@@ -1,0 +1,52 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from "react-router-dom";
+import useWindowDimensions from '../../../hooks/useWindowDimensions';
+
+import Typography from '@mui/material/Typography';
+
+import HelperCBB from '../../../helpers/CBB';
+import Api from './../../../Api.jsx';
+const api = new Api();
+
+
+const ScoreTitle = (props) => {
+  const self = this;
+  let params = useParams();
+  const navigate = useNavigate();
+  const { height, width } = useWindowDimensions();
+
+  const rankDisplay = localStorage.getItem('default_cbb_rank_display') ? JSON.parse(localStorage.getItem('default_cbb_rank_display')) : 'composite_rank';
+  const game = props.game;
+
+  const CBB = new HelperCBB({
+    'cbb_game': game,
+  });
+
+  const handleClick = (team_id) => {
+    navigate('/CBB/Team/' + team_id);
+  }
+
+
+  const titleStyle = {
+    'display': 'flex',
+    'justifyContent': 'space-between',
+  };
+
+
+  return (
+    <div>
+      <div style = {{'marginBottom': 10}}><Typography variant = 'h6'>{CBB.getTime()}</Typography></div>
+      <div style = {titleStyle}>
+        <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.away_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>{CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{CBB.getTeamName('away')}</Typography>
+        <Typography variant = {width < 600 ? 'h6' : 'h4'}>{game.away_score}</Typography>
+      </div>
+      <div style = {Object.assign({'position': 'sticky', 'top': 20},titleStyle)}>
+        <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.home_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>{CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{CBB.getTeamName('home')}</Typography>
+        <Typography variant = {width < 600 ? 'h6' : 'h4'}>{game.home_score}</Typography>
+      </div>
+
+    </div>
+  );
+}
+
+export default ScoreTitle;
