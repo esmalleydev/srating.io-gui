@@ -25,6 +25,7 @@ import TripleDotsIcon from '@mui/icons-material/MoreVert';
 import DarkModeIcon from '@mui/icons-material/ModeNight';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import BeerIcon from '@mui/icons-material/SportsBar';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 
 const Header = (props) => {
@@ -171,6 +172,9 @@ const Header = (props) => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
+            <IconButton  onClick={() => {window.open('https://github.com/esmalleydev/sportsranking-app', '_blank');}} color="inherit">
+              <GitHubIcon />
+            </IconButton>
             <IconButton  onClick={handleAnchorMenu} color="inherit">
               <TripleDotsIcon />
             </IconButton>

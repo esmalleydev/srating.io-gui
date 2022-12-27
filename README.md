@@ -1,6 +1,6 @@
 # > sportsranking.io
 
-This is the open-source GUI project for sportsranking.io.
+This is the open-source GUI project for sportsranking.io. This utilizes [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/)
 
 ## Set up
 
@@ -36,10 +36,10 @@ api.Request({
   'class': 'team',
   'function': 'getCBBTeam',
   'arguments': {
-   		'team_id': params.team_id,
+    'team_id': params.team_id,
    }
 }).then(team => {
-	console.log(team);
+  console.log(team);
 }).catch((err) => {
   console.log(err);
 });
@@ -48,10 +48,10 @@ api.Request({
   'class': 'team',
   'function': 'get',
   'arguments': {
-   		'team_id': params.team_id,
+    'team_id': params.team_id,
    }
 }).then(team => {
-	console.log(team);
+  console.log(team);
 }).catch((err) => {
   console.log(err);
 });
@@ -60,10 +60,10 @@ api.Request({
   'class': 'team',
   'function': 'read',
   'arguments': {
-   		'cbb': '1',
+    'cbb': '1',
    }
 }).then(teams => {
-	console.log(teams);
+  console.log(teams);
 }).catch((err) => {
   console.log(err);
 });
