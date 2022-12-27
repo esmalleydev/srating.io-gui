@@ -175,6 +175,7 @@ const Games = (props) => {
     getGames(now);
   }
 
+  /*
   if (!requestedOtherDays) {
     setRequestedOtherDays(true);
 
@@ -215,6 +216,7 @@ const Games = (props) => {
       });
     }, 2000);
   }
+  */
 
   useEffect(() => {
     // todo save scroll position?
@@ -224,7 +226,7 @@ const Games = (props) => {
       'date': date,
       'status': status,
       'spin': false,
-      'expire_session': new Date().getTime() + (6 * 60 * 60),
+      'expire_session': new Date().getTime() + (6 * 60 * 60 * 1000), // 6 hours from now
     }));
 
     intervalRefresher = setInterval(function() {
@@ -554,6 +556,12 @@ const Games = (props) => {
 
   return (
     <div style = {{'padding': '46px 20px 0px 20px'}}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={spin}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div>
         <AppBar position="fixed" style = {{'marginTop': marginTop, 'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}}>
           <Toolbar /*sx = {{'padding': 0}}*/ variant = 'dense'>
@@ -699,7 +707,7 @@ const Games = (props) => {
       <div>
       </div>
       <div style = {gameContainerStyle}>
-        {spin ? <CircularProgress /> : gameContainers}
+        {gameContainers}
       </div>
     </div>
   );

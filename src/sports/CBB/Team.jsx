@@ -61,7 +61,7 @@ const Team = (props) => {
       'request': request,
       'team': team,
       'spin': false,
-      'expire_session': new Date().getTime() + (6 * 60 * 60),
+      'expire_session': new Date().getTime() + (6 * 60 * 60 * 1000), // 6 hours from now
     }));
   });
 

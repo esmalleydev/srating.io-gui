@@ -8,6 +8,7 @@ import { styled, alpha, useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -647,24 +648,18 @@ const Picks = (props) => {
     setCalendarOpen(!calendarOpen);
   }
 
-  const getTabDates = () => {
-    const currentDate = moment(getSelectedDate());
-
+  const getRangeDates = (start, end)  => {
     let dates = [];
 
-    if (width > 550) {
-      dates.push(currentDate.subtract(2, 'day').format('YYYY-MM-DD'));
-      dates.push(currentDate.add(1, 'day').format('YYYY-MM-DD'));
-      dates.push(currentDate.add(1, 'day').format('YYYY-MM-DD'));
-      dates.push(currentDate.add(1, 'day').format('YYYY-MM-DD'));
-      dates.push(currentDate.add(1, 'day').format('YYYY-MM-DD'));
-    } else {
-      dates.push(currentDate.subtract(1, 'day').format('YYYY-MM-DD'));
-      dates.push(currentDate.add(1, 'day').format('YYYY-MM-DD'));
-      dates.push(currentDate.add(1, 'day').format('YYYY-MM-DD'));
+    for (let date = new Date(start); date <= new Date(end); date.setDate(date.getDate()+1)) {
+      dates.push(new Date(date).toISOString().split('T')[0]);
     }
-
     return dates;
+  };
+
+  const getTabDates = () => {
+    const now = moment();
+    return getRangeDates('2022-11-01', now.add(5, 'day').format('YYYY-MM-DD'));
   }
 
 
@@ -939,8 +934,10 @@ const Picks = (props) => {
     <div style = {{'padding': '56px 20px 0px 20px'}}>
       <div>
         <AppBar position="fixed" style = {{'marginTop': marginTop, 'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}}>
-          <Tabs value={tabIndex} onChange={updateDate} centered indicatorColor="secondary" textColor="inherit">
-            {tabComponents}
+          <Toolbar /*sx = {{'padding': 0}}*/ variant = 'dense'>
+            <Tabs value={tabIndex} onChange={updateDate} variant="scrollable" scrollButtons = {true} allowScrollButtonsMobile = {false} indicatorColor="secondary" textColor="inherit">
+              {tabComponents}
+            </Tabs>
             <IconButton  onClick={toggleCalendar} color="inherit">
               <CalendarIcon />
             </IconButton>
@@ -966,7 +963,7 @@ const Picks = (props) => {
                 />
               </LocalizationProvider>
             </Popover>
-          </Tabs>
+          </Toolbar>
         </AppBar>
       </div>
       {
