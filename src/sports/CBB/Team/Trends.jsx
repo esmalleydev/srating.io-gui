@@ -65,6 +65,14 @@ const Trends = (props) => {
     },
   };
 
+  const lastKnown = {
+    'composite_rank': null,
+    'elo_rank': null,
+    'kenpom_rank': null,
+    'net_rank': null,
+    'srs_rank': null,
+  };
+
   for (let id in ranking) {
     let date_of_rank = moment(ranking[id].date_of_rank).format('MMM Do');
     if (
@@ -74,7 +82,18 @@ const Trends = (props) => {
     }
 
     for (let key in series) {
-      series[key].data.push(ranking[id][key]);
+      if (
+        key in lastKnown &&
+        ranking[id][key]
+      ) {
+        lastKnown[key] = ranking[id][key];
+      }
+
+      if (!ranking[id][key] && lastKnown[key]) {
+        series[key].data.push(lastKnown[key]);
+      } else {
+        series[key].data.push(ranking[id][key]);
+      }
     }
 
   }

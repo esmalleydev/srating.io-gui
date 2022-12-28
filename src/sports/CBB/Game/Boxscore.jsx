@@ -49,6 +49,12 @@ const Boxscore = (props) => {
       'tooltip': 'Minutes played',
     },
     {
+      'id': 'PTS',
+      'numeric': false,
+      'label': 'PTS',
+      'tooltip': 'Points',
+    },
+    {
       'id': 'FG',
       'label': 'FG',
       'tooltip': 'Field goals',
@@ -132,6 +138,7 @@ const Boxscore = (props) => {
               >
                 <TableCell>{row.first_name} {row.last_name}</TableCell>
                 <TableCell>{row.minutes_played}</TableCell>
+                <TableCell>{row.points}</TableCell>
                 <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>
                 <TableCell>{row.two_point_field_goal}-{row.two_point_field_goal_attempts} {row.two_point_field_goal_percentage}%</TableCell>
                 <TableCell>{row.three_point_field_goal}-{row.three_point_field_goal_attempts} {row.three_point_field_goal_percentage}%</TableCell>
@@ -150,6 +157,7 @@ const Boxscore = (props) => {
             <TableRow>
               <TableCell>Total</TableCell>
               <TableCell>-</TableCell>
+              <TableCell>{awayTotalBoxscore.points}</TableCell>
               <TableCell>{awayTotalBoxscore.field_goal}-{awayTotalBoxscore.field_goal_attempts} {awayTotalBoxscore.field_goal_percentage}%</TableCell>
               <TableCell>{awayTotalBoxscore.two_point_field_goal}-{awayTotalBoxscore.two_point_field_goal_attempts} {awayTotalBoxscore.two_point_field_goal_percentage}%</TableCell>
               <TableCell>{awayTotalBoxscore.three_point_field_goal}-{awayTotalBoxscore.three_point_field_goal_attempts} {awayTotalBoxscore.three_point_field_goal_percentage}%</TableCell>
@@ -188,6 +196,7 @@ const Boxscore = (props) => {
               >
                 <TableCell>{row.first_name} {row.last_name}</TableCell>
                 <TableCell>{row.minutes_played}</TableCell>
+                <TableCell>{row.points}</TableCell>
                 <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>
                 <TableCell>{row.two_point_field_goal}-{row.two_point_field_goal_attempts} {row.two_point_field_goal_percentage}%</TableCell>
                 <TableCell>{row.three_point_field_goal}-{row.three_point_field_goal_attempts} {row.three_point_field_goal_percentage}%</TableCell>
@@ -206,6 +215,7 @@ const Boxscore = (props) => {
             <TableRow>
               <TableCell>Total</TableCell>
               <TableCell>-</TableCell>
+              <TableCell>{homeTotalBoxscore.points}</TableCell>
               <TableCell>{homeTotalBoxscore.field_goal}-{homeTotalBoxscore.field_goal_attempts} {homeTotalBoxscore.field_goal_percentage}%</TableCell>
               <TableCell>{homeTotalBoxscore.two_point_field_goal}-{homeTotalBoxscore.two_point_field_goal_attempts} {homeTotalBoxscore.two_point_field_goal_percentage}%</TableCell>
               <TableCell>{homeTotalBoxscore.three_point_field_goal}-{homeTotalBoxscore.three_point_field_goal_attempts} {homeTotalBoxscore.three_point_field_goal_percentage}%</TableCell>

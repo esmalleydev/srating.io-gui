@@ -57,7 +57,7 @@ class CBB {
    * @return {Boolean}
    */
   isInProgress() {
-    return (this.cbb_game.status !== 'pre' && this.cbb_game.status !== 'final');
+    return (this.cbb_game.status !== 'pre' && this.cbb_game.status !== 'final' && this.cbb_game.status !== 'postponed' && this.cbb_game.status !== 'cancelled');
   }
 
   /**
@@ -84,6 +84,10 @@ class CBB {
       if (date.getHours() >= 0 && date.getHours() <= 6) {
         startTime = 'TBA';
       }
+    } else if (this.cbb_game.status === 'postponed') {
+      startTime = 'Postponed';
+    } else if (this.cbb_game.status === 'cancelled') {
+      startTime = 'Cancelled';
     }
 
     return startTime;

@@ -42,7 +42,7 @@ const Tile = (props) => {
     'cursor': 'pointer',
   };
 
-  const circleBackgroundColor = game.status === 'final' ? (won ? theme.palette.success.light : theme.palette.error.light) : theme.palette.info.light;
+  const circleBackgroundColor = game.status === 'final' ? (won ? theme.palette.success.light : theme.palette.error.light) : (game.status !== 'pre' ? theme.palette.warning.light : theme.palette.info.light);
 
   const dateStyle = {
     'width': width < 600 ? '55px' : '65px',
@@ -76,10 +76,10 @@ const Tile = (props) => {
       <div style = {{'display': 'flex', 'alignItems': 'center',}}>
         <div style = {dateStyle}>
           <div style = {{'flexBasis': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'flex-end'}}>
-            <Typography variant = 'body1'>{moment(game.start_datetime).format('Do')}</Typography>
+            <Typography variant = 'body1'>{moment(game.start_date.split('T')[0] + ' 12:00:00').format('Do')}</Typography>
           </div>
           <div style = {{'flexBasis': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'flex-start'}}>
-            <Typography variant = 'body2'>{moment(game.start_datetime).format('ddd').toUpperCase()}</Typography>
+            <Typography variant = 'body2'>{moment(game.start_date.split('T')[0] + ' 12:00:00').format('ddd').toUpperCase()}</Typography>
           </div>
         </div>
         <div style = {{'marginLeft': '10px', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'baseline'}}>
