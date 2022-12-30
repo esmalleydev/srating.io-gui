@@ -397,6 +397,17 @@ const Games = (props) => {
       continue;
     }
 
+    // remove games that are today but still TBA
+    let game_timestamp;
+    if (
+      game_.status === 'pre' &&
+      game_.start_date.split('T')[0] === now &&
+      (game_timestamp = new Date(game_.start_timestamp * 1000)) &&
+      game_timestamp.getHours() >= 0 && game_timestamp.getHours() <= 6
+    ) {
+      continue;
+    }
+
     gameContainers.push(<Tile key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} />);
   }
 
