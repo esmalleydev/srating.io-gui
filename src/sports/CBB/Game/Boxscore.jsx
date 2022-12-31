@@ -11,6 +11,7 @@ import TableFooter from '@mui/material/TableFooter';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
 
 import HelperCBB from '../../../helpers/CBB';
 
@@ -21,6 +22,7 @@ const Boxscore = (props) => {
 
 
   const theme = useTheme();
+  const [boxscoreSide, setBoxscoreSide] = useState('home');
 
   const game = props.game;
 
@@ -30,10 +32,12 @@ const Boxscore = (props) => {
   const awayTotalBoxscore = (game.boxscores && game.boxscores[game.away_team_id]) || {};
   const homeTotalBoxscore = (game.boxscores && game.boxscores[game.home_team_id]) || {};
 
+  const boxscore = boxscoreSide === 'home' ? homeBoxscores : awayBoxscores;
+  const boxscoreTotal = boxscoreSide === 'home' ? homeTotalBoxscore : awayTotalBoxscore;
+
   const CBB = new HelperCBB({
     'cbb_game': game,
   });
-
 
   const headCells = [
     {
@@ -111,13 +115,12 @@ const Boxscore = (props) => {
     },
   ];
 
-
-
   return (
     <div style = {{'padding': 20}}>
-      <Typography variant = 'h5' style = {{'margin': '10px 0px'}}>{CBB.getTeamName('away')}</Typography>
+      <Chip sx = {{'margin': '0px 10px 5px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
+      <Chip sx = {{'margin': '0px 10px 5px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
       <TableContainer component={Paper}>
-        <Table size="small" aria-label="away team boxscore table">
+        <Table size="small" aria-label="team boxscore table">
           <TableHead>
             <TableRow>
               {headCells.map((headCell) => (
@@ -131,7 +134,7 @@ const Boxscore = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {awayBoxscores.map((row) => (
+            {boxscore.map((row) => (
               <TableRow
                 key={row.cbb_player_boxscore_id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -157,76 +160,18 @@ const Boxscore = (props) => {
             <TableRow>
               <TableCell>Total</TableCell>
               <TableCell>-</TableCell>
-              <TableCell>{awayTotalBoxscore.points}</TableCell>
-              <TableCell>{awayTotalBoxscore.field_goal}-{awayTotalBoxscore.field_goal_attempts} {awayTotalBoxscore.field_goal_percentage}%</TableCell>
-              <TableCell>{awayTotalBoxscore.two_point_field_goal}-{awayTotalBoxscore.two_point_field_goal_attempts} {awayTotalBoxscore.two_point_field_goal_percentage}%</TableCell>
-              <TableCell>{awayTotalBoxscore.three_point_field_goal}-{awayTotalBoxscore.three_point_field_goal_attempts} {awayTotalBoxscore.three_point_field_goal_percentage}%</TableCell>
-              <TableCell>{awayTotalBoxscore.free_throws}-{awayTotalBoxscore.free_throw_attempts} {awayTotalBoxscore.free_throw_percentage}%</TableCell>
-              <TableCell>{awayTotalBoxscore.offensive_rebounds}</TableCell>
-              <TableCell>{awayTotalBoxscore.defensive_rebounds}</TableCell>
-              <TableCell>{awayTotalBoxscore.assists}</TableCell>
-              <TableCell>{awayTotalBoxscore.steals}</TableCell>
-              <TableCell>{awayTotalBoxscore.blocks}</TableCell>
-              <TableCell>{awayTotalBoxscore.turnovers}</TableCell>
-              <TableCell>{awayTotalBoxscore.fouls}</TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
-      <Typography variant = 'h5' style = {{'margin': '10px 0px'}}>{CBB.getTeamName('home')}</Typography>
-      <TableContainer component={Paper}>
-        <Table size="small" aria-label="home team boxscore table">
-          <TableHead>
-            <TableRow>
-              {headCells.map((headCell) => (
-                <TableCell
-                  key={headCell.id}
-                  align={'left'}
-                >
-                  {headCell.label}     
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {homeBoxscores.map((row) => (
-              <TableRow
-                key={row.cbb_player_boxscore_id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell>{row.first_name} {row.last_name}</TableCell>
-                <TableCell>{row.minutes_played}</TableCell>
-                <TableCell>{row.points}</TableCell>
-                <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>
-                <TableCell>{row.two_point_field_goal}-{row.two_point_field_goal_attempts} {row.two_point_field_goal_percentage}%</TableCell>
-                <TableCell>{row.three_point_field_goal}-{row.three_point_field_goal_attempts} {row.three_point_field_goal_percentage}%</TableCell>
-                <TableCell>{row.free_throws}-{row.free_throw_attempts} {row.free_throw_percentage}%</TableCell>
-                <TableCell>{row.offensive_rebounds}</TableCell>
-                <TableCell>{row.defensive_rebounds}</TableCell>
-                <TableCell>{row.assists}</TableCell>
-                <TableCell>{row.steals}</TableCell>
-                <TableCell>{row.blocks}</TableCell>
-                <TableCell>{row.turnovers}</TableCell>
-                <TableCell>{row.fouls}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell>Total</TableCell>
-              <TableCell>-</TableCell>
-              <TableCell>{homeTotalBoxscore.points}</TableCell>
-              <TableCell>{homeTotalBoxscore.field_goal}-{homeTotalBoxscore.field_goal_attempts} {homeTotalBoxscore.field_goal_percentage}%</TableCell>
-              <TableCell>{homeTotalBoxscore.two_point_field_goal}-{homeTotalBoxscore.two_point_field_goal_attempts} {homeTotalBoxscore.two_point_field_goal_percentage}%</TableCell>
-              <TableCell>{homeTotalBoxscore.three_point_field_goal}-{homeTotalBoxscore.three_point_field_goal_attempts} {homeTotalBoxscore.three_point_field_goal_percentage}%</TableCell>
-              <TableCell>{homeTotalBoxscore.free_throws}-{homeTotalBoxscore.free_throw_attempts} {homeTotalBoxscore.free_throw_percentage}%</TableCell>
-              <TableCell>{homeTotalBoxscore.offensive_rebounds}</TableCell>
-              <TableCell>{homeTotalBoxscore.defensive_rebounds}</TableCell>
-              <TableCell>{homeTotalBoxscore.assists}</TableCell>
-              <TableCell>{homeTotalBoxscore.steals}</TableCell>
-              <TableCell>{homeTotalBoxscore.blocks}</TableCell>
-              <TableCell>{homeTotalBoxscore.turnovers}</TableCell>
-              <TableCell>{homeTotalBoxscore.fouls}</TableCell>
+              <TableCell>{boxscoreTotal.points}</TableCell>
+              <TableCell>{boxscoreTotal.field_goal}-{boxscoreTotal.field_goal_attempts} {boxscoreTotal.field_goal_percentage}%</TableCell>
+              <TableCell>{boxscoreTotal.two_point_field_goal}-{boxscoreTotal.two_point_field_goal_attempts} {boxscoreTotal.two_point_field_goal_percentage}%</TableCell>
+              <TableCell>{boxscoreTotal.three_point_field_goal}-{boxscoreTotal.three_point_field_goal_attempts} {boxscoreTotal.three_point_field_goal_percentage}%</TableCell>
+              <TableCell>{boxscoreTotal.free_throws}-{boxscoreTotal.free_throw_attempts} {boxscoreTotal.free_throw_percentage}%</TableCell>
+              <TableCell>{boxscoreTotal.offensive_rebounds}</TableCell>
+              <TableCell>{boxscoreTotal.defensive_rebounds}</TableCell>
+              <TableCell>{boxscoreTotal.assists}</TableCell>
+              <TableCell>{boxscoreTotal.steals}</TableCell>
+              <TableCell>{boxscoreTotal.blocks}</TableCell>
+              <TableCell>{boxscoreTotal.turnovers}</TableCell>
+              <TableCell>{boxscoreTotal.fouls}</TableCell>
             </TableRow>
           </TableFooter>
         </Table>

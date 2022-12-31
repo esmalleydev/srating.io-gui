@@ -71,6 +71,14 @@ const Tile = (props) => {
     }
   });
 
+  let scoreLineText = CBB.getTime();
+
+  if (CBB.isFinal()) {
+    scoreLineText = (won ? 'W ' : 'L ') + game.home_score + '-' + game.away_score;
+  } else if (CBB.isInProgress()) {
+    scoreLineText = CBB.getTime() + ' ' + game.home_score + '-' + game.away_score;
+  }
+
   return (
     <div ref = {myRef} style = {containerStyle} onClick = {handleClick}>
       <div style = {{'display': 'flex', 'alignItems': 'center',}}>
@@ -87,7 +95,7 @@ const Tile = (props) => {
         </div>
       </div>
       <div>
-        <Typography variant = {width < 600 ? 'body2' : 'h6'}>{CBB.isFinal() || CBB.isInProgress() ? (won ? 'W ' : 'L ') + game.home_score + '-' + game.away_score : CBB.getTime()}</Typography>
+        <Typography variant = {width < 600 ? 'body2' : 'h6'}>{scoreLineText}</Typography>
       </div>
     </div>
   );
