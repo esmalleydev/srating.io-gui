@@ -90,9 +90,9 @@ const Game = (props) => {
     'betting': 'Betting',
   };
 
-  let tabOrder = ['matchup', 'betting'];
+  let tabOrder = ['matchup', 'trends', 'betting'];
   if (CBB.isInProgress() || CBB.isFinal()) {
-    tabOrder = ['boxscore', 'trends', 'matchup', 'betting'];
+    tabOrder = ['boxscore', 'matchup', 'trends', 'betting'];
   }
 
 
@@ -114,7 +114,7 @@ const Game = (props) => {
         </Tabs>
       </AppBar>
       {selectedTab == 'boxscore' ? <Boxscore game = {game} /> : ''}
-      {selectedTab == 'trends' ? <Trends game = {game} scoreIntervals = {game.score_interval} /> : ''}
+      {selectedTab == 'trends' ? <Trends game = {game} /> : ''}
       {selectedTab == 'matchup' ? <Matchup game = {game} awayTeam={game.teams[game.away_team_id]} awayStats={game.stats[game.away_team_id]} homeTeam={game.teams[game.home_team_id]} homeStats={game.stats[game.home_team_id]} /> : ''}
       {selectedTab == 'betting' ? <div> coming soon...</div> : ''}
     </div>

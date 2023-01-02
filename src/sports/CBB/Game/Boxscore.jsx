@@ -14,15 +14,15 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 
 import HelperCBB from '../../../helpers/CBB';
+import Score from './Charts/Score';
+import Odds from './Charts/Odds';
 
 const Boxscore = (props) => {
   const self = this;
-  
-  // console.log(props);
-
 
   const theme = useTheme();
   const [boxscoreSide, setBoxscoreSide] = useState('home');
+  const [selectedIntervalChip, setSelectedIntervalChip] = useState('scoring');
 
   const game = props.game;
 
@@ -115,10 +115,51 @@ const Boxscore = (props) => {
     },
   ];
 
+  const intervalCompare = [
+    {
+      'label': 'Scoring',
+      'value': 'scoring',
+    },
+    {
+      'label': 'Live odds',
+      'value': 'live_odds',
+    },
+  ];
+
+  let intervalCompareChips = [];
+
+  for (let i = 0; i < intervalCompare.length; i++) {
+    intervalCompareChips.push(
+      <Chip
+        key = {intervalCompare[i].value}
+        sx = {{'margin': '5px 5px 10px 5px'}}
+        variant = {selectedIntervalChip === intervalCompare[i].value ? 'filled' : 'outlined'}
+        color = {selectedIntervalChip === intervalCompare[i].value ? 'success' : 'primary'}
+        onClick = {() => {setSelectedIntervalChip(intervalCompare[i].value);}}
+        label = {intervalCompare[i].label} 
+      />
+    );
+  }
+
+  let intervalChart = null;
+
+  if (selectedIntervalChip === 'scoring') {
+    intervalChart = <Score game = {game} />;
+  } else if (selectedIntervalChip === 'live_odds') {
+    intervalChart = <Odds game = {game} />;
+  }
+
+
   return (
     <div style = {{'padding': 20}}>
-      <Chip sx = {{'margin': '0px 10px 5px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
-      <Chip sx = {{'margin': '0px 10px 5px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
+      <div>
+        <Typography variant = 'body1'>Intervals</Typography>
+        {intervalCompareChips}
+        {intervalChart}
+      </div>
+      <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Boxscore</Typography>
+      <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
+      <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
       <TableContainer component={Paper}>
         <Table size="small" aria-label="team boxscore table">
           <TableHead>
