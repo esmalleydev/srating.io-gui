@@ -63,8 +63,8 @@ const App = (props) => {
           <Header theme = {theme} handleTheme = {switchTheme} />
           <div style = {{'padding': paddingTop + ' 0px 56px 0px'}}>
             <Routes>
-              {/*<Route path="/" element={<Home />} />*/}
-              <Route path="/" element = {<Navigate to='/CBB/Ranking' />}/>
+              <Route path="/" element={<Home />} />
+              {/*<Route path="/" element = {<Navigate to='/CBB/Ranking' />}/>*/}
               <Route path="CBB" element={<CBB />}>
                 <Route path="Ranking" element={<RankingCBB />} />
                 <Route path="Games" element={<GamesCBB />} />
