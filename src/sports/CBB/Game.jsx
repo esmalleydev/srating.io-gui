@@ -40,7 +40,6 @@ const Game = (props) => {
 
   const getGame = () => {
     api.Request({
-      'resource': 'cbb_game',
       'class': 'cbb_game',
       'function': 'getGamesFull',
       'arguments': {

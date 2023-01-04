@@ -18,6 +18,23 @@ const ScoreTitle = (props) => {
   const rankDisplay = localStorage.getItem('default_cbb_rank_display') ? JSON.parse(localStorage.getItem('default_cbb_rank_display')) : 'composite_rank';
   const game = props.game;
 
+  let awayTeamRecord = '';
+  let homeTeamRecord = '';
+
+  if (
+    game.stats &&
+    game.stats[game.away_team_id]
+  ) {
+    awayTeamRecord = ' (' + game.stats[game.away_team_id].wins + '-' + game.stats[game.away_team_id].losses + ')';
+  }
+
+  if (
+    game.stats &&
+    game.stats[game.home_team_id]
+  ) {
+    homeTeamRecord = ' (' + game.stats[game.home_team_id].wins + '-' + game.stats[game.home_team_id].losses + ')';
+  }
+
   const CBB = new HelperCBB({
     'cbb_game': game,
   });
@@ -37,11 +54,11 @@ const ScoreTitle = (props) => {
     <div>
       <div style = {{'marginBottom': 10}}><Typography variant = 'h6'>{CBB.getTime()}</Typography></div>
       <div style = {titleStyle}>
-        <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.away_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>{CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{CBB.getTeamName('away')}</Typography>
+        <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.away_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>{CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{CBB.getTeamName('away')}{awayTeamRecord}</Typography>
         <Typography variant = {width < 600 ? 'h6' : 'h4'}>{game.away_score}</Typography>
       </div>
       <div style = {Object.assign({'position': 'sticky', 'top': 20},titleStyle)}>
-        <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.home_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>{CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{CBB.getTeamName('home')}</Typography>
+        <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.home_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>{CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{CBB.getTeamName('home')}{homeTeamRecord}</Typography>
         <Typography variant = {width < 600 ? 'h6' : 'h4'}>{game.home_score}</Typography>
       </div>
 

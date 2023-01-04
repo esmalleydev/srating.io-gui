@@ -67,6 +67,10 @@ const Stats = (props) => {
     //   'value': (team.ranking && team.ranking.srs_rank) || '-',
     // },
     {
+      'name': 'Streak',
+      'value': (stats.streak < 0 ? 'L' : 'W') + Math.abs(stats.streak),
+    },
+    {
       'name': 'Avg. PTS Offense',
       'value': stats.points,
     },

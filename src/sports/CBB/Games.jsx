@@ -132,7 +132,6 @@ const Games = (props) => {
   ];
 
   const [request, setRequest] = useState(sessionData.request || false);
-  const [requestedOtherDays, setRequestedOtherDays] = useState(false);
   const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : (props.games));
   const [date, setDate] = useState(sessionData.date || null);
   const [now, setNow] = useState(defaultDate);
@@ -153,7 +152,6 @@ const Games = (props) => {
     }
 
     setRequest(true);
-    setRequestedOtherDays(false);
     setDate(value);
     api.Request({
       'class': 'cbb_game',
@@ -163,7 +161,6 @@ const Games = (props) => {
       }
     }).then(cbb_games => {
       setGames(cbb_games);
-      // setDate(value);
       setSpin(false);
     }).catch((err) => {
       // nothing for now
@@ -175,48 +172,6 @@ const Games = (props) => {
     getGames(now);
   }
 
-  /*
-  if (!requestedOtherDays) {
-    setRequestedOtherDays(true);
-
-    if (yesterdayTimeout) {
-      clearTimeout(yesterdayTimeout);
-    }
-
-    if (tomorrowTimeout) {
-      clearTimeout(tomorrowTimeout);
-    }
-
-    // after 2 seconds, load yesterday and tomorrow games
-    yesterdayTimeout = setTimeout(function() {
-      api.Request({
-        'class': 'cbb_game',
-        'function': 'getGames',
-        'arguments': {
-          'start_date': getYesterdayDate(),
-        }
-      }).then(cbb_games => {
-        setGamesYesterday(cbb_games);
-      }).catch((err) => {
-        // nothing for now
-      });
-    }, 2000);
-
-    tomorrowTimeout = setTimeout(function() {
-      api.Request({
-        'class': 'cbb_game',
-        'function': 'getGames',
-        'arguments': {
-          'start_date': getTomorrowDate(),
-        }
-      }).then(cbb_games => {
-        setGamesTomorrow(cbb_games);
-      }).catch((err) => {
-        // nothing for now
-      });
-    }, 2000);
-  }
-  */
 
   useEffect(() => {
     // todo save scroll position?
@@ -226,7 +181,7 @@ const Games = (props) => {
       'date': date,
       'status': status,
       'spin': false,
-      'expire_session': new Date().getTime() + (6 * 60 * 60 * 1000), // 6 hours from now
+      'expire_session': new Date().getTime() + (5 * 60 * 1000), // 5 mins from now
     }));
 
     intervalRefresher = setInterval(function() {
@@ -276,29 +231,7 @@ const Games = (props) => {
 
   const updateDate = (e, value) => {
     const tabDates = getTabDates();
-
-    if (
-      tabDates[value] === getYesterdayDate() &&
-      Object.keys(gamesYesterday).length
-    ) {
-      // setGamesTomorrow(games);
-      setGames(Object.assign({}, gamesYesterday));
-      setGamesTomorrow({});
-      setGamesYesterday({});
-      setRequestedOtherDays(false);
-      setDate(tabDates[value]);
-    } else if (
-      tabDates[value] === getTomorrowDate() &&
-      Object.keys(gamesTomorrow).length
-    ) {
-      setGames(Object.assign({}, gamesTomorrow));
-      setGamesTomorrow({});
-      setGamesYesterday({});
-      setRequestedOtherDays(false);
-      setDate(tabDates[value]);
-    } else {
-      getGames(tabDates[value]);
-    }
+    getGames(tabDates[value]);
   }
 
 
@@ -316,6 +249,7 @@ const Games = (props) => {
   let sorted_games = Object.values(games);
 
   sorted_games.sort(function(a, b) {
+    /*
     if (
       a.status === 'live' &&
       b.status === 'live'
@@ -342,6 +276,7 @@ const Games = (props) => {
       bD.setHours(12, b.clock.split(':')[0], b.clock.split(':')[1])
       return aD < bD ? -1 : 1;
     }
+    */
 
     if (
       a.status === 'live' &&
@@ -371,7 +306,6 @@ const Games = (props) => {
       return -1;
     }
     return a.start_datetime > b.start_datetime ? 1 : -1;
-    // return a.start_timestamp > b.start_timestamp ? 1 : -1;
   });
 
   for (var i = 0; i < sorted_games.length; i++) {
@@ -415,17 +349,6 @@ const Games = (props) => {
     'display': 'flex',
     'flexWrap': 'wrap',
     'justifyContent': 'center',
-  };
-
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
   };
 
   const conferenceOptions = [
@@ -556,9 +479,7 @@ const Games = (props) => {
   };
 
   // TODO FADE IN / GROW CBBGAME TILES
-  // TODO MAKE SELECT LIST SMALLER?
 
-  // todo change popover background color
   let marginTop = '64px';
 
   if (width < 600) {
@@ -569,7 +490,7 @@ const Games = (props) => {
     <div style = {{'padding': '46px 20px 0px 20px'}}>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={spin}
+        open={(spin === true)} // kinda dumb but for some reason spin can be undefined
       >
         <CircularProgress color="inherit" />
       </Backdrop>
