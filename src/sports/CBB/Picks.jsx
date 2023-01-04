@@ -62,13 +62,12 @@ const Picks = (props) => {
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
 
-  const date_ = new Date();
   const defaultRankDisplay = localStorage.getItem('default_cbb_rank_display') ? JSON.parse(localStorage.getItem('default_cbb_rank_display')) : 'composite_rank';
 
   const [request, setRequest] = useState(false);
   const [spin, setSpin] = useState(true);
   const [date, setDate] = useState();
-  const [now, setNow] = useState(date_.getFullYear() + '-' + (date_.getMonth() + 1) + '-' + (date_.getDate() < 10 ? '0' + date_.getDate() : date_.getDate()));
+  const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
   const [games, setGames] = useState({});
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('start_timestamp');
