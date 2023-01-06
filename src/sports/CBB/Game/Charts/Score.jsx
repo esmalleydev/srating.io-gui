@@ -25,7 +25,7 @@ const Scoring = (props) => {
 
   const scoreIntervals = game.score_interval;
 
-  const sorted_intervals = Object.values(scoreIntervals).sort(function (a, b) {
+  const sorted_intervals = Object.values(scoreIntervals || {}).sort(function (a, b) {
     // should probably use clock, but DoE should be fine for now
     return a.date_of_entry  < b.date_of_entry ? -1 : 1;
   });

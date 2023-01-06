@@ -7,8 +7,8 @@ class Team {
   getName() {
     if (this.team.code) {
       return this.team.code;
-    } else if (this.team.kenpom) {
-      return this.team.kenpom;
+    } else if (this.team.alt_name) {
+      return this.team.alt_name;
     } else if (this.team.name) {
       return this.team.name;
     }

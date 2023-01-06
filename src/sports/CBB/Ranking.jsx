@@ -79,9 +79,9 @@ const Ranking = (props) => {
 
   const { height, width } = useWindowDimensions();
 
-  const defaultConferences = localStorage.getItem('default_rank_cbb_conferences') ? JSON.parse(localStorage.getItem('default_rank_cbb_conferences')) : [];
+  const defaultConferences = localStorage.getItem('default_cbb_conferences') ? JSON.parse(localStorage.getItem('default_cbb_conferences')) : [];
 
-  // const [season, setSeason] = useState('2023');
+  const [season, setSeason] = useState(2023);
   const [request, setRequest] = useState();
 
   const [confOpen, setConfOpen] = useState(false);
@@ -96,7 +96,9 @@ const Ranking = (props) => {
     api.Request({
       'class': 'team',
       'function': 'getCBBTeams',
-      'arguments': {}
+      'arguments': {
+        'season': season,
+      }
     }).then(teams => {
       setRequest({
         'teams': teams,
@@ -276,7 +278,8 @@ const Ranking = (props) => {
 
   for (let team_id in teams) {
     let team = teams[team_id];
-    if (!team.last_ranking || !team.stats) {
+    if (!team.stats) {
+    // if (!team.last_ranking || !team.stats) {
       // console.log('missing ranking or stats');
       // console.log(team);
       continue;
@@ -290,27 +293,30 @@ const Ranking = (props) => {
     }
 
     if (
-      !lastUpdated ||
-      (lastUpdated < team.last_ranking.date_of_rank)
+      team.last_ranking &&
+      (
+        !lastUpdated ||
+        lastUpdated < team.last_ranking.date_of_rank
+      )
     ) {
       lastUpdated = team.last_ranking.date_of_rank;
     }
 
     rows.push({
       'team_id': team.team_id,
-      'composite_rank': team.last_ranking.composite_rank,
-      'ap_rank': team.last_ranking.ap_rank,
+      'composite_rank': team.last_ranking && team.last_ranking.composite_rank,
+      'ap_rank': team.last_ranking && team.last_ranking.ap_rank,
       'name': team.kenpom,
       'wins': team.stats.wins + '-' + team.stats.losses,
       'conf_record': team.stats.confwins + '-' + team.stats.conflosses,
       'conf': team.cbb_conference,
-      'elo_rank': team.last_ranking.elo_rank,
+      'elo_rank': team.last_ranking && team.last_ranking.elo_rank,
       'elo': team.elo,
-      'kenpom_rank': team.last_ranking.kenpom_rank,
+      'kenpom_rank': team.last_ranking && team.last_ranking.kenpom_rank,
       // 'kenpom_rank': team.stats.kenpom_rank,
-      'srs_rank': team.last_ranking.srs_rank,
-      'net_rank': team.last_ranking.net_rank,
-      'coaches_rank': team.last_ranking.coaches_rank,
+      'srs_rank': team.last_ranking && team.last_ranking.srs_rank,
+      'net_rank': team.last_ranking && team.last_ranking.net_rank,
+      'coaches_rank': team.last_ranking && team.last_ranking.coaches_rank,
     });
   }
 
@@ -327,10 +333,18 @@ const Ranking = (props) => {
     if (!a[orderBy] && b[orderBy]) {
       return -1;
     }
-    if (b[orderBy] < a[orderBy]) {
+
+    let a_value = a[orderBy];
+    let b_value = b[orderBy];
+    if (orderBy === 'wins' || orderBy === 'conf_record') {
+      a_value = +a[orderBy].split('-')[0];
+      b_value = +b[orderBy].split('-')[0];
+    }
+
+    if (b_value < a_value) {
       return -1;
     }
-    if (b[orderBy] > a[orderBy]) {
+    if (b_value > a_value) {
       return 1;
     }
     return 0;

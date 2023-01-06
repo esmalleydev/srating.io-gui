@@ -5,9 +5,6 @@ import useWindowDimensions from '../../../hooks/useWindowDimensions';
 import Typography from '@mui/material/Typography';
 
 import HelperCBB from '../../../helpers/CBB';
-import Api from './../../../Api.jsx';
-const api = new Api();
-
 
 const ScoreTitle = (props) => {
   const self = this;

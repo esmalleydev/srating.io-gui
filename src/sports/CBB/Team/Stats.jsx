@@ -14,10 +14,11 @@ import Typography from '@mui/material/Typography';
 
 import HelperCBB from '../../../helpers/CBB';
 
+// TODO Have a Chip to toggle between team totals and player totals;
+
 const Stats = (props) => {
   const self = this;
   
-  // console.log(props);
 
   const team = props.team;
 

@@ -29,8 +29,8 @@ const Matchup = (props) => {
   const overviewRows = [
     {
       'name': 'Win %',
-      'away': game.away_team_rating * 100 + '%',
-      'home': game.home_team_rating * 100 + '%',
+      'away': (game.away_team_rating * 100).toFixed(2) + '%',
+      'home': (game.home_team_rating * 100).toFixed(2) + '%',
       'awayCompareValue': game.away_team_rating,
       'homeCompareValue': game.home_team_rating,
       'favored': 'higher',

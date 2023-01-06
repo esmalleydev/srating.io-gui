@@ -89,9 +89,9 @@ const Game = (props) => {
     'betting': 'Betting',
   };
 
-  let tabOrder = ['matchup', 'trends', 'betting'];
+  let tabOrder = ['matchup', 'trends'];
   if (CBB.isInProgress() || CBB.isFinal()) {
-    tabOrder = ['boxscore', 'matchup', 'trends', 'betting'];
+    tabOrder = ['boxscore', 'matchup', 'trends'];
   }
 
 

@@ -108,8 +108,6 @@ const Team = (props) => {
 
   const team_ = new HelperTeam({'team': team});
 
-  // console.log(team);
-
   if (spin) {
     return <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}><CircularProgress /></div>;
   }

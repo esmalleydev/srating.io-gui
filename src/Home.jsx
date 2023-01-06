@@ -43,7 +43,7 @@ const Home = (props) => {
       'value': 'cbb_picks',
       'heading': 'Picks',
       'image': picksImage,
-      'contents': 'View my picks for today\'s games, along with a betting calculator to customize.',
+      'contents': 'View my picks for today\'s games, along with a betting calculator to customize odds.',
       'action': () => {navigate('/CBB/Picks');}
     },
     {
