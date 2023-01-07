@@ -42,8 +42,8 @@ const Tile = (props) => {
 
     const scoreStyle = {
       'margin': '0px 5px',
-      'width': '25px',
-      'maxWidth': '25px',
+      'width': '34px',
+      'maxWidth': '34px',
       'flex': 2,
     };
 
@@ -90,8 +90,8 @@ const Tile = (props) => {
     }
     const scoreStyle = {
       'margin': '0px 5px',
-      'width': '25px',
-      'maxWidth': '25px',
+      'width': '34px',
+      'maxWidth': '34px',
       'border': '1px solid black',
       'borderRadius': '5px',
       'textAlign': 'center',

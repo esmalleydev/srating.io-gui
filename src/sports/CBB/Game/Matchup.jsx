@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
+import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 
 import HelperCBB from '../../../helpers/CBB';
-
-// TODO put the difference in the green width column +5 pts or -2 fouls, to do the math for people
   
 const Matchup = (props) => {
   const self = this;
+
+  const { height, width } = useWindowDimensions();
 
   const awayTeam = props.awayTeam;
   const homeTeam = props.homeTeam;
@@ -34,6 +35,7 @@ const Matchup = (props) => {
       'awayCompareValue': game.away_team_rating,
       'homeCompareValue': game.home_team_rating,
       'favored': 'higher',
+      'showDifference': false,
     },
     {
       'name': 'Record',
@@ -42,6 +44,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.wins,
       'homeCompareValue': homeStats.wins,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'Streak',
@@ -52,44 +55,14 @@ const Matchup = (props) => {
       // 'favored': 'higher',
     },
     {
-      'name': 'Rank',
-      'away': (awayTeam.ranking && awayTeam.ranking.composite_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.composite_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.composite_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.composite_rank) || Infinity,
-      'favored': 'lower',
-    },
-    {
-      'name': 'Elo',
-      'away': awayStats.elo,
-      'home': homeStats.elo,
-      'awayCompareValue': awayStats.elo,
-      'homeCompareValue': homeStats.elo,
+      'name': 'A/H Rec.',
+      'title': 'Away record / Home record',
+      'away': awayStats.roadwins + '-' + awayStats.roadlosses,
+      'home': homeStats.homewins + '-' + homeStats.homelosses,
+      'awayCompareValue': awayStats.roadwins,
+      'homeCompareValue': homeStats.homewins,
       'favored': 'higher',
-    },
-    {
-      'name': 'AP',
-      'away': (awayTeam.ranking && awayTeam.ranking.ap_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.ap_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.ap_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.ap_rank) || Infinity,
-      'favored': 'lower',
-    },
-    {
-      'name': 'KP',
-      'away': (awayTeam.ranking && awayTeam.ranking.kenpom_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.kenpom_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.kenpom_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.kenpom_rank) || Infinity,
-      'favored': 'lower',
-    },
-    {
-      'name': 'SRS',
-      'away': (awayTeam.ranking && awayTeam.ranking.srs_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.srs_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.srs_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.srs_rank) || Infinity,
-      'favored': 'lower',
+      'showDifference': true,
     },
     {
       'name': 'PTS Off.',
@@ -98,6 +71,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.points,
       'homeCompareValue': homeStats.points,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'PTS Def.',
@@ -106,6 +80,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_points,
       'homeCompareValue': homeStats.opponent_points,
       'favored': 'lower',
+      'showDifference': true,
     },
     {
       'name': 'Win MR',
@@ -115,6 +90,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.win_margin,
       'homeCompareValue': homeStats.win_margin,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'Loss MR',
@@ -124,6 +100,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.loss_margin,
       'homeCompareValue': homeStats.loss_margin,
       'favored': 'lower',
+      'showDifference': true,
     },
     {
       'name': 'Conf. W MR',
@@ -133,6 +110,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.confwin_margin,
       'homeCompareValue': homeStats.confwin_margin,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'Conf. L MR',
@@ -142,6 +120,55 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.confloss_margin,
       'homeCompareValue': homeStats.confloss_margin,
       'favored': 'lower',
+      'showDifference': true,
+    },
+  ];
+
+  const rankRows = [
+    {
+      'name': 'Rank',
+      'away': (awayTeam.ranking && awayTeam.ranking.composite_rank) || '-',
+      'home': (homeTeam.ranking && homeTeam.ranking.composite_rank) || '-',
+      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.composite_rank) || Infinity,
+      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.composite_rank) || Infinity,
+      'favored': 'lower',
+      'showDifference': true,
+    },
+    {
+      'name': 'Elo',
+      'away': awayStats.elo,
+      'home': homeStats.elo,
+      'awayCompareValue': awayStats.elo,
+      'homeCompareValue': homeStats.elo,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'AP',
+      'away': (awayTeam.ranking && awayTeam.ranking.ap_rank) || '-',
+      'home': (homeTeam.ranking && homeTeam.ranking.ap_rank) || '-',
+      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.ap_rank) || Infinity,
+      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.ap_rank) || Infinity,
+      'favored': 'lower',
+      'showDifference': true,
+    },
+    {
+      'name': 'KP',
+      'away': (awayTeam.ranking && awayTeam.ranking.kenpom_rank) || '-',
+      'home': (homeTeam.ranking && homeTeam.ranking.kenpom_rank) || '-',
+      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.kenpom_rank) || Infinity,
+      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.kenpom_rank) || Infinity,
+      'favored': 'lower',
+      'showDifference': true,
+    },
+    {
+      'name': 'SRS',
+      'away': (awayTeam.ranking && awayTeam.ranking.srs_rank) || '-',
+      'home': (homeTeam.ranking && homeTeam.ranking.srs_rank) || '-',
+      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.srs_rank) || Infinity,
+      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.srs_rank) || Infinity,
+      'favored': 'lower',
+      'showDifference': true,
     },
   ];
 
@@ -154,6 +181,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.field_goal,
       'homeCompareValue': homeStats.field_goal,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'FGA',
@@ -163,6 +191,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.field_goal_attempts,
       'homeCompareValue': homeStats.field_goal_attempts,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'FG%',
@@ -172,6 +201,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.field_goal_percentage,
       'homeCompareValue': homeStats.field_goal_percentage,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': '2P',
@@ -181,6 +211,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.two_point_field_goal,
       'homeCompareValue': homeStats.two_point_field_goal,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': '2PA',
@@ -190,6 +221,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.two_point_field_goal_attempts,
       'homeCompareValue': homeStats.two_point_field_goal_attempts,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': '2P%',
@@ -199,6 +231,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.two_point_field_goal_percentage,
       'homeCompareValue': homeStats.two_point_field_goal_percentage,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': '3P',
@@ -208,6 +241,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.three_point_field_goal,
       'homeCompareValue': homeStats.three_point_field_goal,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': '3PA',
@@ -217,6 +251,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.three_point_field_goal_attempts,
       'homeCompareValue': homeStats.three_point_field_goal_attempts,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': '3P%',
@@ -226,6 +261,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.three_point_field_goal_percentage,
       'homeCompareValue': homeStats.three_point_field_goal_percentage,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'FT',
@@ -235,6 +271,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.free_throws,
       'homeCompareValue': homeStats.free_throws,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'FTA',
@@ -244,6 +281,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.free_throw_attempts,
       'homeCompareValue': homeStats.free_throw_attempts,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'FT%',
@@ -253,6 +291,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.free_throw_percentage,
       'homeCompareValue': homeStats.free_throw_percentage,
       'favored': 'higher',
+      'showDifference': true,
     },
   ];
 
@@ -265,6 +304,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.offensive_rebounds,
       'homeCompareValue': homeStats.offensive_rebounds,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'DRB',
@@ -274,6 +314,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.defensive_rebounds,
       'homeCompareValue': homeStats.defensive_rebounds,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'AST',
@@ -283,6 +324,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.assists,
       'homeCompareValue': homeStats.assists,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'STL',
@@ -292,6 +334,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.steals,
       'homeCompareValue': homeStats.steals,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'BLK',
@@ -301,6 +344,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.blocks,
       'homeCompareValue': homeStats.blocks,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'TOV',
@@ -310,6 +354,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.turnovers,
       'homeCompareValue': homeStats.turnovers,
       'favored': 'lower',
+      'showDifference': true,
     },
     {
       'name': 'PF',
@@ -319,6 +364,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.fouls,
       'homeCompareValue': homeStats.fouls,
       'favored': 'lower',
+      'showDifference': true,
     },
   ];
 
@@ -331,6 +377,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_field_goal,
       'homeCompareValue': homeStats.opponent_field_goal,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'FGA',
@@ -340,6 +387,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_field_goal_attempts,
       'homeCompareValue': homeStats.opponent_field_goal_attempts,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'FG%',
@@ -349,6 +397,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_field_goal_percentage,
       'homeCompareValue': homeStats.opponent_field_goal_percentage,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'ORB',
@@ -358,6 +407,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_offensive_rebounds,
       'homeCompareValue': homeStats.opponent_offensive_rebounds,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'DRB',
@@ -367,6 +417,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_defensive_rebounds,
       'homeCompareValue': homeStats.opponent_defensive_rebounds,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'AST',
@@ -376,6 +427,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_assists,
       'homeCompareValue': homeStats.opponent_assists,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'STL',
@@ -385,6 +437,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_steals,
       'homeCompareValue': homeStats.opponent_steals,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'BLK',
@@ -394,6 +447,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_blocks,
       'homeCompareValue': homeStats.opponent_blocks,
       'favored': 'higher',
+      'showDifference': true,
     },
     {
       'name': 'TOV',
@@ -403,6 +457,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_turnovers,
       'homeCompareValue': homeStats.opponent_turnovers,
       'favored': 'lower',
+      'showDifference': true,
     },
     {
       'name': 'PF',
@@ -412,6 +467,7 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.opponent_fouls,
       'homeCompareValue': homeStats.opponent_fouls,
       'favored': 'lower',
+      'showDifference': true,
     },
   ];
 
@@ -462,17 +518,27 @@ const Matchup = (props) => {
     return '50%';
   };
 
-  // to make the widths relevant, need a max value to compare it to
-  // ex: % percentage based stats should be out of 100
+  const getDifference = (row, base) => {
+    if (row.favored === 'lower') {
+      if (+row.awayCompareValue > +row.homeCompareValue) {
+        return base === 'away' ? 0 : '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2);
+      }
+      if (+row.awayCompareValue < +row.homeCompareValue) {
+        return base === 'home' ? 0 : '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2);
+      }
+    }
 
-  // const difference = (a, b) => {
-  //   if (a === b) {
-  //     return 50;
-  //   }
+    if (row.favored === 'higher') {
+      if (+row.awayCompareValue > +row.homeCompareValue) {
+        return base === 'away' ? '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2) : 0;
+      }
+      if (+row.awayCompareValue < +row.homeCompareValue) {
+        return base === 'home' ? '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2) : 0;
+      }
+    }
 
-  //   const percentage = 100 * (Math.abs(a - b) / (Math.abs(a + b) / 2));
-  //   return percentage >= 100 ? 99 : percentage;
-  // };
+    return 0;
+  };
   
   const flexContainerStyle = {
     'display': 'flex',
@@ -481,6 +547,7 @@ const Matchup = (props) => {
 
   const leftFlexColumnStyle = {
     'margin': '5px 0px',
+    'height': '24px',
   };
 
   const middleFlexColumnStyle = {
@@ -490,12 +557,14 @@ const Matchup = (props) => {
 
   const rightFlexColumnStyle = {
     'margin': '5px 0px',
+    'height': '24px',
     'textAlign': 'right',
   };
 
   const middleSubFlexContainerStyle = {
     'display': 'flex',
     'margin': '5px 0px',
+    'height': '24px',
   };
 
   const middleSubFlexLeftColumn = {
@@ -515,110 +584,61 @@ const Matchup = (props) => {
     'margin': '0px 10px',
   };
 
+  const PaperSection = (props) => {
+    return (
+      <Paper elevation = {3} style = {{'padding': 10}}>
+        <div style = {flexContainerStyle}>
+          <div>
+          {props.rows.map((row) => (
+            <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}</Typography>
+          ))}
+          </div>
+          <div style = {middleFlexColumnStyle}>
+          {props.rows.map((row) => (
+            <div style = {middleSubFlexContainerStyle}>
+              <div style = {middleSubFlexLeftColumn}>
+                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away')}}>
+                  <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 425 ? getDifference(row, 'away') : ''}</Typography>
+                </div>
+              </div>
+              <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
+              <div style = {middleSubFlexRightColumn}>
+                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home')}}>
+                  <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 425 ? getDifference(row, 'home') : ''}</Typography>
+                </div>
+              </div>
+            </div>
+          ))}
+          </div>
+          <div>
+          {props.rows.map((row) => (
+            <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.home}</Typography>
+          ))}
+          </div>
+        </div>
+      </Paper>
+    );
+  };
+
   return (
     <div style = {{'padding': 20}}>
-      <div style = {{'display': 'flex', 'justifyContent': 'space-around', 'marginBottom': '10px'}}>
-        <Typography variant = 'h5'>{CBB.getTeamName('away')}</Typography>
-        <Typography variant = 'h5'>{CBB.getTeamName('home')}</Typography>
+      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
+        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
+        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
       </div>
-      <Paper elevation = {3} style = {{'padding': 10}}>
-        <div style = {flexContainerStyle}>
-          <div>
-          {overviewRows.map((row) => (
-            <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}</Typography>
-          ))}
-          </div>
-          <div style = {middleFlexColumnStyle}>
-          {overviewRows.map((row) => (
-            <div style = {middleSubFlexContainerStyle}>
-              <div style = {middleSubFlexLeftColumn}><div style = {{'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away')}}></div></div>
-              <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
-              <div style = {middleSubFlexRightColumn}><div style = {{'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home')}}></div></div>
-            </div>
-          ))}
-          </div>
-          <div>
-          {overviewRows.map((row) => (
-            <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.home}</Typography>
-          ))}
-          </div>
-        </div>
-      </Paper>
+      <PaperSection rows = {overviewRows} />
+
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Rank</Typography>
+      <PaperSection rows = {rankRows} />
 
       <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
-      <Paper elevation = {3} style = {{'padding': 10}}>
-        <div style = {flexContainerStyle}>
-          <div>
-          {offenseRows.map((row) => (
-            <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}</Typography>
-          ))}
-          </div>
-          <div style = {middleFlexColumnStyle}>
-          {offenseRows.map((row) => (
-            <div style = {middleSubFlexContainerStyle}>
-              <div style = {middleSubFlexLeftColumn}><div style = {{'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away')}}></div></div>
-              <Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography>
-              <div style = {middleSubFlexRightColumn}><div style = {{'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home')}}></div></div>
-            </div>
-          ))}
-          </div>
-          <div>
-          {offenseRows.map((row) => (
-            <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.home}</Typography>
-          ))}
-          </div>
-        </div>
-      </Paper>
+      <PaperSection rows = {offenseRows} />
 
       <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
-      <Paper elevation = {3} style = {{'padding': 10}}>
-        <div style = {flexContainerStyle}>
-          <div>
-          {specialRows.map((row) => (
-            <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}</Typography>
-          ))}
-          </div>
-          <div style = {middleFlexColumnStyle}>
-          {specialRows.map((row) => (
-            <div style = {middleSubFlexContainerStyle}>
-              <div style = {middleSubFlexLeftColumn}><div style = {{'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away')}}></div></div>
-              <Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography>
-              <div style = {middleSubFlexRightColumn}><div style = {{'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home')}}></div></div>
-            </div>
-          ))}
-          </div>
-          <div>
-          {specialRows.map((row) => (
-            <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.home}</Typography>
-          ))}
-          </div>
-        </div>
-      </Paper>
+      <PaperSection rows = {specialRows} />
 
       <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
-      <Paper elevation = {3} style = {{'padding': 10}}>
-        <div style = {flexContainerStyle}>
-          <div>
-          {opponentRows.map((row) => (
-            <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}</Typography>
-          ))}
-          </div>
-          <div style = {middleFlexColumnStyle}>
-          {opponentRows.map((row) => (
-            <div style = {middleSubFlexContainerStyle}>
-              <div style = {middleSubFlexLeftColumn}><div style = {{'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away')}}></div></div>
-              <Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography>
-              <div style = {middleSubFlexRightColumn}><div style = {{'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home')}}></div></div>
-            </div>
-          ))}
-          </div>
-          <div>
-          {opponentRows.map((row) => (
-            <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.home}</Typography>
-          ))}
-          </div>
-        </div>
-      </Paper>
+      <PaperSection rows = {opponentRows} />
     </div>
   );
 }
