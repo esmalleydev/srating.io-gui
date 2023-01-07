@@ -376,7 +376,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_field_goal,
       'awayCompareValue': awayStats.opponent_field_goal,
       'homeCompareValue': homeStats.opponent_field_goal,
-      'favored': 'higher',
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -386,7 +386,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_field_goal_attempts,
       'awayCompareValue': awayStats.opponent_field_goal_attempts,
       'homeCompareValue': homeStats.opponent_field_goal_attempts,
-      'favored': 'higher',
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -396,7 +396,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_field_goal_percentage + '%',
       'awayCompareValue': awayStats.opponent_field_goal_percentage,
       'homeCompareValue': homeStats.opponent_field_goal_percentage,
-      'favored': 'higher',
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -406,7 +406,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_offensive_rebounds,
       'awayCompareValue': awayStats.opponent_offensive_rebounds,
       'homeCompareValue': homeStats.opponent_offensive_rebounds,
-      'favored': 'higher',
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -416,7 +416,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_defensive_rebounds,
       'awayCompareValue': awayStats.opponent_defensive_rebounds,
       'homeCompareValue': homeStats.opponent_defensive_rebounds,
-      'favored': 'higher',
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -426,7 +426,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_assists,
       'awayCompareValue': awayStats.opponent_assists,
       'homeCompareValue': homeStats.opponent_assists,
-      'favored': 'higher',
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -436,7 +436,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_steals,
       'awayCompareValue': awayStats.opponent_steals,
       'homeCompareValue': homeStats.opponent_steals,
-      'favored': 'higher',
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -446,7 +446,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_blocks,
       'awayCompareValue': awayStats.opponent_blocks,
       'homeCompareValue': homeStats.opponent_blocks,
-      'favored': 'higher',
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -456,7 +456,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_turnovers,
       'awayCompareValue': awayStats.opponent_turnovers,
       'homeCompareValue': homeStats.opponent_turnovers,
-      'favored': 'lower',
+      'favored': 'higher',
       'showDifference': true,
     },
     {
@@ -466,7 +466,7 @@ const Matchup = (props) => {
       'home': homeStats.opponent_fouls,
       'awayCompareValue': awayStats.opponent_fouls,
       'homeCompareValue': homeStats.opponent_fouls,
-      'favored': 'lower',
+      'favored': 'higher',
       'showDifference': true,
     },
   ];
@@ -521,10 +521,16 @@ const Matchup = (props) => {
   const getDifference = (row, base) => {
     if (row.favored === 'lower') {
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? 0 : '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2);
+        if (+row.awayCompareValue === Infinity) {
+          return 0;
+        }
+        return base === 'away' ? 0 : '-' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2);
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? 0 : '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2);
+        if (+row.homeCompareValue === Infinity) {
+          return 0;
+        }
+        return base === 'home' ? 0 : '-' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2);
       }
     }
 
@@ -597,13 +603,13 @@ const Matchup = (props) => {
           {props.rows.map((row) => (
             <div style = {middleSubFlexContainerStyle}>
               <div style = {middleSubFlexLeftColumn}>
-                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away')}}>
+                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': theme.palette.getContrastText(getColor(row, 'away'))}}>
                   <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 425 ? getDifference(row, 'away') : ''}</Typography>
                 </div>
               </div>
               <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
               <div style = {middleSubFlexRightColumn}>
-                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home')}}>
+                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': theme.palette.getContrastText(getColor(row, 'home'))}}>
                   <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 425 ? getDifference(row, 'home') : ''}</Typography>
                 </div>
               </div>
