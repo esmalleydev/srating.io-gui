@@ -143,6 +143,11 @@ const Games = (props) => {
   const [status, setStatus] = useState(sessionData.status || statusOptions.map(item => item.value));
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calAncor, setCalAncor] = useState(null);
+  const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
+  const [firstRender, setFirstRender] = useState(true);
+
+  // if stored session, refresh in 5 seconds, else normal 30 seconds
+  const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
 
   const { height, width } = useWindowDimensions();
 
@@ -160,6 +165,7 @@ const Games = (props) => {
         'start_date': value,
       }
     }).then(cbb_games => {
+      setRefreshRate(30);
       setGames(cbb_games);
       setSpin(false);
     }).catch((err) => {
@@ -172,21 +178,30 @@ const Games = (props) => {
     getGames(now);
   }
 
-
-  useEffect(() => {
-    // todo save scroll position?
+  const triggerSessionStorage = (optScrollTop) => {
     sessionStorage.setItem('CBB.GAMES.DATA', JSON.stringify({
       'request': request,
       'games': games,
       'date': date,
       'status': status,
       'spin': false,
+      'scrollTop': optScrollTop || scrollTop,
       'expire_session': new Date().getTime() + (5 * 60 * 1000), // 5 mins from now
     }));
+  };
+
+
+  useEffect(() => {
+    if (firstRender && props.scrollRef && props.scrollRef.current) {
+      props.scrollRef.current.scrollTop = scrollTop;
+    }
+
+    setFirstRender(false);
+    triggerSessionStorage();
 
     intervalRefresher = setInterval(function() {
-      getGames(date)
-    }, 30000);
+      getGames(date);
+    }, refreshRate * 1000);
 
     return function clean_up() {
       clearInterval(intervalRefresher);
@@ -231,6 +246,8 @@ const Games = (props) => {
 
   const updateDate = (e, value) => {
     const tabDates = getTabDates();
+    setScrollTop(0);
+    setFirstRender(true);
     getGames(tabDates[value]);
   }
 
@@ -308,6 +325,17 @@ const Games = (props) => {
     return a.start_datetime > b.start_datetime ? 1 : -1;
   });
 
+  const onClickTile = () => {
+    if (
+      props.scrollRef &&
+      props.scrollRef.current
+    ) {
+      // the scrollTop is still wrong in the triggerSessionStorage, so just pass the value I guess
+      setScrollTop(props.scrollRef.current.scrollTop);
+      triggerSessionStorage(props.scrollRef.current.scrollTop);
+    }
+  }
+
   for (var i = 0; i < sorted_games.length; i++) {
     let game_ = sorted_games[i];
 
@@ -342,7 +370,7 @@ const Games = (props) => {
       continue;
     }
 
-    gameContainers.push(<Tile key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} />);
+    gameContainers.push(<Tile onClick={onClickTile} key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} />);
   }
 
   const gameContainerStyle = {

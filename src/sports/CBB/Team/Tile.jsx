@@ -100,5 +100,5 @@ const Tile = (props) => {
     </div>
   );
 }
-// moment(game.start_datetime).format('h:mm a')
+
 export default Tile;

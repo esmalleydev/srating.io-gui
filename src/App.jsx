@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+// import { BrowserRouter, Routes, Route, Navigate, ScrollRestoration } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route, Navigate, ScrollRestoration, Outlet } from 'react-router-dom';
+
+
+
 import useWindowDimensions from './hooks/useWindowDimensions';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -27,6 +31,7 @@ const App = (props) => {
   // const navigate = useNavigate();
 
   const [state, setState] = useState();
+  const scrollRef = useRef(null);
 
   const { height, width } = useWindowDimensions();
 
@@ -35,6 +40,21 @@ const App = (props) => {
       'mode': theme,
     },
   });
+
+  /*
+  const [scrollValue, setScrollValue] = useState(0);
+
+  useEffect(() => {
+
+    const onScroll = (e) => {
+      setScrollValue(e.target.documentElement.scrollTop);
+    };
+
+    window.addEventListener('scroll', onScroll);
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [scrollValue]);
+   */
 
 
   const switchTheme = () => {
@@ -54,32 +74,74 @@ const App = (props) => {
     paddingTop = '56px';
   }
 
+  // https://github.com/remix-run/react-router/discussions/9495
+  // maybe that will get pushed at some point and make scroll restoration useful :)
+  // tldr: scroll rest only saves window scroll position, my window doesnt scroll
 
-  return (
-    <ThemeProvider theme={useTheme}>
-      <CssBaseline />
-      <div style = {themeContainerStyle}>
+  const router = createBrowserRouter([
+    {
+      'element':  <div><Header theme = {theme} handleTheme = {switchTheme} /><div style = {{'padding': paddingTop + ' 0px 56px 0px'}}><Outlet /></div><FooterNavigation theme = {theme} handleTheme = {switchTheme} /><ScrollRestoration /></div>,
+      'children': [
+        {
+          'path': '/',
+          'element': <Home />,
+        },
+        {
+          'path': 'CBB',
+          'element': <CBB />,
+          'children': [
+            {
+              'path': 'Ranking',
+              'element': <RankingCBB />,
+            },
+            {
+              'path': 'Games',
+              'element': <GamesCBB scrollRef = {scrollRef} />,
+            },
+            {
+              'path': 'Games/:GameID',
+              'element': <GameCBB scrollRef = {scrollRef} />,
+            },
+            {
+              'path': 'Team/:team_id',
+              'element': <TeamCBB scrollRef = {scrollRef} />,
+            },
+            {
+              'path': 'Picks',
+              'element': <PicksCBB />,
+            },
+          ],
+        },
+      ],
+    },
+  ]);
+
+      /*
         <BrowserRouter>
           <Header theme = {theme} handleTheme = {switchTheme} />
           <div style = {{'padding': paddingTop + ' 0px 56px 0px'}}>
             <Routes>
               <Route path="/" element={<Home />} />
-              {/*<Route path="/" element = {<Navigate to='/CBB/Ranking' />}/>*/}
               <Route path="CBB" element={<CBB />}>
                 <Route path="Ranking" element={<RankingCBB />} />
-                <Route path="Games" element={<GamesCBB />} />
+                <Route path="Games" element={<GamesCBB scrollRef = {scrollRef} />} />
                 <Route path="Games/:GameID" element={<GameCBB />} />
-                <Route path="Team/:team_id" element={<TeamCBB />} />
+                <Route path="Team/:team_id" element={<TeamCBB scrollRef = {scrollRef} />} />
                 <Route path="Picks" element={<PicksCBB />} />
               </Route>
-              {/*<Route path="CFB" element={<CFB />}>
-                <Route path="Games" element={<Games />} />
-                <Route path="Games/:GameID" element={<GameCFB />} />
-              </Route>*/}
             </Routes>
           </div>
           <FooterNavigation theme = {theme} handleTheme = {switchTheme} />
+          <ScrollRestoration />
         </BrowserRouter>
+        */
+
+
+  return (
+    <ThemeProvider theme={useTheme}>
+      <CssBaseline />
+      <div ref = {scrollRef} style = {themeContainerStyle}>
+        <RouterProvider router={router} />
       </div>
     </ThemeProvider>
   );

@@ -28,14 +28,6 @@ const Stats = (props) => {
   const [scrolled, setScrolled] = useState(false);
   const scrollRef = useRef(null);
 
-  // todo this does nothing?
-  useEffect(() => {
-    if (!scrolled && scrollRef && scrollRef.current) {
-      scrollRef.current.scrollIntoView();
-      setScrolled(true);
-    }
-  });
-
   const game = props.game;
 
   const CBB = new HelperCBB({

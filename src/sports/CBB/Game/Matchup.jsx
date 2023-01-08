@@ -491,7 +491,7 @@ const Matchup = (props) => {
       }
     }
 
-    return theme.palette.primary.light;
+    return theme.palette.secondary.light;
   };
 
   const getPercentage = (row, base) => {
@@ -524,22 +524,22 @@ const Matchup = (props) => {
         if (+row.awayCompareValue === Infinity) {
           return 0;
         }
-        return base === 'away' ? 0 : '-' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2);
+        return base === 'away' ? 0 : '-' + Math.round(+row.awayCompareValue - +row.homeCompareValue);
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
         if (+row.homeCompareValue === Infinity) {
           return 0;
         }
-        return base === 'home' ? 0 : '-' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2);
+        return base === 'home' ? 0 : '-' + Math.round(+row.homeCompareValue - +row.awayCompareValue);
       }
     }
 
     if (row.favored === 'higher') {
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2) : 0;
+        return base === 'away' ? '+' + Math.round(+row.awayCompareValue - +row.homeCompareValue) : 0;
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2) : 0;
+        return base === 'home' ? '+' + Math.round(+row.homeCompareValue - +row.awayCompareValue) : 0;
       }
     }
 
@@ -603,14 +603,14 @@ const Matchup = (props) => {
           {props.rows.map((row) => (
             <div style = {middleSubFlexContainerStyle}>
               <div style = {middleSubFlexLeftColumn}>
-                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': theme.palette.getContrastText(getColor(row, 'away'))}}>
-                  <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 425 ? getDifference(row, 'away') : ''}</Typography>
+                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': '#fff'/*theme.palette.getContrastText(getColor(row, 'away'))*/}}>
+                  <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography>
                 </div>
               </div>
               <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
               <div style = {middleSubFlexRightColumn}>
-                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': theme.palette.getContrastText(getColor(row, 'home'))}}>
-                  <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 425 ? getDifference(row, 'home') : ''}</Typography>
+                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': '#fff'/*theme.palette.getContrastText(getColor(row, 'home'))*/}}>
+                  <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>
                 </div>
               </div>
             </div>

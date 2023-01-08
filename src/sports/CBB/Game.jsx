@@ -103,12 +103,19 @@ const Game = (props) => {
 
   const selectedTab = tabOrder[tabIndex];
 
+  const handleTabClick = (e, value) => {
+    setTabIndex(value);
+    if (props.scrollRef && props.scrollRef.current) {
+      props.scrollRef.current.scrollTo(0, 0);
+    }
+  };
+
 
   return (
     <div>
       <div style = {{'padding': '20px'}}><ScoreTitle key={params.GameID} game={game} /></div>
       <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop}}>
-        <Tabs /*todo if width less than x variant="scrollable" scrollButtons="auto"*/ value={tabIndex} onChange={(e, value) => {setTabIndex(value);}} centered indicatorColor="secondary" textColor="inherit">
+        <Tabs /*todo if width less than x variant="scrollable" scrollButtons="auto"*/ value={tabIndex} onChange={handleTabClick} centered indicatorColor="secondary" textColor="inherit">
           {tabs}
         </Tabs>
       </AppBar>

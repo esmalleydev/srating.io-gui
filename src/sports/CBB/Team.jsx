@@ -54,14 +54,13 @@ const Team = (props) => {
   const [team, setTeam] = useState(sessionData.team || {});
   const [tabIndex, setTabIndex] = useState(0);
 
-  const scrollRef = useRef(null);
 
   useEffect(() => {
     sessionStorage.setItem('CBB.TEAM.DATA', JSON.stringify({
       'request': request,
       'team': team,
       'spin': false,
-      'expire_session': new Date().getTime() + (6 * 60 * 60 * 1000), // 6 hours from now
+      'expire_session': new Date().getTime() + (6 * 60 * 1000), // 6 mins from now
     }));
   });
 
@@ -114,15 +113,10 @@ const Team = (props) => {
 
   const handleTabClick = (value) => {
     setTabIndex(value);
-    // console.log(scrollRef);
-    // if (
-    //   scrollRef &&
-    //   scrollRef.current
-    // ) {
-    //   console.log(scrollRef.current.scrollTop);
-    //   setTimeout(function() {scrollRef.current.scrollTo(0,0)}, 0);
-    //   scrollRef.current.offsetTop = 0;
-    // }
+
+    if (value > 0 && props.scrollRef && props.scrollRef.current) {
+      props.scrollRef.current.scrollTo(0, 0);
+    }
   };
 
   const titleStyle = {
@@ -147,7 +141,7 @@ const Team = (props) => {
           {tabs}
         </Tabs>
       </AppBar>
-      <div ref = {scrollRef} style = {{'padding': '20px'}}>
+      <div style = {{'padding': '20px'}}>
         {selectedTab == 'schedule' ? <Schedule team = {team} games = {team.cbb_games} /> : ''}
         {selectedTab == 'stats' ? <Stats team = {team} stats = {team.stats} /> : ''}
         {selectedTab == 'trends' ? <Trends team = {team} ranking = {team.cbb_ranking} elo = {team.cbb_elo} games = {team.cbb_games} /> : ''}

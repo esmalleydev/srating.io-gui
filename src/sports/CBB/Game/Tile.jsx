@@ -25,6 +25,9 @@ const Tile = (props) => {
 
 
   const handleClick = (e) => {
+    if (props.onClick && typeof props.onClick === 'function') {
+      props.onClick();
+    }
     navigate('/CBB/Games/' + props.data.cbb_game_id);
   }
 
