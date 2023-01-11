@@ -23,6 +23,7 @@ import TeamCBB from "./sports/CBB/Team.jsx";
 import RankingCBB from "./sports/CBB/Ranking.jsx";
 import PicksCBB from "./sports/CBB/Picks.jsx";
 
+// todo on first load it sends the request twice? ex /CBB/Ranking then refresh in browser, sends 2 requests, but if I click on ranking button, only 1 request, same with other pages
 
 const App = (props) => {
 

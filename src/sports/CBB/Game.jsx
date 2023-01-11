@@ -16,6 +16,7 @@ import ScoreTitle from './Game/ScoreTitle.jsx';
 import Boxscore from './Game/Boxscore.jsx';
 import Trends from './Game/Trends.jsx';
 import Matchup from './Game/Matchup.jsx';
+import Betting from './Game/Betting.jsx';
 
 const api = new Api();
 
@@ -86,12 +87,12 @@ const Game = (props) => {
     'boxscore': 'Boxscore',
     'trends': 'Trends',
     'matchup': 'Matchup',
-    'betting': 'Betting',
+    'betting': 'ADV Stats',
   };
 
-  let tabOrder = ['matchup', 'trends'];
+  let tabOrder = ['matchup', 'trends', 'betting'];
   if (CBB.isInProgress() || CBB.isFinal()) {
-    tabOrder = ['boxscore', 'matchup', 'trends'];
+    tabOrder = ['boxscore', 'matchup', 'trends', 'betting'];
   }
 
 
@@ -122,7 +123,7 @@ const Game = (props) => {
       {selectedTab == 'boxscore' ? <Boxscore game = {game} /> : ''}
       {selectedTab == 'trends' ? <Trends game = {game} /> : ''}
       {selectedTab == 'matchup' ? <Matchup game = {game} awayTeam={game.teams[game.away_team_id]} awayStats={game.stats[game.away_team_id]} homeTeam={game.teams[game.home_team_id]} homeStats={game.stats[game.home_team_id]} /> : ''}
-      {selectedTab == 'betting' ? <div> coming soon...</div> : ''}
+      {selectedTab == 'betting' ? <Betting game = {game} /> : ''}
     </div>
   );
 }
