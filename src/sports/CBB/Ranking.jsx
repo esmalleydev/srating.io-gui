@@ -31,9 +31,12 @@ const api = new Api();
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
+  // '&:nth-of-type(odd)': {
+  //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.grey[900],
+  // },
+  // '&:nth-of-type(even)': {
+  //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
+  // },
   // hide last border
   '&:last-child td, &:last-child th': {
     border: 0,
@@ -87,8 +90,8 @@ const Ranking = (props) => {
   const [view, setView] = useState(localStorage.getItem('CBB.RANKING.VIEW') ? localStorage.getItem('CBB.RANKING.VIEW') : 'composite');
 
 
-  const compositeColumns = ['name', 'composite_rank', 'ap_rank', 'wins', 'conf_record', 'elo_rank', 'kenpom_rank', 'srs_rank', 'net_rank', 'elo', 'coaches_rank', 'conf'];
-  const statisticColumns = ['name', 'composite_rank', 'offensive_rating', 'defensive_rating', 'points', 'possessions', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
+  const compositeColumns = ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'offensive_rating', 'defensive_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
+  const statisticColumns = ['composite_rank', 'name', 'offensive_rating', 'defensive_rating', 'points', 'possessions', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
 
   useEffect(() => {
     sessionStorage.setItem('CBB.RANKING.DATA', JSON.stringify({
@@ -167,17 +170,19 @@ const Ranking = (props) => {
 
 
   const headCells = {
+    'composite_rank': {
+      id: 'composite_rank',
+      numeric: true,
+      label: 'Rk',
+      tooltip: 'Composite rank',
+      'sticky': true,
+    },
     'name': {
       id: 'name',
       numeric: false,
       label: 'Team',
       tooltip: 'Team',
-    },
-    'composite_rank': {
-      id: 'composite_rank',
-      numeric: true,
-      label: 'Rank',
-      tooltip: 'Composite rank',
+      'sticky': true,
     },
     'ap_rank': {
       id: 'ap_rank',
@@ -194,7 +199,7 @@ const Ranking = (props) => {
     'conf_record': {
       id: 'conf_record',
       numeric: false,
-      label: 'Conf W/L',
+      label: 'C W/L',
       tooltip: 'Conference Win/Loss',
     },
     'elo_rank': {
@@ -393,9 +398,6 @@ const Ranking = (props) => {
   for (let team_id in teams) {
     let team = teams[team_id];
     if (!team.stats) {
-    // if (!team.last_ranking || !team.stats) {
-      // console.log('missing ranking or stats');
-      // console.log(team);
       continue;
     }
 
@@ -476,6 +478,52 @@ const Ranking = (props) => {
       'opponent_fouls': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_fouls,
       'opponent_points': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_points,
       'opponent_possessions': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_possessions,
+      'field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal_rank,
+      'field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal_attempts_rank,
+      'field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal_percentage_rank,
+      'two_point_field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.two_point_field_goal_rank,
+      'two_point_field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.two_point_field_goal_attempts_rank,
+      'two_point_field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.two_point_field_goal_percentage_rank,
+      'three_point_field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.three_point_field_goal_rank,
+      'three_point_field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.three_point_field_goal_attempts_rank,
+      'three_point_field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.three_point_field_goal_percentage_rank,
+      'free_throws_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.free_throws_rank,
+      'free_throw_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.free_throw_attempts_rank,
+      'free_throw_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.free_throw_percentage_rank,
+      'offensive_rebounds_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.offensive_rebounds_rank,
+      'defensive_rebounds_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.defensive_rebounds_rank,
+      'total_rebounds_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.total_rebounds_rank,
+      'assists_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.assists_rank,
+      'steals_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.steals_rank,
+      'blocks_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.blocks_rank,
+      'turnovers_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.turnovers_rank,
+      'fouls_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.fouls_rank,
+      'points_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.points_rank,
+      'possessions_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.possessions_rank,
+      'offensive_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.offensive_rating_rank,
+      'defensive_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.defensive_rating_rank,
+      'opponent_field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_rank,
+      'opponent_field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_attempts_rank,
+      'opponent_field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_percentage_rank,
+      'opponent_two_point_field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_two_point_field_goal_rank,
+      'opponent_two_point_field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_two_point_field_goal_attempts_rank,
+      'opponent_two_point_field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_two_point_field_goal_percentage_rank,
+      'opponent_three_point_field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_three_point_field_goal_rank,
+      'opponent_three_point_field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_three_point_field_goal_attempts_rank,
+      'opponent_three_point_field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_three_point_field_goal_percentage_rank,
+      'opponent_free_throws_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_free_throws_rank,
+      'opponent_free_throw_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_free_throw_attempts_rank,
+      'opponent_free_throw_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_free_throw_percentage_rank,
+      'opponent_offensive_rebounds_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_offensive_rebounds_rank,
+      'opponent_defensive_rebounds_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_defensive_rebounds_rank,
+      'opponent_total_rebounds_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_total_rebounds_rank,
+      'opponent_assists_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_assists_rank,
+      'opponent_steals_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_steals_rank,
+      'opponent_blocks_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_blocks_rank,
+      'opponent_turnovers_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_turnovers_rank,
+      'opponent_fouls_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_fouls_rank,
+      'opponent_points_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_points_rank,
+      'opponent_possessions_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_possessions_rank,
     });
   }
 
@@ -520,26 +568,41 @@ const Ranking = (props) => {
     setView(value);
   };
 
+  let b = 0;
+
   const row_containers = rows.sort(getComparator(order, orderBy)).slice().map((row) => {
     let columns = getColumns();
+
+    const tdStyle = {
+      'padding': '4px 5px',
+      'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+    };
+
+    b++;
 
     let teamCellStyle = {
       'cursor': 'pointer',
     };
 
-    // if (width < 900) {
-      teamCellStyle.position = 'sticky';
-      teamCellStyle.left = 0;
-      teamCellStyle.backgroundColor = (theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900]);
-    // }
+    const spanStyle = {
+      'fontSize': '10px',
+      'marginLeft': '5px',
+    };
+
+
+    teamCellStyle.position = 'sticky';
+    teamCellStyle.left = 50;
+    teamCellStyle.maxWidth = 100;
 
     const tableCells = [];
 
     for (let i = 0; i < columns.length; i++) {
       if (columns[i] === 'name') {
-        tableCells.push(<TableCell sx = {teamCellStyle} onClick={() => {handleTeam(row.team_id)}}>{row.name}</TableCell>);
+        tableCells.push(<TableCell sx = {Object.assign({}, tdStyle, teamCellStyle)} onClick={() => {handleTeam(row.team_id)}}>{row.name}</TableCell>);
+      } else if (columns[i] === 'composite_rank') {
+        tableCells.push(<TableCell sx = {Object.assign({}, tdStyle, {'textAlign': 'center', 'position': 'sticky', 'left': 0, 'max-width': 50})}>{row[columns[i]]}</TableCell>);
       } else {
-        tableCells.push(<TableCell>{row[columns[i]]}</TableCell>);
+        tableCells.push(<TableCell sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {spanStyle}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
       }
     } 
 
@@ -552,6 +615,7 @@ const Ranking = (props) => {
       </StyledTableRow>
     );
   });
+
 
   return (
     <div style = {{'padding': '20px'}}>
@@ -567,10 +631,22 @@ const Ranking = (props) => {
             <TableRow>
               {getColumns().map((column) => {
                 const headCell = headCells[column];
+                const tdStyle = {
+                  'padding': '4px 5px',
+                };
+
+                if (headCell.sticky) {
+                  tdStyle.position = 'sticky';
+                  tdStyle.left = (headCell.id === 'name' ? 50 : 0);
+                  tdStyle.zIndex = 3;
+                } else {
+                  tdStyle.whiteSpace = 'nowrap';
+                }
+
                 return (
                 <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
                   <StyledTableHeadCell
-                    sx = {headCell.id === 'name' ? {'position': 'sticky', 'left': 0, 'z-index': 3} : {'whiteSpace': 'nowrap'}}
+                    sx = {tdStyle}
                     key={headCell.id}
                     align={'left'}
                     sortDirection={orderBy === headCell.id ? order : false}

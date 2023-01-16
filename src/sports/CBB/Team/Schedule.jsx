@@ -33,10 +33,10 @@ const Schedule = (props) => {
 
   for (let i = 0; i < sorted_games.length; i++) {
     let game = sorted_games[i];
-    if (!lastMonth || lastMonth < +moment(game.start_date).format('MM') || lastYear < +moment(game.start_date).format('YYYY')) {
-      lastMonth = +moment(game.start_date).format('MM');
-      lastYear = +moment(game.start_date).format('YYYY');
-      gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px'}} variant = 'h5'>{moment(game.start_date).format('MMMM')}</Typography>);
+    if (!lastMonth || lastMonth < +moment(game.start_datetime).format('MM') || lastYear < +moment(game.start_datetime).format('YYYY')) {
+      lastMonth = +moment(game.start_datetime).format('MM');
+      lastYear = +moment(game.start_datetime).format('YYYY');
+      gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px'}} variant = 'h5'>{moment(game.start_datetime).format('MMMM')}</Typography>);
     }
 
     if (!nextUpcomingGame && (game.status === 'pre' || game.status === 'live')) {

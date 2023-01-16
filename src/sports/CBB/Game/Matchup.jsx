@@ -27,6 +27,18 @@ const Matchup = (props) => {
     'cbb_game': game,
   });
 
+  const baseRows = [
+    {
+      'name': 'Win %',
+      'away': (game.away_team_rating * 100).toFixed(2) + '%',
+      'home': (game.home_team_rating * 100).toFixed(2) + '%',
+      'awayCompareValue': game.away_team_rating,
+      'homeCompareValue': game.home_team_rating,
+      'favored': 'higher',
+      'showDifference': false,
+    },
+  ];
+
   const overviewRows = [
     {
       'name': 'Record',
@@ -38,31 +50,50 @@ const Matchup = (props) => {
       'showDifference': true,
     },
     {
+      'name': 'Conf',
+      'away': awayStats.confwins + '-' + awayStats.conflosses,
+      'home': homeStats.confwins + '-' + homeStats.conflosses,
+      'awayCompareValue': awayStats.confwins,
+      'homeCompareValue': homeStats.confwins,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
       'name': 'Streak',
       'away': (awayStats.streak < 0 ? 'L' : 'W') + Math.abs(awayStats.streak),
       'home': (homeStats.streak < 0 ? 'L' : 'W') + Math.abs(homeStats.streak),
       'awayCompareValue': awayStats.streak,
       'homeCompareValue': homeStats.streak,
-      // 'favored': 'higher',
+      'favored': 'higher',
     },
     {
       'name': 'A/H Rec.',
       'title': 'Away record / Home record',
       'away': awayStats.roadwins + '-' + awayStats.roadlosses,
       'home': homeStats.homewins + '-' + homeStats.homelosses,
-      'awayCompareValue': awayStats.roadwins,
-      'homeCompareValue': homeStats.homewins,
+      'awayCompareValue': awayStats.roadlosses,
+      'homeCompareValue': homeStats.homelosses,
+      'favored': 'lower',
+      'showDifference': true,
+    },
+    {
+      'name': 'O Rating',
+      'title': 'Offensive rating',
+      'away': awayStats.offensive_rating,
+      'home': homeStats.offensive_rating,
+      'awayCompareValue': awayStats.offensive_rating,
+      'homeCompareValue': homeStats.offensive_rating,
       'favored': 'higher',
       'showDifference': true,
     },
     {
-      'name': 'POS',
-      'title': 'Possesions per game',
-      'away': awayStats.possessions,
-      'home': homeStats.possessions,
-      'awayCompareValue': awayStats.possessions,
-      'homeCompareValue': homeStats.possessions,
-      'favored': 'higher',
+      'name': 'D Rating',
+      'title': 'Defensive rating',
+      'away': awayStats.defensive_rating,
+      'home': homeStats.defensive_rating,
+      'awayCompareValue': awayStats.defensive_rating,
+      'homeCompareValue': homeStats.defensive_rating,
+      'favored': 'lower',
       'showDifference': true,
     },
     {
@@ -83,7 +114,10 @@ const Matchup = (props) => {
       'favored': 'lower',
       'showDifference': true,
     },
-    {
+  ];
+
+  const marginRows = [
+     {
       'name': 'Win MR',
       'title': 'Win margin; Average points won by.',
       'away': awayStats.win_margin,
@@ -174,6 +208,16 @@ const Matchup = (props) => {
   ];
 
   const offenseRows = [
+    {
+      'name': 'Pace',
+      'title': 'Possesions per game',
+      'away': awayStats.possessions,
+      'home': homeStats.possessions,
+      'awayCompareValue': awayStats.possessions,
+      'homeCompareValue': homeStats.possessions,
+      'favored': 'higher',
+      'showDifference': true,
+    },
     {
       'name': 'FG',
       'title': 'Field goals per game',
@@ -479,19 +523,23 @@ const Matchup = (props) => {
         <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
         <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
       </div>
-      <CompareStatistic rows = {overviewRows} />
+      {(game.home_team_rating || game.away_team_rating) ? <CompareStatistic rows = {baseRows} /> : ''}
+      <CompareStatistic paper = {true} rows = {overviewRows} />
 
       <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Rank</Typography>
-      <CompareStatistic rows = {rankRows} />
+      <CompareStatistic paper = {true} rows = {rankRows} />
+
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>
+      <CompareStatistic paper = {true} rows = {marginRows} />
 
       <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
-      <CompareStatistic rows = {offenseRows} />
+      <CompareStatistic paper = {true} rows = {offenseRows} />
 
       <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
-      <CompareStatistic rows = {specialRows} />
+      <CompareStatistic paper = {true} rows = {specialRows} />
 
       <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
-      <CompareStatistic rows = {opponentRows} />
+      <CompareStatistic paper = {true} rows = {opponentRows} />
     </div>
   );
 }

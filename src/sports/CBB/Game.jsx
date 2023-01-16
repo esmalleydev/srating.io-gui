@@ -87,7 +87,7 @@ const Game = (props) => {
     'boxscore': 'Boxscore',
     'trends': 'Trends',
     'matchup': 'Matchup',
-    'betting': 'ADV Stats',
+    'betting': 'Momentum',
   };
 
   let tabOrder = ['matchup', 'trends', 'betting'];

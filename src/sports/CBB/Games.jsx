@@ -326,7 +326,7 @@ const Games = (props) => {
       currentConferences = [];
     }
 
-    localStorage.setItem('default_cbb_conferences', JSON.stringify(currentConferences));
+    localStorage.setItem('CBB.CONFERENCEPICKER.DEFAULT', JSON.stringify(currentConferences));
     setConferences(currentConferences);
   }
 

@@ -12,6 +12,8 @@ const CompareStatistic = (props) => {
   const { height, width } = useWindowDimensions();
   const theme = useTheme();
 
+  const paperContainer = (props.paper === true);
+
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
       if (+row.awayCompareValue < +row.homeCompareValue) {
@@ -130,11 +132,17 @@ const CompareStatistic = (props) => {
     'margin': '0px 10px',
   };
 
- 
+  const Container = (props_) => {
+    if (paperContainer) {
+      return <Paper elevation = {3} style = {{'padding': 10}}>{props_.children}</Paper>;
+    }
+
+    return <div>{props_.children}</div>;
+  };
 
 
   return (
-    <Paper elevation = {3} style = {{'padding': 10}}>
+    <Container>
         <div style = {flexContainerStyle}>
           <div>
           {props.rows.map((row) => (
@@ -164,7 +172,7 @@ const CompareStatistic = (props) => {
           ))}
           </div>
         </div>
-      </Paper>
+      </Container>
   );
 }
 
