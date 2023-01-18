@@ -90,7 +90,7 @@ const Ranking = (props) => {
   const [view, setView] = useState(localStorage.getItem('CBB.RANKING.VIEW') ? localStorage.getItem('CBB.RANKING.VIEW') : 'composite');
 
 
-  const compositeColumns = ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'offensive_rating', 'defensive_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
+  const compositeColumns = ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
   const statisticColumns = ['composite_rank', 'name', 'offensive_rating', 'defensive_rating', 'points', 'possessions', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
 
   useEffect(() => {
@@ -244,6 +244,12 @@ const Ranking = (props) => {
       label: 'Conf.',
       tooltip: 'Conference',
     },
+    // 'sos': {
+    //   id: 'sos',
+    //   numeric: true,
+    //   label: 'SOS',
+    //   tooltip: 'Strength of schedule',
+    // },
     'field_goal': {
       id: 'field_goal',
       numeric: true,
@@ -388,6 +394,30 @@ const Ranking = (props) => {
       label: 'DRT',
       tooltip: 'Defensive rating ((Opp. PTS / Opp. Pace) * 100)',
     },
+    'efficiency_rating': {
+      id: 'efficiency_rating',
+      numeric: true,
+      label: 'EM',
+      tooltip: 'Efficiency margin (Offensive rating - Defensive rating)',
+    },
+    'opponent_offensive_rating': {
+      id: 'opponent_offensive_rating',
+      numeric: true,
+      label: 'oORT',
+      tooltip: 'Opponent average Offensive rating',
+    },
+    'opponent_defensive_rating': {
+      id: 'opponent_defensive_rating',
+      numeric: true,
+      label: 'oDRT',
+      tooltip: 'Opponent average Defensive rating ',
+    },
+    'opponent_efficiency_rating': {
+      id: 'opponent_efficiency_rating',
+      numeric: true,
+      label: 'SOS',
+      tooltip: 'Strength of schedule (Opponent Efficiency margin (oORT - oDRT))',
+    },
   };
 
 
@@ -432,6 +462,8 @@ const Ranking = (props) => {
       'srs_rank': team.last_ranking && team.last_ranking.srs_rank,
       'net_rank': team.last_ranking && team.last_ranking.net_rank,
       'coaches_rank': team.last_ranking && team.last_ranking.coaches_rank,
+      // 'sos': team.cbb_statistic_ranking && team.cbb_statistic_ranking.sos,
+      // 'sos_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.sos_rank,
       'field_goal': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal,
       'field_goal_attempts': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal_attempts,
       'field_goal_percentage': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal_percentage,
@@ -456,6 +488,7 @@ const Ranking = (props) => {
       'possessions': team.cbb_statistic_ranking && team.cbb_statistic_ranking.possessions,
       'offensive_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.offensive_rating,
       'defensive_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.defensive_rating,
+      'efficiency_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.efficiency_rating,
       'opponent_field_goal': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal,
       'opponent_field_goal_attempts': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_attempts,
       'opponent_field_goal_percentage': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_percentage,
@@ -478,6 +511,9 @@ const Ranking = (props) => {
       'opponent_fouls': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_fouls,
       'opponent_points': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_points,
       'opponent_possessions': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_possessions,
+      'opponent_offensive_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_offensive_rating,
+      'opponent_defensive_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_defensive_rating,
+      'opponent_efficiency_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_efficiency_rating,
       'field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal_rank,
       'field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal_attempts_rank,
       'field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.field_goal_percentage_rank,
@@ -502,6 +538,7 @@ const Ranking = (props) => {
       'possessions_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.possessions_rank,
       'offensive_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.offensive_rating_rank,
       'defensive_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.defensive_rating_rank,
+      'efficiency_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.efficiency_rating_rank,
       'opponent_field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_rank,
       'opponent_field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_attempts_rank,
       'opponent_field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_percentage_rank,
@@ -524,6 +561,9 @@ const Ranking = (props) => {
       'opponent_fouls_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_fouls_rank,
       'opponent_points_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_points_rank,
       'opponent_possessions_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_possessions_rank,
+      'opponent_offensive_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_offensive_rating_rank,
+      'opponent_defensive_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_defensive_rating_rank,
+      'opponent_efficiency_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_efficiency_rating_rank,
     });
   }
 
@@ -598,11 +638,11 @@ const Ranking = (props) => {
 
     for (let i = 0; i < columns.length; i++) {
       if (columns[i] === 'name') {
-        tableCells.push(<TableCell sx = {Object.assign({}, tdStyle, teamCellStyle)} onClick={() => {handleTeam(row.team_id)}}>{row.name}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, teamCellStyle)} onClick={() => {handleTeam(row.team_id)}}>{row.name}</TableCell>);
       } else if (columns[i] === 'composite_rank') {
-        tableCells.push(<TableCell sx = {Object.assign({}, tdStyle, {'textAlign': 'center', 'position': 'sticky', 'left': 0, 'max-width': 50})}>{row[columns[i]]}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'center', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{row[columns[i]]}</TableCell>);
       } else {
-        tableCells.push(<TableCell sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {spanStyle}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {spanStyle}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
       }
     } 
 

@@ -23,6 +23,9 @@ const Odds = (props) => {
     'cbb_game': game,
   });
 
+  const homeColor = game.teams[game.home_team_id].primary_color;
+  const awayColor = game.teams[game.away_team_id].primary_color;
+
   const scoreIntervals = game.score_interval;
 
   const sorted_intervals = Object.values(scoreIntervals).sort(function (a, b) {
@@ -44,6 +47,14 @@ const Odds = (props) => {
       'data': [],
     },
   };
+
+  if (homeColor) {
+    series.home.color = homeColor;
+  }
+
+  if (awayColor && awayColor !== homeColor) {
+    series.away.color = awayColor;
+  }
 
   let map = {};
 

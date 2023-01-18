@@ -66,22 +66,22 @@ const CompareStatistic = (props) => {
         if (+row.awayCompareValue === Infinity) {
           return 0;
         }
-        return base === 'away' ? 0 : '-' + Math.round(+row.awayCompareValue - +row.homeCompareValue);
+        return base === 'away' ? 0 : '-' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2);
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
         if (+row.homeCompareValue === Infinity) {
           return 0;
         }
-        return base === 'home' ? 0 : '-' + Math.round(+row.homeCompareValue - +row.awayCompareValue);
+        return base === 'home' ? 0 : '-' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2);
       }
     }
 
     if (row.favored === 'higher') {
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? '+' + Math.round(+row.awayCompareValue - +row.homeCompareValue) : 0;
+        return base === 'away' ? '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2) : 0;
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? '+' + Math.round(+row.homeCompareValue - +row.awayCompareValue) : 0;
+        return base === 'home' ? '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2) : 0;
       }
     }
 
@@ -143,13 +143,13 @@ const CompareStatistic = (props) => {
 
   return (
     <Container>
-        <div style = {flexContainerStyle}>
-          <div>
+      <div style = {flexContainerStyle}>
+        <div>
           {props.rows.map((row) => (
             <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}</Typography>
           ))}
-          </div>
-          <div style = {middleFlexColumnStyle}>
+        </div>
+        <div style = {middleFlexColumnStyle}>
           {props.rows.map((row) => (
             <div style = {middleSubFlexContainerStyle}>
               <div style = {middleSubFlexLeftColumn}>
@@ -165,15 +165,47 @@ const CompareStatistic = (props) => {
               </div>
             </div>
           ))}
-          </div>
-          <div>
+        </div>
+        <div>
           {props.rows.map((row) => (
             <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.home}</Typography>
           ))}
-          </div>
         </div>
-      </Container>
+      </div>
+    </Container>
   );
+  
+  // return (
+  //   <Container>
+  //     {props.rows.map((row) => (
+  //       <div>
+  //         <div style = {Object.assign({'alignItems':'center'}, flexContainerStyle)}>
+            
+  //           <div style = {middleFlexColumnStyle}>
+  //               <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
+  //           </div>
+            
+  //         </div>
+  //         <div style = {{'display': 'flex', 'alignItems': 'center', 'justifyContent': 'space-between'}}>
+  //           <div style = {{'margin': '0px 20px 0px 5px'}}>
+  //             <Typography style = {{}} variant = 'body2'>{row.away}</Typography>
+  //           </div>
+  //           <div style = {{'flexGrow': '1', 'margin': '0px 5px', 'display': 'flex'}}>
+  //             <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': '#fff', 'textAlign': 'center'/*theme.palette.getContrastText(getColor(row, 'away'))*/}}>
+  //               <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography>
+  //             </div>
+  //             <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': '#fff', 'textAlign': 'center'/*theme.palette.getContrastText(getColor(row, 'home'))*/}}>
+  //               <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>
+  //             </div>
+  //           </div>
+  //           <div style = {{'margin': '0px 5px 0px 20px'}}>
+  //               <Typography style = {{}} variant = 'body2'>{row.home}</Typography>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     ))}
+  //   </Container>
+  // );
 }
 
 export default CompareStatistic;

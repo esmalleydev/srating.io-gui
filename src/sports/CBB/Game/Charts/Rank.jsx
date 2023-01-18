@@ -19,6 +19,9 @@ const Rank = (props) => {
 
   const game = props.game;
 
+  const homeColor = game.teams[game.home_team_id].primary_color;
+  const awayColor = game.teams[game.away_team_id].primary_color;
+
   const homeRankings = (game.teams[game.home_team_id] && game.teams[game.home_team_id].cbb_rankings) || {};
   const awayRankings = (game.teams[game.away_team_id] && game.teams[game.away_team_id].cbb_rankings) || {};
 
@@ -50,6 +53,14 @@ const Rank = (props) => {
       'data': [],
     },
   };
+
+  if (homeColor) {
+    series.home.color = homeColor;
+  }
+
+  if (awayColor && awayColor !== homeColor) {
+    series.away.color = awayColor;
+  }
 
 
   for (let i = 0; i < sortedHomeRankings.length; i++) {

@@ -40,7 +40,6 @@ const Betting = (props) => {
       'function': 'getMomentumStats',
       'arguments': game.cbb_game_id,
     }).then((response) => {
-      console.log(response);
       setMomentumStats(response || {});
     }).catch((e) => {
       setMomentumStats({});
