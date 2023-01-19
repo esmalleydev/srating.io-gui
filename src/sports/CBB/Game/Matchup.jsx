@@ -16,6 +16,7 @@ const Matchup = (props) => {
   const awayTeam = props.awayTeam;
   const homeTeam = props.homeTeam;
 
+
   const awayStats = props.awayStats || {};
   const homeStats = props.homeStats || {};
 
@@ -30,8 +31,8 @@ const Matchup = (props) => {
   const baseRows = [
     {
       'name': 'Win %',
-      'away': (game.away_team_rating * 100).toFixed(2) + '%',
-      'home': (game.home_team_rating * 100).toFixed(2) + '%',
+      'away': (game.away_team_rating * 100).toFixed(0) + '%',
+      'home': (game.home_team_rating * 100).toFixed(0) + '%',
       'awayCompareValue': game.away_team_rating,
       'homeCompareValue': game.home_team_rating,
       'favored': 'higher',
@@ -74,6 +75,29 @@ const Matchup = (props) => {
       'awayCompareValue': awayStats.roadlosses,
       'homeCompareValue': homeStats.homelosses,
       'favored': 'lower',
+      'showDifference': true,
+    },
+  ];
+
+  const efficiencyRows = [
+    {
+      'name': 'aEM',
+      'title': 'Adjusted Efficiency margin',
+      'away': awayStats.internal && awayStats.internal.adjusted_efficiency_rating,
+      'home': homeStats.internal && homeStats.internal.adjusted_efficiency_rating,
+      'awayCompareValue': awayStats.internal && awayStats.internal.adjusted_efficiency_rating,
+      'homeCompareValue': homeStats.internal && homeStats.internal.adjusted_efficiency_rating,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'SOS',
+      'title': 'Strength of schedule',
+      'away': awayStats.internal && awayStats.internal.opponent_efficiency_rating,
+      'home': homeStats.internal && homeStats.internal.opponent_efficiency_rating,
+      'awayCompareValue': awayStats.internal && awayStats.internal.opponent_efficiency_rating,
+      'homeCompareValue': homeStats.internal && homeStats.internal.opponent_efficiency_rating,
+      'favored': 'higher',
       'showDifference': true,
     },
     {
@@ -525,6 +549,9 @@ const Matchup = (props) => {
       </div>
       {(game.home_team_rating || game.away_team_rating) ? <CompareStatistic rows = {baseRows} /> : ''}
       <CompareStatistic paper = {true} rows = {overviewRows} />
+
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Efficiency</Typography>
+      <CompareStatistic paper = {true} rows = {efficiencyRows} />
 
       <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Rank</Typography>
       <CompareStatistic paper = {true} rows = {rankRows} />

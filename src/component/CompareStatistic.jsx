@@ -14,6 +14,8 @@ const CompareStatistic = (props) => {
 
   const paperContainer = (props.paper === true);
 
+  const fixedLength = width > 500 ? 2 : 0;
+
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
       if (+row.awayCompareValue < +row.homeCompareValue) {
@@ -66,22 +68,22 @@ const CompareStatistic = (props) => {
         if (+row.awayCompareValue === Infinity) {
           return 0;
         }
-        return base === 'away' ? 0 : '-' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2);
+        return base === 'away' ? 0 : '-' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(fixedLength);
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
         if (+row.homeCompareValue === Infinity) {
           return 0;
         }
-        return base === 'home' ? 0 : '-' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2);
+        return base === 'home' ? 0 : '-' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(fixedLength);
       }
     }
 
     if (row.favored === 'higher') {
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(2) : 0;
+        return base === 'away' ? '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(fixedLength) : 0;
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(2) : 0;
+        return base === 'home' ? '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(fixedLength) : 0;
       }
     }
 
@@ -174,7 +176,7 @@ const CompareStatistic = (props) => {
       </div>
     </Container>
   );
-  
+
   // return (
   //   <Container>
   //     {props.rows.map((row) => (

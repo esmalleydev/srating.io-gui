@@ -27,7 +27,8 @@ import PicksCBB from "./sports/CBB/Picks.jsx";
 
 const App = (props) => {
 
-  const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  // const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const defaultDark = true;
   const theme = localStorage.getItem('theme') || (defaultDark ? 'dark' : 'light');
   // const navigate = useNavigate();
 

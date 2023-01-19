@@ -25,10 +25,37 @@ import { visuallyHidden } from '@mui/utils';
 
 import ConferencePicker from './../../component/CBB/ConferencePicker';
 
+// todo move into a component StatsPicker or something
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import CloseIcon from '@mui/icons-material/Close';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItem from '@mui/material/ListItem';
+import List from '@mui/material/List';
+import Slide from '@mui/material/Slide';
+// import Typography from '@mui/material/Typography';
+import CheckIcon from '@mui/icons-material/Check';
+import IconButton from '@mui/material/IconButton';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 import Api from './../../Api.jsx';
 const api = new Api();
 
 
+// todo move to statspicker
+const Transition = React.forwardRef(
+  function Transition(
+    props: TransitionProps & {
+      children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+  ) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  }
+);
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // '&:nth-of-type(odd)': {
@@ -46,9 +73,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
 }));
-
-
-// TODO ADD A BUTTON FOR PEOPLE TO CUSTOMIZE THEIR COLUMNS
 
 
 const Ranking = (props) => {
@@ -89,16 +113,16 @@ const Ranking = (props) => {
 
   const [view, setView] = useState(localStorage.getItem('CBB.RANKING.VIEW') ? localStorage.getItem('CBB.RANKING.VIEW') : 'composite');
 
+  const [customColumns, setCustomColumns] = useState(localStorage.getItem('CBB.RANKING.COLUMNS') ?  JSON.parse(localStorage.getItem('CBB.RANKING.COLUMNS')) : ['composite_rank', 'name']);
+  const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
 
-  const compositeColumns = ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
-  const statisticColumns = ['composite_rank', 'name', 'offensive_rating', 'defensive_rating', 'points', 'possessions', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
 
   useEffect(() => {
     sessionStorage.setItem('CBB.RANKING.DATA', JSON.stringify({
       'request': request,
       'teams': teams,
       // 'spin': false,
-      'expire_session': new Date().getTime() + (30 * 60 * 1000), // 30 mins from now
+      'expire_session': new Date().getTime() + (15 * 60 * 1000), // 15 mins from now
     }));
   });
 
@@ -158,11 +182,15 @@ const Ranking = (props) => {
 
   const getColumns = () => {
     if (view === 'composite') {
-      return compositeColumns;
-    } else if (view === 'statistic') {
-      return statisticColumns;
+      return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
+    } else if (view === 'offense') {
+      return ['composite_rank', 'name', 'offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists'];
+    } else if (view === 'defense') {
+      return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage'];
+    } else if (view === 'special') {
+      return ['composite_rank', 'name', 'opponent_efficiency_rating', 'possessions', 'turnovers', 'fouls'];
     } else if (view === 'custom') {
-      return []; // todo
+      return customColumns;
     }
 
     return [];
@@ -181,7 +209,7 @@ const Ranking = (props) => {
       id: 'name',
       numeric: false,
       label: 'Team',
-      tooltip: 'Team',
+      tooltip: 'Team name',
       'sticky': true,
     },
     'ap_rank': {
@@ -244,12 +272,6 @@ const Ranking = (props) => {
       label: 'Conf.',
       tooltip: 'Conference',
     },
-    // 'sos': {
-    //   id: 'sos',
-    //   numeric: true,
-    //   label: 'SOS',
-    //   tooltip: 'Strength of schedule',
-    // },
     'field_goal': {
       id: 'field_goal',
       numeric: true,
@@ -400,6 +422,12 @@ const Ranking = (props) => {
       label: 'EM',
       tooltip: 'Efficiency margin (Offensive rating - Defensive rating)',
     },
+    'adjusted_efficiency_rating': {
+      id: 'adjusted_efficiency_rating',
+      numeric: true,
+      label: 'aEM',
+      tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + SOS',
+    },
     'opponent_offensive_rating': {
       id: 'opponent_offensive_rating',
       numeric: true,
@@ -417,6 +445,138 @@ const Ranking = (props) => {
       numeric: true,
       label: 'SOS',
       tooltip: 'Strength of schedule (Opponent Efficiency margin (oORT - oDRT))',
+    },
+    'opponent_field_goal': {
+      id: 'opponent_field_goal',
+      numeric: true,
+      label: 'Opp. FG',
+      tooltip: 'Opponent average field goals per game',
+    },
+    'opponent_field_goal_attempts': {
+      id: 'opponent_field_goal_attempts',
+      numeric: true,
+      label: 'Opp. FGA',
+      tooltip: 'Opponent average field goals attempts per game',
+    },
+    'opponent_field_goal_percentage': {
+      id: 'opponent_field_goal_percentage',
+      numeric: true,
+      label: 'Opp. FG%',
+      tooltip: 'Opponent average field goals percentage per game',
+    },
+    'opponent_two_point_field_goal': {
+      id: 'opponent_two_point_field_goal',
+      numeric: true,
+      label: 'Opp. 2FG',
+      tooltip: 'Opponent average two field goals per game',
+    },
+    'opponent_two_point_field_goal_attempts': {
+      id: 'opponent_two_point_field_goal_attempts',
+      numeric: true,
+      label: 'Opp. 2FGA',
+      tooltip: 'Opponent average two field goals attempts per game',
+    },
+    'opponent_two_point_field_goal_percentage': {
+      id: 'opponent_two_point_field_goal_percentage',
+      numeric: true,
+      label: 'Opp. 2FG%',
+      tooltip: 'Opponent average two field goals percentage per game',
+    },
+    'opponent_three_point_field_goal': {
+      id: 'opponent_three_point_field_goal',
+      numeric: true,
+      label: 'Opp. 3FG',
+      tooltip: 'Opponent average three field goals per game',
+    },
+    'opponent_three_point_field_goal_attempts': {
+      id: 'opponent_three_point_field_goal_attempts',
+      numeric: true,
+      label: 'Opp. 3FGA',
+      tooltip: 'Opponent average three field goals attempts per game',
+    },
+    'opponent_three_point_field_goal_percentage': {
+      id: 'opponent_three_point_field_goal_percentage',
+      numeric: true,
+      label: 'Opp. 3FG%',
+      tooltip: 'Opponent average three field goals percentage per game',
+    },
+    'opponent_free_throws': {
+      id: 'opponent_free_throws',
+      numeric: true,
+      label: 'Opp. FT',
+      tooltip: 'Opponent average free throws per game',
+    },
+    'opponent_free_throw_attempts': {
+      id: 'opponent_free_throw_attempts',
+      numeric: true,
+      label: 'Opp. FTA',
+      tooltip: 'Opponent average free throws attempts per game',
+    },
+    'opponent_free_throw_percentage': {
+      id: 'opponent_free_throw_percentage',
+      numeric: true,
+      label: 'Opp. FT%',
+      tooltip: 'Opponent average free throws percentage per game',
+    },
+    'opponent_offensive_rebounds': {
+      id: 'opponent_offensive_rebounds',
+      numeric: true,
+      label: 'Opp. ORB',
+      tooltip: 'Opponent average offensive rebounds per game',
+    },
+    'opponent_defensive_rebounds': {
+      id: 'opponent_defensive_rebounds',
+      numeric: true,
+      label: 'Opp. DRB',
+      tooltip: 'Opponent average defensive rebounds per game',
+    },
+    'opponent_total_rebounds': {
+      id: 'opponent_total_rebounds',
+      numeric: true,
+      label: 'Opp. TRB',
+      tooltip: 'Opponent average total rebounds per game',
+    },
+    'opponent_assists': {
+      id: 'opponent_assists',
+      numeric: true,
+      label: 'Opp. AST',
+      tooltip: 'Opponent average assists per game',
+    },
+    'opponent_steals': {
+      id: 'opponent_steals',
+      numeric: true,
+      label: 'Opp. STL',
+      tooltip: 'Opponent average steals per game',
+    },
+    'opponent_blocks': {
+      id: 'opponent_blocks',
+      numeric: true,
+      label: 'Opp. BLK',
+      tooltip: 'Opponent average blocks per game',
+    },
+    'opponent_turnovers': {
+      id: 'opponent_turnovers',
+      numeric: true,
+      label: 'Opp. TOV',
+      tooltip: 'Opponent average turnovers per game',
+    },
+    'opponent_fouls': {
+      id: 'opponent_fouls',
+      numeric: true,
+      label: 'Opp. PF',
+      tooltip: 'Opponent average fouls per game',
+    },
+    'opponent_points': {
+      id: 'opponent_points',
+      numeric: true,
+      label: 'Opp. PTS',
+      tooltip: 'Opponent average points per game',
+    },
+    'opponent_possessions': {
+      id: 'opponent_possessions',
+      numeric: true,
+      label: 'Opp. Pace',
+      tooltip: 'Opponent average possessions per game',
     },
   };
 
@@ -489,6 +649,7 @@ const Ranking = (props) => {
       'offensive_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.offensive_rating,
       'defensive_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.defensive_rating,
       'efficiency_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.efficiency_rating,
+      'adjusted_efficiency_rating': team.cbb_statistic_ranking && team.cbb_statistic_ranking.adjusted_efficiency_rating,
       'opponent_field_goal': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal,
       'opponent_field_goal_attempts': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_attempts,
       'opponent_field_goal_percentage': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_percentage,
@@ -539,6 +700,7 @@ const Ranking = (props) => {
       'offensive_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.offensive_rating_rank,
       'defensive_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.defensive_rating_rank,
       'efficiency_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.efficiency_rating_rank,
+      'adjusted_efficiency_rating_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.adjusted_efficiency_rating_rank,
       'opponent_field_goal_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_rank,
       'opponent_field_goal_attempts_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_attempts_rank,
       'opponent_field_goal_percentage_rank': team.cbb_statistic_ranking && team.cbb_statistic_ranking.opponent_field_goal_percentage_rank,
@@ -656,14 +818,74 @@ const Ranking = (props) => {
     );
   });
 
+  const handleCustomColumnsClose = () => {
+    setCustomColumnsOpen(false);
+    handleRankingView('custom');
+  };
+
+   const handleCustomColumnsOpen = () => {
+    setCustomColumnsOpen(true);
+  };
+
 
   return (
     <div style = {{'padding': '20px'}}>
-      <Typography variant = 'h5'>NCAAM college basketball rankings.</Typography>
+      <Typography variant = 'h5'>College basketball rankings.</Typography>
       {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
+      <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
+        <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : ''} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
+        <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : ''} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
+        <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : ''} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
+        <Chip sx = {{'margin': '5px'}} label='Special' variant={view !== 'special' ? 'outlined' : ''} color={view !== 'special' ? 'primary' : 'success'} onClick={() => handleRankingView('special')} />
+        <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : ''} color={view !== 'custom' ? 'primary' : 'success'} onClick={handleCustomColumnsOpen} />
+        <Dialog
+          fullScreen
+          open={customColumnsOpen}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCustomColumnsClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <AppBar position="sticky">
+            <Toolbar>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={handleCustomColumnsClose}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                Set custom table columns
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <List style = {{'marginBottom': 60}}>
+            {Object.values(headCells).map((headCell) => (
+              <ListItem key={headCell.id} button disabled = {headCell.id === 'composite_rank' || headCell.id === 'name'} onClick={() => {
+                let currentCustomColumns = [...customColumns];
+                const index = currentCustomColumns.indexOf(headCell.id);
+
+                if (index > -1) {
+                  currentCustomColumns.splice(index, 1);
+                } else {
+                  currentCustomColumns.push(headCell.id);
+                }
+
+                localStorage.setItem('CBB.RANKING.COLUMNS', JSON.stringify(currentCustomColumns));
+                setCustomColumns(currentCustomColumns);
+              }}>
+                <ListItemIcon>
+                  {customColumns.indexOf(headCell.id) > -1 ? <CheckIcon /> : ''}
+                </ListItemIcon>
+                <ListItemText primary={headCell.label} secondary = {headCell.tooltip} />
+              </ListItem>
+            ))}
+          </List>
+        </Dialog>
+      </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}><ConferencePicker selected = {conferences} actionHandler = {handleConferences} /></div>
-      <Chip sx = {{'margin': '5px'}} label='Composite rankings' variant={view !== 'composite' ? 'outlined' : ''} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
-      <Chip sx = {{'margin': '5px'}} label='Statistic rankings' variant={view !== 'statistic' ? 'outlined' : ''} color={view !== 'statistic' ? 'primary' : 'success'} onClick={() => handleRankingView('statistic')} />
       {confChips}
       <TableContainer component={Paper} sx = {{'maxHeight': height - 290}}>
         <Table size = 'small' stickyHeader>
