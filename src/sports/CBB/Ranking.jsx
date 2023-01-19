@@ -832,7 +832,7 @@ const Ranking = (props) => {
     <div style = {{'padding': '20px'}}>
       <Typography variant = 'h5'>College basketball rankings.</Typography>
       {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
-      <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
+      <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
         <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : ''} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
         <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : ''} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
         <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : ''} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
