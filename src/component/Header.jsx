@@ -172,7 +172,7 @@ const Header = (props) => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <IconButton  onClick={() => {window.open('https://github.com/esmalleydev/sportsranking-app', '_blank');}} color="inherit">
+            <IconButton  onClick={() => {window.open('https://github.com/esmalleydev/srating.io-gui', '_blank');}} color="inherit">
               <GitHubIcon />
             </IconButton>
             <IconButton  onClick={handleAnchorMenu} color="inherit">
