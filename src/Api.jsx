@@ -6,7 +6,14 @@ class Api {
 	};
 
 	Request (args) {
-		return fetch(config.http + '://'+ config.host + (config.port ? ':' + config.port : ''), {
+		let url = null;
+		if (config.use_origin) {
+			url = window.location.origin + (config.path ? config.path : '');
+		} else {
+			url = config.http + '://'+ config.host + (config.port ? ':' + config.port : '');
+		}
+
+		return fetch(url, {
 			'method': 'POST',
 			'headers': {
 				'Content-Type': 'application/json',
