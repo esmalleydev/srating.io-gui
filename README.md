@@ -1,6 +1,6 @@
-# > sportsranking.io
+# > srating.io
 
-This is the open-source GUI project for sportsranking.io. This utilizes [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/)
+This is the open-source GUI project for srating.io. This utilizes [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/)
 
 ## Set up
 
@@ -10,9 +10,11 @@ In the `src` folder you will need to create a `configuration.js` file. Use the p
 
 ```
 module.exports = {
-  'host': 'api.sportsranking.io',
-  'api_key': 'TODO',
+  'host': 'api.srating.io',
+  'api_key': '[YOUR API KEY HERE]',
   'http': 'https',
+  'use_origin': false, // If true, requests will use the window.location.origin
+  'path': null, // if using origin and need a path, ex: /api
 };
 ```
 

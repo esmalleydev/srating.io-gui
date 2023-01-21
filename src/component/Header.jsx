@@ -40,9 +40,9 @@ const Header = (props) => {
 
   const sports = [
     'CBB',
-    'CFB ... coming soon',
-    'NBA ... coming soon',
-    'NFL ... coming soon',
+    'CFB ... coming soon?',
+    'NBA ... coming soon?',
+    'NFL ... coming soon?',
   ];
 
   let selectedIndex = null;
@@ -134,7 +134,7 @@ const Header = (props) => {
     <AppBar position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx = {{ display: 'flex', mr: 1 }} style = {logoStyle} onClick = {handleHome}>{(width < 450 ? '> SR' : '> sportsranking.io')}<sup style = {{'fontSize': '14px'}}>beta</sup></Box>
+          <Box sx = {{ display: 'flex', mr: 1 }} style = {logoStyle} onClick = {handleHome}>{(width < 450 ? '> SR' : '> sRating.io')}<sup style = {{'fontSize': '14px'}}>beta</sup></Box>
           <Box sx={{ flexGrow: 1, display: 'flex' }}>
             <Button
               id="sports-picker-button"

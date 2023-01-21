@@ -81,7 +81,7 @@ const Home = (props) => {
               color="text.primary"
               gutterBottom
             >
-              Sports ranking
+              sRating
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
               Aggregate data, clear statistics, better visualization, no ads, open-source.
