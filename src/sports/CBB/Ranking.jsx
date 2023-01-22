@@ -234,7 +234,7 @@ const Ranking = (props) => {
       id: 'elo_rank',
       numeric: true,
       label: 'ELO',
-      tooltip: '>srating.io ELO rank',
+      tooltip: 'srating.io ELO rank',
     },
     'kenpom_rank': {
       id: 'kenpom_rank',
@@ -257,8 +257,8 @@ const Ranking = (props) => {
     'elo': {
       id: 'elo',
       numeric: true,
-      label: 'Rating',
-      tooltip: '>srating.io ELO rating',
+      label: 'sRating',
+      tooltip: 'srating.io ELO rating',
     },
     'coaches_rank': {
       id: 'coaches_rank',
