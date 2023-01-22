@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Box from "@mui/material/Box";
 
 import HelperCBB from '../../helpers/CBB';
 import Api from './../../Api.jsx';
@@ -116,9 +117,11 @@ const Game = (props) => {
     <div>
       <div style = {{'padding': '20px'}}><ScoreTitle key={params.GameID} game={game} /></div>
       <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop}}>
-        <Tabs /*todo if width less than x variant="scrollable" scrollButtons="auto"*/ value={tabIndex} onChange={handleTabClick} centered indicatorColor="secondary" textColor="inherit">
-          {tabs}
-        </Tabs>
+        <Box display="flex" justifyContent="center">
+          <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabClick} indicatorColor="secondary" textColor="inherit">
+            {tabs}
+          </Tabs>
+        </Box>
       </AppBar>
       {selectedTab == 'boxscore' ? <Boxscore game = {game} /> : ''}
       {selectedTab == 'trends' ? <Trends game = {game} /> : ''}

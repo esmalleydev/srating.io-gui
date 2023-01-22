@@ -24,38 +24,13 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 import ConferencePicker from './../../component/CBB/ConferencePicker';
+import ColumnPicker from './../../component/CBB/ColumnPicker';
 
-// todo move into a component StatsPicker or something
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import CloseIcon from '@mui/icons-material/Close';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItem from '@mui/material/ListItem';
-import List from '@mui/material/List';
-import Slide from '@mui/material/Slide';
-// import Typography from '@mui/material/Typography';
-import CheckIcon from '@mui/icons-material/Check';
-import IconButton from '@mui/material/IconButton';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import Api from './../../Api.jsx';
 const api = new Api();
 
 
-// todo move to statspicker
-const Transition = React.forwardRef(
-  function Transition(
-    props: TransitionProps & {
-      children: React.ReactElement<any, any>;
-    },
-    ref: React.Ref<unknown>,
-  ) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  }
-);
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // '&:nth-of-type(odd)': {
@@ -204,6 +179,7 @@ const Ranking = (props) => {
       label: 'Rk',
       tooltip: 'Composite rank',
       'sticky': true,
+      'disabled': true,
     },
     'name': {
       id: 'name',
@@ -211,6 +187,7 @@ const Ranking = (props) => {
       label: 'Team',
       tooltip: 'Team name',
       'sticky': true,
+      'disabled': true,
     },
     'ap_rank': {
       id: 'ap_rank',
@@ -818,13 +795,15 @@ const Ranking = (props) => {
     );
   });
 
-  const handleCustomColumnsClose = () => {
+  const handlCustomColumnsSave = (columns) => {
     setCustomColumnsOpen(false);
+    localStorage.setItem('CBB.RANKING.COLUMNS', JSON.stringify(columns));
+    setCustomColumns(columns);
     handleRankingView('custom');
   };
 
-   const handleCustomColumnsOpen = () => {
-    setCustomColumnsOpen(true);
+  const handlCustomColumnsExit = () => {
+    setCustomColumnsOpen(false);
   };
 
 
@@ -837,53 +816,8 @@ const Ranking = (props) => {
         <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : ''} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
         <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : ''} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
         <Chip sx = {{'margin': '5px'}} label='Special' variant={view !== 'special' ? 'outlined' : ''} color={view !== 'special' ? 'primary' : 'success'} onClick={() => handleRankingView('special')} />
-        <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : ''} color={view !== 'custom' ? 'primary' : 'success'} onClick={handleCustomColumnsOpen} />
-        <Dialog
-          fullScreen
-          open={customColumnsOpen}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={handleCustomColumnsClose}
-          aria-describedby="alert-dialog-slide-description"
-        >
-          <AppBar position="sticky">
-            <Toolbar>
-              <IconButton
-                edge="start"
-                color="inherit"
-                onClick={handleCustomColumnsClose}
-                aria-label="close"
-              >
-                <CloseIcon />
-              </IconButton>
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                Set custom table columns
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <List style = {{'marginBottom': 60}}>
-            {Object.values(headCells).map((headCell) => (
-              <ListItem key={headCell.id} button disabled = {headCell.id === 'composite_rank' || headCell.id === 'name'} onClick={() => {
-                let currentCustomColumns = [...customColumns];
-                const index = currentCustomColumns.indexOf(headCell.id);
-
-                if (index > -1) {
-                  currentCustomColumns.splice(index, 1);
-                } else {
-                  currentCustomColumns.push(headCell.id);
-                }
-
-                localStorage.setItem('CBB.RANKING.COLUMNS', JSON.stringify(currentCustomColumns));
-                setCustomColumns(currentCustomColumns);
-              }}>
-                <ListItemIcon>
-                  {customColumns.indexOf(headCell.id) > -1 ? <CheckIcon /> : ''}
-                </ListItemIcon>
-                <ListItemText primary={headCell.label} secondary = {headCell.tooltip} />
-              </ListItem>
-            ))}
-          </List>
-        </Dialog>
+        <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : ''} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
+        <ColumnPicker options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}><ConferencePicker selected = {conferences} actionHandler = {handleConferences} /></div>
       {confChips}

@@ -78,12 +78,14 @@ const Picks = (props) => {
   const [inputOddsMin, setOddsMin] = useState(-1500);
   const [inputOddsMax, setOddsMax] = useState(-150);
   const [inputRoundRobin, setRoundRobin] = useState(0);
+  const [inputPercentage, setPercentage] = useState(75);
 
 
   const bet = inputBet ? +inputBet : 0;
   const oddsMin = inputOddsMin ? +inputOddsMin : 0;
   const oddsMax = inputOddsMax ? +inputOddsMax : 0;
   const roundRobinLength = inputRoundRobin ? +inputRoundRobin : 0;
+  const winChance = inputPercentage ? +inputPercentage : 0;
 
 
   const shuffle = (array) => {
@@ -344,7 +346,8 @@ const Picks = (props) => {
 
         if (
           odds >= oddsMin &&
-          odds <= oddsMax
+          odds <= oddsMax &&
+          (game[pick + '_team_rating'] * 100) >= winChance
         ) {
           games_bet++;
           total_bet += bet;
@@ -373,7 +376,8 @@ const Picks = (props) => {
 
       if (
         odds >= oddsMin &&
-        odds <= oddsMax
+        odds <= oddsMax &&
+        (game[pick + '_team_rating'] * 100) >= winChance
       ) {
         rows_picked.push(row);
         future_games_bet++;
@@ -863,12 +867,14 @@ const Picks = (props) => {
   const bettingInput = <TextField style = {{'margin': 10}} id="bet" label="Bet" variant="standard" value={inputBet} onChange = {(e) => {setBet(e.target.value)}} />;
   const oddsMinInput = <TextField style = {{'margin': 10}} id="oddsMin" label="Odd Min" variant="standard" value={inputOddsMin} onChange = {(e) => {setOddsMin(e.target.value)}} />;
   const oddsMaxInput = <TextField style = {{'margin': 10}} id="oddsmax" label="Odds Max" variant="standard" value={inputOddsMax} onChange = {(e) => {setOddsMax(e.target.value)}} />;
+  const percentageInput = <TextField style = {{'margin': 10}} id="precentage" label="Win chance %" variant="standard" value={inputPercentage} onChange = {(e) => {setPercentage(e.target.value)}} />;
   const roundRobinInput = <TextField style = {{'margin': 10}} id="roundRobin" label="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(e) => {setRoundRobin(e.target.value)}} />;
 
   if (total_bet || date < now) {
     betting_contents.push(bettingInput);
     betting_contents.push(oddsMinInput);
     betting_contents.push(oddsMaxInput);
+    betting_contents.push(percentageInput);
     betting_contents.push(<Typography variant = 'subtitle1' color = 'text.secondary'>Hypothetical pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
 
     if (total_bet) {
@@ -888,6 +894,7 @@ const Picks = (props) => {
     betting_contents.push(bettingInput);
     betting_contents.push(oddsMinInput);
     betting_contents.push(oddsMaxInput);
+    betting_contents.push(percentageInput);
     betting_contents.push(<Typography variant = 'subtitle1' color = 'text.secondary'>Future pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
 
     if (future_total_bet) {
