@@ -28,7 +28,7 @@ Schema documentation coming soon!
 
 The API requests are based on CRUD. In addition, each table / class has other calls which return data from multiple tables / formatting for performance.
 
-Your api key will not have write access. If you would like write access please contact me.
+Your api key will not have write access. If you would like write access please [contact me](mailto:contact@srating.io).
 
 ```
 import Api from './Api.jsx';
@@ -74,7 +74,7 @@ api.Request({
 
 I am also investigating open-sourcing my server side api for visibility, although I'm not sure how useful it would be as I am not planning on giving database access currently!
 
-If you have Server side API suggestions or bugs, please contact me.
+If you have Server side API suggestions or bugs, please [contact me](mailto:contact@srating.io).
 
 ## Structure
 

@@ -24,13 +24,25 @@ const Trends = (props) => {
   const game = props.game;
 
   const [selectedStatChip, setSelectedStatChip] = useState('elo_rank');
+
   const [requestedPM, setRequestedPM] = useState(false);
   const [previousMatchups, setPreviousMatchups] = useState(null);
   const [showAllPreviousMatchups, setShowAllPreviousMatchups] = useState(false);
 
+  const [requestedOddsStats, setRequestedOddsStats] = useState(false);
+  const [oddsStats, setOddsStats] = useState(null);
+
   const CBB = new HelperCBB({
     'cbb_game': game,
   });
+
+  let awayUnderdog = false;
+  let homeUnderdog = false;
+
+  if (game.odds) {
+    awayUnderdog = game.odds.pre_game_money_line_away > 0;
+    homeUnderdog = game.odds.pre_game_money_line_home > 0;
+  }
 
 
   const theme = useTheme();
@@ -45,6 +57,19 @@ const Trends = (props) => {
       setPreviousMatchups(cbb_games || {});
     }).catch((e) => {
       setPreviousMatchups({});
+    });
+  }
+
+  if (!requestedOddsStats) {
+    setRequestedOddsStats(true);
+    api.Request({
+      'class': 'cbb_game',
+      'function': 'getOddsStats',
+      'arguments': game.cbb_game_id,
+    }).then((Stats) => {
+      setOddsStats(Stats || {});
+    }).catch((e) => {
+      setOddsStats({});
     });
   }
 
@@ -174,6 +199,18 @@ const Trends = (props) => {
     }
   }
 
+  let awayOddsText = null;
+  if (oddsStats && oddsStats[game.away_team_id]) {
+    const awayOS = oddsStats[game.away_team_id];
+    awayOddsText = CBB.getTeamName('away') + ' is ' + (awayUnderdog ? awayOS.underdog_wins + '/' + awayOS.underdog_games + ', ' + ((awayOS.underdog_wins / awayOS.underdog_games) * 100).toFixed(2) + '% as the underdog this season.' : awayOS.favored_wins + '/' + awayOS.favored_games + ' ' + ((awayOS.favored_wins / awayOS.favored_games) * 100).toFixed(2) + '% when favored this season.');
+  }
+
+  let homeOddsText = null;
+  if (oddsStats && oddsStats[game.home_team_id]) {
+    const homeOS = oddsStats[game.home_team_id];
+    homeOddsText = CBB.getTeamName('home') + ' is ' + (homeUnderdog ? homeOS.underdog_wins + '/' + homeOS.underdog_games + ', ' + ((homeOS.underdog_wins / homeOS.underdog_games) * 100).toFixed(2) + '% as the underdog this season.' : homeOS.favored_wins + '/' + homeOS.favored_games + ', ' + ((homeOS.favored_wins / homeOS.favored_games) * 100).toFixed(2) + '% when favored this season.');
+  }
+
   return (
     <div style = {{'padding': 20}}>
       <Typography variant = 'body1'>Previous match-ups</Typography>
@@ -198,6 +235,11 @@ const Trends = (props) => {
           </div>
           : ''
         }
+      <Typography variant = 'body1'>Odds trends</Typography>
+      <div>
+        <Typography variant = 'body2'>{oddsStats === null ? <Skeleton /> : (awayOddsText ? awayOddsText : 'Missing data')}</Typography>
+        <Typography variant = 'body2'>{oddsStats === null ? <Skeleton /> : (homeOddsText ? homeOddsText : 'Missing data')}</Typography>
+      </div>
       <div>
         <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Rank compare</Typography>
         {statsCompareChips}
