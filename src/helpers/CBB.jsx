@@ -166,15 +166,14 @@ class CBB {
 
   /**
    * Get the pre-game over odds
-   * @param  {String} side home or away
    * @return {String}
    */
-  getPreOver(side) {
+  getPreOver() {
     if (
       this.cbb_game.odds &&
-      this.cbb_game.odds['pre_game_over_' + side]
+      this.cbb_game.odds.pre_game_over
     ) {
-      return this.cbb_game.odds['pre_game_over_' + side];
+      return this.cbb_game.odds.pre_game_over;
     }
 
     return '-';
@@ -182,15 +181,14 @@ class CBB {
 
   /**
    * Get the pre-game under odds
-   * @param  {String} side home or away
    * @return {String}
    */
-  getPreUnder(side) {
+  getPreUnder() {
     if (
       this.cbb_game.odds &&
-      this.cbb_game.odds['pre_game_under_' + side]
+      this.cbb_game.odds.pre_game_under
     ) {
-      return this.cbb_game.odds['pre_game_under_' + side];
+      return this.cbb_game.odds.pre_game_under;
     }
 
     return '-';
@@ -233,16 +231,15 @@ class CBB {
 
   /**
    * Get the live over odds
-   * @param  {String} side home or away
    * @return {String}
    */
-  getLiveOver(side) {
+  getLiveOver() {
     if (
       this.isInProgress() &&
       this.cbb_game.odds &&
-      this.cbb_game.odds['live_game_over_' + side]
+      this.cbb_game.odds.live_game_over
     ) {
-      return this.cbb_game.odds['live_game_over_' + side];
+      return this.cbb_game.odds.live_game_over;
     }
 
     return '-';
@@ -250,16 +247,15 @@ class CBB {
 
   /**
    * Get the live under odds
-   * @param  {String} side home or away
    * @return {String}
    */
   getLiveUnder(side) {
     if (
       this.isInProgress() &&
       this.cbb_game.odds &&
-      this.cbb_game.odds['live_game_under_' + side]
+      this.cbb_game.odds.live_game_under
     ) {
-      return this.cbb_game.odds['live_game_under_' + side];
+      return this.cbb_game.odds.live_game_under;
     }
 
     return '-';
