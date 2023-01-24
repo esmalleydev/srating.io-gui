@@ -18,7 +18,7 @@ module.exports = {
 };
 ```
 
-API keys are limited to 10,000 requests per month, if you need more requests, please contact me.
+API keys are limited to 10,000 requests per month, if you need more requests, please [contact me](mailto:contact@srating.io).
 
 ## API requests
 
