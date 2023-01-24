@@ -51,6 +51,26 @@ class CBB {
     return name;
   }
 
+  /**
+   * Get the team short
+   * @param  {String} side home or away
+   * @return {String}
+   */
+  getTeamNameShort(side) {
+    let name = 'UNK';
+    if (
+      this.cbb_game &&
+      this.cbb_game[side + '_team_id'] &&
+      this.cbb_game.teams &&
+      this.cbb_game[side + '_team_id'] in this.cbb_game.teams
+    ) {
+      const team = this.cbb_game.teams[this.cbb_game[side + '_team_id']];
+      name = new Team({'team': team}).getNameShort();
+    }
+
+    return name;
+  }
+
 
   /**
    * Is the game in progress?
@@ -113,11 +133,11 @@ class CBB {
 
 
   /**
-   * Get the pre-game odds
+   * Get the pre-game money line odds
    * @param  {String} side home or away
    * @return {String}
    */
-  getPreOdds(side) {
+  getPreML(side) {
     if (
       this.cbb_game.odds &&
       this.cbb_game.odds['pre_game_money_line_' + side]
@@ -126,14 +146,62 @@ class CBB {
     }
 
     return '-';
-  }
+  };
 
   /**
-   * Get the live game odds
+   * Get the pre-game spread odds
    * @param  {String} side home or away
    * @return {String}
    */
-  getLiveOdds(side) {
+  getPreSpread(side) {
+    if (
+      this.cbb_game.odds &&
+      this.cbb_game.odds['pre_game_spread_' + side]
+    ) {
+      return this.cbb_game.odds['pre_game_spread_' + side];
+    }
+
+    return '-';
+  };
+
+  /**
+   * Get the pre-game over odds
+   * @param  {String} side home or away
+   * @return {String}
+   */
+  getPreOver(side) {
+    if (
+      this.cbb_game.odds &&
+      this.cbb_game.odds['pre_game_over_' + side]
+    ) {
+      return this.cbb_game.odds['pre_game_over_' + side];
+    }
+
+    return '-';
+  };
+
+  /**
+   * Get the pre-game under odds
+   * @param  {String} side home or away
+   * @return {String}
+   */
+  getPreUnder(side) {
+    if (
+      this.cbb_game.odds &&
+      this.cbb_game.odds['pre_game_under_' + side]
+    ) {
+      return this.cbb_game.odds['pre_game_under_' + side];
+    }
+
+    return '-';
+  };
+
+  /**
+   * Get the live money line odds
+   * @param  {String} side home or away
+   * @return {String}
+   */
+  getLiveML(side) {
     if (
       this.isInProgress() &&
       this.cbb_game.odds &&
@@ -144,7 +212,58 @@ class CBB {
     }
 
     return '-';
-  }
+  };
+
+  /**
+   * Get the live spread odds
+   * @param  {String} side home or away
+   * @return {String}
+   */
+  getLiveSpread(side) {
+    if (
+      this.isInProgress() &&
+      this.cbb_game.odds &&
+      this.cbb_game.odds['live_game_spread_' + side]
+    ) {
+      return this.cbb_game.odds['live_game_spread_' + side];
+    }
+
+    return '-';
+  };
+
+  /**
+   * Get the live over odds
+   * @param  {String} side home or away
+   * @return {String}
+   */
+  getLiveOver(side) {
+    if (
+      this.isInProgress() &&
+      this.cbb_game.odds &&
+      this.cbb_game.odds['live_game_over_' + side]
+    ) {
+      return this.cbb_game.odds['live_game_over_' + side];
+    }
+
+    return '-';
+  };
+
+  /**
+   * Get the live under odds
+   * @param  {String} side home or away
+   * @return {String}
+   */
+  getLiveUnder(side) {
+    if (
+      this.isInProgress() &&
+      this.cbb_game.odds &&
+      this.cbb_game.odds['live_game_under_' + side]
+    ) {
+      return this.cbb_game.odds['live_game_under_' + side];
+    }
+
+    return '-';
+  };
 
   /**
    * Have the odds reversed since pre-game?

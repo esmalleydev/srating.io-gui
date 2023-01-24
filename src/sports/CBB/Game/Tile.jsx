@@ -7,9 +7,11 @@ import HelperCBB from '../../../helpers/CBB';
 import { useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+
 import PicksIcon from '@mui/icons-material/Casino';
 import MoneyIcon from '@mui/icons-material/CrisisAlert';
-import Tooltip from '@mui/material/Tooltip';
 
 const Tile = (props) => {
   const self = this;
@@ -43,39 +45,39 @@ const Tile = (props) => {
       'color': CBB.isInProgress() ? theme.palette.info.dark : theme.palette.text.primary,
     };
 
-    const scoreStyle = {
-      'margin': '0px 5px',
-      'width': '34px',
-      'maxWidth': '34px',
-      'flex': 2,
-    };
-
-    const liveStyle = {
-      'margin': '0px 5px',
-      'width': '50px',
-      'maxWidth': '50px',
-      'textAlign': 'right',
-      'flex': 3,
-    };
-
-    const preStyle = {
-      'margin': '0px 5px',
-      'width': '50px',
-      'maxWidth': '50px',
-      'textAlign': 'right',
-      'flex': 4,
-    };
-
     return (
       <div style = {flexContainer} >
         <div style = {timeStyle}>{startTime}</div>
-        <div style = {scoreStyle}></div>
-        <div style = {liveStyle}>Live</div>
-        <div style = {preStyle}>Pre</div>
-        <div style = {{'flex': 5, 'maxWidth': '25px'}}></div>
       </div>
     );
   }
+
+  const getOddsLine = () => {
+    return (
+      <table style = {{'width': '100%', 'textAlign': 'center'}}>
+        <thead>
+          <th style = {{'textAlign': 'left'}}><Typography variant = 'caption'>-</Typography></th>
+          <th><Typography variant = 'caption'>SPREAD</Typography></th>
+          <th><Typography variant = 'caption'>ML</Typography></th>
+          <th><Typography variant = 'caption'>O/U</Typography></th>
+        </thead>
+        <tbody>
+          <tr>
+            <td style = {{'textAlign': 'left'}}><Typography variant = 'caption'>{CBB.getTeamNameShort('away')}</Typography></td>
+            <td><Typography variant = 'caption'>{CBB.getPreSpread('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('away') : ''}</Typography></td>
+            <td style = {{'color': CBB.oddsReversal('away') ? theme.palette.warning.main : theme.palette.text.primary}}><Typography variant = 'caption'>{CBB.getPreML('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('away') : ''}</Typography></td>
+            <td><Typography variant = 'caption'>{CBB.getPreOver() !== '-' ? 'O ' + CBB.getPreOver() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveOver() : ''}</Typography></td>
+          </tr>
+          <tr>
+            <td style = {{'textAlign': 'left'}}><Typography variant = 'caption'>{CBB.getTeamNameShort('home')}</Typography></td>
+            <td><Typography variant = 'caption'>{CBB.getPreSpread('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('home') : ''}</Typography></td>
+            <td style = {{'color': CBB.oddsReversal('home') ? theme.palette.warning.main : theme.palette.text.primary}}><Typography variant = 'caption'>{CBB.getPreML('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('home') : ''}</Typography></td>
+            <td><Typography variant = 'caption'>{CBB.getPreUnder() !== '-' ? 'U ' + CBB.getPreUnder() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveUnder() : ''}</Typography></td>
+          </tr>
+        </tbody>
+      </table>
+    );
+  };
 
 
   const getTeamLine = (side) => {
@@ -99,24 +101,6 @@ const Tile = (props) => {
       'borderRadius': '5px',
       'textAlign': 'center',
       'flex': 2,
-    };
-
-    const liveStyle = {
-      'margin': '0px 5px',
-      'width': 'auto',
-      'maxWidth': '50px',
-      'textAlign': 'right',
-      'flex': 3,
-      'color': CBB.oddsReversal(side) ? theme.palette.warning.main : theme.palette.text.primary,
-      // 'border': oddsReversal(side) ? '1px solid ' + theme.palette.warning.main : 'none',
-    };
-
-    const preStyle = {
-      'margin': '0px 5px',
-      'width': '50px',
-      'maxWidth': '50px',
-      'textAlign': 'right',
-      'flex': 4,
     };
 
     let isPicked = false;
@@ -152,8 +136,6 @@ const Tile = (props) => {
       <div style = {flexContainer} >
         <div style = {nameStyle}>{CBB.getTeamRank(side, props.rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank(side, props.rankDisplay)}</sup> : ''}{CBB.getTeamName(side)}</div>
         <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? props.data[side + '_score'] : '-'}</div>
-        <div style = {liveStyle}>{CBB.oddsReversal(side) ? <MoneyIcon sx = {{'verticalAlign': 'middle'}} fontSize = 'small' color = {theme.palette.warning.main} /> : ''}{CBB.getLiveOdds(side)}</div>
-        <div style = {preStyle}>{CBB.getPreOdds(side)}</div>
         <div style = {{'flex': 5, 'maxWidth': '25px', 'textAlign': 'center'}}>{
           isPicked ?
           <Tooltip disableFocusListener disableTouchListener placement = 'top' title={(props.data[side+'_team_rating'] * 100) + '%'}>
@@ -177,9 +159,10 @@ const Tile = (props) => {
   return (
     <Paper elevation={3} style = {divStyle}  onClick={handleClick}>
       {getHeader()}
-      <hr />
       {getTeamLine('away')}
       {getTeamLine('home')}
+      {CBB.isFinal() ? '' : <hr />}
+      {CBB.isFinal() ? '' : getOddsLine()}
     </Paper>
   );
 }

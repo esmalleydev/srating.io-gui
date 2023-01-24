@@ -16,6 +16,22 @@ class Team {
     return this.team.team_id || 'Unknown';
   };
 
+  getNameShort() {
+    let name = 'Unknown';
+
+    if (this.team.char6) {
+      name = this.team.char6;
+    } else if (this.team.code) {
+      name = this.team.code;
+    } else if (this.team.alt_name) {
+      name = this.team.alt_name;
+    } else if (this.team.name) {
+      name = this.team.name;
+    }
+
+    return name.toUpperCase().substring(0,3);
+  };
+
   getLastRanking () {
     let last = null;
     if (
