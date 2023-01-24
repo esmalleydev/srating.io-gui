@@ -435,6 +435,36 @@ const Matchup = (props) => {
       'favored': 'lower',
       'showDifference': true,
     },
+    {
+      'name': 'FE',
+      'title': 'Fatigue',
+      'away': awayStats.fatigue,
+      'home': homeStats.fatigue,
+      'awayCompareValue': awayStats.fatigue,
+      'homeCompareValue': homeStats.fatigue,
+      'favored': 'lower',
+      'showDifference': true,
+    },
+    {
+      'name': 'DES',
+      'title': 'Desperation',
+      'away': awayStats.desperation,
+      'home': homeStats.desperation,
+      'awayCompareValue': awayStats.desperation,
+      'homeCompareValue': homeStats.desperation,
+      'favored': 'lower',
+      'showDifference': true,
+    },
+    {
+      'name': 'OVC',
+      'title': 'Over confidence',
+      'away': awayStats.over_confidence,
+      'home': homeStats.over_confidence,
+      'awayCompareValue': awayStats.over_confidence,
+      'homeCompareValue': homeStats.over_confidence,
+      'favored': 'lower',
+      'showDifference': true,
+    },
   ];
 
   const opponentRows = [

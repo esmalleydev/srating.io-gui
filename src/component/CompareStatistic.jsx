@@ -14,7 +14,7 @@ const CompareStatistic = (props) => {
 
   const paperContainer = (props.paper === true);
 
-  const fixedLength = width > 500 ? 2 : 0;
+  const fixedLength = width > 500 ? 2 : 1;
 
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
