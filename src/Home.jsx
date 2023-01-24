@@ -13,6 +13,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Link from '@mui/material/Link';
 
 import rankingImage from './img/Home/ranking.png';
 import scoresImage from './img/Home/scores.png';
@@ -132,14 +133,26 @@ const Home = (props) => {
         </Container>
       </main>
       <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          🚂🚂🚂 Boiler up!
-        </Typography>
+        <div>
+          <Typography
+            variant="subtitle1"
+            align="center"
+            color="text.secondary"
+            component="p"
+          >
+            🚂🚂🚂 Boiler up!
+          </Typography>
+        </div>
+        <div>
+          <Typography
+            variant="subtitle1"
+            align="center"
+            color="text.secondary"
+            component="p"
+          >
+            <Link color="text.secondary" underline="hover" href = "mailto:srating.io">Contact</Link>
+          </Typography>
+        </div>
       </Box>
     </div>
   );
