@@ -678,12 +678,10 @@ const Picks = (props) => {
     let label = moment(tabDates[i]).format('MMM Do');
     if (tabDates[i] === moment().format('YYYY-MM-DD')) {
       label = 'TODAY';
-    } else if (tabDates[i] === moment().add(1,'days').format('YYYY-MM-DD')) {
-      label = 'TOMORROW';
     } else if (
+      tabDates[i] === moment().add(1,'days').format('YYYY-MM-DD') ||
       tabDates[i] === moment().add(2,'days').format('YYYY-MM-DD') ||
-      tabDates[i] === moment().add(3,'days').format('YYYY-MM-DD') ||
-      tabDates[i] === moment().add(4,'days').format('YYYY-MM-DD')
+      tabDates[i] === moment().add(3,'days').format('YYYY-MM-DD')
     ) {
       label = moment(tabDates[i]).format('ddd');
     }

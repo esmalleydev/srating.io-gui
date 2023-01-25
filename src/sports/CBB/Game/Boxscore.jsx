@@ -15,7 +15,10 @@ import Chip from '@mui/material/Chip';
 
 import HelperCBB from '../../../helpers/CBB';
 import Score from './Charts/Score';
-import Odds from './Charts/Odds';
+
+import OddsML from './Charts/OddsML';
+import OddsSpread from './Charts/OddsSpread';
+import OddsOverUnder from './Charts/OddsOverUnder';
 
 const Boxscore = (props) => {
   const self = this;
@@ -121,8 +124,16 @@ const Boxscore = (props) => {
       'value': 'scoring',
     },
     {
-      'label': 'Live odds',
-      'value': 'live_odds',
+      'label': 'Live ML',
+      'value': 'liveML',
+    },
+    {
+      'label': 'Live Spread',
+      'value': 'liveSpread',
+    },
+    {
+      'label': 'Live O/U',
+      'value': 'liveOverUnder',
     },
   ];
 
@@ -145,8 +156,12 @@ const Boxscore = (props) => {
 
   if (selectedIntervalChip === 'scoring') {
     intervalChart = <Score game = {game} />;
-  } else if (selectedIntervalChip === 'live_odds') {
-    intervalChart = <Odds game = {game} />;
+  } else if (selectedIntervalChip === 'liveML') {
+    intervalChart = <OddsML game = {game} />;
+  } else if (selectedIntervalChip === 'liveSpread') {
+    intervalChart = <OddsSpread game = {game} />;
+  } else if (selectedIntervalChip === 'liveOverUnder') {
+    intervalChart = <OddsOverUnder game = {game} />;
   }
 
 

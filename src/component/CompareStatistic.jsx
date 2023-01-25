@@ -6,6 +6,10 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 
+import utilsColor from  '../utils/Color.jsx';
+
+const ColorUtil = new utilsColor();
+
 
 const CompareStatistic = (props) => {
 
@@ -15,6 +19,9 @@ const CompareStatistic = (props) => {
   const paperContainer = (props.paper === true);
 
   const fixedLength = width > 500 ? 2 : 1;
+
+  const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
+  const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
 
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
@@ -134,6 +141,13 @@ const CompareStatistic = (props) => {
     'margin': '0px 10px',
   };
 
+  const spanStyle = {
+    'fontSize': '10px',
+    'margin': '0px 5px',
+    'padding': '3px',
+    'borderRadius': '5px',
+  };
+
   const Container = (props_) => {
     if (paperContainer) {
       return <Paper elevation = {3} style = {{'padding': 10}}>{props_.children}</Paper>;
@@ -147,9 +161,20 @@ const CompareStatistic = (props) => {
     <Container>
       <div style = {flexContainerStyle}>
         <div>
-          {props.rows.map((row) => (
-            <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}</Typography>
-          ))}
+          {props.rows.map((row) => {
+            const colors = {};
+            let backgroundColor = null;
+
+            if (
+              row.awayRank && 
+              (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.awayRank / 363))) &&
+              backgroundColor !== '#'
+            ) {
+              colors.backgroundColor = backgroundColor;
+              colors.color = theme.palette.getContrastText(backgroundColor);
+            }
+            return <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(colors, spanStyle)}>{row.awayRank}</span> : ''}</Typography>
+          })}
         </div>
         <div style = {middleFlexColumnStyle}>
           {props.rows.map((row) => (
@@ -169,9 +194,20 @@ const CompareStatistic = (props) => {
           ))}
         </div>
         <div>
-          {props.rows.map((row) => (
-            <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.home}</Typography>
-          ))}
+          {props.rows.map((row) => {
+            const colors = {};
+            let backgroundColor = null;
+
+            if (
+              row.homeRank && 
+              (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.homeRank / 363))) &&
+              backgroundColor !== '#'
+            ) {
+              colors.backgroundColor = backgroundColor;
+              colors.color = theme.palette.getContrastText(backgroundColor);
+            }
+            return <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.homeRank ? <span style = {Object.assign(colors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
+          })}
         </div>
       </div>
     </Container>

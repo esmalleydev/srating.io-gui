@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
+import moment from 'moment';
 
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -28,21 +29,24 @@ const Betting = (props) => {
   const homeStats = (game.stats && game.stats[game.home_team_id]) || {};
 
   const [requestedMomentum, setRequestedMomentum] = useState(false);
-  const [momentumStats, setMomentumStats] = useState(null);
+  const [momentumData, setMomentumData] = useState(null);
 
-  const awayMomentumStats = (momentumStats && momentumStats[game.away_team_id]) || {}; 
-  const homeMomentumStats = (momentumStats && momentumStats[game.home_team_id]) || {}; 
+  const awayMomentumStats = (momentumData && momentumData[game.away_team_id] && momentumData[game.away_team_id].stats) || {}; 
+  const homeMomentumStats = (momentumData && momentumData[game.home_team_id] && momentumData[game.home_team_id].stats) || {};
+
+  const awayTeamGames = (momentumData && momentumData[game.away_team_id] && momentumData[game.away_team_id].cbb_games) || {}; 
+  const homeTeamGames = (momentumData && momentumData[game.home_team_id] && momentumData[game.home_team_id].cbb_games) || {}; 
 
   if (!requestedMomentum) {
     setRequestedMomentum(true);
     api.Request({
       'class': 'cbb_game',
-      'function': 'getMomentumStats',
+      'function': 'getMomentumData',
       'arguments': game.cbb_game_id,
     }).then((response) => {
-      setMomentumStats(response || {});
+      setMomentumData(response || {});
     }).catch((e) => {
-      setMomentumStats({});
+      setMomentumData({});
     });
   }
 
@@ -455,6 +459,14 @@ const Betting = (props) => {
     },
   ];
 
+  const sortedHomeGames = Object.values(homeTeamGames).sort(function(a, b) {
+    return a.start_date < b.start_date ? -1 : 1;
+  });
+
+  const sortedAwayGames = Object.values(awayTeamGames).sort(function(a, b) {
+    return a.start_date < b.start_date ? -1 : 1;
+  });
+
 
   return (
     <div style = {{'padding': 20}}>
@@ -463,7 +475,7 @@ const Betting = (props) => {
         <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
       </div>
       {
-        momentumStats === null ?
+        momentumData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>
           <div>
             <Typography variant = 'h5'><Skeleton /></Typography>
@@ -476,12 +488,52 @@ const Betting = (props) => {
         : ''
       }
       {
-        momentumStats !== null ?
+        momentumData !== null ?
         <div>
           <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h6'>Last 5 game stat comparison</Typography>
           <Paper elevation = {3} style = {{'padding': 10, 'marginBottom': 10}}>
-            <Typography variant = 'body1'>{CBB.getTeamName('away')} offense is trending {awayMomentumStats.offensive_rating > awayStats.offensive_rating ? 'up' : 'down'}. {CBB.getTeamName('home')} offense is trending {homeMomentumStats.offensive_rating > homeStats.offensive_rating ? 'up' : 'down'}.</Typography>
-            <Typography variant = 'body1'>{CBB.getTeamName('away')} defense is trending {awayMomentumStats.defensive_rating < awayStats.defensive_rating ? 'up' : 'down'}. {CBB.getTeamName('home')} defense is trending {homeMomentumStats.defensive_rating < homeStats.defensive_rating ? 'up' : 'down'}.</Typography>
+            <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
+              <table>
+                {
+                  sortedAwayGames.map((cbb_game) => {
+                    const CBB_ = new HelperCBB({
+                      'cbb_game': cbb_game,
+                    });
+
+                    const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === game.away_team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === game.away_team_id);
+
+                    return (<tr>
+                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
+                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{CBB_.getTeamName('away')} @ {CBB_.getTeamName('home')}</Typography></td>
+                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{won ? 'W' : 'L'}</Typography></td>
+                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
+                    </tr>);
+                  })
+                }
+              </table>
+              <table>
+                {
+                  sortedHomeGames.map((cbb_game) => {
+                    const CBB_ = new HelperCBB({
+                      'cbb_game': cbb_game,
+                    });
+
+                    const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === game.home_team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === game.home_team_id);
+
+                    return (<tr>
+                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
+                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{CBB_.getTeamName('away')} @ {CBB_.getTeamName('home')}</Typography></td>
+                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{won ? 'W' : 'L'}</Typography></td>
+                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
+                    </tr>);
+                  })
+                }
+              </table>
+            </div>
+            <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
+              <Typography variant = 'caption'>Offense is trending {awayMomentumStats.offensive_rating > awayStats.offensive_rating ? 'up' : 'down'}. Defense is trending {awayMomentumStats.defensive_rating < awayStats.defensive_rating ? 'up' : 'down'}.</Typography>
+              <Typography variant = 'caption'>Offense is trending {homeMomentumStats.offensive_rating > homeStats.offensive_rating ? 'up' : 'down'}. Defense is trending {homeMomentumStats.defensive_rating < homeStats.defensive_rating ? 'up' : 'down'}.</Typography>
+            </div>
             {//<Typography style = {{'margin': '10px 0px'}} variant = 'body2'>Below shows the averages of the last 5 games. Next to each statisic shows the team's season average.</Typography>
             }
           </Paper>

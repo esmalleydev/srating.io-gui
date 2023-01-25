@@ -14,7 +14,7 @@ import moment from 'moment';
 
 
 
-const Odds = (props) => {
+const OddsOverUnder = (props) => {
   const self = this;
 
   const game = props.game;
@@ -38,31 +38,24 @@ const Odds = (props) => {
 
   let xAxis = [];
   let series = {
-    'home': {
-      'name': CBB.getTeamName('home'),
+    'over': {
+      'name': 'Over',
       'data': [],
     },
-    'away': {
-      'name': CBB.getTeamName('away'),
+    'under': {
+      'name': 'Under',
       'data': [],
     },
   };
 
-  if (homeColor) {
-    series.home.color = homeColor;
-  }
-
-  if (awayColor && awayColor !== homeColor) {
-    series.away.color = awayColor;
-  }
 
   let map = {};
 
   for (let i = 0; i < sorted_intervals.length; i++) {
     if (
       !map[sorted_intervals[i].clock + sorted_intervals[i].current_period] &&
-      sorted_intervals[i].money_line_away &&
-      sorted_intervals[i].money_line_home
+      sorted_intervals[i].over &&
+      sorted_intervals[i].under
     ) {
       map[sorted_intervals[i].clock + sorted_intervals[i].current_period] = true;
       if (!sorted_intervals[i].current_period.length && sorted_intervals[i].clock === ':00') {
@@ -71,8 +64,8 @@ const Odds = (props) => {
         xAxis.push(sorted_intervals[i].clock);
       }
 
-      series.home.data.push(sorted_intervals[i].money_line_home < -10000 ? -10000 : sorted_intervals[i].money_line_home);
-      series.away.data.push(sorted_intervals[i].money_line_away < -10000 ? -10000 : sorted_intervals[i].money_line_away);
+      series.over.data.push(sorted_intervals[i].under < -10000 ? -10000 : sorted_intervals[i].under);
+      series.under.data.push(sorted_intervals[i].over < -10000 ? -10000 : sorted_intervals[i].over);
     }
 
   }
@@ -85,14 +78,14 @@ const Odds = (props) => {
       },
     },
     'title': {
-      'text': 'Live odds by game time'
+      'text': 'Live O/U by game time'
     },
     'xAxis': {
       'categories': xAxis
     },
     'yAxis': {
       'title': {
-        'text': 'Odds',
+        'text': 'Points',
       },
     },
     'plotOptions': {
@@ -119,4 +112,4 @@ const Odds = (props) => {
   );
 }
 
-export default Odds;
+export default OddsOverUnder;

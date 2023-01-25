@@ -28,6 +28,9 @@ import ColumnPicker from './../../component/CBB/ColumnPicker';
 
 
 import Api from './../../Api.jsx';
+import utilsColor from  './../../utils/Color.jsx';
+
+const ColorUtil = new utilsColor();
 const api = new Api();
 
 
@@ -763,11 +766,15 @@ const Ranking = (props) => {
       'cursor': 'pointer',
     };
 
+    const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
+    const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
+
     const spanStyle = {
       'fontSize': '10px',
       'marginLeft': '5px',
+      'padding': '3px',
+      'borderRadius': '5px',
     };
-
 
     teamCellStyle.position = 'sticky';
     teamCellStyle.left = 50;
@@ -781,7 +788,14 @@ const Ranking = (props) => {
       } else if (columns[i] === 'composite_rank') {
         tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'center', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{row[columns[i]]}</TableCell>);
       } else {
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {spanStyle}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
+        const colors = {};
+        const backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row[columns[i] + '_rank'] / 363));
+
+        if (backgroundColor !== '#') {
+          colors.backgroundColor = backgroundColor;
+          colors.color = theme.palette.getContrastText(backgroundColor);
+        }
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {Object.assign(colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
       }
     } 
 
@@ -806,70 +820,78 @@ const Ranking = (props) => {
     setCustomColumnsOpen(false);
   };
 
+  const tableStyle = {
+    'maxHeight': height - 290 - (width < 470 ? 40 : 0) - (confChips.length ? 40 : 0),
+  };
+
 
   return (
-    <div style = {{'padding': '20px'}}>
-      <Typography variant = 'h5'>College basketball rankings.</Typography>
-      {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
-      <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
-        <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : ''} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
-        <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : ''} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
-        <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : ''} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
-        <Chip sx = {{'margin': '5px'}} label='Special' variant={view !== 'special' ? 'outlined' : ''} color={view !== 'special' ? 'primary' : 'success'} onClick={() => handleRankingView('special')} />
-        <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : ''} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
-        <ColumnPicker options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
+    <div>
+      <div style = {{'padding': '20px 20px 0px 20px'}}>
+        <Typography variant = 'h5'>College basketball rankings.</Typography>
+        {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
+        <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
+          <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : ''} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
+          <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : ''} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
+          <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : ''} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
+          <Chip sx = {{'margin': '5px'}} label='Special' variant={view !== 'special' ? 'outlined' : ''} color={view !== 'special' ? 'primary' : 'success'} onClick={() => handleRankingView('special')} />
+          <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : ''} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
+          <ColumnPicker options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
+        </div>
+        <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}><ConferencePicker selected = {conferences} actionHandler = {handleConferences} /></div>
+        {confChips}
       </div>
-      <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}><ConferencePicker selected = {conferences} actionHandler = {handleConferences} /></div>
-      {confChips}
-      <TableContainer component={Paper} sx = {{'maxHeight': height - 290}}>
-        <Table size = 'small' stickyHeader>
-          <TableHead>
-            <TableRow>
-              {getColumns().map((column) => {
-                const headCell = headCells[column];
-                const tdStyle = {
-                  'padding': '4px 5px',
-                };
+      <div style = {{'padding': width < 600 ? '0px 10px' : '0px 20px'}}>
+        <TableContainer component={Paper} sx = {tableStyle}>
+          <Table size = 'small' stickyHeader>
+            <TableHead>
+              <TableRow>
+                {getColumns().map((column) => {
+                  const headCell = headCells[column];
+                  const tdStyle = {
+                    'padding': '4px 5px',
+                  };
 
-                if (headCell.sticky) {
-                  tdStyle.position = 'sticky';
-                  tdStyle.left = (headCell.id === 'name' ? 50 : 0);
-                  tdStyle.zIndex = 3;
-                } else {
-                  tdStyle.whiteSpace = 'nowrap';
-                }
+                  if (headCell.sticky) {
+                    tdStyle.position = 'sticky';
+                    tdStyle.left = (headCell.id === 'name' ? 50 : 0);
+                    tdStyle.zIndex = 3;
+                  } else {
+                    tdStyle.whiteSpace = 'nowrap';
+                  }
 
-                return (
-                <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
-                  <StyledTableHeadCell
-                    sx = {tdStyle}
-                    key={headCell.id}
-                    align={'left'}
-                    sortDirection={orderBy === headCell.id ? order : false}
-                  >
-                    <TableSortLabel
-                      active={orderBy === headCell.id}
-                      direction={orderBy === headCell.id ? order : 'asc'}
-                      onClick={() => {handleSort(headCell.id)}}
+                  return (
+                  <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
+                    <StyledTableHeadCell
+                      sx = {tdStyle}
+                      key={headCell.id}
+                      align={'left'}
+                      sortDirection={orderBy === headCell.id ? order : false}
                     >
-                      {headCell.label}
-                      {orderBy === headCell.id ? (
-                        <Box component="span" sx={visuallyHidden}>
-                          {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                        </Box>
-                      ) : null}
-                    </TableSortLabel>
-                  </StyledTableHeadCell>
-                </Tooltip>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {row_containers}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                      <TableSortLabel
+                        active={orderBy === headCell.id}
+                        direction={orderBy === headCell.id ? order : 'asc'}
+                        onClick={() => {handleSort(headCell.id)}}
+                      >
+                        {headCell.label}
+                        {orderBy === headCell.id ? (
+                          <Box component="span" sx={visuallyHidden}>
+                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                          </Box>
+                        ) : null}
+                      </TableSortLabel>
+                    </StyledTableHeadCell>
+                  </Tooltip>
+                  );
+                })}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {row_containers}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
     </div>
   );
 }
