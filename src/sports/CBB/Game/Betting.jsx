@@ -467,6 +467,18 @@ const Betting = (props) => {
     return a.start_date < b.start_date ? -1 : 1;
   });
 
+  const flexContainerStyle = {
+    'display': 'flex',
+    'flexFlow': 'row wrap',
+    'justifyContent': 'space-between',
+    'marginBottom': '10px',
+    'flexWrap': 'nowrap',
+  };
+
+  if (width < 700) {
+    flexContainerStyle.flexDirection = 'column';
+  }
+
 
   return (
     <div style = {{'padding': 20}}>
@@ -492,8 +504,8 @@ const Betting = (props) => {
         <div>
           <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h6'>Last 5 game stat comparison</Typography>
           <Paper elevation = {3} style = {{'padding': 10, 'marginBottom': 10}}>
-            <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
-              <table>
+            <div style = {flexContainerStyle}>
+              <table style = {{'flexGrow': '1'}}>
                 {
                   sortedAwayGames.map((cbb_game) => {
                     const CBB_ = new HelperCBB({
@@ -505,13 +517,13 @@ const Betting = (props) => {
                     return (<tr>
                       <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
                       <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{CBB_.getTeamName('away')} @ {CBB_.getTeamName('home')}</Typography></td>
-                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{won ? 'W' : 'L'}</Typography></td>
-                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
+                      <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
                     </tr>);
                   })
                 }
               </table>
-              <table>
+              <div style = {{'margin': '10px 60px'}}></div>
+              <table style = {{'flexGrow': '1'}}>
                 {
                   sortedHomeGames.map((cbb_game) => {
                     const CBB_ = new HelperCBB({
@@ -523,16 +535,15 @@ const Betting = (props) => {
                     return (<tr>
                       <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
                       <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{CBB_.getTeamName('away')} @ {CBB_.getTeamName('home')}</Typography></td>
-                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{won ? 'W' : 'L'}</Typography></td>
-                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
+                      <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
                     </tr>);
                   })
                 }
               </table>
             </div>
-            <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
-              <Typography variant = 'caption'>Offense is trending {awayMomentumStats.offensive_rating > awayStats.offensive_rating ? 'up' : 'down'}. Defense is trending {awayMomentumStats.defensive_rating < awayStats.defensive_rating ? 'up' : 'down'}.</Typography>
-              <Typography variant = 'caption'>Offense is trending {homeMomentumStats.offensive_rating > homeStats.offensive_rating ? 'up' : 'down'}. Defense is trending {homeMomentumStats.defensive_rating < homeStats.defensive_rating ? 'up' : 'down'}.</Typography>
+            <div style = {{'display': 'flex', 'flexFlow': 'row wrap', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
+              <Typography variant = 'caption'>{CBB.getTeamName('away')} offense is trending {awayMomentumStats.offensive_rating > awayStats.offensive_rating ? 'up' : 'down'}, Defense is trending {awayMomentumStats.defensive_rating < awayStats.defensive_rating ? 'up' : 'down'}.</Typography>
+              <Typography variant = 'caption'>{CBB.getTeamName('home')} offense is trending {homeMomentumStats.offensive_rating > homeStats.offensive_rating ? 'up' : 'down'}. Defense is trending {homeMomentumStats.defensive_rating < homeStats.defensive_rating ? 'up' : 'down'}.</Typography>
             </div>
             {//<Typography style = {{'margin': '10px 0px'}} variant = 'body2'>Below shows the averages of the last 5 games. Next to each statisic shows the team's season average.</Typography>
             }
