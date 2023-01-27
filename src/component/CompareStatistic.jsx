@@ -26,19 +26,19 @@ const CompareStatistic = (props) => {
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'away' ? theme.palette.success.main : theme.palette.error.main;
+        return base === 'away' ? theme.palette.success.light : theme.palette.error.light;
       }
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'home' ? theme.palette.success.main : theme.palette.error.main;
+        return base === 'home' ? theme.palette.success.light : theme.palette.error.light;
       }
     }
 
     if (row.favored === 'higher') {
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? theme.palette.success.main : theme.palette.error.main;
+        return base === 'away' ? theme.palette.success.light : theme.palette.error.light;
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? theme.palette.success.main : theme.palette.error.main;
+        return base === 'home' ? theme.palette.success.light : theme.palette.error.light;
       }
     }
 
@@ -97,6 +97,7 @@ const CompareStatistic = (props) => {
     return 0;
   };
 
+  /*
   const flexContainerStyle = {
     'display': 'flex',
     'justifyContent': 'space-between',
@@ -140,6 +141,7 @@ const CompareStatistic = (props) => {
     'display': 'flex',
     'margin': '0px 10px',
   };
+  */
 
   const spanStyle = {
     'fontSize': '10px',
@@ -157,93 +159,115 @@ const CompareStatistic = (props) => {
   };
 
 
+  // return (
+  //   <Container>
+  //     <div style = {flexContainerStyle}>
+  //       <div>
+  //         {props.rows.map((row) => {
+  //           const colors = {};
+  //           let backgroundColor = null;
+
+  //           if (
+  //             row.awayRank && 
+  //             (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.awayRank / 363))) &&
+  //             backgroundColor !== '#'
+  //           ) {
+  //             colors.backgroundColor = backgroundColor;
+  //             colors.color = theme.palette.getContrastText(backgroundColor);
+  //           }
+  //           return <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(colors, spanStyle)}>{row.awayRank}</span> : ''}</Typography>
+  //         })}
+  //       </div>
+  //       <div style = {middleFlexColumnStyle}>
+  //         {props.rows.map((row) => (
+  //           <div style = {middleSubFlexContainerStyle}>
+  //             <div style = {middleSubFlexLeftColumn}>
+  //               <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': '#fff'/*theme.palette.getContrastText(getColor(row, 'away'))*/}}>
+  //                 <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography>
+  //               </div>
+  //             </div>
+  //             <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
+  //             <div style = {middleSubFlexRightColumn}>
+  //               <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': '#fff'/*theme.palette.getContrastText(getColor(row, 'home'))*/}}>
+  //                 <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>
+  //               </div>
+  //             </div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //       <div>
+  //         {props.rows.map((row) => {
+  //           const colors = {};
+  //           let backgroundColor = null;
+
+  //           if (
+  //             row.homeRank && 
+  //             (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.homeRank / 363))) &&
+  //             backgroundColor !== '#'
+  //           ) {
+  //             colors.backgroundColor = backgroundColor;
+  //             colors.color = theme.palette.getContrastText(backgroundColor);
+  //           }
+  //           return <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.homeRank ? <span style = {Object.assign(colors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
+  //         })}
+  //       </div>
+  //     </div>
+  //   </Container>
+  // );
+
   return (
     <Container>
-      <div style = {flexContainerStyle}>
-        <div>
-          {props.rows.map((row) => {
-            const colors = {};
-            let backgroundColor = null;
+      {props.rows.map((row) => {
+        const awayColors = {};
+        const homeColors = {};
+        let backgroundColor = null;
 
-            if (
-              row.awayRank && 
-              (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.awayRank / 363))) &&
-              backgroundColor !== '#'
-            ) {
-              colors.backgroundColor = backgroundColor;
-              colors.color = theme.palette.getContrastText(backgroundColor);
-            }
-            return <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(colors, spanStyle)}>{row.awayRank}</span> : ''}</Typography>
-          })}
-        </div>
-        <div style = {middleFlexColumnStyle}>
-          {props.rows.map((row) => (
-            <div style = {middleSubFlexContainerStyle}>
-              <div style = {middleSubFlexLeftColumn}>
-                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': '#fff'/*theme.palette.getContrastText(getColor(row, 'away'))*/}}>
-                  <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography>
-                </div>
+        if (
+          row.awayRank && 
+          (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.awayRank / 363))) &&
+          backgroundColor !== '#'
+        ) {
+          awayColors.backgroundColor = backgroundColor;
+          awayColors.color = theme.palette.getContrastText(backgroundColor);
+        }
+        if (
+          row.homeRank && 
+          (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.homeRank / 363))) &&
+          backgroundColor !== '#'
+        ) {
+          homeColors.backgroundColor = backgroundColor;
+          homeColors.color = theme.palette.getContrastText(backgroundColor);
+        }
+
+        const radius = '4px';
+
+        return (
+          <div style = {{'margin': '10px 0px'}}>
+            <div style = {{'display': 'flex', 'alignItems':'center', 'justifyContent': 'space-between'}}>
+              <div style = {{'margin': '0px 20px 0px 5px', 'minWidth': '100px', 'textAlign': 'left', 'overflow': 'hidden'}}>
+                <Typography variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(awayColors, spanStyle)}>{row.awayRank}</span> : ''}<Typography style = {{'margin': '0px 5px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography></div>
+              <div style = {{'textAlign': 'center', 'whiteSpace': 'nowrap'}}>
+                <Tooltip key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography color = {'text.secondary'} variant = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
               </div>
-              <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
-              <div style = {middleSubFlexRightColumn}>
-                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': '#fff'/*theme.palette.getContrastText(getColor(row, 'home'))*/}}>
-                  <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>
+              <div style = {{'margin': '0px 5px 0px 20px', 'minWidth': '100px', 'textAlign': 'right', 'overflow': 'hidden'}}>
+                <Typography variant = 'body2'><Typography style = {{'margin': '0px 5px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{row.homeRank ? <span style = {Object.assign(homeColors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
+              </div>
+            </div>
+            <div style = {{'display': 'flex', 'alignItems': 'center', 'justifyContent': 'space-between', 'marginTop': '5px'}}>
+              <div style = {{'flexGrow': '1', 'margin': '0px 5px', 'display': 'flex', 'height': '8px'}}>
+                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': '#fff', 'textAlign': 'center', 'borderTopLeftRadius': radius, 'borderBottomLeftRadius': radius/*theme.palette.getContrastText(getColor(row, 'away'))*/}}>
+                  
+                </div>
+                <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': '#fff', 'textAlign': 'center', 'borderTopRightRadius': radius, 'borderBottomRightRadius': radius/*theme.palette.getContrastText(getColor(row, 'home'))*/}}>
+                  
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-        <div>
-          {props.rows.map((row) => {
-            const colors = {};
-            let backgroundColor = null;
-
-            if (
-              row.homeRank && 
-              (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.homeRank / 363))) &&
-              backgroundColor !== '#'
-            ) {
-              colors.backgroundColor = backgroundColor;
-              colors.color = theme.palette.getContrastText(backgroundColor);
-            }
-            return <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.homeRank ? <span style = {Object.assign(colors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
-          })}
-        </div>
-      </div>
+          </div>
+        );
+      })}
     </Container>
   );
-
-  // return (
-  //   <Container>
-  //     {props.rows.map((row) => (
-  //       <div>
-  //         <div style = {Object.assign({'alignItems':'center'}, flexContainerStyle)}>
-            
-  //           <div style = {middleFlexColumnStyle}>
-  //               <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
-  //           </div>
-            
-  //         </div>
-  //         <div style = {{'display': 'flex', 'alignItems': 'center', 'justifyContent': 'space-between'}}>
-  //           <div style = {{'margin': '0px 20px 0px 5px'}}>
-  //             <Typography style = {{}} variant = 'body2'>{row.away}</Typography>
-  //           </div>
-  //           <div style = {{'flexGrow': '1', 'margin': '0px 5px', 'display': 'flex'}}>
-  //             <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': '#fff', 'textAlign': 'center'/*theme.palette.getContrastText(getColor(row, 'away'))*/}}>
-  //               <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography>
-  //             </div>
-  //             <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': '#fff', 'textAlign': 'center'/*theme.palette.getContrastText(getColor(row, 'home'))*/}}>
-  //               <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>
-  //             </div>
-  //           </div>
-  //           <div style = {{'margin': '0px 5px 0px 20px'}}>
-  //               <Typography style = {{}} variant = 'body2'>{row.home}</Typography>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     ))}
-  //   </Container>
-  // );
 }
 
 export default CompareStatistic;

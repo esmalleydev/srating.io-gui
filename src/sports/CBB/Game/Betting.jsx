@@ -60,6 +60,7 @@ const Betting = (props) => {
   const overviewRows = [
     {
       'name': 'Record',
+      'title': 'Record',
       'away': awayMomentumStats.wins + '-' + awayMomentumStats.losses,
       'home': homeMomentumStats.wins + '-' + homeMomentumStats.losses,
       'awayCompareValue': awayMomentumStats.wins,
@@ -89,6 +90,7 @@ const Betting = (props) => {
     },
     {
       'name': 'PTS Off.',
+      'title': 'Avg points scored',
       'away': awayMomentumStats.points,
       'home': homeMomentumStats.points,
       'awayCompareValue': awayMomentumStats.points,
@@ -98,6 +100,7 @@ const Betting = (props) => {
     },
     {
       'name': 'PTS Def.',
+      'title': 'Avg points allowed',
       'away': awayMomentumStats.opponent_points,
       'home': homeMomentumStats.opponent_points,
       'awayCompareValue': awayMomentumStats.opponent_points,
@@ -110,7 +113,7 @@ const Betting = (props) => {
   const marginRows = [
      {
       'name': 'Win MR',
-      'title': 'Win margin; Average points won by.',
+      'title': 'Avg. Win margin',
       'away': awayMomentumStats.win_margin,
       'home': homeMomentumStats.win_margin,
       'awayCompareValue': awayMomentumStats.win_margin,
@@ -120,7 +123,7 @@ const Betting = (props) => {
     },
     {
       'name': 'Loss MR',
-      'title': 'Loss margin; Average points lost by.',
+      'title': 'Avg. Loss margin',
       'away': awayMomentumStats.loss_margin,
       'home': homeMomentumStats.loss_margin,
       'awayCompareValue': awayMomentumStats.loss_margin,
@@ -130,7 +133,7 @@ const Betting = (props) => {
     },
     {
       'name': 'Conf. W MR',
-      'title': 'Conference win margin; Average points won by.',
+      'title': 'Avg. Conference win margin',
       'away': awayMomentumStats.confwin_margin,
       'home': homeMomentumStats.confwin_margin,
       'awayCompareValue': awayMomentumStats.confwin_margin,
@@ -140,7 +143,7 @@ const Betting = (props) => {
     },
     {
       'name': 'Conf. L MR',
-      'title': 'Conference loss margin; Average points lost by.',
+      'title': 'Avg. Conference loss margin',
       'away': awayMomentumStats.confloss_margin,
       'home': homeMomentumStats.confloss_margin,
       'awayCompareValue': awayMomentumStats.confloss_margin,
@@ -153,7 +156,8 @@ const Betting = (props) => {
   const offenseRows = [
     {
       'name': 'Pace',
-      'title': 'Possesions per game',
+      'title': 'Pace',
+      'tooltip': 'Possesions per game',
       'away': awayMomentumStats.possessions,
       'home': homeMomentumStats.possessions,
       'awayCompareValue': awayMomentumStats.possessions,
@@ -163,7 +167,8 @@ const Betting = (props) => {
     },
     {
       'name': 'FG',
-      'title': 'Field goals per game',
+      'title': 'FG',
+      'tooltip': 'Field goals per game',
       'away': awayMomentumStats.field_goal,
       'home': homeMomentumStats.field_goal,
       'awayCompareValue': awayMomentumStats.field_goal,
@@ -173,7 +178,8 @@ const Betting = (props) => {
     },
     {
       'name': 'FGA',
-      'title': 'Field goal attempts per game',
+      'title': 'FGA',
+      'tooltip': 'Field goal attempts per game',
       'away': awayMomentumStats.field_goal_attempts,
       'home': homeMomentumStats.field_goal_attempts,
       'awayCompareValue': awayMomentumStats.field_goal_attempts,
@@ -183,7 +189,8 @@ const Betting = (props) => {
     },
     {
       'name': 'FG%',
-      'title': 'Field goal percentage',
+      'title': 'FG%',
+      'tooltip': 'Field goal percentage',
       'away': awayMomentumStats.field_goal_percentage + '%',
       'home': homeMomentumStats.field_goal_percentage + '%',
       'awayCompareValue': awayMomentumStats.field_goal_percentage,
@@ -193,7 +200,8 @@ const Betting = (props) => {
     },
     {
       'name': '2P',
-      'title': '2 point field goals per game',
+      'title': '2P',
+      'tooltip': '2 point field goals per game',
       'away': awayMomentumStats.two_point_field_goal,
       'home': homeMomentumStats.two_point_field_goal,
       'awayCompareValue': awayMomentumStats.two_point_field_goal,
@@ -203,7 +211,8 @@ const Betting = (props) => {
     },
     {
       'name': '2PA',
-      'title': '2 point field goal attempts per game',
+      'title': '2PA',
+      'tooltip': '2 point field goal attempts per game',
       'away': awayMomentumStats.two_point_field_goal_attempts,
       'home': homeMomentumStats.two_point_field_goal_attempts,
       'awayCompareValue': awayMomentumStats.two_point_field_goal_attempts,
@@ -213,7 +222,8 @@ const Betting = (props) => {
     },
     {
       'name': '2P%',
-      'title': '2 point field goal percentage',
+      'title': '2P%',
+      'tooltip': '2 point field goal percentage',
       'away': awayMomentumStats.two_point_field_goal_percentage + '%',
       'home': homeMomentumStats.two_point_field_goal_percentage + '%',
       'awayCompareValue': awayMomentumStats.two_point_field_goal_percentage,
@@ -223,7 +233,8 @@ const Betting = (props) => {
     },
     {
       'name': '3P',
-      'title': '3 point field goals per game',
+      'title': '3P',
+      'tooltip': '3 point field goals per game',
       'away': awayMomentumStats.three_point_field_goal,
       'home': homeMomentumStats.three_point_field_goal,
       'awayCompareValue': awayMomentumStats.three_point_field_goal,
@@ -233,7 +244,8 @@ const Betting = (props) => {
     },
     {
       'name': '3PA',
-      'title': '3 point field goal attempts per game',
+      'title': '3PA',
+      'tooltip': '3 point field goal attempts per game',
       'away': awayMomentumStats.three_point_field_goal_attempts,
       'home': homeMomentumStats.three_point_field_goal_attempts,
       'awayCompareValue': awayMomentumStats.three_point_field_goal_attempts,
@@ -243,7 +255,8 @@ const Betting = (props) => {
     },
     {
       'name': '3P%',
-      'title': '3 point field goal percentage',
+      'title': '3P%',
+      'tooltip': '3 point field goal percentage',
       'away': awayMomentumStats.three_point_field_goal_percentage + '%',
       'home': homeMomentumStats.three_point_field_goal_percentage + '%',
       'awayCompareValue': awayMomentumStats.three_point_field_goal_percentage,
@@ -253,7 +266,8 @@ const Betting = (props) => {
     },
     {
       'name': 'FT',
-      'title': 'Free throws per game',
+      'title': 'FT',
+      'tooltip': 'Free throws per game',
       'away': awayMomentumStats.free_throws,
       'home': homeMomentumStats.free_throws,
       'awayCompareValue': awayMomentumStats.free_throws,
@@ -263,7 +277,8 @@ const Betting = (props) => {
     },
     {
       'name': 'FTA',
-      'title': 'Free throw attempts per game',
+      'title': 'FTA',
+      'tooltip': 'Free throw attempts per game',
       'away': awayMomentumStats.free_throw_attempts,
       'home': homeMomentumStats.free_throw_attempts,
       'awayCompareValue': awayMomentumStats.free_throw_attempts,
@@ -273,7 +288,8 @@ const Betting = (props) => {
     },
     {
       'name': 'FT%',
-      'title': 'Free throw percentage',
+      'title': 'FT%',
+      'tooltip': 'Free throw percentage',
       'away': awayMomentumStats.free_throw_percentage + '%',
       'home': homeMomentumStats.free_throw_percentage + '%',
       'awayCompareValue': awayMomentumStats.free_throw_percentage,
@@ -286,7 +302,8 @@ const Betting = (props) => {
   const specialRows = [
     {
       'name': 'ORB',
-      'title': 'Offensive rebounds per game',
+      'title': 'ORB',
+      'tooltip': 'Offensive rebounds per game',
       'away': awayMomentumStats.offensive_rebounds,
       'home': homeMomentumStats.offensive_rebounds,
       'awayCompareValue': awayMomentumStats.offensive_rebounds,
@@ -296,7 +313,8 @@ const Betting = (props) => {
     },
     {
       'name': 'DRB',
-      'title': 'Defensive rebounds per game',
+      'title': 'DRB',
+      'tooltip': 'Defensive rebounds per game',
       'away': awayMomentumStats.defensive_rebounds,
       'home': homeMomentumStats.defensive_rebounds,
       'awayCompareValue': awayMomentumStats.defensive_rebounds,
@@ -306,7 +324,8 @@ const Betting = (props) => {
     },
     {
       'name': 'AST',
-      'title': 'Assists per game',
+      'title': 'AST',
+      'tooltip': 'Assists per game',
       'away': awayMomentumStats.assists,
       'home': homeMomentumStats.assists,
       'awayCompareValue': awayMomentumStats.assists,
@@ -316,7 +335,8 @@ const Betting = (props) => {
     },
     {
       'name': 'STL',
-      'title': 'Steals per game',
+      'title': 'STL',
+      'tooltip': 'Steals per game',
       'away': awayMomentumStats.steals,
       'home': homeMomentumStats.steals,
       'awayCompareValue': awayMomentumStats.steals,
@@ -326,7 +346,8 @@ const Betting = (props) => {
     },
     {
       'name': 'BLK',
-      'title': 'Blocks per game',
+      'title': 'BLK',
+      'tooltip': 'Blocks per game',
       'away': awayMomentumStats.blocks,
       'home': homeMomentumStats.blocks,
       'awayCompareValue': awayMomentumStats.blocks,
@@ -336,7 +357,8 @@ const Betting = (props) => {
     },
     {
       'name': 'TOV',
-      'title': 'Turnovers per game',
+      'title': 'TOV',
+      'tooltip': 'Turnovers per game',
       'away': awayMomentumStats.turnovers,
       'home': homeMomentumStats.turnovers,
       'awayCompareValue': awayMomentumStats.turnovers,
@@ -346,7 +368,8 @@ const Betting = (props) => {
     },
     {
       'name': 'PF',
-      'title': 'Turnovers per game',
+      'title': 'PF',
+      'tooltip': 'Turnovers per game',
       'away': awayMomentumStats.fouls,
       'home': homeMomentumStats.fouls,
       'awayCompareValue': awayMomentumStats.fouls,
@@ -359,7 +382,8 @@ const Betting = (props) => {
   const opponentRows = [
     {
       'name': 'FG',
-      'title': 'Oppenent field goals per game',
+      'title': 'FG',
+      'tooltip': 'Oppenent field goals per game',
       'away': awayMomentumStats.opponent_field_goal,
       'home': homeMomentumStats.opponent_field_goal,
       'awayCompareValue': awayMomentumStats.opponent_field_goal,
@@ -369,7 +393,8 @@ const Betting = (props) => {
     },
     {
       'name': 'FGA',
-      'title': 'Oppenent field goal attempts per game',
+      'title': 'FGA',
+      'tooltip': 'Oppenent field goal attempts per game',
       'away': awayMomentumStats.opponent_field_goal_attempts,
       'home': homeMomentumStats.opponent_field_goal_attempts,
       'awayCompareValue': awayMomentumStats.opponent_field_goal_attempts,
@@ -379,7 +404,8 @@ const Betting = (props) => {
     },
     {
       'name': 'FG%',
-      'title': 'Oppenent field goal percentage',
+      'title': 'FG%',
+      'tooltip': 'Oppenent field goal percentage',
       'away': awayMomentumStats.opponent_field_goal_percentage + '%',
       'home': homeMomentumStats.opponent_field_goal_percentage + '%',
       'awayCompareValue': awayMomentumStats.opponent_field_goal_percentage,
@@ -389,7 +415,8 @@ const Betting = (props) => {
     },
     {
       'name': 'ORB',
-      'title': 'Oppenent Offensive rebounds per game',
+      'title': 'ORB',
+      'tooltip': 'Oppenent Offensive rebounds per game',
       'away': awayMomentumStats.opponent_offensive_rebounds,
       'home': homeMomentumStats.opponent_offensive_rebounds,
       'awayCompareValue': awayMomentumStats.opponent_offensive_rebounds,
@@ -399,7 +426,8 @@ const Betting = (props) => {
     },
     {
       'name': 'DRB',
-      'title': 'Oppenent Defensive rebounds per game',
+      'title': 'DRB',
+      'tooltip': 'Oppenent Defensive rebounds per game',
       'away': awayMomentumStats.opponent_defensive_rebounds,
       'home': homeMomentumStats.opponent_defensive_rebounds,
       'awayCompareValue': awayMomentumStats.opponent_defensive_rebounds,
@@ -409,7 +437,8 @@ const Betting = (props) => {
     },
     {
       'name': 'AST',
-      'title': 'Oppenent Assists per game',
+      'title': 'AST',
+      'tooltip': 'Oppenent Assists per game',
       'away': awayMomentumStats.opponent_assists,
       'home': homeMomentumStats.opponent_assists,
       'awayCompareValue': awayMomentumStats.opponent_assists,
@@ -419,7 +448,8 @@ const Betting = (props) => {
     },
     {
       'name': 'STL',
-      'title': 'Oppenent Steals per game',
+      'title': 'STL',
+      'tooltip': 'Oppenent Steals per game',
       'away': awayMomentumStats.opponent_steals,
       'home': homeMomentumStats.opponent_steals,
       'awayCompareValue': awayMomentumStats.opponent_steals,
@@ -429,7 +459,8 @@ const Betting = (props) => {
     },
     {
       'name': 'BLK',
-      'title': 'Oppenent Blocks per game',
+      'title': 'BLK',
+      'tooltip': 'Oppenent Blocks per game',
       'away': awayMomentumStats.opponent_blocks,
       'home': homeMomentumStats.opponent_blocks,
       'awayCompareValue': awayMomentumStats.opponent_blocks,
@@ -439,7 +470,8 @@ const Betting = (props) => {
     },
     {
       'name': 'TOV',
-      'title': 'Oppenent Turnovers per game',
+      'title': 'TOV',
+      'tooltip': 'Oppenent Turnovers per game',
       'away': awayMomentumStats.opponent_turnovers,
       'home': homeMomentumStats.opponent_turnovers,
       'awayCompareValue': awayMomentumStats.opponent_turnovers,
@@ -449,7 +481,8 @@ const Betting = (props) => {
     },
     {
       'name': 'PF',
-      'title': 'Oppenent Turnovers per game',
+      'title': 'PF',
+      'tooltip': 'Oppenent Turnovers per game',
       'away': awayMomentumStats.opponent_fouls,
       'home': homeMomentumStats.opponent_fouls,
       'awayCompareValue': awayMomentumStats.opponent_fouls,
@@ -481,89 +514,91 @@ const Betting = (props) => {
 
 
   return (
-    <div style = {{'padding': 20}}>
-      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
+    <div>
+      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap', 'position': 'sticky', 'top': 100, 'backgroundColor': theme.palette.background.default, 'padding': '20px'}}>
         <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
         <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
       </div>
-      {
-        momentumData === null ?
-        <Paper elevation = {3} style = {{'padding': 10}}>
-          <div>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-          </div>
-        </Paper>
-        : ''
-      }
-      {
-        momentumData !== null ?
-        <div>
-          <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h6'>Last 5 game stat comparison</Typography>
-          <Paper elevation = {3} style = {{'padding': 10, 'marginBottom': 10}}>
-            <div style = {flexContainerStyle}>
-              <table style = {{'flexGrow': '1'}}>
-                {
-                  sortedAwayGames.map((cbb_game) => {
-                    const CBB_ = new HelperCBB({
-                      'cbb_game': cbb_game,
-                    });
-
-                    const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === game.away_team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === game.away_team_id);
-
-                    return (<tr>
-                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
-                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{CBB_.getTeamName('away')} @ {CBB_.getTeamName('home')}</Typography></td>
-                      <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
-                    </tr>);
-                  })
-                }
-              </table>
-              <div style = {{'margin': '10px 60px'}}></div>
-              <table style = {{'flexGrow': '1'}}>
-                {
-                  sortedHomeGames.map((cbb_game) => {
-                    const CBB_ = new HelperCBB({
-                      'cbb_game': cbb_game,
-                    });
-
-                    const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === game.home_team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === game.home_team_id);
-
-                    return (<tr>
-                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
-                      <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{CBB_.getTeamName('away')} @ {CBB_.getTeamName('home')}</Typography></td>
-                      <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
-                    </tr>);
-                  })
-                }
-              </table>
+      <div style = {{'padding': '0px 20px 20px 20px'}}>
+        {
+          momentumData === null ?
+          <Paper elevation = {3} style = {{'padding': 10}}>
+            <div>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography variant = 'h5'><Skeleton /></Typography>
             </div>
-            <div style = {{'display': 'flex', 'flexFlow': 'row wrap', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
-              <Typography variant = 'caption'>{CBB.getTeamName('away')} offense is trending {awayMomentumStats.offensive_rating > awayStats.offensive_rating ? 'up' : 'down'}, Defense is trending {awayMomentumStats.defensive_rating < awayStats.defensive_rating ? 'up' : 'down'}.</Typography>
-              <Typography variant = 'caption'>{CBB.getTeamName('home')} offense is trending {homeMomentumStats.offensive_rating > homeStats.offensive_rating ? 'up' : 'down'}. Defense is trending {homeMomentumStats.defensive_rating < homeStats.defensive_rating ? 'up' : 'down'}.</Typography>
-            </div>
-            {//<Typography style = {{'margin': '10px 0px'}} variant = 'body2'>Below shows the averages of the last 5 games. Next to each statisic shows the team's season average.</Typography>
-            }
           </Paper>
-          <CompareStatistic paper = {true} rows = {overviewRows} />
+          : ''
+        }
+        {
+          momentumData !== null ?
+          <div>
+            <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h6'>Last 5 game stat comparison</Typography>
+            <Paper elevation = {3} style = {{'padding': 10, 'marginBottom': 10}}>
+              <div style = {flexContainerStyle}>
+                <table style = {{'flexGrow': '1'}}>
+                  {
+                    sortedAwayGames.map((cbb_game) => {
+                      const CBB_ = new HelperCBB({
+                        'cbb_game': cbb_game,
+                      });
 
-          <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>
-          <CompareStatistic paper = {true} rows = {marginRows} />
+                      const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === game.away_team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === game.away_team_id);
 
-          <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
-          <CompareStatistic paper = {true} rows = {offenseRows} />
+                      return (<tr>
+                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
+                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game.away_team_id === game.away_team_id ? '@ ' + CBB_.getTeamName('home') : 'vs ' +CBB_.getTeamName('away')}</Typography></td>
+                        <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
+                      </tr>);
+                    })
+                  }
+                </table>
+                <div style = {{'margin': '10px 60px'}}></div>
+                <table style = {{'flexGrow': '1'}}>
+                  {
+                    sortedHomeGames.map((cbb_game) => {
+                      const CBB_ = new HelperCBB({
+                        'cbb_game': cbb_game,
+                      });
 
-          <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
-          <CompareStatistic paper = {true} rows = {specialRows} />
+                      const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === game.home_team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === game.home_team_id);
 
-          <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
-          <CompareStatistic paper = {true} rows = {opponentRows} />
-        </div>
-        : ''
-      }
+                      return (<tr>
+                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
+                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game.home_team_id === game.home_team_id ? '@ ' + CBB_.getTeamName('away') : 'vs ' +CBB_.getTeamName('home')}</Typography></td>
+                        <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
+                      </tr>);
+                    })
+                  }
+                </table>
+              </div>
+              <div style = {{'display': 'flex', 'flexFlow': 'row wrap', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
+                <Typography variant = 'caption'>{CBB.getTeamName('away')} offense is trending {awayMomentumStats.offensive_rating > awayStats.offensive_rating ? 'up' : 'down'}, Defense is trending {awayMomentumStats.defensive_rating < awayStats.defensive_rating ? 'up' : 'down'}.</Typography>
+                <Typography variant = 'caption'>{CBB.getTeamName('home')} offense is trending {homeMomentumStats.offensive_rating > homeStats.offensive_rating ? 'up' : 'down'}. Defense is trending {homeMomentumStats.defensive_rating < homeStats.defensive_rating ? 'up' : 'down'}.</Typography>
+              </div>
+              {//<Typography style = {{'margin': '10px 0px'}} variant = 'body2'>Below shows the averages of the last 5 games. Next to each statisic shows the team's season average.</Typography>
+              }
+            </Paper>
+            <CompareStatistic paper = {true} rows = {overviewRows} />
+
+            <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>
+            <CompareStatistic paper = {true} rows = {marginRows} />
+
+            <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
+            <CompareStatistic paper = {true} rows = {offenseRows} />
+
+            <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
+            <CompareStatistic paper = {true} rows = {specialRows} />
+
+            <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
+            <CompareStatistic paper = {true} rows = {opponentRows} />
+          </div>
+          : ''
+        }
+      </div>
     </div>
   );
 }

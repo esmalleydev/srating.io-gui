@@ -186,9 +186,9 @@ const Trends = (props) => {
 
     if (sorted_matchups.length > 5) {
       if (lastThree_home_wins >= lastThree_away_wins) {
-        summaryPRContainers.push(<Typography variant = 'body2'>{CBB.getTeamName('home')} has won {lastThree_home_wins} of last 3 by an average of {(home_points / lastThree_home_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography variant = 'body2'>{CBB.getTeamName('home')} has won {lastThree_home_wins} of last 3 by an average of {(lastThree_home_points / lastThree_home_wins).toFixed(2)} pts.</Typography>);
       } else {
-        summaryPRContainers.push(<Typography variant = 'body2'>{CBB.getTeamName('away')} has won {lastThree_away_wins} of last 3 by an average of {(away_points / lastThree_away_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography variant = 'body2'>{CBB.getTeamName('away')} has won {lastThree_away_wins} of last 3 by an average of {(lastThree_away_points / lastThree_away_wins).toFixed(2)} pts.</Typography>);
       }
     }
 

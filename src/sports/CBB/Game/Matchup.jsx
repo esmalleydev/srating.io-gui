@@ -31,6 +31,7 @@ const Matchup = (props) => {
   const baseRows = [
     {
       'name': 'Win %',
+      'title': 'Predicted win %',
       'away': (game.away_team_rating * 100).toFixed(0) + '%',
       'home': (game.home_team_rating * 100).toFixed(0) + '%',
       'awayCompareValue': game.away_team_rating,
@@ -43,6 +44,7 @@ const Matchup = (props) => {
   const overviewRows = [
     {
       'name': 'Record',
+      'title': 'Record',
       'away': awayStats.wins + '-' + awayStats.losses,
       'home': homeStats.wins + '-' + homeStats.losses,
       'awayCompareValue': awayStats.wins,
@@ -52,6 +54,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'Conf',
+      'title': 'Conference record',
       'away': awayStats.confwins + '-' + awayStats.conflosses,
       'home': homeStats.confwins + '-' + homeStats.conflosses,
       'awayCompareValue': awayStats.confwins,
@@ -61,6 +64,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'Streak',
+      'title': 'Streak',
       'away': (awayStats.streak < 0 ? 'L' : 'W') + Math.abs(awayStats.streak),
       'home': (homeStats.streak < 0 ? 'L' : 'W') + Math.abs(homeStats.streak),
       'awayCompareValue': awayStats.streak,
@@ -130,6 +134,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'PTS Off.',
+      'title': 'Avg points scored',
       'away': awayStats.points,
       'home': homeStats.points,
       'awayCompareValue': awayStats.points,
@@ -141,6 +146,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'PTS Def.',
+      'title': 'Avg points allowed',
       'away': awayStats.opponent_points,
       'home': homeStats.opponent_points,
       'awayCompareValue': awayStats.opponent_points,
@@ -155,7 +161,7 @@ const Matchup = (props) => {
   const marginRows = [
      {
       'name': 'Win MR',
-      'title': 'Win margin; Average points won by.',
+      'title': 'Avg. Win margin',
       'away': awayStats.win_margin,
       'home': homeStats.win_margin,
       'awayCompareValue': awayStats.win_margin,
@@ -165,7 +171,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'Loss MR',
-      'title': 'Loss margin; Average points lost by.',
+      'title': 'Avg. Loss margin',
       'away': awayStats.loss_margin,
       'home': homeStats.loss_margin,
       'awayCompareValue': awayStats.loss_margin,
@@ -175,7 +181,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'Conf. W MR',
-      'title': 'Conference win margin; Average points won by.',
+      'title': 'Avg. Conference win margin',
       'away': awayStats.confwin_margin,
       'home': homeStats.confwin_margin,
       'awayCompareValue': awayStats.confwin_margin,
@@ -185,7 +191,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'Conf. L MR',
-      'title': 'Conference loss margin; Average points lost by.',
+      'title': 'Avg. Conference loss margin',
       'away': awayStats.confloss_margin,
       'home': homeStats.confloss_margin,
       'awayCompareValue': awayStats.confloss_margin,
@@ -198,6 +204,7 @@ const Matchup = (props) => {
   const rankRows = [
     {
       'name': 'Rank',
+      'title': 'Composite Rank',
       'away': (awayTeam.ranking && awayTeam.ranking.composite_rank) || '-',
       'home': (homeTeam.ranking && homeTeam.ranking.composite_rank) || '-',
       'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.composite_rank) || Infinity,
@@ -206,7 +213,8 @@ const Matchup = (props) => {
       'showDifference': true,
     },
     {
-      'name': 'Elo',
+      'name': 'sRating',
+      'title': 'sRating',
       'away': awayStats.elo,
       'home': homeStats.elo,
       'awayCompareValue': awayStats.elo,
@@ -216,6 +224,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'AP',
+      'title': 'AP',
       'away': (awayTeam.ranking && awayTeam.ranking.ap_rank) || '-',
       'home': (homeTeam.ranking && homeTeam.ranking.ap_rank) || '-',
       'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.ap_rank) || Infinity,
@@ -225,6 +234,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'KP',
+      'title': 'Kenpom',
       'away': (awayTeam.ranking && awayTeam.ranking.kenpom_rank) || '-',
       'home': (homeTeam.ranking && homeTeam.ranking.kenpom_rank) || '-',
       'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.kenpom_rank) || Infinity,
@@ -234,6 +244,7 @@ const Matchup = (props) => {
     },
     {
       'name': 'SRS',
+      'title': 'SRS',
       'away': (awayTeam.ranking && awayTeam.ranking.srs_rank) || '-',
       'home': (homeTeam.ranking && homeTeam.ranking.srs_rank) || '-',
       'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.srs_rank) || Infinity,
@@ -246,7 +257,8 @@ const Matchup = (props) => {
   const offenseRows = [
     {
       'name': 'Pace',
-      'title': 'Possesions per game',
+      'title': 'Pace',
+      'tooltip': 'Possesions per game',
       'away': awayStats.possessions,
       'home': homeStats.possessions,
       'awayCompareValue': awayStats.possessions,
@@ -258,7 +270,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'FG',
-      'title': 'Field goals per game',
+      'title': 'FG',
+      'tooltip': 'Field goals per game',
       'away': awayStats.field_goal,
       'home': homeStats.field_goal,
       'awayCompareValue': awayStats.field_goal,
@@ -270,7 +283,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'FGA',
-      'title': 'Field goal attempts per game',
+      'title': 'FGA',
+      'tooltip': 'Field goal attempts per game',
       'away': awayStats.field_goal_attempts,
       'home': homeStats.field_goal_attempts,
       'awayCompareValue': awayStats.field_goal_attempts,
@@ -282,7 +296,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'FG%',
-      'title': 'Field goal percentage',
+      'title': 'FG%',
+      'tooltip': 'Field goal percentage',
       'away': awayStats.field_goal_percentage + '%',
       'home': homeStats.field_goal_percentage + '%',
       'awayCompareValue': awayStats.field_goal_percentage,
@@ -294,7 +309,8 @@ const Matchup = (props) => {
     },
     {
       'name': '2P',
-      'title': '2 point field goals per game',
+      'title': '2P',
+      'tooltip': '2 point field goals per game',
       'away': awayStats.two_point_field_goal,
       'home': homeStats.two_point_field_goal,
       'awayCompareValue': awayStats.two_point_field_goal,
@@ -306,7 +322,8 @@ const Matchup = (props) => {
     },
     {
       'name': '2PA',
-      'title': '2 point field goal attempts per game',
+      'title': '2PA',
+      'tooltip': '2 point field goal attempts per game',
       'away': awayStats.two_point_field_goal_attempts,
       'home': homeStats.two_point_field_goal_attempts,
       'awayCompareValue': awayStats.two_point_field_goal_attempts,
@@ -318,7 +335,8 @@ const Matchup = (props) => {
     },
     {
       'name': '2P%',
-      'title': '2 point field goal percentage',
+      'title': '2P%',
+      'tooltip': '2 point field goal percentage',
       'away': awayStats.two_point_field_goal_percentage + '%',
       'home': homeStats.two_point_field_goal_percentage + '%',
       'awayCompareValue': awayStats.two_point_field_goal_percentage,
@@ -330,7 +348,8 @@ const Matchup = (props) => {
     },
     {
       'name': '3P',
-      'title': '3 point field goals per game',
+      'title': '3P',
+      'tooltip': '3 point field goals per game',
       'away': awayStats.three_point_field_goal,
       'home': homeStats.three_point_field_goal,
       'awayCompareValue': awayStats.three_point_field_goal,
@@ -342,7 +361,8 @@ const Matchup = (props) => {
     },
     {
       'name': '3PA',
-      'title': '3 point field goal attempts per game',
+      'title': '3PA',
+      'tooltip': '3 point field goal attempts per game',
       'away': awayStats.three_point_field_goal_attempts,
       'home': homeStats.three_point_field_goal_attempts,
       'awayCompareValue': awayStats.three_point_field_goal_attempts,
@@ -354,7 +374,8 @@ const Matchup = (props) => {
     },
     {
       'name': '3P%',
-      'title': '3 point field goal percentage',
+      'title': '3P%',
+      'tooltip': '3 point field goal percentage',
       'away': awayStats.three_point_field_goal_percentage + '%',
       'home': homeStats.three_point_field_goal_percentage + '%',
       'awayCompareValue': awayStats.three_point_field_goal_percentage,
@@ -366,7 +387,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'FT',
-      'title': 'Free throws per game',
+      'title': 'FT',
+      'tooltip': 'Free throws per game',
       'away': awayStats.free_throws,
       'home': homeStats.free_throws,
       'awayCompareValue': awayStats.free_throws,
@@ -378,7 +400,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'FTA',
-      'title': 'Free throw attempts per game',
+      'title': 'FTA',
+      'tooltip': 'Free throw attempts per game',
       'away': awayStats.free_throw_attempts,
       'home': homeStats.free_throw_attempts,
       'awayCompareValue': awayStats.free_throw_attempts,
@@ -390,7 +413,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'FT%',
-      'title': 'Free throw percentage',
+      'title': 'FT%',
+      'tooltip': 'Free throw percentage',
       'away': awayStats.free_throw_percentage + '%',
       'home': homeStats.free_throw_percentage + '%',
       'awayCompareValue': awayStats.free_throw_percentage,
@@ -405,7 +429,8 @@ const Matchup = (props) => {
   const specialRows = [
     {
       'name': 'ORB',
-      'title': 'Offensive rebounds per game',
+      'title': 'ORB',
+      'tooltip': 'Offensive rebounds',
       'away': awayStats.offensive_rebounds,
       'home': homeStats.offensive_rebounds,
       'awayCompareValue': awayStats.offensive_rebounds,
@@ -417,7 +442,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'DRB',
-      'title': 'Defensive rebounds per game',
+      'title': 'DRB',
+      'tooltip': 'Defensive rebounds',
       'away': awayStats.defensive_rebounds,
       'home': homeStats.defensive_rebounds,
       'awayCompareValue': awayStats.defensive_rebounds,
@@ -429,7 +455,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'AST',
-      'title': 'Assists per game',
+      'title': 'AST',
+      'tooltip': 'Assists',
       'away': awayStats.assists,
       'home': homeStats.assists,
       'awayCompareValue': awayStats.assists,
@@ -441,7 +468,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'STL',
-      'title': 'Steals per game',
+      'title': 'STL',
+      'tooltip': 'Steals',
       'away': awayStats.steals,
       'home': homeStats.steals,
       'awayCompareValue': awayStats.steals,
@@ -453,7 +481,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'BLK',
-      'title': 'Blocks per game',
+      'title': 'BLK',
+      'tooltip': 'Blocks',
       'away': awayStats.blocks,
       'home': homeStats.blocks,
       'awayCompareValue': awayStats.blocks,
@@ -465,7 +494,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'TOV',
-      'title': 'Turnovers per game',
+      'title': 'TOV',
+      'tooltip': 'Turnovers',
       'away': awayStats.turnovers,
       'home': homeStats.turnovers,
       'awayCompareValue': awayStats.turnovers,
@@ -477,7 +507,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'PF',
-      'title': 'Fouls per game',
+      'title': 'PF',
+      'tooltip': 'Fouls',
       'away': awayStats.fouls,
       'home': homeStats.fouls,
       'awayCompareValue': awayStats.fouls,
@@ -522,7 +553,8 @@ const Matchup = (props) => {
   const opponentRows = [
     {
       'name': 'FG',
-      'title': 'Oppenent field goals per game',
+      'title': 'FG',
+      'tooltip': 'Oppenent field goals per game',
       'away': awayStats.opponent_field_goal,
       'home': homeStats.opponent_field_goal,
       'awayCompareValue': awayStats.opponent_field_goal,
@@ -534,7 +566,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'FGA',
-      'title': 'Oppenent field goal attempts per game',
+      'title': 'FGA',
+      'tooltip': 'Oppenent field goal attempts per game',
       'away': awayStats.opponent_field_goal_attempts,
       'home': homeStats.opponent_field_goal_attempts,
       'awayCompareValue': awayStats.opponent_field_goal_attempts,
@@ -546,7 +579,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'FG%',
-      'title': 'Oppenent field goal percentage',
+      'title': 'FG%',
+      'tooltip': 'Oppenent field goal percentage',
       'away': awayStats.opponent_field_goal_percentage + '%',
       'home': homeStats.opponent_field_goal_percentage + '%',
       'awayCompareValue': awayStats.opponent_field_goal_percentage,
@@ -558,7 +592,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'ORB',
-      'title': 'Oppenent Offensive rebounds per game',
+      'title': 'ORB',
+      'tooltip': 'Oppenent Offensive rebounds per game',
       'away': awayStats.opponent_offensive_rebounds,
       'home': homeStats.opponent_offensive_rebounds,
       'awayCompareValue': awayStats.opponent_offensive_rebounds,
@@ -570,7 +605,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'DRB',
-      'title': 'Oppenent Defensive rebounds per game',
+      'title': 'DRB',
+      'tooltip': 'Oppenent Defensive rebounds per game',
       'away': awayStats.opponent_defensive_rebounds,
       'home': homeStats.opponent_defensive_rebounds,
       'awayCompareValue': awayStats.opponent_defensive_rebounds,
@@ -582,7 +618,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'AST',
-      'title': 'Oppenent Assists per game',
+      'title': 'AST',
+      'tooltip': 'Oppenent Assists per game',
       'away': awayStats.opponent_assists,
       'home': homeStats.opponent_assists,
       'awayCompareValue': awayStats.opponent_assists,
@@ -594,7 +631,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'STL',
-      'title': 'Oppenent Steals per game',
+      'title': 'STL',
+      'tooltip': 'Oppenent Steals per game',
       'away': awayStats.opponent_steals,
       'home': homeStats.opponent_steals,
       'awayCompareValue': awayStats.opponent_steals,
@@ -606,7 +644,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'BLK',
-      'title': 'Oppenent Blocks per game',
+      'title': 'BLK',
+      'tooltip': 'Oppenent Blocks per game',
       'away': awayStats.opponent_blocks,
       'home': homeStats.opponent_blocks,
       'awayCompareValue': awayStats.opponent_blocks,
@@ -618,7 +657,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'TOV',
-      'title': 'Oppenent Turnovers per game',
+      'title': 'TOV',
+      'tooltip': 'Oppenent Turnovers per game',
       'away': awayStats.opponent_turnovers,
       'home': homeStats.opponent_turnovers,
       'awayCompareValue': awayStats.opponent_turnovers,
@@ -630,7 +670,8 @@ const Matchup = (props) => {
     },
     {
       'name': 'PF',
-      'title': 'Oppenent Turnovers per game',
+      'title': 'PF',
+      'tooltip': 'Oppenent Turnovers per game',
       'away': awayStats.opponent_fouls,
       'home': homeStats.opponent_fouls,
       'awayCompareValue': awayStats.opponent_fouls,
@@ -644,31 +685,33 @@ const Matchup = (props) => {
 
 
   return (
-    <div style = {{'padding': 20}}>
-      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
+    <div>
+      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap', 'position': 'sticky', 'top': 100, 'backgroundColor': theme.palette.background.default, 'padding': '20px'}}>
         <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
         <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
       </div>
-      {(game.home_team_rating || game.away_team_rating) ? <CompareStatistic rows = {baseRows} /> : ''}
-      <CompareStatistic paper = {true} rows = {overviewRows} />
+      <div style = {{'padding': '0px 20px 20px 20px'}}>
+        {(game.home_team_rating || game.away_team_rating) ? <CompareStatistic rows = {baseRows} /> : ''}
+        <CompareStatistic paper = {true} rows = {overviewRows} />
 
-      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Efficiency</Typography>
-      <CompareStatistic paper = {true} rows = {efficiencyRows} />
+        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Efficiency</Typography>
+        <CompareStatistic paper = {true} rows = {efficiencyRows} />
 
-      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Rank</Typography>
-      <CompareStatistic paper = {true} rows = {rankRows} />
+        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Rank</Typography>
+        <CompareStatistic paper = {true} rows = {rankRows} />
 
-      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>
-      <CompareStatistic paper = {true} rows = {marginRows} />
+        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>
+        <CompareStatistic paper = {true} rows = {marginRows} />
 
-      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
-      <CompareStatistic paper = {true} rows = {offenseRows} />
+        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
+        <CompareStatistic paper = {true} rows = {offenseRows} />
 
-      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
-      <CompareStatistic paper = {true} rows = {specialRows} />
+        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
+        <CompareStatistic paper = {true} rows = {specialRows} />
 
-      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
-      <CompareStatistic paper = {true} rows = {opponentRows} />
+        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
+        <CompareStatistic paper = {true} rows = {opponentRows} />
+      </div>
     </div>
   );
 }

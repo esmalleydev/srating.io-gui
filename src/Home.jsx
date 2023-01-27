@@ -19,7 +19,7 @@ import rankingImage from './img/Home/ranking.png';
 import scoresImage from './img/Home/scores.png';
 import picksImage from './img/Home/picks.PNG';
 import teamImage from './img/Home/team.PNG';
-import gameImage from './img/Home/game.PNG';
+import gameImage from './img/Home/statcompare.PNG';
 
 const Home = (props) => {
 
@@ -59,7 +59,7 @@ const Home = (props) => {
       'heading': 'Game details',
       'image': gameImage,
       'contents': 'View a game\'s boxscore, match up, trends.',
-      'action': () => {navigate('/CBB/Games/67c452cc-8551-11ed-bf01-5296e1552828');}
+      'action': () => {navigate('/CBB/Games/81a20ec9-8551-11ed-bf01-5296e1552828');}
     },
   ];
 
