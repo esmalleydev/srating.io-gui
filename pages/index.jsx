@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
+import Image from 'next/image'
 import Button from '@mui/material/Button';
 import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
@@ -106,15 +107,16 @@ const Home = (props) => {
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      // 16:9
-                      // pt: '56.25%',
-                    }}
-                    image = {card.image}
-                    alt = {card.heading}
-                  />
+                  <CardMedia sx = {{'height': 175}} alt = {card.heading}>
+                    <div style={{ 'position': 'relative', 'width': '100%', 'height': '100%' }}>
+                    <Image
+                      alt = {card.heading}
+                      src={card.image}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                    </div>
+                  </CardMedia>
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {card.heading}

@@ -54,7 +54,6 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 
 
 const Ranking = (props) => {
-  console.log(props);
   const self = this;
 
   const router = useRouter();
@@ -136,6 +135,7 @@ const Ranking = (props) => {
       tooltip: 'Composite rank',
       'sticky': true,
       'disabled': true,
+      'sort': 'lower',
     },
     'name': {
       id: 'name',
@@ -150,54 +150,63 @@ const Ranking = (props) => {
       numeric: true,
       label: 'AP',
       tooltip: 'Associated Press rank',
+      'sort': 'lower',
     },
     'wins': {
       id: 'wins',
       numeric: false,
       label: 'W/L',
       tooltip: 'Win/Loss',
+      'sort': 'higher',
     },
     'conf_record': {
       id: 'conf_record',
       numeric: false,
       label: 'C W/L',
       tooltip: 'Conference Win/Loss',
+      'sort': 'higher',
     },
     'elo_rank': {
       id: 'elo_rank',
       numeric: true,
       label: 'ELO',
       tooltip: 'srating.io ELO rank',
+      'sort': 'lower',
     },
     'kenpom_rank': {
       id: 'kenpom_rank',
       numeric: true,
       label: 'KP',
       tooltip: 'kenpom.com rank',
+      'sort': 'lower',
     },
     'srs_rank': {
       id: 'srs_rank',
       numeric: true,
       label: 'SRS',
       tooltip: 'Simple rating system rank',
+      'sort': 'lower',
     },
     'net_rank': {
       id: 'net_rank',
       numeric: true,
       label: 'NET',
       tooltip: 'NET rank',
+      'sort': 'lower',
     },
     'elo': {
       id: 'elo',
       numeric: true,
       label: 'sRating',
       tooltip: 'srating.io ELO rating',
+      'sort': 'higher',
     },
     'coaches_rank': {
       id: 'coaches_rank',
       numeric: true,
       label: 'Coaches',
       tooltip: 'Coaches poll rank',
+      'sort': 'lower',
     },
     'conf': {
       id: 'conf',
@@ -210,306 +219,357 @@ const Ranking = (props) => {
       numeric: true,
       label: 'FG',
       tooltip: 'Average field goals per game',
+      'sort': 'higher',
     },
     'field_goal_attempts': {
       id: 'field_goal_attempts',
       numeric: true,
       label: 'FGA',
       tooltip: 'Average field goals attempts per game',
+      'sort': 'higher',
     },
     'field_goal_percentage': {
       id: 'field_goal_percentage',
       numeric: true,
       label: 'FG%',
       tooltip: 'Average field goals percentage per game',
+      'sort': 'higher',
     },
     'two_point_field_goal': {
       id: 'two_point_field_goal',
       numeric: true,
       label: '2FG',
       tooltip: 'Average two field goals per game',
+      'sort': 'higher',
     },
     'two_point_field_goal_attempts': {
       id: 'two_point_field_goal_attempts',
       numeric: true,
       label: '2FGA',
       tooltip: 'Average two field goals attempts per game',
+      'sort': 'higher',
     },
     'two_point_field_goal_percentage': {
       id: 'two_point_field_goal_percentage',
       numeric: true,
       label: '2FG%',
       tooltip: 'Average two field goals percentage per game',
+      'sort': 'higher',
     },
     'three_point_field_goal': {
       id: 'three_point_field_goal',
       numeric: true,
       label: '3FG',
       tooltip: 'Average three field goals per game',
+      'sort': 'higher',
     },
     'three_point_field_goal_attempts': {
       id: 'three_point_field_goal_attempts',
       numeric: true,
       label: '3FGA',
       tooltip: 'Average three field goals attempts per game',
+      'sort': 'higher',
     },
     'three_point_field_goal_percentage': {
       id: 'three_point_field_goal_percentage',
       numeric: true,
       label: '3FG%',
       tooltip: 'Average three field goals percentage per game',
+      'sort': 'higher',
     },
     'free_throws': {
       id: 'free_throws',
       numeric: true,
       label: 'FT',
       tooltip: 'Average free throws per game',
+      'sort': 'higher',
     },
     'free_throw_attempts': {
       id: 'free_throw_attempts',
       numeric: true,
       label: 'FTA',
       tooltip: 'Average free throws attempts per game',
+      'sort': 'higher',
     },
     'free_throw_percentage': {
       id: 'free_throw_percentage',
       numeric: true,
       label: 'FT%',
       tooltip: 'Average free throws percentage per game',
+      'sort': 'higher',
     },
     'offensive_rebounds': {
       id: 'offensive_rebounds',
       numeric: true,
       label: 'ORB',
       tooltip: 'Average offensive rebounds per game',
+      'sort': 'higher',
     },
     'defensive_rebounds': {
       id: 'defensive_rebounds',
       numeric: true,
       label: 'DRB',
       tooltip: 'Average defensive rebounds per game',
+      'sort': 'higher',
     },
     'total_rebounds': {
       id: 'total_rebounds',
       numeric: true,
       label: 'TRB',
       tooltip: 'Average total rebounds per game',
+      'sort': 'higher',
     },
     'assists': {
       id: 'assists',
       numeric: true,
       label: 'AST',
       tooltip: 'Average assists per game',
+      'sort': 'higher',
     },
     'steals': {
       id: 'steals',
       numeric: true,
       label: 'STL',
       tooltip: 'Average steals per game',
+      'sort': 'higher',
     },
     'blocks': {
       id: 'blocks',
       numeric: true,
       label: 'BLK',
       tooltip: 'Average blocks per game',
+      'sort': 'higher',
     },
     'turnovers': {
       id: 'turnovers',
       numeric: true,
       label: 'TOV',
       tooltip: 'Average turnovers per game',
+      'sort': 'lower',
     },
     'fouls': {
       id: 'fouls',
       numeric: true,
       label: 'PF',
       tooltip: 'Average fouls per game',
+      'sort': 'lower',
     },
     'points': {
       id: 'points',
       numeric: true,
       label: 'PTS',
       tooltip: 'Average points per game',
+      'sort': 'higher',
     },
     'possessions': {
       id: 'possessions',
       numeric: true,
       label: 'Pace',
       tooltip: 'Average possessions per game',
+      'sort': 'higher',
     },
     'offensive_rating': {
       id: 'offensive_rating',
       numeric: true,
       label: 'ORT',
       tooltip: 'Offensive rating ((PTS / Pace) * 100)',
+      'sort': 'higher',
     },
     'defensive_rating': {
       id: 'defensive_rating',
       numeric: true,
       label: 'DRT',
       tooltip: 'Defensive rating ((Opp. PTS / Opp. Pace) * 100)',
+      'sort': 'lower',
     },
     'efficiency_rating': {
       id: 'efficiency_rating',
       numeric: true,
       label: 'EM',
       tooltip: 'Efficiency margin (Offensive rating - Defensive rating)',
+      'sort': 'higher',
     },
     'adjusted_efficiency_rating': {
       id: 'adjusted_efficiency_rating',
       numeric: true,
       label: 'aEM',
       tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + SOS',
+      'sort': 'higher',
     },
     'opponent_offensive_rating': {
       id: 'opponent_offensive_rating',
       numeric: true,
       label: 'oORT',
       tooltip: 'Opponent average Offensive rating',
+      'sort': 'higher',
     },
     'opponent_defensive_rating': {
       id: 'opponent_defensive_rating',
       numeric: true,
       label: 'oDRT',
       tooltip: 'Opponent average Defensive rating ',
+      'sort': 'lower',
     },
     'opponent_efficiency_rating': {
       id: 'opponent_efficiency_rating',
       numeric: true,
       label: 'SOS',
       tooltip: 'Strength of schedule (Opponent Efficiency margin (oORT - oDRT))',
+      'sort': 'higher',
     },
     'opponent_field_goal': {
       id: 'opponent_field_goal',
       numeric: true,
       label: 'Opp. FG',
       tooltip: 'Opponent average field goals per game',
+      'sort': 'lower',
     },
     'opponent_field_goal_attempts': {
       id: 'opponent_field_goal_attempts',
       numeric: true,
       label: 'Opp. FGA',
       tooltip: 'Opponent average field goals attempts per game',
+      'sort': 'lower',
     },
     'opponent_field_goal_percentage': {
       id: 'opponent_field_goal_percentage',
       numeric: true,
       label: 'Opp. FG%',
       tooltip: 'Opponent average field goals percentage per game',
+      'sort': 'lower',
     },
     'opponent_two_point_field_goal': {
       id: 'opponent_two_point_field_goal',
       numeric: true,
       label: 'Opp. 2FG',
       tooltip: 'Opponent average two field goals per game',
+      'sort': 'lower',
     },
     'opponent_two_point_field_goal_attempts': {
       id: 'opponent_two_point_field_goal_attempts',
       numeric: true,
       label: 'Opp. 2FGA',
       tooltip: 'Opponent average two field goals attempts per game',
+      'sort': 'lower',
     },
     'opponent_two_point_field_goal_percentage': {
       id: 'opponent_two_point_field_goal_percentage',
       numeric: true,
       label: 'Opp. 2FG%',
       tooltip: 'Opponent average two field goals percentage per game',
+      'sort': 'lower',
     },
     'opponent_three_point_field_goal': {
       id: 'opponent_three_point_field_goal',
       numeric: true,
       label: 'Opp. 3FG',
       tooltip: 'Opponent average three field goals per game',
+      'sort': 'lower',
     },
     'opponent_three_point_field_goal_attempts': {
       id: 'opponent_three_point_field_goal_attempts',
       numeric: true,
       label: 'Opp. 3FGA',
       tooltip: 'Opponent average three field goals attempts per game',
+      'sort': 'lower',
     },
     'opponent_three_point_field_goal_percentage': {
       id: 'opponent_three_point_field_goal_percentage',
       numeric: true,
       label: 'Opp. 3FG%',
       tooltip: 'Opponent average three field goals percentage per game',
+      'sort': 'lower',
     },
     'opponent_free_throws': {
       id: 'opponent_free_throws',
       numeric: true,
       label: 'Opp. FT',
       tooltip: 'Opponent average free throws per game',
+      'sort': 'lower',
     },
     'opponent_free_throw_attempts': {
       id: 'opponent_free_throw_attempts',
       numeric: true,
       label: 'Opp. FTA',
       tooltip: 'Opponent average free throws attempts per game',
+      'sort': 'lower',
     },
     'opponent_free_throw_percentage': {
       id: 'opponent_free_throw_percentage',
       numeric: true,
       label: 'Opp. FT%',
       tooltip: 'Opponent average free throws percentage per game',
+      'sort': 'lower',
     },
     'opponent_offensive_rebounds': {
       id: 'opponent_offensive_rebounds',
       numeric: true,
       label: 'Opp. ORB',
       tooltip: 'Opponent average offensive rebounds per game',
+      'sort': 'lower',
     },
     'opponent_defensive_rebounds': {
       id: 'opponent_defensive_rebounds',
       numeric: true,
       label: 'Opp. DRB',
       tooltip: 'Opponent average defensive rebounds per game',
+      'sort': 'lower',
     },
     'opponent_total_rebounds': {
       id: 'opponent_total_rebounds',
       numeric: true,
       label: 'Opp. TRB',
       tooltip: 'Opponent average total rebounds per game',
+      'sort': 'lower',
     },
     'opponent_assists': {
       id: 'opponent_assists',
       numeric: true,
       label: 'Opp. AST',
       tooltip: 'Opponent average assists per game',
+      'sort': 'lower',
     },
     'opponent_steals': {
       id: 'opponent_steals',
       numeric: true,
       label: 'Opp. STL',
       tooltip: 'Opponent average steals per game',
+      'sort': 'lower',
     },
     'opponent_blocks': {
       id: 'opponent_blocks',
       numeric: true,
       label: 'Opp. BLK',
       tooltip: 'Opponent average blocks per game',
+      'sort': 'lower',
     },
     'opponent_turnovers': {
       id: 'opponent_turnovers',
       numeric: true,
       label: 'Opp. TOV',
       tooltip: 'Opponent average turnovers per game',
+      'sort': 'higher',
     },
     'opponent_fouls': {
       id: 'opponent_fouls',
       numeric: true,
       label: 'Opp. PF',
       tooltip: 'Opponent average fouls per game',
+      'sort': 'higher',
     },
     'opponent_points': {
       id: 'opponent_points',
       numeric: true,
       label: 'Opp. PTS',
       tooltip: 'Opponent average points per game',
+      'sort': 'lower',
     },
     'opponent_possessions': {
       id: 'opponent_possessions',
       numeric: true,
       label: 'Opp. Pace',
       tooltip: 'Opponent average possessions per game',
+      'sort': 'lower',
     },
   };
 
@@ -669,10 +729,10 @@ const Ranking = (props) => {
   };
 
   const descendingComparator = (a, b, orderBy) => {
-    if (a[orderBy] && !b[orderBy]) {
+    if ((orderBy in a) && b[orderBy] === null) {
       return 1;
     }
-    if (!a[orderBy] && b[orderBy]) {
+    if (a[orderBy] === null && (orderBy in b)) {
       return -1;
     }
 
@@ -683,11 +743,13 @@ const Ranking = (props) => {
       b_value = +b[orderBy].split('-')[0];
     }
 
+    const direction = (headCells[orderBy] && headCells[orderBy].sort) || 'lower';
+
     if (b_value < a_value) {
-      return -1;
+      return direction === 'higher' ? 1 : -1;
     }
     if (b_value > a_value) {
-      return 1;
+      return direction === 'higher' ? -1 : 1;
     }
     return 0;
   }
