@@ -62,6 +62,7 @@ const Ranking = (props) => {
   const { height, width } = useWindowDimensions();
 
   const teams = props.data;
+  const [firstRender, setFirstRender] = useState(true);
   const [conferences, setConferences] = useState([]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('composite_rank');
@@ -71,12 +72,13 @@ const Ranking = (props) => {
 
 
   useEffect(() => {
-    // setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
-    // setView(localStorage.getItem('CBB.RANKING.VIEW') ? localStorage.getItem('CBB.RANKING.VIEW') : 'composite');
-    // setCustomColumns(localStorage.getItem('CBB.RANKING.COLUMNS') ?  JSON.parse(localStorage.getItem('CBB.RANKING.COLUMNS')) : ['composite_rank', 'name']);
-  });
+    setFirstRender(false);
+    setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
+    setView(localStorage.getItem('CBB.RANKING.VIEW') ? localStorage.getItem('CBB.RANKING.VIEW') : 'composite');
+    setCustomColumns(localStorage.getItem('CBB.RANKING.COLUMNS') ?  JSON.parse(localStorage.getItem('CBB.RANKING.COLUMNS')) : ['composite_rank', 'name']);
+  }, []);
 
-  if (!teams || !Object.keys(teams).length) {
+  if (firstRender) {
     return (<div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div>);
   }
 

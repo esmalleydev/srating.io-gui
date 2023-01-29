@@ -33,8 +33,7 @@ const Team = (props) => {
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
 
-  // let sessionData = sessionStorage.getItem('CBB.TEAM.DATA') ? JSON.parse(sessionStorage.getItem('CBB.TEAM.DATA')) : {};
-  let sessionData = {};
+  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem('CBB.TEAM.DATA') ? JSON.parse(sessionStorage.getItem('CBB.TEAM.DATA')) : {};
 
   if (
     (
@@ -58,12 +57,12 @@ const Team = (props) => {
 
 
   useEffect(() => {
-    // sessionStorage.setItem('CBB.TEAM.DATA', JSON.stringify({
-    //   'request': request,
-    //   'team': team,
-    //   'spin': false,
-    //   'expire_session': new Date().getTime() + (6 * 60 * 1000), // 6 mins from now
-    // }));
+    sessionStorage.setItem('CBB.TEAM.DATA', JSON.stringify({
+      'request': request,
+      'team': team,
+      'spin': false,
+      'expire_session': new Date().getTime() + (6 * 60 * 1000), // 6 mins from now
+    }));
   });
 
 

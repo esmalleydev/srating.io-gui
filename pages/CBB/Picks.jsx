@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 
@@ -61,9 +61,8 @@ const Picks = (props) => {
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
 
-  // const defaultRankDisplay = localStorage.getItem('default_cbb_rank_display') ? JSON.parse(localStorage.getItem('default_cbb_rank_display')) : 'composite_rank';
-  const defaultRankDisplay = 'composite_rank';
 
+  const [firstRender, setFirstRender] = useState(true);
   const [request, setRequest] = useState(false);
   const [spin, setSpin] = useState(true);
   const [date, setDate] = useState();
@@ -73,12 +72,22 @@ const Picks = (props) => {
   const [orderBy, setOrderBy] = useState('start_timestamp');
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calAncor, setCalAncor] = useState(null);
-  const [rankDisplay, setRankDisplay] = useState(defaultRankDisplay);
+  const [rankDisplay, setRankDisplay] = useState('composite_rank');
   const [inputBet, setBet] = useState(10);
   const [inputOddsMin, setOddsMin] = useState(-1500);
   const [inputOddsMax, setOddsMax] = useState(-150);
   const [inputRoundRobin, setRoundRobin] = useState(0);
   const [inputPercentage, setPercentage] = useState(75);
+
+
+  useEffect(() => {
+    setFirstRender(false);
+    setRankDisplay(localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank');
+  }, []);
+
+  if (firstRender) {
+    return (<div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div>);
+  }
 
 
   const bet = inputBet ? +inputBet : 0;

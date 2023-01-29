@@ -40,15 +40,12 @@ let intervalRefresher = null;
 const Games = (props) => {
   const theme = useTheme();
 
-  // const defaultRankDisplay = localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank';
-  // const defaultConferences = localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : [];
-  const defaultRankDisplay = 'composite_rank';
-  const defaultConferences = [];
+  // console.log(props);
+
   const defaultDate = moment().format('YYYY-MM-DD');
 
   // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
-  // let sessionData = sessionStorage.getItem('CBB.GAMES.DATA') ? JSON.parse(sessionStorage.getItem('CBB.GAMES.DATA')) : {};
-  let sessionData = {};
+  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem('CBB.GAMES.DATA') ? JSON.parse(sessionStorage.getItem('CBB.GAMES.DATA')) : {};
 
   if (sessionData.expire_session && sessionData.expire_session < new Date().getTime()) {
     sessionData = {};
@@ -61,8 +58,8 @@ const Games = (props) => {
   const [date, setDate] = useState(sessionData.date || null);
   const [now, setNow] = useState(defaultDate);
   const [games, setGames] = useState(sessionData.games || {});
-  const [rankDisplay, setRankDisplay] = useState(defaultRankDisplay);
-  const [conferences, setConferences] = useState(defaultConferences);
+  const [rankDisplay, setRankDisplay] = useState('composite_rank');
+  const [conferences, setConferences] = useState([]);
   const [status, setStatus] = useState(sessionData.status || statusOptions.map(item => item.value));
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calAncor, setCalAncor] = useState(null);
@@ -73,6 +70,18 @@ const Games = (props) => {
   const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
 
   const { height, width } = useWindowDimensions();
+
+  const triggerSessionStorage = (optScrollTop) => {
+    sessionStorage.setItem('CBB.GAMES.DATA', JSON.stringify({
+      'request': request,
+      'games': games,
+      'date': date,
+      'status': status,
+      'spin': false,
+      'scrollTop': optScrollTop || scrollTop,
+      'expire_session': new Date().getTime() + (5 * 60 * 1000), // 5 mins from now
+    }));
+  };
 
   const getGames = (value) => {
     if (date !== value) {
@@ -94,34 +103,25 @@ const Games = (props) => {
     }).catch((err) => {
       // nothing for now
     });
-  }
-
-
-  if (!request) {
-    getGames(now);
-  }
-
-  const triggerSessionStorage = (optScrollTop) => {
-    sessionStorage.setItem('CBB.GAMES.DATA', JSON.stringify({
-      'request': request,
-      'games': games,
-      'date': date,
-      'status': status,
-      'spin': false,
-      'scrollTop': optScrollTop || scrollTop,
-      'expire_session': new Date().getTime() + (5 * 60 * 1000), // 5 mins from now
-    }));
   };
 
 
   useEffect(() => {
+    setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
+    setRankDisplay(localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank');
+    triggerSessionStorage();
+  }, []);
+
+  useEffect(() => {
     if (firstRender && props.scrollRef && props.scrollRef.current) {
-      props.scrollRef.current.scrollTop = scrollTop;
+      // todo something in nextjs is setting scrolltop to zero right after this, so trick it by putting this at the end of the execution :)
+      // https://github.com/vercel/next.js/issues/20951
+      setTimeout(function() {
+        props.scrollRef.current.scrollTop = scrollTop;
+      }, 1);
     }
 
     setFirstRender(false);
-    triggerSessionStorage();
-
     intervalRefresher = setInterval(function() {
       getGames(date);
     }, refreshRate * 1000);
@@ -130,6 +130,15 @@ const Games = (props) => {
       clearInterval(intervalRefresher);
     };
   });
+
+  if (firstRender) {
+    return (<div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div>);
+  }
+
+  if (!request) {
+    getGames(now);
+  }
+
 
   const getRangeDates = (start, end)  => {
     let dates = [];
