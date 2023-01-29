@@ -1,8 +1,14 @@
 # > srating.io
 
-This is the open-source GUI project for srating.io. This utilizes [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/)
+This is the open-source GUI project for srating.io. This project uses [nextjs](https://nextjs.org/), [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/)
 
 ## Set up
+
+After cloning project, in the project directory run:
+`npm install`
+
+To start developing run
+`npm run dev`
 
 If you would like to contribute, please contact me for an API key.
 
@@ -76,67 +82,27 @@ I am also investigating open-sourcing my server side api for visibility, althoug
 
 If you have Server side API suggestions or bugs, please [contact me](mailto:contact@srating.io).
 
-## Structure
+## Pages
 
-### component
+### [Homepage](pages/Homepage.md)
 
-General reusable components across the system.
+### [Ranking](pages/CBB/Ranking.md)
 
-### css
+### [Games](pages/CBB/Games.md)
 
-Where the css goes!
+### [Picks](pages/CBB/Picks.md)
 
-### helpers
+### [Game](pages/CBB/Games/Game.md)
 
-Helper functions to be used system wide. TODO examples
+### [Team](pages/CBB/Games/Team.md)
 
-### hooks
-
-Custom hooks. TODO examples
-
-### sports
-
-#### CBB
-
-All code related to College basketball
-
-##### Picks
-
-TODO
-
-##### Ranking
-
-TODO
-
-##### Games
-
-TODO
-
-##### Game
-
-TODO
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Other Scripts
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `npm run start`
+
+
 
 
 
