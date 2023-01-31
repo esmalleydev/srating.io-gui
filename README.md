@@ -10,7 +10,7 @@ After cloning project, in the project directory run:
 To start developing run:
 `npm run dev`
 
-If you would like to contribute, please contact me for an API key.
+If you would like to contribute, please [contact me](mailto:contact@srating.io) for an API key.
 
 In the project root you will need to create a `configuration.js` file. Use the provided `configuration_example.js` as a template. This points the gui api requests to the correct place.
 
