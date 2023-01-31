@@ -921,12 +921,16 @@ const Ranking = (props) => {
 }
 
 export async function getStaticProps() {
-  const teams = await api.Request({
+  let teams = {};
+
+  await api.Request({
     'class': 'team',
     'function': 'getCBBTeams',
     'arguments': {
       'season': 2023, // todo?
     }
+  }).then((teams) => {
+    teams = teams;
   });
 
   return {
