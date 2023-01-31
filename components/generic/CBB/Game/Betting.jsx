@@ -503,7 +503,7 @@ const Betting = (props) => {
   const flexContainerStyle = {
     'display': 'flex',
     'flexFlow': 'row wrap',
-    'justifyContent': 'space-between',
+    'justifyContent': 'space-evenly',
     'marginBottom': '10px',
     'flexWrap': 'nowrap',
   };
@@ -537,9 +537,12 @@ const Betting = (props) => {
           momentumData !== null ?
           <div>
             <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h6'>Last 5 game stat comparison</Typography>
-            <Paper elevation = {3} style = {{'padding': 10, 'marginBottom': 10}}>
               <div style = {flexContainerStyle}>
-                <table style = {{'flexGrow': '1'}}>
+              <Paper elevation = {3} style = {{'padding': 10, 'margin': '0px 5px 10px 5px'}}>
+                <table style = {{'width': '100%'}}>
+                  <tr>
+                    <th colspan='3'><Typography variant = 'caption'>{CBB.getTeamName('away')}</Typography></th>
+                  </tr>
                   {
                     sortedAwayGames.map((cbb_game) => {
                       const CBB_ = new HelperCBB({
@@ -556,8 +559,13 @@ const Betting = (props) => {
                     })
                   }
                 </table>
-                <div style = {{'margin': '10px 60px'}}></div>
-                <table style = {{'flexGrow': '1'}}>
+                <Typography variant = 'caption'>{CBB.getTeamName('away')} offense is trending {awayMomentumStats.offensive_rating > awayStats.offensive_rating ? 'up' : 'down'}, Defense is trending {awayMomentumStats.defensive_rating < awayStats.defensive_rating ? 'up' : 'down'}.</Typography>
+                </Paper>
+                <Paper elevation = {3} style = {{'padding': 10, 'margin': '0px 5px 10px 5px'}}>
+                <table style = {{'width': '100%'}}>
+                  <tr>
+                    <th colspan='3'><Typography variant = 'caption'>{CBB.getTeamName('home')}</Typography></th>
+                  </tr>
                   {
                     sortedHomeGames.map((cbb_game) => {
                       const CBB_ = new HelperCBB({
@@ -574,14 +582,11 @@ const Betting = (props) => {
                     })
                   }
                 </table>
-              </div>
-              <div style = {{'display': 'flex', 'flexFlow': 'row wrap', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap'}}>
-                <Typography variant = 'caption'>{CBB.getTeamName('away')} offense is trending {awayMomentumStats.offensive_rating > awayStats.offensive_rating ? 'up' : 'down'}, Defense is trending {awayMomentumStats.defensive_rating < awayStats.defensive_rating ? 'up' : 'down'}.</Typography>
                 <Typography variant = 'caption'>{CBB.getTeamName('home')} offense is trending {homeMomentumStats.offensive_rating > homeStats.offensive_rating ? 'up' : 'down'}. Defense is trending {homeMomentumStats.defensive_rating < homeStats.defensive_rating ? 'up' : 'down'}.</Typography>
+                </Paper>
               </div>
               {//<Typography style = {{'margin': '10px 0px'}} variant = 'body2'>Below shows the averages of the last 5 games. Next to each statisic shows the team's season average.</Typography>
               }
-            </Paper>
             <CompareStatistic paper = {true} rows = {overviewRows} />
 
             <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>

@@ -36,7 +36,6 @@ const Team = (props) => {
   const { height, width } = useWindowDimensions();
 
 
-  // const [spin, setSpin] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
 
 
@@ -65,9 +64,6 @@ const Team = (props) => {
 
   const team_ = new HelperTeam({'team': team});
 
-  // if (spin) {
-  //   return <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}><CircularProgress /></div>;
-  // }
 
   const handleTabClick = (value) => {
     setTabIndex(value);
@@ -111,7 +107,7 @@ const Team = (props) => {
 export async function getServerSideProps(context) {
   const team_id = context.params && context.params.team_id;
 
-  const seconds = 60 * 5; // cache fopr 5 mins
+  const seconds = 60 * 5; // cache for 5 mins
   context.res.setHeader(
     'Cache-Control',
     'public, s-maxage='+seconds+', stale-while-revalidate=59'

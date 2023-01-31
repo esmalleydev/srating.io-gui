@@ -152,10 +152,10 @@ const CompareStatistic = (props) => {
 
   const Container = (props_) => {
     if (paperContainer) {
-      return <Paper elevation = {3} style = {{'padding': 10}}>{props_.children}</Paper>;
+      return <Paper elevation = {3} style = {{'padding': 10, 'maxWidth': 600, 'margin': 'auto'}}>{props_.children}</Paper>;
     }
 
-    return <div>{props_.children}</div>;
+    return <div  style = {{'maxWidth': 600, 'margin': 'auto'}}>{props_.children}</div>;
   };
 
 

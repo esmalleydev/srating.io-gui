@@ -15,7 +15,7 @@ import Chip from '@mui/material/Chip';
 
 import HelperCBB from '../../../helpers/CBB';
 import Score from './Charts/Score';
-
+import CompareStatistic from '../../CompareStatistic';
 import OddsML from './Charts/OddsML';
 import OddsSpread from './Charts/OddsSpread';
 import OddsOverUnder from './Charts/OddsOverUnder';
@@ -24,6 +24,7 @@ const Boxscore = (props) => {
   const self = this;
 
   const theme = useTheme();
+  const [boxscoreCompare, setBoxscoreCompare] = useState('team');
   const [boxscoreSide, setBoxscoreSide] = useState('home');
   const [selectedIntervalChip, setSelectedIntervalChip] = useState('scoring');
 
@@ -118,6 +119,230 @@ const Boxscore = (props) => {
     },
   ];
 
+
+  const compareRows = [
+    {
+      'name': 'PTS',
+      'title': 'PTS',
+      'tooltip': 'Points',
+      'away': awayTotalBoxscore.points,
+      'home': homeTotalBoxscore.points,
+      'awayCompareValue': awayTotalBoxscore.points,
+      'homeCompareValue': homeTotalBoxscore.points,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'FG',
+      'title': 'FG',
+      'tooltip': 'Field goals per game',
+      'away': awayTotalBoxscore.field_goal,
+      'home': homeTotalBoxscore.field_goal,
+      'awayCompareValue': awayTotalBoxscore.field_goal,
+      'homeCompareValue': homeTotalBoxscore.field_goal,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'FGA',
+      'title': 'FGA',
+      'tooltip': 'Field goal attempts per game',
+      'away': awayTotalBoxscore.field_goal_attempts,
+      'home': homeTotalBoxscore.field_goal_attempts,
+      'awayCompareValue': awayTotalBoxscore.field_goal_attempts,
+      'homeCompareValue': homeTotalBoxscore.field_goal_attempts,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'FG%',
+      'title': 'FG%',
+      'tooltip': 'Field goal percentage',
+      'away': awayTotalBoxscore.field_goal_percentage + '%',
+      'home': homeTotalBoxscore.field_goal_percentage + '%',
+      'awayCompareValue': awayTotalBoxscore.field_goal_percentage,
+      'homeCompareValue': homeTotalBoxscore.field_goal_percentage,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': '2P',
+      'title': '2P',
+      'tooltip': '2 point field goals per game',
+      'away': awayTotalBoxscore.two_point_field_goal,
+      'home': homeTotalBoxscore.two_point_field_goal,
+      'awayCompareValue': awayTotalBoxscore.two_point_field_goal,
+      'homeCompareValue': homeTotalBoxscore.two_point_field_goal,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': '2PA',
+      'title': '2PA',
+      'tooltip': '2 point field goal attempts per game',
+      'away': awayTotalBoxscore.two_point_field_goal_attempts,
+      'home': homeTotalBoxscore.two_point_field_goal_attempts,
+      'awayCompareValue': awayTotalBoxscore.two_point_field_goal_attempts,
+      'homeCompareValue': homeTotalBoxscore.two_point_field_goal_attempts,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': '2P%',
+      'title': '2P%',
+      'tooltip': '2 point field goal percentage',
+      'away': awayTotalBoxscore.two_point_field_goal_percentage + '%',
+      'home': homeTotalBoxscore.two_point_field_goal_percentage + '%',
+      'awayCompareValue': awayTotalBoxscore.two_point_field_goal_percentage,
+      'homeCompareValue': homeTotalBoxscore.two_point_field_goal_percentage,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': '3P',
+      'title': '3P',
+      'tooltip': '3 point field goals per game',
+      'away': awayTotalBoxscore.three_point_field_goal,
+      'home': homeTotalBoxscore.three_point_field_goal,
+      'awayCompareValue': awayTotalBoxscore.three_point_field_goal,
+      'homeCompareValue': homeTotalBoxscore.three_point_field_goal,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': '3PA',
+      'title': '3PA',
+      'tooltip': '3 point field goal attempts per game',
+      'away': awayTotalBoxscore.three_point_field_goal_attempts,
+      'home': homeTotalBoxscore.three_point_field_goal_attempts,
+      'awayCompareValue': awayTotalBoxscore.three_point_field_goal_attempts,
+      'homeCompareValue': homeTotalBoxscore.three_point_field_goal_attempts,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': '3P%',
+      'title': '3P%',
+      'tooltip': '3 point field goal percentage',
+      'away': awayTotalBoxscore.three_point_field_goal_percentage + '%',
+      'home': homeTotalBoxscore.three_point_field_goal_percentage + '%',
+      'awayCompareValue': awayTotalBoxscore.three_point_field_goal_percentage,
+      'homeCompareValue': homeTotalBoxscore.three_point_field_goal_percentage,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'FT',
+      'title': 'FT',
+      'tooltip': 'Free throws per game',
+      'away': awayTotalBoxscore.free_throws,
+      'home': homeTotalBoxscore.free_throws,
+      'awayCompareValue': awayTotalBoxscore.free_throws,
+      'homeCompareValue': homeTotalBoxscore.free_throws,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'FTA',
+      'title': 'FTA',
+      'tooltip': 'Free throw attempts per game',
+      'away': awayTotalBoxscore.free_throw_attempts,
+      'home': homeTotalBoxscore.free_throw_attempts,
+      'awayCompareValue': awayTotalBoxscore.free_throw_attempts,
+      'homeCompareValue': homeTotalBoxscore.free_throw_attempts,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'FT%',
+      'title': 'FT%',
+      'tooltip': 'Free throw percentage',
+      'away': awayTotalBoxscore.free_throw_percentage + '%',
+      'home': homeTotalBoxscore.free_throw_percentage + '%',
+      'awayCompareValue': awayTotalBoxscore.free_throw_percentage,
+      'homeCompareValue': homeTotalBoxscore.free_throw_percentage,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'ORB',
+      'title': 'ORB',
+      'tooltip': 'Offensive rebounds',
+      'away': awayTotalBoxscore.offensive_rebounds,
+      'home': homeTotalBoxscore.offensive_rebounds,
+      'awayCompareValue': awayTotalBoxscore.offensive_rebounds,
+      'homeCompareValue': homeTotalBoxscore.offensive_rebounds,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'DRB',
+      'title': 'DRB',
+      'tooltip': 'Defensive rebounds',
+      'away': awayTotalBoxscore.defensive_rebounds,
+      'home': homeTotalBoxscore.defensive_rebounds,
+      'awayCompareValue': awayTotalBoxscore.defensive_rebounds,
+      'homeCompareValue': homeTotalBoxscore.defensive_rebounds,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'AST',
+      'title': 'AST',
+      'tooltip': 'Assists',
+      'away': awayTotalBoxscore.assists,
+      'home': homeTotalBoxscore.assists,
+      'awayCompareValue': awayTotalBoxscore.assists,
+      'homeCompareValue': homeTotalBoxscore.assists,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'STL',
+      'title': 'STL',
+      'tooltip': 'Steals',
+      'away': awayTotalBoxscore.steals,
+      'home': homeTotalBoxscore.steals,
+      'awayCompareValue': awayTotalBoxscore.steals,
+      'homeCompareValue': homeTotalBoxscore.steals,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'BLK',
+      'title': 'BLK',
+      'tooltip': 'Blocks',
+      'away': awayTotalBoxscore.blocks,
+      'home': homeTotalBoxscore.blocks,
+      'awayCompareValue': awayTotalBoxscore.blocks,
+      'homeCompareValue': homeTotalBoxscore.blocks,
+      'favored': 'higher',
+      'showDifference': true,
+    },
+    {
+      'name': 'TOV',
+      'title': 'TOV',
+      'tooltip': 'Turnovers',
+      'away': awayTotalBoxscore.turnovers,
+      'home': homeTotalBoxscore.turnovers,
+      'awayCompareValue': awayTotalBoxscore.turnovers,
+      'homeCompareValue': homeTotalBoxscore.turnovers,
+      'favored': 'lower',
+      'showDifference': true,
+    },
+    {
+      'name': 'PF',
+      'title': 'PF',
+      'tooltip': 'Fouls',
+      'away': awayTotalBoxscore.fouls,
+      'home': homeTotalBoxscore.fouls,
+      'awayCompareValue': awayTotalBoxscore.fouls,
+      'homeCompareValue': homeTotalBoxscore.fouls,
+      'favored': 'lower',
+      'showDifference': true,
+    },
+  ];
+
   const intervalCompare = [
     {
       'label': 'Scoring',
@@ -172,7 +397,9 @@ const Boxscore = (props) => {
         {intervalCompareChips}
         {intervalChart}
       </div>
-      <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Boxscore</Typography>
+      <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Boxscore compare</Typography>
+      <CompareStatistic paper = {true} rows = {compareRows} />
+      <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Player boxscore</Typography>
       <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
       <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
       <TableContainer component={Paper}>
@@ -190,27 +417,32 @@ const Boxscore = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {boxscore.map((row) => (
-              <TableRow
-                key={row.cbb_player_boxscore_id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell>{row.first_name} {row.last_name}</TableCell>
-                <TableCell>{row.minutes_played}</TableCell>
-                <TableCell>{row.points}</TableCell>
-                <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>
-                <TableCell>{row.two_point_field_goal}-{row.two_point_field_goal_attempts} {row.two_point_field_goal_percentage}%</TableCell>
-                <TableCell>{row.three_point_field_goal}-{row.three_point_field_goal_attempts} {row.three_point_field_goal_percentage}%</TableCell>
-                <TableCell>{row.free_throws}-{row.free_throw_attempts} {row.free_throw_percentage}%</TableCell>
-                <TableCell>{row.offensive_rebounds}</TableCell>
-                <TableCell>{row.defensive_rebounds}</TableCell>
-                <TableCell>{row.assists}</TableCell>
-                <TableCell>{row.steals}</TableCell>
-                <TableCell>{row.blocks}</TableCell>
-                <TableCell>{row.turnovers}</TableCell>
-                <TableCell>{row.fouls}</TableCell>
-              </TableRow>
-            ))}
+            {boxscore.map((row) => {
+              if (!row.minutes_played) {
+                return;
+              }
+              return (
+                <TableRow
+                  key={row.cbb_player_boxscore_id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell>{row.first_name} {row.last_name}</TableCell>
+                  <TableCell>{row.minutes_played}</TableCell>
+                  <TableCell>{row.points}</TableCell>
+                  <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>
+                  <TableCell>{row.two_point_field_goal}-{row.two_point_field_goal_attempts} {row.two_point_field_goal_percentage}%</TableCell>
+                  <TableCell>{row.three_point_field_goal}-{row.three_point_field_goal_attempts} {row.three_point_field_goal_percentage}%</TableCell>
+                  <TableCell>{row.free_throws}-{row.free_throw_attempts} {row.free_throw_percentage}%</TableCell>
+                  <TableCell>{row.offensive_rebounds}</TableCell>
+                  <TableCell>{row.defensive_rebounds}</TableCell>
+                  <TableCell>{row.assists}</TableCell>
+                  <TableCell>{row.steals}</TableCell>
+                  <TableCell>{row.blocks}</TableCell>
+                  <TableCell>{row.turnovers}</TableCell>
+                  <TableCell>{row.fouls}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TableRow>
