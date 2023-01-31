@@ -929,8 +929,10 @@ export async function getStaticProps() {
     'arguments': {
       'season': 2023, // todo?
     }
-  }).then((teams) => {
-    teams = teams;
+  }).then((response) => {
+    teams = response;
+  }).catch((e) => {
+    
   });
 
   return {
