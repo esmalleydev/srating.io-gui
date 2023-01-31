@@ -1,4 +1,10 @@
-const config = require('../configuration') || require('../configuration_example');
+// this is just for the github build to pass, since the configuration file is git ignored
+let config = {};
+try {
+	config = require('../configuration');
+} catch (e) {
+	
+}
 
 class Api {
 	constructor() {
