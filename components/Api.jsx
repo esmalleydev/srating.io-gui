@@ -1,4 +1,4 @@
-const config = require('../configuration');
+const config = require('../configuration') || require('../configuration_example');
 
 class Api {
 	constructor() {

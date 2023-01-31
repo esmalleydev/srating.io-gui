@@ -1,5 +1,6 @@
+![build](https://github.com/esmalleydev/srating.io-gui/actions/workflows/build.js.yml/badge.svg)
 # > srating.io
-![build](https://github.com/esmalleydev/srating.io-gui/actions/workflows/build.js.yaml/badge.svg)
+
 This is the open-source GUI project for srating.io. This project uses [nextjs](https://nextjs.org/), [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/)
 
 ## Set up
