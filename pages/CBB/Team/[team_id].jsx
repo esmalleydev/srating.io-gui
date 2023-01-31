@@ -30,57 +30,14 @@ const Team = (props) => {
   const router = useRouter();
   const team_id = router.query && router.query.team_id;
 
+  const team = props.team;
+
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
 
-  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem('CBB.TEAM.DATA') ? JSON.parse(sessionStorage.getItem('CBB.TEAM.DATA')) : {};
 
-  if (
-    (
-      sessionData.expire_session &&
-      sessionData.expire_session < new Date().getTime()
-    ) ||
-    (
-      sessionData &&
-      sessionData.team &&
-      sessionData.team.team_id != team_id
-    )
-  ) {
-    sessionData = {};
-  }
-
-
-  const [request, setRequest] = useState(sessionData.request || false);
-  const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : true);
-  const [team, setTeam] = useState(sessionData.team || {});
+  // const [spin, setSpin] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
-
-
-  useEffect(() => {
-    sessionStorage.setItem('CBB.TEAM.DATA', JSON.stringify({
-      'request': request,
-      'team': team,
-      'spin': false,
-      'expire_session': new Date().getTime() + (6 * 60 * 1000), // 6 mins from now
-    }));
-  });
-
-
-  if (!request) {
-    setRequest(true);
-    api.Request({
-      'class': 'team',
-      'function': 'getCBBTeam',
-      'arguments': {
-        'team_id': team_id,
-      }
-    }).then(team => {
-      setTeam(team);
-      setSpin(false);
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
 
 
   let marginTop = 64;
@@ -108,9 +65,9 @@ const Team = (props) => {
 
   const team_ = new HelperTeam({'team': team});
 
-  if (spin) {
-    return <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}><CircularProgress /></div>;
-  }
+  // if (spin) {
+  //   return <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}><CircularProgress /></div>;
+  // }
 
   const handleTabClick = (value) => {
     setTabIndex(value);
@@ -149,6 +106,34 @@ const Team = (props) => {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const team_id = context.params && context.params.team_id;
+
+  const seconds = 60 * 5; // cache fopr 5 mins
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage='+seconds+', stale-while-revalidate=59'
+  );
+
+  let team = null;
+
+  if (team_id) {
+    team = await api.Request({
+      'class': 'team',
+      'function': 'getCBBTeam',
+      'arguments': {
+        'team_id': team_id,
+      }
+    });
+  }
+
+  return {
+    'props': {
+      'team': team,
+    },
+  }
 }
 
 export default Team;
