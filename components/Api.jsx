@@ -3,7 +3,11 @@ let config = {};
 try {
 	config = require('../configuration');
 } catch (e) {
-	
+	config = {
+		'host': 'localhost',
+	  'port': 5000,
+	  'http': 'http',
+	};
 }
 
 class Api {
