@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 import Image from 'next/image'
 import Button from '@mui/material/Button';
@@ -67,6 +68,12 @@ const Home = (props) => {
 
   return (
     <div>
+      <Head>
+        <title>sRating | Aggregate college basketball ranking, scores, picks</title>
+        <meta name = 'description' content = 'View statistic ranking, live score, live odds, picks for college basketball' key = 'desc'/>
+        <meta property="og:title" content=">sRating.io college basketball rankings" />
+        <meta property="og:description" content="View statistic ranking, live score, live odds, picks for college basketball" />
+      </Head>
       <main>
         <Box
           sx={{

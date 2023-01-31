@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material/styles';
 
@@ -386,6 +387,12 @@ const Games = (props) => {
 
   return (
     <div style = {{'padding': '46px 20px 0px 20px'}}>
+      <Head>
+        <title>sRating | College basketball scores</title>
+        <meta name = 'description' content = 'Live college basketball scores and odds' key = 'desc'/>
+        <meta property="og:title" content=">sRating.io college basketball scores" />
+        <meta property="og:description" content="ive college basketball scores and odds" />
+      </Head>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={(spin === true)} // kinda dumb but for some reason spin can be undefined

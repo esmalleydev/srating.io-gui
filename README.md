@@ -7,12 +7,12 @@ This is the open-source GUI project for srating.io. This project uses [nextjs](h
 After cloning project, in the project directory run:
 `npm install`
 
-To start developing run
+To start developing run:
 `npm run dev`
 
 If you would like to contribute, please contact me for an API key.
 
-In the `src` folder you will need to create a `configuration.js` file. Use the provided `configuration_example.js` as a template. This points the gui api requests to the correct place.
+In the project root you will need to create a `configuration.js` file. Use the provided `configuration_example.js` as a template. This points the gui api requests to the correct place.
 
 ```
 module.exports = {
@@ -26,9 +26,23 @@ module.exports = {
 
 API keys are limited to 10,000 requests per month, if you need more requests, please [contact me](mailto:contact@srating.io).
 
+## Pages
+
+### [Homepage](pages/Homepage.md)
+
+### [Ranking](pages/CBB/Ranking.md)
+
+### [Games](pages/CBB/Games.md)
+
+### [Picks](pages/CBB/Picks.md)
+
+### [Game](pages/CBB/Games/Game.md)
+
+### [Team](pages/CBB/Games/Team.md)
+
 ## API requests
 
-The `src\Api.jsx` Api class has a wrapper to handle requests.
+The `components\Api.jsx` Api class has a wrapper to handle requests.
 
 Schema documentation coming soon!
 
@@ -81,20 +95,6 @@ api.Request({
 I am also investigating open-sourcing my server side api for visibility, although I'm not sure how useful it would be as I am not planning on giving database access currently!
 
 If you have Server side API suggestions or bugs, please [contact me](mailto:contact@srating.io).
-
-## Pages
-
-### [Homepage](pages/Homepage.md)
-
-### [Ranking](pages/CBB/Ranking.md)
-
-### [Games](pages/CBB/Games.md)
-
-### [Picks](pages/CBB/Picks.md)
-
-### [Game](pages/CBB/Games/Game.md)
-
-### [Team](pages/CBB/Games/Team.md)
 
 ## Other Scripts
 

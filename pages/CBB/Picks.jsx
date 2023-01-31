@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 
 import CircularProgress from '@mui/material/CircularProgress';
@@ -956,6 +957,12 @@ const Picks = (props) => {
 
   return (
     <div style = {{'padding': '56px 20px 0px 20px'}}>
+      <Head>
+        <title>sRating | College basketball betting picks</title>
+        <meta name = 'description' content = 'Best picks for each college basketball game based on statistics' key = 'desc'/>
+        <meta property="og:title" content=">sRating.io college basketball picks" />
+        <meta property="og:description" content="Best picks for each college basketball game based on statistics" />
+      </Head>
       <div>
         <AppBar position="fixed" style = {{'marginTop': marginTop, 'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}}>
           <Toolbar /*sx = {{'padding': 0}}*/ variant = 'dense'>

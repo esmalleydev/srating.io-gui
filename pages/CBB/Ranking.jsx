@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 
 import moment from 'moment';
@@ -844,6 +845,12 @@ const Ranking = (props) => {
 
   return (
     <div>
+      <Head>
+        <title>sRating | College basketball ranking</title>
+        <meta name = 'description' content = 'View statistic ranking for all 363 teams' key = 'desc'/>
+        <meta property="og:title" content=">sRating.io college basketball rankings" />
+        <meta property="og:description" content="View statistic ranking for all 363 teams" />
+      </Head>
       <div style = {{'padding': '20px 20px 0px 20px'}}>
         <Typography variant = 'h5'>College basketball rankings.</Typography>
         {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
