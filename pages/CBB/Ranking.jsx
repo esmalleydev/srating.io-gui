@@ -854,6 +854,7 @@ const Ranking = (props) => {
       <div style = {{'padding': '20px 20px 0px 20px'}}>
         <Typography variant = 'h5'>College basketball rankings.</Typography>
         {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
+        {props.generated ? <Typography color="text.secondary" variant = 'caption' style = {{'fontStyle': 'italic'}}>{moment(props.generated).format('YYYY-MM-DD h:m:s a')}</Typography> : ''}
         <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
           <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : ''} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
           <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : ''} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
@@ -932,12 +933,13 @@ export async function getStaticProps() {
   }).then((response) => {
     teams = response;
   }).catch((e) => {
-    
+
   });
 
   return {
     'props': {
       'data': teams,
+      'generated': new Date().getTime(),
     },
     'revalidate': 60 * 10, // 10 mins
   };
