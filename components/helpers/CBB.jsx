@@ -261,6 +261,55 @@ class CBB {
     return '-';
   };
 
+  won(side) {
+    const otherSide = (side === 'away' ? 'home' : 'away');
+    if (
+      this.isFinal() &&
+      this.cbb_game[side + '_score'] > this.cbb_game[otherSide + '_score']
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  coveredSpread(side) {
+    const otherSide = (side === 'away' ? 'home' : 'away');
+    const spread = this.getPreSpread(side);
+    if (
+      this.isFinal() &&
+      (this.cbb_game[side + '_score'] - this.cbb_game[otherSide + '_score']) > (spread * -1)
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  coveredOver() {
+    const over = this.getPreOver();
+    if (
+      this.isFinal() &&
+      (this.cbb_game.home_score + this.cbb_game.away_score) > over
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  coveredUnder() {
+    const under = this.getPreUnder();
+    if (
+      this.isFinal() &&
+      (this.cbb_game.home_score + this.cbb_game.away_score) < under
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   /**
    * Have the odds reversed since pre-game?
    * @param  {String} side home or away

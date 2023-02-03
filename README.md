@@ -2,11 +2,11 @@
 ![status](https://img.shields.io/uptimerobot/status/m793600490-481ed5a22e5d58de53fdb32a)
 ![uptime](https://img.shields.io/uptimerobot/ratio/7/m793600490-481ed5a22e5d58de53fdb32a)
 ![version](https://img.shields.io/github/package-json/v/esmalleydev/srating.io-gui)
-# > [srating.io](https://srating.io)
+# [>srating.io](https://srating.io)
 
-This is the open-source GUI project for srating.io. This project uses [nextjs](https://nextjs.org/), [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/).
+This is the open-source GUI project for [srating.io](https://srating.io). This project uses [nextjs](https://nextjs.org/), [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/).
 
-Prerequsuites: Nodejs, npm.
+Prerequisites: Nodejs, npm.
 
 ## Set up
 

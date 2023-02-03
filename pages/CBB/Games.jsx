@@ -61,6 +61,7 @@ const Games = (props) => {
   const [games, setGames] = useState(sessionData.games || {});
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
   const [conferences, setConferences] = useState([]);
+  const [pins, setPins] = useState(typeof window !== 'undefined' && sessionStorage.getItem('CBB.GAMES.PINS') ? JSON.parse(sessionStorage.getItem('CBB.GAMES.PINS')) : []);
   const [status, setStatus] = useState(sessionData.status || statusOptions.map(item => item.value));
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calAncor, setCalAncor] = useState(null);
@@ -150,7 +151,6 @@ const Games = (props) => {
     return dates;
   };
 
-
   const getTabDates = () => {
     return getRangeDates('2022-11-01', '2023-04-04');
   }
@@ -159,33 +159,12 @@ const Games = (props) => {
     return date || now;
   }
 
-  /*
-  const getYesterdayDate = () => {
-    const selectedDate = getSelectedDate();
-
-    let yesterday = new Date(selectedDate + ' 12:00:00');
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    return yesterday.toISOString().split('T')[0];
-  };
-
-  const getTomorrowDate = () => {
-    const selectedDate = getSelectedDate();
-
-    let tomorrow = new Date(selectedDate + ' 12:00:00');
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    return tomorrow.toISOString().split('T')[0];
-  };
-  */
-
   const updateDate = (e, value) => {
     const tabDates = getTabDates();
     setScrollTop(0);
     setFirstRender(true);
     getGames(tabDates[value]);
   }
-
 
   const toggleCalendar = (e) => {
     if (calendarOpen) {
@@ -195,6 +174,21 @@ const Games = (props) => {
     }
     setCalendarOpen(!calendarOpen);
   }
+
+  const handlePins = (cbb_game_id) => {
+    let currentPins = [...pins];
+
+    const index = currentPins.indexOf(cbb_game_id);
+
+    if (index > -1) {
+      currentPins.splice(index, 1);
+    } else {
+      currentPins.push(cbb_game_id);
+    } 
+
+    sessionStorage.setItem('CBB.GAMES.PINS', JSON.stringify(currentPins));
+    setPins(currentPins);
+  };
 
   const gameContainers = [];
 
@@ -229,6 +223,14 @@ const Games = (props) => {
       return aD < bD ? -1 : 1;
     }
     */
+
+    if (pins.length && pins.indexOf(a.cbb_game_id) > -1) {
+      return -1;
+    }
+
+    if (pins.length && pins.indexOf(b.cbb_game_id) > -1) {
+      return 1;
+    }
 
     if (
       a.status === 'live' &&
@@ -305,7 +307,7 @@ const Games = (props) => {
       continue;
     }
 
-    gameContainers.push(<Tile onClick={onClickTile} key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} />);
+    gameContainers.push(<Tile onClick={onClickTile} key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} isPinned = {(pins.indexOf(game_.cbb_game_id) > -1)} actionPin = {handlePins} />);
   }
 
   const gameContainerStyle = {

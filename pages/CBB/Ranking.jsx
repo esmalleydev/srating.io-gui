@@ -854,7 +854,6 @@ const Ranking = (props) => {
       <div style = {{'padding': '20px 20px 0px 20px'}}>
         <Typography variant = 'h5'>College basketball rankings.</Typography>
         {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
-        {props.generated ? <Typography color="text.secondary" variant = 'caption' style = {{'fontStyle': 'italic'}}>{moment(props.generated).format('YYYY-MM-DD h:m:s a')}</Typography> : ''}
         <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
           <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : ''} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
           <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : ''} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
@@ -920,6 +919,38 @@ const Ranking = (props) => {
     </div>
   );
 }
+
+/*
+export async function getServerSideProps(context) {
+  const seconds = 60 * 10; // cache for 10 mins
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage='+seconds+', stale-while-revalidate=59'
+  );
+
+  let teams = {};
+
+  await api.Request({
+    'class': 'team',
+    'function': 'getCBBTeams',
+    'arguments': {
+      'season': 2023, // todo?
+    }
+  }).then((response) => {
+    teams = response;
+  }).catch((e) => {
+
+  });
+
+  return {
+    'props': {
+      'data': teams,
+      'generated': new Date().getTime(),
+    },
+  }
+}
+*/
+
 
 export async function getStaticProps() {
   let teams = {};

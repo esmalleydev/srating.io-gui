@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
@@ -9,14 +9,18 @@ import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 
 import PicksIcon from '@mui/icons-material/Casino';
 import MoneyIcon from '@mui/icons-material/CrisisAlert';
+import PinIcon from '@mui/icons-material/PushPin';
 
 const Tile = (props) => {
   const self = this;
   const router = useRouter();
   const theme = useTheme();
+  const [hover, setHover] = useState(false);
+  const [pin, setPin] = useState(props.isPinned || false);
 
   const CBB = new HelperCBB({
     'cbb_game': props.data,
@@ -31,13 +35,29 @@ const Tile = (props) => {
       props.onClick();
     }
     router.push('/CBB/Games/' + props.data.cbb_game_id);
-  }
+  };
+
+  const handleMouseEnter = (e) => {
+    setHover(true);
+  };
+
+  const handleMouseLeave = (e) => {
+    setHover(false);
+  };
+
+  const handlePin = () => {
+    if (props.actionPin) {
+      props.actionPin(props.data.cbb_game_id);
+    }
+    setPin(!pin);
+  };
 
   const getHeader = () => {
     let startTime = CBB.getTime();
     
     const flexContainer = {
       'display': 'flex',
+      'alignItems': 'center',
     };
 
     const timeStyle = {
@@ -48,11 +68,62 @@ const Tile = (props) => {
     return (
       <div style = {flexContainer} >
         <div style = {timeStyle}>{startTime}</div>
+        <IconButton id = {'pin-'+props.data.cbb_game_id} onClick = {handlePin}>
+          <PinIcon sx = {pinStyle} fontSize = 'small' />
+        </IconButton>
       </div>
     );
   }
 
   const getOddsLine = () => {
+    const awaySpreadCoverStyle = {};
+    const homeSpreadCoverStyle = {};
+    const awayMLStyle = {};
+    const homeMLStyle = {};
+    const overStyle = {};
+    const underStyle = {};
+
+    let tdAwaySpreadTitle = 'Pre-game spread';
+    let tdHomeSpreadTitle = 'Pre-game spread';
+    let tdAwayMLTitle = 'Pre-game money line';
+    let tdHomeMLTitle = 'Pre-game money line';
+    let tdOverTitle = 'Pre-game over';
+    let tdUnderTitle = 'Pre-game under';
+
+    if (CBB.isFinal()) {
+      if (CBB.coveredSpread('away')) {
+        awaySpreadCoverStyle.color = theme.palette.success.main;
+        tdAwaySpreadTitle = 'Covered pre spread';
+      }
+      if (CBB.coveredSpread('home')) {
+        homeSpreadCoverStyle.color = theme.palette.success.main;
+        tdHomeSpreadTitle = 'Covered pre spread';
+      }
+      if (CBB.won('away')) {
+        awayMLStyle.color = theme.palette.success.main;
+        tdAwayMLTitle = 'Covered money line';
+      }
+      if (CBB.won('home')) {
+        homeMLStyle.color = theme.palette.success.main;
+        tdHomeMLTitle = 'Covered money line';
+      }
+      if (CBB.coveredOver()) {
+        overStyle.color = theme.palette.success.main;
+        tdOverTitle = 'Covered over';
+      }
+      if (CBB.coveredUnder()) {
+        underStyle.color = theme.palette.success.main;
+        tdUnderTitle = 'Covered under';
+      }
+    } else if (CBB.isInProgress()) {
+      tdAwaySpreadTitle = 'Pre / Live spread';
+      tdAwayMLTitle = 'Pre / Live money line';
+      tdOverTitle = 'Pre / Live over';
+      tdHomeSpreadTitle = 'Pre / Live spread';
+      tdHomeMLTitle = 'Pre / Live money line';
+      tdUnderTitle = 'Pre / Live under';
+    }
+
     return (
       <table style = {{'width': '100%', 'textAlign': 'center'}}>
         <thead>
@@ -65,16 +136,16 @@ const Tile = (props) => {
         <tbody>
           <tr>
             <td style = {{'textAlign': 'left'}}><Typography variant = 'caption'>{CBB.getTeamNameShort('away')}</Typography></td>
-            <td title = 'Pre vs Live'><Typography variant = 'caption'>{CBB.getPreSpread('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('away') : ''}</Typography></td>
-            <td title = 'Pre vs Live' style = {{'color': CBB.oddsReversal('away') ? theme.palette.warning.main : theme.palette.text.primary}}><Typography variant = 'caption'>{CBB.getPreML('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('away') : ''}</Typography></td>
-            <td title = 'Pre vs Live'><Typography variant = 'caption'>{CBB.getPreOver() !== '-' ? 'O ' + CBB.getPreOver() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveOver() : ''}</Typography></td>
+            <td title = {tdAwaySpreadTitle}><Typography variant = 'caption' style = {awaySpreadCoverStyle}>{CBB.getPreSpread('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('away') : ''}</Typography></td>
+            <td title = {tdAwayMLTitle} style = {Object.assign({'color': CBB.oddsReversal('away') ? theme.palette.warning.main : theme.palette.text.primary}, awayMLStyle)}><Typography variant = 'caption'>{CBB.getPreML('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('away') : ''}</Typography></td>
+            <td title = {tdOverTitle}><Typography variant = 'caption' style = {overStyle}>{CBB.getPreOver() !== '-' ? 'O ' + CBB.getPreOver() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveOver() : ''}</Typography></td>
             <td style = {{'textAlign': 'right'}}><Typography variant = 'caption'>{(props.data.away_team_rating * 100)}</Typography></td>
           </tr>
           <tr>
             <td style = {{'textAlign': 'left'}}><Typography variant = 'caption'>{CBB.getTeamNameShort('home')}</Typography></td>
-            <td title = 'Pre vs Live'><Typography variant = 'caption'>{CBB.getPreSpread('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('home') : ''}</Typography></td>
-            <td title = 'Pre vs Live' style = {{'color': CBB.oddsReversal('home') ? theme.palette.warning.main : theme.palette.text.primary}}><Typography variant = 'caption'>{CBB.getPreML('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('home') : ''}</Typography></td>
-            <td title = 'Pre vs Live'><Typography variant = 'caption'>{CBB.getPreUnder() !== '-' ? 'U ' + CBB.getPreUnder() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveUnder() : ''}</Typography></td>
+            <td title = {tdHomeSpreadTitle}><Typography variant = 'caption' style = {homeSpreadCoverStyle}>{CBB.getPreSpread('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('home') : ''}</Typography></td>
+            <td title = {tdHomeMLTitle} style = {Object.assign({'color': CBB.oddsReversal('home') ? theme.palette.warning.main : theme.palette.text.primary}, homeMLStyle)}><Typography variant = 'caption'>{CBB.getPreML('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('home') : ''}</Typography></td>
+            <td title = {tdUnderTitle}><Typography variant = 'caption' style = {underStyle}>{CBB.getPreUnder() !== '-' ? 'U ' + CBB.getPreUnder() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveUnder() : ''}</Typography></td>
             <td style = {{'textAlign': 'right'}}><Typography variant = 'caption'>{(props.data.home_team_rating * 100)}</Typography></td>
           </tr>
         </tbody>
@@ -157,17 +228,32 @@ const Tile = (props) => {
     'width': width > 420 ? '375px' : '320px',
     'minHeight': '100px',
     'margin': '5px',
-    'cursor': 'pointer',
     'padding': '10px',
   };
 
+  const teamLineStyle = {
+    'cursor': 'pointer',
+  };
+
+  const pinStyle = {};
+
+  if (hover) {
+    teamLineStyle.backgroundColor = theme.palette.action.hover;
+  }
+
+  if (pin) {
+    pinStyle.color = theme.palette.warning.light;
+  }
+
   return (
-    <Paper elevation={3} style = {divStyle}  onClick={handleClick}>
+    <Paper elevation={3} style = {divStyle}>
       {getHeader()}
-      {getTeamLine('away')}
-      {getTeamLine('home')}
-      {CBB.isFinal() ? '' : <hr />}
-      {CBB.isFinal() ? '' : getOddsLine()}
+      <div style = {teamLineStyle} onClick = {handleClick} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>
+        {getTeamLine('away')}
+        {getTeamLine('home')}
+      </div>
+      <hr />
+      {getOddsLine()}
     </Paper>
   );
 }
