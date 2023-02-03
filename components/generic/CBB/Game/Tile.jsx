@@ -63,12 +63,20 @@ const Tile = (props) => {
     const timeStyle = {
       'flex': 1,
       'color': CBB.isInProgress() ? theme.palette.info.dark : theme.palette.text.primary,
+      'cursor': 'pointer',
+      // this is just to remove the small click deadzone
+      'height': '36px',
+      'lineHeight': '36px',
     };
+
+    if (hover) {
+      flexContainer.backgroundColor = theme.palette.action.hover;
+    }
 
     return (
       <div style = {flexContainer} >
-        <div style = {timeStyle}>{startTime}</div>
-        <IconButton id = {'pin-'+props.data.cbb_game_id} onClick = {handlePin}>
+        <div style = {timeStyle} onClick = {handleClick} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>{startTime}</div>
+        <IconButton id = {'pin-'+props.data.cbb_game_id} onClick = {handlePin} style = {{'marginLeft': 20}}>
           <PinIcon sx = {pinStyle} fontSize = 'small' />
         </IconButton>
       </div>
@@ -233,6 +241,7 @@ const Tile = (props) => {
 
   const teamLineStyle = {
     'cursor': 'pointer',
+    'padding': '5px 0px',
   };
 
   const pinStyle = {};
@@ -252,7 +261,7 @@ const Tile = (props) => {
         {getTeamLine('away')}
         {getTeamLine('home')}
       </div>
-      <hr />
+      <hr style ={{'marginTop': 0}} />
       {getOddsLine()}
     </Paper>
   );
