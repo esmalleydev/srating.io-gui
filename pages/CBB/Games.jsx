@@ -278,8 +278,8 @@ const Games = (props) => {
 
     // remove d2 garbo games
     if (
-      !game_.teams[game_.away_team_id].kenpom ||
-      !game_.teams[game_.home_team_id].kenpom
+      !game_.teams[game_.away_team_id].cbb_d1 ||
+      !game_.teams[game_.home_team_id].cbb_d1
     ) {
       continue;
     }

@@ -608,7 +608,7 @@ const Ranking = (props) => {
       'team_id': team.team_id,
       'composite_rank': team.last_ranking && team.last_ranking.composite_rank,
       'ap_rank': team.last_ranking && team.last_ranking.ap_rank,
-      'name': team.kenpom,
+      'name': team.alt_name,
       'wins': team.stats.wins + '-' + team.stats.losses,
       'conf_record': team.stats.confwins + '-' + team.stats.conflosses,
       'conf': team.cbb_conference,

@@ -199,8 +199,8 @@ const Picks = (props) => {
     ) {
       if (game.teams[game[side + '_team_id']].code) {
         name = game.teams[game[side + '_team_id']].code;
-      } else if (game.teams[game[side + '_team_id']].kenpom) {
-        name = game.teams[game[side + '_team_id']].kenpom;
+      } else if (game.teams[game[side + '_team_id']].alt_name) {
+        name = game.teams[game[side + '_team_id']].alt_name;
       } else if (game.teams[game[side + '_team_id']].name) {
         name = game.teams[game[side + '_team_id']].name;
       }
