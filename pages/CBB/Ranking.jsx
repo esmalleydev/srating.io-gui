@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 
+// import cacheData from 'memory-cache';
+
 import moment from 'moment';
 
 import CircularProgress from '@mui/material/CircularProgress';
@@ -920,7 +922,7 @@ const Ranking = (props) => {
   );
 }
 
-/*
+
 export async function getServerSideProps(context) {
   const seconds = 60 * 10; // cache for 10 mins
   context.res.setHeader(
@@ -949,32 +951,31 @@ export async function getServerSideProps(context) {
     },
   }
 }
-*/
 
 
-export async function getStaticProps() {
-  let teams = {};
+// export async function getStaticProps() {
+//   let teams = {};
 
-  await api.Request({
-    'class': 'team',
-    'function': 'getCBBTeams',
-    'arguments': {
-      'season': 2023, // todo?
-    }
-  }).then((response) => {
-    teams = response;
-  }).catch((e) => {
+//   await api.Request({
+//     'class': 'team',
+//     'function': 'getCBBTeams',
+//     'arguments': {
+//       'season': 2023, // todo?
+//     }
+//   }).then((response) => {
+//     teams = response;
+//   }).catch((e) => {
 
-  });
+//   });
 
-  return {
-    'props': {
-      'data': teams,
-      'generated': new Date().getTime(),
-    },
-    'revalidate': 60 * 10, // 10 mins
-  };
-}
+//   return {
+//     'props': {
+//       'data': teams,
+//       'generated': new Date().getTime(),
+//     },
+//     'revalidate': 60 * 10, // 10 mins
+//   };
+// }
 
 
 export default Ranking;
