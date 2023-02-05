@@ -23,7 +23,6 @@ const api = new Api();
 
 let intervalRefresher = null;
 
-
 const Game = (props) => {
   const self = this;
 
@@ -60,7 +59,7 @@ const Game = (props) => {
     });
   };
 
-  if (!request) {
+  if (!request && cbb_game_id) {
     getGame();
   }
 
