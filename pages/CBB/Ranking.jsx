@@ -585,9 +585,6 @@ const Ranking = (props) => {
 
   for (let team_id in teams) {
     let team = teams[team_id];
-    if (!team.stats) {
-      continue;
-    }
 
     if (
       conferences.length &&
@@ -606,13 +603,18 @@ const Ranking = (props) => {
       lastUpdated = team.last_ranking.date_of_rank;
     }
 
+    const wins = (team.cbb_statistic_ranking && team.cbb_statistic_ranking.wins) || 0;
+    const losses = (team.cbb_statistic_ranking && team.cbb_statistic_ranking.losses) || 0;
+    const confwins = (team.cbb_statistic_ranking && team.cbb_statistic_ranking.confwins) || 0;
+    const conflosses = (team.cbb_statistic_ranking && team.cbb_statistic_ranking.conflosses) || 0;
+
     rows.push({
       'team_id': team.team_id,
       'composite_rank': team.last_ranking && team.last_ranking.composite_rank,
       'ap_rank': team.last_ranking && team.last_ranking.ap_rank,
       'name': team.alt_name,
-      'wins': team.stats.wins + '-' + team.stats.losses,
-      'conf_record': team.stats.confwins + '-' + team.stats.conflosses,
+      'wins': wins + '-' + losses,
+      'conf_record': confwins + '-' + conflosses,
       'conf': team.cbb_conference,
       'elo_rank': team.last_ranking && team.last_ranking.elo_rank,
       'elo': team.elo,
@@ -931,7 +933,6 @@ export async function getServerSideProps(context) {
   );
 
   let teams = {};
-
 
   const cached = cacheData.get('CBB.RANKING.LOAD');
 
