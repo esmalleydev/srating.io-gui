@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 
-// import cacheData from 'memory-cache';
+import cacheData from 'memory-cache';
 
 import moment from 'moment';
 
@@ -932,17 +932,25 @@ export async function getServerSideProps(context) {
 
   let teams = {};
 
-  await api.Request({
-    'class': 'team',
-    'function': 'getCBBTeams',
-    'arguments': {
-      'season': 2023, // todo?
-    }
-  }).then((response) => {
-    teams = response;
-  }).catch((e) => {
 
-  });
+  const cached = cacheData.get('CBB.RANKING.LOAD');
+
+  if (!cached) {
+    await api.Request({
+      'class': 'team',
+      'function': 'getCBBTeams',
+      'arguments': {
+        'season': 2023, // todo?
+      }
+    }).then((response) => {
+      teams = response;
+      cacheData.put('CBB.RANKING.LOAD', teams, 1000 * 60 * 10);
+    }).catch((e) => {
+
+    });
+  } else {
+    teams = cached;
+  }
 
   return {
     'props': {
