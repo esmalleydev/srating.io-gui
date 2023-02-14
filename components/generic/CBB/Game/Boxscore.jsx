@@ -36,6 +36,8 @@ const Boxscore = (props) => {
   const awayTotalBoxscore = (game.boxscores && game.boxscores[game.away_team_id]) || {};
   const homeTotalBoxscore = (game.boxscores && game.boxscores[game.home_team_id]) || {};
 
+  const hasBoxscoreData = ('points' in awayTotalBoxscore) && ('points' in homeTotalBoxscore);
+
   const boxscore = boxscoreSide === 'home' ? homeBoxscores : awayBoxscores;
   const boxscoreTotal = boxscoreSide === 'home' ? homeTotalBoxscore : awayTotalBoxscore;
 
@@ -397,8 +399,11 @@ const Boxscore = (props) => {
         {intervalCompareChips}
         {intervalChart}
       </div>
-      <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Boxscore compare</Typography>
-      <CompareStatistic paper = {true} rows = {compareRows} />
+      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap', 'position': 'sticky', 'top': 100, 'backgroundColor': theme.palette.background.default, 'padding': '20px'}}>
+        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
+        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
+      </div>
+      {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}
       <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Player boxscore</Typography>
       <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
       <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />

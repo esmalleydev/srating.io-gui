@@ -7,6 +7,8 @@ import useWindowDimensions from '../hooks/useWindowDimensions';
 import Paper from '@mui/material/Paper';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
@@ -27,6 +29,7 @@ const FooterNavigation = (props) => {
 
   const theme = useTheme();
   const router = useRouter();
+  const [spin, setSpin] = useState(false);
 
   let viewingSport = null;
   let viewingPage = null;
@@ -70,21 +73,36 @@ const FooterNavigation = (props) => {
 
 
   const handleRanking = () => {
-    router.push('/'+viewingSport+'/Ranking');
+    setSpin(true);
+    router.push('/'+viewingSport+'/Ranking').then(() => {
+      setSpin(false);
+    });
   }
 
   const handleScores = () => {
+    setSpin(true);
     sessionStorage.removeItem('CBB.GAMES.DATA');
-    router.push('/'+viewingSport+'/Games');
+    router.push('/'+viewingSport+'/Games').then(() => {
+      setSpin(false);
+    });
   }
 
   const handlePicks = () => {
-    router.push('/'+viewingSport+'/Picks');
+    setSpin(true);
+    router.push('/'+viewingSport+'/Picks').then(() => {
+      setSpin(false);
+    });
   }
+
 
 
   return (
     <div>
+    {spin ?
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      : ''}
     {viewingSport ? 
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, 'zIndex': 9000,}} elevation={3}>
         <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}} showLabels value={pages.indexOf(viewingPage)}>

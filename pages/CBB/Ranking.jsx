@@ -24,6 +24,7 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
+import Backdrop from '@mui/material/Backdrop';
 import { visuallyHidden } from '@mui/utils';
 
 import ConferencePicker from '../../components/generic/CBB/ConferencePicker';
@@ -65,6 +66,7 @@ const Ranking = (props) => {
   const { height, width } = useWindowDimensions();
 
   const teams = props.data;
+  const [spin, setSpin] = useState(false);
   const [firstRender, setFirstRender] = useState(true);
   const [conferences, setConferences] = useState([]);
   const [order, setOrder] = useState('asc');
@@ -112,7 +114,10 @@ const Ranking = (props) => {
   }
 
   function handleTeam(team_id) {
-    router.push('/CBB/Team/' + team_id);
+    setSpin(true);
+    router.push('/CBB/Team/' + team_id).then(() => {
+      setSpin(false);
+    });
   }
 
   const getColumns = () => {
@@ -855,6 +860,11 @@ const Ranking = (props) => {
         <meta property="og:title" content=">sRating.io college basketball rankings" />
         <meta property="og:description" content="View statistic ranking for all 363 teams" />
       </Head>
+      {spin ?
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      : ''}
       <div style = {{'padding': '20px 20px 0px 20px'}}>
         <Typography variant = 'h5'>College basketball rankings.</Typography>
         {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
