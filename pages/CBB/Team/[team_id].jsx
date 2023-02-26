@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
 
 import { useTheme } from '@mui/material/styles';
@@ -85,6 +86,14 @@ const Team = (props) => {
 
   return (
     <div>
+      <Head>
+        <title>sRating | {team_.getName()}</title>
+        <meta name = 'description' content = {team_.getName() + ' schedule, trends, statistics'} key = 'desc'/>
+        <meta property="og:title" content = {team_.getName() + ' schedule, trends, statistics'} />
+        <meta property="og:description" content = {team_.getName() + ' schedule, trends, statistics'} />
+        <meta name="twitter:card" content="summary" />
+        <meta name = 'twitter:title' content = {team_.getName() + ' schedule, trends, statistics'} />
+      </Head>
       <div style = {titleStyle}>
         <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
           {team_.getRank() ? <sup style = {{'fontSize': '24px'}}>{team_.getRank()}</sup> : ''} {team_.getName()} ({team.stats.wins}-{team.stats.losses})

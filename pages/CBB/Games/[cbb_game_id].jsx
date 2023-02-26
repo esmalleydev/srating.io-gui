@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
 
 
@@ -117,6 +118,15 @@ const Game = (props) => {
 
   return (
     <div>
+      <Head>
+        <title>sRating | {CBB.getTeamName('away')} vs {CBB.getTeamName('home')}</title>
+        <meta name = 'description' content = 'View predicted result, matchup, trends, odds' key = 'desc'/>
+        <meta property="og:title" content = {CBB.getTeamName('away') + ' vs ' + CBB.getTeamName('home')} />
+        <meta property="og:description" content = 'View predicted result, matchup, trends, odds' />
+        <meta name = "twitter:card" content="summary" />
+        <meta name = 'twitter:title' content = {CBB.getTeamName('away') + ' vs ' + CBB.getTeamName('home')} />
+        <meta name = 'twitter:description' content = 'View predicted result, matchup, trends, odds' />
+      </Head>
       <div style = {{'padding': '20px'}}><ScoreTitle key={cbb_game_id} game={game} /></div>
       <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop}}>
         <Box display="flex" justifyContent="center">
