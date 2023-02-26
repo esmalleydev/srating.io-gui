@@ -73,6 +73,8 @@ const Home = (props) => {
         <meta name = 'description' content = 'View statistic ranking, live score, live odds, picks for college basketball' key = 'desc'/>
         <meta property="og:title" content=">sRating.io college basketball rankings" />
         <meta property="og:description" content="View statistic ranking, live score, live odds, picks for college basketball" />
+        <meta name="twitter:card" content="summary" />
+        <meta name = 'twitter:title' content = 'View statistic ranking, live score, live odds, picks for college basketball' />
       </Head>
       <main>
         <Box
