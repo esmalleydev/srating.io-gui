@@ -76,7 +76,22 @@ const Game = (props) => {
   });
 
   if (!game) {
-    return (<div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}><CircularProgress /></div>);
+    return (
+      <div>
+        <Head>
+          <title>sRating | Game details</title>
+          <meta name = 'description' content = 'View predicted result, matchup, trends, odds' key = 'desc'/>
+          <meta property="og:title" content = 'Game details' />
+          <meta property="og:description" content = 'View predicted result, matchup, trends, odds' />
+          <meta name = "twitter:card" content="summary" />
+          <meta name = 'twitter:title' content = 'Game details' />
+          <meta name = 'twitter:description' content = 'View predicted result, matchup, trends, odds' />
+        </Head>
+        <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
+          <CircularProgress />
+        </div>
+      </div>
+    );
   }
   
 

@@ -84,7 +84,21 @@ const Ranking = (props) => {
   }, []);
 
   if (firstRender) {
-    return (<div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div>);
+    return (
+      <div>
+        <Head>
+          <title>sRating | College basketball ranking</title>
+          <meta name = 'description' content = 'View statistic ranking for all 363 teams' key = 'desc'/>
+          <meta property="og:title" content="srating.io college basketball rankings" />
+          <meta property="og:description" content="View statistic ranking for all 363 teams" />
+          <meta name="twitter:card" content="summary" />
+          <meta name = 'twitter:title' content = 'srating.io college basketball rankings' />
+        </Head>
+        <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
+          <CircularProgress />
+        </div>
+      </div>
+    );
   }
 
   const handleConferences = (conference) => {

@@ -134,7 +134,21 @@ const Games = (props) => {
   });
 
   if (firstRender) {
-    return (<div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div>);
+    return (
+      <div>
+        <Head>
+          <title>sRating | College basketball scores</title>
+          <meta name = 'description' content = 'Live college basketball scores and odds' key = 'desc'/>
+          <meta property="og:title" content="srating.io college basketball scores" />
+          <meta property="og:description" content="Live college basketball scores and odds" />
+          <meta name="twitter:card" content="summary" />
+          <meta name = 'twitter:title' content = 'Live college basketball scores and odds' />
+        </Head>
+        <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
+          <CircularProgress />
+        </div>
+      </div>
+    );
   }
 
   if (!request) {
