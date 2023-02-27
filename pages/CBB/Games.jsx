@@ -276,6 +276,16 @@ const Games = (props) => {
   for (var i = 0; i < sorted_games.length; i++) {
     let game_ = sorted_games[i];
 
+    // remove games where a team is TBA
+    
+    if (
+      !game_.teams ||
+      !game_.teams[game_.away_team_id] ||
+      !game_.teams[game_.home_team_id]
+    ) {
+      continue;
+    }
+
     // remove d2 garbo games
     if (
       !game_.teams[game_.away_team_id].cbb_d1 ||
