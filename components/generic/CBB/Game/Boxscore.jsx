@@ -391,6 +391,8 @@ const Boxscore = (props) => {
     intervalChart = <OddsOverUnder game = {game} />;
   }
 
+  // todo put sticky header in container with the data so it does not overlap with the player box scores
+
 
   return (
     <div style = {{'padding': 20}}>
@@ -423,15 +425,23 @@ const Boxscore = (props) => {
           </TableHead>
           <TableBody>
             {boxscore.map((row) => {
-              if (!row.minutes_played) {
-                return;
+              // if (!row.minutes_played) {
+              //   return;
+              // }
+              let player_name = row.first_name + ' ' + row.last_name;
+
+              if (row.player_id && game.players && row.player_id in game.players) {
+                const player = game.players[row.player_id];
+                player_name = player.first_name + ' ' + player.last_name;
               }
+
+              // todo if no minutes played, check for any stat
               return (
                 <TableRow
                   key={row.cbb_player_boxscore_id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell>{row.first_name} {row.last_name}</TableCell>
+                  <TableCell>{player_name}</TableCell>
                   <TableCell>{row.minutes_played}</TableCell>
                   <TableCell>{row.points}</TableCell>
                   <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>

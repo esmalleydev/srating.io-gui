@@ -43,9 +43,9 @@ const FooterNavigation = (props) => {
   ];
 
   const pages = [
-    'Ranking',
-    'Games',
-    'Picks'
+    'ranking',
+    'games',
+    'picks'
   ];
 
 
@@ -54,9 +54,9 @@ const FooterNavigation = (props) => {
     if (
       splat &&
       splat.length > 1 &&
-      sports.indexOf(splat[1]) > -1
+      sports.indexOf(splat[1].toUpperCase()) > -1
     ) {
-      let selectedIndex = sports.indexOf(splat[1]);
+      let selectedIndex = sports.indexOf(splat[1].toUpperCase());
       viewingSport = sports[selectedIndex];
     }
 
@@ -74,7 +74,7 @@ const FooterNavigation = (props) => {
 
   const handleRanking = () => {
     setSpin(true);
-    router.push('/'+viewingSport+'/Ranking').then(() => {
+    router.push('/'+viewingSport.toLowerCase()+'/ranking').then(() => {
       setSpin(false);
     });
   }
@@ -82,14 +82,14 @@ const FooterNavigation = (props) => {
   const handleScores = () => {
     setSpin(true);
     sessionStorage.removeItem('CBB.GAMES.DATA');
-    router.push('/'+viewingSport+'/Games').then(() => {
+    router.push('/'+viewingSport.toLowerCase()+'/games').then(() => {
       setSpin(false);
     });
   }
 
   const handlePicks = () => {
     setSpin(true);
-    router.push('/'+viewingSport+'/Picks').then(() => {
+    router.push('/'+viewingSport.toLowerCase()+'/picks').then(() => {
       setSpin(false);
     });
   }
