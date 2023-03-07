@@ -17,8 +17,6 @@ import moment from 'moment';
 
 const Trends = (props) => {
   const self = this;
-  
-  // console.log(props);
 
   const team = props.team;
 
@@ -28,6 +26,10 @@ const Trends = (props) => {
 
   const sorted_elo = Object.values(elo).sort(function(a, b) {
     return games[a.cbb_game_id].start_date < games[b.cbb_game_id].start_date ? -1 : 1;
+  });
+
+  const sorted_ranking = Object.values(ranking).sort(function(a, b) {
+    return a.date_of_rank > b.date_of_rank ? 1 : -1;
   });
 
   const theme = useTheme();
@@ -73,8 +75,9 @@ const Trends = (props) => {
     'srs_rank': null,
   };
 
-  for (let id in ranking) {
-    let date_of_rank = moment(ranking[id].date_of_rank).format('MMM Do');
+  for (let i = 0; i < sorted_ranking.length; i++) {
+    const row = sorted_ranking[i];
+    let date_of_rank = moment(row.date_of_rank).format('MMM Do');
     if (
       xAxis.indexOf(date_of_rank) === -1
     ) {
@@ -84,15 +87,15 @@ const Trends = (props) => {
     for (let key in series) {
       if (
         key in lastKnown &&
-        ranking[id][key]
+        row[key]
       ) {
-        lastKnown[key] = ranking[id][key];
+        lastKnown[key] = row[key];
       }
 
-      if (!ranking[id][key] && lastKnown[key]) {
+      if (!row[key] && lastKnown[key]) {
         series[key].data.push(lastKnown[key]);
       } else {
-        series[key].data.push(ranking[id][key]);
+        series[key].data.push(row[key]);
       }
     }
 
