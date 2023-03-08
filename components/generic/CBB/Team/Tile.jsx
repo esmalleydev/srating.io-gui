@@ -61,7 +61,7 @@ const Tile = (props) => {
   };
 
   const handleClick = () => {
-    router.push('/CBB/Games/' + game.cbb_game_id);
+    router.push('/cbb/games/' + game.cbb_game_id);
   }
 
   useEffect(() => {

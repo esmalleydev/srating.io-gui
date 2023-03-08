@@ -36,7 +36,7 @@ const ScoreTitle = (props) => {
   });
 
   const handleClick = (team_id) => {
-    router.push('/CBB/Team/' + team_id);
+    router.push('/cbb/team/' + team_id);
   }
 
 

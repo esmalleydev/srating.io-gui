@@ -52,9 +52,9 @@ const Header = (props) => {
     if (
       splat &&
       splat.length > 1 &&
-      sports.indexOf(splat[1]) > -1
+      sports.indexOf(splat[1].toUpperCase()) > -1
     ) {
-      let selectedIndex = sports.indexOf(splat[1]);
+      let selectedIndex = sports.indexOf(splat[1].toUpperCase());
       viewingSport = sports[selectedIndex];
     }
   }
@@ -99,8 +99,7 @@ const Header = (props) => {
   };
 
   const handleSportHome = () => {
-    router.push('/'+viewingSport+'/Ranking');
-    // navigate('/'+viewingSport+'/Ranking');
+    router.push('/'+viewingSport.toLowerCase()+'/ranking');
   }
 
   const [anchorMenu, setAnchorMenu] = useState(null);

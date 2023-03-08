@@ -182,7 +182,7 @@ const Picks = (props) => {
 
 
   const handleGame = (cbb_game_id) => {
-    router.push('/CBB/Games/' + cbb_game_id);
+    router.push('/cbb/games/' + cbb_game_id);
   }
 
   const getSelectedDate = () => {

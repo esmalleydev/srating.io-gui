@@ -34,7 +34,7 @@ const Tile = (props) => {
     if (props.onClick && typeof props.onClick === 'function') {
       props.onClick();
     }
-    router.push('/CBB/Games/' + props.data.cbb_game_id);
+    router.push('/cbb/games/' + props.data.cbb_game_id);
   };
 
   const handleMouseEnter = (e) => {

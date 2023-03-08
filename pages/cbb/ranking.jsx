@@ -129,7 +129,7 @@ const Ranking = (props) => {
 
   function handleTeam(team_id) {
     setSpin(true);
-    router.push('/CBB/Team/' + team_id).then(() => {
+    router.push('/cbb/team/' + team_id).then(() => {
       setSpin(false);
     });
   }

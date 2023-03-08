@@ -33,35 +33,35 @@ const Home = (props) => {
       'heading': 'Ranking',
       'image': rankingImage,
       'contents': 'Aggregate rankings for college basketball, combining multiple metrics. Sort by any ranking metric, filter by conference.',
-      'action': () => {router.push('/CBB/Ranking');}
+      'action': () => {router.push('/cbb/ranking');}
     },
     {
       'value': 'cbb_scores',
       'heading': 'Scores',
       'image': scoresImage,
       'contents': 'View scores real time, with live odds. Filter by conference, game status.',
-      'action': () => {router.push('/CBB/Games');}
+      'action': () => {router.push('/cbb/games');}
     },
     {
       'value': 'cbb_picks',
       'heading': 'Picks',
       'image': picksImage,
       'contents': 'View my picks for today\'s games, along with a betting calculator to customize odds.',
-      'action': () => {router.push('/CBB/Picks');}
+      'action': () => {router.push('/cbb/picks');}
     },
     {
       'value': 'cbb_team',
       'heading': 'Teams',
       'image': teamImage,
       'contents': 'View a team\'s schedule, statistics, trends.',
-      'action': () => {router.push('/CBB/Team/87019264-8549-11ed-bf01-5296e1552828');}
+      'action': () => {router.push('/cbb/team/87019264-8549-11ed-bf01-5296e1552828');}
     },
     {
       'value': 'cbb_game',
       'heading': 'Game details',
       'image': gameImage,
       'contents': 'View a game\'s boxscore, match up, trends.',
-      'action': () => {router.push('/CBB/Games/81a20ec9-8551-11ed-bf01-5296e1552828');}
+      'action': () => {router.push('/cbb/games/81a20ec9-8551-11ed-bf01-5296e1552828');}
     },
   ];
 
@@ -103,8 +103,8 @@ const Home = (props) => {
               spacing={2}
               justifyContent="center"
             >
-              <Button onClick = {() => {router.push('/CBB/Ranking')}} variant="contained">CBB ranking</Button>
-              <Button onClick = {() => {router.push('/CBB/Games')}} variant="outlined">CBB Scores</Button>
+              <Button onClick = {() => {router.push('/cbb/ranking')}} variant="contained">CBB ranking</Button>
+              <Button onClick = {() => {router.push('/cbb/games')}} variant="outlined">CBB Scores</Button>
             </Stack>
           </Container>
         </Box>
