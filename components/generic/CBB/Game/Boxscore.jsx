@@ -425,9 +425,24 @@ const Boxscore = (props) => {
           </TableHead>
           <TableBody>
             {boxscore.map((row) => {
-              // if (!row.minutes_played) {
-              //   return;
-              // }
+              // Only have minutes played from post game boxscore
+              if (!row.minutes_played && +row.final === 1) {
+                return;
+              }
+
+              if (
+                !row.field_goal_attempts &&
+                !row.free_throw_attempts &&
+                !row.total_rebounds &&
+                !row.assists &&
+                !row.steals &&
+                !row.blocks &&
+                !row.turnovers &&
+                !row.fouls &&
+                !row.points
+              ) {
+                return
+              }
               let player_name = row.first_name + ' ' + row.last_name;
 
               if (row.player_id && game.players && row.player_id in game.players) {
@@ -435,7 +450,7 @@ const Boxscore = (props) => {
                 player_name = player.first_name + ' ' + player.last_name;
               }
 
-              // todo if no minutes played, check for any stat
+              
               return (
                 <TableRow
                   key={row.cbb_player_boxscore_id}

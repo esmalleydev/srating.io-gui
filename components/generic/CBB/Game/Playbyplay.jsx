@@ -26,7 +26,7 @@ const Playbyplay = (props) => {
   const [requestedPBP, setRequestedPBP] = useState(false);
   const [pbpData, setPBPData] = useState(null);
 
-  console.log(game);
+  // console.log(game);
 
 
   if (!requestedPBP) {
@@ -81,7 +81,7 @@ const Playbyplay = (props) => {
     return 0;
   });
 
-  console.log(sortedPBP);
+  // console.log(sortedPBP);
 
 
   return (
@@ -90,12 +90,14 @@ const Playbyplay = (props) => {
          sortedPBP.map((cbb_game_pbp) => {
 
           return (
-            <div>
-              {cbb_game_pbp.current_period} {cbb_game_pbp.clock} {cbb_game_pbp.description}
+            <div style = {{'margin': '5px 10px'}}>
+              <Typography variant = 'subtitle1'>{cbb_game_pbp.current_period}H {cbb_game_pbp.away_score}-{cbb_game_pbp.home_score} {cbb_game_pbp.clock}</Typography>
+              <Typography variant = 'body1'>{cbb_game_pbp.description}</Typography>
             </div>
           );
         })
       }
+      {sortedPBP.length === 0 ? <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No play by play data yet...</Typography> : ''}
     </div>
   );
 }
