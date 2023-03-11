@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -7,15 +8,16 @@ import Typography from '@mui/material/Typography';
 
 import HelperCBB from '../../../helpers/CBB';
 
+import Charts from './Charts';
+import Boxscore from './Boxscore';
+import Playbyplay from './Playbyplay';
 
-import RankCompare from './RankCompare';
-import PreviousMatchups from './PreviousMatchups';
-import OddsTrends from './OddsTrends';
-import Momentum from './Momentum';
 
-const Trends = (props) => {
+const GameDetails = (props) => {
   const self = this;
 
+  const theme = useTheme();
+ 
   const [tabIndex, setTabIndex] = useState(0);
 
   const game = props.game;
@@ -26,13 +28,12 @@ const Trends = (props) => {
 
 
   let tabOptions = {
-    'rank': 'Rank compare',
-    'previous_matchups': 'Prev. Matchups',
-    'odds': 'Odds',
-    'momentum': 'Momentum',
+    'charts': 'Charts',
+    'boxscore': 'Boxscore',
+    'pbp': 'Play by play',
   };
 
-  let tabOrder = ['rank', 'previous_matchups', 'odds', 'momentum'];
+  let tabOrder = ['boxscore', 'charts', 'pbp'];
   let tabs = [];
 
   for (let i = 0; i < tabOrder.length; i++) {
@@ -54,13 +55,12 @@ const Trends = (props) => {
         </Tabs>
       </Box>
       <div style = {{'padding': 20}}>
-        {selectedTab == 'rank' ? <RankCompare game = {game} /> : ''}
-        {selectedTab == 'previous_matchups' ? <PreviousMatchups game = {game} /> : ''}
-        {selectedTab == 'odds' ? <OddsTrends game = {game} /> : ''}
-        {selectedTab == 'momentum' ? <Momentum game = {game} /> : ''}
+        {selectedTab == 'charts' ? <Charts game = {game} /> : ''}
+        {selectedTab == 'boxscore' ? <Boxscore game = {game} /> : ''}
+        {selectedTab == 'pbp' ? <Playbyplay game = {game} /> : ''}
       </div>
     </div>
   );
 }
 
-export default Trends;
+export default GameDetails;

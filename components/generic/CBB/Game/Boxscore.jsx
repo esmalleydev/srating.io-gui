@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 
-import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from "@mui/material/Box";
+
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -14,11 +17,7 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 
 import HelperCBB from '../../../helpers/CBB';
-import Score from './Charts/Score';
 import CompareStatistic from '../../CompareStatistic';
-import OddsML from './Charts/OddsML';
-import OddsSpread from './Charts/OddsSpread';
-import OddsOverUnder from './Charts/OddsOverUnder';
 
 const Boxscore = (props) => {
   const self = this;
@@ -26,7 +25,7 @@ const Boxscore = (props) => {
   const theme = useTheme();
   const [boxscoreCompare, setBoxscoreCompare] = useState('team');
   const [boxscoreSide, setBoxscoreSide] = useState('home');
-  const [selectedIntervalChip, setSelectedIntervalChip] = useState('scoring');
+  const [tabIndex, setTabIndex] = useState(0);
 
   const game = props.game;
 
@@ -345,67 +344,20 @@ const Boxscore = (props) => {
     },
   ];
 
-  const intervalCompare = [
-    {
-      'label': 'Scoring',
-      'value': 'scoring',
-    },
-    {
-      'label': 'Live ML',
-      'value': 'liveML',
-    },
-    {
-      'label': 'Live Spread',
-      'value': 'liveSpread',
-    },
-    {
-      'label': 'Live O/U',
-      'value': 'liveOverUnder',
-    },
-  ];
 
-  let intervalCompareChips = [];
-
-  for (let i = 0; i < intervalCompare.length; i++) {
-    intervalCompareChips.push(
-      <Chip
-        key = {intervalCompare[i].value}
-        sx = {{'margin': '5px 5px 10px 5px'}}
-        variant = {selectedIntervalChip === intervalCompare[i].value ? 'filled' : 'outlined'}
-        color = {selectedIntervalChip === intervalCompare[i].value ? 'success' : 'primary'}
-        onClick = {() => {setSelectedIntervalChip(intervalCompare[i].value);}}
-        label = {intervalCompare[i].label} 
-      />
-    );
-  }
-
-  let intervalChart = null;
-
-  if (selectedIntervalChip === 'scoring') {
-    intervalChart = <Score game = {game} />;
-  } else if (selectedIntervalChip === 'liveML') {
-    intervalChart = <OddsML game = {game} />;
-  } else if (selectedIntervalChip === 'liveSpread') {
-    intervalChart = <OddsSpread game = {game} />;
-  } else if (selectedIntervalChip === 'liveOverUnder') {
-    intervalChart = <OddsOverUnder game = {game} />;
-  }
 
   // todo put sticky header in container with the data so it does not overlap with the player box scores
 
 
   return (
-    <div style = {{'padding': 20}}>
+    <div>
       <div>
-        <Typography variant = 'body1'>Intervals</Typography>
-        {intervalCompareChips}
-        {intervalChart}
+        <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap', 'position': 'sticky', 'top': 100, 'backgroundColor': theme.palette.background.default, 'padding': '20px'}}>
+          <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
+          <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
+        </div>
+        {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}
       </div>
-      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap', 'position': 'sticky', 'top': 100, 'backgroundColor': theme.palette.background.default, 'padding': '20px'}}>
-        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
-        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
-      </div>
-      {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}
       <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Player boxscore</Typography>
       <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
       <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
@@ -415,12 +367,12 @@ const Boxscore = (props) => {
             <TableRow>
               {headCells.map((headCell) => (
                 <TableCell
-                  key={headCell.id}
-                  align={'left'}
+                key={headCell.id}
+                align={'left'}
                 >
-                  {headCell.label}     
+                {headCell.label}     
                 </TableCell>
-              ))}
+                ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -441,8 +393,9 @@ const Boxscore = (props) => {
                 !row.fouls &&
                 !row.points
               ) {
-                return
+                return;
               }
+
               let player_name = row.first_name + ' ' + row.last_name;
 
               if (row.player_id && game.players && row.player_id in game.players) {
@@ -450,12 +403,9 @@ const Boxscore = (props) => {
                 player_name = player.first_name + ' ' + player.last_name;
               }
 
-              
+
               return (
-                <TableRow
-                  key={row.cbb_player_boxscore_id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
+                <TableRow key={row.cbb_player_boxscore_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell>{player_name}</TableCell>
                   <TableCell>{row.minutes_played}</TableCell>
                   <TableCell>{row.points}</TableCell>

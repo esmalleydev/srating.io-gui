@@ -16,7 +16,7 @@ const api = new Api();
 
 // TODO update to show differential from season averages, build it into stats compare component?
   
-const Betting = (props) => {
+const Momentum = (props) => {
   const self = this;
 
   const { height, width } = useWindowDimensions();
@@ -608,4 +608,4 @@ const Betting = (props) => {
   );
 }
 
-export default Betting;
+export default Momentum;

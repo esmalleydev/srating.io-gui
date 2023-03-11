@@ -26,8 +26,6 @@ const Playbyplay = (props) => {
   const [requestedPBP, setRequestedPBP] = useState(false);
   const [pbpData, setPBPData] = useState(null);
 
-  // console.log(game);
-
 
   if (!requestedPBP) {
     setRequestedPBP(true);
@@ -83,11 +81,25 @@ const Playbyplay = (props) => {
 
   // console.log(sortedPBP);
 
+  // todo skeleton loading
 
   return (
     <div>
       {
-         sortedPBP.map((cbb_game_pbp) => {
+        pbpData === null ?
+          <Paper elevation = {3} style = {{'padding': 10}}>
+            <div>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography variant = 'h5'><Skeleton /></Typography>
+            </div>
+          </Paper>
+        : ''
+      }
+      {
+        sortedPBP.map((cbb_game_pbp) => {
 
           return (
             <div style = {{'margin': '5px 10px'}}>
@@ -97,7 +109,7 @@ const Playbyplay = (props) => {
           );
         })
       }
-      {sortedPBP.length === 0 ? <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No play by play data yet...</Typography> : ''}
+      {pbpData !== null && sortedPBP.length === 0 ? <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No play by play data yet...</Typography> : ''}
     </div>
   );
 }
