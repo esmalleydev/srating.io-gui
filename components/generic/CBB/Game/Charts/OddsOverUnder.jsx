@@ -39,13 +39,13 @@ const OddsOverUnder = (props) => {
   let xAxis = [];
   let series = {
     'over': {
-      'name': 'Over',
+      'name': 'Over / Under',
       'data': [],
     },
-    'under': {
-      'name': 'Under',
-      'data': [],
-    },
+    // 'under': {
+    //   'name': 'Under',
+    //   'data': [],
+    // },
   };
 
 
@@ -64,8 +64,8 @@ const OddsOverUnder = (props) => {
         xAxis.push(sorted_intervals[i].clock);
       }
 
-      series.over.data.push(sorted_intervals[i].under < -10000 ? -10000 : sorted_intervals[i].under);
-      series.under.data.push(sorted_intervals[i].over < -10000 ? -10000 : sorted_intervals[i].over);
+      series.over.data.push(sorted_intervals[i].over < -10000 ? -10000 : sorted_intervals[i].over);
+      // series.under.data.push(sorted_intervals[i].under < -10000 ? -10000 : sorted_intervals[i].under);
     }
 
   }
