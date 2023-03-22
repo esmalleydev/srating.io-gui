@@ -54,7 +54,7 @@ const GameDetails = (props) => {
           {tabs}
         </Tabs>
       </Box>
-      <div style = {{'padding': 20}}>
+      <div>
         {selectedTab == 'charts' ? <Charts game = {game} /> : ''}
         {selectedTab == 'boxscore' ? <Boxscore game = {game} /> : ''}
         {selectedTab == 'pbp' ? <Playbyplay game = {game} /> : ''}

@@ -345,10 +345,6 @@ const Boxscore = (props) => {
   ];
 
 
-
-  // todo put sticky header in container with the data so it does not overlap with the player box scores
-
-
   return (
     <div>
       <div>
@@ -356,94 +352,98 @@ const Boxscore = (props) => {
           <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
           <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
         </div>
-        {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}
+        <div style = {{'padding': 20}}>
+          {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}
+        </div>
       </div>
-      <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Player boxscore</Typography>
-      <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
-      <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
-      <TableContainer component={Paper}>
-        <Table size="small" aria-label="team boxscore table">
-          <TableHead>
-            <TableRow>
-              {headCells.map((headCell) => (
-                <TableCell
-                key={headCell.id}
-                align={'left'}
-                >
-                {headCell.label}     
-                </TableCell>
-                ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {boxscore.map((row) => {
-              // Only have minutes played from post game boxscore
-              if (!row.minutes_played && +row.final === 1) {
-                return;
-              }
+      <div style = {{'padding': 20}}>
+        <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Player boxscore</Typography>
+        <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
+        <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
+        <TableContainer component={Paper}>
+          <Table size="small" aria-label="team boxscore table">
+            <TableHead>
+              <TableRow>
+                {headCells.map((headCell) => (
+                  <TableCell
+                  key={headCell.id}
+                  align={'left'}
+                  >
+                  {headCell.label}     
+                  </TableCell>
+                  ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {boxscore.map((row) => {
+                // Only have minutes played from post game boxscore
+                if (!row.minutes_played && +row.final === 1) {
+                  return;
+                }
 
-              if (
-                !row.field_goal_attempts &&
-                !row.free_throw_attempts &&
-                !row.total_rebounds &&
-                !row.assists &&
-                !row.steals &&
-                !row.blocks &&
-                !row.turnovers &&
-                !row.fouls &&
-                !row.points
-              ) {
-                return;
-              }
+                if (
+                  !row.field_goal_attempts &&
+                  !row.free_throw_attempts &&
+                  !row.total_rebounds &&
+                  !row.assists &&
+                  !row.steals &&
+                  !row.blocks &&
+                  !row.turnovers &&
+                  !row.fouls &&
+                  !row.points
+                ) {
+                  return;
+                }
 
-              let player_name = row.first_name + ' ' + row.last_name;
+                let player_name = row.first_name + ' ' + row.last_name;
 
-              if (row.player_id && game.players && row.player_id in game.players) {
-                const player = game.players[row.player_id];
-                player_name = player.first_name + ' ' + player.last_name;
-              }
+                if (row.player_id && game.players && row.player_id in game.players) {
+                  const player = game.players[row.player_id];
+                  player_name = player.first_name + ' ' + player.last_name;
+                }
 
 
-              return (
-                <TableRow key={row.cbb_player_boxscore_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell>{player_name}</TableCell>
-                  <TableCell>{row.minutes_played}</TableCell>
-                  <TableCell>{row.points}</TableCell>
-                  <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>
-                  <TableCell>{row.two_point_field_goal}-{row.two_point_field_goal_attempts} {row.two_point_field_goal_percentage}%</TableCell>
-                  <TableCell>{row.three_point_field_goal}-{row.three_point_field_goal_attempts} {row.three_point_field_goal_percentage}%</TableCell>
-                  <TableCell>{row.free_throws}-{row.free_throw_attempts} {row.free_throw_percentage}%</TableCell>
-                  <TableCell>{row.offensive_rebounds}</TableCell>
-                  <TableCell>{row.defensive_rebounds}</TableCell>
-                  <TableCell>{row.assists}</TableCell>
-                  <TableCell>{row.steals}</TableCell>
-                  <TableCell>{row.blocks}</TableCell>
-                  <TableCell>{row.turnovers}</TableCell>
-                  <TableCell>{row.fouls}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell>Total</TableCell>
-              <TableCell>-</TableCell>
-              <TableCell>{boxscoreTotal.points}</TableCell>
-              <TableCell>{boxscoreTotal.field_goal}-{boxscoreTotal.field_goal_attempts} {boxscoreTotal.field_goal_percentage}%</TableCell>
-              <TableCell>{boxscoreTotal.two_point_field_goal}-{boxscoreTotal.two_point_field_goal_attempts} {boxscoreTotal.two_point_field_goal_percentage}%</TableCell>
-              <TableCell>{boxscoreTotal.three_point_field_goal}-{boxscoreTotal.three_point_field_goal_attempts} {boxscoreTotal.three_point_field_goal_percentage}%</TableCell>
-              <TableCell>{boxscoreTotal.free_throws}-{boxscoreTotal.free_throw_attempts} {boxscoreTotal.free_throw_percentage}%</TableCell>
-              <TableCell>{boxscoreTotal.offensive_rebounds}</TableCell>
-              <TableCell>{boxscoreTotal.defensive_rebounds}</TableCell>
-              <TableCell>{boxscoreTotal.assists}</TableCell>
-              <TableCell>{boxscoreTotal.steals}</TableCell>
-              <TableCell>{boxscoreTotal.blocks}</TableCell>
-              <TableCell>{boxscoreTotal.turnovers}</TableCell>
-              <TableCell>{boxscoreTotal.fouls}</TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
+                return (
+                  <TableRow key={row.cbb_player_boxscore_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    <TableCell>{player_name}</TableCell>
+                    <TableCell>{row.minutes_played}</TableCell>
+                    <TableCell>{row.points}</TableCell>
+                    <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>
+                    <TableCell>{row.two_point_field_goal}-{row.two_point_field_goal_attempts} {row.two_point_field_goal_percentage}%</TableCell>
+                    <TableCell>{row.three_point_field_goal}-{row.three_point_field_goal_attempts} {row.three_point_field_goal_percentage}%</TableCell>
+                    <TableCell>{row.free_throws}-{row.free_throw_attempts} {row.free_throw_percentage}%</TableCell>
+                    <TableCell>{row.offensive_rebounds}</TableCell>
+                    <TableCell>{row.defensive_rebounds}</TableCell>
+                    <TableCell>{row.assists}</TableCell>
+                    <TableCell>{row.steals}</TableCell>
+                    <TableCell>{row.blocks}</TableCell>
+                    <TableCell>{row.turnovers}</TableCell>
+                    <TableCell>{row.fouls}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell>Total</TableCell>
+                <TableCell>-</TableCell>
+                <TableCell>{boxscoreTotal.points}</TableCell>
+                <TableCell>{boxscoreTotal.field_goal}-{boxscoreTotal.field_goal_attempts} {boxscoreTotal.field_goal_percentage}%</TableCell>
+                <TableCell>{boxscoreTotal.two_point_field_goal}-{boxscoreTotal.two_point_field_goal_attempts} {boxscoreTotal.two_point_field_goal_percentage}%</TableCell>
+                <TableCell>{boxscoreTotal.three_point_field_goal}-{boxscoreTotal.three_point_field_goal_attempts} {boxscoreTotal.three_point_field_goal_percentage}%</TableCell>
+                <TableCell>{boxscoreTotal.free_throws}-{boxscoreTotal.free_throw_attempts} {boxscoreTotal.free_throw_percentage}%</TableCell>
+                <TableCell>{boxscoreTotal.offensive_rebounds}</TableCell>
+                <TableCell>{boxscoreTotal.defensive_rebounds}</TableCell>
+                <TableCell>{boxscoreTotal.assists}</TableCell>
+                <TableCell>{boxscoreTotal.steals}</TableCell>
+                <TableCell>{boxscoreTotal.blocks}</TableCell>
+                <TableCell>{boxscoreTotal.turnovers}</TableCell>
+                <TableCell>{boxscoreTotal.fouls}</TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      </div>
     </div>
   );
 }

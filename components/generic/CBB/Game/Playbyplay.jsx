@@ -84,7 +84,7 @@ const Playbyplay = (props) => {
   // todo skeleton loading
 
   return (
-    <div>
+    <div style = {{'padding': 20}}>
       {
         pbpData === null ?
           <Paper elevation = {3} style = {{'padding': 10}}>

@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import HelperCBB from '../../../helpers/CBB';
 
 
-import RankCompare from './RankCompare';
+import StatCompare from './StatCompare';
 import PreviousMatchups from './PreviousMatchups';
 import OddsTrends from './OddsTrends';
 import Momentum from './Momentum';
@@ -26,13 +26,13 @@ const Trends = (props) => {
 
 
   let tabOptions = {
-    'rank': 'Rank compare',
+    'stat_compare': 'Stat compare',
     'previous_matchups': 'Prev. Matchups',
     'odds': 'Odds',
     'momentum': 'Momentum',
   };
 
-  let tabOrder = ['rank', 'previous_matchups', 'odds', 'momentum'];
+  let tabOrder = ['stat_compare', 'previous_matchups', 'odds', 'momentum'];
   let tabs = [];
 
   for (let i = 0; i < tabOrder.length; i++) {
@@ -54,7 +54,7 @@ const Trends = (props) => {
         </Tabs>
       </Box>
       <div style = {{'padding': 20}}>
-        {selectedTab == 'rank' ? <RankCompare game = {game} /> : ''}
+        {selectedTab == 'stat_compare' ? <StatCompare game = {game} /> : ''}
         {selectedTab == 'previous_matchups' ? <PreviousMatchups game = {game} /> : ''}
         {selectedTab == 'odds' ? <OddsTrends game = {game} /> : ''}
         {selectedTab == 'momentum' ? <Momentum game = {game} /> : ''}
