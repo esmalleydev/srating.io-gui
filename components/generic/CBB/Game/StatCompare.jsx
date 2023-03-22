@@ -6,12 +6,35 @@ import Chip from '@mui/material/Chip';
 
 import RankChart from './Charts/Rank';
 
-const RankCompare = (props) => {
+import Api from './../../../Api.jsx';
+const api = new Api();
+
+const StatCompare = (props) => {
   const self = this;
 
   const game = props.game;
 
+  const [requestedStats, setRequestedStats] = useState(false);
+  const [statsData, setStatsData] = useState(null);
   const [selectedStatChip, setSelectedStatChip] = useState('elo_rank');
+
+   if (!requestedStats) {
+    setRequestedStats(true);
+    api.Request({
+      'class': 'cbb_statistic_ranking',
+      'function': 'read',
+      'arguments': {
+        'season': game.season,
+        'team_id': [game.home_team_id, game.away_team_id],
+      },
+    }).then((response) => {
+      setStatsData(response || {});
+    }).catch((e) => {
+      setStatsData({});
+    });
+  }
+
+  console.log(statsData);
 
   const statsCompare = [
     {
@@ -47,6 +70,9 @@ const RankCompare = (props) => {
     );
   }
 
+
+  // todo show popular stats in chips, then a show more button that goes to a stat selector screen
+
   return (
     <div>
       <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Rank compare</Typography>
@@ -56,4 +82,4 @@ const RankCompare = (props) => {
   );
 }
 
-export default RankCompare;
+export default StatCompare;
