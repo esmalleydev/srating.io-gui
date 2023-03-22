@@ -26,7 +26,7 @@ const OddsSpread = (props) => {
   const homeColor = game.teams[game.home_team_id].primary_color;
   const awayColor = game.teams[game.away_team_id].primary_color;
 
-  const scoreIntervals = game.score_interval;
+  const scoreIntervals = game.score_interval || {};
 
   const sorted_intervals = Object.values(scoreIntervals).sort(function (a, b) {
     // should probably use clock, but DoE should be fine for now

@@ -74,12 +74,10 @@ const GameDetails = (props) => {
 
 
   return (
-    <div>
-      <div>
-        <Typography variant = 'body1'>Intervals</Typography>
-        {intervalCompareChips}
-        {intervalChart}
-      </div>
+    <div style = {{'padding': 20}}>
+      <Typography variant = 'body1'>Intervals</Typography>
+      {intervalCompareChips}
+      {intervalChart}
     </div>
   );
 }
