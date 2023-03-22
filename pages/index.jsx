@@ -161,7 +161,7 @@ const Home = (props) => {
             color="text.secondary"
             component="p"
           >
-            <Link color="text.secondary" underline="hover" href = "mailto:srating.io">Contact</Link>
+            <Link color="text.secondary" underline="hover" href = "mailto:contact@srating.io">Contact</Link>
           </Typography>
         </div>
       </Box>
