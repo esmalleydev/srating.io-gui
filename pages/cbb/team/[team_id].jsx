@@ -87,7 +87,7 @@ const Team = (props) => {
     'position': 'sticky',
     'top': marginTop,
     'backgroundColor': theme.palette.background.default,
-    'zIndex': 1,
+    'zIndex': 9000,
   };
 
 
