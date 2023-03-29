@@ -607,7 +607,7 @@ const Ranking = (props) => {
 
     if (
       conferences.length &&
-      conferences.indexOf(team.cbb_conference) === -1
+      conferences.indexOf(team.conference) === -1
     ) {
       continue;
     }
@@ -634,7 +634,7 @@ const Ranking = (props) => {
       'name': team.alt_name,
       'wins': wins + '-' + losses,
       'conf_record': confwins + '-' + conflosses,
-      'conf': team.cbb_conference,
+      'conf': team.conference,
       'elo_rank': team.last_ranking && team.last_ranking.elo_rank,
       'elo': team.elo,
       'kenpom_rank': team.last_ranking && team.last_ranking.kenpom_rank,

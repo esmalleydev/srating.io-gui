@@ -310,8 +310,8 @@ const Games = (props) => {
 
     if (
       conferences.length &&
-      conferences.indexOf(game_.teams[game_.away_team_id].cbb_conference) === -1 &&
-      conferences.indexOf(game_.teams[game_.home_team_id].cbb_conference) === -1
+      conferences.indexOf(game_.teams[game_.away_team_id].conference) === -1 &&
+      conferences.indexOf(game_.teams[game_.home_team_id].conference) === -1
     ) {
       continue;
     }

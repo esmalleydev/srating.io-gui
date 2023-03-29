@@ -20,9 +20,13 @@ import HelperTeam from '../../../components/helpers/Team';
 import Schedule from '../../../components/generic/CBB/Team/Schedule';
 import Stats from '../../../components/generic/CBB/Team/Stats';
 import Trends from '../../../components/generic/CBB/Team/Trends';
+import Roster from '../../../components/generic/CBB/Team/Roster';
 
 import Api from '../../../components/Api.jsx';
 const api = new Api();
+
+// TODO need a season selector, stored in the url so the backend can retrieve
+// THen pass in the season to all the components
 
 
 
@@ -30,6 +34,7 @@ const Team = (props) => {
   const self = this;
   const router = useRouter();
   const team_id = router.query && router.query.team_id;
+  const season = router.query && router.query.season || 2023;
 
   const team = props.team;
 
@@ -51,9 +56,10 @@ const Team = (props) => {
     'schedule': 'Schedule',
     'stats': 'Stats',
     'trends': 'Trends',
+    'roster': 'Roster',
   };
 
-  let tabOrder = ['schedule', 'stats', 'trends'];
+  let tabOrder = ['schedule', 'stats', 'trends', 'roster'];
 
   let tabs = [];
 
@@ -81,6 +87,7 @@ const Team = (props) => {
     'position': 'sticky',
     'top': marginTop,
     'backgroundColor': theme.palette.background.default,
+    'zIndex': 1,
   };
 
 
@@ -88,11 +95,11 @@ const Team = (props) => {
     <div>
       <Head>
         <title>sRating | {team_.getName()}</title>
-        <meta name = 'description' content = {team_.getName() + ' schedule, trends, statistics'} key = 'desc'/>
-        <meta property="og:title" content = {team_.getName() + ' schedule, trends, statistics'} />
-        <meta property="og:description" content = {team_.getName() + ' schedule, trends, statistics'} />
+        <meta name = 'description' content = {team_.getName() + ' schedule, trends, statistics, roster'} key = 'desc'/>
+        <meta property="og:title" content = {team_.getName() + ' schedule, trends, statistics, roster'} />
+        <meta property="og:description" content = {team_.getName() + ' schedule, trends, statistics, roster'} />
         <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = {team_.getName() + ' schedule, trends, statistics'} />
+        <meta name = 'twitter:title' content = {team_.getName() + ' schedule, trends, statistics, roster'} />
       </Head>
       <div style = {titleStyle}>
         <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
@@ -108,6 +115,7 @@ const Team = (props) => {
         {selectedTab == 'schedule' ? <Schedule team = {team} games = {team.cbb_games} /> : ''}
         {selectedTab == 'stats' ? <Stats team = {team} stats = {team.stats} /> : ''}
         {selectedTab == 'trends' ? <Trends team = {team} ranking = {team.cbb_ranking} elo = {team.cbb_elo} games = {team.cbb_games} /> : ''}
+        {selectedTab == 'roster' ? <Roster team = {team} players = {team.players} season = {season} /> : ''}
       </div>
     </div>
   );
@@ -115,6 +123,7 @@ const Team = (props) => {
 
 export async function getServerSideProps(context) {
   const team_id = context.params && context.params.team_id;
+  const season = context.params && context.params.season;
 
   const seconds = 60 * 5; // cache for 5 mins
   context.res.setHeader(
@@ -130,6 +139,7 @@ export async function getServerSideProps(context) {
       'function': 'getCBBTeam',
       'arguments': {
         'team_id': team_id,
+        'season': season,
       }
     });
   }
