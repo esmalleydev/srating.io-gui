@@ -100,7 +100,7 @@ class CBB {
       startTime = this.getGameTime();
     } else if (this.cbb_game.status === 'pre') {
       let date = new Date(this.cbb_game.start_timestamp * 1000);
-      startTime = ((date.getHours() % 12) || 12) + (date.getMinutes() ? ':' + date.getMinutes() : '') + ' ' + (date.getHours() < 12 ? 'am' : 'pm') + ' ';
+      startTime = ((date.getHours() % 12) || 12) + (date.getMinutes() ? ':' + (date.getMinutes().toString().length === 1 ? '0' : '') + date.getMinutes() : '') + ' ' + (date.getHours() < 12 ? 'am' : 'pm') + ' ';
       if (date.getHours() >= 0 && date.getHours() <= 6) {
         startTime = 'TBA';
       }
