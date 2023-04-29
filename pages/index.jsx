@@ -27,6 +27,9 @@ const Home = (props) => {
 
   const router = useRouter();
 
+  const hash = process.env.COMMIT_HASH;
+  const commitDate = process.env.COMMIT_DATE;
+
   const cards = [
     {
       'value': 'cbb_ranking',
@@ -151,7 +154,7 @@ const Home = (props) => {
             color="text.secondary"
             component="p"
           >
-            🚂🚂🚂 Boiler up!
+            🚂Boiler up!🚂
           </Typography>
         </div>
         <div>
@@ -161,7 +164,17 @@ const Home = (props) => {
             color="text.secondary"
             component="p"
           >
-            <Link color="text.secondary" underline="hover" href = "mailto:contact@srating.io">Contact</Link>
+            <Link color="text.secondary" underline="hover" href = "mailto:contact@srating.io">Contact me</Link>
+          </Typography>
+        </div>
+        <div>
+          <Typography
+            variant="subtitle1"
+            align="center"
+            color="text.secondary"
+            component="p"
+          >
+            <Link color="text.secondary" underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">{commitDate} - {hash}</Link>
           </Typography>
         </div>
       </Box>

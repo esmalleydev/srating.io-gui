@@ -64,14 +64,14 @@ const Roster = (props) => {
   const [requestedPlayerStats, setRequestedPlayerStats] = useState(false);
   const [playerStatsData, setPlayerStatsData] = useState(null);
   const [view, setView] = useState('offense');
-  const [order, setOrder] = useState('desc');
+  const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('minutes_played');
   const [isAverage, setIsAverage] = useState(true);
 
 
   useEffect(() => {
     setView(sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') ? sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') : 'offense');
-    setOrder(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') : 'desc');
+    setOrder(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') : 'asc');
     setOrderBy(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') : 'minutes_played');
     setIsAverage(sessionStorage.getItem('CBB.TEAM.ROSTER.ISAVERAGE') ? +sessionStorage.getItem('CBB.TEAM.ROSTER.ISAVERAGE') : true);
   }, []);
@@ -119,6 +119,8 @@ const Roster = (props) => {
         'free_throws': +(((row.stats && row.stats.free_throws) || 0) / (isAverage && row.stats.games > 0 ? row.stats.games : 1)).toFixed(2),
         'free_throw_attempts': +(((row.stats && row.stats.free_throw_attempts) || 0) / (isAverage && row.stats.games > 0 ? row.stats.games : 1)).toFixed(2),
         'free_throw_percentage': row.stats && row.stats.free_throw_percentage,
+        'true_shooting_percentage': row.stats && row.stats.true_shooting_percentage,
+        'effective_field_goal_percentage': row.stats && row.stats.effective_field_goal_percentage,
         'offensive_rebounds': +(((row.stats && row.stats.offensive_rebounds) || 0) / (isAverage && row.stats.games > 0 ? row.stats.games : 1)).toFixed(2),
         'defensive_rebounds': +(((row.stats && row.stats.defensive_rebounds) || 0) / (isAverage && row.stats.games > 0 ? row.stats.games : 1)).toFixed(2),
         'total_rebounds': +(((row.stats && row.stats.total_rebounds) || 0) / (isAverage && row.stats.games > 0 ? row.stats.games : 1)).toFixed(2),
@@ -129,19 +131,31 @@ const Roster = (props) => {
         'fouls': +(((row.stats && row.stats.fouls) || 0) / (isAverage && row.stats.games > 0 ? row.stats.games : 1)).toFixed(2),
         'points': +(((row.stats && row.stats.points) || 0) / (isAverage && row.stats.games > 0 ? row.stats.games : 1)).toFixed(2),
         'games': row.stats && row.stats.games,
+        'possessions': row.stats && row.stats.possessions,
+        'offensive_rating': (row.stats && row.stats.offensive_rating) || 0,
+        'defensive_rating': (row.stats && row.stats.defensive_rating) || 0,
+        'efficiency_rating': (row.stats && row.stats.efficiency_rating) || 0,
+        'offensive_rebound_percentage': row.stats && row.stats.offensive_rebound_percentage,
+        'defensive_rebound_percentage': row.stats && row.stats.defensive_rebound_percentage,
+        'total_rebound_percentage': row.stats && row.stats.total_rebound_percentage,
+        'assist_percentage': row.stats && row.stats.assist_percentage,
+        'block_percentage': row.stats && row.stats.block_percentage,
+        'steal_percentage': row.stats && row.stats.steal_percentage,
+        'turnover_percentage': row.stats && row.stats.turnover_percentage,
+        'usage_percentage': row.stats && row.stats.usage_percentage,
       });
     }
   }
 
   const getColumns = () => {
     if (view === 'offense') {
-      return ['player_name', 'points', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists'];
+      return ['player_name', 'offensive_rating', 'defensive_rating', 'efficiency_rating', 'points', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'effective_field_goal_percentage', 'true_shooting_percentage', 'offensive_rebounds', 'assists', 'offensive_rebound_percentage', 'assist_percentage', 'usage_percentage'];
     } else if (view === 'defense') {
-      return ['player_name', 'defensive_rebounds', 'steals', 'blocks'];
+      return ['player_name', 'defensive_rebounds', 'defensive_rebound_percentage', 'total_rebound_percentage', 'steals', 'steal_percentage', 'blocks', 'block_percentage'];
     } else if (view === 'other') {
-      return ['player_name', 'height', 'position', 'minutes_played', 'games', 'turnovers', 'fouls'];
+      return ['player_name', 'height', 'position', 'minutes_played', 'games', 'turnovers', 'turnover_percentage', 'fouls'];
     } else if (view === 'all') {
-      return ['player_name', 'height', 'position', 'minutes_played', 'games', 'points', 'field_goal', 'field_goal_attempts', 'field_goal_percentage', 'two_point_field_goal', 'two_point_field_goal_attempts', 'two_point_field_goal_percentage', 'three_point_field_goal', 'three_point_field_goal_attempts', 'three_point_field_goal_percentage', 'free_throws', 'free_throw_attempts', 'free_throw_percentage', 'offensive_rebounds', 'defensive_rebounds', 'total_rebounds', 'steals', 'blocks', 'assists', 'turnovers', 'fouls'];
+      return ['player_name', 'height', 'position', 'minutes_played', 'games', 'points', 'field_goal', 'field_goal_attempts', 'field_goal_percentage', 'two_point_field_goal', 'two_point_field_goal_attempts', 'two_point_field_goal_percentage', 'three_point_field_goal', 'three_point_field_goal_attempts', 'three_point_field_goal_percentage', 'effective_field_goal_percentage', 'true_shooting_percentage', 'free_throws', 'free_throw_attempts', 'free_throw_percentage', 'offensive_rebounds', 'defensive_rebounds', 'total_rebounds', 'steals', 'blocks', 'assists', 'turnovers', 'fouls', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'assist_percentage', 'block_percentage', 'steal_percentage', 'turnover_percentage', 'usage_percentage'];
     }
 
     return [];
@@ -171,6 +185,29 @@ const Roster = (props) => {
       'id': 'games',
       'label': 'G',
       'title': 'Games',
+    },
+    'possessions': {
+      'id': 'possessions',
+      'label': 'Pace',
+      'title': 'Pace',
+    },
+    'offensive_rating': {
+      'id': 'offensive_rating',
+      'label': 'ORT',
+      'title': 'Offensive rating',
+      'tooltip': 'Offensive rating',
+    },
+    'defensive_rating': {
+      'id': 'defensive_rating',
+      'label': 'DRT',
+      'title': 'Defensive rating',
+      'tooltip': 'Defensive rating',
+    },
+    'efficiency_rating': {
+      'id': 'efficiency_rating',
+      'label': 'ERT',
+      'title': 'Efficiency rating',
+      'tooltip': 'Efficiency rating',
     },
     'minutes_played': {
       'id': 'minutes_played',
@@ -244,45 +281,97 @@ const Roster = (props) => {
       'label': 'FT%',
       'tooltip': 'Free throw percentage',
     },
+    'true_shooting_percentage': {
+      'id': 'true_shooting_percentage',
+      'label': 'TS%',
+      'tooltip': 'True shooting percentage',
+    },
+    'effective_field_goal_percentage': {
+      'id': 'effective_field_goal_percentage',
+      'label': 'eFG%',
+      'tooltip': 'Effective field goal percentage',
+    },
     'offensive_rebounds': {
       'id': 'offensive_rebounds',
       'label': 'ORB',
       'tooltip': 'Offensive rebounds',
+    },
+    'offensive_rebound_percentage': {
+      'id': 'offensive_rebound_percentage',
+      'label': 'ORB%',
+      'tooltip': 'Offensive rebound percentage',
     },
     'defensive_rebounds': {
       'id': 'defensive_rebounds',
       'label': 'DRB',
       'tooltip': 'Defensive rebounds',
     },
+    'defensive_rebound_percentage': {
+      'id': 'defensive_rebound_percentage',
+      'label': 'DRB%',
+      'tooltip': 'Defensive rebound percentage',
+    },
     'total_rebounds': {
       'id': 'total_rebounds',
       'label': 'TRB',
       'tooltip': 'Total rebounds',
+    },
+    'total_rebound_percentage': {
+      'id': 'total_rebound_percentage',
+      'label': 'TRB%',
+      'tooltip': 'Total rebound percentage',
     },
     'assists': {
       'id': 'assists',
       'label': 'AST',
       'tooltip': 'Assists',
     },
+    'assist_percentage': {
+      'id': 'assist_percentage',
+      'label': 'AST%',
+      'tooltip': 'Assist percentage',
+    },
     'steals': {
       'id': 'steals',
       'label': 'STL',
       'tooltip': 'Steals',
+    },
+    'steal_percentage': {
+      'id': 'steal_percentage',
+      'label': 'STL%',
+      'tooltip': 'Steal percentage',
     },
     'blocks': {
       'id': 'blocks',
       'label': 'BLK',
       'tooltip': 'Blocks',
     },
+    'block_percentage': {
+      'id': 'block_percentage',
+      'label': 'BLK%',
+      'tooltip': 'Block percentage',
+    },
     'turnovers': {
       'id': 'turnovers',
       'label': 'TOV',
       'tooltip': 'Turnovers',
+      'sort': 'lower',
+    },
+    'turnover_percentage': {
+      'id': 'turnover_percentage',
+      'label': 'TOV%',
+      'tooltip': 'Turnover percentage',
     },
     'fouls': {
       'id': 'fouls',
       'label': 'PF',
       'title': 'Personal fouls',
+      'sort': 'lower',
+    },
+    'usage_percentage': {
+      'id': 'usage_percentage',
+      'label': 'USG%',
+      'tooltip': 'Usage percentage',
     },
   };
 
@@ -348,10 +437,6 @@ const Roster = (props) => {
 
     let a_value = a[orderBy];
     let b_value = b[orderBy];
-    if (orderBy === 'wins' || orderBy === 'conf_record') {
-      a_value = +a[orderBy].split('-')[0];
-      b_value = +b[orderBy].split('-')[0];
-    }
 
     const direction = (headCells[orderBy] && headCells[orderBy].sort) || 'lower';
 
