@@ -18,17 +18,6 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 
-// const Transition = React.forwardRef(
-//   function Transition(
-//     props: TransitionProps & {
-//       children: React.ReactElement<any, any>;
-//     },
-//     ref: React.Ref<unknown>,
-//   ) {
-//     return <Slide direction="up" ref={ref} {...props} />;
-//   }
-// );
-
 const ColumnPicker = (props) => {
 
   const options = props.options;
@@ -58,7 +47,7 @@ const ColumnPicker = (props) => {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Set custom table columns
             </Typography>
-            <Button autoFocus color="inherit" onClick={() => {props.saveHandler(columns)}}>Save</Button>
+            <Button autoFocus color="inherit" onClick={() => {props.saveHandler(columns);}}>Save</Button>
           </Toolbar>
         </AppBar>
         <DialogContent sx = {{'padding': 0}}>

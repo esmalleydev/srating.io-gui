@@ -4,8 +4,16 @@ import Team from './Team';
 
 class CBB {
   constructor(args) {
-    this.cbb_game = args.cbb_game || null;
-    this.team = args.team || null;
+    this.cbb_game = (args && args.cbb_game) || null;
+    this.team = (args && args.team) || null;
+  };
+
+  /**
+   * Return the current default season
+   * @return {Number}
+   */
+  getCurrentSeason() {
+    return 2023;
   };
 
 

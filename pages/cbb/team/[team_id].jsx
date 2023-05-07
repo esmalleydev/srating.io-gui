@@ -34,7 +34,7 @@ const Team = (props) => {
   const self = this;
   const router = useRouter();
   const team_id = router.query && router.query.team_id;
-  const season = router.query && router.query.season || 2023;
+  const season = router.query && router.query.season || new HelperCBB().getCurrentSeason();
 
   const team = props.team;
 
