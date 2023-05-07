@@ -1162,10 +1162,6 @@ const Ranking = (props) => {
     };
 
 
-    let teamCellStyle = {
-      'cursor': 'pointer',
-    };
-
     const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
     const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
 
@@ -1176,6 +1172,7 @@ const Ranking = (props) => {
       'borderRadius': '5px',
     };
 
+    let teamCellStyle = {};
     teamCellStyle.position = 'sticky';
     teamCellStyle.left = 50;
     teamCellStyle.minWidth = 125;
@@ -1184,8 +1181,16 @@ const Ranking = (props) => {
     const tableCells = [];
 
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i] === 'name') {
-        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, teamCellStyle)}>{row.name}</TableCell>);
+      if (columns[i] === 'team_name') {
+        tableCells.push(<TableCell title = {row[columns[i]]} key = {i} sx = {Object.assign({}, tdStyle, {
+          'minWidth': 85,
+          'maxWidth': 85,
+          'overflow': 'hidden',
+          'whiteSpace': 'nowrap',
+          'textOverflow': 'ellipsis',
+        })}>{row[columns[i]]}</TableCell>);
+      } else if (columns[i] === 'name') {
+        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, teamCellStyle)}>{row[columns[i]]}</TableCell>);
       } else if (columns[i] === 'composite_rank') {
         tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'center', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{row[columns[i]]}</TableCell>);
       } else {
