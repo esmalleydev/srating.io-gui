@@ -38,6 +38,8 @@ const Team = (props) => {
 
   const team = props.team;
 
+  // console.log(team);
+
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
 
@@ -122,8 +124,8 @@ const Team = (props) => {
 }
 
 export async function getServerSideProps(context) {
-  const team_id = context.params && context.params.team_id;
-  const season = context.params && context.params.season;
+  const team_id = context.query && context.query.team_id;
+  const season = context.query && context.query.season;
 
   const seconds = 60 * 5; // cache for 5 mins
   context.res.setHeader(

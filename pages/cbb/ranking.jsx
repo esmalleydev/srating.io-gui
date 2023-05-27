@@ -91,6 +91,10 @@ const Ranking = (props) => {
   const [customColumns, setCustomColumns] = useState(['composite_rank', 'name']);
   const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
 
+  // todo save rankview in local storage
+  // TODO IF I GO TO PLAYER VIEW< SAVE CUSTOM COLUMNS, THEN MANUALLY CHANGE THE URL TO REGULAR RANKING PAGE, IT WILL ERROR OUT
+  // JUST STORE THE 2 COLUMNS IN SEPARTE LOCAL STORAGES
+
 
   useEffect(() => {
     const handleStart = (url) => {;
@@ -187,7 +191,7 @@ const Ranking = (props) => {
 
   function handleTeam(team_id) {
     setSpin(true);
-    router.push('/cbb/team/' + team_id).then(() => {
+    router.push('/cbb/team/' + team_id+'?season='+season).then(() => {
       setSpin(false);
     });
   }
@@ -1288,6 +1292,7 @@ export async function getServerSideProps(context) {
   const cachedLocation = 'CBB.RANKING.LOAD.'+season+ '.' + view;
 
   const cached = cacheData.get(cachedLocation);
+  // const cached = false;
 
   if (!cached) {
     const fxn = (view === 'player') ? 'getPlayerRanking': 'getTeamRanking';
