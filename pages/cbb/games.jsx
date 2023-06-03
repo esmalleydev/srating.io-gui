@@ -73,7 +73,8 @@ const Games = (props) => {
   // if stored session, refresh in 5 seconds, else normal 30 seconds
   const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
 
-  const season = new HelperCBB().getCurrentSeason();
+  // const season = new HelperCBB().getCurrentSeason();
+  const season = 2017;
 
   const { height, width } = useWindowDimensions();
 
@@ -449,7 +450,7 @@ const Games = (props) => {
             <Tabs value={tabIndex} onChange={updateDate} variant="scrollable" scrollButtons = {true} allowScrollButtonsMobile = {false} indicatorColor="secondary" textColor="inherit" /* sx = {{'backgroundImage': 'linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)'}}*/>
               {tabComponents}
             </Tabs>
-            <IconButton  onClick={toggleCalendar} color="inherit">
+            <IconButton sx = {{'padding': 0}} onClick={toggleCalendar} color="inherit">
               <CalendarIcon />
             </IconButton>
             <Popover
