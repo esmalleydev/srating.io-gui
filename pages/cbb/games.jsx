@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
 
-// import Typography from '@mui/material/Typography';
-
+import Typography from '@mui/material/Typography';
 
 import IconButton from '@mui/material/IconButton';
 import CalendarIcon from '@mui/icons-material/Event';
@@ -31,17 +30,20 @@ import ConferencePicker from '../../components/generic/CBB/ConferencePicker';
 import AdditionalOptions from '../../components/generic/CBB/Games/AdditionalOptions';
 import Tile from '../../components/generic/CBB/Game/Tile.jsx';
 
+
+import HelperCBB from '../../components/helpers/CBB';
 import Api from '../../components/Api.jsx';
 
 const api = new Api();
 
 let intervalRefresher = null;
 
+// TODO Send a sever side loader, to get dates with games on them, query to get all the start dates, so we can remove days without games
+
 
 const Games = (props) => {
   const theme = useTheme();
-
-  // console.log(props);
+  const scrollRef = useRef(null);
 
   const defaultDate = moment().format('YYYY-MM-DD');
 
@@ -70,6 +72,8 @@ const Games = (props) => {
 
   // if stored session, refresh in 5 seconds, else normal 30 seconds
   const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
+
+  const season = new HelperCBB().getCurrentSeason();
 
   const { height, width } = useWindowDimensions();
 
@@ -107,12 +111,20 @@ const Games = (props) => {
     });
   };
 
+  const scrollToElement = () => {
+    scrollRef.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+  };
+
 
   useEffect(() => {
     setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
     setRankDisplay(localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank');
     triggerSessionStorage();
   }, []);
+
+  useEffect(() => {
+    scrollToElement();
+  }, [date]);
 
   useEffect(() => {
     if (firstRender && props.scrollRef && props.scrollRef.current) {
@@ -166,7 +178,7 @@ const Games = (props) => {
   };
 
   const getTabDates = () => {
-    return getRangeDates('2022-11-01', '2023-04-04');
+    return getRangeDates((season - 1) + '-11-01', season + '-04-10');
   }
 
   const getSelectedDate = () => {
@@ -176,7 +188,6 @@ const Games = (props) => {
   const updateDate = (e, value) => {
     const tabDates = getTabDates();
     setScrollTop(0);
-    setFirstRender(true);
     getGames(tabDates[value]);
   }
 
@@ -300,13 +311,14 @@ const Games = (props) => {
       continue;
     }
 
+    // todo temp, uncomment
     // remove d2 garbo games
-    if (
-      !game_.teams[game_.away_team_id].cbb_d1 ||
-      !game_.teams[game_.home_team_id].cbb_d1
-    ) {
-      continue;
-    }
+    // if (
+    //   !game_.teams[game_.away_team_id].cbb_d1 ||
+    //   !game_.teams[game_.home_team_id].cbb_d1
+    // ) {
+    //   continue;
+    // }
 
     if (
       conferences.length &&
@@ -344,7 +356,7 @@ const Games = (props) => {
   const tabDates = getTabDates();
   let tabComponents = [];
   for (let i = 0; i < tabDates.length; i++) {
-    let label = moment(tabDates[i]).format('MMM Do');
+    let label = moment(tabDates[i]).format('MMM D');
     if (tabDates[i] === moment().format('YYYY-MM-DD')) {
       label = 'TODAY';
     } else if (
@@ -354,7 +366,11 @@ const Games = (props) => {
     ) {
       label = moment(tabDates[i]).format('ddd');
     }
-    tabComponents.push(<Tab key = {tabDates[i]} label = {label} />);
+    let ref_ = null;
+    if (tabDates[i] === getSelectedDate()) {
+      ref_ = scrollRef;
+    }
+    tabComponents.push(<Tab ref = {ref_} key = {tabDates[i]} value = {i} label = {label} sx = {{'fontSize': '12px', 'minWidth': 60}} />);
   }
 
   const tabIndex = tabDates.indexOf(getSelectedDate());
@@ -430,7 +446,7 @@ const Games = (props) => {
       <div>
         <AppBar position="fixed" style = {{'marginTop': marginTop, 'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}}>
           <Toolbar /*sx = {{'padding': 0}}*/ variant = 'dense'>
-            <Tabs value={tabIndex} onChange={updateDate} variant="scrollable" scrollButtons = {true} allowScrollButtonsMobile = {false} indicatorColor="secondary" textColor="inherit">
+            <Tabs value={tabIndex} onChange={updateDate} variant="scrollable" scrollButtons = {true} allowScrollButtonsMobile = {false} indicatorColor="secondary" textColor="inherit" /* sx = {{'backgroundImage': 'linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)'}}*/>
               {tabComponents}
             </Tabs>
             <IconButton  onClick={toggleCalendar} color="inherit">
@@ -449,8 +465,13 @@ const Games = (props) => {
                 <StaticDatePicker
                   displayStaticWrapperAs="desktop"
                   openTo="day"
-                  value={getSelectedDate}
-                  onChange={(momentObj) => {
+                  minDate = {'2008-01-01'}
+                  maxDate = {(new HelperCBB().getCurrentSeason() + 1) + '-12-31'}
+                  value={getSelectedDate()}
+                  onChange = {(momentObj) => {
+                    // required for some reason
+                  }}
+                  onAccept = {(momentObj) => {
                     getGames(momentObj.format('YYYY-MM-DD'));
                     toggleCalendar();
                   }}
@@ -477,8 +498,6 @@ const Games = (props) => {
           />
         ))}
         {confChips}
-      </div>
-      <div>
       </div>
       <div style = {gameContainerStyle}>
         {gameContainers}
