@@ -189,9 +189,16 @@ const Ranking = (props) => {
     confChips.push(<Chip sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {handleConferences(conferences[i])}} />);
   }
 
-  function handleTeam(team_id) {
+  const handleTeam = (team_id) => {
     setSpin(true);
     router.push('/cbb/team/' + team_id+'?season='+season).then(() => {
+      setSpin(false);
+    });
+  }
+
+  const handlePlayer = (player_id) => {
+    setSpin(true);
+    router.push('/cbb/player/' + player_id+'?season='+season).then(() => {
       setSpin(false);
     });
   }
@@ -1093,7 +1100,13 @@ const Ranking = (props) => {
     TableHead: TableHead,
     TableRow: React.forwardRef((props, ref) => {
       return (
-        <StyledTableRow {...props} ref={ref} onClick={() => {handleTeam(props.item.team_id)}} />
+        <StyledTableRow {...props} ref={ref} onClick={() => {
+          if (props.item.player_id) {
+            handlePlayer(props.item.player_id);
+          } else {
+            handleTeam(props.item.team_id);
+          }
+        }} />
       );
     }),
     TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
@@ -1292,7 +1305,6 @@ export async function getServerSideProps(context) {
   const cachedLocation = 'CBB.RANKING.LOAD.'+season+ '.' + view;
 
   const cached = cacheData.get(cachedLocation);
-  // const cached = false;
 
   if (!cached) {
     const fxn = (view === 'player') ? 'getPlayerRanking': 'getTeamRanking';

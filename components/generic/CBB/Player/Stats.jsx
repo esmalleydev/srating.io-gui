@@ -1,49 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-
 import { styled, useTheme } from '@mui/material/styles';
 
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Skeleton from '@mui/material/Skeleton';
+import CircularProgress from '@mui/material/CircularProgress';
+
+
+import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TableFooter from '@mui/material/TableFooter';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Skeleton from '@mui/material/Skeleton';
-import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
-import { visuallyHidden } from '@mui/utils';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-
-import HelperCBB from '../../../helpers/CBB';
+import Chip from '@mui/material/Chip';
 
 
+import HelperTeam from '../../../helpers/Team';
 import Api from './../../../Api.jsx';
 import utilsColor from  './../../../utils/Color.jsx';
 
 const ColorUtil = new utilsColor();
 const api = new Api();
 
-
-
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
   '&:last-child td, &:last-child th': {
     border: 0,
   },
-  '&:hover td': {
-    backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
-  },
-  '&:hover': {
-    cursor: 'pointer',
-  }
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
@@ -51,72 +38,65 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-const Roster = (props) => {
+const Stats = (props) => {
   const self = this;
 
   const theme = useTheme();
-  const router = useRouter();
 
-  const team = props.team;
   const season = props.season;
-  const players = props.players || {};
+  const player = props.player;
+  const player_team_seasons = props.player_team_season;
+  const teams = props.team;
 
-  const [requestedPlayerStats, setRequestedPlayerStats] = useState(false);
-  const [playerStatsData, setPlayerStatsData] = useState(null);
+  const [requestedStats, setRequestedStats] = useState(false);
+  const [statsData, setStatsData] = useState(null);
   const [view, setView] = useState('overview');
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('minutes_per_game');
-
 
   useEffect(() => {
-    setView(sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') ? sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') : 'overview');
-    setOrder(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') : 'asc');
-    setOrderBy(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') : 'minutes_per_game');
+    setView(sessionStorage.getItem('CBB.PLAYER.STATS.VIEW') ? sessionStorage.getItem('CBB.PLAYER.STATS.VIEW') : 'overview');
   }, []);
 
 
-  if (!requestedPlayerStats) {
-    setRequestedPlayerStats(true);
+  if (!requestedStats) {
+    setRequestedStats(true);
     api.Request({
       'class': 'cbb_player_statistic_ranking',
       'function': 'read',
       'arguments': {
-        'team_id': team.team_id,
-        'season': season,
+        'player_team_season_id': Object.keys(player_team_seasons),
         'current': '1',
       },
     }).then((response) => {
-      setPlayerStatsData(response || {});
+      setStatsData(response || {});
     }).catch((e) => {
-      setPlayerStatsData({});
+      setStatsData({});
     });
   }
- 
+
+
+  // <CircularProgress color="inherit" />
+  
+
   const getColumns = () => {
     if (view === 'overview') {
-      return ['player', 'games', 'minutes_per_game', 'points_per_game', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
+      return ['season', 'games', 'minutes_per_game', 'points_per_game', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
     } else if (view === 'per_game') {
-      return ['player', 'games', 'minutes_per_game', 'points_per_game', 'offensive_rebounds_per_game', 'defensive_rebounds_per_game', 'assists_per_game', 'steals_per_game', 'blocks_per_game', 'turnovers_per_game', 'fouls_per_game'];
+      return ['season', 'games', 'minutes_per_game', 'points_per_game', 'offensive_rebounds_per_game', 'defensive_rebounds_per_game', 'assists_per_game', 'steals_per_game', 'blocks_per_game', 'turnovers_per_game', 'fouls_per_game'];
     } else if (view === 'offensive') {
-      return ['player', 'games', 'minutes_per_game', 'points_per_game', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
+      return ['season', 'games', 'minutes_per_game', 'points_per_game', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
     } else if (view === 'defensive') {
-      return ['player', 'games', 'minutes_per_game', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
+      return ['season', 'games', 'minutes_per_game', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
     }
     return [];
   };
 
-  const handleClick = (player_id) => {
-    router.push('/cbb/player/' + player_id);
-  };
-
-
 
   const headCells = {
-    'player': {
-      id: 'player',
+    'season': {
+      id: 'season',
       numeric: true,
-      label: 'Player',
-      tooltip: 'Player',
+      label: 'Season',
+      tooltip: 'Season',
       'sticky': true,
     },
     'field_goal_percentage': {
@@ -316,7 +296,73 @@ const Roster = (props) => {
     },
   };
 
-  let rows = Object.values(playerStatsData || {});
+  const rows = Object.values(statsData || {}).sort(function(a, b) {
+    return +a.season > +b.season ? -1 : 1;
+  });
+
+  let b = 0;
+
+  const row_containers = rows.map((row) => {
+    let columns = getColumns();
+
+
+    const tdStyle = {
+      'padding': '4px 5px',
+      'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+    };
+
+    b++;
+
+    const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
+    const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
+
+    const spanStyle = {
+      'fontSize': '10px',
+      'marginLeft': '5px',
+      'padding': '3px',
+      'borderRadius': '5px',
+    };
+
+
+    const tableCells = [];
+
+    for (let i = 0; i < columns.length; i++) {
+
+      if (columns[i] === 'season') {
+        tableCells.push(
+          <TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>
+            <div style = {{'display': 'flex', 'flexDirection': 'column', 'textAlign': 'center'}}>
+              <Typography variant = 'body1'>
+                {row.season}
+              </Typography>
+              <Typography variant = 'body2' /*variant = 'overline'*/>
+                {new HelperTeam({'team': teams[row.team_id]}).getName()}
+              </Typography>
+            </div>
+          </TableCell>);
+      } else {
+        const colors = {};
+        // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
+        const backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row[columns[i] + '_rank'] / 5300));
+
+        if (backgroundColor !== '#') {
+          colors.backgroundColor = backgroundColor;
+          colors.color = theme.palette.getContrastText(backgroundColor);
+        }
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {Object.assign(colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
+      }
+    } 
+
+    return (
+      <StyledTableRow
+        key={row.player_team_season_id}
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+      >
+        {tableCells}
+      </StyledTableRow>
+    );
+  });
+
 
   const statDisplay = [
     {
@@ -340,7 +386,7 @@ const Roster = (props) => {
   let statDisplayChips = [];
 
   const handleView = (value) => {
-    sessionStorage.setItem('CBB.TEAM.ROSTER.VIEW', value);
+    sessionStorage.setItem('CBB.PLAYER.STATS.VIEW', value);
     setView(value);
   }
 
@@ -357,181 +403,66 @@ const Roster = (props) => {
     );
   }
 
-
-  const handleSort = (id) => {
-    const isAsc = orderBy === id && order === 'asc';
-    sessionStorage.setItem('CBB.TEAM.ROSTER.ORDER', (isAsc ? 'desc' : 'asc'));
-    sessionStorage.setItem('CBB.TEAM.ROSTER.ORDERBY', id);
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(id);
-  };
-
-  const descendingComparator = (a, b, orderBy) => {
-    if ((orderBy in a) && b[orderBy] === null) {
-      return 1;
-    }
-    if (a[orderBy] === null && (orderBy in b)) {
-      return -1;
-    }
-
-    let a_value = a[orderBy];
-    let b_value = b[orderBy];
-
-    const direction = (headCells[orderBy] && headCells[orderBy].sort) || 'lower';
-
-    if (b_value < a_value) {
-      return direction === 'higher' ? 1 : -1;
-    }
-    if (b_value > a_value) {
-      return direction === 'higher' ? -1 : 1;
-    }
-    return 0;
-  }
-
-  const getComparator = (order, orderBy) => {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  let b = 0;
-
-  const row_containers = rows.sort(getComparator(order, orderBy)).slice().map((row) => {
-    let columns = getColumns();
-
-
-    const tdStyle = {
-      'padding': '4px 5px',
-      'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
-    };
-
-    b++;
-
-
-    const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
-    const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
-
-    const spanStyle = {
-      'fontSize': '10px',
-      'marginLeft': '5px',
-      'padding': '3px',
-      'borderRadius': '5px',
-    };
-
-
-    const tableCells = [];
-
-    for (let i = 0; i < columns.length; i++) {
-      if (columns[i] === 'player') {
-        const player = (row.player_id in players && players[row.player_id]) || null;
-        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{player ? player.first_name + ' ' + player.last_name : 'Unknown'}</TableCell>);
-      } else {
-        const colors = {};
-
-        // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
-        const backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row[columns[i] + '_rank'] / 5300));
-
-        if (backgroundColor !== '#') {
-          colors.backgroundColor = backgroundColor;
-          colors.color = theme.palette.getContrastText(backgroundColor);
-        }
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <span style = {Object.assign(colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
-      }
-    } 
-
-    return (
-      <StyledTableRow
-        key={row.name}
-        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-        onClick={() => {handleClick(row.player_id)}}
-      >
-        {tableCells}
-      </StyledTableRow>
-    );
-  });
-
-
   return (
-    <div>
-    {
-      playerStatsData === null ?
+    <div style = {{'padding': 20}}>
+      {
+      statsData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>
             <div>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
               <Typography variant = 'h5'><Skeleton /></Typography>
               <Typography variant = 'h5'><Skeleton /></Typography>
             </div>
           </Paper>
         : ''
       }
-      {playerStatsData !== null ? <div style = {{'textAlign': 'center'}}>{statDisplayChips}</div> : ''}
       {
-        playerStatsData !== null ?    
-          <div>
-            <TableContainer component={Paper}>
-              <Table size="small" aria-label="player stats table">
-                <TableHead>
-                  <TableRow>
-                    {getColumns().map((column) => {
-                      const headCell = headCells[column];
-                      const tdStyle = {
-                        'padding': '4px 5px',
-                      };
+        statsData !== null ?
+        <div>
+          <div style = {{'textAlign': 'center'}}>
+            {statDisplayChips}
+          </div>
+          <TableContainer component={Paper}>
+            <Table size="small" aria-label="player stats table">
+              <TableHead>
+                <TableRow>
+                  {getColumns().map((column) => {
+                    const headCell = headCells[column];
+                    const tdStyle = {
+                      'padding': '4px 5px',
+                    };
 
-                      if (headCell.sticky) {
-                        tdStyle.position = 'sticky';
-                        tdStyle.left = 0;
-                        tdStyle.zIndex = 3;
-                      } else {
-                        tdStyle.whiteSpace = 'nowrap';
-                      }
+                    if (headCell.sticky) {
+                      tdStyle.position = 'sticky';
+                      tdStyle.left = 0;
+                      tdStyle.zIndex = 3;
+                    } else {
+                      tdStyle.whiteSpace = 'nowrap';
+                    }
 
-                      return (
+                    return (
                       <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
                         <StyledTableHeadCell
                           sx = {tdStyle}
                           key={headCell.id}
-                          align={'left'}
-                          sortDirection={orderBy === headCell.id ? order : false}
+                          align={headCell.id === 'season' ? 'center': 'left'}
                         >
-                          <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={() => {handleSort(headCell.id)}}
-                          >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                              <Box component="span" sx={visuallyHidden}>
-                                {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                              </Box>
-                            ) : null}
-                          </TableSortLabel>
+                          {headCell.label}
                         </StyledTableHeadCell>
                       </Tooltip>
-                      );
-                    })}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row_containers}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-         : ''
+                    );
+                  })}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {row_containers}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+        : ''
       }
     </div>
   );
 }
 
-
-export default Roster;
+export default Stats;

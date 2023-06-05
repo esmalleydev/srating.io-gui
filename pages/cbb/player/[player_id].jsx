@@ -16,29 +16,24 @@ import moment from 'moment';
 import HelperCBB from '../../../components/helpers/CBB';
 import HelperTeam from '../../../components/helpers/Team';
 
+import Stats from '../../../components/generic/CBB/Player/Stats';
+import GameLogs from '../../../components/generic/CBB/Player/GameLogs';
+import Trends from '../../../components/generic/CBB/Player/Trends';
 
-import Schedule from '../../../components/generic/CBB/Team/Schedule';
-import Stats from '../../../components/generic/CBB/Team/Stats';
-import Trends from '../../../components/generic/CBB/Team/Trends';
-import Roster from '../../../components/generic/CBB/Team/Roster';
 
 import Api from '../../../components/Api.jsx';
 const api = new Api();
 
-// TODO need a season selector, stored in the url so the backend can retrieve
-// THen pass in the season to all the components
 
-
-
-const Team = (props) => {
+const Player = (props) => {
   const self = this;
   const router = useRouter();
-  const team_id = router.query && router.query.team_id;
+  const player_id = router.query && router.query.player_id;
   const season = router.query && router.query.season || new HelperCBB().getCurrentSeason();
 
-  const team = props.team;
+  const player = props.player;
 
-  // console.log(team);
+  const name = player.first_name + ' ' + player.last_name;
 
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
@@ -55,13 +50,12 @@ const Team = (props) => {
 
 
   let tabOptions = {
-    'schedule': 'Schedule',
     'stats': 'Stats',
+    'gamelogs': 'Game Log',
     'trends': 'Trends',
-    'roster': 'Roster',
   };
 
-  let tabOrder = ['schedule', 'stats', 'trends', 'roster'];
+  let tabOrder = ['stats', 'gamelogs', 'trends'];
 
   let tabs = [];
 
@@ -71,20 +65,22 @@ const Team = (props) => {
 
   const selectedTab = tabOrder[tabIndex];
 
-  const team_ = new HelperTeam({'team': team});
+  // const team_ = new HelperTeam({'team': team});
 
 
   const handleTabClick = (value) => {
     setTabIndex(value);
 
-    if (value > 0 && props.scrollRef && props.scrollRef.current) {
-      props.scrollRef.current.scrollTo(0, 0);
-    }
+  //   if (value > 0 && props.scrollRef && props.scrollRef.current) {
+  //     props.scrollRef.current.scrollTo(0, 0);
+  //   }
   };
+
+  const titleHeight = 112;
 
   const titleStyle = {
     'padding': '20px',
-    'height': '96px',
+    'height': titleHeight,
     'textAlign': 'center',
     'position': 'sticky',
     'top': marginTop,
@@ -96,36 +92,35 @@ const Team = (props) => {
   return (
     <div>
       <Head>
-        <title>sRating | {team_.getName()}</title>
-        <meta name = 'description' content = {team_.getName() + ' schedule, trends, statistics, roster'} key = 'desc'/>
-        <meta property="og:title" content = {team_.getName() + ' schedule, trends, statistics, roster'} />
-        <meta property="og:description" content = {team_.getName() + ' schedule, trends, statistics, roster'} />
+        <title>sRating | {name}</title>
+        <meta name = 'description' content = {name + ' statistics'} key = 'desc'/>
+        <meta property="og:title" content = {name + ' statistics'} />
+        <meta property="og:description" content = {name + ' statistics'} />
         <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = {team_.getName() + ' schedule, trends, statistics, roster'} />
+        <meta name = 'twitter:title' content = {name + ' statistics'} />
       </Head>
       <div style = {titleStyle}>
         <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
-          {team_.getRank() ? <sup style = {{'fontSize': '24px'}}>{team_.getRank()}</sup> : ''} {team_.getName()} ({team.stats.wins}-{team.stats.losses})
+          {name}
+        </Typography>
+        <Typography variant = 'h6'>
+          #{player.number} {player.position} {player.height}
         </Typography>
       </div>
-      <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop + 96}}>
+      <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop + titleHeight}}>
         <Tabs /*todo if width less than x variant="scrollable" scrollButtons="auto"*/ value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} centered indicatorColor="secondary" textColor="inherit">
           {tabs}
         </Tabs>
       </AppBar>
-      <div style = {{'padding': '20px'}}>
-        {selectedTab == 'schedule' ? <Schedule team = {team} games = {team.cbb_games} /> : ''}
-        {selectedTab == 'stats' ? <Stats team = {team} stats = {team.stats} /> : ''}
-        {selectedTab == 'trends' ? <Trends team = {team} ranking = {team.cbb_ranking} elo = {team.cbb_elo} games = {team.cbb_games} /> : ''}
-        {selectedTab == 'roster' ? <Roster team = {team} players = {team.players} season = {season} /> : ''}
-      </div>
+      {selectedTab == 'stats' ? <Stats player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
+      {selectedTab == 'gamelogs' ? <GameLogs player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
+      {selectedTab == 'trends' ? <Trends /> : ''}
     </div>
   );
 }
 
 export async function getServerSideProps(context) {
-  const team_id = context.query && context.query.team_id;
-  const season = context.query && context.query.season;
+  const player_id = context.query && context.query.player_id;
 
   const seconds = 60 * 5; // cache for 5 mins
   context.res.setHeader(
@@ -133,24 +128,23 @@ export async function getServerSideProps(context) {
     'public, s-maxage='+seconds+', stale-while-revalidate=59'
   );
 
-  let team = null;
+  let player = null;
 
-  if (team_id) {
-    team = await api.Request({
-      'class': 'team',
-      'function': 'getCBBTeam',
+  if (player_id) {
+    player = await api.Request({
+      'class': 'player',
+      'function': 'getCBBPlayer',
       'arguments': {
-        'team_id': team_id,
-        'season': season,
+        'player_id': player_id,
       }
     });
   }
 
   return {
     'props': {
-      'team': team,
+      'player': player,
     },
   }
 }
 
-export default Team;
+export default Player;

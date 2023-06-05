@@ -408,10 +408,51 @@ const Boxscore = (props) => {
                     <TableCell>{player_name}</TableCell>
                     <TableCell>{row.minutes_played}</TableCell>
                     <TableCell>{row.points}</TableCell>
-                    <TableCell>{row.field_goal}-{row.field_goal_attempts} {row.field_goal_percentage}%</TableCell>
-                    <TableCell>{row.two_point_field_goal}-{row.two_point_field_goal_attempts} {row.two_point_field_goal_percentage}%</TableCell>
-                    <TableCell>{row.three_point_field_goal}-{row.three_point_field_goal_attempts} {row.three_point_field_goal_percentage}%</TableCell>
-                    <TableCell>{row.free_throws}-{row.free_throw_attempts} {row.free_throw_percentage}%</TableCell>
+
+                    <TableCell>
+                      <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+                        <div>
+                          {row.field_goal}-{row.field_goal_attempts}
+                        </div>
+                        <div style = {{'color': theme.palette.grey[500]}}>
+                          {row.field_goal_percentage}%
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+                        <div>
+                          {row.two_point_field_goal}-{row.two_point_field_goal_attempts}
+                        </div>
+                        <div style = {{'color': theme.palette.grey[500]}}>
+                          {row.two_point_field_goal_percentage}%
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+                        <div>
+                          {row.three_point_field_goal}-{row.three_point_field_goal_attempts}
+                        </div>
+                        <div style = {{'color': theme.palette.grey[500]}}>
+                          {row.three_point_field_goal_percentage}%
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+                        <div>
+                          {row.free_throws}-{row.free_throw_attempts}
+                        </div>
+                        <div style = {{'color': theme.palette.grey[500]}}>
+                          {row.free_throw_percentage}%
+                        </div>
+                      </div>
+                    </TableCell>
+
                     <TableCell>{row.offensive_rebounds}</TableCell>
                     <TableCell>{row.defensive_rebounds}</TableCell>
                     <TableCell>{row.assists}</TableCell>
