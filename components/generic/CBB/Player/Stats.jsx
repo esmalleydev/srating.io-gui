@@ -18,6 +18,8 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
 
+// import { grey } from '@mui/material/colors';
+
 
 import HelperTeam from '../../../helpers/Team';
 import Api from './../../../Api.jsx';
@@ -330,12 +332,12 @@ const Stats = (props) => {
 
       if (columns[i] === 'season') {
         tableCells.push(
-          <TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>
+          <TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'maxWidth': 100, 'minWidth': 100})}>
             <div style = {{'display': 'flex', 'flexDirection': 'column', 'textAlign': 'center'}}>
               <Typography variant = 'body1'>
                 {row.season}
               </Typography>
-              <Typography variant = 'body2' /*variant = 'overline'*/>
+              <Typography variant = 'body2' /*variant = 'overline'*/ sx = {{'color': theme.palette.mode === 'light' ? theme.palette.grey[600] : theme.palette.grey[400]}}>
                 {new HelperTeam({'team': teams[row.team_id]}).getName()}
               </Typography>
             </div>
@@ -349,7 +351,20 @@ const Stats = (props) => {
           colors.backgroundColor = backgroundColor;
           colors.color = theme.palette.getContrastText(backgroundColor);
         }
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {Object.assign(colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {Object.assign({}, colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
+        
+        // if (row[columns[i] + '_rank']) {
+        //   tableCells.push(
+        //     <TableCell key = {i} sx = {tdStyle}>
+        //       <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+        //         <div>{row[columns[i]]}</div>
+        //         <div><span style = {Object.assign({}, colors, spanStyle)}>{row[columns[i] + '_rank']}</span></div>
+        //       </div>
+        //     </TableCell>
+        //   );
+        // } else {
+        //   tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}</TableCell>);
+        // }
       }
     } 
 
@@ -374,11 +389,11 @@ const Stats = (props) => {
       'value': 'per_game',
     },
     {
-      'label': 'Offensive',
+      'label': 'Offense',
       'value': 'offensive',
     },
     {
-      'label': 'Defensive',
+      'label': 'Defense',
       'value': 'defensive',
     },
   ];
@@ -394,6 +409,7 @@ const Stats = (props) => {
     statDisplayChips.push(
       <Chip
         key = {statDisplay[i].value}
+        size = 'small'
         sx = {{'margin': '5px 5px 10px 5px'}}
         variant = {view === statDisplay[i].value ? 'filled' : 'outlined'}
         color = {view === statDisplay[i].value ? 'success' : 'primary'}

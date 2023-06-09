@@ -22,6 +22,7 @@ import scoresImage from '../public/static/images/scores.png';
 import picksImage from '../public/static/images/picks.png';
 import teamImage from '../public/static/images/team.png';
 import gameImage from '../public/static/images/statcompare.png';
+import playerImage from '../public/static/images/player.png';
 
 const Home = (props) => {
 
@@ -35,7 +36,7 @@ const Home = (props) => {
       'value': 'cbb_ranking',
       'heading': 'Ranking',
       'image': rankingImage,
-      'contents': 'Aggregate rankings for college basketball, combining multiple metrics. Sort by any ranking metric, filter by conference.',
+      'contents': 'Aggregate rankings for college basketball teams and players. Sort by any ranking metric, filter by conference, season.',
       'action': () => {router.push('/cbb/ranking');}
     },
     {
@@ -65,6 +66,13 @@ const Home = (props) => {
       'image': gameImage,
       'contents': 'View a game\'s boxscore, match up, trends.',
       'action': () => {router.push('/cbb/games/81a20ec9-8551-11ed-bf01-5296e1552828');}
+    },
+    {
+      'value': 'cbb_player',
+      'heading': 'Players',
+      'image': playerImage,
+      'contents': 'View a player\'s statistics, ranking, game log, trends.',
+      'action': () => {router.push('/cbb/player/dff6dce2-ad5a-11ed-9185-b6be2f39279c');}
     },
   ];
 

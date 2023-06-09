@@ -30,6 +30,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }));
 
+const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
+  'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
+}));
+
 
 const GameLog = (props) => {
   const self = this;
@@ -75,6 +79,7 @@ const GameLog = (props) => {
       'numeric': false,
       'label': 'Game',
       'tooltip': 'Date / Game',
+      'sticky': true,
     },
     {
       'id': 'MP',
@@ -149,6 +154,8 @@ const GameLog = (props) => {
     return a.cbb_game.start_datetime > b.cbb_game.start_datetime ? -1 : 1;
   });
 
+  let b = 0;
+
   return (
     <div style = {{'padding': 20}}>
       {
@@ -177,18 +184,30 @@ const GameLog = (props) => {
           <Table size="small" aria-label="game log table">
             <TableHead>
               <TableRow>
-                {headCells.map((headCell) => (
-                  <TableCell
-                  key={headCell.id}
-                  align={'center'}
-                  >
-                  {headCell.label}     
-                  </TableCell>
-                  ))}
+                {headCells.map((headCell) => {
+                    const tdStyle = {
+                      'padding': '4px 5px',
+                    };
+
+                    let align = 'center';
+
+                    if (headCell.sticky) {
+                      align = 'left';
+                      tdStyle.position = 'sticky';
+                      tdStyle.left = 0;
+                      tdStyle.zIndex = 3;
+                    } else {
+                      tdStyle.whiteSpace = 'nowrap';
+                    }
+
+
+                  return (<StyledTableHeadCell key={headCell.id} align={align} sx = {tdStyle}>{headCell.label}</StyledTableHeadCell>);
+                  })}
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row) => {
+                b++;
                 const won = (row.cbb_game.home_score > row.cbb_game.away_score && row.cbb_game.home_team_id === player_team_season.team_id) || (row.cbb_game.home_score < row.cbb_game.away_score && row.cbb_game.away_team_id === player_team_season.team_id);
 
                 const CBB = new HelperCBB({
@@ -210,10 +229,16 @@ const GameLog = (props) => {
                   spanStyle.color = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
                 }
 
+                const tdStyle = {
+                  'padding': '4px 7px',
+                  'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+                  'textAlign': 'center',
+                };
 
+                // todo add tool tips?
                 return (
                   <StyledTableRow key={row.cbb_player_boxscore_id} onClick={() => {handleClick(row.cbb_game_id)}}>
-                    <TableCell sx = {{'textAlign': 'center'}}>
+                    <TableCell sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'minWidth': 125, 'maxWidth': 125})}>
                       <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
                         <div>
                           {moment(row.cbb_game.start_date.split('T')[0] + ' 12:00:00').format('MMM Do')}
@@ -223,10 +248,10 @@ const GameLog = (props) => {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.minutes_played}</TableCell>
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.points}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.minutes_played}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.points}</TableCell>
 
-                    <TableCell sx = {{'textAlign': 'center'}}>
+                    <TableCell sx = {tdStyle}>
                       <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
                         <div>
                           {row.field_goal}-{row.field_goal_attempts}
@@ -237,7 +262,7 @@ const GameLog = (props) => {
                       </div>
                     </TableCell>
 
-                    <TableCell sx = {{'textAlign': 'center'}}>
+                    <TableCell sx = {tdStyle}>
                       <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
                         <div>
                           {row.two_point_field_goal}-{row.two_point_field_goal_attempts}
@@ -248,7 +273,7 @@ const GameLog = (props) => {
                       </div>
                     </TableCell>
 
-                    <TableCell sx = {{'textAlign': 'center'}}>
+                    <TableCell sx = {tdStyle}>
                       <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
                         <div>
                           {row.three_point_field_goal}-{row.three_point_field_goal_attempts}
@@ -259,7 +284,7 @@ const GameLog = (props) => {
                       </div>
                     </TableCell>
 
-                    <TableCell sx = {{'textAlign': 'center'}}>
+                    <TableCell sx = {tdStyle}>
                       <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
                         <div>
                           {row.free_throws}-{row.free_throw_attempts}
@@ -270,13 +295,13 @@ const GameLog = (props) => {
                       </div>
                     </TableCell>
 
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.offensive_rebounds}</TableCell>
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.defensive_rebounds}</TableCell>
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.assists}</TableCell>
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.steals}</TableCell>
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.blocks}</TableCell>
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.turnovers}</TableCell>
-                    <TableCell sx = {{'textAlign': 'center'}}>{row.fouls}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.offensive_rebounds}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.defensive_rebounds}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.assists}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.steals}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.blocks}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.turnovers}</TableCell>
+                    <TableCell sx = {tdStyle}>{row.fouls}</TableCell>
                   </StyledTableRow>
                 );
               })}
