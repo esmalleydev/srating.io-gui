@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useRouter } from 'next/router';
+import { styled, useTheme } from '@mui/material/styles';
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -19,10 +20,27 @@ import Chip from '@mui/material/Chip';
 import HelperCBB from '../../../helpers/CBB';
 import CompareStatistic from '../../CompareStatistic';
 
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:hover td': {
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
+  },
+  '&:hover': {
+    cursor: 'pointer',
+  }
+}));
+
+/*
+const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
+  'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
+}));
+*/
+
 const Boxscore = (props) => {
   const self = this;
 
   const theme = useTheme();
+  const router = useRouter();
+
   const [boxscoreCompare, setBoxscoreCompare] = useState('team');
   const [boxscoreSide, setBoxscoreSide] = useState('home');
   const [tabIndex, setTabIndex] = useState(0);
@@ -39,6 +57,10 @@ const Boxscore = (props) => {
 
   const boxscore = boxscoreSide === 'home' ? homeBoxscores : awayBoxscores;
   const boxscoreTotal = boxscoreSide === 'home' ? homeTotalBoxscore : awayTotalBoxscore;
+
+  const handleClick = (player_id) => {
+    router.push('/cbb/player/' + player_id);
+  };
 
   const CBB = new HelperCBB({
     'cbb_game': game,
@@ -404,7 +426,7 @@ const Boxscore = (props) => {
 
 
                 return (
-                  <TableRow key={row.cbb_player_boxscore_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <StyledTableRow key={row.cbb_player_boxscore_id} onClick={() => {handleClick(row.player_id)}}>
                     <TableCell>{player_name}</TableCell>
                     <TableCell>{row.minutes_played}</TableCell>
                     <TableCell>{row.points}</TableCell>
@@ -460,7 +482,7 @@ const Boxscore = (props) => {
                     <TableCell>{row.blocks}</TableCell>
                     <TableCell>{row.turnovers}</TableCell>
                     <TableCell>{row.fouls}</TableCell>
-                  </TableRow>
+                  </StyledTableRow>
                 );
               })}
             </TableBody>
