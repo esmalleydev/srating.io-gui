@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
+import cacheData from 'memory-cache';
 
 import Typography from '@mui/material/Typography';
 
@@ -38,24 +40,28 @@ const api = new Api();
 
 let intervalRefresher = null;
 
-// TODO Send a sever side loader, to get dates with games on them, query to get all the start dates, so we can remove days without games
-
 
 const Games = (props) => {
+  const router = useRouter();
   const theme = useTheme();
   const scrollRef = useRef(null);
 
   const defaultDate = moment().format('YYYY-MM-DD');
+  const season = (router.query && router.query.season) || new HelperCBB().getCurrentSeason();
+
+  const sessionDataKey = 'CBB.GAMES.DATA.'+season;
 
   // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
-  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem('CBB.GAMES.DATA') ? JSON.parse(sessionStorage.getItem('CBB.GAMES.DATA')) : {};
+  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem(sessionDataKey) ? JSON.parse(sessionStorage.getItem(sessionDataKey)) : {};
 
-  if (sessionData.expire_session && sessionData.expire_session < new Date().getTime()) {
+
+  if ((sessionData.expire_session && sessionData.expire_session < new Date().getTime()) || +sessionData.season !== +season) {
     sessionData = {};
   }
 
   const statusOptions = [{'value': 'pre', 'label': 'Upcoming'}, {'value': 'live', 'label': 'Live'}, {'value': 'final', 'label': 'Final'}];
 
+  const tabDates = props.dates || [];
   const [request, setRequest] = useState(sessionData.request || false);
   const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : (props.games));
   const [date, setDate] = useState(sessionData.date || null);
@@ -73,13 +79,18 @@ const Games = (props) => {
   // if stored session, refresh in 5 seconds, else normal 30 seconds
   const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
 
-  const season = new HelperCBB().getCurrentSeason();
-  // const season = 2017;
 
   const { height, width } = useWindowDimensions();
 
+  // For speed, lookups
+  const tabDatesObject = {};
+
+  for (let i = 0; i < tabDates.length; i++) {
+    tabDatesObject[tabDates[i]] = true;
+  }
+
   const triggerSessionStorage = (optScrollTop) => {
-    sessionStorage.setItem('CBB.GAMES.DATA', JSON.stringify({
+    sessionStorage.setItem(sessionDataKey, JSON.stringify({
       'request': request,
       'games': games,
       'date': date,
@@ -87,6 +98,7 @@ const Games = (props) => {
       'spin': false,
       'scrollTop': optScrollTop || scrollTop,
       'expire_session': new Date().getTime() + (5 * 60 * 1000), // 5 mins from now
+      'season': season,
     }));
   };
 
@@ -115,6 +127,43 @@ const Games = (props) => {
   const scrollToElement = () => {
     scrollRef.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
   };
+
+
+  /**
+   * Find the closest tabDates match to a date
+   * @param  {String} d a date to match YYYY-MM-DD
+   * @return {?String}
+   */
+  const getClosestDate = (d) => {
+    let closestDist = null;
+    let closestDate = null;
+
+    if (d in tabDatesObject) {
+      return d;
+    }
+
+    for (let i = 0; i < tabDates.length; i++) {
+      const a = new Date(tabDates[i]);
+      const b = new Date(d);
+
+      const dist = Math.abs(a - b);
+
+      if (
+        !closestDist ||
+        dist < closestDist
+      ) {
+        closestDist = dist;
+        closestDate = tabDates[i];
+      }
+    }
+
+    return closestDate;
+  };
+
+
+  const getSelectedDate = () => {
+    return date || now;
+  }
 
 
   useEffect(() => {
@@ -165,29 +214,12 @@ const Games = (props) => {
   }
 
   if (!request) {
-    getGames(now);
+    const d = getClosestDate(getSelectedDate());
+    getGames(d || tabDates[0]);
   }
 
-
-  const getRangeDates = (start, end)  => {
-    let dates = [];
-
-    for (let date = new Date(start); date <= new Date(end); date.setDate(date.getDate()+1)) {
-      dates.push(new Date(date).toISOString().split('T')[0]);
-    }
-    return dates;
-  };
-
-  const getTabDates = () => {
-    return getRangeDates((season - 1) + '-11-01', season + '-04-10');
-  }
-
-  const getSelectedDate = () => {
-    return date || now;
-  }
 
   const updateDate = (e, value) => {
-    const tabDates = getTabDates();
     setScrollTop(0);
     getGames(tabDates[value]);
   }
@@ -354,7 +386,6 @@ const Games = (props) => {
   };
 
 
-  const tabDates = getTabDates();
   let tabComponents = [];
   for (let i = 0; i < tabDates.length; i++) {
     let label = moment(tabDates[i]).format('MMM D');
@@ -374,7 +405,7 @@ const Games = (props) => {
     tabComponents.push(<Tab ref = {ref_} key = {tabDates[i]} value = {i} label = {label} sx = {{'fontSize': '12px', 'minWidth': 60}} />);
   }
 
-  const tabIndex = tabDates.indexOf(getSelectedDate());
+  const tabIndex = tabDates.indexOf(getSelectedDate()) > -1 ? tabDates.indexOf(getSelectedDate()) : tabDates.length - 1;
 
   const handleConferences = (conference) => {
     let currentConferences = [...conferences];
@@ -469,6 +500,12 @@ const Games = (props) => {
                   minDate = {'2008-01-01'}
                   maxDate = {(new HelperCBB().getCurrentSeason() + 1) + '-12-31'}
                   value={getSelectedDate()}
+                  shouldDisableDate = {(momentObj) => {
+                    if (!(momentObj.format('YYYY-MM-DD') in tabDatesObject)) {
+                      return true;
+                    }
+                    return false;
+                  }}
                   onChange = {(momentObj) => {
                     // required for some reason
                   }}
@@ -505,6 +542,49 @@ const Games = (props) => {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const seconds = 60 * 60 * 12; // cache for 12 hours
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage='+seconds+', stale-while-revalidate=59'
+  );
+
+  const CBB = new HelperCBB();
+
+  const season =  (context.query && context.query.season) || CBB.getCurrentSeason();
+
+  let dates = [];
+
+  const cachedLocation = 'CBB.GAMES.LOAD.'+season;
+
+  // const cached = cacheData.get(cachedLocation);
+  const cached = false
+
+  if (!cached) {
+    await api.Request({
+      'class': 'cbb_game',
+      'function': 'getSeasonDates',
+      'arguments': {
+        'season': season
+      }
+    }).then((response) => {
+      dates = response;
+      cacheData.put(cachedLocation, dates, 1000 * seconds);
+    }).catch((e) => {
+
+    });
+  } else {
+    dates = cached;
+  }
+
+
+  return {
+    'props': {
+      'dates': dates,
+    },
+  }
 }
 
 export default Games;

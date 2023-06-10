@@ -351,7 +351,7 @@ const Stats = (props) => {
           colors.backgroundColor = backgroundColor;
           colors.color = theme.palette.getContrastText(backgroundColor);
         }
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}{row[columns[i] + '_rank'] ? <span style = {Object.assign({}, colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <span style = {Object.assign({}, colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
         
         // if (row[columns[i] + '_rank']) {
         //   tableCells.push(

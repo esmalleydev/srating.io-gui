@@ -1316,7 +1316,7 @@ export async function getServerSideProps(context) {
       }
     }).then((response) => {
       data = response;
-      cacheData.put(cachedLocation, data, 1000 * 60 * 10);
+      cacheData.put(cachedLocation, data, 1000 * seconds);
     }).catch((e) => {
 
     });
