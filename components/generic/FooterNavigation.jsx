@@ -104,7 +104,7 @@ const FooterNavigation = (props) => {
       </Backdrop>
       : ''}
     {viewingSport ? 
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, 'zIndex': 9000,}} elevation={3}>
+      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, /*'zIndex': 9000,*/}} elevation={3}>
         <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}} showLabels value={pages.indexOf(viewingPage)}>
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />

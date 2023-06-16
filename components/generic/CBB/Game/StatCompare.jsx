@@ -34,8 +34,6 @@ const StatCompare = (props) => {
     });
   }
 
-  console.log(statsData);
-
   const statsCompare = [
     {
       'label': 'Elo',

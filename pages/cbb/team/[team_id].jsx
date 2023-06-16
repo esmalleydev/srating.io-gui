@@ -35,6 +35,7 @@ const Team = (props) => {
   const router = useRouter();
   const team_id = router.query && router.query.team_id;
   const season = router.query && router.query.season || new HelperCBB().getCurrentSeason();
+  // let view = router.query && router.query.view || 'schedule';
 
   const team = props.team;
 
@@ -43,7 +44,16 @@ const Team = (props) => {
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
 
+  let tabOptions = {
+    'schedule': 'Schedule',
+    'stats': 'Stats',
+    'trends': 'Trends',
+    'roster': 'Roster',
+  };
 
+  let tabOrder = ['schedule', 'stats', 'trends', 'roster'];
+
+  // const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0);
   const [tabIndex, setTabIndex] = useState(0);
 
 
@@ -54,14 +64,6 @@ const Team = (props) => {
   }
 
 
-  let tabOptions = {
-    'schedule': 'Schedule',
-    'stats': 'Stats',
-    'trends': 'Trends',
-    'roster': 'Roster',
-  };
-
-  let tabOrder = ['schedule', 'stats', 'trends', 'roster'];
 
   let tabs = [];
 
@@ -76,6 +78,10 @@ const Team = (props) => {
 
   const handleTabClick = (value) => {
     setTabIndex(value);
+
+    // view = tabOrder[tabIndex];
+
+    // router.push('/cbb/team/' + team_id + '?season='+season + '&view=' + view, undefined, { shallow: true });
 
     if (value > 0 && props.scrollRef && props.scrollRef.current) {
       props.scrollRef.current.scrollTo(0, 0);
