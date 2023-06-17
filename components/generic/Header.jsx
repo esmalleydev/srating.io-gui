@@ -170,7 +170,7 @@ const Header = (props) => {
                   <Sidebar theme = {props.theme} handleTheme = {props.handleTheme} />
                 </Drawer>
               </IconButton>
-              <Box sx = {{ display: 'flex', mr: 1 }} style = {logoStyle} onClick = {handleHome}>{(width < 450 ? '> SR' : '> sRating.io')}<sup style = {{'fontSize': '14px'}}>beta</sup></Box>
+              <Box sx = {{ display: 'flex', mr: 1 }} style = {logoStyle} onClick = {handleHome}>{(typeof window !== 'undefined' && width < 450 ? '> SR' : '> sRating.io')}<sup style = {{'fontSize': '14px'}}>beta</sup></Box>
               <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 {/*<Button
                   id="sports-picker-button"
