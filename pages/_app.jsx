@@ -98,14 +98,14 @@ const App = ({ Component, pageProps, router }) => {
           <FooterNavigation theme = {theme} handleTheme = {switchTheme} />
         </div>
       </div>
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-3TLQ1QEXSE" strategy="afterInteractive" />
+      <Script src="https://www.googletagmanager.com/gtag/js?id=G-8VLTD3X7R8" strategy="afterInteractive" />
       <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', 'G-3TLQ1QEXSE');
+          gtag('config', 'G-8VLTD3X7R8');
         `}
       </Script>
     </ThemeProvider>
