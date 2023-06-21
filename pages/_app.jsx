@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import React, { useState, useEffect, useRef } from 'react';
 
+import Script from 'next/script'
 import Cookies from 'universal-cookie';
 
 import useWindowDimensions from '../components/hooks/useWindowDimensions';
@@ -34,11 +35,15 @@ const App = ({ Component, pageProps, router }) => {
     },
   });
 
+  let session_id = cookies.get('session_id');
 
   const [validSession, setValidSession] = useState(false);
   const [requestedSession, setRequestedSession] = useState(false);
 
-  let session_id = cookies.get('session_id');
+
+  if (validSession === true && !session_id) {
+    setValidSession(false);
+  }
 
   if (!requestedSession && session_id) {
     setRequestedSession(true);
@@ -93,6 +98,16 @@ const App = ({ Component, pageProps, router }) => {
           <FooterNavigation theme = {theme} handleTheme = {switchTheme} />
         </div>
       </div>
+      <Script src="https://www.googletagmanager.com/gtag/js?id=G-3TLQ1QEXSE" strategy="afterInteractive" />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-3TLQ1QEXSE');
+        `}
+      </Script>
     </ThemeProvider>
   );
 }
