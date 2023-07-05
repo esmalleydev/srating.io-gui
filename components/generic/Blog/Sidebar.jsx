@@ -5,7 +5,7 @@ import moment from 'moment';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 
-const BSidebar = (props)  => {
+const Sidebar = (props)  => {
   const posts = props.posts;
 
   const router = useRouter();
@@ -25,4 +25,4 @@ const BSidebar = (props)  => {
   );
 }
 
-export default BSidebar;
+export default Sidebar;

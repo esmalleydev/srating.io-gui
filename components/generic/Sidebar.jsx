@@ -20,7 +20,7 @@ import DarkModeIcon from '@mui/icons-material/ModeNight';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import BeerIcon from '@mui/icons-material/SportsBar';
 import HomeIcon from '@mui/icons-material/Home';
-import RSSFeedIcon from '@mui/icons-material/RSSFeed';
+import RSSFeedIcon from '@mui/icons-material/RssFeed';
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
 import PicksIcon from '@mui/icons-material/Casino';
