@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 
-import Sidebar from '../../components/generic/Blog/Sidebar';
+import Sidebar from '../../components/generic/Blog/BSidebar';
 import Post from '../../components/generic/Blog/Post';
 
 import { getAllPostIds, getPostData, getSidebarPosts } from '../../lib/blog';

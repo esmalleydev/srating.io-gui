@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
 
-import Sidebar from '../components/generic/Blog/Sidebar';
+import Sidebar from '../components/generic/Blog/BSidebar';
 import Post from '../components/generic/Blog/Post';
 
 
