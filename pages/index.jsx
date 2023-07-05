@@ -80,12 +80,12 @@ const Home = (props) => {
   return (
     <div>
       <Head>
-        <title>sRating | Aggregate college basketball ranking, scores, picks</title>
-        <meta name = 'description' content = 'View statistic ranking, live score, live odds, picks for college basketball' key = 'desc'/>
+        <title>sRating | Aggregate college basketball stats, ranking, scores, picks</title>
+        <meta name = 'description' content = 'View stats, ranking, live scores, live odds, picks for college basketball' key = 'desc'/>
         <meta property="og:title" content=">sRating.io college basketball rankings" />
-        <meta property="og:description" content="View statistic ranking, live score, live odds, picks for college basketball" />
+        <meta property="og:description" content="View stats, ranking, live scores, live odds, picks for college basketball" />
         <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = 'View statistic ranking, live score, live odds, picks for college basketball' />
+        <meta name = 'twitter:title' content = 'View stats, ranking, live scores, live odds, picks for college basketball' />
       </Head>
       <main>
         <Box

@@ -559,8 +559,7 @@ export async function getServerSideProps(context) {
 
   const cachedLocation = 'CBB.GAMES.LOAD.'+season;
 
-  // const cached = cacheData.get(cachedLocation);
-  const cached = false
+  const cached = cacheData.get(cachedLocation);
 
   if (!cached) {
     await api.Request({

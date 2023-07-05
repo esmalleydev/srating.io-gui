@@ -1288,7 +1288,7 @@ const Ranking = (props) => {
 
 
 export async function getServerSideProps(context) {
-  const seconds = 60 * 10; // cache for 10 mins
+  const seconds = 60 * 60 * 12; // cache for 12 hours
   context.res.setHeader(
     'Cache-Control',
     'public, s-maxage='+seconds+', stale-while-revalidate=59'
