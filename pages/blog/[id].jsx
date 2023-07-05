@@ -27,11 +27,11 @@ const Blog = (props) => {
     <div>
       <Head>
         <title>sRating | Blog | {metadata.title}</title>
-        {/*<meta name = 'description' content = {name + ' statistics'} key = 'desc'/>*/}
-        {/*<meta property="og:title" content = {name + ' statistics'} />*/}
-        {/*<meta property="og:description" content = {name + ' statistics'} />*/}
+        <meta name = 'description' content = {metadata.excerpt} key = 'desc'/>
+        <meta property="og:title" content = {metadata.title} />
+        <meta property="og:description" content = {metadata.excerpt} />
         <meta name="twitter:card" content="summary" />
-        {/*<meta name = 'twitter:title' content = {name + ' statistics'} />*/}
+        <meta name = 'twitter:title' content = {metadata.title} />
       </Head>
       <div style = {{'display': 'flex', 'padding': 20}}>
         <Sidebar posts = {sidebarPosts} />
