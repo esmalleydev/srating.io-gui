@@ -2,30 +2,34 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-import Image from 'next/image'
-import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
+import Cookies from 'universal-cookie';
+
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 
 
 const Account = (props) => {
-
+  const cookies = new Cookies();
   const router = useRouter();
 
   const hash = process.env.COMMIT_HASH;
   const commitDate = process.env.COMMIT_DATE;
 
-  // logout button
+  const logout = () => {
+    cookies.remove('session_id');
+    router.push('/');
+  };
+
+  let session_id = cookies.get('session_id');
+
+  if (!session_id) {
+    // TODO REDIRECT, LOGOUT DOESNT WORK IF NAVIGATING DIRECT TO URL
+    // logout();
+  }
+
+  // todo
   // account overview
   // stripe subscriptions panel
 
@@ -47,6 +51,7 @@ const Account = (props) => {
             pb: 6,
           }}
         >
+          <Link color="text.secondary" underline="hover" onClick = {logout}>Sign out</Link>
           <Container maxWidth="sm">
             Coming soon
           </Container>

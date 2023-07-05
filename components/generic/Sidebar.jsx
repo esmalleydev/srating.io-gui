@@ -12,15 +12,18 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+// import Backdrop from '@mui/material/Backdrop';
+// import CircularProgress from '@mui/material/CircularProgress';
 
 // import TripleDotsIcon from '@mui/icons-material/MoreVert';
 import DarkModeIcon from '@mui/icons-material/ModeNight';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import BeerIcon from '@mui/icons-material/SportsBar';
 import HomeIcon from '@mui/icons-material/Home';
-
-// todo a lot more options here in the future, blog, etc
-
+import RSSFeedIcon from '@mui/icons-material/RSSFeed';
+import RankingIcon from '@mui/icons-material/EmojiEvents';
+import ScoresIcon from '@mui/icons-material/Scoreboard';
+import PicksIcon from '@mui/icons-material/Casino';
 
 
 const Sidebar = (props) => {
@@ -28,6 +31,7 @@ const Sidebar = (props) => {
 
   const theme = useTheme();
   const router = useRouter();
+  // const [spin, setSpin] = useState(false);
 
   // todo allow keyboard to click the option on enter keydown
   /*
@@ -35,17 +39,40 @@ const Sidebar = (props) => {
     console.log(e);
   }
   */
+ 
+  const handleRanking = () => {
+    // setSpin(true);
+    router.push('/cbb/ranking').then(() => {
+      // setSpin(false);
+    });
+  };
+
+  const handleScores = () => {
+    // setSpin(true);
+    sessionStorage.removeItem('CBB.GAMES.DATA');
+    router.push('/cbb/games').then(() => {
+      // setSpin(false);
+    });
+  };
+
+  const handlePicks = () => {
+    // setSpin(true);
+    router.push('/cbb/picks').then(() => {
+      // setSpin(false);
+    });
+  };
 
 
   return (
-    <Box
-      sx={{'width': 250}}
-      role="presentation"
-      // onClick={handleClick}
-      // onKeyDown={handleClick}
-    >
-      <List>
-        <ListItem key={'home'} disablePadding onClick = {() => {router.push('/')}}>
+    <div>
+      <Box
+        sx={{'width': 250}}
+        role="presentation"
+        // onClick={handleClick}
+        // onKeyDown={handleClick}
+      >
+        <List>
+          <ListItem key={'home'} disablePadding onClick = {() => {router.push('/')}}>
             <ListItemButton>
               <ListItemIcon>
                 <HomeIcon />
@@ -53,28 +80,66 @@ const Sidebar = (props) => {
               <ListItemText primary={'Home'} />
             </ListItemButton>
           </ListItem>
+
+          <ListItem key={'ranking'} disablePadding onClick = {handleRanking}>
+            <ListItemButton>
+              <ListItemIcon>
+                <RankingIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Ranking'} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key={'scores'} disablePadding onClick = {handleScores}>
+            <ListItemButton>
+              <ListItemIcon>
+                <ScoresIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Scores'} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key={'picks'} disablePadding onClick = {handlePicks}>
+            <ListItemButton>
+              <ListItemIcon>
+                <PicksIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Picks'} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key={'blog'} disablePadding onClick = {() => {router.push('/blog')}}>
+            <ListItemButton>
+              <ListItemIcon>
+                <RSSFeedIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Blog'} />
+            </ListItemButton>
+          </ListItem>
+
+          <Divider />
+
+          <ListItem key={'theme'} disablePadding onClick = {() => {setTimeout(props.handleTheme, 100);}}>
+            <ListItemButton>
+              <ListItemIcon>
+                {props.theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+              </ListItemIcon>
+              <ListItemText primary={props.theme === 'dark' ? 'Light mode' : 'Dark mode'} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key={'beer'} disablePadding onClick = {() => {window.open('https://www.buymeacoffee.com/lxeUvrCaH1', '_blank');}}>
+            <ListItemButton>
+              <ListItemIcon>
+                <BeerIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Buy me a beer'} />
+            </ListItemButton>
+          </ListItem>
+        </List>
         <Divider />
-
-        <ListItem key={'theme'} disablePadding onClick = {() => {setTimeout(props.handleTheme, 100);}}>
-          <ListItemButton>
-            <ListItemIcon>
-              {props.theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-            </ListItemIcon>
-            <ListItemText primary={props.theme === 'dark' ? 'Light mode' : 'Dark mode'} />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem key={'beer'} disablePadding onClick = {() => {window.open('https://www.buymeacoffee.com/lxeUvrCaH1', '_blank');}}>
-          <ListItemButton>
-            <ListItemIcon>
-              <BeerIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Buy me a beer'} />
-          </ListItemButton>
-        </ListItem>
-      </List>
-      <Divider />
-    </Box>
+      </Box>
+    </div>
   );
 }
 

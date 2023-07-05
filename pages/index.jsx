@@ -114,8 +114,8 @@ const Home = (props) => {
               spacing={2}
               justifyContent="center"
             >
-              <Button onClick = {() => {router.push('/cbb/ranking')}} variant="contained">CBB ranking</Button>
-              <Button onClick = {() => {router.push('/cbb/games')}} variant="outlined">CBB Scores</Button>
+              <Button onClick = {() => {router.push('/cbb/ranking')}} variant="contained">Ranking</Button>
+              <Button onClick = {() => {router.push('/cbb/games')}} variant="outlined">Scores</Button>
             </Stack>
           </Container>
         </Box>
@@ -183,6 +183,16 @@ const Home = (props) => {
             component="p"
           >
             <Link color="text.secondary" underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">{commitDate} - {hash}</Link>
+          </Typography>
+        </div>
+        <div>
+          <Typography
+            variant="subtitle1"
+            align="center"
+            color="text.secondary"
+            component="p"
+          >
+            SRATING LLC
           </Typography>
         </div>
       </Box>

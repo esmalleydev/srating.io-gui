@@ -93,7 +93,7 @@ const Header = (props) => {
 
   return (
     <AppBar position="fixed">
-      {isLoading ? <Container maxWidth="xl"><Toolbar disableGutters /></Container> :
+      {isLoading ? <Container maxWidth="xl"><Toolbar disableGutters /></Container> : // This prevents flashing on mobile since mediaQuery / width is a hook, will not be useable for first load
       <div>
         <Container maxWidth="xl">
           {
@@ -118,39 +118,6 @@ const Header = (props) => {
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1 }} style = {logoStyle} onClick = {handleHome}>{(width < 450 ? '> SR' : '> sRating.io')}<sup style = {{'fontSize': '14px'}}>beta</sup></Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
-                  {/*<Button
-                    id="sports-picker-button"
-                    aria-controls={open ? 'sports-picker-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    variant="text"
-                    style = {{'color': '#fff'}}
-                    disableElevation
-                    onClick={handleSport}
-                    endIcon={<KeyboardArrowDownIcon />}
-                  >
-                    {viewingSport ? viewingSport : 'Sport'}
-                  </Button>
-                  <StyledMenu
-                    id="sports-picker-menu"
-                    MenuListProps={{
-                      'aria-labelledby': 'sports-picker-button',
-                    }}
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleSportClose}
-                  >
-                   {sports.map((sport, index) => (
-                    <MenuItem
-                      key={sport}
-                      disabled={index === selectedIndex || sport !== 'CBB'}
-                      selected={index === selectedIndex}
-                      onClick={(event) => handleSportClick(event, index)}
-                    >
-                      {sport}
-                    </MenuItem>
-                  ))}
-                  </StyledMenu>*/}
                 </Box>
                 <Box sx={{ flexGrow: 0, 'marginRight': (width < 600 ? 0 : '5px') }}>
                   {width < 600 ? <IconButton  onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search />}
