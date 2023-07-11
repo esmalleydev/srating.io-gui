@@ -11,7 +11,9 @@ const Sidebar = (props)  => {
   const router = useRouter();
 
   return (
-    <div style = {{'min-width': 125, 'padding-right': 10}}>
+    <div style = {{'min-width': 125, 'float': 'right', 'marginTop': 100, 'marginLeft': 10, 'textAlign': 'right'}}>
+      <Typography variant = 'h6'>Posts</Typography>
+      <hr />
       {posts.map((post) => {
         return (
           <div>

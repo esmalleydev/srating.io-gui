@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
 
-import Sidebar from '../components/generic/Blog/Sidebar';
 import Post from '../components/generic/Blog/Post';
 
 
@@ -29,11 +28,8 @@ const Blog = (props) => {
         <meta name="twitter:card" content="summary" />
         <meta name = 'twitter:title' content = 'srating Blog | information about college basketball statistics' />
       </Head>
-      <div style = {{'display': 'flex', 'padding': 20}}>
-        <Sidebar posts = {sidebarPosts} />
-        <div>
-          <Post post = {mainPost} />
-        </div>
+      <div style = {{'padding': 20}}>
+        <Post post = {mainPost} posts = {sidebarPosts} />
       </div>
     </div>
   );

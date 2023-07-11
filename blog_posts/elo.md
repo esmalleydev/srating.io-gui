@@ -18,32 +18,32 @@ In the world of competitive sports, ranking systems play a vital role in determi
 ## Understanding the Elo Rating System
 The Elo rating system is a method for calculating the relative skill levels of players or teams in head-to-head competitions. It assigns each player or team an Elo rating, which represents their estimated strength. The system takes into account the outcome of each match and updates the ratings accordingly. The Elo rating system assumes that the outcome of a match is influenced by the difference in ratings between the competitors.
 
-## Code example
+## JS Code example
 
 
 ```javascript
-const r1 = Math.pow(10, (team_1_current_elo / 400));
-const r2 = Math.pow(10, (team_2_current_elo / 400));
+r1 = Math.pow(10, (elo_1 / 400));
+r2 = Math.pow(10, (elo_2 / 400));
 
-const e1 = r1 / (r1 + r2);
-const e2 = r2 / (r1 + r2);
+e1 = r1 / (r1 + r2);
+e2 = r2 / (r1 + r2);
 
-const s1 = away_score > home_score ? 1 : 0;
-const s2 = home_score > away_score ? 1 : 0;
+s1 = away_score > home_score ? 1 : 0;
+s2 = home_score > away_score ? 1 : 0;
 
-const k = 32;
+k = 32;
 
-let team_1_new_elo = team_1_current_elo + (k * (s1 - e1));
-let team_2_new_elo = team_2_current_elo + (k * (s2 - e2));
+new_elo_1 = elo_1 + (k * (s1 - e1));
+new_elo_2 = elo_2 + (k * (s2 - e2));
 ```
 
 ## Breaking Down the Formula:
 
-1. Step 1: Convert the Elo ratings into exponentiated values using the base 10 logarithm. This conversion is done to scale the ratings appropriately for further calculations.
-2. Step 2: Calculate the expected scores (`e1` and `e2`) for both teams using the exponentiated ratings.
-3. Step 3: Determine the actual scores (`s1` and `s2`) based on the outcome of the game. If the away team's score is higher, `s1` is 1 or if the home team's score is higher, `s2` is 1. Otherwise,  `s1` or `s2` are 0.
-4. Step 4: Set the k-factor, which represents the weight or sensitivity of each match's impact on the Elo ratings. In this case, the value of k is set to 32.
-5. Step 5: Update the Elo ratings for both teams using the formula: `new_elo = old_elo + (k * (actual_score - expected_score))`. The difference between the actual and expected scores determines the change in ratings for each team.
+1. Convert the Elo ratings into exponentiated values using the base 10 logarithm. This conversion is done to scale the ratings appropriately for further calculations.
+2. Calculate the expected scores (`e1` and `e2`) for both teams using the exponentiated ratings.
+3. Determine the actual scores (`s1` and `s2`) based on the outcome of the game. If the away team's score is higher, `s1` is 1 or if the home team's score is higher, `s2` is 1. Otherwise,  `s1` or `s2` are 0.
+4. Set the k-factor, which represents the weight or sensitivity of each match's impact on the Elo ratings. In this case, the value of k is set to 32.
+5. Update the Elo ratings for both teams using the formula: `new_elo = old_elo + (k * (actual_score - expected_score))`. The difference between the actual and expected scores determines the change in ratings for each team.
 
 ## Conclusion
 

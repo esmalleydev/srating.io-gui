@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-
-import Sidebar from '../../components/generic/Blog/Sidebar';
 import Post from '../../components/generic/Blog/Post';
 
 import { getAllPostIds, getPostData, getSidebarPosts } from '../../lib/blog';
@@ -34,10 +32,7 @@ const Blog = (props) => {
         <meta name = 'twitter:title' content = {metadata.title} />
       </Head>
       <div style = {{'display': 'flex', 'padding': 20}}>
-        <Sidebar posts = {sidebarPosts} />
-        <div>
-          <Post post = {data} />
-        </div>
+        <Post post = {data} posts = {sidebarPosts} />
       </div>
     </div>
   );
