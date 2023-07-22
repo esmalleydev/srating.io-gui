@@ -13,6 +13,17 @@ body {
   overflow: hidden;
 }
 
+/* .scroller {
+  height: 100%;
+  overflow-y: overlay;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+} */
+
 ::-webkit-scrollbar {
   width: 14px;
 }

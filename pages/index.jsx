@@ -106,7 +106,7 @@ const Home = (props) => {
               sRating
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Aggregate data, clear statistics, better visualization, no ads, open-source.
+              Aggregate data, clear statistics, better visualization, no ads, <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</Link>.
             </Typography>
             <Stack
               sx={{ pt: 4 }}

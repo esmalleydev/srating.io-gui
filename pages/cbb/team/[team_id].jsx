@@ -120,10 +120,10 @@ const Team = (props) => {
         </Tabs>
       </AppBar>
       <div style = {{'padding': '20px'}}>
-        {selectedTab == 'schedule' ? <Schedule team = {team} games = {team.cbb_games} /> : ''}
-        {selectedTab == 'stats' ? <Stats team = {team} stats = {team.stats} /> : ''}
-        {selectedTab == 'trends' ? <Trends team = {team} ranking = {team.cbb_ranking} elo = {team.cbb_elo} games = {team.cbb_games} /> : ''}
-        {selectedTab == 'roster' ? <Roster team = {team} players = {team.players} season = {season} /> : ''}
+        {selectedTab == 'schedule' ? <Schedule key = {team.team_id} team = {team} games = {team.cbb_games} /> : ''}
+        {selectedTab == 'stats' ? <Stats key = {team.team_id} team = {team} stats = {team.stats} /> : ''}
+        {selectedTab == 'trends' ? <Trends key = {team.team_id} team = {team} ranking = {team.cbb_ranking} elo = {team.cbb_elo} games = {team.cbb_games} /> : ''}
+        {selectedTab == 'roster' ? <Roster key = {team.team_id} team = {team} players = {team.players} season = {season} /> : ''}
       </div>
     </div>
   );

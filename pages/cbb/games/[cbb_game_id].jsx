@@ -148,9 +148,9 @@ const Game = (props) => {
           </Tabs>
         </Box>
       </AppBar>
-      {selectedTab == 'game_details' ? <GameDetails game = {game} /> : ''}
-      {selectedTab == 'matchup' ? <Matchup game = {game} awayTeam={game.teams[game.away_team_id]} awayStats={game.stats[game.away_team_id]} homeTeam={game.teams[game.home_team_id]} homeStats={game.stats[game.home_team_id]} /> : ''}
-      {selectedTab == 'trends' ? <Trends game = {game} /> : ''}
+      {selectedTab == 'game_details' ? <GameDetails key = {game.cbb_game_id} game = {game} /> : ''}
+      {selectedTab == 'matchup' ? <Matchup key = {game.cbb_game_id} game = {game} awayTeam={game.teams[game.away_team_id]} awayStats={game.stats[game.away_team_id]} homeTeam={game.teams[game.home_team_id]} homeStats={game.stats[game.home_team_id]} /> : ''}
+      {selectedTab == 'trends' ? <Trends key = {game.cbb_game_id} game = {game} /> : ''}
     </div>
   );
 }

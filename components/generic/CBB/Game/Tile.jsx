@@ -40,7 +40,7 @@ const Tile = (props) => {
   const handleMouseEnter = (e) => {
     setHover(true);
   };
-
+  
   const handleMouseLeave = (e) => {
     setHover(false);
   };
@@ -69,13 +69,13 @@ const Tile = (props) => {
       'lineHeight': '36px',
     };
 
-    if (hover) {
-      flexContainer.backgroundColor = theme.palette.action.hover;
-    }
+    // if (hover) {
+    //   flexContainer.backgroundColor = theme.palette.action.hover;
+    // }
 
     return (
       <div style = {flexContainer} >
-        <div style = {timeStyle} onClick = {handleClick} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>{startTime}</div>
+        <div style = {timeStyle}>{startTime}</div>
         <IconButton id = {'pin-'+props.data.cbb_game_id} onClick = {handlePin} style = {{'marginLeft': 20}}>
           <PinIcon sx = {pinStyle} fontSize = 'small' />
         </IconButton>
@@ -236,12 +236,11 @@ const Tile = (props) => {
     'width': width > 420 ? '375px' : '320px',
     'minHeight': '100px',
     'margin': '5px',
-    'padding': '10px',
   };
 
   const teamLineStyle = {
     'cursor': 'pointer',
-    'padding': '5px 0px',
+    'padding': '10px',
   };
 
   const pinStyle = {};
@@ -256,13 +255,17 @@ const Tile = (props) => {
 
   return (
     <Paper elevation={3} style = {divStyle}>
-      {getHeader()}
-      <div style = {teamLineStyle} onClick = {handleClick} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>
-        {getTeamLine('away')}
-        {getTeamLine('home')}
+      <div style = {teamLineStyle} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>
+        {getHeader()}
+        <div onClick = {handleClick}>
+          {getTeamLine('away')}
+          {getTeamLine('home')}
+        </div>
       </div>
-      <hr style ={{'marginTop': 0}} />
-      {getOddsLine()}
+      <div style = {{'padding': '0px 10px 10px 10px'}}>
+        <hr style ={{'marginTop': 0}} />
+        {getOddsLine()}
+      </div>
     </Paper>
   );
 }

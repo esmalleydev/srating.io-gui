@@ -18,6 +18,8 @@ const CompareStatistic = (props) => {
 
   const paperContainer = (props.paper === true);
 
+  const maxWidth = props.maxWidth || 600;
+
   const fixedLength = width > 500 ? 2 : 1;
 
   const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
@@ -152,10 +154,10 @@ const CompareStatistic = (props) => {
 
   const Container = (props_) => {
     if (paperContainer) {
-      return <Paper elevation = {3} style = {{'padding': 10, 'maxWidth': 600, 'margin': 'auto'}}>{props_.children}</Paper>;
+      return <Paper elevation = {3} style = {{'padding': 10, 'maxWidth': maxWidth, 'width': '100%', 'margin': 'auto'}}>{props_.children}</Paper>;
     }
 
-    return <div  style = {{'maxWidth': 600, 'margin': 'auto'}}>{props_.children}</div>;
+    return <div style = {{'maxWidth': maxWidth, 'width': '100%', 'margin': 'auto'}}>{props_.children}</div>;
   };
 
 

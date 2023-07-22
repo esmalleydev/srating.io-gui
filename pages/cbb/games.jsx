@@ -9,28 +9,17 @@ import cacheData from 'memory-cache';
 
 import Typography from '@mui/material/Typography';
 
-import IconButton from '@mui/material/IconButton';
-import CalendarIcon from '@mui/icons-material/Event';
 
-import Popover from '@mui/material/Popover';
-import TextField from '@mui/material/TextField';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import Chip from '@mui/material/Chip';
 import Backdrop from '@mui/material/Backdrop';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-
 
 import CircularProgress from '@mui/material/CircularProgress';
 
 import ConferencePicker from '../../components/generic/CBB/ConferencePicker';
 import AdditionalOptions from '../../components/generic/CBB/Games/AdditionalOptions';
 import Tile from '../../components/generic/CBB/Game/Tile.jsx';
+
+import DateAppBar from '../../components/generic/DateAppBar.jsx';
 
 
 import HelperCBB from '../../components/helpers/CBB';
@@ -71,8 +60,6 @@ const Games = (props) => {
   const [conferences, setConferences] = useState([]);
   const [pins, setPins] = useState(typeof window !== 'undefined' && sessionStorage.getItem('CBB.GAMES.PINS') ? JSON.parse(sessionStorage.getItem('CBB.GAMES.PINS')) : []);
   const [status, setStatus] = useState(sessionData.status || statusOptions.map(item => item.value));
-  const [calendarOpen, setCalendarOpen] = useState(false);
-  const [calAncor, setCalAncor] = useState(null);
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
   const [firstRender, setFirstRender] = useState(true);
 
@@ -222,15 +209,6 @@ const Games = (props) => {
   const updateDate = (e, value) => {
     setScrollTop(0);
     getGames(tabDates[value]);
-  }
-
-  const toggleCalendar = (e) => {
-    if (calendarOpen) {
-      setCalAncor(null)
-    } else {
-      setCalAncor(e.currentTarget);
-    }
-    setCalendarOpen(!calendarOpen);
   }
 
   const handlePins = (cbb_game_id) => {
@@ -386,27 +364,6 @@ const Games = (props) => {
   };
 
 
-  let tabComponents = [];
-  for (let i = 0; i < tabDates.length; i++) {
-    let label = moment(tabDates[i]).format('MMM D');
-    if (tabDates[i] === moment().format('YYYY-MM-DD')) {
-      label = 'TODAY';
-    } else if (
-      tabDates[i] === moment().add(1,'days').format('YYYY-MM-DD') ||
-      tabDates[i] === moment().add(2,'days').format('YYYY-MM-DD') ||
-      tabDates[i] === moment().add(3,'days').format('YYYY-MM-DD')
-    ) {
-      label = moment(tabDates[i]).format('ddd');
-    }
-    let ref_ = null;
-    if (tabDates[i] === getSelectedDate()) {
-      ref_ = scrollRef;
-    }
-    tabComponents.push(<Tab ref = {ref_} key = {tabDates[i]} value = {i} label = {label} sx = {{'fontSize': '12px', 'minWidth': 60}} />);
-  }
-
-  const tabIndex = tabDates.indexOf(getSelectedDate()) > -1 ? tabDates.indexOf(getSelectedDate()) : tabDates.length - 1;
-
   const handleConferences = (conference) => {
     let currentConferences = [...conferences];
 
@@ -476,49 +433,14 @@ const Games = (props) => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <div>
-        <AppBar position="fixed" style = {{'marginTop': marginTop, 'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}}>
-          <Toolbar /*sx = {{'padding': 0}}*/ variant = 'dense'>
-            <Tabs value={tabIndex} onChange={updateDate} variant="scrollable" scrollButtons = {true} allowScrollButtonsMobile = {false} indicatorColor="secondary" textColor="inherit" /* sx = {{'backgroundImage': 'linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)'}}*/>
-              {tabComponents}
-            </Tabs>
-            <IconButton sx = {{'padding': 0}} onClick={toggleCalendar} color="inherit">
-              <CalendarIcon />
-            </IconButton>
-            <Popover
-              open={calendarOpen}
-              anchorEl={calAncor}
-              onClose={toggleCalendar}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-            >
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <StaticDatePicker
-                  displayStaticWrapperAs="desktop"
-                  openTo="day"
-                  minDate = {'2008-01-01'}
-                  maxDate = {(new HelperCBB().getCurrentSeason() + 1) + '-12-31'}
-                  value={getSelectedDate()}
-                  shouldDisableDate = {(momentObj) => {
-                    if (!(momentObj.format('YYYY-MM-DD') in tabDatesObject)) {
-                      return true;
-                    }
-                    return false;
-                  }}
-                  onChange = {(momentObj) => {
-                    // required for some reason
-                  }}
-                  onAccept = {(momentObj) => {
-                    getGames(momentObj.format('YYYY-MM-DD'));
-                    toggleCalendar();
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </Popover>
-          </Toolbar>
-        </AppBar>
+        <DateAppBar
+          styles = {{'marginTop': marginTop}}
+          selectedDate = {getSelectedDate()}
+          dates = {tabDates}
+          tabsOnChange = {updateDate}
+          calendarOnAccept = {(momentObj) => {getGames(momentObj.format('YYYY-MM-DD'));}}
+          scrollRef = {scrollRef}
+        />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}>
         <ConferencePicker selected = {conferences} actionHandler = {handleConferences} />

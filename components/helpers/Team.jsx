@@ -32,6 +32,27 @@ class Team {
     return name.toUpperCase().substring(0,3);
   };
 
+  getConference() {
+    let name = 'Unknown';
+
+    if (this.team.conference) {
+      name = this.team.conference;
+    }
+
+    return name;
+  };
+
+  // This doesnt really work with BIG TEN vs BIG EAST, ETC... probably need to curate the list myself
+  // getConferenceShort() {
+  //   let name = 'UNK';
+
+  //   if (this.team.conference) {
+  //     name = this.team.conference;
+  //   }
+
+  //   return name.toUpperCase().substring(0,3);
+  // };
+
   getLastRanking () {
     let last = null;
     if (

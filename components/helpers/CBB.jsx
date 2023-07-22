@@ -79,6 +79,47 @@ class CBB {
     return name;
   }
 
+  /**
+   * Get the teams conference name
+   * @param {String} side 
+   * @return {String}
+   */
+  getTeamConference(side) {
+    let name = 'Unknown';
+    if (
+      this.cbb_game &&
+      this.cbb_game[side + '_team_id'] &&
+      this.cbb_game.teams &&
+      this.cbb_game[side + '_team_id'] in this.cbb_game.teams
+    ) {
+      const team = this.cbb_game.teams[this.cbb_game[side + '_team_id']];
+      name = new Team({'team': team}).getConference();
+    }
+
+    return name;
+  }
+
+   /**
+   * Get the teams short conference name
+   * This doesnt really work with BIG TEN vs BIG EAST, ETC... probably need to curate the list myself
+   * @param {String} side 
+   * @return {String}
+   */
+  // getTeamConferenceShort(side) {
+  //   let name = 'UNK';
+  //   if (
+  //     this.cbb_game &&
+  //     this.cbb_game[side + '_team_id'] &&
+  //     this.cbb_game.teams &&
+  //     this.cbb_game[side + '_team_id'] in this.cbb_game.teams
+  //   ) {
+  //     const team = this.cbb_game.teams[this.cbb_game[side + '_team_id']];
+  //     name = new Team({'team': team}).getConferenceShort();
+  //   }
+
+  //   return name;
+  // }
+
 
   /**
    * Is the game in progress?
@@ -90,10 +131,18 @@ class CBB {
 
   /**
    * Is the game final?
-   * @return {Boolean} [description]
+   * @return {Boolean}
    */
   isFinal() {
     return (this.cbb_game.status === 'final');
+  }
+
+  /**
+   * Is the game played on a neutral court?
+   * @return {Boolean}
+   */
+  isNeuralSite() {
+    return (+this.cbb_game.neutral_site === 1);
   }
 
   /**
@@ -107,15 +156,25 @@ class CBB {
     } else if (this.isInProgress()) {
       startTime = this.getGameTime();
     } else if (this.cbb_game.status === 'pre') {
-      let date = new Date(this.cbb_game.start_timestamp * 1000);
-      startTime = ((date.getHours() % 12) || 12) + (date.getMinutes() ? ':' + (date.getMinutes().toString().length === 1 ? '0' : '') + date.getMinutes() : '') + ' ' + (date.getHours() < 12 ? 'am' : 'pm') + ' ';
-      if (date.getHours() >= 0 && date.getHours() <= 6) {
-        startTime = 'TBA';
-      }
+      startTime = this.getStartTime();
     } else if (this.cbb_game.status === 'postponed') {
       startTime = 'Postponed';
     } else if (this.cbb_game.status === 'cancelled') {
       startTime = 'Cancelled';
+    }
+
+    return startTime;
+  };
+
+  /**
+   * Get the start time of a game
+   * @return {String}
+   */
+  getStartTime() {
+    let date = new Date(this.cbb_game.start_timestamp * 1000);
+    let startTime = ((date.getHours() % 12) || 12) + (date.getMinutes() ? ':' + (date.getMinutes().toString().length === 1 ? '0' : '') + date.getMinutes() : '') + ' ' + (date.getHours() < 12 ? 'am' : 'pm') + ' ';
+    if (date.getHours() >= 0 && date.getHours() <= 6) {
+      startTime = 'TBA';
     }
 
     return startTime;

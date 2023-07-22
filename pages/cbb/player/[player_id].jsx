@@ -112,9 +112,9 @@ const Player = (props) => {
           {tabs}
         </Tabs>
       </AppBar>
-      {selectedTab == 'stats' ? <Stats player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
-      {selectedTab == 'gamelogs' ? <GameLogs player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
-      {selectedTab == 'trends' ? <Trends /> : ''}
+      {selectedTab == 'stats' ? <Stats key = {player.player_id} player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
+      {selectedTab == 'gamelogs' ? <GameLogs key = {player.player_id} player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
+      {selectedTab == 'trends' ? <Trends key = {player.player_id} /> : ''}
     </div>
   );
 }
