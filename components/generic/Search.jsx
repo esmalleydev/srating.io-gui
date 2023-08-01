@@ -110,6 +110,9 @@ const Search = (props) => {
   }));
 
   const handleClick = (event, option) => {
+    if (!option || (!option.player_id && !option.team_id)) {
+      return;
+    }
     setSpin(true);
     if (option && option.player_id) {
       router.push('/cbb/player/' + option.player_id).then(() => {
@@ -145,12 +148,13 @@ const Search = (props) => {
       <Autocomplete
         id="auto complete"
         freeSolo
-        onChange={handleClick}
+        onChange = {handleClick}
         loading = {loading}
         value = {null}
-        options={options}
-        groupBy={(option) => option.group}
-        getOptionLabel={(option) => option.name}
+        options = {options}
+        autoHighlight = {true}
+        groupBy = {(option) => option.group}
+        getOptionLabel = {(option) =>  {return option.name || 'Unknown';}}
         fullWidth = {true}
         renderInput={(params) => {
           const {InputLabelProps,InputProps,...rest} = params;
