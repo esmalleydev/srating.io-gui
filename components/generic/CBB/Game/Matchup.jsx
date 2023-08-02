@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
+// import { useTheme } from '@mui/material/styles';
+// import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 
 import Typography from '@mui/material/Typography';
 import CompareStatistic from '../../CompareStatistic';
 
-import HelperCBB from '../../../helpers/CBB';
+// import HelperCBB from '../../../helpers/CBB';
+import TeamSubHeader from './TeamSubHeader';
   
 const Matchup = (props) => {
   const self = this;
 
-  const { height, width } = useWindowDimensions();
+  // const { height, width } = useWindowDimensions();
 
   const awayTeam = props.awayTeam;
   const homeTeam = props.homeTeam;
@@ -20,13 +21,10 @@ const Matchup = (props) => {
   const awayStats = props.awayStats || {};
   const homeStats = props.homeStats || {};
 
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const game = props.game;
 
-  const CBB = new HelperCBB({
-    'cbb_game': game,
-  });
 
   const baseRows = [
     {
@@ -109,7 +107,7 @@ const Matchup = (props) => {
       'showDifference': true,
     },
     {
-      'name': 'O Rating',
+      'name': 'ORT',
       'title': 'Offensive rating',
       'away': awayStats.offensive_rating,
       'home': homeStats.offensive_rating,
@@ -121,7 +119,7 @@ const Matchup = (props) => {
       'showDifference': true,
     },
     {
-      'name': 'D Rating',
+      'name': 'DRT',
       'title': 'Defensive rating',
       'away': awayStats.defensive_rating,
       'home': homeStats.defensive_rating,
@@ -686,10 +684,7 @@ const Matchup = (props) => {
 
   return (
     <div>
-      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap', 'position': 'sticky', 'top': 100, 'backgroundColor': theme.palette.background.default, 'padding': '20px'}}>
-        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}} variant = 'h6'>{CBB.getTeamName('away')}</Typography>
-        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}} variant = 'h6'>{CBB.getTeamName('home')}</Typography>
-      </div>
+      <TeamSubHeader game = {game} />
       <div style = {{'padding': '0px 20px 20px 20px'}}>
         {(game.home_team_rating || game.away_team_rating) ? <CompareStatistic rows = {baseRows} /> : ''}
         <CompareStatistic paper = {true} rows = {overviewRows} />

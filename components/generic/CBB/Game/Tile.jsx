@@ -7,12 +7,8 @@ import HelperCBB from '../../../helpers/CBB';
 import { useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-
-import PicksIcon from '@mui/icons-material/Casino';
-import MoneyIcon from '@mui/icons-material/CrisisAlert';
 import PinIcon from '@mui/icons-material/PushPin';
 
 const Tile = (props) => {

@@ -3,16 +3,15 @@ import { useTheme } from '@mui/material/styles';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
 
 import Tile from './Tile';
 import AdditionalOptions from './AdditionalOptions';
 import ConferencePicker from '../ConferencePicker';
 
 import Api from './../../../Api.jsx';
-import { Typography } from '@mui/material';
 const api = new Api();
 
-  
 const Picks = (props) => {
   const self = this;
 
@@ -25,6 +24,7 @@ const Picks = (props) => {
   const [picksData, setPicksData] = useState(null);
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
   const [sortOrder, setSortOrder] = useState('start_time');
+  const [pins, setPins] = useState(typeof window !== 'undefined' && sessionStorage.getItem('CBB.GAMES.PINS') ? JSON.parse(sessionStorage.getItem('CBB.GAMES.PINS')) : []);
   const [conferences, setConferences] = useState([]);
 
   useEffect(() => {
@@ -32,6 +32,22 @@ const Picks = (props) => {
     setRankDisplay(localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank');
     setSortOrder(localStorage.getItem('CBB.SORTPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.SORTPICKER.DEFAULT')) : 'start_time');
   }, []);
+
+
+  const handlePins = (cbb_game_id) => {
+    let currentPins = [...pins];
+
+    const index = currentPins.indexOf(cbb_game_id);
+
+    if (index > -1) {
+      currentPins.splice(index, 1);
+    } else {
+      currentPins.push(cbb_game_id);
+    } 
+
+    sessionStorage.setItem('CBB.GAMES.PINS', JSON.stringify(currentPins));
+    setPins(currentPins);
+  };
 
 
   if (!requested) {
@@ -43,7 +59,6 @@ const Picks = (props) => {
         'cbb_game_id': Object.keys(games),
       },
     }).then((response) => {
-      console.log(response);
       setPicksData(response || {});
     }).catch((e) => {
       setPicksData({});
@@ -53,13 +68,22 @@ const Picks = (props) => {
   let sorted_games = Object.values(games);
 
   sorted_games.sort(function(a, b) {
-    // if (pins.length && pins.indexOf(a.cbb_game_id) > -1) {
-    //   return -1;
-    // }
+    if (pins.length && pins.indexOf(a.cbb_game_id) > -1) {
+      return -1;
+    }
 
-    // if (pins.length && pins.indexOf(b.cbb_game_id) > -1) {
-    //   return 1;
-    // }
+    if (pins.length && pins.indexOf(b.cbb_game_id) > -1) {
+      return 1;
+    }
+
+    if (sortOrder === 'win_percentage') {
+      const a_percentage = a.home_team_rating > a.away_team_rating ? a.home_team_rating : a.away_team_rating;
+      const b_percentage = b.home_team_rating > b.away_team_rating ? b.home_team_rating : b.away_team_rating;
+
+      if (a_percentage !== b_percentage) {
+        return a_percentage > b_percentage ? -1 : 1;
+      }
+    }
 
     return a.start_datetime > b.start_datetime ? 1 : -1;
   });
@@ -82,9 +106,8 @@ const Picks = (props) => {
     if (picksData && cbb_game.cbb_game_id in picksData) {
       picks = picksData[cbb_game.cbb_game_id];
     }
-    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} game = {cbb_game} picks = {picks} rankDisplay = {rankDisplay} />);
+    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} game = {cbb_game} picks = {picks} rankDisplay = {rankDisplay} isPinned = {(pins.indexOf(cbb_game.cbb_game_id) > -1)} actionPin = {handlePins} onClickTile = {props.onClickTile} />);
   }
-
 
   const handleConferences = (conference) => {
     let currentConferences = [...conferences];
@@ -116,7 +139,7 @@ const Picks = (props) => {
     <div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
         <ConferencePicker selected = {conferences} actionHandler = {handleConferences} />
-        {/* <AdditionalOptions rankDisplayHandler = {(value) => {setRankDisplay(value);}} rankDisplay = {rankDisplay} sortHandler = {(value) => {setSortOrder(value);}} sortOrder = {sortOrder} /> */}
+        <AdditionalOptions rankDisplayHandler = {(value) => {setRankDisplay(value);}} rankDisplay = {rankDisplay} sortHandler = {(value) => {setSortOrder(value);}} sortOrder = {sortOrder} />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
         {confChips}

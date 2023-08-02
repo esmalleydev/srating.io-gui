@@ -74,6 +74,8 @@ const Stats = (props) => {
       if (orderedBuckets[i] in statsData) {
         let label = null;
 
+        const totalGames = statsData[orderedBuckets[i]].games;
+
         if (orderedBuckets[i] === 'today') {
           label = todayDate;
         } else if (orderedBuckets[i] === 'yesterday') {
@@ -84,19 +86,22 @@ const Stats = (props) => {
           label = monthDate + ' - ' + todayDate;
         }
 
+        const colorStyle = {};
+
         let percentCorrect = 0;
-        if (statsData[orderedBuckets[i]].games) {
-          percentCorrect = ((statsData[orderedBuckets[i]].correct / statsData[orderedBuckets[i]].games) * 100).toFixed(2);
+        if (totalGames) {
+          percentCorrect = ((statsData[orderedBuckets[i]].correct / totalGames) * 100).toFixed(2);
+          let color = ColorUtil.lerpColor(worstColor, bestColor, (+percentCorrect / 100));
+          colorStyle.color = color;
         }
 
-        let color = ColorUtil.lerpColor(worstColor, bestColor, (+percentCorrect / 100));
 
         statContainers.push(
           <Card sx = {cardStyle}>
             <CardContent>
               <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>{label}</Typography>
-              <Typography sx = {{'textAlign': 'center', 'color': color}} variant="h5" component="div">{percentCorrect}%</Typography>
-              <Typography variant="body2">({statsData[orderedBuckets[i]].correct} / {statsData[orderedBuckets[i]].games}) games</Typography>
+              <Typography sx = {Object.assign({'textAlign': 'center'}, colorStyle)} variant="h5" component="div">{totalGames ? percentCorrect + '%' : '-'}</Typography>
+              <Typography variant="body2">({statsData[orderedBuckets[i]].correct} / {totalGames}) games</Typography>
             </CardContent>
           </Card>
         )

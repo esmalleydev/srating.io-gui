@@ -16,6 +16,7 @@ import ListItemText from '@mui/material/ListItemText';
 // import CircularProgress from '@mui/material/CircularProgress';
 
 // import TripleDotsIcon from '@mui/icons-material/MoreVert';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import DarkModeIcon from '@mui/icons-material/ModeNight';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import BeerIcon from '@mui/icons-material/SportsBar';
@@ -81,6 +82,8 @@ const Sidebar = (props) => {
             </ListItemButton>
           </ListItem>
 
+          <Divider />
+
           <ListItem key={'ranking'} disablePadding onClick = {handleRanking}>
             <ListItemButton>
               <ListItemIcon>
@@ -125,6 +128,15 @@ const Sidebar = (props) => {
                 {props.theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
               </ListItemIcon>
               <ListItemText primary={props.theme === 'dark' ? 'Light mode' : 'Dark mode'} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key={'github'} disablePadding onClick = {() => {window.open('https://github.com/esmalleydev/srating.io-gui', '_blank');}}>
+            <ListItemButton>
+              <ListItemIcon>
+                <GitHubIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Github'} />
             </ListItemButton>
           </ListItem>
 

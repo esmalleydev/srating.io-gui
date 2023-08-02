@@ -1259,7 +1259,7 @@ const Ranking = (props) => {
         loading ? 
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :
         <div>
-          <div style = {{'padding': '20px 20px 0px 20px'}}>
+          <div style = {{'padding': '5px 20px 0px 20px'}}>
             <div style = {{'display': 'flex', 'justifyContent': 'right', 'flexWrap': 'wrap'}}>
               <OptionPicker title = 'View' options = {rankViewOptions} selected = {rankView} actionHandler = {handleRankView} />
               <SeasonPicker selected = {season} actionHandler = {handleSeason} />

@@ -19,6 +19,7 @@ import Chip from '@mui/material/Chip';
 
 import HelperCBB from '../../../helpers/CBB';
 import CompareStatistic from '../../CompareStatistic';
+import TeamSubHeader from './TeamSubHeader';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {
@@ -29,11 +30,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }));
 
-/*
-const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
-}));
-*/
 
 const Boxscore = (props) => {
   const self = this;
@@ -41,9 +37,7 @@ const Boxscore = (props) => {
   const theme = useTheme();
   const router = useRouter();
 
-  const [boxscoreCompare, setBoxscoreCompare] = useState('team');
   const [boxscoreSide, setBoxscoreSide] = useState('home');
-  const [tabIndex, setTabIndex] = useState(0);
 
   const game = props.game;
 
@@ -370,10 +364,7 @@ const Boxscore = (props) => {
   return (
     <div>
       <div>
-        <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap', 'position': 'sticky', 'top': 100, 'backgroundColor': theme.palette.background.default, 'padding': '20px'}}>
-          <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h6'>{CBB.getTeamName('away')}</Typography>
-          <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h6'>{CBB.getTeamName('home')}</Typography>
-        </div>
+        <TeamSubHeader game = {game} />
         <div style = {{'padding': 20}}>
           {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}
         </div>

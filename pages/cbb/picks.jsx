@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
 
@@ -21,18 +22,30 @@ const api = new Api();
 
 const Picks = (props) => {
   const self = this;
+  const router = useRouter();
+  const scrollRef = useRef(null);
 
   const tabDates = props.dates;
   const { height, width } = useWindowDimensions();
 
+  const season = (router.query && router.query.season) || new HelperCBB().getCurrentSeason();
+
+  const sessionDataKey = 'CBB.PICKS.DATA.'+season;
+
+  // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
+  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem(sessionDataKey) ? JSON.parse(sessionStorage.getItem(sessionDataKey)) : {};
+  if ((sessionData.expire_session && sessionData.expire_session < new Date().getTime()) || +sessionData.season !== +season) {
+    sessionData = {};
+  }
+
   const [firstRender, setFirstRender] = useState(true);
-  const [request, setRequest] = useState(false);
-  const [spin, setSpin] = useState(true);
-  const [date, setDate] = useState();
+  const [request, setRequest] = useState(sessionData.request || false);
+  const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : (props.games));
+  const [date, setDate] = useState(sessionData.date || null);
+  const [games, setGames] = useState(sessionData.games || {});
   const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
-  const [games, setGames] = useState({});
-  // const [rankDisplay, setRankDisplay] = useState('composite_rank');
-  const [tabIndex, setTabIndex] = useState(0);
+  const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
+  const [tabIndex, setTabIndex] = useState(sessionData.tabIndex || 0);
 
   // For speed, lookups
   const tabDatesObject = {};
@@ -40,17 +53,22 @@ const Picks = (props) => {
     tabDatesObject[tabDates[i]] = true;
   }
 
+  const triggerSessionStorage = () => {
+    sessionStorage.setItem(sessionDataKey, JSON.stringify({
+      'request': request,
+      'games': games,
+      'date': date,
+      'spin': false,
+      'scrollTop': scrollTop,
+      'expire_session': new Date().getTime() + (5 * 60 * 1000), // 5 mins from now
+      'season': season,
+      'tabIndex': tabIndex,
+    }));
+  };
 
-
-  useEffect(() => {
-    setFirstRender(false);
-    // setRankDisplay(localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank');
-  }, []);
-
-  if (firstRender) {
-    return (<div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div>);
-  }
-
+  const scrollToElement = () => {
+    scrollRef.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+  };
 
 
   const getGames = (value) => {;
@@ -73,6 +91,37 @@ const Picks = (props) => {
       // nothing for now
     });
   }
+
+
+  useEffect(() => {
+    triggerSessionStorage();
+  }, [tabIndex, scrollTop, request, games, date]);
+
+  useEffect(() => {
+    scrollToElement();
+  }, [date]);
+
+  useEffect(() => {
+    if (firstRender && props.scrollRef && props.scrollRef.current) {
+      // todo something in nextjs is setting scrolltop to zero right after this, so trick it by putting this at the end of the execution :)
+      // https://github.com/vercel/next.js/issues/20951
+      setTimeout(function() {
+        props.scrollRef.current.scrollTop = scrollTop;
+      }, 1);
+    }
+
+    setFirstRender(false);
+
+    // return function clean_up() {
+    //   console.log('clean up')
+    //   console.log(props.scrollRef.current.scrollTop)
+    // }
+  });
+
+  if (firstRender) {
+    return (<div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div>);
+  }
+
 
    /**
    * Find the closest tabDates match to a date
@@ -117,6 +166,7 @@ const Picks = (props) => {
 
 
   const updateDate = (e, value) => {
+    setScrollTop(0);
     getGames(tabDates[value]);
   }
 
@@ -140,6 +190,15 @@ const Picks = (props) => {
     setTabIndex(value);
   }
 
+  const onClickTile = () => {
+    if (
+      props.scrollRef &&
+      props.scrollRef.current
+    ) {
+      setScrollTop(props.scrollRef.current.scrollTop);
+    }
+  }
+
   let marginTop = '64px';
 
   if (width < 600) {
@@ -161,7 +220,7 @@ const Picks = (props) => {
           dates = {tabDates}
           tabsOnChange = {updateDate}
           calendarOnAccept = {(momentObj) => {getGames(momentObj.format('YYYY-MM-DD'));}}
-          // scrollRef = {scrollRef}
+          scrollRef = {scrollRef}
         />
       </div>
       <Box display="flex" justifyContent="center" /*sx = {{'position': 'sticky', 'top': 100}}*/>
@@ -172,7 +231,7 @@ const Picks = (props) => {
       {
         spin ? <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :
         <div>
-          {selectedTab == 'picks' ? <Picks_ key = {date} games = {games} date = {date} /> : ''}
+          {selectedTab == 'picks' ? <Picks_ key = {date} games = {games} date = {date} onClickTile = {onClickTile} /> : ''}
           {selectedTab == 'calculator' ? <Calculator key = {date} games = {games} date = {date} /> : ''}
           {selectedTab == 'stats' ? <Stats key = {date} date = {date} /> : ''}
         </div>

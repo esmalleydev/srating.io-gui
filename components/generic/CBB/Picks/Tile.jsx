@@ -11,6 +11,8 @@ import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import PinIcon from '@mui/icons-material/PushPin';
 // import Link from '@mui/material/Link';
 
 
@@ -19,13 +21,12 @@ const Tile = (props) => {
   const self = this;
   const router = useRouter();
   const theme = useTheme();
-  const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(props.isPinned || false);
   
   const rankDisplay = props.rankDisplay || 'composite_rank';
   const picksData = props.picks;
   const game = props.game;
-  
+
   const home_team_id = game.home_team_id;
   const away_team_id = game.away_team_id;
 
@@ -35,29 +36,28 @@ const Tile = (props) => {
     'cbb_game': game,
   });
 
+  const pinStyle = {};
+
+  if (pin) {
+    pinStyle.color = theme.palette.warning.light;
+  }
+
 
   const { height, width } = useWindowDimensions();
 
 
   const handleMatchup = (e) => {
+    props.onClickTile();
     // TODO support ?view=matchup
     router.push('/cbb/games/' + game.cbb_game_id);
   };
 
-  const handleMouseEnter = (e) => {
-    setHover(true);
+  const handlePin = () => {
+    if (props.actionPin) {
+      props.actionPin(game.cbb_game_id);
+    }
+    setPin(!pin);
   };
-
-  const handleMouseLeave = (e) => {
-    setHover(false);
-  };
-
-  // const handlePin = () => {
-  //   if (props.actionPin) {
-  //     props.actionPin(game.cbb_game_id);
-  //   }
-  //   setPin(!pin);
-  // };
 
 
   const compareRows = [
@@ -84,7 +84,7 @@ const Tile = (props) => {
       'showDifference': true,
     },
     {
-      'name': 'O Rating',
+      'name': 'ORT',
       'title': 'Offensive rating',
       'away': picksData && picksData[away_team_id] && picksData[away_team_id].offensive_rating,
       'home': picksData && picksData[home_team_id] && picksData[home_team_id].offensive_rating,
@@ -96,7 +96,7 @@ const Tile = (props) => {
       'showDifference': true,
     },
     // {
-    //   'name': 'D Rating',
+    //   'name': 'DRT',
     //   'title': 'Defensive rating',
     //   'away': picksData && picksData[away_team_id] && picksData[away_team_id].defensive_rating,
     //   'home': picksData && picksData[home_team_id] && picksData[home_team_id].defensive_rating,
@@ -133,10 +133,18 @@ const Tile = (props) => {
     // },
   ];
 
+  /**
+   * Get game start time line with pin button
+   * @return {Object} div container
+   */
   const getTime = () => {
-
     return (
-      <Typography color = 'text.secondary' variant = 'overline'>{CBB.getStartTime()}</Typography>
+      <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
+        <Typography color = 'text.secondary' variant = 'overline'>{CBB.getStartTime()}</Typography>
+        <IconButton id = {'pin-'+game.cbb_game_id} onClick = {handlePin}>
+          <PinIcon sx = {pinStyle} fontSize = 'small' />
+        </IconButton>
+      </div>
     );
   };
 
@@ -155,16 +163,22 @@ const Tile = (props) => {
       'alignItems': 'center'
     };
 
-    const awayName = width < 525 ? CBB.getTeamNameShort('away') : CBB.getTeamName('away');
-    const homeName = width < 525 ? CBB.getTeamNameShort('home') : CBB.getTeamName('home');
+    // const awayName = width < 525 ? CBB.getTeamNameShort('away') : CBB.getTeamName('away');
+    // const homeName = width < 525 ? CBB.getTeamNameShort('home') : CBB.getTeamName('home');
+
+    const awayName = CBB.getTeamName('away');
+    const homeName = CBB.getTeamName('home');
+
+    const fontSize = width > 525 ? '1.1rem' : '1rem';
+    const maxWidth = width <= 425 ? 140 : (width <= 375 ? 120 : 1000);
     
     return (
       <div style={flexContainerStyle}>
-        <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden'}}>
-          {CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{awayName}
+        <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidth}}>
+          {CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{awayName}
         </Typography>
-        <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': '1.1rem'}}>
-          {CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{homeName}
+        <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidth}}>
+          {CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{homeName}
         </Typography>
       </div>
     );
@@ -231,27 +245,12 @@ const Tile = (props) => {
     const skeletons = [];
 
     for (let i = 0; i < compareRows.length; i++) {
-      skeletons.push(<Skeleton variant="text" animation="wave" sx = {{'width': '100%', 'maxWidth': maxWidth, 'height': '30px', 'margin': '10px 0px'}} />)
+      skeletons.push(<Skeleton key = {i} variant="text" animation="wave" sx = {{'width': '100%', 'maxWidth': maxWidth, 'height': '30px', 'margin': '10px 0px'}} />)
     }
 
     return skeletons;
   };
 
-
-  const teamLineStyle = {
-    'cursor': 'pointer',
-    'padding': '5px 0px',
-  };
-
-  const pinStyle = {};
-
-  if (hover) {
-    teamLineStyle.backgroundColor = theme.palette.action.hover;
-  }
-
-  if (pin) {
-    pinStyle.color = theme.palette.warning.light;
-  }
 
   return (
     <Paper style = {{'width': '100%', 'maxWidth': maxWidth, 'padding': '10px', 'margin': '10px 0px'}}>
@@ -261,7 +260,7 @@ const Tile = (props) => {
       {
         picksData === null ?
         getSkeleton() :
-        <CompareStatistic maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
+        <CompareStatistic key = {game.cbb_game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
       }
       {getOdds()}
       <div style = {{'textAlign': 'right'}}>

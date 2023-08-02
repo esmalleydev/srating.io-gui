@@ -10,6 +10,7 @@ import Skeleton from '@mui/material/Skeleton';
 
 import CompareStatistic from '../../CompareStatistic';
 import HelperCBB from '../../../helpers/CBB';
+import TeamSubHeader from './TeamSubHeader';
 
 import Api from './../../../Api.jsx';
 const api = new Api();
@@ -69,7 +70,7 @@ const Momentum = (props) => {
       'showDifference': true,
     },
     {
-      'name': 'O Rating',
+      'name': 'ORT',
       'title': 'Offensive rating',
       'away': awayMomentumStats.offensive_rating,
       'home': homeMomentumStats.offensive_rating,
@@ -79,7 +80,7 @@ const Momentum = (props) => {
       'showDifference': true,
     },
     {
-      'name': 'D Rating',
+      'name': 'DRT',
       'title': 'Defensive rating',
       'away': awayMomentumStats.defensive_rating,
       'home': homeMomentumStats.defensive_rating,
@@ -515,10 +516,7 @@ const Momentum = (props) => {
 
   return (
     <div>
-      <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '10px', 'flexWrap': 'nowrap', 'position': 'sticky', 'top': 100, 'backgroundColor': theme.palette.background.default, 'padding': '20px'}}>
-        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('away')}</Typography>
-        <Typography style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'margin': '0px 5px'}}variant = 'h5'>{CBB.getTeamName('home')}</Typography>
-      </div>
+      <TeamSubHeader game = {game} />
       <div style = {{'padding': '0px 20px 20px 20px'}}>
         {
           momentumData === null ?

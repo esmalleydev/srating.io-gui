@@ -10,21 +10,10 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
-import StyledMenu from './StyledMenu';
 import Drawer from '@mui/material/Drawer';
 
 // Icons
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
@@ -123,9 +112,6 @@ const Header = (props) => {
                   {width < 600 ? <IconButton  onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search />}
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
-                  <IconButton  onClick={() => {window.open('https://github.com/esmalleydev/srating.io-gui', '_blank');}} color="inherit">
-                    <GitHubIcon />
-                  </IconButton>
                   <IconButton  onClick={handleAccount} color="inherit">
                     <AccountCircle />
                   </IconButton>
