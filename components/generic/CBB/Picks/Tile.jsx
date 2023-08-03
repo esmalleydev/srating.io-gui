@@ -170,7 +170,7 @@ const Tile = (props) => {
     const homeName = CBB.getTeamName('home');
 
     const fontSize = width > 525 ? '1.1rem' : '1rem';
-    const maxWidth = width <= 425 ? 140 : (width <= 375 ? 120 : 1000);
+    const maxWidth = width <= 425 ? '160px' : (width <= 375 ? '120px' : '1000px');
     
     return (
       <div style={flexContainerStyle}>
