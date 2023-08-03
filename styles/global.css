@@ -24,6 +24,12 @@ body {
   display: none;
 } */
 
+.overlay_scroller {
+  height: 100%;
+  overflow-y: auto;
+  overflow-y: overlay;
+}
+
 ::-webkit-scrollbar {
   width: 14px;
 }

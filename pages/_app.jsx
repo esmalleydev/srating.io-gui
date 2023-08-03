@@ -75,7 +75,7 @@ const App = ({ Component, pageProps, router }) => {
 
   const themeContainerStyle = {
     'height': '100%',
-    'overflowY': 'overlay',
+    // 'overflowY': 'overlay',
   };
 
   let paddingTop = '64px';
@@ -89,7 +89,7 @@ const App = ({ Component, pageProps, router }) => {
   return (
     <ThemeProvider theme={useTheme}>
       <CssBaseline />
-      <div ref = {scrollRef} style = {themeContainerStyle}>
+      <div ref = {scrollRef} className = 'overlay_scroller'>
         <div>
           <Header theme = {theme} handleTheme = {switchTheme} validSession = {validSession} />
           <div style = {{'padding': paddingTop + ' 0px 56px 0px'}}>
