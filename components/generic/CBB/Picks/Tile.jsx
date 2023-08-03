@@ -163,21 +163,19 @@ const Tile = (props) => {
       'alignItems': 'center'
     };
 
-    // const awayName = width < 525 ? CBB.getTeamNameShort('away') : CBB.getTeamName('away');
-    // const homeName = width < 525 ? CBB.getTeamNameShort('home') : CBB.getTeamName('home');
 
     const awayName = CBB.getTeamName('away');
     const homeName = CBB.getTeamName('home');
 
     const fontSize = width > 525 ? '1.1rem' : '1rem';
-    const maxWidth = width <= 425 ? '160px' : (width <= 375 ? '120px' : '1000px');
+    const maxWidthTypography = width <= 425 ? 140 : (width <= 375 ? 120 : 1000);
     
     return (
       <div style={flexContainerStyle}>
-        <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidth}}>
+        <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidthTypography}}>
           {CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{awayName}
         </Typography>
-        <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidth}}>
+        <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidthTypography}}>
           {CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{homeName}
         </Typography>
       </div>
