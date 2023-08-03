@@ -119,7 +119,7 @@ const Header = (props) => {
               </Toolbar>
           }
         </Container>
-        <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
+        <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {props.loginCallback} />
       </div>
       }
     </AppBar>

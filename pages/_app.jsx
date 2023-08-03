@@ -63,6 +63,10 @@ const App = ({ Component, pageProps, router }) => {
     });
   }
 
+  const loginCallback = () => {
+    setValidSession(true);
+  };
+
 
 
   const switchTheme = () => {
@@ -91,7 +95,7 @@ const App = ({ Component, pageProps, router }) => {
       <CssBaseline />
       <div ref = {scrollRef} className = 'overlay_scroller'>
         <div>
-          <Header theme = {theme} handleTheme = {switchTheme} validSession = {validSession} />
+          <Header theme = {theme} handleTheme = {switchTheme} validSession = {validSession} loginCallback = {loginCallback} />
           <div style = {{'padding': paddingTop + ' 0px 56px 0px'}}>
             <Component scrollRef = {scrollRef} {...pageProps} />
           </div>

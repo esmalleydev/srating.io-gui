@@ -71,9 +71,13 @@ const AccountHandler = (props) => {
       if (!session_id) {
         setPasswordError('Incorrect password');
         return;
+      } else if (session_id && session_id.error) {
+        setPasswordError('Something went wrong, try again later');
+        return;
       } else {
         cookies.set('session_id', session_id, {'path': '/'});
         router.push('/account');
+        props.loginCallback();
         props.closeHandler();
       }
     }).catch((e) => {
