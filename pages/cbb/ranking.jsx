@@ -37,6 +37,7 @@ import ColumnPicker from '../../components/generic/CBB/ColumnPicker';
 import HelperCBB from '../../components/helpers/CBB';
 import Api from '../../components/Api.jsx';
 import utilsColor from  '../../components/utils/Color.jsx';
+import BackdropLoader from '../../components/generic/BackdropLoader';
 
 const ColorUtil = new utilsColor();
 const api = new Api();
@@ -1250,11 +1251,7 @@ const Ranking = (props) => {
         <meta name="twitter:card" content="summary" />
         <meta name = 'twitter:title' content = 'srating.io college basketball rankings' />
       </Head>
-      {spin ?
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      : ''}
+      {spin ? <BackdropLoader /> : ''}
       {
         loading ? 
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :

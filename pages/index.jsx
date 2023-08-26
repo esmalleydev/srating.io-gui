@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 import Image from 'next/image'
 import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -12,10 +11,11 @@ import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
+
+import Footer from '../components/generic/Footer';
 
 import rankingImage from '../public/static/images/ranking.png';
 import scoresImage from '../public/static/images/scores.png';
@@ -24,12 +24,13 @@ import teamImage from '../public/static/images/team.png';
 import gameImage from '../public/static/images/statcompare.png';
 import playerImage from '../public/static/images/player.png';
 
+import Pricing from '../components/generic/Pricing';
+
 const Home = (props) => {
 
   const router = useRouter();
 
-  const hash = process.env.COMMIT_HASH;
-  const commitDate = process.env.COMMIT_DATE;
+  const ref = useRef(null);
 
   const cards = [
     {
@@ -80,7 +81,7 @@ const Home = (props) => {
   return (
     <div>
       <Head>
-        <title>sRating | Aggregate college basketball stats, ranking, scores, picks</title>
+        <title>sRating | College basketball stats, ranking, scores, picks</title>
         <meta name = 'description' content = 'View stats, ranking, live scores, live odds, picks for college basketball' key = 'desc'/>
         <meta property="og:title" content=">sRating.io college basketball rankings" />
         <meta property="og:description" content="View stats, ranking, live scores, live odds, picks for college basketball" />
@@ -91,8 +92,7 @@ const Home = (props) => {
         <Box
           sx={{
             bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6,
+            pt: 2,
           }}
         >
           <Container maxWidth="sm">
@@ -106,18 +106,22 @@ const Home = (props) => {
               sRating
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Aggregate data, clear statistics, better visualization, no ads, <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</Link>.
+              College basketball live scores, odds, picks, API, <br /> no ads, <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</Link>
             </Typography>
             <Stack
-              sx={{ pt: 4 }}
+              // sx={{ pt: 4 }}
               direction="row"
               spacing={2}
               justifyContent="center"
             >
-              <Button onClick = {() => {router.push('/cbb/ranking')}} variant="contained">Ranking</Button>
+              <Button onClick = {() => {router.push('/cbb/ranking')}} variant="outlined">Ranking</Button>
               <Button onClick = {() => {router.push('/cbb/games')}} variant="outlined">Scores</Button>
+              <Button onClick = {() => {router.push('/cbb/picks')}} variant="outlined">Picks</Button>
             </Stack>
           </Container>
+          <div style = {{'textAlign': 'center', 'padding': 20}}>
+            <Button style = {{'width': '100%', 'maxWidth': 400}} onClick = {() => {ref.current?.scrollIntoView({ behavior: 'smooth' })}} variant="contained">Get Picks / API access</Button>
+          </div>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
@@ -153,49 +157,11 @@ const Home = (props) => {
             ))}
           </Grid>
         </Container>
+        <div ref = {ref} style = {{'padding': '0px 20px', 'scrollMargin': 85}}>
+          <Pricing />
+        </div>
       </main>
-      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <div>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            color="text.secondary"
-            component="p"
-          >
-            🚂Boiler up!🚂
-          </Typography>
-        </div>
-        <div>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            color="text.secondary"
-            component="p"
-          >
-            <Link color="text.secondary" underline="hover" href = "mailto:contact@srating.io">Contact me</Link>
-          </Typography>
-        </div>
-        <div>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            color="text.secondary"
-            component="p"
-          >
-            <Link color="text.secondary" underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">{commitDate} - {hash}</Link>
-          </Typography>
-        </div>
-        <div>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            color="text.secondary"
-            component="p"
-          >
-            SRATING LLC
-          </Typography>
-        </div>
-      </Box>
+      <div style = {{'padding': '20px 0px 0px 0px'}}><Footer /></div>
     </div>
   );
 }

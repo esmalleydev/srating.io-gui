@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 
 import utilsColor from  '../utils/Color.jsx';
+import { IconButton } from '@mui/material';
+import Locked from './Billing/Locked';
 
 const ColorUtil = new utilsColor();
 
@@ -217,12 +219,14 @@ const CompareStatistic = (props) => {
   //   </Container>
   // );
 
+  let key = 0;
   return (
     <Container>
       {props.rows.map((row) => {
         const awayColors = {};
         const homeColors = {};
         let backgroundColor = null;
+        key++;
 
         if (
           row.awayRank && 
@@ -244,15 +248,22 @@ const CompareStatistic = (props) => {
         const radius = '4px';
 
         return (
-          <div style = {{'margin': '10px 0px'}}>
+          <div key = {key} style = {{'margin': '10px 0px'}}>
             <div style = {{'display': 'flex', 'alignItems':'center', 'justifyContent': 'space-between'}}>
               <div style = {{'margin': '0px 20px 0px 5px', 'minWidth': '100px', 'textAlign': 'left', 'overflow': 'hidden'}}>
-                <Typography variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(awayColors, spanStyle)}>{row.awayRank}</span> : ''}<Typography style = {{'margin': '0px 5px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography></div>
+                {
+                row.locked ? <Locked />
+                : <Typography variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(awayColors, spanStyle)}>{row.awayRank}</span> : ''}<Typography style = {{'margin': '0px 5px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
+                }
+              </div>
               <div style = {{'textAlign': 'center', 'whiteSpace': 'nowrap'}}>
                 <Tooltip key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography color = {'text.secondary'} variant = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
               </div>
               <div style = {{'margin': '0px 5px 0px 20px', 'minWidth': '100px', 'textAlign': 'right', 'overflow': 'hidden'}}>
-                <Typography variant = 'body2'><Typography style = {{'margin': '0px 5px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{row.homeRank ? <span style = {Object.assign(homeColors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
+                {
+                row.locked ? <Locked />
+                : <Typography variant = 'body2'><Typography style = {{'margin': '0px 5px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{row.homeRank ? <span style = {Object.assign(homeColors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
+                }
               </div>
             </div>
             <div style = {{'display': 'flex', 'alignItems': 'center', 'justifyContent': 'space-between', 'marginTop': '5px'}}>

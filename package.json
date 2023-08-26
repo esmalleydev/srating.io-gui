@@ -1,6 +1,6 @@
 {
   "name": "srating.io-gui",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -8,6 +8,8 @@
     "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.16",
     "@mui/x-date-pickers": "^5.0.9",
+    "@stripe/react-stripe-js": "^2.1.2",
+    "@stripe/stripe-js": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -25,7 +27,6 @@
     "react-dom": "^18.2.0",
     "react-virtuoso": "^4.3.5",
     "typeface-roboto": "^1.1.13",
-    "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

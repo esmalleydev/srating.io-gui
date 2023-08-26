@@ -12,8 +12,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-// import Backdrop from '@mui/material/Backdrop';
-// import CircularProgress from '@mui/material/CircularProgress';
 
 // import TripleDotsIcon from '@mui/icons-material/MoreVert';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -25,6 +23,7 @@ import RSSFeedIcon from '@mui/icons-material/RssFeed';
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
 import PicksIcon from '@mui/icons-material/Casino';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 
 const Sidebar = (props) => {
@@ -79,6 +78,17 @@ const Sidebar = (props) => {
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText primary={'Home'} />
+            </ListItemButton>
+          </ListItem>
+
+          <Divider />
+
+          <ListItem key={'pricing'} disablePadding onClick = {() => {router.push('/pricing')}}>
+            <ListItemButton>
+              <ListItemIcon>
+                <ShoppingCartIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Subscriptions'} />
             </ListItemButton>
           </ListItem>
 

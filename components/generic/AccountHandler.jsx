@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import Cookies from 'universal-cookie';
-
 import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -12,18 +10,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 
 
 import Api from './../Api.jsx';
+import BackdropLoader from './BackdropLoader.jsx';
 const api = new Api();
 
 
 const AccountHandler = (props) => {
   const theme = useTheme();
   const router = useRouter();
-  const cookies = new Cookies();
 
   const [spin, setSpin] = useState(false);
 
@@ -38,6 +34,12 @@ const AccountHandler = (props) => {
 
   const [passwordConfirm, setPasswordConfirm] = useState(null);
   const [passwordErrorConfirm, setPasswordErrorConfirm] = useState(null);
+
+  const [forgotPassword, setForgotPassword] = useState(false);
+  const [tempLogin, setTempLogin] = useState(false);
+
+  const [loginCode, setLoginCode] = useState(null);
+  const [loginCodeError, setLoginCodeError] = useState(null);
 
   const checkEmail = (text) => {
     let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
@@ -75,10 +77,10 @@ const AccountHandler = (props) => {
         setPasswordError('Something went wrong, try again later');
         return;
       } else {
-        cookies.set('session_id', session_id, {'path': '/'});
-        router.push('/account');
+        localStorage.setItem('session_id', session_id);
         props.loginCallback();
         props.closeHandler();
+        window.location.reload();
       }
     }).catch((e) => {
         setPasswordError('Incorrect password');
@@ -133,8 +135,68 @@ const AccountHandler = (props) => {
         setEmailError(response.error);
         return;
       } else if (response) {
-        cookies.set('session_id', response, {'path': '/'});
+        localStorage.setItem('session_id', response);
         router.push('/account');
+        props.closeHandler();
+      }
+    }).catch((e) => {
+        setEmailError('Something went wrong, try again later');
+    });
+  };
+
+  const sendLoginCode = () => {
+    if (!email || !checkEmail(email)) {
+      setEmailError('Valid email required');
+      return;
+    } else {
+      setEmailError(null);
+    }
+
+    setSpin(true);
+
+    api.Request({
+      'class': 'user',
+      'function': 'forgotPassword',
+      'arguments': {
+        'email': email,
+      },
+    }).then((response) => {
+      setSpin(false);
+      setForgotPassword(false);
+      setTempLogin(true);
+    }).catch((e) => {
+        setEmailError('Something went wrong, try again later');
+    });
+  };
+
+  const useLoginCode = () => {
+    if (!email || !checkEmail(email)) {
+      setEmailError('Valid email required');
+      return;
+    } else {
+      setEmailError(null);
+    }
+
+    if (!loginCode) {
+      setLoginCodeError('Code required');
+      return;
+    } else {
+      setLoginCodeError(null);
+    }
+
+    api.Request({
+      'class': 'user',
+      'function': 'useLoginCode',
+      'arguments': {
+        'email': email,
+        'code': loginCode,
+      },
+    }).then((response) => {
+      if (!response) {
+        setLoginCodeError('Code incorrect / expired');
+      } else {
+        localStorage.setItem('session_id', response);
+        router.push('/account?view=password');
         props.closeHandler();
       }
     }).catch((e) => {
@@ -161,35 +223,34 @@ const AccountHandler = (props) => {
     if (e.keyCode === 13) {
       if (register) {
         handleRegister();
+      } else if (forgotPassword) {
+        handleLogin();
+      } else if (tempLogin) {
+        useLoginCode();
       } else {
         handleLogin();
       }
     }
   };
 
+  const handleLoginCode = (e) => {
+    const value = e.target.value;
+    setLoginCode(value || '');
+  };
 
+  let boxContents = [];
 
-  return (
-    <Dialog
-      open={props.open}
-      onClose={props.closeHandler}
-    >
-      {spin ?
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      : ''}
-      <DialogTitle id="alert-dialog-title">Account</DialogTitle>
-      {
-        register === false ?
-        <DialogContent>
-          <DialogContentText sx = {{'marginBottom': 2}}>Sign in to your account</DialogContentText>
-          <TextField
+  if (tempLogin) {
+    boxContents.push(
+      <DialogContent>
+        <DialogContentText sx = {{'marginBottom': 2}}>Login with temporary code</DialogContentText>
+        <TextField
             autoFocus
             required
             error = {emailError ? true : false}
             helperText = {emailError ? emailError : null}
             onChange = {handleEmail}
+            onKeyDown = {handleEnter}
             margin="dense"
             id="name"
             label="Email Address"
@@ -198,21 +259,57 @@ const AccountHandler = (props) => {
             variant="standard"
           />
           <TextField
+            autoFocus
             required
-            error = {passwordError ? true : false}
-            helperText = {passwordError ? passwordError : null}
-            onChange = {handlePassword}
+            error = {emailError ? true : false}
+            helperText = {emailError ? emailError : null}
+            onChange = {handleLoginCode}
             onKeyDown = {handleEnter}
             margin="dense"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
+            id="name"
+            label="Code"
+            type="number"
             fullWidth
             variant="standard"
           />
-          <DialogContentText sx = {{'marginTop': 3}}>No account? <Link sx = {{'cursor': 'pointer'}} onClick = {() => {setRegister(true);}}>Create account</Link></DialogContentText>
-        </DialogContent> :
-        <DialogContent>
+        </DialogContent>
+    );
+
+    boxContents.push(
+      <DialogActions>
+        <Button onClick = {() => {setTempLogin(false); setForgotPassword(false);}}>Back</Button>
+        <Button onClick = {useLoginCode}>Sign in</Button>
+      </DialogActions>
+    );
+  } else if (forgotPassword) {
+    boxContents.push(
+      <DialogContent sx = {{'minWidth': 320}}>
+        <DialogContentText sx = {{'marginBottom': 2}}>Send a Forgot Password email</DialogContentText>
+        <TextField
+            autoFocus
+            required
+            error = {emailError ? true : false}
+            helperText = {emailError ? emailError : null}
+            onChange = {handleEmail}
+            onKeyDown = {handleEnter}
+            margin="dense"
+            id="name"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="standard"
+        />
+      </DialogContent>
+    );
+
+    boxContents.push(
+      <DialogActions>
+        <Button onClick = {sendLoginCode}>Send temporary code</Button>
+      </DialogActions>
+    );
+  } else if (register) {
+    boxContents.push(
+      <DialogContent>
           <DialogContentText sx = {{'marginBottom': 2}}>Create an account</DialogContentText>
           <TextField
             autoFocus
@@ -220,6 +317,7 @@ const AccountHandler = (props) => {
             error = {emailError ? true : false}
             helperText = {emailError ? emailError : null}
             onChange = {handleEmail}
+            onKeyDown = {handleEnter}
             margin="dense"
             id="name"
             label="Email Address"
@@ -252,10 +350,65 @@ const AccountHandler = (props) => {
           />
           <DialogContentText sx = {{'marginTop': 3}}>Have an account? <Link sx = {{'cursor': 'pointer'}} onClick = {() => {setRegister(false);}}>Sign in</Link></DialogContentText>
         </DialogContent>
-      }
+    );
+
+    boxContents.push(
       <DialogActions>
-        <Button onClick = {register ? handleRegister : handleLogin}>{register ? 'Create account' : 'Sign in'}</Button>
+        <Button onClick = {handleRegister}>Create account</Button>
       </DialogActions>
+    );
+  } else {
+    boxContents.push(
+      <DialogContent>
+        <DialogContentText sx = {{'marginBottom': 2}}>Sign in to your account</DialogContentText>
+        <TextField
+            autoFocus
+            required
+            error = {emailError ? true : false}
+            helperText = {emailError ? emailError : null}
+            onChange = {handleEmail}
+            margin="dense"
+            id="name"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            required
+            error = {passwordError ? true : false}
+            helperText = {passwordError ? passwordError : null}
+            onChange = {handlePassword}
+            onKeyDown = {handleEnter}
+            margin="dense"
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            fullWidth
+            variant="standard"
+          />
+          <DialogContentText sx = {{'marginTop': 3}}><Link sx = {{'cursor': 'pointer'}} onClick = {() => {setForgotPassword(true)}}>Forgot Password?</Link></DialogContentText>
+          <DialogContentText sx = {{'marginTop': 3}}>No account? <Link sx = {{'cursor': 'pointer'}} onClick = {() => {setRegister(true);}}>Create account</Link></DialogContentText>
+        </DialogContent>
+    );
+
+    boxContents.push(
+      <DialogActions>
+        <Button onClick = {handleLogin}>Sign in</Button>
+      </DialogActions>
+    );
+  }
+
+
+
+  return (
+    <Dialog
+      open={props.open}
+      onClose={props.closeHandler}
+    >
+      {spin ? <BackdropLoader /> : ''}
+      <DialogTitle id="alert-dialog-title">Account</DialogTitle>
+      {boxContents}
     </Dialog>
   );
 }

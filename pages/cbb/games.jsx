@@ -11,7 +11,6 @@ import Typography from '@mui/material/Typography';
 
 
 import Chip from '@mui/material/Chip';
-import Backdrop from '@mui/material/Backdrop';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -24,6 +23,7 @@ import DateAppBar from '../../components/generic/DateAppBar.jsx';
 
 import HelperCBB from '../../components/helpers/CBB';
 import Api from '../../components/Api.jsx';
+import BackdropLoader from '../../components/generic/BackdropLoader';
 
 const api = new Api();
 
@@ -53,7 +53,7 @@ const Games = (props) => {
   const tabDates = props.dates || [];
   const [request, setRequest] = useState(sessionData.request || false);
   const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : (props.games));
-  const [date, setDate] = useState(sessionData.date || null);
+  const [date, setDate] = useState(sessionData.date || router.query.date || null);
   const [now, setNow] = useState(defaultDate);
   const [games, setGames] = useState(sessionData.games || {});
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
@@ -96,6 +96,11 @@ const Games = (props) => {
 
     setRequest(true);
     setDate(value);
+
+    router.replace({
+      query: {...router.query, date: value},
+    });
+    
     api.Request({
       'class': 'cbb_game',
       'function': 'getGames',
@@ -426,12 +431,7 @@ const Games = (props) => {
         <meta name="twitter:card" content="summary" />
         <meta name = 'twitter:title' content = 'Live college basketball scores and odds' />
       </Head>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={(spin === true)} // kinda dumb but for some reason spin can be undefined
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <BackdropLoader open = {(spin === true)} />
       <div>
         <DateAppBar
           styles = {{'marginTop': marginTop}}

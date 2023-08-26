@@ -1,3 +1,4 @@
+
 // this is just for the github build to pass, since the configuration file is git ignored
 let config = {};
 try {
@@ -23,11 +24,14 @@ class Api {
 			url = config.http + '://'+ config.host + (config.port ? ':' + config.port : '');
 		}
 
+		let session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;
+
 		return fetch(url, {
 			'method': 'POST',
 			'headers': {
 				'Content-Type': 'application/json',
 				'X-API-KEY': config.api_key || null,
+				'X-SESSION-ID': session_id || null,
 			},
 			'body': JSON.stringify(args),
 		}).then(response => {

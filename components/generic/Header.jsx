@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 // import useMediaQuery from '../hooks/useMediaQuery';
 
-import { useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -12,6 +12,9 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
 import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
 
 // Icons
 import MenuIcon from '@mui/icons-material/Menu';
@@ -26,6 +29,17 @@ import AccountHandler from './AccountHandler';
 import Api from './../Api.jsx';
 const api = new Api();
 
+
+
+const LoginButton = styled(Button)(({ theme }) => ({
+  'color': theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main,
+  'border': '1px solid ' + (theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main),
+  '&:hover': {
+    'border': '1px solid ' + (theme.palette.mode === 'light' ? '#fff' : theme.palette.success.light),
+    // backgroundColor: (theme.palette.mode === 'light' ? '#fff' : theme.palette.success.dark),
+  },
+}));
+
 const Header = (props) => {
   const self = this;
 
@@ -37,6 +51,10 @@ const Header = (props) => {
   const [accountOpen, setAccountOpen] = useState(false);
   const [fullSearch, setFullSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const validSession = props.validSession;
 
   useEffect(() => {
     setIsLoading(false);
@@ -54,7 +72,8 @@ const Header = (props) => {
 
 
   const handleAccount = () => {
-    if (props.validSession) {
+    handleClose();
+    if (validSession) {
       router.push('/account');
       return;
     }
@@ -65,6 +84,20 @@ const Header = (props) => {
     setAccountOpen(false);
   };
 
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleClose();
+    localStorage.removeItem('session_id');
+    sessionStorage.clear();
+    router.push('/');
+  };
 
 
   let logoStyle = {
@@ -112,9 +145,34 @@ const Header = (props) => {
                   {width < 600 ? <IconButton  onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search />}
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
-                  <IconButton  onClick={handleAccount} color="inherit">
-                    <AccountCircle />
-                  </IconButton>
+                  {
+                  validSession ? 
+                    <div>
+                      <IconButton  onClick={handleMenu} color="inherit">
+                        <AccountCircle />
+                      </IconButton>
+                      <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                      >
+                        <MenuItem onClick={handleAccount}>My account</MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                      </Menu>
+                    </div>
+                  :
+                    <LoginButton variant = 'outlined' onClick={handleAccount}>Login</LoginButton>
+                  }
                 </Box>
               </Toolbar>
           }

@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import PinIcon from '@mui/icons-material/PushPin';
+import Locked from '../../Billing/Locked';
 
 const Tile = (props) => {
   const self = this;
@@ -131,11 +132,13 @@ const Tile = (props) => {
     return (
       <table style = {{'width': '100%', 'textAlign': 'center'}}>
         <thead>
-          <th style = {{'textAlign': 'left'}}><Typography variant = 'caption'>-</Typography></th>
-          <th><Typography variant = 'caption'>SPREAD</Typography></th>
-          <th><Typography variant = 'caption'>ML</Typography></th>
-          <th><Typography variant = 'caption'>O/U</Typography></th>
-          <th style = {{'textAlign': 'right'}}><Typography variant = 'caption'>%</Typography></th>
+          <tr>
+            <th style = {{'textAlign': 'left'}}><Typography variant = 'caption'>-</Typography></th>
+            <th><Typography variant = 'caption'>SPREAD</Typography></th>
+            <th><Typography variant = 'caption'>ML</Typography></th>
+            <th><Typography variant = 'caption'>O/U</Typography></th>
+            <th style = {{'textAlign': 'right'}}><Typography variant = 'caption'>%</Typography></th>
+          </tr>
         </thead>
         <tbody>
           <tr>
@@ -143,14 +146,20 @@ const Tile = (props) => {
             <td title = {tdAwaySpreadTitle}><Typography variant = 'caption' style = {awaySpreadCoverStyle}>{CBB.getPreSpread('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('away') : ''}</Typography></td>
             <td title = {tdAwayMLTitle} style = {Object.assign({'color': CBB.oddsReversal('away') ? theme.palette.warning.main : theme.palette.text.primary}, awayMLStyle)}><Typography variant = 'caption'>{CBB.getPreML('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('away') : ''}</Typography></td>
             <td title = {tdOverTitle}><Typography variant = 'caption' style = {overStyle}>{CBB.getPreOver() !== '-' ? 'O ' + CBB.getPreOver() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveOver() : ''}</Typography></td>
-            <td style = {{'textAlign': 'right'}}><Typography variant = 'caption'>{(props.data.away_team_rating * 100).toFixed(0)}</Typography></td>
+            <td style = {{'textAlign': 'right'}}>{
+              (!props.data.away_team_rating && !props.data.home_team_rating) ? <Locked />
+              : <Typography variant = 'caption'>{(props.data.away_team_rating * 100).toFixed(0)}</Typography>
+            }</td>
           </tr>
           <tr>
             <td style = {{'textAlign': 'left'}}><Typography variant = 'caption'>{CBB.getTeamNameShort('home')}</Typography></td>
             <td title = {tdHomeSpreadTitle}><Typography variant = 'caption' style = {homeSpreadCoverStyle}>{CBB.getPreSpread('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('home') : ''}</Typography></td>
             <td title = {tdHomeMLTitle} style = {Object.assign({'color': CBB.oddsReversal('home') ? theme.palette.warning.main : theme.palette.text.primary}, homeMLStyle)}><Typography variant = 'caption'>{CBB.getPreML('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('home') : ''}</Typography></td>
             <td title = {tdUnderTitle}><Typography variant = 'caption' style = {underStyle}>{CBB.getPreUnder() !== '-' ? 'U ' + CBB.getPreUnder() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveUnder() : ''}</Typography></td>
-            <td style = {{'textAlign': 'right'}}><Typography variant = 'caption'>{(props.data.home_team_rating * 100).toFixed(0)}</Typography></td>
+            <td style = {{'textAlign': 'right'}}>{
+              (!props.data.away_team_rating && !props.data.home_team_rating) ? <Locked />
+              : <Typography variant = 'caption'>{(props.data.home_team_rating * 100).toFixed(0)}</Typography>
+            }</td>
           </tr>
         </tbody>
       </table>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, styled } from '@mui/material/styles';
 
 import useWindowDimensions from '../hooks/useWindowDimensions';
 
@@ -13,14 +13,13 @@ import CircularProgress from '@mui/material/CircularProgress';
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
 import PicksIcon from '@mui/icons-material/Casino';
-
-import { styled } from "@mui/material/styles";
+import BackdropLoader from './BackdropLoader';
 
 
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
   'color': theme.palette.mode === 'light' ? '#fff' : theme.palette.text.primary,
   '&.Mui-selected': {
-    'color': theme.palette.mode === 'light' ? theme.palette.secondary.dark : theme.palette.success.dark,
+    'color': theme.palette.mode === 'light' ? '#424CF5' : theme.palette.success.dark,
   },
 }));
 
@@ -94,15 +93,13 @@ const FooterNavigation = (props) => {
     });
   }
 
+  // console.log(theme);
 
+  const buttonColor = theme.palette.mode === 'light' ? '#F59242' : 'secondary';
 
   return (
     <div>
-    {spin ?
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      : ''}
+    {spin ? <BackdropLoader /> : ''}
     {viewingSport ? 
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, /*'zIndex': 9000,*/}} elevation={3}>
         <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}} showLabels value={pages.indexOf(viewingPage)}>

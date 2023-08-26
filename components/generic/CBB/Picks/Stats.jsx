@@ -57,7 +57,7 @@ const Stats = (props) => {
   const skeletonContainers = [];
 
   for (let i = 0; i < orderedBuckets.length; i++) {
-    skeletonContainers.push(<Skeleton variant="rounded" animation="wave" height={115} sx = {cardStyle} />);
+    skeletonContainers.push(<Skeleton key = {i} variant="rounded" animation="wave" height={115} sx = {cardStyle} />);
   }
 
   const statContainers = [];
@@ -97,7 +97,7 @@ const Stats = (props) => {
 
 
         statContainers.push(
-          <Card sx = {cardStyle}>
+          <Card key = {i} sx = {cardStyle}>
             <CardContent>
               <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>{label}</Typography>
               <Typography sx = {Object.assign({'textAlign': 'center'}, colorStyle)} variant="h5" component="div">{totalGames ? percentCorrect + '%' : '-'}</Typography>

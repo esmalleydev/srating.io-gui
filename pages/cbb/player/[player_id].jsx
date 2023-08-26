@@ -107,14 +107,16 @@ const Player = (props) => {
           #{player.number} {player.position} {player.height}
         </Typography>
       </div>
-      <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop + titleHeight}}>
+      <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop + titleHeight, 'position': 'fixed'}}>
         <Tabs /*todo if width less than x variant="scrollable" scrollButtons="auto"*/ value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} centered indicatorColor="secondary" textColor="inherit">
           {tabs}
         </Tabs>
       </AppBar>
-      {selectedTab == 'stats' ? <Stats key = {player.player_id} player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
-      {selectedTab == 'gamelogs' ? <GameLogs key = {player.player_id} player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
-      {selectedTab == 'trends' ? <Trends key = {player.player_id} /> : ''}
+      <div style = {{'padding': '48px 20px 20px 20px'}}>
+        {selectedTab == 'stats' ? <Stats key = {player.player_id} player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
+        {selectedTab == 'gamelogs' ? <GameLogs key = {player.player_id} player = {player} player_team_season = {player.player_team_season} team = {player.team} /> : ''}
+        {selectedTab == 'trends' ? <Trends key = {player.player_id} /> : ''}
+      </div>
     </div>
   );
 }

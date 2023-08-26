@@ -114,12 +114,12 @@ const Team = (props) => {
           {team_.getRank() ? <sup style = {{'fontSize': '24px'}}>{team_.getRank()}</sup> : ''} {team_.getName()} ({team.stats.wins}-{team.stats.losses})
         </Typography>
       </div>
-      <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop + 96}}>
+      <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop + 96, 'position': 'fixed'}}>
         <Tabs /*todo if width less than x variant="scrollable" scrollButtons="auto"*/ value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} centered indicatorColor="secondary" textColor="inherit">
           {tabs}
         </Tabs>
       </AppBar>
-      <div style = {{'padding': '20px'}}>
+      <div style = {{'padding': '68px 20px 20px 20px'}}>
         {selectedTab == 'schedule' ? <Schedule key = {team.team_id} team = {team} games = {team.cbb_games} /> : ''}
         {selectedTab == 'stats' ? <Stats key = {team.team_id} team = {team} stats = {team.stats} /> : ''}
         {selectedTab == 'trends' ? <Trends key = {team.team_id} team = {team} ranking = {team.cbb_ranking} elo = {team.cbb_elo} games = {team.cbb_games} /> : ''}

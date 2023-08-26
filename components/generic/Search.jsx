@@ -8,10 +8,9 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 
 import Api from './../Api.jsx';
+import BackdropLoader from './BackdropLoader';
 const api = new Api();
 
 const Container = styled('div')(({ theme }) => ({
@@ -137,11 +136,7 @@ const Search = (props) => {
 
   return (
     <Container>
-    {spin ?
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      : ''}
+      {spin ? <BackdropLoader /> : ''}
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>

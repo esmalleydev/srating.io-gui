@@ -41,7 +41,7 @@ const Picks = (props) => {
   const [firstRender, setFirstRender] = useState(true);
   const [request, setRequest] = useState(sessionData.request || false);
   const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : (props.games));
-  const [date, setDate] = useState(sessionData.date || null);
+  const [date, setDate] = useState(sessionData.date || router.query.date || null);
   const [games, setGames] = useState(sessionData.games || {});
   const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
@@ -77,6 +77,11 @@ const Picks = (props) => {
     }
 
     setRequest(true);
+
+    router.replace({
+      query: {...router.query, date: value},
+    });
+
     api.Request({
       'class': 'cbb_game',
       'function': 'getGames',

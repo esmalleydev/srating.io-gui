@@ -12,6 +12,8 @@ import ConferencePicker from '../ConferencePicker';
 import Api from './../../../Api.jsx';
 const api = new Api();
 
+// todo there is some bug, if I am on this page, not logged in, then login, with a subscription, after page reload, the skeleton lines never get replaced
+
 const Picks = (props) => {
   const self = this;
 
