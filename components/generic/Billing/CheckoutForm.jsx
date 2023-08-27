@@ -11,6 +11,7 @@ import {
 import { Button } from '@mui/material';
 
 import Api from './../../Api.jsx';
+import BackdropLoader from '../BackdropLoader.jsx';
 
 
 const api = new Api();
@@ -22,6 +23,7 @@ const CheckoutForm = (props) => {
   const pricing = props.pricing;
 
   const [spin, setSpin] = useState(false);
+  const [backdrop, setBackdrop] = useState(false);
   const [request, setRequest] = useState(false);
   const [email, setEmail] = useState(null);
   const [emailError, setEmailError] = useState(null);
@@ -51,6 +53,7 @@ const CheckoutForm = (props) => {
 
   const handleError = (error) => {
     setIsLoading(false);
+    setBackdrop(false);
     setErrorMessage(error.message);
   }
 
@@ -82,6 +85,8 @@ const CheckoutForm = (props) => {
       handleError(submitError);
       return;
     }
+
+    setBackdrop(true);
 
     const subscription = await api.Request({
       'class': 'billing',
@@ -134,6 +139,7 @@ const CheckoutForm = (props) => {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
+      {backdrop ? <BackdropLoader /> : ''}
       <TextField
         style = {{'marginBottom': 20}}
         required
