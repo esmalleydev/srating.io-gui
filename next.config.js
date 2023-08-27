@@ -11,7 +11,13 @@ const commitDate = require('child_process')
 	.toString()
 	.trim();
 
-const config_ = require('./configuration.js')
+// this is just for the github build to pass, since the configuration file is git ignored
+let config_ = {};
+try {
+	config_ = require('./configuration');
+} catch (e) {
+	config_ = {};
+}
 
 module.exports = {
 	// experimental: {
