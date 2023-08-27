@@ -1,18 +1,10 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import Status from '../components/generic/Billing/Status';
 import { Typography } from '@mui/material';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const Terms = (props) => {
-  const router = useRouter();
-
-
   return (
     <div>
       <Head>

@@ -5,6 +5,7 @@ module.exports = {
   'http': 'https',
   'use_origin': false, // If true, requests will use the window.location.origin. If you want to use origin for requests, but need local with nextjs do (typeof window !== 'undefined')
   'path': null, // if using origin and need a path, ex: /api
+  'stripe_public_key': null,
 };
 
 

@@ -26,7 +26,7 @@ const Footer = (props) => {
           🚂Boiler up!🚂
         </Typography>
       </div>
-      <div>
+      {/* <div>
         <Typography
           variant="subtitle1"
           align="center"
@@ -35,7 +35,7 @@ const Footer = (props) => {
         >
           Data from <Link underline="hover" href = "https://stats.ncaa.org" target = "_blank">stats.ncaa.org</Link>
         </Typography>
-      </div>
+      </div> */}
       <div>
         <Typography
           variant="subtitle1"

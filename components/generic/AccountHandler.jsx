@@ -196,7 +196,7 @@ const AccountHandler = (props) => {
         setLoginCodeError('Code incorrect / expired');
       } else {
         localStorage.setItem('session_id', response);
-        router.push('/account?view=password');
+        router.push('/account?view=settings');
         props.closeHandler();
       }
     }).catch((e) => {
