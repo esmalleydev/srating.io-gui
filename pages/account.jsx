@@ -11,7 +11,7 @@ import Footer from '../components/generic/Footer';
 
 import Api from '../components/Api.jsx';
 import Subscription from '../components/generic/Account/Subscription';
-import { Button, Paper, Typography, TextField } from '@mui/material';
+import { Button, Paper, Typography } from '@mui/material';
 import Settings from '../components/generic/Account/Settings';
 // import AccountHandler from '../components/generic/AccountHandler';
 

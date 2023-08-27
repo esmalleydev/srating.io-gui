@@ -136,8 +136,9 @@ const AccountHandler = (props) => {
         return;
       } else if (response) {
         localStorage.setItem('session_id', response);
-        router.push('/account');
+        props.loginCallback();
         props.closeHandler();
+        router.push('/account');
       }
     }).catch((e) => {
         setEmailError('Something went wrong, try again later');
@@ -195,9 +196,12 @@ const AccountHandler = (props) => {
       if (!response) {
         setLoginCodeError('Code incorrect / expired');
       } else {
+        setForgotPassword(false);
+        setTempLogin(false);
         localStorage.setItem('session_id', response);
-        router.push('/account?view=settings');
+        props.loginCallback();
         props.closeHandler();
+        router.push('/account?view=settings');
       }
     }).catch((e) => {
         setEmailError('Something went wrong, try again later');
@@ -245,8 +249,8 @@ const AccountHandler = (props) => {
       <DialogContent>
         <DialogContentText sx = {{'marginBottom': 2}}>Login with temporary code</DialogContentText>
         <TextField
-            autoFocus
             required
+            disabled
             error = {emailError ? true : false}
             helperText = {emailError ? emailError : null}
             onChange = {handleEmail}
@@ -261,12 +265,12 @@ const AccountHandler = (props) => {
           <TextField
             autoFocus
             required
-            error = {emailError ? true : false}
-            helperText = {emailError ? emailError : null}
+            error = {loginCodeError ? true : false}
+            helperText = {loginCodeError ? loginCodeError : null}
             onChange = {handleLoginCode}
             onKeyDown = {handleEnter}
             margin="dense"
-            id="name"
+            id="login-code"
             label="Code"
             type="number"
             fullWidth
@@ -304,6 +308,7 @@ const AccountHandler = (props) => {
 
     boxContents.push(
       <DialogActions>
+        <Button onClick = {() => {setTempLogin(false); setForgotPassword(false);}}>Back</Button>
         <Button onClick = {sendLoginCode}>Send temporary code</Button>
       </DialogActions>
     );
