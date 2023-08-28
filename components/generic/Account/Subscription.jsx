@@ -46,10 +46,14 @@ const Subscription = (props) => {
   // todo get this from stripe instead?
   const renewDay = moment(subscription.date_of_entry).date();
 
-  let due = moment().date();
+  let due = moment().utc().date();
 
   if (due >= renewDay) {
-    due = moment().add(1, 'months').date(renewDay);
+    if (pricing.code === 'picks_yearly') {
+      due = moment().add(1, 'years').date(renewDay);
+    } else {
+      due = moment().add(1, 'months').date(renewDay);
+    }
   } else {
     due = moment().date(renewDay);
   }
@@ -110,8 +114,8 @@ const Subscription = (props) => {
       {spin ? <BackdropLoader /> : ''}
       <Typography style = {{'textAlign': 'center'}} variant='h5'>{pricing.type === 'api' || pricing.type === 'trial' ? 'API' : 'Picks'} subscription ({pricing.name})</Typography>
       <Typography style = {{'marginTop': 5}} color = {'text.secondary'} variant='body1'>{pricing.description}</Typography>
-      {pricing.type !== 'trial' && cancelledSub === null && !subscription.expires ? <Typography variant='body1'>Renews on {due.format('MMM Do')}</Typography> : ''}
-      {(cancelledSub && cancelledSub.expires) || subscription.expires ? <Typography variant='body1'>Expires on {moment(subscription.expires || cancelledSub.expires).format('MMM Do')}</Typography> : ''}
+      {pricing.type !== 'trial' && cancelledSub === null && !subscription.expires ? <Typography variant='body1'>Automatically renews on {due.format('MMM Do \'YY')}</Typography> : ''}
+      {(cancelledSub && cancelledSub.expires) || subscription.expires ? <Typography variant='body1'>Expires on {moment(subscription.expires || cancelledSub.expires).format('MMM Do \'YY')}</Typography> : ''}
       {
         (pricing.type === 'api' || pricing.type === 'trial') && apiKey ?
         <div>

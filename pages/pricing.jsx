@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 import Pricing_ from '../components/generic/Pricing';
+import Footer from '../components/generic/Footer';
 
 const Pricing = (props) => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const Pricing = (props) => {
           <Pricing_ />
         </div>
       </main>
+      <div style = {{'padding': '20px 0px 0px 0px'}}><Footer /></div>
     </div>
   );
 }
