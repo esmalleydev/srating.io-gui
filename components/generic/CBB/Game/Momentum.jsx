@@ -68,6 +68,7 @@ const Momentum = (props) => {
       'homeCompareValue': homeMomentumStats.wins,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'ORT',

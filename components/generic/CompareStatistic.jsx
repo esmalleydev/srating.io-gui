@@ -79,22 +79,22 @@ const CompareStatistic = (props) => {
         if (+row.awayCompareValue === Infinity) {
           return 0;
         }
-        return base === 'away' ? 0 : '-' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(fixedLength);
+        return base === 'away' ? 0 : '-' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(('precision' in row ? row.precision : fixedLength));
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
         if (+row.homeCompareValue === Infinity) {
           return 0;
         }
-        return base === 'home' ? 0 : '-' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(fixedLength);
+        return base === 'home' ? 0 : '-' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(('precision' in row ? row.precision : fixedLength));
       }
     }
 
     if (row.favored === 'higher') {
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(fixedLength) : 0;
+        return base === 'away' ? '+' + (+row.awayCompareValue - +row.homeCompareValue).toFixed(('precision' in row ? row.precision : fixedLength)) : 0;
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(fixedLength) : 0;
+        return base === 'home' ? '+' + (+row.homeCompareValue - +row.awayCompareValue).toFixed(('precision' in row ? row.precision : fixedLength)) : 0;
       }
     }
 
@@ -253,16 +253,16 @@ const CompareStatistic = (props) => {
               <div style = {{'margin': '0px 20px 0px 5px', 'minWidth': '100px', 'textAlign': 'left', 'overflow': 'hidden'}}>
                 {
                 row.locked ? <Locked />
-                : <Typography variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(awayColors, spanStyle)}>{row.awayRank}</span> : ''}<Typography style = {{'margin': '0px 5px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
+                : <Typography variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(awayColors, spanStyle)}>{row.awayRank}</span> : ''}<Typography style = {{'margin': '0px 8px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
                 }
               </div>
               <div style = {{'textAlign': 'center', 'whiteSpace': 'nowrap'}}>
-                <Tooltip key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography color = {'text.secondary'} variant = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
+                <Tooltip enterTouchDelay={0} key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography color = {'text.secondary'} variant = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
               </div>
               <div style = {{'margin': '0px 5px 0px 20px', 'minWidth': '100px', 'textAlign': 'right', 'overflow': 'hidden'}}>
                 {
                 row.locked ? <Locked />
-                : <Typography variant = 'body2'><Typography style = {{'margin': '0px 5px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{row.homeRank ? <span style = {Object.assign(homeColors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
+                : <Typography variant = 'body2'><Typography style = {{'margin': '0px 8px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{row.homeRank ? <span style = {Object.assign(homeColors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
                 }
               </div>
             </div>

@@ -49,6 +49,7 @@ const Matchup = (props) => {
       'homeCompareValue': homeStats.wins,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'Conf',
@@ -59,6 +60,7 @@ const Matchup = (props) => {
       'homeCompareValue': homeStats.confwins,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'Streak',
@@ -78,6 +80,7 @@ const Matchup = (props) => {
       'homeCompareValue': homeStats.homelosses,
       'favored': 'lower',
       'showDifference': true,
+      'precision': 0,
     },
   ];
 
@@ -209,6 +212,7 @@ const Matchup = (props) => {
       'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.composite_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'sRating',
@@ -219,6 +223,7 @@ const Matchup = (props) => {
       'homeCompareValue': homeStats.elo,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'AP',
@@ -229,6 +234,7 @@ const Matchup = (props) => {
       'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.ap_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'KP',
@@ -239,6 +245,7 @@ const Matchup = (props) => {
       'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.kenpom_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'SRS',
@@ -249,6 +256,7 @@ const Matchup = (props) => {
       'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.srs_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
+      'precision': 0,
     },
   ];
 

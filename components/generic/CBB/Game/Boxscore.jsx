@@ -148,6 +148,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.points,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'FG',
@@ -159,6 +160,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.field_goal,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'FGA',
@@ -170,6 +172,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.field_goal_attempts,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'FG%',
@@ -192,6 +195,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.two_point_field_goal,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': '2PA',
@@ -203,6 +207,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.two_point_field_goal_attempts,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': '2P%',
@@ -225,6 +230,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.three_point_field_goal,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': '3PA',
@@ -236,6 +242,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.three_point_field_goal_attempts,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': '3P%',
@@ -258,6 +265,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.free_throws,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'FTA',
@@ -269,6 +277,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.free_throw_attempts,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'FT%',
@@ -291,6 +300,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.offensive_rebounds,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'DRB',
@@ -302,6 +312,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.defensive_rebounds,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'AST',
@@ -313,6 +324,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.assists,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'STL',
@@ -324,6 +336,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.steals,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'BLK',
@@ -335,6 +348,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.blocks,
       'favored': 'higher',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'TOV',
@@ -346,6 +360,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.turnovers,
       'favored': 'lower',
       'showDifference': true,
+      'precision': 0,
     },
     {
       'name': 'PF',
@@ -357,6 +372,7 @@ const Boxscore = (props) => {
       'homeCompareValue': homeTotalBoxscore.fouls,
       'favored': 'lower',
       'showDifference': true,
+      'precision': 0,
     },
   ];
 
