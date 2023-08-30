@@ -18,17 +18,14 @@ import Skeleton from '@mui/material/Skeleton';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 
 import HelperCBB from '../../../helpers/CBB';
 
 
 import Api from './../../../Api.jsx';
-import utilsColor from  './../../../utils/Color.jsx';
+import RankSpan from '../RankSpan';
 
-const ColorUtil = new utilsColor();
+
 const api = new Api();
 
 
@@ -407,18 +404,6 @@ const Roster = (props) => {
 
     b++;
 
-
-    const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
-    const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
-
-    const spanStyle = {
-      'fontSize': '10px',
-      'marginLeft': '5px',
-      'padding': '3px',
-      'borderRadius': '5px',
-    };
-
-
     const tableCells = [];
 
     for (let i = 0; i < columns.length; i++) {
@@ -426,16 +411,8 @@ const Roster = (props) => {
         const player = (row.player_id in players && players[row.player_id]) || null;
         tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{player ? player.first_name + ' ' + player.last_name : 'Unknown'}</TableCell>);
       } else {
-        const colors = {};
-
         // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
-        const backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row[columns[i] + '_rank'] / 5300));
-
-        if (backgroundColor !== '#') {
-          colors.backgroundColor = backgroundColor;
-          colors.color = theme.palette.getContrastText(backgroundColor);
-        }
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <span style = {Object.assign(colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <RankSpan key = {i} rank = {row[columns[i] + '_rank']} max = {5300} useOrdinal = {false} /> : ''}</TableCell>);
       }
     } 
 

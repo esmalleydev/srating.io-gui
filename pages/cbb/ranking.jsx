@@ -36,10 +36,10 @@ import ColumnPicker from '../../components/generic/CBB/ColumnPicker';
 
 import HelperCBB from '../../components/helpers/CBB';
 import Api from '../../components/Api.jsx';
-import utilsColor from  '../../components/utils/Color.jsx';
 import BackdropLoader from '../../components/generic/BackdropLoader';
+import RankSpan from '../../components/generic/CBB/RankSpan';
 
-const ColorUtil = new utilsColor();
+
 const api = new Api();
 
 
@@ -1179,17 +1179,6 @@ const Ranking = (props) => {
       'backgroundColor': theme.palette.mode === 'light' ? (index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
     };
 
-
-    const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
-    const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
-
-    const spanStyle = {
-      'fontSize': '10px',
-      'marginLeft': '5px',
-      'padding': '3px',
-      'borderRadius': '5px',
-    };
-
     let teamCellStyle = {};
     teamCellStyle.position = 'sticky';
     teamCellStyle.left = 50;
@@ -1212,14 +1201,7 @@ const Ranking = (props) => {
       } else if (columns[i] === 'composite_rank') {
         tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'center', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{row[columns[i]]}</TableCell>);
       } else {
-        const colors = {};
-        const backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row[columns[i] + '_rank'] / row_length_before_filter));
-
-        if (backgroundColor !== '#') {
-          colors.backgroundColor = backgroundColor;
-          colors.color = theme.palette.getContrastText(backgroundColor);
-        }
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[columns[i] + '_rank'] && row[columns[i]] !== null ? <span style = {Object.assign(colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[columns[i] + '_rank'] && row[columns[i]] !== null ? <RankSpan rank = {row[columns[i] + '_rank']} useOrdinal = {(rankView === 'team')} max = {row_length_before_filter} />  : ''}</TableCell>);
       }
     } 
 

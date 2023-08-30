@@ -6,11 +6,8 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 
-import utilsColor from  '../utils/Color.jsx';
-import { IconButton } from '@mui/material';
 import Locked from './Billing/Locked';
-
-const ColorUtil = new utilsColor();
+import RankSpan from './CBB/RankSpan';
 
 
 const CompareStatistic = (props) => {
@@ -24,8 +21,6 @@ const CompareStatistic = (props) => {
 
   const fixedLength = width > 500 ? 2 : 1;
 
-  const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
-  const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
 
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
@@ -147,12 +142,6 @@ const CompareStatistic = (props) => {
   };
   */
 
-  const spanStyle = {
-    'fontSize': '10px',
-    'margin': '0px 5px',
-    'padding': '3px',
-    'borderRadius': '5px',
-  };
 
   const Container = (props_) => {
     if (paperContainer) {
@@ -223,29 +212,19 @@ const CompareStatistic = (props) => {
   return (
     <Container>
       {props.rows.map((row) => {
-        const awayColors = {};
-        const homeColors = {};
-        let backgroundColor = null;
         key++;
 
-        if (
-          row.awayRank && 
-          (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.awayRank / 363))) &&
-          backgroundColor !== '#'
-        ) {
-          awayColors.backgroundColor = backgroundColor;
-          awayColors.color = theme.palette.getContrastText(backgroundColor);
-        }
-        if (
-          row.homeRank && 
-          (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.homeRank / 363))) &&
-          backgroundColor !== '#'
-        ) {
-          homeColors.backgroundColor = backgroundColor;
-          homeColors.color = theme.palette.getContrastText(backgroundColor);
-        }
-
         const radius = '4px';
+
+        const getRankSpan = (rank) => {
+          if (!rank) {
+            return '';
+          }
+
+          return (
+            <RankSpan rank = {rank} key = {key} max = {363} useOrdinal = {true} />
+          );
+        };
 
         return (
           <div key = {key} style = {{'margin': '10px 0px'}}>
@@ -253,7 +232,7 @@ const CompareStatistic = (props) => {
               <div style = {{'margin': '0px 20px 0px 5px', 'minWidth': '100px', 'textAlign': 'left', 'overflow': 'hidden'}}>
                 {
                 row.locked ? <Locked />
-                : <Typography variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(awayColors, spanStyle)}>{row.awayRank}</span> : ''}<Typography style = {{'margin': '0px 8px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
+                : <Typography variant = 'body2'>{row.away}{getRankSpan(row.awayRank)}<Typography style = {{'margin': '0px ' + (row.awayRank ? '5px' : '8px')}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
                 }
               </div>
               <div style = {{'textAlign': 'center', 'whiteSpace': 'nowrap'}}>
@@ -262,7 +241,7 @@ const CompareStatistic = (props) => {
               <div style = {{'margin': '0px 5px 0px 20px', 'minWidth': '100px', 'textAlign': 'right', 'overflow': 'hidden'}}>
                 {
                 row.locked ? <Locked />
-                : <Typography variant = 'body2'><Typography style = {{'margin': '0px 8px'}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{row.homeRank ? <span style = {Object.assign(homeColors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
+                : <Typography variant = 'body2'><Typography style = {{'margin': '0px ' + (row.homeRank ? '5px' : '8px')}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{getRankSpan(row.homeRank)}{row.home}</Typography>
                 }
               </div>
             </div>
