@@ -48,7 +48,7 @@ const RankPicker = (props) => {
     },
     {
       'value': 'elo_rank',
-      'label': 'Elo',
+      'label': 'sRating',
     },
     {
       'value': 'kenpom_rank',
