@@ -64,9 +64,6 @@ const FreeTrialForm = (props) => {
         'email': email,
       },
     });
-
-    console.log(session)
-
     
     if (session && session.error) {
       setErrorMessage(session.error.message);

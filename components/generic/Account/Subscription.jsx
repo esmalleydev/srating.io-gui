@@ -127,6 +127,7 @@ const Subscription = (props) => {
           </div>
           <Typography color = {'text.secondary'} variant='subtitle1'>Usage</Typography>
           <Typography variant='body1'>{apiKey.requests || 0} / {apiKey.request_limit}</Typography>
+          <Typography color = {'text.secondary'} variant='subtitle2'>Resets 1st of every month.</Typography>
         </div>
         : ''
       }
