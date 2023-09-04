@@ -43,19 +43,16 @@ const Subscription = (props) => {
     }
   }
 
-  // todo get this from stripe instead?
-  const renewDay = moment(subscription.date_of_entry).date();
+  const renewDay = moment(subscription.renewed);
 
-  let due = moment().utc().date();
+  let due;
 
-  if (due >= renewDay) {
-    if (pricing.code === 'picks_yearly') {
-      due = moment().add(1, 'years').date(renewDay);
-    } else {
-      due = moment().add(1, 'months').date(renewDay);
-    }
+  if (
+    pricing.code === 'picks_yearly'
+  ) {
+    due = moment(subscription.renewed).add(1, 'years');
   } else {
-    due = moment().date(renewDay);
+    due = moment(subscription.renewed).add(1, 'months');
   }
 
 

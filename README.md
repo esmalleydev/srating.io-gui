@@ -22,7 +22,7 @@ In the project root you will need to create a `configuration.js` file. Use the p
 
 ```
 module.exports = {
-  'host': 'https://api.srating.io',
+  'host': 'https://api.srating.io/v1/',
   'api_key': '[YOUR API KEY HERE]',
   'http': 'https',
   'use_origin': false, // If true, requests will use the window.location.origin
