@@ -1,6 +1,6 @@
 {
   "name": "srating.io-gui",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -30,9 +30,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 3000"
   },
   "eslintConfig": {
     "extends": [

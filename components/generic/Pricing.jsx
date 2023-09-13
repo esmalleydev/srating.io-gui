@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { Button, CardActionArea } from '@mui/material';
+import PicksIcon from '@mui/icons-material/Casino';
+import LaunchIcon from '@mui/icons-material/Launch';
 import Billing from './Billing';
 
 
 const Pricing = (props) => {
   const self = this;
 
+  const router = useRouter();
   const [billingOpen, setBillingOpen] = useState(false);
   const [selectedPricing, setSelectedPricing] = useState(null);
 
@@ -143,12 +147,14 @@ const Pricing = (props) => {
    <div>
     <Billing open = {billingOpen} closeHandler = {handleBillingClose} pricing = {selectedPricing} />
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='h5'>Picks access</Typography>
+    <div style = {{'textAlign': 'center', 'margin': '10px 0px'}}><Button startIcon = {<PicksIcon />} variant='outlined' onClick={() => {router.push('/cbb/picks')}}>View Picks</Button></div>
     <Grid container spacing={4} style = {{'justifyContent': 'center'}}>
       {picksOptions.map((option) => {
         return getPriceCard(option);
       })}
     </Grid>
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='h5'>API access</Typography>
+    <div style = {{'textAlign': 'center', 'margin': '10px 0px'}}><Button endIcon = {<LaunchIcon />} variant='outlined' onClick={() => {window.open('https://docs.srating.io/', '_blank')}}>API Documentation</Button></div>
     <Grid container spacing={4} style = {{'justifyContent': 'center'}}>
       {apiOptions.map((option) => {
         return getPriceCard(option);

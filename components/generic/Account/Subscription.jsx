@@ -123,7 +123,7 @@ const Subscription = (props) => {
             {cancelledSub === null && !subscription.expires ? <div style = {{'textAlign': 'right'}}><Button onClick={handleRegenerate}>Regenerate</Button></div> : ''}
           </div>
           <Typography color = {'text.secondary'} variant='subtitle1'>Usage</Typography>
-          <Typography variant='body1'>{apiKey.requests || 0} / {apiKey.request_limit}</Typography>
+          <Typography variant='body1'>{apiKey.requests || 0} / {apiKey.request_limit} requests</Typography>
           <Typography color = {'text.secondary'} variant='subtitle2'>Resets 1st of every month.</Typography>
         </div>
         : ''
