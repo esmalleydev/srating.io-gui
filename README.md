@@ -30,7 +30,8 @@ module.exports = {
 };
 ```
 
-API keys are limited to 10,000 requests per month, if you need more requests, please [contact me](mailto:contact@srating.io).
+## API Documentation
+### [docs.srating.io](https://docs.srating.io)
 
 ## Pages
 
@@ -48,29 +49,11 @@ API keys are limited to 10,000 requests per month, if you need more requests, pl
 
 ## API requests
 
-The `components\Api.jsx` Api class has a wrapper to handle requests.
-
-Schema documentation coming soon!
-
-The API requests are based on CRUD. In addition, each table / class has other calls which return data from multiple tables / formatting for performance.
-
-Your api key will not have write access. If you would like write access please [contact me](mailto:contact@srating.io).
+The `components\Api.jsx` Api class is a wrapper to handle requests.
 
 ```
 import Api from './Api.jsx';
 const api = new Api();
-
-api.Request({
-  'class': 'team',
-  'function': 'getCBBTeam',
-  'arguments': {
-    'team_id': params.team_id,
-   }
-}).then(team => {
-  console.log(team);
-}).catch((err) => {
-  console.log(err);
-});
 
 api.Request({
   'class': 'team',
@@ -83,24 +66,7 @@ api.Request({
 }).catch((err) => {
   console.log(err);
 });
-
-api.Request({
-  'class': 'team',
-  'function': 'read',
-  'arguments': {
-    'cbb': '1',
-   }
-}).then(teams => {
-  console.log(teams);
-}).catch((err) => {
-  console.log(err);
-});
-
 ```
-
-I am also investigating open-sourcing my server side api for visibility, although I'm not sure how useful it would be as I am not planning on giving database access currently!
-
-If you have Server side API suggestions or bugs, please [contact me](mailto:contact@srating.io).
 
 ## Other Scripts
 
