@@ -24,6 +24,7 @@ import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
 import PicksIcon from '@mui/icons-material/Casino';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ArticleIcon from '@mui/icons-material/Article';
 
 
 const Sidebar = (props) => {
@@ -83,17 +84,6 @@ const Sidebar = (props) => {
 
           <Divider />
 
-          <ListItem key={'pricing'} disablePadding onClick = {() => {router.push('/pricing')}}>
-            <ListItemButton>
-              <ListItemIcon>
-                <ShoppingCartIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Subscriptions'} />
-            </ListItemButton>
-          </ListItem>
-
-          <Divider />
-
           <ListItem key={'ranking'} disablePadding onClick = {handleRanking}>
             <ListItemButton>
               <ListItemIcon>
@@ -127,6 +117,26 @@ const Sidebar = (props) => {
                 <RSSFeedIcon />
               </ListItemIcon>
               <ListItemText primary={'Blog'} />
+            </ListItemButton>
+          </ListItem>
+
+          <Divider />
+
+          <ListItem key={'pricing'} disablePadding onClick = {() => {router.push('/pricing')}}>
+            <ListItemButton>
+              <ListItemIcon>
+                <ShoppingCartIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Subscriptions'} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key={'api'} disablePadding onClick = {() => {window.open('https://docs.srating.io', '_blank');}}>
+            <ListItemButton>
+              <ListItemIcon>
+                <ArticleIcon />
+              </ListItemIcon>
+              <ListItemText primary={'API Documentation'} />
             </ListItemButton>
           </ListItem>
 
