@@ -17,6 +17,7 @@ import Link from '@mui/material/Link';
 
 import Footer from '../components/generic/Footer';
 
+import apiImage from '../public/static/images/api.png';
 import rankingImage from '../public/static/images/ranking.png';
 import scoresImage from '../public/static/images/scores.png';
 import picksImage from '../public/static/images/picks.png';
@@ -34,6 +35,13 @@ const Home = (props) => {
 
   const cards = [
     {
+      'value': 'docs',
+      'heading': 'API',
+      'image': apiImage,
+      'contents': 'Follow the API documentation to set up and send a request in 3 steps.',
+      'action': () => {ref.current?.scrollIntoView({ behavior: 'smooth' })}
+    },
+    {
       'value': 'cbb_ranking',
       'heading': 'Ranking',
       'image': rankingImage,
@@ -48,11 +56,11 @@ const Home = (props) => {
       'action': () => {router.push('/cbb/games');}
     },
     {
-      'value': 'cbb_picks',
-      'heading': 'Picks',
-      'image': picksImage,
-      'contents': 'View my picks for today\'s games, along with a betting calculator to customize odds.',
-      'action': () => {router.push('/cbb/picks');}
+      'value': 'cbb_game',
+      'heading': 'Game details',
+      'image': gameImage,
+      'contents': 'View a game\'s boxscore, match up, trends.',
+      'action': () => {router.push('/cbb/games/81a20ec9-8551-11ed-bf01-5296e1552828');}
     },
     {
       'value': 'cbb_team',
@@ -62,11 +70,11 @@ const Home = (props) => {
       'action': () => {router.push('/cbb/team/87019264-8549-11ed-bf01-5296e1552828');}
     },
     {
-      'value': 'cbb_game',
-      'heading': 'Game details',
-      'image': gameImage,
-      'contents': 'View a game\'s boxscore, match up, trends.',
-      'action': () => {router.push('/cbb/games/81a20ec9-8551-11ed-bf01-5296e1552828');}
+      'value': 'cbb_picks',
+      'heading': 'Picks',
+      'image': picksImage,
+      'contents': 'View my picks for today\'s games, along with a betting calculator to customize odds.',
+      'action': () => {router.push('/cbb/picks');}
     },
     {
       'value': 'cbb_player',

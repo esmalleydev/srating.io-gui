@@ -80,7 +80,7 @@ const Pricing = (props) => {
         'Live scores',
         'Live odds',
       ],
-      'disabled': true,
+      'disabled': false,
       'missing_features': [],
       // 'priceId': 'price_1NehA8DIZlrOiqc2XVZLRjzc', // dev price_id,
       'priceId': 'price_1NczfoDIZlrOiqc27QjIZfmt', // live price_id,
@@ -99,17 +99,36 @@ const Pricing = (props) => {
         'Live scores',
         'Live odds',
       ],
-      'disabled': true,
+      'disabled': false,
       'missing_features': [],
       // 'priceId': 'price_1NehA8DIZlrOiqc2zPZ8Ikaa', // dev price_id,
       'priceId': 'price_1NczfoDIZlrOiqc2eH6dGdGK', // live price_id,
+    },
+    {
+      'code': 'api_elite',
+      'name': 'Elite',
+      'description': '$99 USD per month for elite API access',
+      'price': 99,
+      'type': 'api',
+      'price_description': 'USD per month',
+      'requests': '4 Million requests per month',
+      'features': [
+        'Access to picks',
+        'Games / Teams / Players / Stats',
+        'Live scores',
+        'Live odds',
+      ],
+      'disabled': true,
+      'missing_features': [],
+      // 'priceId': 'price_1NqdsnDIZlrOiqc2Jr2BQJ9N', // dev price_id,
+      'priceId': 'price_1NqdqfDIZlrOiqc2w0H1MYrv', // live price_id,
     },
   ];
 
   const getPriceCard = (option) => {
     const trial = (option.code === 'api_trial');
     return (
-      <Grid item key={option.code} xs={12} sm={6} md={4}>
+      <Grid item key={option.code} xs={12} sm={5} md={3}>
         <Card sx={{ display: 'flex', flexDirection: 'column', 'textAlign': 'center' }}>
           <CardActionArea onClick = {() => {handleBilling(option)}} disabled = {option.disabled}>
             <CardContent>
@@ -160,6 +179,40 @@ const Pricing = (props) => {
         return getPriceCard(option);
       })}
     </Grid>
+    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='h5'>Features</Typography>
+    <div>
+      <Typography variant='h6'>Live scores</Typography>
+      <ul>
+        <li><Typography variant='body1'>Get live scores for all college basketball games.</Typography></li>
+      </ul>
+    </div>
+    <hr />
+    <div>
+      <Typography variant='h6'>Betting odds</Typography>
+      <Typography variant='body1'>Our API supports pre game and live odds.</Typography>
+      <ul>
+        <li><Typography variant='body1'>Money line</Typography></li>
+        <li><Typography variant='body1'>Spread</Typography></li>
+        <li><Typography variant='body1'>Over / Under</Typography></li>
+      </ul>
+    </div>
+    <hr />
+    <div>
+      <Typography variant='h6'>Teams and Players</Typography>
+      <ul>
+        <li><Typography variant='body1'>Get all the college basketball D1 teams</Typography></li>
+        <li><Typography variant='body1'>Get all the players on every team</Typography></li>
+      </ul>
+    </div>
+    <hr />
+    <div>
+      <Typography variant='h6'>Stats + Picks</Typography>
+      <ul>
+        <li><Typography variant='body1'>Get team statistics</Typography></li>
+        <li><Typography variant='body1'>Get player statistics</Typography></li>
+        <li><Typography variant='body1'>Get picks win percentage</Typography></li>
+      </ul>
+    </div>
    </div>
   );
 }
