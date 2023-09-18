@@ -1,28 +1,65 @@
 import React, { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { CircularProgress } from '@mui/material';
 
 import moment from 'moment';
 
 import Tile from './Tile';
-import HelperCBB from '../../../helpers/CBB';
+import Api from './../../../Api.jsx';
+
+
+const api = new Api();
+
+let season_ = null;
 
 const Schedule = (props) => {
   const self = this;
-  
-  // console.log(props);
 
+  const season = props.season;
   const team = props.team;
-  const games = props.games;
 
-  const ranking = props.ranking || {};
+  // const theme = useTheme();
 
-  const theme = useTheme();
+  const [requested, setRequested] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
 
-  let sorted_games = Object.values(team.cbb_games || {}).sort(function (a, b) {
+
+  if (season_ && season_ != season) {
+    setRequested(false);
+    setData(null);
+    setLoading(true);
+  }
+
+  season_ = season;
+
+
+  if (!requested) {
+    setLoading(true);
+    setRequested(true);
+    api.Request({
+      'class': 'team',
+      'function': 'getSchedule',
+      'arguments': {
+        'team_id': team.team_id,
+        'season': season,
+      },
+    }).then((response) => {
+      setData(response || {});
+      setLoading(false);
+    }).catch((e) => {
+      setData({});
+      setLoading(false);
+    });
+  }
+
+  if (loading) {
+    return <div style = {{'display': 'flex', 'justifyContent': 'center', 'paddingTop': 68}}><CircularProgress /></div>;
+  }
+
+  let sorted_games = Object.values(data || {}).sort(function (a, b) {
     return a.start_date < b.start_date ? -1 : 1;
   });
 
@@ -36,7 +73,7 @@ const Schedule = (props) => {
     if (!lastMonth || lastMonth < +moment(game.start_datetime).format('MM') || lastYear < +moment(game.start_datetime).format('YYYY')) {
       lastMonth = +moment(game.start_datetime).format('MM');
       lastYear = +moment(game.start_datetime).format('YYYY');
-      gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px'}} variant = 'h5'>{moment(game.start_datetime).format('MMMM')}</Typography>);
+      gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px'}} variant = 'h5'>{moment(game.start_datetime).format('MMMM \'YY')}</Typography>);
     }
 
     if (!nextUpcomingGame && (game.status === 'pre' || game.status === 'live')) {
@@ -49,7 +86,7 @@ const Schedule = (props) => {
 
 
   return (
-    <div>
+    <div style = {{'padding': '68px 20px 20px 20px'}}>
       {gameContainers}
     </div>
   );

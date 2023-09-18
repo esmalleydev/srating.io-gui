@@ -8,7 +8,6 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TableFooter from '@mui/material/TableFooter';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Box from '@mui/material/Box';
@@ -19,11 +18,10 @@ import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
-import HelperCBB from '../../../helpers/CBB';
-
 
 import Api from './../../../Api.jsx';
 import RankSpan from '../RankSpan';
+import { CircularProgress } from '@mui/material';
 
 
 const api = new Api();
@@ -47,6 +45,8 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
 }));
 
+let season_ = null;
+
 
 const Roster = (props) => {
   const self = this;
@@ -56,13 +56,24 @@ const Roster = (props) => {
 
   const team = props.team;
   const season = props.season;
-  const players = props.players || {};
+
 
   const [requestedPlayerStats, setRequestedPlayerStats] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [players, setPlayers] = useState({});
   const [playerStatsData, setPlayerStatsData] = useState(null);
   const [view, setView] = useState('overview');
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('minutes_per_game');
+
+
+  if (season_ && season_ != season) {
+    setRequestedPlayerStats(false);
+    setPlayerStatsData(null);
+    setLoading(true);
+  }
+
+  season_ = season;
 
 
   useEffect(() => {
@@ -73,20 +84,27 @@ const Roster = (props) => {
 
 
   if (!requestedPlayerStats) {
+    setLoading(true);
     setRequestedPlayerStats(true);
     api.Request({
-      'class': 'cbb_player_statistic_ranking',
-      'function': 'read',
+      'class': 'team',
+      'function': 'getRosterStats',
       'arguments': {
         'team_id': team.team_id,
         'season': season,
-        'current': '1',
       },
     }).then((response) => {
-      setPlayerStatsData(response || {});
+      setPlayers((response && response.players) || {});
+      setPlayerStatsData((response && response.cbb_player_statistic_ranking) || {});
+      setLoading(false);
     }).catch((e) => {
       setPlayerStatsData({});
+      setLoading(false);
     });
+  }
+
+  if (loading) {
+    return <div style = {{'display': 'flex', 'justifyContent': 'center', 'padding': 20}}><CircularProgress /></div>;
   }
  
   const getColumns = () => {
@@ -105,7 +123,6 @@ const Roster = (props) => {
   const handleClick = (player_id) => {
     router.push('/cbb/player/' + player_id);
   };
-
 
 
   const headCells = {
@@ -409,7 +426,9 @@ const Roster = (props) => {
     for (let i = 0; i < columns.length; i++) {
       if (columns[i] === 'player') {
         const player = (row.player_id in players && players[row.player_id]) || null;
-        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{player ? player.first_name + ' ' + player.last_name : 'Unknown'}</TableCell>);
+        if (player) {
+          tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{player ? player.first_name + ' ' + player.last_name : 'Unknown'}</TableCell>);
+        }
       } else {
         // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
         tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <RankSpan key = {i} rank = {row[columns[i] + '_rank']} max = {5300} useOrdinal = {false} /> : ''}</TableCell>);
@@ -429,7 +448,7 @@ const Roster = (props) => {
 
 
   return (
-    <div>
+    <div style = {{'paddingTop': 10}}>
     {
       playerStatsData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>

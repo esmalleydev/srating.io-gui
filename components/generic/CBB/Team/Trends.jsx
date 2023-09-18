@@ -2,27 +2,67 @@ import React, { useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-import { useTheme } from '@mui/material/styles';
-
-import Box from '@mui/material/Box';
+// import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-
-import HelperCBB from '../../../helpers/CBB';
+import { CircularProgress } from '@mui/material';
 
 import moment from 'moment';
 
-// todo ? https://www.react-google-charts.com/examples/line-chart
+import Api from './../../../Api.jsx';
 
+
+const api = new Api();
+
+
+let season_ = null;
 
 const Trends = (props) => {
   const self = this;
 
   const team = props.team;
+  const season = props.season;
 
-  const ranking = props.ranking || {};
-  const elo = props.elo || {};
-  const games = props.games || {};
+  const [requested, setRequested] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  // const theme = useTheme();
+
+
+  if (season_ && season_ != season) {
+    setRequested(false);
+    setData(null);
+    setLoading(true);
+  }
+
+  season_ = season;
+
+  if (!requested) {
+    setLoading(true);
+    setRequested(true);
+    api.Request({
+      'class': 'team',
+      'function': 'getTrends',
+      'arguments': {
+        'team_id': team.team_id,
+        'season': season,
+      },
+    }).then((response) => {
+      setData(response || {});
+      setLoading(false);
+    }).catch((e) => {
+      setData({});
+      setLoading(false);
+    });
+  }
+
+  if (loading) {
+    return <div style = {{'display': 'flex', 'justifyContent': 'center', 'paddingTop': 68}}><CircularProgress /></div>;
+  }
+
+  const elo = data && data.cbb_elo || {};
+  const ranking = data && data.cbb_ranking || {};
+  const games = data && data.cbb_game || {};
 
   const sorted_elo = Object.values(elo).sort(function(a, b) {
     if (!(a.cbb_game_id in games)) {
@@ -40,7 +80,6 @@ const Trends = (props) => {
     return a.date_of_rank > b.date_of_rank ? 1 : -1;
   });
 
-  const theme = useTheme();
 
   let xAxis = [];
   // let yAxis = [];
@@ -189,7 +228,7 @@ const Trends = (props) => {
   
 
   return (
-    <div>
+    <div style={{'padding': '48px 20px 20px 20px'}}>
       <Typography style = {{'margin': '10px 0px'}} variant = 'h5'>Ranking</Typography>
       <Paper elevation = {3}>
         <HighchartsReact  highcharts={Highcharts} options={rankingChartOptions} />

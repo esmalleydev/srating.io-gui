@@ -33,6 +33,8 @@ const Home = (props) => {
 
   const ref = useRef(null);
 
+  // todo blurb about this app, picks, scores is built using the same data available in our API
+
   const cards = [
     {
       'value': 'docs',
