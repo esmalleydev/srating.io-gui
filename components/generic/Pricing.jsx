@@ -62,7 +62,7 @@ const Pricing = (props) => {
       'price': 0,
       'type': 'api',
       'price_description': '',
-      'requests': '500 requests per month',
+      'requests': '500',
       'features': ['Limited access', 'Scrambled data'],
       'missing_features': ['Access to picks'],
     },
@@ -73,7 +73,7 @@ const Pricing = (props) => {
       'price': 25,
       'type': 'api',
       'price_description': 'USD per month',
-      'requests': '20,000 requests per month',
+      'requests': '20,000',
       'features': [
         'Access to picks',
         'Games / Teams / Players / Stats',
@@ -92,7 +92,7 @@ const Pricing = (props) => {
       'price': 49,
       'type': 'api',
       'price_description': 'USD per month',
-      'requests': '100,000 requests per month',
+      'requests': '100,000',
       'features': [
         'Access to picks',
         'Games / Teams / Players / Stats',
@@ -111,7 +111,7 @@ const Pricing = (props) => {
       'price': 99,
       'type': 'api',
       'price_description': 'USD per month',
-      'requests': '4 Million requests per month',
+      'requests': '4 Million',
       'features': [
         'Access to picks',
         'Games / Teams / Players / Stats',
@@ -136,7 +136,7 @@ const Pricing = (props) => {
               <Typography color = 'text.secondary' variant = 'body1'>{option.name}</Typography>
               <Typography color = 'primary.main' variant = 'h3'><Typography sx = {{'fontSize': 16}} variant='caption'>$</Typography>{option.price}</Typography>
               <Typography color = 'text.secondary' variant = 'caption'>{option.price_description}</Typography>
-              {option.requests ? <div><Typography color = 'text.secondary' variant = 'caption'>{option.requests}</Typography></div> : ''}
+              {option.requests ? <div><Typography color = 'primary.main' variant = 'caption'>{option.requests}</Typography><Typography color = 'text.secondary' variant = 'caption'> requests per month</Typography></div> : ''}
               {option.features.map((feature) => {
                 return (
                   <div>
