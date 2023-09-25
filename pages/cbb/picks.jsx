@@ -7,6 +7,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import moment from 'moment';
 import cacheData from 'memory-cache';
@@ -46,6 +52,7 @@ const Picks = (props) => {
   const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
   const [tabIndex, setTabIndex] = useState(sessionData.tabIndex || 0);
+  const [showLockedDialog, setShowLockedDialog] = useState(false);
 
   // For speed, lookups
   const tabDatesObject = {};
@@ -175,6 +182,20 @@ const Picks = (props) => {
     getGames(tabDates[value]);
   }
 
+  // check the games, if the first one has no rating, then they dont have picks access
+  // dont let them click the calc button
+  // todo should store this on login or something so the gui doesnt need to make a request, even though this is a reliable method to check
+  let calcAccess = true;
+  for (let cbb_game_id in games) {
+    if (
+      !games[cbb_game_id].home_team_rating &&
+      !games[cbb_game_id].away_team_rating
+    ) {
+      calcAccess = false;
+    }
+    break;
+  }
+
 
   let tabOptions = {
     'stats': 'Stats',
@@ -192,6 +213,12 @@ const Picks = (props) => {
   const selectedTab = tabOrder[tabIndex];
 
   const handleTabClick = (e, value) => {
+    setShowLockedDialog(false);
+    if (value === 1 && !calcAccess) {
+      setShowLockedDialog(true);
+      return;
+    }
+    
     setTabIndex(value);
   }
 
@@ -209,6 +236,14 @@ const Picks = (props) => {
   if (width < 600) {
     marginTop = '56px';
   }
+
+  const handleSubscribe = () => {
+    router.push('/pricing');
+  };
+
+  const handleCloseLockedDialog = () => {
+    setShowLockedDialog(false);
+  };
 
   return (
     <div style = {{'padding': '46px 20px 0px 20px'}}>
@@ -241,6 +276,27 @@ const Picks = (props) => {
           {selectedTab == 'stats' ? <Stats key = {date} date = {date} /> : ''}
         </div>
       }
+      <Dialog
+        open={showLockedDialog}
+        onClose={handleCloseLockedDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {'Subscription required'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Subscribe for just $5 per month to get access to the betting calculator!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseLockedDialog}>Maybe later</Button>
+          <Button onClick={handleSubscribe} autoFocus>
+            Subscribe
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
