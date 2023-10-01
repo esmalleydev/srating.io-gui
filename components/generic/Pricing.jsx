@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { Button, CardActionArea } from '@mui/material';
+import { Button, CardActionArea, Link } from '@mui/material';
 import PicksIcon from '@mui/icons-material/Casino';
 import LaunchIcon from '@mui/icons-material/Launch';
 import Billing from './Billing';
@@ -174,6 +174,8 @@ const Pricing = (props) => {
     </Grid>
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='h5'>API access</Typography>
     <div style = {{'textAlign': 'center', 'margin': '10px 0px'}}><Button endIcon = {<LaunchIcon />} variant='outlined' onClick={() => {window.open('https://docs.srating.io/', '_blank')}}>API Documentation</Button></div>
+    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>Our <Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {() => {router.push('/cbb/picks')}}>GUI</Link> uses this same API!</Typography>
+    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>Set up takes less than 5 mins</Typography>
     <Grid container spacing={4} style = {{'justifyContent': 'center'}}>
       {apiOptions.map((option) => {
         return getPriceCard(option);

@@ -61,7 +61,7 @@ api.Request({
   'arguments': {
     'team_id': params.team_id,
    }
-}).then(team => {
+}).then((team) => {
   console.log(team);
 }).catch((err) => {
   console.log(err);

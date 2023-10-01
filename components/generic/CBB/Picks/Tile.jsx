@@ -176,6 +176,9 @@ const Tile = (props) => {
         <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidthTypography}}>
           {CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{awayName}
         </Typography>
+        {/* <Typography color = 'text.secondary' sx = {{'minWidth': 50, 'textAlign': 'center'}} variant = 'overline' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden'}}>
+          {CBB.isNeuralSite() ? 'vs' : '@'}
+        </Typography> */}
         <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidthTypography}}>
           {CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{homeName}
         </Typography>
@@ -184,8 +187,7 @@ const Tile = (props) => {
   };
 
   /**
-   * Get the secondary header, contains conference and Money lines
-   * Ex: +300 vs -350
+   * Get the secondary header, contains conference
    * @return {Object} div container
    */
   const getSecondaryHeader = () => {
@@ -199,20 +201,13 @@ const Tile = (props) => {
     return (
       <div style={containerStyle}>
         <Typography variant = 'overline' color = 'text.secondary' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'maxWidth': (width < 525 ? 100 : 200)}}>{CBB.getTeamConference('away')}</Typography>
-        
-        <Typography color = 'text.secondary' sx = {{'minWidth': 50, 'textAlign': 'center'}} variant = 'overline' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden'}}>
-          <Typography color = 'text.secondary' sx = {{'marginRight': '5px'}} variant = 'overline'>{CBB.getPreML('away')}</Typography>
-          {CBB.isNeuralSite() ? 'vs' : '@'}
-          <Typography color = 'text.secondary' sx = {{'marginLeft': '5px'}} variant = 'overline'>{CBB.getPreML('home')}</Typography>
-        </Typography>
-
         <Typography variant = 'overline' color = 'text.secondary' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'maxWidth': (width < 525 ? 100 : 200)}}>{CBB.getTeamConference('home')}</Typography>
       </div>
     );
   };
   
   /**
-   * Get the spread and over / under lines
+   * Get the ML, spread and over / under lines
    * @return {Object} div container
    */
   const getOdds = () => {
@@ -226,6 +221,9 @@ const Tile = (props) => {
 
     return (
       <div>
+        <div style={containerStyle}>
+          <Typography color = 'text.secondary' sx = {{'display': 'block', 'lineHeight': '20px'}} variant = 'overline'>Money Line: {CBB.getPreML('away')} / {CBB.getPreML('home')}</Typography>
+        </div>
         <div style={containerStyle}>
           <Typography color = 'text.secondary' sx = {{'display': 'block', 'lineHeight': '20px'}} variant = 'overline'>Spread: {CBB.getPreSpread('away')} / {CBB.getPreSpread('home')}</Typography>
         </div>

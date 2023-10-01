@@ -111,17 +111,6 @@ const Sidebar = (props) => {
             </ListItemButton>
           </ListItem>
 
-          <ListItem key={'blog'} disablePadding onClick = {() => {router.push('/blog')}}>
-            <ListItemButton>
-              <ListItemIcon>
-                <RSSFeedIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Blog'} />
-            </ListItemButton>
-          </ListItem>
-
-          <Divider />
-
           <ListItem key={'pricing'} disablePadding onClick = {() => {router.push('/pricing')}}>
             <ListItemButton>
               <ListItemIcon>
@@ -131,12 +120,32 @@ const Sidebar = (props) => {
             </ListItemButton>
           </ListItem>
 
+          <Divider />
+
           <ListItem key={'api'} disablePadding onClick = {() => {window.open('https://docs.srating.io', '_blank');}}>
             <ListItemButton>
               <ListItemIcon>
                 <ArticleIcon />
               </ListItemIcon>
-              <ListItemText primary={'API Documentation'} />
+              <ListItemText primary={'API Docs'} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key={'github'} disablePadding onClick = {() => {window.open('https://github.com/esmalleydev/srating.io-gui', '_blank');}}>
+            <ListItemButton>
+              <ListItemIcon>
+                <GitHubIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Github'} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem key={'blog'} disablePadding onClick = {() => {router.push('/blog')}}>
+            <ListItemButton>
+              <ListItemIcon>
+                <RSSFeedIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Blog'} />
             </ListItemButton>
           </ListItem>
 
@@ -151,23 +160,14 @@ const Sidebar = (props) => {
             </ListItemButton>
           </ListItem>
 
-          <ListItem key={'github'} disablePadding onClick = {() => {window.open('https://github.com/esmalleydev/srating.io-gui', '_blank');}}>
-            <ListItemButton>
-              <ListItemIcon>
-                <GitHubIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Github'} />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem key={'beer'} disablePadding onClick = {() => {window.open('https://www.buymeacoffee.com/lxeUvrCaH1', '_blank');}}>
+          {/* <ListItem key={'beer'} disablePadding onClick = {() => {window.open('https://www.buymeacoffee.com/lxeUvrCaH1', '_blank');}}>
             <ListItemButton>
               <ListItemIcon>
                 <BeerIcon />
               </ListItemIcon>
               <ListItemText primary={'Buy me a beer'} />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
         </List>
         <Divider />
       </Box>
