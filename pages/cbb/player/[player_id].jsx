@@ -22,6 +22,7 @@ import Trends from '../../../components/generic/CBB/Player/Trends';
 
 
 import Api from '../../../components/Api.jsx';
+import FavoritePicker from '../../../components/generic/FavoritePicker';
 const api = new Api();
 
 
@@ -100,9 +101,12 @@ const Player = (props) => {
         <meta name = 'twitter:title' content = {name + ' statistics'} />
       </Head>
       <div style = {titleStyle}>
-        <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
-          {name}
-        </Typography>
+        <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
+          <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
+            {name}
+          </Typography>
+          <FavoritePicker player_id = {player.player_id} />
+        </div>
         <Typography variant = 'h6'>
           #{player.number} {player.position} {player.height}
         </Typography>

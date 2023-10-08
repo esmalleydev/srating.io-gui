@@ -21,12 +21,14 @@ import SeasonPicker from '../../../components/generic/CBB/SeasonPicker';
 import BackdropLoader from '../../../components/generic/BackdropLoader';
 
 import Api from '../../../components/Api.jsx';
+import FavoritePicker from '../../../components/generic/FavoritePicker';
 const api = new Api();
 
 
 const Team = (props) => {
   const self = this;
   const router = useRouter();
+  const theme = useTheme();
 
   const team = props.team;
 
@@ -36,7 +38,6 @@ const Team = (props) => {
   const [spin, setSpin] = useState(false);
   let view = router.query && router.query.view || 'schedule';
 
-  const theme = useTheme();
   const { height, width } = useWindowDimensions();
 
   let tabOptions = {
@@ -116,10 +117,13 @@ const Team = (props) => {
         <meta name = 'twitter:title' content = {team_.getName() + ' schedule, trends, statistics, roster'} />
       </Head>
       <div style = {titleStyle}>
-        <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
-          {team_.getRank() ? <sup style = {{'fontSize': '24px'}}>{team_.getRank()}</sup> : ''} {team_.getName()} ({team.stats.wins}-{team.stats.losses})
-        </Typography>
-        <SeasonPicker selected = {season} actionHandler = {handleSeason} />
+        <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
+          <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
+            {team_.getRank() ? <sup style = {{'fontSize': '24px'}}>{team_.getRank()}</sup> : ''} {team_.getName()} ({team.stats.wins}-{team.stats.losses})
+          </Typography>
+          <FavoritePicker team_id = {team_id} />
+        </div>
+          <SeasonPicker selected = {season} actionHandler = {handleSeason} />
       </div>
       <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop + headerHeight, 'position': 'fixed'}}>
         <Tabs /*todo if width less than x variant="scrollable" scrollButtons="auto"*/ value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} centered indicatorColor="secondary" textColor="inherit">
