@@ -420,7 +420,7 @@ const Stats = (props) => {
   }
 
   return (
-    <div style = {{'padding': 20}}>
+    <div style = {{'paddingTop': 20}}>
       {
       statsData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>

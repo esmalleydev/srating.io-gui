@@ -157,7 +157,7 @@ const GameLog = (props) => {
   let b = 0;
 
   return (
-    <div style = {{'padding': 20}}>
+    <div style = {{'paddingTop': 20}}>
       {
       data === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>
