@@ -51,8 +51,8 @@ class Arrayifer {
       }
     
       data[index] = arr[i];
-      combination(arr, n, r, index+1, data, i+1, results);
-      combination(arr, n, r, index, data, i+1, results);
+      this.combination(arr, n, r, index+1, data, i+1, results);
+      this.combination(arr, n, r, index, data, i+1, results);
     
       return results;
     };
@@ -68,7 +68,7 @@ class Arrayifer {
       let data = new Array(r);
     
       let results = [];
-      results = combination(arr, n, r, 0, data, 0, results);
+      results = this.combination(arr, n, r, 0, data, 0, results);
       return results;
     };
   
