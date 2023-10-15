@@ -9,6 +9,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import LockIcon from '@mui/icons-material/Lock';
+import BackdropLoader from '../BackdropLoader';
 
 
 const Locked = (props) => {
@@ -17,10 +18,14 @@ const Locked = (props) => {
   const router = useRouter();
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [spin, setSpin] = useState(false);
 
 
   const handleSubscribe = () => {
-    router.push('/pricing');
+    setSpin(true);
+    router.push('/pricing').then(() => {
+      setSpin(false);
+    });
   };
 
   const handleClose = () => {
@@ -29,6 +34,7 @@ const Locked = (props) => {
 
   return (
     <>
+      <BackdropLoader open = {(spin === true)} />
       <IconButton onClick={() => {setOpenDialog(true);}}><LockIcon fontSize='small' color='error' /></IconButton>
       <Dialog
         open={openDialog}

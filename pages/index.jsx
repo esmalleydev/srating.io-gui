@@ -26,14 +26,22 @@ import gameImage from '../public/static/images/statcompare.png';
 import playerImage from '../public/static/images/player.png';
 
 import Pricing from '../components/generic/Pricing';
+import BackdropLoader from '../components/generic/BackdropLoader';
 
 const Home = (props) => {
 
   const router = useRouter();
 
+  const [spin, setSpin] = useState(false);
+
   const ref = useRef(null);
 
-  // todo blurb about this app, picks, scores is built using the same data available in our API
+  const handlePath = (path) => {
+    setSpin(true);
+    router.push(path).then(() => {
+      setSpin(false);
+    });
+  };
 
   const cards = [
     {
@@ -48,42 +56,42 @@ const Home = (props) => {
       'heading': 'Ranking',
       'image': rankingImage,
       'contents': 'Aggregate rankings for college basketball teams and players. Sort by any ranking metric, filter by conference, season.',
-      'action': () => {router.push('/cbb/ranking');}
+      'action': () => {handlePath('/cbb/ranking');}
     },
     {
       'value': 'cbb_scores',
       'heading': 'Scores',
       'image': scoresImage,
       'contents': 'View scores real time, with live odds. Filter by conference, game status.',
-      'action': () => {router.push('/cbb/games');}
+      'action': () => {handlePath('/cbb/games');}
     },
     {
       'value': 'cbb_game',
       'heading': 'Game details',
       'image': gameImage,
       'contents': 'View a game\'s boxscore, match up, trends.',
-      'action': () => {router.push('/cbb/games/81a20ec9-8551-11ed-bf01-5296e1552828');}
+      'action': () => {handlePath('/cbb/games/81a20ec9-8551-11ed-bf01-5296e1552828');}
     },
     {
       'value': 'cbb_team',
       'heading': 'Teams',
       'image': teamImage,
       'contents': 'View a team\'s schedule, statistics, trends.',
-      'action': () => {router.push('/cbb/team/87019264-8549-11ed-bf01-5296e1552828');}
+      'action': () => {handlePath('/cbb/team/87019264-8549-11ed-bf01-5296e1552828');}
     },
     {
       'value': 'cbb_picks',
       'heading': 'Picks',
       'image': picksImage,
       'contents': 'View my picks for today\'s games, along with a betting calculator to customize odds.',
-      'action': () => {router.push('/cbb/picks');}
+      'action': () => {handlePath('/cbb/picks');}
     },
     {
       'value': 'cbb_player',
       'heading': 'Players',
       'image': playerImage,
       'contents': 'View a player\'s statistics, ranking, game log, trends.',
-      'action': () => {router.push('/cbb/player/dff6dce2-ad5a-11ed-9185-b6be2f39279c');}
+      'action': () => {handlePath('/cbb/player/dff6dce2-ad5a-11ed-9185-b6be2f39279c');}
     },
   ];
 
@@ -99,6 +107,7 @@ const Home = (props) => {
         <meta name = 'twitter:title' content = 'View stats, ranking, live scores, live odds, picks for college basketball' />
       </Head>
       <main>
+        <BackdropLoader open = {(spin === true)} />
         <Box
           sx={{
             bgcolor: 'background.paper',
@@ -124,9 +133,9 @@ const Home = (props) => {
               spacing={2}
               justifyContent="center"
             >
-              <Button onClick = {() => {router.push('/cbb/ranking')}} variant="outlined">Ranking</Button>
-              <Button onClick = {() => {router.push('/cbb/games')}} variant="outlined">Scores</Button>
-              <Button onClick = {() => {router.push('/cbb/picks')}} variant="outlined">Picks</Button>
+              <Button onClick = {() => {handlePath('/cbb/ranking');}} variant="outlined">Ranking</Button>
+              <Button onClick = {() => {handlePath('/cbb/games')}} variant="outlined">Scores</Button>
+              <Button onClick = {() => {handlePath('/cbb/picks')}} variant="outlined">Picks</Button>
             </Stack>
           </Container>
           <div style = {{'textAlign': 'center', 'padding': 20}}>

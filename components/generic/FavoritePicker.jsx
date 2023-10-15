@@ -4,6 +4,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from '@mui/material';
 
 import Api from './../Api.jsx';
+import AccountHandler from './AccountHandler.jsx';
 const api = new Api();
 
 const FavoritePicker = (props) => {
@@ -18,6 +19,7 @@ const FavoritePicker = (props) => {
   
   const [request, setRequest] = useState(sessionData.request || false);
   const [favorite, setFavorite] = useState(sessionData.favorite || {});
+  const [accountOpen, setAccountOpen] = useState(false);
 
   let selected = false;
 
@@ -73,29 +75,24 @@ const FavoritePicker = (props) => {
     getFavorite();
   }
 
-
+  const handleAccountClose = () => {
+    setAccountOpen(false);
+  };
 
   const handleFavorite = () => {
+    if (!session_id) {
+      setAccountOpen(true);
+      return;
+    }
+
     let args = {};
-    args.team_ids = (favorite && favorite.json_team_ids) || [];
-    args.player_ids = (favorite && favorite.json_player_ids) || [];
 
     if (team_id) {
-      let index = args.team_ids.indexOf(team_id);
-      if (index > -1) {
-        args.team_ids.splice(index, 1);
-      } else {
-        args.team_ids.push(team_id);
-      }
+      args.team_id = team_id;
     }
 
     if (player_id) {
-      let index = args.player_ids.indexOf(player_id);
-      if (index > -1) {
-        args.player_ids.splice(index, 1);
-      } else {
-        args.player_ids.push(player_id);
-      }
+      args.player_id = player_id;
     }
 
     api.Request({
@@ -116,9 +113,12 @@ const FavoritePicker = (props) => {
   }
 
   return (
-    <IconButton color='primary' onClick = {handleFavorite}>
-      <FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />
-    </IconButton>
+    <>
+      <IconButton color='primary' onClick = {handleFavorite}>
+        <FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />
+      </IconButton>
+      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {() => {}} />
+    </>
   );
 }
 

@@ -7,12 +7,12 @@ import useWindowDimensions from '../hooks/useWindowDimensions';
 import Paper from '@mui/material/Paper';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
 import PicksIcon from '@mui/icons-material/Casino';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+// import NewspaperIcon from '@mui/icons-material/Newspaper';
 import BackdropLoader from './BackdropLoader';
 
 
@@ -44,7 +44,8 @@ const FooterNavigation = (props) => {
   const pages = [
     'ranking',
     'games',
-    'picks'
+    'picks',
+    'favorites'
   ];
 
 
@@ -93,6 +94,13 @@ const FooterNavigation = (props) => {
     });
   }
 
+  const handleFavorites = () => {
+    setSpin(true);
+    router.push('/'+viewingSport.toLowerCase()+'/favorites').then(() => {
+      setSpin(false);
+    });
+  }
+
   // console.log(theme);
 
   const buttonColor = theme.palette.mode === 'light' ? '#F59242' : 'secondary';
@@ -106,6 +114,7 @@ const FooterNavigation = (props) => {
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handlePicks} label="Picks" icon={<PicksIcon />} />
+          <StyledBottomNavigationAction color = 'secondary' onClick = {handleFavorites} label="Favorites" icon={<FavoriteIcon />} />
         </BottomNavigation>
       </Paper>
       : ''}

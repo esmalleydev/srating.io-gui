@@ -60,8 +60,8 @@ const Calculator = (props) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('start_timestamp');
   const [inputBet, setBet] = useState(10);
-  const [inputOddsMin, setOddsMin] = useState(-1500);
-  const [inputOddsMax, setOddsMax] = useState(-150);
+  const [inputOddsMin, setOddsMin] = useState(-2000);
+  const [inputOddsMax, setOddsMax] = useState(500);
   const [inputRoundRobin, setRoundRobin] = useState(0);
   const [inputPercentage, setPercentage] = useState(75);
   

@@ -168,7 +168,7 @@ const Pricing = (props) => {
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='h5'>Picks access</Typography>
     <div style = {{'textAlign': 'center', 'margin': '10px 0px'}}><Button startIcon = {<PicksIcon />} variant='outlined' onClick={() => {router.push('/cbb/picks')}}>View Picks</Button></div>
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>Algorithm trained on 10+ years of data (75000+ games)</Typography>
-    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>70%+ win rate and always improving!</Typography>
+    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>72%+ win rate and always improving!</Typography>
     <Grid container spacing={4} style = {{'justifyContent': 'center'}}>
       {picksOptions.map((option) => {
         return getPriceCard(option);

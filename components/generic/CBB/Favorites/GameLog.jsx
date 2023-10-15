@@ -3,15 +3,12 @@ import { useRouter } from 'next/router';
 import { styled, useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Skeleton from '@mui/material/Skeleton';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TableFooter from '@mui/material/TableFooter';
 import TableRow from '@mui/material/TableRow';
 
 import moment from 'moment';
@@ -42,33 +39,10 @@ const GameLog = (props) => {
   const theme = useTheme();
   const router = useRouter();
 
-  // const season = props.season;
-  // const player = props.player;
+  const gamelogs = props.gamelogs;
   const player_team_season = props.player_team_season;
-  // const team = props.team;
 
-
-  const [requestedLog, setRequestedLog] = useState(false);
-  const [data, setData] = useState(null);
   const [spin, setSpin] = useState(false);
-
-
-  if (!requestedLog) {
-    setRequestedLog(true);
-    api.Request({
-      'class': 'cbb_player_boxscore',
-      'function': 'getGameLogs',
-      'arguments': {
-        'player_id': player_team_season.player_id,
-        'season': player_team_season.season,
-      },
-    }).then((response) => {
-      setData(response || {});
-    }).catch((e) => {
-      setData({});
-    });
-  }
-
 
   const handleClick = (cbb_game_id) => {
     setSpin(true);
@@ -155,38 +129,16 @@ const GameLog = (props) => {
     },
   ];
 
-  const rows = Object.values(data || {}).sort(function(a, b) {
+  const rows = Object.values(gamelogs || {}).sort(function(a, b) {
     return a.cbb_game.start_datetime > b.cbb_game.start_datetime ? -1 : 1;
   });
 
   let b = 0;
 
   return (
-    <div style = {{'paddingTop': 20}}>
+    <>
       <BackdropLoader open = {(spin === true)} />
-      {
-      data === null ?
-        <Paper elevation = {3} style = {{'padding': 10}}>
-            <div>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-            </div>
-          </Paper>
-        : ''
-      }
-      {
-        data !== null ?
-        <TableContainer component={Paper}>
+      <TableContainer component={Paper}>
           <Table size="small" aria-label="game log table">
             <TableHead>
               <TableRow>
@@ -313,10 +265,8 @@ const GameLog = (props) => {
               })}
             </TableBody>
           </Table>
-        </TableContainer>
-        : ''
-      }
-    </div>
+      </TableContainer>
+    </>
   );
 }
 

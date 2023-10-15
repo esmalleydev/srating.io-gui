@@ -23,6 +23,8 @@ const PreviousMatchups = (props) => {
   const [previousMatchups, setPreviousMatchups] = useState(null);
   const [showAllPreviousMatchups, setShowAllPreviousMatchups] = useState(false);
 
+  console.log(previousMatchups);
+
 
   const CBB = new HelperCBB({
     'cbb_game': game,

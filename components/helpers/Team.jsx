@@ -64,6 +64,11 @@ class Team {
           last = this.team.cbb_ranking[cbb_ranking_id];
         }
       }
+    } else if (
+      this.team &&
+      this.team.ranking
+    ) {
+      last = this.team.ranking;
     }
     return last;
   };

@@ -22,6 +22,7 @@ import { visuallyHidden } from '@mui/utils';
 import Api from './../../../Api.jsx';
 import RankSpan from '../RankSpan';
 import { CircularProgress } from '@mui/material';
+import BackdropLoader from '../../BackdropLoader.jsx';
 
 
 const api = new Api();
@@ -65,6 +66,7 @@ const Roster = (props) => {
   const [view, setView] = useState('overview');
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('minutes_per_game');
+  const [spin, setSpin] = useState(false);
 
 
   if (season_ && season_ != season) {
@@ -121,7 +123,10 @@ const Roster = (props) => {
   };
 
   const handleClick = (player_id) => {
-    router.push('/cbb/player/' + player_id);
+    setSpin(true);
+    router.push('/cbb/player/' + player_id).then(() => {
+      setSpin(false);
+    });
   };
 
 
@@ -449,6 +454,7 @@ const Roster = (props) => {
 
   return (
     <div style = {{'paddingTop': 10}}>
+      <BackdropLoader open = {(spin === true)} />
     {
       playerStatsData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>

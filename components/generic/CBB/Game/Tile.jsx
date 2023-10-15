@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import PinIcon from '@mui/icons-material/PushPin';
 import Locked from '../../Billing/Locked';
+import BackdropLoader from '../../BackdropLoader';
 
 const Tile = (props) => {
   const self = this;
@@ -18,6 +19,7 @@ const Tile = (props) => {
   const theme = useTheme();
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(props.isPinned || false);
+  const [spin, setSpin] = useState(false);
 
   const CBB = new HelperCBB({
     'cbb_game': props.data,
@@ -31,7 +33,10 @@ const Tile = (props) => {
     if (props.onClick && typeof props.onClick === 'function') {
       props.onClick();
     }
-    router.push('/cbb/games/' + props.data.cbb_game_id);
+    setSpin(true);
+    router.push('/cbb/games/' + props.data.cbb_game_id).then(() => {
+      setSpin(false);
+    });
   };
 
   const handleMouseEnter = (e) => {
@@ -260,6 +265,7 @@ const Tile = (props) => {
 
   return (
     <Paper elevation={3} style = {divStyle}>
+      <BackdropLoader open = {(spin === true)} />
       <div style = {teamLineStyle} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>
         {getHeader()}
         <div onClick = {handleClick}>
