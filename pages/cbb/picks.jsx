@@ -36,6 +36,14 @@ const Picks = (props) => {
 
   const season = (router.query && router.query.season) || new HelperCBB().getCurrentSeason();
 
+  let tabOptions = {
+    'stats': 'Stats',
+    'calculator': 'Calculator',
+    'picks': 'Picks',
+  };
+
+  let tabOrder = ['picks', 'calculator', 'stats'];
+
   const sessionDataKey = 'CBB.PICKS.DATA.'+season;
 
   // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
@@ -48,11 +56,14 @@ const Picks = (props) => {
   const [request, setRequest] = useState(sessionData.request || false);
   const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : (props.games));
   const [date, setDate] = useState(sessionData.date || router.query.date || null);
+  const [view, setView] = useState(router.query.view || 'picks');
   const [games, setGames] = useState(sessionData.games || {});
   const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
-  const [tabIndex, setTabIndex] = useState(sessionData.tabIndex || 0);
   const [showLockedDialog, setShowLockedDialog] = useState(false);
+  
+  const selectedTab = tabOrder.indexOf(view) > -1 ? tabOrder[tabOrder.indexOf(view)] : tabOrder[0];
+  const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(selectedTab));
 
   // For speed, lookups
   const tabDatesObject = {};
@@ -69,7 +80,6 @@ const Picks = (props) => {
       'scrollTop': scrollTop,
       'expire_session': new Date().getTime() + (5 * 60 * 1000), // 5 mins from now
       'season': season,
-      'tabIndex': tabIndex,
     }));
   };
 
@@ -107,7 +117,7 @@ const Picks = (props) => {
 
   useEffect(() => {
     triggerSessionStorage();
-  }, [tabIndex, scrollTop, request, games, date]);
+  }, [view, scrollTop, request, games, date]);
 
   useEffect(() => {
     scrollToElement();
@@ -197,20 +207,11 @@ const Picks = (props) => {
   }
 
 
-  let tabOptions = {
-    'stats': 'Stats',
-    'calculator': 'Calculator',
-    'picks': 'Picks',
-  };
-
-  let tabOrder = ['picks', 'calculator', 'stats'];
+  
   let tabs = [];
-
   for (let i = 0; i < tabOrder.length; i++) {
     tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{'fontSize': '12px'}}>{tabOptions[tabOrder[i]]}</span>)} />);
   }
-
-  const selectedTab = tabOrder[tabIndex];
 
   const handleTabClick = (e, value) => {
     setShowLockedDialog(false);
@@ -220,6 +221,10 @@ const Picks = (props) => {
     }
     
     setTabIndex(value);
+    setView(tabOrder[value]);
+    router.replace({
+      query: {...router.query, view: tabOrder[value]},
+    });
   }
 
   const onClickTile = () => {
