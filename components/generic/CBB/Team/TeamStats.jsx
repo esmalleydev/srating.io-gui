@@ -95,7 +95,7 @@ const TeamStats = (props) => {
     {
       'name': 'FG%',
       'title': 'Field goal percentage',
-      'value': stats.field_goal_percentage + '%',
+      'value': stats.field_goal_percentage || 0 + '%',
       'rank': stats.field_goal_percentage_rank,
     },
     {
@@ -113,7 +113,7 @@ const TeamStats = (props) => {
     {
       'name': '2P%',
       'title': '2 point field goal percentage',
-      'value': stats.two_point_field_goal_percentage + '%',
+      'value': stats.two_point_field_goal_percentage || 0 + '%',
       'rank': stats.two_point_field_goal_percentage_rank,
     },
     {
@@ -131,7 +131,7 @@ const TeamStats = (props) => {
     {
       'name': '3P%',
       'title': '3 point field goal percentage',
-      'value': stats.three_point_field_goal_percentage + '%',
+      'value': stats.three_point_field_goal_percentage || 0 + '%',
       'rank': stats.three_point_field_goal_percentage_rank,
     },
     {
@@ -149,7 +149,7 @@ const TeamStats = (props) => {
     {
       'name': 'FT%',
       'title': 'Free throw percentage',
-      'value': stats.free_throw_percentage + '%',
+      'value': stats.free_throw_percentage || 0 + '%',
       'rank': stats.free_throw_percentage_rank,
     },
   ];
@@ -297,7 +297,7 @@ const TeamStats = (props) => {
     {
       'name': 'FG%',
       'title': 'Oppenent field goal percentage',
-      'value': stats.opponent_field_goal_percentage + '%',
+      'value': stats.opponent_field_goal_percentage || 0 + '%',
       'rank': stats.opponent_field_goal_percentage_rank,
     },
     {
@@ -349,7 +349,7 @@ const TeamStats = (props) => {
       <div style = {{'textAlign': 'center', 'flex': '1', 'minWidth': 100, 'maxWidth': 100, 'margin': 10}}>
         <Tooltip key={statistic.name} disableFocusListener placement = 'top' title={statistic.title}><Typography color = {'text.secondary'} variant='body1'>{statistic.name}</Typography></Tooltip>
         {/* <hr style = {{'padding': 0, 'margin': 'auto', 'width': 50}} /> */}
-        <div><Typography variant='caption'>{statistic.value}</Typography><RankSpan rank = {statistic.rank} useOrdinal = {true} max = {363} /></div>
+        <div><Typography variant='caption'>{statistic.value || 0}</Typography>{statistic.rank ? <RankSpan rank = {statistic.rank} useOrdinal = {true} max = {362} /> : ''}</div>
       </div>
     );
   };

@@ -54,6 +54,8 @@ const Players = (props) => {
       </div>
     );
 
+    let atleastOneBoxscore = false;
+
     for (let i = 0; i < favorite.json_player_ids.length; i++) {
       const player = players && players[favorite.json_player_ids[i]];
 
@@ -84,6 +86,8 @@ const Players = (props) => {
         continue;
       }
 
+      atleastOneBoxscore = true;
+
       gamelogContainers.push(
         <div>
           <Typography variant='h6'><Link style = {{'cursor': 'pointer'}} underline='hover' onClick={() => handlePlayerClick(player.player_id)}>{player.first_name + ' ' + player.last_name}</Link></Typography>
@@ -107,7 +111,17 @@ const Players = (props) => {
         );
       }
     }
+
+    if (!atleastOneBoxscore) {
+      gamelogContainers.push(
+        <div>
+          <Typography variant='h6' style = {{'textAlign': 'center'}}>No recent boxscores :(</Typography>
+        </div>
+      );
+    }
   }
+
+  console.log(gamelogContainers)
 
 
   return (

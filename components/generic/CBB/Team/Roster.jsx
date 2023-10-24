@@ -105,13 +105,16 @@ const Roster = (props) => {
     });
   }
 
+  console.log(players)
+  console.log(playerStatsData)
+
   if (loading) {
     return <div style = {{'display': 'flex', 'justifyContent': 'center', 'padding': 20}}><CircularProgress /></div>;
   }
  
   const getColumns = () => {
     if (view === 'overview') {
-      return ['player', 'games', 'minutes_per_game', 'points_per_game', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
+      return ['player', 'games', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
     } else if (view === 'per_game') {
       return ['player', 'games', 'minutes_per_game', 'points_per_game', 'offensive_rebounds_per_game', 'defensive_rebounds_per_game', 'assists_per_game', 'steals_per_game', 'blocks_per_game', 'turnovers_per_game', 'fouls_per_game'];
     } else if (view === 'offensive') {
@@ -179,6 +182,13 @@ const Roster = (props) => {
       label: 'DRT',
       tooltip: 'Defensive rating',
       'sort': 'lower',
+    },
+    'player_efficiency_rating': {
+      id: 'player_efficiency_rating',
+      numeric: true,
+      label: 'PER',
+      tooltip: 'Player efficiency rating',
+      'sort': 'higher',
     },
     'efficiency_rating': {
       id: 'efficiency_rating',
@@ -336,6 +346,14 @@ const Roster = (props) => {
   };
 
   let rows = Object.values(playerStatsData || {});
+
+  if (!rows.length && players && Object.keys(players).length) {
+    for (let player_id in players) {
+      rows.push({
+        'player_id': player_id,
+      });
+    }
+  }
 
   const statDisplay = [
     {

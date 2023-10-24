@@ -50,7 +50,7 @@ const Playbyplay = (props) => {
   });
 
   const sortedPBP = Object.values(pbpData || {}).sort(function(a, b) {
-    return +a.external_action_number > +b.external_action_number ? -1 : 1;
+    return +a.order > +b.order ? -1 : 1;
     if (a.date_of_entry > b.date_of_entry) {
       return -1;
     }

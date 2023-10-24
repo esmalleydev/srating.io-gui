@@ -96,6 +96,7 @@ const Matchup = (props) => {
       'homeRank': homeStats.internal && homeStats.internal.adjusted_efficiency_rating_rank,
       'favored': 'higher',
       'showDifference': true,
+      'compareType': 'rank',
     },
     {
       'name': 'SOS',
@@ -108,6 +109,7 @@ const Matchup = (props) => {
       'homeRank': homeStats.internal && homeStats.internal.opponent_efficiency_rating_rank,
       'favored': 'higher',
       'showDifference': true,
+      'compareType': 'rank',
     },
     {
       'name': 'ORT',

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
+import moment from 'moment';
+
 import HelperCBB from '../../../helpers/CBB';
 
 import { useTheme } from '@mui/material/styles';
@@ -16,8 +18,10 @@ const Tile = (props) => {
   const [hover, setHover] = useState(false);
   const [spin, setSpin] = useState(false);
 
+  const cbb_game = props.data;
+
   const CBB = new HelperCBB({
-    'cbb_game': props.data,
+    'cbb_game': cbb_game,
   });
 
 
@@ -29,7 +33,7 @@ const Tile = (props) => {
       props.onClick();
     }
     setSpin(true);
-    router.push('/cbb/games/' + props.data.cbb_game_id).then(() => {
+    router.push('/cbb/games/' + cbb_game.cbb_game_id).then(() => {
       setSpin(false);
     });
   };
@@ -45,6 +49,10 @@ const Tile = (props) => {
 
   const getHeader = () => {
     let startTime = CBB.getTime();
+
+    if (!CBB.isInProgress() && !CBB.isFinal()) {
+      startTime = moment(cbb_game.start_date).format('MMM Do') + ' - ' + startTime;
+    }
     
     const flexContainer = {
       'display': 'flex',

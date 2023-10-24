@@ -47,21 +47,68 @@ const CompareStatistic = (props) => {
   const getPercentage = (row, base) => {
     if (row.favored === 'lower') {
       let total = +row.awayCompareValue + +row.homeCompareValue;
+      
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'away' ? 100 * (+row.homeCompareValue / total) + '%' : 100 * (+row.awayCompareValue / total) + '%';
+        let percentage = base === 'away' ? 100 * (+row.homeCompareValue / total) : 100 * (+row.awayCompareValue / total);
+        return percentage + '%';
       }
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'home' ? 100 * (+row.awayCompareValue / total) + '%' : 100 * (+row.homeCompareValue / total) + '%';
+        let percentage = base === 'home' ? 100 * (+row.awayCompareValue / total) : 100 * (+row.homeCompareValue / total);
+        return percentage + '%';
       }
     }
 
+
     if (row.favored === 'higher') {
       let total = +row.awayCompareValue + +row.homeCompareValue;
-      if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? 100 * (+row.awayCompareValue / total) + '%' : 100 * (+row.homeCompareValue / total) + '%';
+
+      // compareType rank is just for aEM because it is annoying as fuck and the numbers go all over
+      /*
+      if (
+        row.compareType === 'absolute' &&
+        (
+          (
+            +row.homeCompareValue < 0 &&
+            +row.awayCompareValue > 0
+          ) ||
+          (base === 'home' && +row.awayCompareValue > total) ||
+          (base === 'away' && +row.awayCompareValue > total)
+        )
+      ) {
+        let percentage = ((+row.awayCompareValue - +row.homeCompareValue) / Math.abs(+row.homeCompareValue)) * 100;
+        return (base === 'away' ? (percentage >= 100 ? 95 : percentage) : 100 - (percentage >= 100 ? 95 : percentage)) + '%';
+      }*/
+      if (row.compareType === 'rank' && row.awayRank && row.homeRank) {
+        total = row.awayRank + row.homeRank;
+        let percentage = base === 'home' ? 100 * (+row.awayRank / total) : 100 * (+row.homeRank / total);
+        return percentage + '%';
+      } else if (+row.awayCompareValue > +row.homeCompareValue) {
+        let percentage = base === 'away' ? 100 * (+row.awayCompareValue / total) : 100 * (+row.homeCompareValue / total);
+        return percentage + '%';
       }
-      if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? 100 * (+row.homeCompareValue / total) + '%' : 100 * (+row.awayCompareValue / total) + '%';
+
+      /*
+      if (
+        row.compareType === 'absolute' &&
+        (
+          (
+            +row.awayCompareValue < 0 &&
+            +row.homeCompareValue > 0
+          ) ||
+          (base === 'home' && +row.homeCompareValue > total) ||
+          (base === 'away' && +row.homeCompareValue > total)
+        )
+      ) {
+        let percentage = ((+row.homeCompareValue - +row.awayCompareValue) / Math.abs(+row.awayCompareValue)) * 100;
+        return (base === 'home' ? (percentage >= 100 ? 95 : percentage) : 100 - (percentage >= 100 ? 95 : percentage)) + '%';
+      }*/
+      if (row.compareType === 'rank' && row.awayRank && row.homeRank) {
+        total = row.awayRank + row.homeRank;
+        let percentage = base === 'away' ? 100 * (+row.homeRank / total) : 100 * (+row.awayRank / total);
+        return percentage + '%';
+      } else if (+row.awayCompareValue < +row.homeCompareValue) {
+        let percentage = base === 'home' ? 100 * (+row.homeCompareValue / total) : 100 * (+row.awayCompareValue / total);
+        return percentage + '%';
       }
     }
 
@@ -226,6 +273,12 @@ const CompareStatistic = (props) => {
           );
         };
 
+        // console.log(row)
+        // console.log(getPercentage(row, 'away'))
+        // console.log(getPercentage(row, 'home'))
+        // console.log(getColor(row, 'away'))
+        // console.log(getColor(row, 'home'))
+        
         return (
           <div key = {key} style = {{'margin': '10px 0px'}}>
             <div style = {{'display': 'flex', 'alignItems':'center', 'justifyContent': 'space-between'}}>

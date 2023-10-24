@@ -167,14 +167,14 @@ const Pricing = (props) => {
     <Billing open = {billingOpen} closeHandler = {handleBillingClose} pricing = {selectedPricing} />
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='h5'>Picks access</Typography>
     <div style = {{'textAlign': 'center', 'margin': '10px 0px'}}><Button startIcon = {<PicksIcon />} variant='outlined' onClick={() => {router.push('/cbb/picks')}}>View Picks</Button></div>
-    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'><Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {() => {router.push('/cbb/picks?view=stats')}}>View</Link> our win rate stats</Typography>
+    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>View our <Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {() => {router.push('/cbb/picks?view=stats')}}>live win rate</Link> stats and read our blog about <Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {() => {router.push('/blog/picks-2023-review')}}>2023 picks breakdown</Link></Typography>
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>Algorithm trained on 10+ years of data (75000+ games)</Typography>
     <Grid container spacing={4} style = {{'justifyContent': 'center'}}>
       {picksOptions.map((option) => {
         return getPriceCard(option);
       })}
     </Grid>
-    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='h5'>API access</Typography>
+    <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='h5'>API access <sup style = {{'fontSize': '14px'}}>beta</sup></Typography>
     <div style = {{'textAlign': 'center', 'margin': '10px 0px'}}><Button endIcon = {<LaunchIcon />} variant='outlined' onClick={() => {window.open('https://docs.srating.io/', '_blank')}}>API Documentation</Button></div>
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>Our <Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {() => {router.push('/cbb/picks')}}>GUI</Link> uses this same API!</Typography>
     <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant='body1'>Set up takes less than 5 mins</Typography>

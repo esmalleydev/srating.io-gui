@@ -83,6 +83,7 @@ const Tile = (props) => {
       'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].adjusted_efficiency_rating_rank,
       'favored': 'higher',
       'showDifference': true,
+      'compareType': 'rank',
     },
     {
       'name': 'ORT',

@@ -22,6 +22,8 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+import sratingLogo from '../../public/favicon-32x32.png';
+
 import Sidebar from './Sidebar';
 import Search from './Search';
 import AccountHandler from './AccountHandler';
@@ -138,7 +140,10 @@ const Header = (props) => {
                     <Sidebar theme = {props.theme} handleTheme = {props.handleTheme} />
                   </Drawer>
                 </IconButton>
-                <Box sx = {{ display: 'flex', mr: 1 }} style = {logoStyle} onClick = {handleHome}>{(width < 450 ? '> SR' : '> sRating.io')}<sup style = {{'fontSize': '14px'}}>beta</sup></Box>
+                <Box sx = {{ display: 'flex', mr: 1, 'alignItems': 'center' }} style = {logoStyle} onClick = {handleHome}>
+                  <img src={sratingLogo.src} width = '20' height = '20' style = {{'marginRight': 5}} />
+                  {(width < 450 ? 'SR' : 'sRating.io')}
+                </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
                 <Box sx={{ flexGrow: 0, 'marginRight': (width < 600 ? 0 : '5px') }}>
