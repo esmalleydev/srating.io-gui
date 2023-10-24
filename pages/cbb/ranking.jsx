@@ -1238,8 +1238,8 @@ const Ranking = (props) => {
 
 
   const tableStyle = {
-    'maxHeight': height - 290 - (width < 470 ? 40 : 0) - (confChips.length ? 40 : 0) - 40,
-    'height': height - 290 - (width < 470 ? 40 : 0) - (confChips.length ? 40 : 0) - 40,
+    'maxHeight': height - 320 - (width < 470 ? 60 : 0) - (confChips.length ? 6 : 0) - 40,
+    'height': height - 320 - (width < 470 ? 60 : 0) - (confChips.length ? 40 : 0) - 40,
   };
 
   if ((rows.length + 2) * 29 < tableStyle.height) {
@@ -1286,7 +1286,7 @@ const Ranking = (props) => {
           </div>
           <div style={{'display': 'flex', 'justifyContent': 'end', 'padding': '0px 20px 10px 0px'}}><RankSearch rows = {allRows} callback = {handleSearch} /></div>
           <div style = {{'padding': width < 600 ? '0px 10px' : '0px 20px'}}>
-            <TableVirtuoso style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} />
+            {rows.length ? <TableVirtuoso style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
           </div>
         </div>
       }
