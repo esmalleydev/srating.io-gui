@@ -121,9 +121,6 @@ const Players = (props) => {
     }
   }
 
-  console.log(gamelogContainers)
-
-
   return (
     <div>
       <BackdropLoader open = {(spin === true)} />

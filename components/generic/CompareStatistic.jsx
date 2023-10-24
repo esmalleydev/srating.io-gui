@@ -272,12 +272,6 @@ const CompareStatistic = (props) => {
             <RankSpan rank = {rank} key = {key} max = {363} useOrdinal = {true} />
           );
         };
-
-        // console.log(row)
-        // console.log(getPercentage(row, 'away'))
-        // console.log(getPercentage(row, 'home'))
-        // console.log(getColor(row, 'away'))
-        // console.log(getColor(row, 'home'))
         
         return (
           <div key = {key} style = {{'margin': '10px 0px'}}>

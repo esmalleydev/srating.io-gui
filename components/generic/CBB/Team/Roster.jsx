@@ -105,9 +105,6 @@ const Roster = (props) => {
     });
   }
 
-  console.log(players)
-  console.log(playerStatsData)
-
   if (loading) {
     return <div style = {{'display': 'flex', 'justifyContent': 'center', 'padding': 20}}><CircularProgress /></div>;
   }
