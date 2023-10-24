@@ -51,7 +51,7 @@ const Tile = (props) => {
     let startTime = CBB.getTime();
 
     if (!CBB.isInProgress() && !CBB.isFinal()) {
-      startTime = moment(cbb_game.start_date).format('MMM Do') + ' - ' + startTime;
+      startTime = moment(cbb_game.start_datetime).format('MMM Do') + ' - ' + startTime;
     }
     
     const flexContainer = {
