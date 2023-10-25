@@ -104,9 +104,10 @@ const Header = (props) => {
 
   let logoStyle = {
     // 'fontFamily': 'Consolas',
-    'fontFamily': 'Courier New',
+    // 'fontFamily': 'Courier New',
     'fontWeight': 600,
     'fontSize': '20px',
+    'fontStyle': 'italic',
     'verticalAlign':'middle',
     'cursor': 'pointer',
   };
@@ -142,7 +143,7 @@ const Header = (props) => {
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, 'alignItems': 'center' }} style = {logoStyle} onClick = {handleHome}>
                   <img src={sratingLogo.src} width = '20' height = '20' style = {{'marginRight': 5}} />
-                  {(width < 450 ? 'SR' : 'sRating.io')}
+                  {'SRATING'}
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>

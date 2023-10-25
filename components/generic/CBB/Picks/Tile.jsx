@@ -70,7 +70,7 @@ const Tile = (props) => {
       'homeCompareValue': game.home_team_rating,
       'favored': 'higher',
       'showDifference': false,
-      'locked': (!game.away_team_rating && !game.home_team_rating),
+      'locked': (game.away_team_rating === null && game.home_team_rating === null),
     },
     {
       'name': 'aEM',

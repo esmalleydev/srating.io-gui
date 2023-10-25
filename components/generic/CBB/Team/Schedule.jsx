@@ -14,6 +14,8 @@ const api = new Api();
 
 let season_ = null;
 
+// TODO fix the scrollintoview for the tiles, for novemeber it scrolls past the element, even with the scrollmargintop set
+
 const Schedule = (props) => {
   const self = this;
 
@@ -78,7 +80,7 @@ const Schedule = (props) => {
 
     if (!nextUpcomingGame && (game.status === 'pre' || game.status === 'live')) {
       nextUpcomingGame = true;
-      gameContainers.push(<Tile key = {game.cbb_game_id} scroll = {true} game = {game} team = {team} />);
+      gameContainers.push(<Tile key = {game.cbb_game_id} /*scroll = {true}*/ game = {game} team = {team} />);
     } else {
       gameContainers.push(<Tile key = {game.cbb_game_id} game = {game} team = {team} />);
     }

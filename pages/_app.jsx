@@ -1,6 +1,7 @@
 
 import '../styles/global.css';
 import React, { useState, useEffect, useRef } from 'react';
+// import { useRouter } from 'next/router';
 
 import Script from 'next/script'
 
@@ -18,6 +19,7 @@ import Api from '../components/Api.jsx';
 const api = new Api();
 
 const App = ({ Component, pageProps, router }) => {
+  // const router = useRouter();
   const defaultDark = true;
   const theme = (typeof window !== 'undefined' && localStorage.getItem('theme')) || (defaultDark ? 'dark' : 'light');
 
@@ -44,7 +46,16 @@ const App = ({ Component, pageProps, router }) => {
   useEffect(() => {
     setIsMounted(true);
     setUseTheme(theme === 'light' ? lightTheme : darkTheme);
-  }, [])
+  }, []);
+
+  // resets scroll position between pages
+  useEffect(() => {
+    router.events.on('routeChangeComplete', () => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = 0
+      }
+    })
+  }, [router.events])
 
 
   let session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;

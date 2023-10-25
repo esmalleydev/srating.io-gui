@@ -39,7 +39,8 @@ const Tile = (props) => {
     'display': 'flex',
     'justifyContent': 'space-between',
     'alignItems': 'center',
-    'scrollMarginTop': '220px',
+    'scrollMarginTop': '200px', // todo doesnt seem to work for games in Nov.
+    // 'scrollPaddingTop': '200px',
     'cursor': 'pointer',
   };
 

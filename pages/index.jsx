@@ -49,7 +49,7 @@ const Home = (props) => {
       'heading': 'API',
       'image': apiImage,
       'contents': 'Follow the API documentation to set up and send a request in 3 steps.',
-      'action': () => {ref.current?.scrollIntoView({ behavior: 'smooth' })}
+      'action': () => {/*ref.current?.scrollIntoView({ behavior: 'smooth' })*/window.open('https://docs.srating.io/', '_blank')}
     },
     {
       'value': 'cbb_ranking',
@@ -120,6 +120,7 @@ const Home = (props) => {
               variant="h2"
               align="center"
               color="text.primary"
+              style = {{'fontWeight': 600, 'fontStyle': 'italic'}}
               gutterBottom
             >
               sRating

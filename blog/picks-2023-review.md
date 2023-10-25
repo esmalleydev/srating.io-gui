@@ -2,7 +2,7 @@
 title: '2023 picks stats'
 excerpt: '2023 Season Picks Statistical Review'
 coverImage: null
-date: '2023-10-23T12:00:00.322Z'
+date: '2023-10-24T12:00:00.322Z'
 author:
   name: 'Evan S'
   picture: '/public/static/images/evan.png'

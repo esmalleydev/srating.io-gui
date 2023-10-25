@@ -2,10 +2,6 @@ import React from 'react';
 import Head from 'next/head';
 
 
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-
-
 import Post from '../components/generic/Blog/Post';
 
 

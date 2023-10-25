@@ -12,11 +12,12 @@ const Container = styled('div')(({ theme }) => ({
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   marginLeft: 0,
-  width: '200px',
+  width: '150px',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
+  // padding: theme.spacing(0, 2),
+  paddingLeft: '10px',
   height: '100%',
   position: 'absolute',
   pointerEvents: 'none',
@@ -28,9 +29,10 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
+    // padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    paddingLeft: '40px',
     transition: theme.transitions.create('width'),
     width: '100%',
   },
@@ -55,14 +57,14 @@ const RankSearch = (props) => {
   };
 
   return (
-    <Container>
+    <Container style = {{'marginBottom': '5px'}}>
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase 
         value = {value}
-        placeholder = {'Search ranks'}
-        sx = {{'minWidth': '200px', 'maxWidth': '200px'}}
+        placeholder = {'Search'}
+        sx = {{'minWidth': '150px', 'maxWidth': '150px', 'maxHeight': '39px'}}
         onChange = {onChange} 
       />
     </Container>

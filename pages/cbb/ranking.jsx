@@ -274,56 +274,56 @@ const Ranking = (props) => {
       id: 'field_goal_attempts',
       numeric: true,
       label: 'FGA',
-      tooltip: 'Average field goals attempts per game',
+      tooltip: 'Average field goal attempts per game',
       'sort': 'higher',
     },
     'field_goal_percentage': {
       id: 'field_goal_percentage',
       numeric: true,
       label: 'FG%',
-      tooltip: 'Average field goals percentage per game',
+      tooltip: 'Average field goal percentage per game',
       'sort': 'higher',
     },
     'two_point_field_goal': {
       id: 'two_point_field_goal',
       numeric: true,
       label: '2FG',
-      tooltip: 'Average two field goals per game',
+      tooltip: 'Average two point field goals per game',
       'sort': 'higher',
     },
     'two_point_field_goal_attempts': {
       id: 'two_point_field_goal_attempts',
       numeric: true,
       label: '2FGA',
-      tooltip: 'Average two field goals attempts per game',
+      tooltip: 'Average two point field goal attempts per game',
       'sort': 'higher',
     },
     'two_point_field_goal_percentage': {
       id: 'two_point_field_goal_percentage',
       numeric: true,
       label: '2FG%',
-      tooltip: 'Average two field goals percentage per game',
+      tooltip: 'Average two point field goal percentage per game',
       'sort': 'higher',
     },
     'three_point_field_goal': {
       id: 'three_point_field_goal',
       numeric: true,
       label: '3FG',
-      tooltip: 'Average three field goals per game',
+      tooltip: 'Average three point field goals per game',
       'sort': 'higher',
     },
     'three_point_field_goal_attempts': {
       id: 'three_point_field_goal_attempts',
       numeric: true,
       label: '3FGA',
-      tooltip: 'Average three field goals attempts per game',
+      tooltip: 'Average three field goal attempts per game',
       'sort': 'higher',
     },
     'three_point_field_goal_percentage': {
       id: 'three_point_field_goal_percentage',
       numeric: true,
       label: '3FG%',
-      tooltip: 'Average three field goals percentage per game',
+      tooltip: 'Average three field goal percentage per game',
       'sort': 'higher',
     },
     'free_throws': {
@@ -337,14 +337,14 @@ const Ranking = (props) => {
       id: 'free_throw_attempts',
       numeric: true,
       label: 'FTA',
-      tooltip: 'Average free throws attempts per game',
+      tooltip: 'Average free throw attempts per game',
       'sort': 'higher',
     },
     'free_throw_percentage': {
       id: 'free_throw_percentage',
       numeric: true,
       label: 'FT%',
-      tooltip: 'Average free throws percentage per game',
+      tooltip: 'Average free throw percentage per game',
       'sort': 'higher',
     },
     'offensive_rebounds': {
@@ -456,13 +456,6 @@ const Ranking = (props) => {
         tooltip: 'Conference Win/Loss',
         'sort': 'higher',
       },
-      'elo_rank': {
-        id: 'elo_rank',
-        numeric: true,
-        label: 'ELO',
-        tooltip: 'srating.io ELO rank',
-        'sort': 'lower',
-      },
       'kenpom_rank': {
         id: 'kenpom_rank',
         numeric: true,
@@ -551,56 +544,56 @@ const Ranking = (props) => {
         id: 'opponent_field_goal_attempts',
         numeric: true,
         label: 'Opp. FGA',
-        tooltip: 'Opponent average field goals attempts per game',
+        tooltip: 'Opponent average field goal attempts per game',
         'sort': 'lower',
       },
       'opponent_field_goal_percentage': {
         id: 'opponent_field_goal_percentage',
         numeric: true,
         label: 'Opp. FG%',
-        tooltip: 'Opponent average field goals percentage per game',
+        tooltip: 'Opponent average field goal percentage per game',
         'sort': 'lower',
       },
       'opponent_two_point_field_goal': {
         id: 'opponent_two_point_field_goal',
         numeric: true,
         label: 'Opp. 2FG',
-        tooltip: 'Opponent average two field goals per game',
+        tooltip: 'Opponent average two point field goals per game',
         'sort': 'lower',
       },
       'opponent_two_point_field_goal_attempts': {
         id: 'opponent_two_point_field_goal_attempts',
         numeric: true,
         label: 'Opp. 2FGA',
-        tooltip: 'Opponent average two field goals attempts per game',
+        tooltip: 'Opponent average two point field goal attempts per game',
         'sort': 'lower',
       },
       'opponent_two_point_field_goal_percentage': {
         id: 'opponent_two_point_field_goal_percentage',
         numeric: true,
         label: 'Opp. 2FG%',
-        tooltip: 'Opponent average two field goals percentage per game',
+        tooltip: 'Opponent average two point field goal percentage per game',
         'sort': 'lower',
       },
       'opponent_three_point_field_goal': {
         id: 'opponent_three_point_field_goal',
         numeric: true,
         label: 'Opp. 3FG',
-        tooltip: 'Opponent average three field goals per game',
+        tooltip: 'Opponent average three point field goals per game',
         'sort': 'lower',
       },
       'opponent_three_point_field_goal_attempts': {
         id: 'opponent_three_point_field_goal_attempts',
         numeric: true,
         label: 'Opp. 3FGA',
-        tooltip: 'Opponent average three field goals attempts per game',
+        tooltip: 'Opponent average three point field goal attempts per game',
         'sort': 'lower',
       },
       'opponent_three_point_field_goal_percentage': {
         id: 'opponent_three_point_field_goal_percentage',
         numeric: true,
         label: 'Opp. 3FG%',
-        tooltip: 'Opponent average three field goals percentage per game',
+        tooltip: 'Opponent average three point field goal percentage per game',
         'sort': 'lower',
       },
       'opponent_free_throws': {
@@ -614,14 +607,14 @@ const Ranking = (props) => {
         id: 'opponent_free_throw_attempts',
         numeric: true,
         label: 'Opp. FTA',
-        tooltip: 'Opponent average free throws attempts per game',
+        tooltip: 'Opponent average free throw attempts per game',
         'sort': 'lower',
       },
       'opponent_free_throw_percentage': {
         id: 'opponent_free_throw_percentage',
         numeric: true,
         label: 'Opp. FT%',
-        tooltip: 'Opponent average free throws percentage per game',
+        tooltip: 'Opponent average free throw percentage per game',
         'sort': 'lower',
       },
       'opponent_offensive_rebounds': {
@@ -1238,8 +1231,8 @@ const Ranking = (props) => {
 
 
   const tableStyle = {
-    'maxHeight': height - 320 - (width < 470 ? 60 : 0) - (confChips.length ? 6 : 0) - 40,
-    'height': height - 320 - (width < 470 ? 60 : 0) - (confChips.length ? 40 : 0) - 40,
+    'maxHeight': height - 280 - (width < 470 ? 60 : 0) - (confChips.length ? 60 : 0) - 40,
+    'height': height - 280 - (width < 470 ? 60 : 0) - (confChips.length ? 60 : 0) - 40,
   };
 
   if ((rows.length + 2) * 29 < tableStyle.height) {
@@ -1281,10 +1274,12 @@ const Ranking = (props) => {
               <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : ''} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
               <ColumnPicker key = {rankView} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
             </div>
-            <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}><ConferencePicker selected = {conferences} actionHandler = {handleConferences} /></div>
+            <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center', 'marginTop': '10px'}}>
+              <ConferencePicker selected = {conferences} actionHandler = {handleConferences} />
+              <RankSearch rows = {allRows} callback = {handleSearch} />
+            </div>
             {confChips}
           </div>
-          <div style={{'display': 'flex', 'justifyContent': 'end', 'padding': '0px 20px 10px 0px'}}><RankSearch rows = {allRows} callback = {handleSearch} /></div>
           <div style = {{'padding': width < 600 ? '0px 10px' : '0px 20px'}}>
             {rows.length ? <TableVirtuoso style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
           </div>

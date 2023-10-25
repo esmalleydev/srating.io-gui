@@ -42,7 +42,7 @@ const Team = (props) => {
 
   let tabOptions = {
     'schedule': 'Schedule',
-    'stats': 'Stats',
+    'stats': 'Stats / Roster',
     'trends': 'Trends',
   };
 
@@ -93,7 +93,7 @@ const Team = (props) => {
     }
   };
 
-  const headerHeight = 112;
+  const headerHeight = 100;
 
   const titleStyle = {
     'padding': '20px',
@@ -118,12 +118,12 @@ const Team = (props) => {
       </Head>
       <div style = {titleStyle}>
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
-          <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
-            {team_.getRank() ? <sup style = {{'fontSize': '24px'}}>{team_.getRank()}</sup> : ''} {team_.getName()} ({team.stats.wins}-{team.stats.losses})
+          <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h5' : 'h4'}>
+            {team_.getRank() ? <span style = {{'fontSize': '20px', 'verticalAlign': 'super'}}>{team_.getRank()}</span> : ''} {team_.getName()} <span style = {{'fontSize': '16px', 'verticalAlign': 'middle'}}>({team.stats.wins || 0}-{team.stats.losses || 0})</span>
           </Typography>
           <FavoritePicker team_id = {team_id} />
         </div>
-          <SeasonPicker selected = {season} actionHandler = {handleSeason} />
+        <SeasonPicker selected = {season} actionHandler = {handleSeason} />
       </div>
       <AppBar position="sticky" style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, 'top': marginTop + headerHeight, 'position': 'fixed'}}>
         <Tabs /*todo if width less than x variant="scrollable" scrollButtons="auto"*/ value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} centered indicatorColor="secondary" textColor="inherit">
