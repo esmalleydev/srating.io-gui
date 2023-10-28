@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import useWindowDimensions from '../../components/hooks/useWindowDimensions';
@@ -94,9 +94,32 @@ const Ranking = (props) => {
   const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
   const [filteredRows, setFilteredRows] = useState(false);
 
+  const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
+  const tableRef = useRef(null);
+
   // todo save rankview in local storage
   // TODO IF I GO TO PLAYER VIEW< SAVE CUSTOM COLUMNS, THEN MANUALLY CHANGE THE URL TO REGULAR RANKING PAGE, IT WILL ERROR OUT
   // JUST STORE THE 2 COLUMNS IN SEPARTE LOCAL STORAGES
+
+  const scrollerRef = React.useCallback(
+    (element) => {
+      if (element) {
+        tableRef.current = element;
+      } else {
+        tableRef.current = null;
+      }
+    },
+    []
+  );
+  
+  useEffect(() => {
+    if (tableRef.current) {
+      setTimeout(function() {
+        // tableRef.current.scrollLeft = tableHorizontalScroll;
+        tableRef.current.scrollTo({'left': tableHorizontalScroll});
+      }, 0);
+    }
+  }, [tableHorizontalScroll, order, orderBy]);
 
 
   useEffect(() => {
@@ -1056,6 +1079,9 @@ const Ranking = (props) => {
 
   const handleSort = (id) => {
     const isAsc = orderBy === id && order === 'asc';
+    if (tableRef && tableRef.current) {
+      setTableHorizontalScroll(tableRef.current.scrollLeft);
+    }
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(id);
   };
@@ -1113,7 +1139,11 @@ const Ranking = (props) => {
 
 
   const TableComponents = {
-    Scroller: React.forwardRef((props, ref) => <TableContainer component={Paper} {...props} ref={ref} />),
+    Scroller: React.forwardRef((props, ref) => {
+      return (
+        <TableContainer component={Paper} {...props} ref={ref} />
+      );
+    }),
     Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
     TableHead: TableHead,
     TableRow: React.forwardRef((props, ref) => {
@@ -1281,7 +1311,7 @@ const Ranking = (props) => {
             {confChips}
           </div>
           <div style = {{'padding': width < 600 ? '0px 10px' : '0px 20px'}}>
-            {rows.length ? <TableVirtuoso style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
+            {rows.length ? <TableVirtuoso scrollerRef={scrollerRef}  /*onScroll={(e) => console.log(e.target.scrollLeft)}*/ style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
           </div>
         </div>
       }

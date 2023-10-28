@@ -64,7 +64,6 @@ const Tile = (props) => {
 
     const timeStyle = {
       'flex': 1,
-      'color': CBB.isInProgress() ? theme.palette.info.dark : theme.palette.text.primary,
       'cursor': 'pointer',
       // this is just to remove the small click deadzone
       'height': '36px',
@@ -77,7 +76,7 @@ const Tile = (props) => {
 
     return (
       <div style = {flexContainer} >
-        <div style = {timeStyle}>{startTime}</div>
+        <div style = {timeStyle}><Typography  color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{startTime}</Typography></div>
         <IconButton id = {'pin-'+props.data.cbb_game_id} onClick = {handlePin} style = {{'marginLeft': 20}}>
           <PinIcon sx = {pinStyle} fontSize = 'small' />
         </IconButton>
@@ -190,7 +189,7 @@ const Tile = (props) => {
       'margin': '0px 5px',
       'width': '34px',
       'maxWidth': '34px',
-      'border': '1px solid black',
+      'border': '2px solid ' + theme.palette.text.secondary,
       'borderRadius': '5px',
       'textAlign': 'center',
       'flex': 2,
@@ -228,15 +227,8 @@ const Tile = (props) => {
 
     return (
       <div style = {flexContainer} >
-        <div style = {nameStyle}>{CBB.getTeamRank(side, props.rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank(side, props.rankDisplay)}</sup> : ''}{CBB.getTeamName(side)}</div>
+        <div style = {nameStyle}><Typography variant = 'subtitle'>{CBB.getTeamRank(side, props.rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank(side, props.rankDisplay)}</sup> : ''}{CBB.getTeamName(side)}</Typography></div>
         <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? props.data[side + '_score'] : '-'}</div>
-        {/*<div style = {{'flex': 5, 'maxWidth': '25px', 'textAlign': 'center'}}>{
-          isPicked ?
-          <Tooltip disableFocusListener disableTouchListener placement = 'top' title={(props.data[side+'_team_rating'] * 100) + '%'}>
-            <PicksIcon sx = {{'verticalAlign': 'middle'}} fontSize = 'small'  color={props.data.status === 'final' ? ( won ? 'success' : 'error') : 'secondary'} />
-          </Tooltip>
-          : ''
-        }</div>*/}
       </div>
     );
   }
