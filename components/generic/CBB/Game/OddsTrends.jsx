@@ -50,13 +50,13 @@ const OddsTrends = (props) => {
   let awayOddsText = null;
   if (oddsStats && oddsStats[game.away_team_id]) {
     const awayOS = oddsStats[game.away_team_id];
-    awayOddsText = CBB.getTeamName('away') + ' is ' + (awayUnderdog ? awayOS.underdog_wins + '/' + awayOS.underdog_games + ', ' + ((awayOS.underdog_wins / awayOS.underdog_games) * 100).toFixed(2) + '% as the underdog this season.' : awayOS.favored_wins + '/' + awayOS.favored_games + ' ' + ((awayOS.favored_wins / awayOS.favored_games) * 100).toFixed(2) + '% when favored this season.');
+    awayOddsText = CBB.getTeamName('away') + ' is ' + (awayUnderdog ? awayOS.underdog_wins + '/' + awayOS.underdog_games + ', ' + (((awayOS.underdog_wins / awayOS.underdog_games) || 0) * 100).toFixed(0) + '% as the underdog this season.' : awayOS.favored_wins + '/' + awayOS.favored_games + ', ' + (((awayOS.favored_wins / awayOS.favored_games) || 0) * 100).toFixed(0) + '% when favored this season.');
   }
 
   let homeOddsText = null;
   if (oddsStats && oddsStats[game.home_team_id]) {
     const homeOS = oddsStats[game.home_team_id];
-    homeOddsText = CBB.getTeamName('home') + ' is ' + (homeUnderdog ? homeOS.underdog_wins + '/' + homeOS.underdog_games + ', ' + ((homeOS.underdog_wins / homeOS.underdog_games) * 100).toFixed(2) + '% as the underdog this season.' : homeOS.favored_wins + '/' + homeOS.favored_games + ', ' + ((homeOS.favored_wins / homeOS.favored_games) * 100).toFixed(2) + '% when favored this season.');
+    homeOddsText = CBB.getTeamName('home') + ' is ' + (homeUnderdog ? homeOS.underdog_wins + '/' + homeOS.underdog_games + ', ' + (((homeOS.underdog_wins / homeOS.underdog_games) || 0) * 100).toFixed(0) + '% as the underdog this season.' : homeOS.favored_wins + '/' + homeOS.favored_games + ', ' + (((homeOS.favored_wins / homeOS.favored_games) || 0) * 100).toFixed(0) + '% when favored this season.');
   }
 
   return (

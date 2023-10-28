@@ -514,6 +514,17 @@ const Momentum = (props) => {
     flexContainerStyle.flexDirection = 'column';
   }
 
+  let moreThanOneGame = false;
+
+  if (momentumData) {
+    for (let team_id in momentumData) {
+      let counter = Object.keys(momentumData[team_id].cbb_games).length;
+      if (counter > 1) {
+        moreThanOneGame = true;
+      }
+    }
+  }
+
 
   return (
     <div>
@@ -533,7 +544,7 @@ const Momentum = (props) => {
           : ''
         }
         {
-          momentumData !== null ?
+          momentumData !== null && moreThanOneGame ?
           <div>
             <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h6'>Last 5 game stat comparison</Typography>
               <div style = {flexContainerStyle}>
@@ -599,6 +610,13 @@ const Momentum = (props) => {
 
             <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
             <CompareStatistic paper = {true} rows = {opponentRows} />
+          </div>
+          : ''
+        }
+        {
+          momentumData !== null && !moreThanOneGame ?
+          <div style={{'textAlign': 'center'}}>
+            <Typography variant = 'h5'>No enough data to determine momentum yet.</Typography>
           </div>
           : ''
         }
