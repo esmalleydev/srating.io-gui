@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import PinIcon from '@mui/icons-material/PushPin';
 import Locked from '../../Billing/Locked';
 import BackdropLoader from '../../BackdropLoader';
+import { Button } from '@mui/material';
 
 const Tile = (props) => {
   const self = this;
@@ -268,6 +269,9 @@ const Tile = (props) => {
       <div style = {{'padding': '0px 10px 10px 10px'}}>
         <hr style ={{'marginTop': 0}} />
         {getOddsLine()}
+      </div>
+      <div style = {{'textAlign': 'right'}}>
+        <Button onClick = {handleClick}>Full matchup</Button>
       </div>
     </Paper>
   );
