@@ -151,9 +151,9 @@ const Ranking = (props) => {
       <div>
         <Head>
           <title>sRating | College basketball ranking</title>
-          <meta name = 'description' content = 'View statistic ranking for all 363 teams' key = 'desc'/>
+          <meta name = 'description' content = 'View statistic ranking for all 362 teams' key = 'desc'/>
           <meta property="og:title" content="srating.io college basketball rankings" />
-          <meta property="og:description" content="View statistic ranking for all 363 teams" />
+          <meta property="og:description" content="View statistic ranking for all 362 teams" />
           <meta name="twitter:card" content="summary" />
           <meta name = 'twitter:title' content = 'srating.io college basketball rankings' />
         </Head>
@@ -234,7 +234,7 @@ const Ranking = (props) => {
       if (rankView === 'team') {
         return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
       } else if (rankView === 'player') {
-        return ['composite_rank', 'name', 'team_name', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
+        return ['composite_rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
       }
     } else if (view === 'offense') {
       if (rankView === 'team') {
@@ -437,14 +437,14 @@ const Ranking = (props) => {
       id: 'offensive_rating',
       numeric: true,
       label: 'ORT',
-      tooltip: 'Offensive rating ((PTS / Pace) * 100)',
+      tooltip: 'Offensive rating ((PTS / Poss) * 100)',
       'sort': 'higher',
     },
     'defensive_rating': {
       id: 'defensive_rating',
       numeric: true,
       label: 'DRT',
-      tooltip: 'Defensive rating ((Opp. PTS / Opp. Pace) * 100)',
+      tooltip: 'Defensive rating ((Opp. PTS / Opp. Poss) * 100)',
       'sort': 'lower',
     },
     'efficiency_rating': {

@@ -8,6 +8,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 import Locked from './Billing/Locked';
 import RankSpan from './CBB/RankSpan';
+import HelperCBB from '../helpers/CBB';
 
 
 const CompareStatistic = (props) => {
@@ -21,6 +22,7 @@ const CompareStatistic = (props) => {
 
   const fixedLength = width > 500 ? 2 : 1;
 
+  const CBB = new HelperCBB();
 
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
@@ -269,7 +271,7 @@ const CompareStatistic = (props) => {
           }
 
           return (
-            <RankSpan rank = {rank} key = {key} max = {363} useOrdinal = {true} />
+            <RankSpan rank = {rank} key = {key} max = {CBB.getNumberOfD1Teams()} useOrdinal = {true} />
           );
         };
         

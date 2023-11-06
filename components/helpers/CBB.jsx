@@ -10,10 +10,28 @@ class CBB {
 
   /**
    * Return the current default season
-   * @return {Number}
+   * @return {number}
    */
   getCurrentSeason() {
     return 2024;
+  };
+
+  /**
+   * Instead of wasting time with a query and local storage etc
+   * Just hardcode this...
+   * Only do the first few seasons people will actually look at
+   * @todo When I have more time, add it to the site load and store in localStorage
+   * @param {number|string} season
+   * @return {number}
+   */
+  getNumberOfD1Teams(season) {
+    if (+season === 2024) {
+      return 362;
+    } else if (+season === 2023) {
+      return 363;
+    } else if (+season === 2022) {
+      return 359;
+    }
   };
 
 
