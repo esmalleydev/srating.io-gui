@@ -32,6 +32,8 @@ class CBB {
     } else if (+season === 2022) {
       return 359;
     }
+
+    return 363;
   };
 
 

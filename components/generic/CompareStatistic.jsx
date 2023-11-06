@@ -271,7 +271,7 @@ const CompareStatistic = (props) => {
           }
 
           return (
-            <RankSpan rank = {rank} key = {key} max = {CBB.getNumberOfD1Teams()} useOrdinal = {true} />
+            <RankSpan rank = {rank} key = {key} max = {CBB.getNumberOfD1Teams(props.season || CBB.getCurrentSeason())} useOrdinal = {true} />
           );
         };
         

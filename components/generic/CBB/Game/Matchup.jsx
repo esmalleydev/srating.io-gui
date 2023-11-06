@@ -720,26 +720,26 @@ const Matchup = (props) => {
     <div>
       <TeamSubHeader game = {game} />
       <div style = {{'padding': '0px 20px 20px 20px'}}>
-        {(game.home_team_rating || game.away_team_rating) ? <CompareStatistic rows = {baseRows} /> : ''}
-        <CompareStatistic paper = {true} rows = {overviewRows} />
+        {(game.home_team_rating || game.away_team_rating) ? <CompareStatistic season = {game.season} rows = {baseRows} /> : ''}
+        <CompareStatistic season = {game.season} paper = {true} rows = {overviewRows} />
 
         <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Efficiency</Typography>
-        <CompareStatistic paper = {true} rows = {efficiencyRows} />
+        <CompareStatistic season = {game.season} paper = {true} rows = {efficiencyRows} />
 
         <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Rank</Typography>
-        <CompareStatistic paper = {true} rows = {rankRows} />
+        <CompareStatistic season = {game.season} paper = {true} rows = {rankRows} />
 
         <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>
-        <CompareStatistic paper = {true} rows = {marginRows} />
+        <CompareStatistic season = {game.season} paper = {true} rows = {marginRows} />
 
         <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
-        <CompareStatistic paper = {true} rows = {offenseRows} />
+        <CompareStatistic season = {game.season} paper = {true} rows = {offenseRows} />
 
         <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
-        <CompareStatistic paper = {true} rows = {specialRows} />
+        <CompareStatistic season = {game.season} paper = {true} rows = {specialRows} />
 
         <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
-        <CompareStatistic paper = {true} rows = {opponentRows} />
+        <CompareStatistic season = {game.season} paper = {true} rows = {opponentRows} />
       </div>
     </div>
   );
