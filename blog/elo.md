@@ -13,13 +13,12 @@ ogImage:
 # srating.io ELO calculation
 
 ## Introduction
-In the world of competitive sports, ranking systems play a vital role in determining the relative strength and skill of teams and individuals. One widely used rating system is the Elo rating system, which was originally developed for chess but has found application in various sports, including college basketball. In this blog post, I will discuss how srating.io calculate ELO.
+Here is a short summary of how I do my Elo calculation. Elo is a metric to rank teams competitively, originally for chess.
 
 ## Understanding the Elo Rating System
 The Elo rating system is a method for calculating the relative skill levels of players or teams in head-to-head competitions. It assigns each player or team an Elo rating, which represents their estimated strength. The system takes into account the outcome of each match and updates the ratings accordingly. The Elo rating system assumes that the outcome of a match is influenced by the difference in ratings between the competitors.
 
 ## JS Code example
-
 
 ```javascript
 r1 = Math.pow(10, (elo_1 / 400));
