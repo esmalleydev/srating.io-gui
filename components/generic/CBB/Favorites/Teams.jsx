@@ -40,7 +40,7 @@ const Teams = (props) => {
       // game in the past
       if (
         cbb_game.status === 'final' &&
-        moment(cbb_game.start_datetime).format('YYYY-MM-DD') < now
+        moment(cbb_game.start_datetime).format('YYYY-MM-DD') <= now
       ) {
         // handle the away team, add last game if it more recent
         if (
@@ -68,7 +68,7 @@ const Teams = (props) => {
       // handle the 2 future games now
       if (
         // cbb_game.status !== 'final' && // todo uncomment
-        moment(cbb_game.start_datetime).format('YYYY-MM-DD') > now
+        moment(cbb_game.start_datetime).format('YYYY-MM-DD') >= now
       ) {
 
         // handle the away team, initialize array if needed
