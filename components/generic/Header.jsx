@@ -33,7 +33,7 @@ const api = new Api();
 
 
 
-const LoginButton = styled(Button)(({ theme }) => ({
+const SignUpButton = styled(Button)(({ theme }) => ({
   'color': theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main,
   'border': '1px solid ' + (theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main),
   '&:hover': {
@@ -176,8 +176,11 @@ const Header = (props) => {
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                       </Menu>
                     </div>
-                  :
-                    <LoginButton variant = 'outlined' onClick={handleAccount}>Login</LoginButton>
+                  : 
+                    <div>
+                      {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''}
+                      <Button color = {theme.palette.mode === 'light' ? 'secondary' : 'success'} variant = 'contained' disableElevation onClick={handleAccount}>Log in</Button>
+                    </div>
                   }
                 </Box>
               </Toolbar>
