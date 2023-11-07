@@ -97,9 +97,11 @@ const Games = (props) => {
     setRequest(true);
     setDate(value);
 
-    router.replace({
-      query: {...router.query, date: value},
-    });
+    if (router.query && router.query.date !== value) {
+      router.replace({
+        query: {...router.query, date: value},
+      });
+    }
     
     api.Request({
       'class': 'cbb_game',
