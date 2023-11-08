@@ -65,6 +65,14 @@ const Trends = (props) => {
   const games = data && data.cbb_game || {};
 
   const sorted_elo = Object.values(elo).sort(function(a, b) {
+    if (!(a.cbb_game_id)) {
+      return -1;
+    }
+
+    if (!(b.cbb_game_id)) {
+      return 1;
+    }
+
     if (!(a.cbb_game_id in games)) {
       return 1;
     }
@@ -188,6 +196,12 @@ const Trends = (props) => {
   };
 
   for (let i = 0; i < sorted_elo.length; i++) {
+    // preseason elo calc
+    if (sorted_elo[i].cbb_game_id === null) {
+      elo_xAxis.push(moment(sorted_elo[i].date_of_entry).format('MMM Do'));
+      elo_series.data.push(sorted_elo[i].elo);
+    }
+
     if (!(sorted_elo[i].cbb_game_id in games)) {
       continue;
     }
