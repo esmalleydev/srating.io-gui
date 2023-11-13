@@ -49,6 +49,7 @@ const App = ({ Component, pageProps, router }) => {
   }, []);
 
   // resets scroll position between pages
+  // todo if a page has custom scrolling, this will reset it
   useEffect(() => {
     router.events.on('routeChangeComplete', () => {
       if (scrollRef.current) {

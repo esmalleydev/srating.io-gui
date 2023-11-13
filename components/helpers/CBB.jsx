@@ -215,8 +215,27 @@ class CBB {
       formatted_period = '2nd'
     }
 
+    if (
+      this.cbb_game.clock === '00:00' &&
+      formatted_period === '2nd' &&
+      this.cbb_game.home_score !== this.cbb_game.away_score
+    ) {
+      return 'Finalizing game...';
+    }
+
     return this.cbb_game.clock + ' ' + formatted_period;
-  }
+  };
+
+  /**
+   * Get the network of the game
+   * @return {string}
+   */
+  getNetwork() {
+    if (this.cbb_game.network) {
+      return this.cbb_game.network;
+    }
+    return null;
+  };
 
 
   /**

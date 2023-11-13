@@ -616,7 +616,7 @@ const Momentum = (props) => {
         {
           momentumData !== null && !moreThanOneGame ?
           <div style={{'textAlign': 'center'}}>
-            <Typography variant = 'h5'>No enough data to determine momentum yet.</Typography>
+            <Typography variant = 'h5'>Not enough data to determine momentum yet.</Typography>
           </div>
           : ''
         }

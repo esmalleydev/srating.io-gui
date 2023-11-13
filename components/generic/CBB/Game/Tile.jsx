@@ -56,8 +56,6 @@ const Tile = (props) => {
   };
 
   const getHeader = () => {
-    let startTime = CBB.getTime();
-    
     const flexContainer = {
       'display': 'flex',
       'alignItems': 'center',
@@ -75,9 +73,15 @@ const Tile = (props) => {
     //   flexContainer.backgroundColor = theme.palette.action.hover;
     // }
 
+    let network = [];
+
+    if (!CBB.isFinal() && CBB.getNetwork()) {
+      network.push(<Typography sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
+    }
+
     return (
       <div style = {flexContainer} >
-        <div style = {timeStyle}><Typography  color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{startTime}</Typography></div>
+        <div style = {timeStyle}><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
         <IconButton id = {'pin-'+props.data.cbb_game_id} onClick = {handlePin} style = {{'marginLeft': 20}}>
           <PinIcon sx = {pinStyle} fontSize = 'small' />
         </IconButton>

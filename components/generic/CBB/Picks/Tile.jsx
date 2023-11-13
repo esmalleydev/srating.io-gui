@@ -140,9 +140,14 @@ const Tile = (props) => {
    * @return {Object} div container
    */
   const getTime = () => {
+    let network = [];
+
+    if (!CBB.isFinal() && CBB.getNetwork()) {
+      network.push(<Typography sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
+    }
     return (
       <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
-        <Typography color = 'text.secondary' variant = 'overline'>{CBB.getStartTime()}</Typography>
+        <div><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
         <IconButton id = {'pin-'+game.cbb_game_id} onClick = {handlePin}>
           <PinIcon sx = {pinStyle} fontSize = 'small' />
         </IconButton>
