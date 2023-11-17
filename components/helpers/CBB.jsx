@@ -1,5 +1,7 @@
 
+import moment from 'moment';
 import Team from './Team';
+
 
 
 class CBB {
@@ -40,9 +42,9 @@ class CBB {
   /**
    * Return the number to display next to a team
    * Ex: 1 Purdue
-   * @param  {String} side            home or away
-   * @param  {String} rankDisplay     the column to display
-   * @return {?Number}
+   * @param  {string} side            home or away
+   * @param  {string} rankDisplay     the column to display
+   * @return {?number}
    */
   getTeamRank(side, rankDisplay) {
     if (
@@ -61,8 +63,8 @@ class CBB {
 
   /**
    * Get the team name
-   * @param  {String} side home or away
-   * @return {String}
+   * @param  {string} side home or away
+   * @return {string}
    */
   getTeamName(side) {
     let name = 'Unknown';
@@ -81,8 +83,8 @@ class CBB {
 
   /**
    * Get the team short
-   * @param  {String} side home or away
-   * @return {String}
+   * @param  {string} side home or away
+   * @return {string}
    */
   getTeamNameShort(side) {
     let name = 'UNK';
@@ -101,8 +103,8 @@ class CBB {
 
   /**
    * Get the teams conference name
-   * @param {String} side 
-   * @return {String}
+   * @param {string} side 
+   * @return {string}
    */
   getTeamConference(side) {
     let name = 'Unknown';
@@ -122,8 +124,8 @@ class CBB {
    /**
    * Get the teams short conference name
    * This doesnt really work with BIG TEN vs BIG EAST, ETC... probably need to curate the list myself
-   * @param {String} side 
-   * @return {String}
+   * @param {string} side 
+   * @return {string}
    */
   // getTeamConferenceShort(side) {
   //   let name = 'UNK';
@@ -143,7 +145,7 @@ class CBB {
 
   /**
    * Is the game in progress?
-   * @return {Boolean}
+   * @return {boolean}
    */
   isInProgress() {
     return (this.cbb_game.status !== 'pre' && this.cbb_game.status !== 'final' && this.cbb_game.status !== 'postponed' && this.cbb_game.status !== 'cancelled');
@@ -151,7 +153,7 @@ class CBB {
 
   /**
    * Is the game final?
-   * @return {Boolean}
+   * @return {boolean}
    */
   isFinal() {
     return (this.cbb_game.status === 'final');
@@ -159,15 +161,23 @@ class CBB {
 
   /**
    * Is the game played on a neutral court?
-   * @return {Boolean}
+   * @return {boolean}
    */
-  isNeuralSite() {
+  isNeutralSite() {
     return (+this.cbb_game.neutral_site === 1);
   }
 
   /**
+   * Get the friendly formatted start date of the game
+   * @return {string}
+   */
+  getStartDate() {
+    return moment(this.cbb_game.start_date).format('MMM Do');
+  };
+
+  /**
    * Get the start time or status or time remaining in game
-   * @return {String}
+   * @return {string}
    */
   getTime() {
     let startTime = 'Unknown';
@@ -188,7 +198,7 @@ class CBB {
 
   /**
    * Get the start time of a game
-   * @return {String}
+   * @return {string}
    */
   getStartTime() {
     let date = new Date(this.cbb_game.start_timestamp * 1000);
@@ -202,7 +212,7 @@ class CBB {
 
   /**
    * Get the time remaining in game
-   * @return {String}
+   * @return {string}
    */
   getGameTime() {
     if (this.isInProgress() && !this.cbb_game.current_period) {
@@ -240,8 +250,8 @@ class CBB {
 
   /**
    * Get the pre-game money line odds
-   * @param  {String} side home or away
-   * @return {String}
+   * @param  {string} side home or away
+   * @return {string}
    */
   getPreML(side) {
     if (
@@ -256,8 +266,8 @@ class CBB {
 
   /**
    * Get the pre-game spread odds
-   * @param  {String} side home or away
-   * @return {String}
+   * @param  {string} side home or away
+   * @return {string}
    */
   getPreSpread(side) {
     if (
@@ -272,7 +282,7 @@ class CBB {
 
   /**
    * Get the pre-game over odds
-   * @return {String}
+   * @return {string}
    */
   getPreOver() {
     if (
@@ -287,7 +297,7 @@ class CBB {
 
   /**
    * Get the pre-game under odds
-   * @return {String}
+   * @return {string}
    */
   getPreUnder() {
     if (
@@ -302,8 +312,8 @@ class CBB {
 
   /**
    * Get the live money line odds
-   * @param  {String} side home or away
-   * @return {String}
+   * @param  {string} side home or away
+   * @return {string}
    */
   getLiveML(side) {
     if (
@@ -320,8 +330,8 @@ class CBB {
 
   /**
    * Get the live spread odds
-   * @param  {String} side home or away
-   * @return {String}
+   * @param  {string} side home or away
+   * @return {string}
    */
   getLiveSpread(side) {
     if (
@@ -337,7 +347,7 @@ class CBB {
 
   /**
    * Get the live over odds
-   * @return {String}
+   * @return {string}
    */
   getLiveOver() {
     if (
@@ -353,7 +363,7 @@ class CBB {
 
   /**
    * Get the live under odds
-   * @return {String}
+   * @return {string}
    */
   getLiveUnder(side) {
     if (
@@ -418,8 +428,8 @@ class CBB {
 
   /**
    * Have the odds reversed since pre-game?
-   * @param  {String} side home or away
-   * @return {Boolean}
+   * @param  {string} side home or away
+   * @return {boolean}
    */
   oddsReversal(side) {
     let pre = 0;

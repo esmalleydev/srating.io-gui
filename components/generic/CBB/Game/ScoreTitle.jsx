@@ -56,7 +56,7 @@ const ScoreTitle = (props) => {
   return (
     <div>
       <BackdropLoader open = {(spin === true)} />
-      <div style = {{'marginBottom': 10}}><Typography variant = 'h6'>{CBB.getTime()}</Typography></div>
+      <div style = {{'marginBottom': 10}}><Typography variant = 'h6' color = 'text.secondary'>{!CBB.isInProgress() ? CBB.getStartDate() + ' ' : ''}{CBB.getTime()}</Typography></div>
       <div style = {titleStyle}>
         <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.away_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>
           {CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}

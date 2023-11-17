@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import PinIcon from '@mui/icons-material/PushPin';
+import Indicator from '../Indicator';
 // import Link from '@mui/material/Link';
 
 
@@ -155,6 +156,28 @@ const Tile = (props) => {
     );
   };
 
+  const getIndicators = () => {
+    const flexContainer = {
+      'display': 'flex',
+      'alignItems': 'left',
+      'margin': '0px 10px',
+    };
+
+    const indicators = [];
+
+    if (CBB.isNeutralSite()) {
+      indicators.push(
+        <Indicator title = {'Neutral site'} code = {'N'} color = {'#ffa726'} />
+      );
+    }
+
+    return (
+      <div style = {flexContainer} >
+        {indicators}
+      </div>
+    );
+  };
+
   /**
    * Get the header line.
    * Ex: Purdue vs Indiana
@@ -183,7 +206,7 @@ const Tile = (props) => {
           {CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{awayName}
         </Typography>
         {/* <Typography color = 'text.secondary' sx = {{'minWidth': 50, 'textAlign': 'center'}} variant = 'overline' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden'}}>
-          {CBB.isNeuralSite() ? 'vs' : '@'}
+          {CBB.isNeutralSite() ? 'vs' : '@'}
         </Typography> */}
         <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidthTypography}}>
           {CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{homeName}
@@ -256,18 +279,21 @@ const Tile = (props) => {
 
 
   return (
-    <Paper style = {{'width': '100%', 'maxWidth': maxWidth, 'padding': '10px', 'margin': '10px 0px'}}>
-      {getTime()}
-      {getHeader()}
-      {getSecondaryHeader()}
-      {
-        picksData === null ?
-        getSkeleton() :
-        <CompareStatistic key = {game.cbb_game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
-      }
-      {getOdds()}
-      <div style = {{'textAlign': 'right'}}>
-        <Button onClick = {handleMatchup}>Full matchup</Button>
+    <Paper style = {{'width': '100%', 'maxWidth': maxWidth, 'margin': '10px 0px'}}>
+      {getIndicators()}
+      <div style = {{'padding': '10px'}}>
+        {getTime()}
+        {getHeader()}
+        {getSecondaryHeader()}
+        {
+          picksData === null ?
+          getSkeleton() :
+          <CompareStatistic key = {game.cbb_game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
+        }
+        {getOdds()}
+        <div style = {{'textAlign': 'right'}}>
+          <Button onClick = {handleMatchup}>Full matchup</Button>
+        </div>
       </div>
     </Paper>
   );

@@ -13,6 +13,7 @@ import PinIcon from '@mui/icons-material/PushPin';
 import Locked from '../../Billing/Locked';
 import BackdropLoader from '../../BackdropLoader';
 import { Button } from '@mui/material';
+import Indicator from '../Indicator';
 
 const Tile = (props) => {
   const self = this;
@@ -55,6 +56,28 @@ const Tile = (props) => {
     setPin(!pin);
   };
 
+  const getIndicators = () => {
+    const flexContainer = {
+      'display': 'flex',
+      'alignItems': 'left',
+      'margin': '0px 10px',
+    };
+
+    const indicators = [];
+
+    if (CBB.isNeutralSite()) {
+      indicators.push(
+        <Indicator title = {'Neutral site'} code = {'N'} color = {'#ffa726'} />
+      );
+    }
+
+    return (
+      <div style = {flexContainer} >
+        {indicators}
+      </div>
+    );
+  };
+
   const getHeader = () => {
     const flexContainer = {
       'display': 'flex',
@@ -63,8 +86,6 @@ const Tile = (props) => {
 
     const timeStyle = {
       'flex': 1,
-      'cursor': 'pointer',
-      // this is just to remove the small click deadzone
       'height': '36px',
       'lineHeight': '36px',
     };
@@ -87,7 +108,7 @@ const Tile = (props) => {
         </IconButton>
       </div>
     );
-  }
+  };
 
   const getOddsLine = () => {
     const awaySpreadCoverStyle = {};
@@ -236,17 +257,24 @@ const Tile = (props) => {
         <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? props.data[side + '_score'] : '-'}</div>
       </div>
     );
+  };
+
+  let tileWidth = '320px';
+
+  if (width >= 425) {
+    tileWidth = '425px';
+  } else if (width < 425 && width > 320) {
+    tileWidth = '100%';
   }
 
-
   const divStyle = {
-    'width': width > 420 ? '375px' : '320px',
+    'width': tileWidth,
     'minHeight': '100px',
     'margin': '5px',
   };
 
   const teamLineStyle = {
-    'cursor': 'pointer',
+    // 'cursor': 'pointer',
     'padding': '10px',
   };
 
@@ -263,9 +291,10 @@ const Tile = (props) => {
   return (
     <Paper elevation={3} style = {divStyle}>
       <BackdropLoader open = {(spin === true)} />
-      <div style = {teamLineStyle} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>
+      {getIndicators()}
+      <div style = {teamLineStyle}>
         {getHeader()}
-        <div onClick = {handleClick}>
+        <div>
           {getTeamLine('away')}
           {getTeamLine('home')}
         </div>
@@ -275,7 +304,7 @@ const Tile = (props) => {
         {getOddsLine()}
       </div>
       <div style = {{'textAlign': 'right'}}>
-        <Button onClick = {handleClick}>Full matchup</Button>
+        <Button onClick = {handleClick}>View game / stats / matchup</Button>
       </div>
     </Paper>
   );
