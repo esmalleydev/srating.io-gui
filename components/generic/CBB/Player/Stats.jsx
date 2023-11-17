@@ -1,38 +1,39 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { styled, useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import CircularProgress from '@mui/material/CircularProgress';
 
 
-import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
 import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
 
-// import { grey } from '@mui/material/colors';
 
 
 import HelperTeam from '../../../helpers/Team';
 import Api from './../../../Api.jsx';
-import utilsColor from  './../../../utils/Color.jsx';
+import RankSpan from '../RankSpan.jsx';
+import BackdropLoader from '../../BackdropLoader.jsx';
 
-const ColorUtil = new utilsColor();
+
 const api = new Api();
 
+
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
+  '&:hover td': {
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
   },
+  '&:hover': {
+    cursor: 'pointer',
+  }
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
@@ -44,6 +45,7 @@ const Stats = (props) => {
   const self = this;
 
   const theme = useTheme();
+  const router = useRouter();
 
   const season = props.season;
   const player = props.player;
@@ -53,6 +55,7 @@ const Stats = (props) => {
   const [requestedStats, setRequestedStats] = useState(false);
   const [statsData, setStatsData] = useState(null);
   const [view, setView] = useState('overview');
+  const [spin, setSpin] = useState(false);
 
   useEffect(() => {
     setView(sessionStorage.getItem('CBB.PLAYER.STATS.VIEW') ? sessionStorage.getItem('CBB.PLAYER.STATS.VIEW') : 'overview');
@@ -76,7 +79,12 @@ const Stats = (props) => {
   }
 
 
-  // <CircularProgress color="inherit" />
+  const handleClick = (player_team_season) => {
+    setSpin(true);
+    router.push('/cbb/team/' + player_team_season.team_id + '?season=' + player_team_season.season).then(() => {
+      setSpin(false);
+    });
+  };
   
 
   const getColumns = () => {
@@ -315,16 +323,6 @@ const Stats = (props) => {
 
     b++;
 
-    const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
-    const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
-
-    const spanStyle = {
-      'fontSize': '10px',
-      'marginLeft': '5px',
-      'padding': '3px',
-      'borderRadius': '5px',
-    };
-
 
     const tableCells = [];
 
@@ -343,28 +341,7 @@ const Stats = (props) => {
             </div>
           </TableCell>);
       } else {
-        const colors = {};
-        // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
-        const backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row[columns[i] + '_rank'] / 5300));
-
-        if (backgroundColor !== '#') {
-          colors.backgroundColor = backgroundColor;
-          colors.color = theme.palette.getContrastText(backgroundColor);
-        }
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <span style = {Object.assign({}, colors, spanStyle)}>{row[columns[i] + '_rank']}</span> : ''}</TableCell>);
-        
-        // if (row[columns[i] + '_rank']) {
-        //   tableCells.push(
-        //     <TableCell key = {i} sx = {tdStyle}>
-        //       <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
-        //         <div>{row[columns[i]]}</div>
-        //         <div><span style = {Object.assign({}, colors, spanStyle)}>{row[columns[i] + '_rank']}</span></div>
-        //       </div>
-        //     </TableCell>
-        //   );
-        // } else {
-        //   tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]]}</TableCell>);
-        // }
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <RankSpan rank = {row[columns[i] + '_rank']} useOrdinal = {false} max = {5300} /> : ''}</TableCell>);
       }
     } 
 
@@ -372,6 +349,7 @@ const Stats = (props) => {
       <StyledTableRow
         key={row.player_team_season_id}
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        onClick={() => {handleClick(row)}}
       >
         {tableCells}
       </StyledTableRow>
@@ -421,6 +399,7 @@ const Stats = (props) => {
 
   return (
     <div style = {{'paddingTop': 20}}>
+      <BackdropLoader open = {(spin === true)} />
       {
       statsData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>
