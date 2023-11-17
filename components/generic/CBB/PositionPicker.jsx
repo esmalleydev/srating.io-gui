@@ -10,7 +10,6 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
-import Slide from '@mui/material/Slide';
 
 import Typography from '@mui/material/Typography';
 
@@ -18,79 +17,50 @@ import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const ConferencePicker = (props) => {
+
+const PositionPicker = (props) => {
 
   const { width } = useWindowDimensions();
 
   const selected = props.selected;
-  const [confOpen, setConfOpen] = useState(false);
+  const [posOpen, setPosOpen] = useState(false);
 
   const conferenceOptions = [
     {'value': 'all', 'label': 'All'},
-    {'value': 'ACC', 'label': 'ACC'},
-    {'value': 'Big 12', 'label': 'Big 12'},
-    {'value': 'SEC', 'label': 'SEC'},
-    {'value': 'Big Ten', 'label': 'Big Ten'},
-    {'value': 'Pac-12', 'label': 'Pac-12'},
-    {'value': 'Big East', 'label': 'Big East'},
-    {'value': 'Atlantic 10', 'label': 'Atlantic 10'},
-    {'value': 'Sun Belt', 'label': 'Sun Belt'},
-    {'value': 'Patriot', 'label': 'Patriot'},
-    {'value': 'Mountain West', 'label': 'Mountain West'},
-    {'value': 'MAC', 'label': 'MAC'},
-    {'value': 'MVC', 'label': 'MVC'},
-    {'value': 'WCC', 'label': 'WCC'},
-    {'value': 'Big West', 'label': 'Big West'},
-    {'value': 'C-USA', 'label': 'C-USA'},
-    {'value': 'Ivy League', 'label': 'Ivy League'},
-    {'value': 'Summit League', 'label': 'Summit League'},
-    {'value': 'Horizon', 'label': 'Horizon'},
-    {'value': 'MAAC', 'label': 'MAAC'},
-    {'value': 'OVC', 'label': 'OVC'},
-    {'value': 'SoCon', 'label': 'SoCon'},
-    {'value': 'SWAC', 'label': 'SWAC'},
-    {'value': 'Big Sky', 'label': 'Big Sky'},
-    {'value': 'Southland', 'label': 'Southland'},
-    {'value': 'ASUN', 'label': 'ASUN'},
-    {'value': 'America East', 'label': 'America East'},
-    {'value': 'WAC', 'label': 'WAC'},
-    {'value': 'AAC', 'label': 'AAC'},
-    {'value': 'CAA', 'label': 'CAA'},
-    {'value': 'Big South', 'label': 'Big South'},
-    {'value': 'NEC', 'label': 'NEC'},
-    {'value': 'MEAC', 'label': 'MEAC'},
-    {'value': 'DI Independent', 'label': 'DI Independent'},
+    {'value': 'G', 'label': 'Gaurd'},
+    {'value': 'F', 'label': 'Forward'},
+    {'value': 'C', 'label': 'Center'},
   ];
 
 
-  const handleConfOpen = () => {
-    setConfOpen(true);
+  const handlePosOpen = () => {
+    setPosOpen(true);
   };
 
-  const handleConfClose = () => {
-    setConfOpen(false);
+  const handlePosClose = () => {
+    setPosOpen(false);
   };
 
   return (
     <div>
       <Button
-        id="conf-picker-button"
-        aria-controls={confOpen ? 'conf-picker-menu' : undefined}
+        id="position-picker-button"
+        aria-controls={posOpen ? 'position-picker-menu' : undefined}
         aria-haspopup="true"
-        aria-expanded={confOpen ? 'true' : undefined}
+        aria-expanded={posOpen ? 'true' : undefined}
         variant="text"
         disableElevation
-        onClick={handleConfOpen}
+        onClick={handlePosOpen}
         endIcon={<KeyboardArrowDownIcon />}
       >
-        {width < 500 ? 'Conf.' : 'Conferences'}
+        {width < 500 ? 'Pos.' : 'Positions'}
       </Button>
       <Dialog
         fullScreen
-        open={confOpen}
+        open={posOpen}
         // TransitionComponent={Transition}
         keepMounted
-        onClose={handleConfClose}
+        onClose={handlePosClose}
         aria-describedby="alert-dialog-slide-description"
       >
         <AppBar sx={{ position: 'relative' }}>
@@ -98,13 +68,13 @@ const ConferencePicker = (props) => {
             <IconButton
               edge="start"
               color="inherit"
-              onClick={handleConfClose}
+              onClick={handlePosClose}
               aria-label="close"
             >
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Conferences
+              Positions
             </Typography>
           </Toolbar>
         </AppBar>
@@ -114,7 +84,7 @@ const ConferencePicker = (props) => {
               if (props.actionHandler) {
                 props.actionHandler(confOption.value);
               }
-              handleConfClose();
+              handlePosClose();
             }}>
               <ListItemIcon>
                 {selected.indexOf(confOption.value) > -1 ? <CheckIcon /> : ''}
@@ -128,4 +98,4 @@ const ConferencePicker = (props) => {
   );
 }
 
-export default ConferencePicker;
+export default PositionPicker;

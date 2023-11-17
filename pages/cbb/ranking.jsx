@@ -39,6 +39,7 @@ import Api from '../../components/Api.jsx';
 import BackdropLoader from '../../components/generic/BackdropLoader';
 import RankSpan from '../../components/generic/CBB/RankSpan';
 import RankSearch from '../../components/generic/RankSearch';
+import PositionPicker from '../../components/generic/CBB/PositionPicker.jsx';
 
 
 const api = new Api();
@@ -87,6 +88,7 @@ const Ranking = (props) => {
   const [season, setSeason] = useState((router.query && router.query.season) || new HelperCBB().getCurrentSeason());
   const [rankView, setRankView] = useState((router.query && router.query.view) || 'team');
   const [conferences, setConferences] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('composite_rank');
   const [view, setView] = useState('composite');
@@ -132,6 +134,7 @@ const Ranking = (props) => {
 
     setFirstRender(false);
     setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
+    setPositions(localStorage.getItem('CBB.POSITIONPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.POSITIONPICKER.DEFAULT')) : []);
     setView(localStorage.getItem('CBB.RANKING.VIEW') ? localStorage.getItem('CBB.RANKING.VIEW') : 'composite');
     setCustomColumns(localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView) ?  JSON.parse(localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView)) : ['composite_rank', 'name']);
 
@@ -167,11 +170,13 @@ const Ranking = (props) => {
 
   const handleRankView = (newRankView) => {
     localStorage.removeItem('CBB.RANKING.COLUMNS.' + rankView);
+    localStorage.removeItem('CBB.POSITIONPICKER.DEFAULT');
 
     router.query.view = newRankView;
     router.push(router);
 
     setCustomColumns(['composite_rank', 'name']);
+    setPositions([]);
     setOrder('asc');
     setOrderBy('composite_rank');
     setView('composite');
@@ -205,10 +210,33 @@ const Ranking = (props) => {
     setConferences(currentConferences);
   }
 
-
   let confChips = [];
   for (let i = 0; i < conferences.length; i++) {
     confChips.push(<Chip sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {handleConferences(conferences[i])}} />);
+  }
+
+  const handlePositions = (position) => {
+    let currentPositions = [...positions];
+
+    if (position && position !== 'all') {
+      const positionIndex = currentPositions.indexOf(position);
+
+      if (positionIndex > -1) {
+        currentPositions.splice(positionIndex, 1);
+      } else {
+        currentPositions.push(position);
+      }
+    } else {
+      currentPositions = [];
+    }
+
+    localStorage.setItem('CBB.POSITIONPICKER.DEFAULT', JSON.stringify(currentPositions));
+    setPositions(currentPositions);
+  }
+
+  let positionChips = [];
+  for (let i = 0; i < positions.length; i++) {
+    positionChips.push(<Chip sx = {{'margin': '5px'}} label={positions[i]} onDelete={() => {handlePositions(positions[i])}} />);
   }
 
   const handleTeam = (team_id) => {
@@ -1056,13 +1084,21 @@ const Ranking = (props) => {
       ) {
         lastUpdated = row.date_of_rank;
       }
-
+        
       row.name = row.player ? (row.player.first_name + ' ' + row.player.last_name) : null;
       row.number = row.player ? row.player.number : null;
       row.position = row.player ? row.player.position : null;
       row.height = row.player ? row.player.height : null;
       row.conf = row.conference;
       row.composite_rank = row.efficiency_rating_rank;
+
+      if (
+        positions.length &&
+        positions.indexOf(row.position) === -1
+      ) {
+        continue;
+      }
+
       rows.push(row);
     }
   }
@@ -1301,10 +1337,14 @@ const Ranking = (props) => {
               <ColumnPicker key = {rankView} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
             </div>
             <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center', 'marginTop': '10px'}}>
-              <ConferencePicker selected = {conferences} actionHandler = {handleConferences} />
+              <div style={{'display': 'flex'}}>
+                <ConferencePicker selected = {conferences} actionHandler = {handleConferences} />
+                {rankView === 'player' ? <PositionPicker selected = {positions} actionHandler = {handlePositions} /> : ''}
+              </div>
               <RankSearch rows = {allRows} callback = {handleSearch} />
             </div>
             {confChips}
+            {positionChips}
           </div>
           <div style = {{'padding': width < 600 ? '0px 10px' : '0px 20px'}}>
             {rows.length ? <TableVirtuoso scrollerRef={scrollerRef}  /*onScroll={(e) => console.log(e.target.scrollLeft)}*/ style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
