@@ -193,7 +193,7 @@ class CBB {
   getStartTime() {
     let date = new Date(this.cbb_game.start_timestamp * 1000);
     let startTime = ((date.getHours() % 12) || 12) + (date.getMinutes() ? ':' + (date.getMinutes().toString().length === 1 ? '0' : '') + date.getMinutes() : '') + ' ' + (date.getHours() < 12 ? 'am' : 'pm') + ' ';
-    if (date.getHours() >= 0 && date.getHours() <= 6) {
+    if (date.getHours() >= 2 && date.getHours() <= 6) {
       startTime = 'TBA';
     }
 

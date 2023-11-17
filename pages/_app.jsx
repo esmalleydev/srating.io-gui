@@ -131,14 +131,14 @@ const App = ({ Component, pageProps, router }) => {
         </div>
       : ''
       }
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-8VLTD3X7R8" strategy="afterInteractive" />
+      <Script src="https://www.googletagmanager.com/gtag/js?id=G-S67JFT2KZW" strategy="afterInteractive" />
       <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', 'G-8VLTD3X7R8');
+          gtag('config', 'G-S67JFT2KZW');
         `}
       </Script>
     </ThemeProvider>
