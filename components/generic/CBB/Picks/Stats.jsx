@@ -13,7 +13,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 
 
-
+import HelperCBB from '../../../helpers/CBB';
 
 
 import utilsColor from  '../../../utils/Color.jsx';
@@ -43,6 +43,7 @@ const Stats = (props) => {
       'function': 'getStatsData',
       'arguments': {
         'date': date,
+        'season': props.season || new HelperCBB().getCurrentSeason(),
       },
     }).then((response) => {
       setStatsData(response || {});
@@ -52,7 +53,7 @@ const Stats = (props) => {
   }
 
   const cardStyle = {'width': 300, 'minWidth': 200, 'margin': '5px'};
-  const orderedBuckets = ['today', 'yesterday', 'week', 'month'];
+  const orderedBuckets = ['today', 'yesterday', 'week', 'month', 'season'];
 
   const skeletonContainers = [];
 
@@ -84,6 +85,8 @@ const Stats = (props) => {
           label = weekDate + ' - ' + todayDate;
         } else if (orderedBuckets[i] === 'month') {
           label = monthDate + ' - ' + todayDate;
+        } else if (orderedBuckets[i] === 'season') {
+          label = 'Season';
         }
 
         const colorStyle = {};
