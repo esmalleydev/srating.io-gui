@@ -97,10 +97,6 @@ const Ranking = (props) => {
   const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
   const tableRef = useRef(null);
 
-  // todo save rankview in local storage
-  // TODO IF I GO TO PLAYER VIEW< SAVE CUSTOM COLUMNS, THEN MANUALLY CHANGE THE URL TO REGULAR RANKING PAGE, IT WILL ERROR OUT
-  // JUST STORE THE 2 COLUMNS IN SEPARTE LOCAL STORAGES
-
   const scrollerRef = React.useCallback(
     (element) => {
       if (element) {
@@ -137,7 +133,7 @@ const Ranking = (props) => {
     setFirstRender(false);
     setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
     setView(localStorage.getItem('CBB.RANKING.VIEW') ? localStorage.getItem('CBB.RANKING.VIEW') : 'composite');
-    setCustomColumns(localStorage.getItem('CBB.RANKING.COLUMNS') ?  JSON.parse(localStorage.getItem('CBB.RANKING.COLUMNS')) : ['composite_rank', 'name']);
+    setCustomColumns(localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView) ?  JSON.parse(localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView)) : ['composite_rank', 'name']);
 
     return () => {
       router.events.off('routeChangeStart', handleStart)
@@ -169,17 +165,17 @@ const Ranking = (props) => {
     {'value': 'player', 'label': 'Player rankings'},
   ];
 
-  const handleRankView = (rankView) => {
-    localStorage.removeItem('CBB.RANKING.COLUMNS');
+  const handleRankView = (newRankView) => {
+    localStorage.removeItem('CBB.RANKING.COLUMNS.' + rankView);
 
-    router.query.view = rankView;
+    router.query.view = newRankView;
     router.push(router);
 
     setCustomColumns(['composite_rank', 'name']);
     setOrder('asc');
     setOrderBy('composite_rank');
     setView('composite');
-    setRankView(rankView);
+    setRankView(newRankView);
   }
 
   const handleSeason = (season) => {
@@ -1128,7 +1124,7 @@ const Ranking = (props) => {
 
   const handlCustomColumnsSave = (columns) => {
     setCustomColumnsOpen(false);
-    localStorage.setItem('CBB.RANKING.COLUMNS', JSON.stringify(columns));
+    localStorage.setItem('CBB.RANKING.COLUMNS.' + rankView, JSON.stringify(columns));
     setCustomColumns(columns);
     handleRankingView('custom');
   };
