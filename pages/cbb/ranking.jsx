@@ -1258,6 +1258,10 @@ const Ranking = (props) => {
       'backgroundColor': theme.palette.mode === 'light' ? (index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
     };
 
+    if (width <= 425) {
+      tdStyle.fontSize = '12px';
+    }
+
     let teamCellStyle = {};
     teamCellStyle.position = 'sticky';
     teamCellStyle.left = 50;
