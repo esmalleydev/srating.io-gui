@@ -117,13 +117,19 @@ const App = ({ Component, pageProps, router }) => {
     paddingTop = '56px';
   }
 
+  let scrollerClasses = 'overlay_scroller';
+
+  if (width < 750) {
+    scrollerClasses += ' hide_scroll';
+  }
+
 
   return (
     <ThemeProvider theme={useTheme}>
       <CssBaseline />
       {
       isMounted ? 
-        <div ref = {scrollRef} className = 'overlay_scroller'>
+        <div ref = {scrollRef} className = {scrollerClasses}>
           <div>
             <Header theme = {theme} handleTheme = {switchTheme} validSession = {validSession} loginCallback = {loginCallback} />
             <div style = {{'padding': paddingTop + ' 0px 56px 0px'}}>

@@ -424,7 +424,7 @@ const Games = (props) => {
   }
 
   return (
-    <div style = {{'padding': '46px 20px 0px 20px'}}>
+    <div style = {{'padding': '46px 0px 0px 0px'}}>
       <Head>
         <title>sRating | College basketball scores</title>
         <meta name = 'description' content = 'Live college basketball scores and odds' key = 'desc'/>
