@@ -37,6 +37,9 @@ const App = ({ Component, pageProps, router }) => {
   const lightTheme = createTheme({
     'palette': {
       'mode': 'light',
+      'background': {
+        'default': "#efefef"
+      },
     },
   });
 

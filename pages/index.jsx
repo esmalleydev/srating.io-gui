@@ -110,7 +110,6 @@ const Home = (props) => {
         <BackdropLoader open = {(spin === true)} />
         <Box
           sx={{
-            bgcolor: 'background.paper',
             pt: 2,
           }}
         >

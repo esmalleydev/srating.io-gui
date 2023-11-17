@@ -15,7 +15,7 @@ const Footer = (props) => {
 
 
   return (
-    <Box sx={{ bgcolor: 'background.paper'}} component="footer">
+    <Box component="footer">
       <div>
         <Typography
           variant="subtitle1"
