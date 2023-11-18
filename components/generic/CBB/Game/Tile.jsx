@@ -294,7 +294,7 @@ const Tile = (props) => {
       {getIndicators()}
       <div style = {teamLineStyle}>
         {getHeader()}
-        <div>
+        <div style = {{'cursor': 'pointer'}} onClick={handleClick}>
           {getTeamLine('away')}
           {getTeamLine('home')}
         </div>
