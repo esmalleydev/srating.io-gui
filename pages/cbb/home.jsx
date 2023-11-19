@@ -45,7 +45,6 @@ const Home = (props) => {
         'start_date': defaultDate,
       }
     }).then((homeData) => {
-      console.log(homeData);
       setData(homeData);
       setSpin(false);
       setLoading(false);
