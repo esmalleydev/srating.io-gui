@@ -11,7 +11,8 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
 import PicksIcon from '@mui/icons-material/Casino';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+// import FavoriteIcon from '@mui/icons-material/Favorite';
+import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
 import BackdropLoader from './BackdropLoader';
 
@@ -42,10 +43,10 @@ const FooterNavigation = (props) => {
   ];
 
   const pages = [
+    'home',
     'ranking',
     'games',
     'picks',
-    'favorites'
   ];
 
 
@@ -71,6 +72,12 @@ const FooterNavigation = (props) => {
 
   const { height, width } = useWindowDimensions();
 
+  const handleHome = () => {
+    setSpin(true);
+    router.push('/'+viewingSport.toLowerCase()+'/home').then(() => {
+      setSpin(false);
+    });
+  }
 
   const handleRanking = () => {
     setSpin(true);
@@ -94,12 +101,14 @@ const FooterNavigation = (props) => {
     });
   }
 
+  /*
   const handleFavorites = () => {
     setSpin(true);
     router.push('/'+viewingSport.toLowerCase()+'/favorites').then(() => {
       setSpin(false);
     });
   }
+  */
 
   // console.log(theme);
 
@@ -111,10 +120,11 @@ const FooterNavigation = (props) => {
     {viewingSport ? 
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, /*'zIndex': 9000,*/}} elevation={3}>
         <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}} showLabels value={pages.indexOf(viewingPage)}>
+          <StyledBottomNavigationAction color = 'secondary' onClick = {handleHome} label="Home" icon={<HomeIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handlePicks} label="Picks" icon={<PicksIcon />} />
-          <StyledBottomNavigationAction color = 'secondary' onClick = {handleFavorites} label="Favorites" icon={<FavoriteIcon />} />
+          {/* <StyledBottomNavigationAction color = 'secondary' onClick = {handleFavorites} label="Favorites" icon={<FavoriteIcon />} /> */}
         </BottomNavigation>
       </Paper>
       : ''}

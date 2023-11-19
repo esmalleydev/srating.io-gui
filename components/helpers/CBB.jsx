@@ -171,8 +171,8 @@ class CBB {
    * Get the friendly formatted start date of the game
    * @return {string}
    */
-  getStartDate() {
-    return moment(this.cbb_game.start_date).format('MMM Do');
+  getStartDate(opt_format) {
+    return moment(this.cbb_game.start_date).format(opt_format || 'MMM Do');
   };
 
   /**
