@@ -14,6 +14,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
+import { useTheme } from '@mui/material/styles';
 
 import Footer from '../components/generic/Footer';
 
@@ -29,7 +30,7 @@ import Pricing from '../components/generic/Pricing';
 import BackdropLoader from '../components/generic/BackdropLoader';
 
 const Home = (props) => {
-
+  const theme = useTheme();
   const router = useRouter();
 
   const [spin, setSpin] = useState(false);
@@ -122,7 +123,7 @@ const Home = (props) => {
               style = {{'fontWeight': 600, 'fontStyle': 'italic'}}
               gutterBottom
             >
-              sRating
+              {theme.palette.mode === 'dark' ? <><span style = {{'color': '#FDD835'}}>s</span><span style = {{'color': '#2ab92a'}}>Rating</span></> : 'sRating'}
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
               College basketball live scores, odds, picks, API, <br /> no ads, <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</Link>

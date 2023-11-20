@@ -114,6 +114,7 @@ const Header = (props) => {
 
   if (props.theme === 'dark') {
     logoStyle.color = '#2ab92a';
+    // purple #b92ab9
   }
 
   return (
@@ -143,7 +144,7 @@ const Header = (props) => {
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, 'alignItems': 'center' }} style = {logoStyle} onClick = {handleHome}>
                   <img src={sratingLogo.src} width = '20' height = '20' style = {{'marginRight': 5}} />
-                  <span style = {{'color': (props.theme === 'dark' ? '#FDD835' : 'black')}}>S</span>{'RATING'}
+                  <span style = {{'color': '#FDD835'}}>S</span>{'RATING'}
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
