@@ -200,7 +200,7 @@ const Tile = (props) => {
   const getTeamLine = (side) => {
     const flexContainer = {
       'display': 'flex',
-      'margin': '5px 0px',
+      // 'margin': '5px 0px',
       'alignItems': 'self-end',
     };
 
@@ -250,11 +250,29 @@ const Tile = (props) => {
       won = true;
       scoreStyle.backgroundColor = 'rgba(66, 245, 96, 0.5)';
     }
+    
+    let team_id = props.data[side + '_team_id'];
+    let wins = 0;
+    let losses = 0;
+
+    if (
+      team_id &&
+      team_id in props.data.teams &&
+      'stats' in props.data.teams[team_id]
+    ) {
+      wins = props.data.teams[team_id].stats.wins;
+      losses = props.data.teams[team_id].stats.losses;
+    }
 
     return (
-      <div style = {flexContainer} >
-        <div style = {nameStyle}><Typography variant = 'subtitle'>{CBB.getTeamRank(side, props.rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank(side, props.rankDisplay)}</sup> : ''}{CBB.getTeamName(side)}</Typography></div>
-        <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? props.data[side + '_score'] : '-'}</div>
+      <div>
+        <div style = {flexContainer} >
+          <div style = {nameStyle}>
+            <Typography variant = 'subtitle'>{CBB.getTeamRank(side, props.rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank(side, props.rankDisplay)}</sup> : ''}{CBB.getTeamName(side)}</Typography>
+            <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography>
+          </div>
+          <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? props.data[side + '_score'] : '-'}</div>
+        </div>
       </div>
     );
   };
