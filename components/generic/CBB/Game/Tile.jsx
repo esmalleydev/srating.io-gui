@@ -200,7 +200,7 @@ const Tile = (props) => {
   const getTeamLine = (side) => {
     const flexContainer = {
       'display': 'flex',
-      // 'margin': '5px 0px',
+      'margin': '5px 0px',
       'alignItems': 'self-end',
     };
 
@@ -268,7 +268,7 @@ const Tile = (props) => {
       <div>
         <div style = {flexContainer} >
           <div style = {nameStyle}>
-            <Typography variant = 'subtitle'>{CBB.getTeamRank(side, props.rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank(side, props.rankDisplay)}</sup> : ''}{CBB.getTeamName(side)}</Typography>
+            <Typography variant = 'h6' sx = {{'fontSize': 14, 'display': 'inline-block'}}>{CBB.getTeamRank(side, props.rankDisplay) ? <Typography variant = 'overline' color = 'text.secondary' sx = {{'fontSize': 12}}><sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank(side, props.rankDisplay)}</sup></Typography> : ''}{CBB.getTeamName(side)}</Typography>
             <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography>
           </div>
           <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? props.data[side + '_score'] : '-'}</div>
