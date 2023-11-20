@@ -143,7 +143,7 @@ const Header = (props) => {
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, 'alignItems': 'center' }} style = {logoStyle} onClick = {handleHome}>
                   <img src={sratingLogo.src} width = '20' height = '20' style = {{'marginRight': 5}} />
-                  {'SRATING'}
+                  <span style = {{'color': (props.theme === 'dark' ? '#FDD835' : 'black')}}>S</span>{'RATING'}
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
