@@ -172,7 +172,7 @@ class CBB {
    * @return {string}
    */
   getStartDate(opt_format) {
-    return moment(this.cbb_game.start_date).format(opt_format || 'MMM Do');
+    return moment(this.cbb_game.start_datetime).format(opt_format || 'MMM Do');
   };
 
   /**
