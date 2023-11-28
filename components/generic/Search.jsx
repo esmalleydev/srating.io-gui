@@ -1,5 +1,6 @@
+'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import useDebounce from '../hooks/useDebounce';
 
 import { styled, alpha, useTheme } from '@mui/material/styles';

@@ -1,4 +1,5 @@
 
+/*
 import '../styles/global.css';
 import React, { useState, useEffect, useRef } from 'react';
 // import { useRouter } from 'next/router';
@@ -155,4 +156,4 @@ const App = ({ Component, pageProps, router }) => {
 }
 
 export default App;
-
+*/

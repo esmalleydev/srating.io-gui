@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';

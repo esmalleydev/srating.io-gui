@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTheme, styled } from '@mui/material/styles';
 
 import useWindowDimensions from '../hooks/useWindowDimensions';

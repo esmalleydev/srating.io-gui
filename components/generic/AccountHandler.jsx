@@ -1,5 +1,6 @@
+'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -14,10 +15,13 @@ import Button from '@mui/material/Button';
 
 import Api from './../Api.jsx';
 import BackdropLoader from './BackdropLoader.jsx';
+import { useAppDispatch } from '../../redux/hooks';
+import { setValidSession } from '../../redux/features/user-slice';
 const api = new Api();
 
 
 const AccountHandler = (props) => {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const router = useRouter();
 
@@ -78,7 +82,8 @@ const AccountHandler = (props) => {
         return;
       } else {
         localStorage.setItem('session_id', session_id);
-        props.loginCallback();
+        sessionStorage.clear();
+        dispatch(setValidSession(true));
         props.closeHandler();
         window.location.reload();
       }
@@ -136,7 +141,8 @@ const AccountHandler = (props) => {
         return;
       } else if (response) {
         localStorage.setItem('session_id', response);
-        props.loginCallback();
+        sessionStorage.clear();
+        dispatch(setValidSession(true));
         props.closeHandler();
         router.push('/account');
       }
@@ -199,7 +205,8 @@ const AccountHandler = (props) => {
         setForgotPassword(false);
         setTempLogin(false);
         localStorage.setItem('session_id', response);
-        props.loginCallback();
+        sessionStorage.clear();
+        dispatch(setValidSession(true));
         props.closeHandler();
         router.push('/account?view=settings');
       }

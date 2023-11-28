@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
 
-import { useTheme } from '@mui/material/styles';
-
+import React from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { updateTheme } from '../../redux/features/theme-slice';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
@@ -17,7 +18,7 @@ import ListItemText from '@mui/material/ListItemText';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import DarkModeIcon from '@mui/icons-material/ModeNight';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import BeerIcon from '@mui/icons-material/SportsBar';
+// import BeerIcon from '@mui/icons-material/SportsBar';
 import HomeIcon from '@mui/icons-material/Home';
 import RSSFeedIcon from '@mui/icons-material/RssFeed';
 import RankingIcon from '@mui/icons-material/EmojiEvents';
@@ -30,7 +31,10 @@ import ArticleIcon from '@mui/icons-material/Article';
 const Sidebar = (props) => {
   const self = this;
 
-  const theme = useTheme();
+  const themeSlice = useAppSelector(state => state.themeReducer.value);
+  const dispatch = useAppDispatch();
+  const themeMode = themeSlice.mode;
+
   const router = useRouter();
   // const [spin, setSpin] = useState(false);
 
@@ -151,12 +155,12 @@ const Sidebar = (props) => {
 
           <Divider />
 
-          <ListItem key={'theme'} disablePadding onClick = {() => {setTimeout(props.handleTheme, 100);}}>
+          <ListItem key={'theme'} disablePadding onClick = {() => {dispatch(updateTheme(themeMode === 'dark' ? 'light': 'dark'))}}>
             <ListItemButton>
               <ListItemIcon>
-                {props.theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+                {themeMode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
               </ListItemIcon>
-              <ListItemText primary={props.theme === 'dark' ? 'Light mode' : 'Dark mode'} />
+              <ListItemText primary={themeMode === 'dark' ? 'Light mode' : 'Dark mode'} />
             </ListItemButton>
           </ListItem>
 
@@ -174,49 +178,5 @@ const Sidebar = (props) => {
     </div>
   );
 }
-
-/*
-const [anchorMenu, setAnchorMenu] = useState(null);
-  const menuOpen = Boolean(anchorMenu);
-
-  const handleAnchorMenu = (event) => {
-    setAnchorMenu(event.currentTarget);
-  };
-
-  const handleAnchorMenuClose = () => {
-    setAnchorMenu(null);
-  };
-<IconButton  onClick={handleAnchorMenu} color="inherit">
-              <TripleDotsIcon />
-            </IconButton>
-            <Menu
-              sx = {{'minWidth': 200}}
-              id="header-menu"
-              anchorEl={anchorMenu}
-              open={menuOpen}
-              onClose={handleAnchorMenuClose}
-            >
-              <MenuItem onClick={() => {
-                handleAnchorMenuClose();
-                // I put a timeout here because you can see the value of the menu change before closing
-                setTimeout(props.handleTheme, 100);
-              }}>
-                <ListItemIcon>
-                  {props.theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-                </ListItemIcon>
-                {props.theme === 'dark' ? 'Light mode' : 'Dark mode'}
-              </MenuItem>
-              <Divider />
-              <MenuItem onClick={() => {
-                handleAnchorMenuClose();
-                window.open('https://www.buymeacoffee.com/lxeUvrCaH1', '_blank');
-              }}>
-                <ListItemIcon>
-                  <BeerIcon />
-                </ListItemIcon>
-                Buy me a beer
-              </MenuItem>
-            </Menu>
- */
 
 export default Sidebar;

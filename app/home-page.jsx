@@ -1,6 +1,7 @@
+'use client';
+
 import React, { useState, useRef } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import Image from 'next/image'
 import Button from '@mui/material/Button';
@@ -31,7 +32,10 @@ import BackdropLoader from '../components/generic/BackdropLoader';
 
 const Home = (props) => {
   const theme = useTheme();
+
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [spin, setSpin] = useState(false);
 
@@ -99,14 +103,6 @@ const Home = (props) => {
 
   return (
     <div>
-      <Head>
-        <title>sRating | College basketball stats, ranking, scores, picks</title>
-        <meta name = 'description' content = 'View stats, ranking, live scores, live odds, picks for college basketball' key = 'desc'/>
-        <meta property="og:title" content=">sRating.io college basketball rankings" />
-        <meta property="og:description" content="View stats, ranking, live scores, live odds, picks for college basketball" />
-        <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = 'View stats, ranking, live scores, live odds, picks for college basketball' />
-      </Head>
       <main>
         <BackdropLoader open = {(spin === true)} />
         <Box
@@ -155,9 +151,12 @@ const Home = (props) => {
                     <div style={{ 'position': 'relative', 'width': '100%', 'height': '100%' }}>
                     <Image
                       alt = {card.heading}
-                      src={card.image}
-                      layout="fill"
-                      objectFit="cover"
+                      src = {card.image}
+                      fill = {true}
+                      sizes = 'max-width: 100%'
+                      style = {{
+                        objectFit: 'cover',
+                      }}
                     />
                     </div>
                   </CardMedia>
