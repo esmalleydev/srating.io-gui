@@ -1,5 +1,6 @@
+'use client';
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import moment from 'moment';
 
 import Typography from '@mui/material/Typography';

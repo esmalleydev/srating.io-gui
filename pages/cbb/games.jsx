@@ -329,15 +329,6 @@ const Games = (props) => {
       continue;
     }
 
-    // todo temp, uncomment
-    // remove d2 garbo games
-    // if (
-    //   !game_.teams[game_.away_team_id].cbb_d1 ||
-    //   !game_.teams[game_.home_team_id].cbb_d1
-    // ) {
-    //   continue;
-    // }
-
     if (
       conferences.length &&
       conferences.indexOf(game_.teams[game_.away_team_id].conference) === -1 &&
@@ -424,7 +415,7 @@ const Games = (props) => {
   }
 
   return (
-    <div style = {{'padding': '46px 0px 0px 0px'}}>
+    <div style = {{'padding': '46px 2.5px 0px 2.5px'}}>
       <Head>
         <title>sRating | College basketball scores</title>
         <meta name = 'description' content = 'Live college basketball scores and odds' key = 'desc'/>

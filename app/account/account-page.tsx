@@ -1,35 +1,57 @@
+'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import Footer from '../components/generic/Footer';
+import Footer from '../../components/generic/Footer';
 
-import Api from '../components/Api.jsx';
-import Subscription from '../components/generic/Account/Subscription';
+import Api from '../../components/Api.jsx';
+import Subscription from '../../components/generic/Account/Subscription';
 import { Button, Paper, Typography } from '@mui/material';
-import Settings from '../components/generic/Account/Settings';
+import Settings from '../../components/generic/Account/Settings';
 // import AccountHandler from '../components/generic/AccountHandler';
 
 const api = new Api();
 
+
 const Account = (props) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const view = (router.query && router.query.view) || 'subscriptions';
+
+  const view = searchParams?.get('view') || 'subscriptions';
   let tabOrder = ['subscriptions', 'settings'];
 
   const viewIndex = tabOrder.indexOf(view);
 
+  interface accountDataType {
+    subscription: {
+      [subscription_id: string]: {
+        pricing_id: string,
+      }
+    };
+    pricing: {
+      [pricing_id: string]: {}
+    };
+    api_key: {
+      [api_key_id: number]: {}
+    };
+    user: {
+      [user_id: string]: {}
+    };
+  }
+
 
   const [request, setRequest] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<accountDataType | null>(null);
   const [tabIndex, setTabIndex] = useState(viewIndex > -1 ? viewIndex : 0);
+
   
 
   let tabOptions = {
@@ -38,7 +60,7 @@ const Account = (props) => {
   };
 
 
-  let tabs = [];
+  let tabs: React.JSX.Element[] = [];
 
   for (let i = 0; i < tabOrder.length; i++) {
     tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{'fontSize': '12px'}}>{tabOptions[tabOrder[i]]}</span>)} />);
@@ -75,7 +97,7 @@ const Account = (props) => {
     loadAccount();
   }
 
-  let subscriptions = [];
+  let subscriptions: React.JSX.Element[] = [];
 
   if (data && data.subscription) {
     for (let subscription_id in data.subscription) {
@@ -109,21 +131,13 @@ const Account = (props) => {
 
   return (
     <div>
-      <Head>
-        <title>sRating | Aggregate college basketball ranking, scores, picks</title>
-        <meta name = 'description' content = 'View statistic ranking, live score, live odds, picks for college basketball' key = 'desc'/>
-        <meta property="og:title" content=">sRating.io college basketball rankings" />
-        <meta property="og:description" content="View statistic ranking, live score, live odds, picks for college basketball" />
-        <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = 'View statistic ranking, live score, live odds, picks for college basketball' />
-      </Head>
       <main>
         {
           data === null ?
             <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div>
           :
           <div>
-            <Box display="flex" justifyContent="center" /*sx = {{'position': 'sticky', 'top': 100}}*/>
+            <Box display="flex" justifyContent="center">
               <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabClick} indicatorColor="secondary" textColor="inherit">
                 {tabs}
               </Tabs>

@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { Metadata } from 'next'
+import { Metadata } from 'next';
 
 import Pricing from '../../components/generic/Pricing';
 import Footer from '../../components/generic/Footer';

@@ -1,20 +1,24 @@
 import React from 'react';
-import Head from 'next/head';
+import { Metadata } from 'next';
 
 import { Typography } from '@mui/material';
 
+export const metadata: Metadata = {
+  title: 'sRating | Terms and conditions',
+  description: 'College basketball API / Picks',
+  openGraph: {
+    title: 'sRating.io college basketball API',
+    description: 'College basketball API / Picks',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'College basketball API / Picks',
+  }
+};
 
-const Terms = (props) => {
+const Terms = () => {
   return (
     <div>
-      <Head>
-        <title>sRating | Terms and conditions</title>
-        <meta name = 'description' content = 'View statistic ranking, live score, live odds, picks for college basketball' key = 'desc'/>
-        <meta property="og:title" content=">sRating.io college basketball rankings" />
-        <meta property="og:description" content="View statistic ranking, live score, live odds, picks for college basketball" />
-        <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = 'View statistic ranking, live score, live odds, picks for college basketball' />
-      </Head>
       <main>
         <div style = {{'padding': 20}}>
           <Typography variant='h3'>SRATING API Terms and Conditions</Typography>
