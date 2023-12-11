@@ -35,17 +35,17 @@ module.exports = {
 
 ## Pages
 
-### [Homepage](pages/Homepage.md)
+### [Ranking](app/cbb/ranking/README.md)
 
-### [Ranking](pages/CBB/Ranking.md)
+### [Games](app/cbb/games/README.md)
 
-### [Games](pages/CBB/Games.md)
+### [Picks](app/cbb/picks/README.md)
 
-### [Picks](pages/CBB/Picks.md)
+### [Team](app/cbb/team/[team_id]/README.md)
 
-### [Game](pages/CBB/Games/Game.md)
+### [Player](app/cbb/player/[player_id]/README.md)
 
-### [Team](pages/CBB/Games/Team.md)
+### [Game](app/cbb/games/[cbb_game_id]/README.md)
 
 ## API requests
 
