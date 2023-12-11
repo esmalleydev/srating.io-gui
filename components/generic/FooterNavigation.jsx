@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTheme, styled } from '@mui/material/styles';
 
@@ -31,10 +31,13 @@ const FooterNavigation = (props) => {
 
   const theme = useTheme();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [spin, setSpin] = useState(false);
 
   let viewingSport = null;
-  let viewingPage = null;
+  let viewingPage = 'home';
+  const pathName = usePathname();
+
 
   // todo share this with header
   const sports = [
@@ -51,9 +54,8 @@ const FooterNavigation = (props) => {
     'picks',
   ];
 
-
-  if (router && router.pathname) {
-    const splat = router.pathname.split('/');
+  if (pathName) {
+    const splat = pathName.split('/');
     if (
       splat &&
       splat.length > 1 &&
@@ -76,14 +78,16 @@ const FooterNavigation = (props) => {
 
   const handleHome = () => {
     setSpin(true);
-    router.push('/'+viewingSport.toLowerCase()+'/home').then(() => {
+    startTransition(() => {
+      router.push('/'+viewingSport.toLowerCase());
       setSpin(false);
     });
   }
 
   const handleRanking = () => {
     setSpin(true);
-    router.push('/'+viewingSport.toLowerCase()+'/ranking').then(() => {
+    startTransition(() => {
+      router.push('/'+viewingSport.toLowerCase()+'/ranking');
       setSpin(false);
     });
   }
@@ -91,28 +95,19 @@ const FooterNavigation = (props) => {
   const handleScores = () => {
     setSpin(true);
     sessionStorage.removeItem('CBB.GAMES.DATA');
-    router.push('/'+viewingSport.toLowerCase()+'/games').then(() => {
+    startTransition(() => {
+      router.push('/'+viewingSport.toLowerCase()+'/games');
       setSpin(false);
     });
   }
 
   const handlePicks = () => {
     setSpin(true);
-    router.push('/'+viewingSport.toLowerCase()+'/picks').then(() => {
+    startTransition(() => {
+      router.push('/'+viewingSport.toLowerCase()+'/picks');
       setSpin(false);
     });
   }
-
-  /*
-  const handleFavorites = () => {
-    setSpin(true);
-    router.push('/'+viewingSport.toLowerCase()+'/favorites').then(() => {
-      setSpin(false);
-    });
-  }
-  */
-
-  // console.log(theme);
 
   const buttonColor = theme.palette.mode === 'light' ? '#F59242' : 'secondary';
 

@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
-import useWindowDimensions from '../../components/hooks/useWindowDimensions';
+'use client';
+import React, { useState, useEffect, useRef, useTransition, MutableRefObject } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
 
-import cacheData from 'memory-cache';
 
 import moment from 'moment';
 
@@ -19,7 +18,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import TableCell, { SortDirection } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -29,17 +28,17 @@ import Tooltip from '@mui/material/Tooltip';
 import Backdrop from '@mui/material/Backdrop';
 import { visuallyHidden } from '@mui/utils';
 
-import OptionPicker from '../../components/generic/OptionPicker';
-import SeasonPicker from '../../components/generic/CBB/SeasonPicker';
-import ConferencePicker from '../../components/generic/CBB/ConferencePicker';
-import ColumnPicker from '../../components/generic/CBB/ColumnPicker';
+import OptionPicker from '../../../components/generic/OptionPicker';
+import SeasonPicker from '../../../components/generic/CBB/SeasonPicker';
+import ConferencePicker from '../../../components/generic/CBB/ConferencePicker';
+import ColumnPicker from '../../../components/generic/CBB/ColumnPicker';
 
-import HelperCBB from '../../components/helpers/CBB';
-import Api from '../../components/Api.jsx';
-import BackdropLoader from '../../components/generic/BackdropLoader';
-import RankSpan from '../../components/generic/CBB/RankSpan';
-import RankSearch from '../../components/generic/RankSearch';
-import PositionPicker from '../../components/generic/CBB/PositionPicker.jsx';
+import HelperCBB from '../../../components/helpers/CBB';
+import Api from '../../../components/Api.jsx';
+import BackdropLoader from '../../../components/generic/BackdropLoader';
+import RankSpan from '../../../components/generic/CBB/RankSpan';
+import RankSearch from '../../../components/generic/RankSearch';
+import PositionPicker from '../../../components/generic/CBB/PositionPicker.jsx';
 
 
 const api = new Api();
@@ -77,28 +76,165 @@ const Ranking = (props) => {
   const self = this;
 
   const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
   const theme = useTheme();
+  const [isPending, startTransition] = useTransition();
 
-  const { height, width } = useWindowDimensions();
+  interface Dimensions {
+    width: number;
+    height: number;
+  };
+
+  interface rowDatatype {
+    team_id: string;
+    composite_rank: number;
+    ap_rank: number,
+    name: string;
+    wins: string;
+    conf_record: string;
+    conf: string;
+    elo_rank: number;
+    elo: number;
+    kenpom_rank: number;
+    srs_rank: number;
+    net_rank: number;
+    coaches_rank: number;
+    field_goal: number;
+    field_goal_attempts: number;
+    field_goal_percentage: number;
+    two_point_field_goal: number;
+    two_point_field_goal_attempts: number;
+    two_point_field_goal_percentage: number;
+    three_point_field_goal: number;
+    three_point_field_goal_attempts: number;
+    three_point_field_goal_percentage: number;
+    free_throws: number;
+    free_throw_attempts: number;
+    free_throw_percentage: number;
+    offensive_rebounds: number;
+    defensive_rebounds: number;
+    total_rebounds: number;
+    assists: number;
+    steals: number;
+    blocks: number;
+    turnovers: number;
+    fouls: number;
+    points: number;
+    possessions: number;
+    pace: number;
+    offensive_rating: number;
+    defensive_rating: number;
+    efficiency_rating: number;
+    adjusted_efficiency_rating: number;
+    opponent_field_goal: number;
+    opponent_field_goal_attempts: number;
+    opponent_field_goal_percentage: number;
+    opponent_two_point_field_goal: number;
+    opponent_two_point_field_goal_attempts: number;
+    opponent_two_point_field_goal_percentage: number;
+    opponent_three_point_field_goal: number;
+    opponent_three_point_field_goal_attempts: number;
+    opponent_three_point_field_goal_percentage: number;
+    opponent_free_throws: number;
+    opponent_free_throw_attempts: number;
+    opponent_free_throw_percentage: number;
+    opponent_offensive_rebounds: number;
+    opponent_defensive_rebounds: number;
+    opponent_total_rebounds: number;
+    opponent_assists: number;
+    opponent_steals: number;
+    opponent_blocks: number;
+    opponent_turnovers: number;
+    opponent_fouls: number;
+    opponent_points: number;
+    opponent_possessions: number;
+    opponent_offensive_rating: number;
+    opponent_defensive_rating: number;
+    opponent_efficiency_rating: number;
+    field_goal_rank: number;
+    field_goal_attempts_rank: number;
+    field_goal_percentage_rank: number;
+    two_point_field_goal_rank: number;
+    two_point_field_goal_attempts_rank: number;
+    two_point_field_goal_percentage_rank: number;
+    three_point_field_goal_rank: number;
+    three_point_field_goal_attempts_rank: number;
+    three_point_field_goal_percentage_rank: number;
+    free_throws_rank: number;
+    free_throw_attempts_rank: number;
+    free_throw_percentage_rank: number;
+    offensive_rebounds_rank: number;
+    defensive_rebounds_rank: number;
+    total_rebounds_rank: number;
+    assists_rank: number;
+    steals_rank: number;
+    blocks_rank: number;
+    turnovers_rank: number;
+    fouls_rank: number;
+    points_rank: number;
+    possessions_rank: number;
+    pace_rank: number;
+    offensive_rating_rank: number;
+    defensive_rating_rank: number;
+    efficiency_rating_rank: number;
+    adjusted_efficiency_rating_rank: number;
+    opponent_field_goal_rank: number;
+    opponent_field_goal_attempts_rank: number;
+    opponent_field_goal_percentage_rank: number;
+    opponent_two_point_field_goal_rank: number;
+    opponent_two_point_field_goal_attempts_rank: number;
+    opponent_two_point_field_goal_percentage_rank: number;
+    opponent_three_point_field_goal_rank: number;
+    opponent_three_point_field_goal_attempts_rank: number;
+    opponent_three_point_field_goal_percentage_rank: number;
+    opponent_free_throws_rank: number;
+    opponent_free_throw_attempts_rank: number;
+    opponent_free_throw_percentage_rank: number;
+    opponent_offensive_rebounds_rank: number;
+    opponent_defensive_rebounds_rank: number;
+    opponent_total_rebounds_rank: number;
+    opponent_assists_rank: number;
+    opponent_steals_rank: number;
+    opponent_blocks_rank: number;
+    opponent_turnovers_rank: number;
+    opponent_fouls_rank: number;
+    opponent_points_rank: number;
+    opponent_possessions_rank: number;
+    opponent_offensive_rating_rank: number;
+    opponent_defensive_rating_rank: number;
+    opponent_efficiency_rating_rank: number;
+  };
+
+  interface TableComponentsType {
+    Scroller: React.ComponentType<any>;
+    Table: React.ComponentType<any>;
+    TableHead: React.ComponentType<any>;
+    TableRow: React.ComponentType<any>;
+    TableBody: React.ComponentType<any>;
+    FillerRow: React.ComponentType<{ height: number }>;
+  };
+
+  const { height, width } = useWindowDimensions() as Dimensions;
 
   const data = props.data;
 
   const [loading, setLoading] = useState(false);
   const [spin, setSpin] = useState(false);
   const [firstRender, setFirstRender] = useState(true);
-  const [season, setSeason] = useState((router.query && router.query.season) || new HelperCBB().getCurrentSeason());
-  const [rankView, setRankView] = useState((router.query && router.query.view) || 'team');
-  const [conferences, setConferences] = useState([]);
-  const [positions, setPositions] = useState([]);
+  const [season, setSeason] = useState(searchParams?.get('season') || new HelperCBB().getCurrentSeason());
+  const [rankView, setRankView] = useState(searchParams?.get('view') || 'team');
+  const [conferences, setConferences] = useState<string[]>([]);
+  const [positions, setPositions] = useState<string[]>([]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('composite_rank');
   const [view, setView] = useState('composite');
   const [customColumns, setCustomColumns] = useState(['composite_rank', 'name']);
   const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
-  const [filteredRows, setFilteredRows] = useState(false);
+  const [filteredRows, setFilteredRows] = useState(null);
 
   const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
-  const tableRef = useRef(null);
+  const tableRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
 
   const scrollerRef = React.useCallback(
     (element) => {
@@ -115,48 +251,27 @@ const Ranking = (props) => {
     if (tableRef.current) {
       setTimeout(function() {
         // tableRef.current.scrollLeft = tableHorizontalScroll;
-        tableRef.current.scrollTo({'left': tableHorizontalScroll});
+        tableRef.current?.scrollTo({'left': tableHorizontalScroll});
       }, 0);
     }
   }, [tableHorizontalScroll, order, orderBy]);
 
 
   useEffect(() => {
-    const handleStart = (url) => {;
-      setLoading(true);
-    };
-    const handleComplete = (url) => {
-      setLoading(false);
-    };
-
-    router.events.on('routeChangeStart', handleStart)
-    router.events.on('routeChangeComplete', handleComplete)
-    router.events.on('routeChangeError', handleComplete)
-
     setFirstRender(false);
-    setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
-    setPositions(localStorage.getItem('CBB.POSITIONPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.POSITIONPICKER.DEFAULT')) : []);
-    setView(localStorage.getItem('CBB.RANKING.VIEW') ? localStorage.getItem('CBB.RANKING.VIEW') : 'composite');
-    setCustomColumns(localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView) ?  JSON.parse(localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView)) : ['composite_rank', 'name']);
-
-    return () => {
-      router.events.off('routeChangeStart', handleStart)
-      router.events.off('routeChangeComplete', handleComplete)
-      router.events.off('routeChangeError', handleComplete)
-    }
+    const localConfPicker = localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') || null;
+    const localPosPicker = localStorage.getItem('CBB.POSITIONPICKER.DEFAULT') || null;
+    const localRankView = localStorage.getItem('CBB.RANKING.VIEW') || null;
+    const localRankCols = localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView) || null;
+    setConferences(localConfPicker ? JSON.parse(localConfPicker) : []);
+    setPositions(localPosPicker ? JSON.parse(localPosPicker) : []);
+    setView(localRankView ? localRankView : 'composite');
+    setCustomColumns(localRankCols ?  JSON.parse(localRankCols) : ['composite_rank', 'name']);
   }, []);
 
   if (firstRender) {
     return (
       <div>
-        <Head>
-          <title>sRating | College basketball ranking</title>
-          <meta name = 'description' content = 'View statistic ranking for all 362 teams' key = 'desc'/>
-          <meta property="og:title" content="srating.io college basketball rankings" />
-          <meta property="og:description" content="View statistic ranking for all 362 teams" />
-          <meta name="twitter:card" content="summary" />
-          <meta name = 'twitter:title' content = 'srating.io college basketball rankings' />
-        </Head>
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
           <CircularProgress />
         </div>
@@ -173,8 +288,17 @@ const Ranking = (props) => {
     localStorage.removeItem('CBB.RANKING.COLUMNS.' + rankView);
     localStorage.removeItem('CBB.POSITIONPICKER.DEFAULT');
 
-    router.query.view = newRankView;
-    router.push(router);
+    if (searchParams) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('view', newRankView);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+      setLoading(true);
+      startTransition(() => {
+        router.push(`${pathName}${query}`);
+        setLoading(false);
+      });
+    }
 
     setCustomColumns(['composite_rank', 'name']);
     setPositions([]);
@@ -185,8 +309,17 @@ const Ranking = (props) => {
   }
 
   const handleSeason = (season) => {
-    router.query.season = season;
-    router.push(router);
+    if (searchParams) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('season', season);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+      setLoading(true);
+      startTransition(() => {
+        router.push(`${pathName}${query}`);
+        setLoading(false);
+      });
+    }
 
     setSeason(season);
   }
@@ -211,7 +344,7 @@ const Ranking = (props) => {
     setConferences(currentConferences);
   }
 
-  let confChips = [];
+  let confChips: React.JSX.Element[] = [];
   for (let i = 0; i < conferences.length; i++) {
     confChips.push(<Chip sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {handleConferences(conferences[i])}} />);
   }
@@ -235,21 +368,23 @@ const Ranking = (props) => {
     setPositions(currentPositions);
   }
 
-  let positionChips = [];
+  let positionChips: React.JSX.Element[] = [];
   for (let i = 0; i < positions.length; i++) {
     positionChips.push(<Chip sx = {{'margin': '5px'}} label={positions[i]} onDelete={() => {handlePositions(positions[i])}} />);
   }
 
   const handleTeam = (team_id) => {
     setSpin(true);
-    router.push('/cbb/team/' + team_id+'?season='+season).then(() => {
+    startTransition(() => {
+      router.push('/cbb/team/' + team_id+'?season='+season);
       setSpin(false);
     });
   }
 
   const handlePlayer = (player_id) => {
     setSpin(true);
-    router.push('/cbb/player/' + player_id+'?season='+season).then(() => {
+    startTransition(() => {
+      router.push('/cbb/player/' + player_id+'?season='+season);
       setSpin(false);
     });
   }
@@ -925,9 +1060,9 @@ const Ranking = (props) => {
     });
   }
 
-  let rows = [];
+  let rows: rowDatatype[] = [];
 
-  let lastUpdated = null;
+  let lastUpdated: string | null = null;
 
   const row_length_before_filter = Object.keys(data).length;
 
@@ -1106,7 +1241,7 @@ const Ranking = (props) => {
 
   const allRows = rows;
 
-  if (filteredRows) {
+  if (filteredRows !== null) {
     rows = filteredRows;
   }
 
@@ -1171,26 +1306,26 @@ const Ranking = (props) => {
   };
 
 
-  const TableComponents = {
-    Scroller: React.forwardRef((props, ref) => {
+  const TableComponents: TableComponentsType = {
+    Scroller: React.forwardRef<HTMLDivElement>((props, ref) => {
       return (
         <TableContainer component={Paper} {...props} ref={ref} />
       );
     }),
     Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
     TableHead: TableHead,
-    TableRow: React.forwardRef((props, ref) => {
+    TableRow: React.forwardRef<HTMLTableRowElement>((props, ref) => {
       return (
         <StyledTableRow {...props} ref={ref} onClick={() => {
-          if (props.item.player_id) {
-            handlePlayer(props.item.player_id);
+          if ((props as any).item.player_id) {
+            handlePlayer((props as any).item.player_id);
           } else {
-            handleTeam(props.item.team_id);
+            handleTeam((props as any).item.team_id);
           }
         }} />
       );
     }),
-    TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+    TableBody: React.forwardRef<HTMLTableSectionElement>((props, ref) => <TableBody {...props} ref={ref} />),
     // https://github.com/petyosi/react-virtuoso/issues/609
     // set the colspan below to the amount of columns you have.
     FillerRow: ({ height }) => {
@@ -1210,7 +1345,7 @@ const Ranking = (props) => {
       <TableRow>
         {getColumns().map((column) => {
           const headCell = headCells[column];
-          const tdStyle = {
+          const tdStyle: React.CSSProperties = {
             'padding': '4px 5px',
           };
 
@@ -1228,11 +1363,11 @@ const Ranking = (props) => {
                 sx = {tdStyle}
                 key={headCell.id}
                 align={'left'}
-                sortDirection={orderBy === headCell.id ? order : false}
+                sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
               >
                 <TableSortLabel
                   active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : 'asc'}
+                  direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
                   onClick={() => {handleSort(headCell.id)}}
                 >
                   {headCell.label}
@@ -1254,7 +1389,7 @@ const Ranking = (props) => {
   const getTableContents = (index, row) => {
     let columns = getColumns();
 
-    const tdStyle = {
+    const tdStyle: React.CSSProperties = {
       'padding': '4px 5px',
       'backgroundColor': theme.palette.mode === 'light' ? (index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
     };
@@ -1263,13 +1398,13 @@ const Ranking = (props) => {
       tdStyle.fontSize = '12px';
     }
 
-    let teamCellStyle = {};
+    let teamCellStyle: React.CSSProperties = {};
     teamCellStyle.position = 'sticky';
     teamCellStyle.left = 50;
     teamCellStyle.minWidth = 125;
     teamCellStyle.maxWidth = 125;
 
-    const tableCells = [];
+    const tableCells: React.JSX.Element[] = [];
 
     for (let i = 0; i < columns.length; i++) {
       if (columns[i] === 'team_name') {
@@ -1313,14 +1448,6 @@ const Ranking = (props) => {
 
   return (
     <div>
-      <Head>
-        <title>sRating | College basketball ranking</title>
-        <meta name = 'description' content = 'View statistic ranking for all 362 teams' key = 'desc'/>
-        <meta property="og:title" content="srating.io college basketball rankings" />
-        <meta property="og:description" content="View statistic ranking for all 362 teams" />
-        <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = 'srating.io college basketball rankings' />
-      </Head>
       {spin ? <BackdropLoader /> : ''}
       {
         loading ? 
@@ -1334,11 +1461,11 @@ const Ranking = (props) => {
             <Typography variant = 'h5'>College basketball rankings.</Typography>
             {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>Last updated: {moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY')}</Typography> : ''}
             <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
-              <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : ''} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
-              <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : ''} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
-              <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : ''} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
-              <Chip sx = {{'margin': '5px'}} label='Special' variant={view !== 'special' ? 'outlined' : ''} color={view !== 'special' ? 'primary' : 'success'} onClick={() => handleRankingView('special')} />
-              <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : ''} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
+              <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
+              <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
+              <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : 'filled'} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
+              <Chip sx = {{'margin': '5px'}} label='Special' variant={view !== 'special' ? 'outlined' : 'filled'} color={view !== 'special' ? 'primary' : 'success'} onClick={() => handleRankingView('special')} />
+              <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : 'filled'} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
               <ColumnPicker key = {rankView} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
             </div>
             <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center', 'marginTop': '10px'}}>
@@ -1358,52 +1485,6 @@ const Ranking = (props) => {
       }
     </div>
   );
-}
-
-
-export async function getServerSideProps(context) {
-  const seconds = 60 * 60 * 5; // cache for 5 hours
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage='+seconds+', stale-while-revalidate=59'
-  );
-
-  const CBB = new HelperCBB();
-
-  const season =  (context.query && context.query.season) || CBB.getCurrentSeason();
-
-  const view =  (context.query && context.query.view) || 'team';
-
-  let data = {};
-
-  const cachedLocation = 'CBB.RANKING.LOAD.'+season+ '.' + view;
-
-  const cached = cacheData.get(cachedLocation);
-
-  if (!cached) {
-    const fxn = (view === 'player') ? 'getPlayerRanking': 'getTeamRanking';
-    await api.Request({
-      'class': 'cbb_ranking',
-      'function': fxn,
-      'arguments': {
-        'season': season
-      }
-    }).then((response) => {
-      data = response;
-      cacheData.put(cachedLocation, data, 1000 * seconds);
-    }).catch((e) => {
-
-    });
-  } else {
-    data = cached;
-  }
-
-  return {
-    'props': {
-      'data': data,
-      'generated': new Date().getTime(),
-    },
-  }
 }
 
 

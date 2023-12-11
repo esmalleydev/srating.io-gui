@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useTransition, RefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import Image from 'next/image'
@@ -36,14 +36,16 @@ const Home = (props) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
   const [spin, setSpin] = useState(false);
 
-  const ref = useRef(null);
+  const ref: RefObject<HTMLDivElement> = useRef(null);
 
   const handlePath = (path) => {
     setSpin(true);
-    router.push(path).then(() => {
+    startTransition(() => {
+      router.push(path);
       setSpin(false);
     });
   };
@@ -147,17 +149,17 @@ const Home = (props) => {
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
-                  <CardMedia sx = {{'height': 175}} alt = {card.heading}>
+                  <CardMedia sx = {{'height': 175}}>
                     <div style={{ 'position': 'relative', 'width': '100%', 'height': '100%' }}>
-                    <Image
-                      alt = {card.heading}
-                      src = {card.image}
-                      fill = {true}
-                      sizes = 'max-width: 100%'
-                      style = {{
-                        objectFit: 'cover',
-                      }}
-                    />
+                      <Image
+                        alt = {card.heading}
+                        src = {card.image}
+                        fill = {true}
+                        sizes = 'max-width: 100%'
+                        style = {{
+                          objectFit: 'cover',
+                        }}
+                      />
                     </div>
                   </CardMedia>
                   <CardContent sx={{ flexGrow: 1 }}>

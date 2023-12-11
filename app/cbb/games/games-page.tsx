@@ -1,48 +1,102 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
-import useWindowDimensions from '../../components/hooks/useWindowDimensions';
+'use client';
+import React, { useState, useEffect, useRef, useTransition, RefObject } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
-import cacheData from 'memory-cache';
-
-import Typography from '@mui/material/Typography';
 
 
 import Chip from '@mui/material/Chip';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
-import ConferencePicker from '../../components/generic/CBB/ConferencePicker';
-import AdditionalOptions from '../../components/generic/CBB/Games/AdditionalOptions';
-import Tile from '../../components/generic/CBB/Game/Tile.jsx';
+import ConferencePicker from '../../../components/generic/CBB/ConferencePicker';
+import AdditionalOptions from '../../../components/generic/CBB/Games/AdditionalOptions';
+import Tile from '../../../components/generic/CBB/Game/Tile.jsx';
 
-import DateAppBar from '../../components/generic/DateAppBar.jsx';
+import DateAppBar from '../../../components/generic/DateAppBar.jsx';
 
 
-import HelperCBB from '../../components/helpers/CBB';
-import Api from '../../components/Api.jsx';
-import BackdropLoader from '../../components/generic/BackdropLoader';
+import HelperCBB from '../../../components/helpers/CBB';
+import Api from '../../../components/Api.jsx';
+import BackdropLoader from '../../../components/generic/BackdropLoader';
 
 const api = new Api();
 
-let intervalRefresher = null;
+let intervalRefresher: NodeJS.Timeout;
 
 
 const Games = (props) => {
+
+  interface Dimensions {
+    width: number;
+    height: number;
+  };
+
+  interface Team {
+    team_id: string;
+    char6: string;
+    code: string;
+    name: string;
+    alt_name: string;
+    primary_color: string;
+    secondary_color: string;
+    cbb_d1: number;
+    cbb: number;
+    cfb: number;
+    nba: number;
+    nfl: number;
+    nhl: number;
+    guid: string;
+    deleted: number;
+  };
+
+  interface Game {
+    cbb_game_id: string;
+    season: number;
+    away_team_id: string;
+    home_team_id: string;
+    network: string;
+    home_team_rating: number;
+    away_team_rating: number;
+    away_score: number;
+    home_score: number;
+    status: string;
+    current_period: string;
+    clock: string;
+    start_date: string;
+    start_datetime: string;
+    start_timestamp: number;
+    attendance: number;
+    neutral_site: number;
+    is_conf_game: number;
+    boxscore: number;
+    guid: string;
+    deleted: number;
+    teams: Team;
+  };
+
+  interface gamesDataType {
+    [cbb_game_id: string]: Game;
+  };
+
+
   const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
   const theme = useTheme();
-  const scrollRef = useRef(null);
+  const [isPending, startTransition] = useTransition();
+  const scrollRef: RefObject<HTMLDivElement> = useRef(null);
 
   const defaultDate = moment().format('YYYY-MM-DD');
-  const season = (router.query && router.query.season) || new HelperCBB().getCurrentSeason();
+  const season = searchParams?.get('season') || new HelperCBB().getCurrentSeason();
 
   const sessionDataKey = 'CBB.GAMES.DATA.'+season;
 
   // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
-  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem(sessionDataKey) ? JSON.parse(sessionStorage.getItem(sessionDataKey)) : {};
-
+  const sessionDataString = typeof window !== 'undefined' ? sessionStorage.getItem(sessionDataKey) : null;
+  let sessionData = sessionDataString ? JSON.parse(sessionDataString) : {};
 
   if ((sessionData.expire_session && sessionData.expire_session < new Date().getTime()) || +sessionData.season !== +season) {
     sessionData = {};
@@ -53,12 +107,13 @@ const Games = (props) => {
   const tabDates = props.dates || [];
   const [request, setRequest] = useState(sessionData.request || false);
   const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : (props.games));
-  const [date, setDate] = useState(sessionData.date || router.query.date || null);
+  const [date, setDate] = useState(sessionData.date || searchParams?.get('date') || null);
   const [now, setNow] = useState(defaultDate);
-  const [games, setGames] = useState(sessionData.games || {});
+  const [games, setGames] = useState<gamesDataType>(sessionData.games || {});
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
-  const [conferences, setConferences] = useState([]);
-  const [pins, setPins] = useState(typeof window !== 'undefined' && sessionStorage.getItem('CBB.GAMES.PINS') ? JSON.parse(sessionStorage.getItem('CBB.GAMES.PINS')) : []);
+  const [conferences, setConferences] = useState<string[]>([]);
+  const sessionDataStringPins = typeof window !== 'undefined' ? sessionStorage.getItem('CBB.GAMES.PINS') : null;
+  const [pins, setPins] = useState(sessionDataStringPins ? JSON.parse(sessionDataStringPins) : []);
   const [status, setStatus] = useState(sessionData.status || statusOptions.map(item => item.value));
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
   const [firstRender, setFirstRender] = useState(true);
@@ -66,8 +121,9 @@ const Games = (props) => {
   // if stored session, refresh in 5 seconds, else normal 30 seconds
   const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
 
+  console.log(games)
 
-  const { height, width } = useWindowDimensions();
+  const { height, width } = useWindowDimensions() as Dimensions;
 
   // For speed, lookups
   const tabDatesObject = {};
@@ -97,11 +153,20 @@ const Games = (props) => {
     setRequest(true);
     setDate(value);
 
-    if (router.query && router.query.date !== value) {
-      router.replace({
-        query: {...router.query, date: value},
-      });
+    if (searchParams && searchParams?.get('date') !== value) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('date', value);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+
+      router.replace(`${pathName}${query}`);
     }
+
+    // if (router.query && router.query.date !== value) {
+    //   router.replace({
+    //     query: {...router.query, date: value},
+    //   });
+    // }
     
     api.Request({
       'class': 'cbb_game',
@@ -129,7 +194,7 @@ const Games = (props) => {
    * @return {?String}
    */
   const getClosestDate = (d) => {
-    let closestDist = null;
+    let closestDist: number | null = null;
     let closestDate = null;
 
     if (d in tabDatesObject) {
@@ -137,8 +202,8 @@ const Games = (props) => {
     }
 
     for (let i = 0; i < tabDates.length; i++) {
-      const a = new Date(tabDates[i]);
-      const b = new Date(d);
+      const a = new Date(tabDates[i]).getTime();
+      const b = new Date(d).getTime();
 
       const dist = Math.abs(a - b);
 
@@ -161,9 +226,11 @@ const Games = (props) => {
 
 
   useEffect(() => {
-    setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
-    setRankDisplay(localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank');
-    triggerSessionStorage();
+    const localConfPicker = localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') || null;
+    const localRankPicker = localStorage.getItem('CBB.RANKPICKER.DEFAULT') || null;
+    setConferences(localConfPicker ? JSON.parse(localConfPicker) : []);
+    setRankDisplay(localRankPicker ? JSON.parse(localRankPicker) : 'composite_rank');
+    triggerSessionStorage(false);
   }, []);
 
   useEffect(() => {
@@ -192,14 +259,6 @@ const Games = (props) => {
   if (firstRender) {
     return (
       <div>
-        <Head>
-          <title>sRating | College basketball scores</title>
-          <meta name = 'description' content = 'Live college basketball scores and odds' key = 'desc'/>
-          <meta property="og:title" content="srating.io college basketball scores" />
-          <meta property="og:description" content="Live college basketball scores and odds" />
-          <meta name="twitter:card" content="summary" />
-          <meta name = 'twitter:title' content = 'Live college basketball scores and odds' />
-        </Head>
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
           <CircularProgress />
         </div>
@@ -233,7 +292,7 @@ const Games = (props) => {
     setPins(currentPins);
   };
 
-  const gameContainers = [];
+  const gameContainers: React.JSX.Element[] = [];
 
   let sorted_games = Object.values(games);
 
@@ -355,7 +414,7 @@ const Games = (props) => {
     gameContainers.push(<Tile onClick={onClickTile} key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} isPinned = {(pins.indexOf(game_.cbb_game_id) > -1)} actionPin = {handlePins} />);
   }
 
-  const gameContainerStyle = {
+  const gameContainerStyle: React.CSSProperties = {
     'display': 'flex',
     'flexWrap': 'wrap',
     'justifyContent': 'center',
@@ -400,7 +459,7 @@ const Games = (props) => {
   };
 
 
-  let confChips = [];
+  let confChips: React.JSX.Element[] = [];
   for (let i = 0; i < conferences.length; i++) {
     confChips.push(<Chip key = {conferences[i]} sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {handleConferences(conferences[i])}} />);
   }
@@ -416,14 +475,6 @@ const Games = (props) => {
 
   return (
     <div style = {{'padding': '46px 2.5px 0px 2.5px'}}>
-      <Head>
-        <title>sRating | College basketball scores</title>
-        <meta name = 'description' content = 'Live college basketball scores and odds' key = 'desc'/>
-        <meta property="og:title" content="srating.io college basketball scores" />
-        <meta property="og:description" content="Live college basketball scores and odds" />
-        <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = 'Live college basketball scores and odds' />
-      </Head>
       <BackdropLoader open = {(spin === true)} />
       <div>
         <DateAppBar
@@ -445,7 +496,7 @@ const Games = (props) => {
             key = {index}
             sx = {{'margin': '5px'}}
             label={statusOption.label}
-            variant={status.indexOf(statusOption.value) === -1 ? 'outlined' : ''}
+            variant={status.indexOf(statusOption.value) === -1 ? 'outlined' : 'filled'}
             color={status.indexOf(statusOption.value) === -1 ? 'primary' : 'success'}
             onClick={() => handleStatuses(statusOption.value)}
           />
@@ -457,48 +508,6 @@ const Games = (props) => {
       </div>
     </div>
   );
-}
-
-export async function getServerSideProps(context) {
-  const seconds = 60 * 60 * 12; // cache for 12 hours
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage='+seconds+', stale-while-revalidate=59'
-  );
-
-  const CBB = new HelperCBB();
-
-  const season =  (context.query && context.query.season) || CBB.getCurrentSeason();
-
-  let dates = [];
-
-  const cachedLocation = 'CBB.GAMES.LOAD.'+season;
-
-  const cached = cacheData.get(cachedLocation);
-
-  if (!cached) {
-    await api.Request({
-      'class': 'cbb_game',
-      'function': 'getSeasonDates',
-      'arguments': {
-        'season': season
-      }
-    }).then((response) => {
-      dates = response;
-      cacheData.put(cachedLocation, dates, 1000 * seconds);
-    }).catch((e) => {
-
-    });
-  } else {
-    dates = cached;
-  }
-
-
-  return {
-    'props': {
-      'dates': dates,
-    },
-  }
 }
 
 export default Games;

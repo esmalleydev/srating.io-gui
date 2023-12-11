@@ -1,5 +1,6 @@
+'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';

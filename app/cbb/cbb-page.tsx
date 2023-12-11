@@ -1,6 +1,6 @@
+'use client';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
+import { useSearchParams } from 'next/navigation';
 
 import moment from 'moment';
 
@@ -17,20 +17,30 @@ import ThrillerGames from '../../components/generic/CBB/Home/ThrillerGames.jsx';
 import CloseGames from '../../components/generic/CBB/Home/CloseGames.jsx';
 const api = new Api();
 
-let intervalRefresher = null;
+let intervalRefresher: NodeJS.Timeout;
 
 const Home = (props) => {
   const self = this;
-  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  interface favoriteDataType {
+    favorites: {
+      [favorite_id: string]: {
+      }
+    };
+    cbb_games: {
+      [cbb_game_id: string]: {}
+    };
+  };
 
   const defaultDate = moment().format('YYYY-MM-DD');
 
   const [request, setRequest] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<favoriteDataType | null>(null);
   const [spin, setSpin] = useState(false);
 
-  const season = (router.query && router.query.season) || new HelperCBB().getCurrentSeason();
+  const season = searchParams?.get('season') || new HelperCBB().getCurrentSeason();
 
   const favoriteData = (data && data.favorites) || {};
 
@@ -80,12 +90,6 @@ const Home = (props) => {
 
   return (
     <div style = {{'padding': '20px 20px 0px 20px'}}>
-      <Head>
-        <title>sRating | College basketball favorites</title>
-        <meta name = 'description' content = 'My favorites' key = 'desc'/>
-        <meta property="og:title" content=">sRating.io college basketball" />
-        <meta property="og:description" content="My favorites" />
-      </Head>
       <BackdropLoader open = {(spin === true)} />
       {
         loading ?

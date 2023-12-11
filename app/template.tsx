@@ -10,20 +10,18 @@ import { useAppSelector } from '../redux/hooks';
 import Header from "../components/generic/Header.jsx";
 import FooterNavigation from "../components/generic/FooterNavigation.jsx";
 
-
+// todo unintall memory-cache
 
 const Template = ({ children }: { children: React.ReactNode }) => {
   const themeSlice = useAppSelector(state => state.themeReducer.value);
 
   const scrollRef = useRef(null);
-  const windowDimensions = useWindowDimensions();
 
-  let width: number;
-  if (typeof windowDimensions === 'number') {
-    width = windowDimensions; // Handle the number value
-  } else {
-    width = windowDimensions.width; // Access the width property
-  }
+  interface Dimensions {
+    width: number;
+    height: number;
+  };
+  const { width } = useWindowDimensions() as Dimensions;
 
   /**
    * TODO this fixes some hydration issues...but shouldnt be needed...

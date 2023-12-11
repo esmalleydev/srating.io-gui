@@ -1,44 +1,36 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
-import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
+'use client';
+import React, { useState } from 'react';
+
+import useWindowDimensions from '../../../../components/hooks/useWindowDimensions';
 
 import { useTheme } from '@mui/material/styles';
-import CircularProgress from '@mui/material/CircularProgress';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 
-import moment from 'moment';
 
-
-import HelperCBB from '../../../components/helpers/CBB';
-import HelperTeam from '../../../components/helpers/Team';
-
-import Stats from '../../../components/generic/CBB/Player/Stats';
-import GameLogs from '../../../components/generic/CBB/Player/GameLogs';
-import Trends from '../../../components/generic/CBB/Player/Trends';
-
-
-import Api from '../../../components/Api.jsx';
-import FavoritePicker from '../../../components/generic/FavoritePicker';
-const api = new Api();
+import Stats from '../../../../components/generic/CBB/Player/Stats';
+import GameLogs from '../../../../components/generic/CBB/Player/GameLogs';
+import Trends from '../../../../components/generic/CBB/Player/Trends';
+import FavoritePicker from '../../../../components/generic/FavoritePicker';
 
 
 const Player = (props) => {
   const self = this;
-  const router = useRouter();
-  const player_id = router.query && router.query.player_id;
-  const season = router.query && router.query.season || new HelperCBB().getCurrentSeason();
+
+  interface Dimensions {
+    width: number;
+    height: number;
+  };
+
+
+  const theme = useTheme();
+  const { width } = useWindowDimensions() as Dimensions;
 
   const player = props.player;
 
   const name = player.first_name + ' ' + player.last_name;
-
-  const theme = useTheme();
-  const { height, width } = useWindowDimensions();
-
 
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -58,7 +50,7 @@ const Player = (props) => {
 
   let tabOrder = ['stats', 'gamelogs', 'trends'];
 
-  let tabs = [];
+  let tabs: React.JSX.Element[] = [];
 
   for (let i = 0; i < tabOrder.length; i++) {
     tabs.push(<Tab key = {tabOrder[i]} label = {tabOptions[tabOrder[i]]} />);
@@ -66,20 +58,14 @@ const Player = (props) => {
 
   const selectedTab = tabOrder[tabIndex];
 
-  // const team_ = new HelperTeam({'team': team});
-
 
   const handleTabClick = (value) => {
     setTabIndex(value);
-
-  //   if (value > 0 && props.scrollRef && props.scrollRef.current) {
-  //     props.scrollRef.current.scrollTo(0, 0);
-  //   }
   };
 
   const titleHeight = 112;
 
-  const titleStyle = {
+  const titleStyle: React.CSSProperties = {
     'padding': '20px',
     'height': titleHeight,
     'textAlign': 'center',
@@ -92,14 +78,6 @@ const Player = (props) => {
 
   return (
     <div>
-      <Head>
-        <title>sRating | {name}</title>
-        <meta name = 'description' content = {name + ' statistics'} key = 'desc'/>
-        <meta property="og:title" content = {name + ' statistics'} />
-        <meta property="og:description" content = {name + ' statistics'} />
-        <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = {name + ' statistics'} />
-      </Head>
       <div style = {titleStyle}>
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
           <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h4' : 'h3'}>
@@ -125,32 +103,5 @@ const Player = (props) => {
   );
 }
 
-export async function getServerSideProps(context) {
-  const player_id = context.query && context.query.player_id;
-
-  const seconds = 60 * 5; // cache for 5 mins
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage='+seconds+', stale-while-revalidate=59'
-  );
-
-  let player = null;
-
-  if (player_id) {
-    player = await api.Request({
-      'class': 'player',
-      'function': 'getCBBPlayer',
-      'arguments': {
-        'player_id': player_id,
-      }
-    });
-  }
-
-  return {
-    'props': {
-      'player': player,
-    },
-  }
-}
 
 export default Player;

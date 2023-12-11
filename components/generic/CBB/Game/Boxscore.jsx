@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
-
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from "@mui/material/Box";
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,6 +17,7 @@ import Chip from '@mui/material/Chip';
 import HelperCBB from '../../../helpers/CBB';
 import CompareStatistic from '../../CompareStatistic';
 import TeamSubHeader from './TeamSubHeader';
+import BackdropLoader from '../../BackdropLoader';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {
@@ -35,6 +33,8 @@ const Boxscore = (props) => {
   const self = this;
 
   const theme = useTheme();
+  const [isPending, startTransition] = useTransition();
+  const [spin, setSpin] = useState(false);
   const router = useRouter();
 
   const [boxscoreSide, setBoxscoreSide] = useState('home');
@@ -53,7 +53,11 @@ const Boxscore = (props) => {
   const boxscoreTotal = boxscoreSide === 'home' ? homeTotalBoxscore : awayTotalBoxscore;
 
   const handleClick = (player_id) => {
-    router.push('/cbb/player/' + player_id);
+    setSpin(true);
+    startTransition(() => {
+      router.push('/cbb/player/' + player_id);
+      setSpin(false);
+    });
   };
 
   const CBB = new HelperCBB({
@@ -379,6 +383,7 @@ const Boxscore = (props) => {
 
   return (
     <div>
+      {spin ? <BackdropLoader /> : ''}
       <div>
         <TeamSubHeader game = {game} />
         <div style = {{'padding': 20}}>

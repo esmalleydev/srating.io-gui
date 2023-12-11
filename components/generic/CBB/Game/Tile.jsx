@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 import HelperCBB from '../../../helpers/CBB';
@@ -18,6 +19,7 @@ import Indicator from '../Indicator';
 const Tile = (props) => {
   const self = this;
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const theme = useTheme();
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(props.isPinned || false);
@@ -36,7 +38,8 @@ const Tile = (props) => {
       props.onClick();
     }
     setSpin(true);
-    router.push('/cbb/games/' + props.data.cbb_game_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/games/' + props.data.cbb_game_id);
       setSpin(false);
     });
   };

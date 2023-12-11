@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { styled, useTheme } from '@mui/material/styles';
 
@@ -27,8 +28,6 @@ import BackdropLoader from '../../BackdropLoader.jsx';
 
 const api = new Api();
 
-
-
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
   '&:last-child td, &:last-child th': {
@@ -54,6 +53,7 @@ const Roster = (props) => {
 
   const theme = useTheme();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const team = props.team;
   const season = props.season;
@@ -124,7 +124,8 @@ const Roster = (props) => {
 
   const handleClick = (player_id) => {
     setSpin(true);
-    router.push('/cbb/player/' + player_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/player/' + player_id);
       setSpin(false);
     });
   };

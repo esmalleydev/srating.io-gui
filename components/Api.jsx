@@ -16,7 +16,7 @@ class Api {
 
 	};
 
-	Request (args) {
+	Request (args, optional_fetch_args = {}) {
 		let url = null;
 		if (config.use_origin) {
 			url = window.location.origin + (config.path ? config.path : '');
@@ -26,7 +26,7 @@ class Api {
 
 		let session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;
 
-		return fetch(url, {
+		return fetch(url, Object.assign(optional_fetch_args, {
 			'method': 'POST',
 			'headers': {
 				'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ class Api {
 				'X-SESSION-ID': session_id || null,
 			},
 			'body': JSON.stringify(args),
-		}).then(response => {
+		})).then(response => {
 			return response.json();
 		}).then(json => {
 			return json;

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
-import useWindowDimensions from '../../components/hooks/useWindowDimensions';
+'use client';
+import React, { useState, useEffect, useRef, RefObject } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+
+import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -15,26 +16,33 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import moment from 'moment';
-import cacheData from 'memory-cache';
 
-import DateAppBar from '../../components/generic/DateAppBar.jsx';
-import Picks_ from '../../components/generic/CBB/Picks/Picks.jsx';
-import Calculator from '../../components/generic/CBB/Picks/Calculator.jsx';
-import Stats from '../../components/generic/CBB/Picks/Stats.jsx';
-import HelperCBB from '../../components/helpers/CBB';
+import DateAppBar from '../../../components/generic/DateAppBar.jsx';
+import Picks_ from '../../../components/generic/CBB/Picks/Picks.jsx';
+import Calculator from '../../../components/generic/CBB/Picks/Calculator.jsx';
+import Stats from '../../../components/generic/CBB/Picks/Stats.jsx';
+import HelperCBB from '../../../components/helpers/CBB';
 
-import Api from '../../components/Api.jsx';
+import Api from '../../../components/Api.jsx';
 const api = new Api();
 
 const Picks = (props) => {
   const self = this;
   const router = useRouter();
-  const scrollRef = useRef(null);
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
+  const scrollRef: RefObject<HTMLDivElement> = useRef(null);
 
   const tabDates = props.dates;
-  const { height, width } = useWindowDimensions();
 
-  const season = (router.query && router.query.season) || new HelperCBB().getCurrentSeason();
+  interface Dimensions {
+    width: number;
+    height: number;
+  };
+
+  const { width } = useWindowDimensions() as Dimensions;
+
+  const season = searchParams?.get('season') || new HelperCBB().getCurrentSeason();
 
   let tabOptions = {
     'stats': 'Stats',
@@ -47,7 +55,8 @@ const Picks = (props) => {
   const sessionDataKey = 'CBB.PICKS.DATA.'+season;
 
   // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
-  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem(sessionDataKey) ? JSON.parse(sessionStorage.getItem(sessionDataKey)) : {};
+  const sessionDataString = typeof window !== 'undefined' ? sessionStorage.getItem(sessionDataKey) : null;
+  let sessionData = sessionDataString ? JSON.parse(sessionDataString) : {};
   if ((sessionData.expire_session && sessionData.expire_session < new Date().getTime()) || +sessionData.season !== +season) {
     sessionData = {};
   }
@@ -55,8 +64,8 @@ const Picks = (props) => {
   const [firstRender, setFirstRender] = useState(true);
   const [request, setRequest] = useState(sessionData.request || false);
   const [spin, setSpin] = useState(('spin' in sessionData) ? sessionData.spin : (props.games));
-  const [date, setDate] = useState(sessionData.date || router.query.date || null);
-  const [view, setView] = useState(router.query.view || 'picks');
+  const [date, setDate] = useState(sessionData.date || searchParams?.get('date') || null);
+  const [view, setView] = useState(searchParams?.get('view') || 'picks');
   const [games, setGames] = useState(sessionData.games || {});
   const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
@@ -95,9 +104,19 @@ const Picks = (props) => {
 
     setRequest(true);
 
-    router.replace({
-      query: {...router.query, date: value},
-    });
+    // https://github.com/vercel/next.js/discussions/47583
+    // router.replace({
+    //   query: {...router.query, date: value},
+    // });
+    
+    if (searchParams) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('date', value);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+
+      router.replace(`${pathName}${query}`);
+    }
 
     api.Request({
       'class': 'cbb_game',
@@ -151,7 +170,7 @@ const Picks = (props) => {
    * @return {?String}
    */
   const getClosestDate = (d) => {
-    let closestDist = null;
+    let closestDist: number | null = null;
     let closestDate = null;
 
     if (d in tabDatesObject) {
@@ -159,8 +178,8 @@ const Picks = (props) => {
     }
 
     for (let i = 0; i < tabDates.length; i++) {
-      const a = new Date(tabDates[i]);
-      const b = new Date(d);
+      const a = new Date(tabDates[i]).getTime();
+      const b = new Date(d).getTime();
 
       const dist = Math.abs(a - b);
 
@@ -208,7 +227,7 @@ const Picks = (props) => {
 
 
   
-  let tabs = [];
+  let tabs: React.JSX.Element[] = [];
   for (let i = 0; i < tabOrder.length; i++) {
     tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{'fontSize': '12px'}}>{tabOptions[tabOrder[i]]}</span>)} />);
   }
@@ -222,9 +241,18 @@ const Picks = (props) => {
     
     setTabIndex(value);
     setView(tabOrder[value]);
-    router.replace({
-      query: {...router.query, view: tabOrder[value]},
-    });
+    // https://github.com/vercel/next.js/discussions/47583
+    // router.replace({
+    //   query: {...router.query, view: tabOrder[value]},
+    // });
+    if (searchParams) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('view', tabOrder[value]);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+
+      router.replace(`${pathName}${query}`);
+    }
   }
 
   const onClickTile = () => {
@@ -252,12 +280,6 @@ const Picks = (props) => {
 
   return (
     <div style = {{'padding': '46px 20px 0px 20px'}}>
-      <Head>
-        <title>sRating | College basketball betting picks</title>
-        <meta name = 'description' content = 'Best picks for each college basketball game based on statistics' key = 'desc'/>
-        <meta property="og:title" content=">sRating.io college basketball picks" />
-        <meta property="og:description" content="Best picks for each college basketball game based on statistics" />
-      </Head>
       <div>
         <DateAppBar
           styles = {{'marginTop': marginTop}}
@@ -304,49 +326,6 @@ const Picks = (props) => {
       </Dialog>
     </div>
   );
-}
-
-
-export async function getServerSideProps(context) {
-  const seconds = 60 * 60 * 12; // cache for 12 hours
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage='+seconds+', stale-while-revalidate=59'
-  );
-
-  const CBB = new HelperCBB();
-
-  const season =  (context.query && context.query.season) || CBB.getCurrentSeason();
-
-  let dates = [];
-
-  const cachedLocation = 'CBB.PICKS.LOAD.'+season;
-
-  const cached = cacheData.get(cachedLocation);
-
-  if (!cached) {
-    await api.Request({
-      'class': 'cbb_game',
-      'function': 'getSeasonDates',
-      'arguments': {
-        'season': season
-      }
-    }).then((response) => {
-      dates = response;
-      cacheData.put(cachedLocation, dates, 1000 * seconds);
-    }).catch((e) => {
-
-    });
-  } else {
-    dates = cached;
-  }
-
-
-  return {
-    'props': {
-      'dates': dates,
-    },
-  }
 }
 
 

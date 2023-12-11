@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
-import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
+'use client';
+import React, { useState, useTransition } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import useWindowDimensions from '../../../../components/hooks/useWindowDimensions';
 
 import { useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -10,35 +10,40 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 
 
-import HelperCBB from '../../../components/helpers/CBB';
-import HelperTeam from '../../../components/helpers/Team';
+import HelperCBB from '../../../../components/helpers/CBB';
+import HelperTeam from '../../../../components/helpers/Team';
 
 
-import Schedule from '../../../components/generic/CBB/Team/Schedule';
-import Stats from '../../../components/generic/CBB/Team/Stats';
-import Trends from '../../../components/generic/CBB/Team/Trends';
-import SeasonPicker from '../../../components/generic/CBB/SeasonPicker';
-import BackdropLoader from '../../../components/generic/BackdropLoader';
-
-import Api from '../../../components/Api.jsx';
-import FavoritePicker from '../../../components/generic/FavoritePicker';
-const api = new Api();
+import Schedule from '../../../../components/generic/CBB/Team/Schedule';
+import Stats from '../../../../components/generic/CBB/Team/Stats';
+import Trends from '../../../../components/generic/CBB/Team/Trends';
+import SeasonPicker from '../../../../components/generic/CBB/SeasonPicker';
+import BackdropLoader from '../../../../components/generic/BackdropLoader';
+import FavoritePicker from '../../../../components/generic/FavoritePicker';
 
 
 const Team = (props) => {
   const self = this;
+
+  interface Dimensions {
+    width: number;
+    height: number;
+  };
+
   const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
   const theme = useTheme();
+  const [isPending, startTransition] = useTransition();
 
   const team = props.team;
+  const team_id = team.team_id;
 
-  const team_id = router.query && router.query.team_id;
-
-  const [season, setSeason] = useState((router.query && router.query.season) || new HelperCBB().getCurrentSeason());
+  const [season, setSeason] = useState(searchParams?.get('season') || new HelperCBB().getCurrentSeason());
   const [spin, setSpin] = useState(false);
-  let view = router.query && router.query.view || 'schedule';
+  let view = searchParams?.get('view') || 'schedule';
 
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions() as Dimensions;
 
   let tabOptions = {
     'schedule': 'Schedule',
@@ -56,7 +61,7 @@ const Team = (props) => {
     marginTop = 56;
   }
 
-  let tabs = [];
+  let tabs: React.JSX.Element[] = [];
 
   for (let i = 0; i < tabOrder.length; i++) {
     tabs.push(<Tab key = {tabOrder[i]} label = {tabOptions[tabOrder[i]]} />);
@@ -68,12 +73,17 @@ const Team = (props) => {
   const team_ = new HelperTeam({'team': team});
 
   const handleSeason = (season) => {
-    setSpin(true);
-    router.query.season = season;
-
-    router.push(router).then(() => {
-      setSpin(false);
-    });
+    if (searchParams) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('season', season);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+      setSpin(true);
+      startTransition(() => {
+        router.push(`${pathName}${query}`);
+        setSpin(false);
+      });
+    }
 
     setSeason(season);
   }
@@ -84,9 +94,18 @@ const Team = (props) => {
 
     view = tabOrder[value];
 
-    router.replace({
-      query: {...router.query, view: view},
-    });
+    if (searchParams) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('view', view);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+
+      router.replace(`${pathName}${query}`);
+    }
+
+    // router.replace({
+    //   query: {...router.query, view: view},
+    // });
 
     if (value > 0 && props.scrollRef && props.scrollRef.current) {
       props.scrollRef.current.scrollTo(0, 0);
@@ -95,7 +114,7 @@ const Team = (props) => {
 
   const headerHeight = 100;
 
-  const titleStyle = {
+  const titleStyle: React.CSSProperties = {
     'padding': '20px',
     'height': headerHeight,
     'textAlign': 'center',
@@ -108,14 +127,6 @@ const Team = (props) => {
 
   return (
     <div>
-      <Head>
-        <title>sRating | {team_.getName()}</title>
-        <meta name = 'description' content = {team_.getName() + ' schedule, trends, statistics, roster'} key = 'desc'/>
-        <meta property="og:title" content = {team_.getName() + ' schedule, trends, statistics, roster'} />
-        <meta property="og:description" content = {team_.getName() + ' schedule, trends, statistics, roster'} />
-        <meta name="twitter:card" content="summary" />
-        <meta name = 'twitter:title' content = {team_.getName() + ' schedule, trends, statistics, roster'} />
-      </Head>
       <div style = {titleStyle}>
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
           <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {width < 600 ? 'h5' : 'h4'}>
@@ -138,61 +149,5 @@ const Team = (props) => {
   );
 }
 
-
-export async function getServerSideProps(context) {
-  const CBB = new HelperCBB();
-
-  const team_id = context.query && context.query.team_id;
-  const season =  (context.query && context.query.season) || CBB.getCurrentSeason();
-
-  const seconds = 60 * 5; // cache for 5 mins
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage='+seconds+', stale-while-revalidate=59'
-  );
-
-  let team = null;
-
-  if (team_id) {
-    team = await api.Request({
-      'class': 'team',
-      'function': 'get',
-      'arguments': {
-        'team_id': team_id,
-      }
-    });
-
-    const cbb_ranking = await api.Request({
-      'class': 'cbb_ranking',
-      'function': 'get',
-      'arguments': {
-        'team_id': team_id,
-        'season': season,
-        'current': '1'
-      }
-    });
-
-    team.cbb_ranking = {};
-
-    if (cbb_ranking && cbb_ranking.cbb_ranking_id) {
-      team.cbb_ranking[cbb_ranking.cbb_ranking_id] = cbb_ranking;
-    }
-
-    team.stats = await api.Request({
-      'class': 'team',
-      'function': 'getStats',
-      'arguments': {
-        'team_id': team_id,
-        'season': season,
-      }
-    });
-  }
-
-  return {
-    'props': {
-      'team': team,
-    },
-  }
-}
 
 export default Team;

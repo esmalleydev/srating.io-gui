@@ -44,7 +44,7 @@ const Account = (props) => {
     user: {
       [user_id: string]: {}
     };
-  }
+  };
 
 
   const [request, setRequest] = useState(false);
