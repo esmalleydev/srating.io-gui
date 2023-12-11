@@ -10,8 +10,6 @@ import { useAppSelector } from '../redux/hooks';
 import Header from "../components/generic/Header.jsx";
 import FooterNavigation from "../components/generic/FooterNavigation.jsx";
 
-// todo unintall memory-cache
-
 const Template = ({ children }: { children: React.ReactNode }) => {
   const themeSlice = useAppSelector(state => state.themeReducer.value);
 

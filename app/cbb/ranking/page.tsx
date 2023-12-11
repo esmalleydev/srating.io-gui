@@ -2,6 +2,8 @@ import RankingPage from './ranking-page';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
 
+import cacheData from 'memory-cache';
+
 import HelperCBB from '../../../components/helpers/CBB';
 import Api from '../../../components/Api.jsx';
 
@@ -35,14 +37,24 @@ async function getData() {
   const view = searchParams.get('view') || 'team';
   const fxn = (view === 'player') ? 'getPlayerRanking': 'getTeamRanking';
 
-  const data = await api.Request({
-    'class': 'cbb_ranking',
-    'function': fxn,
-    'arguments': {
-      'season': season
-    }
-  },
-  {next : {revalidate: seconds}});
+  const cachedLocation = 'CBB.RANKING.LOAD.'+season+ '.' + view;
+  const cached = cacheData.get(cachedLocation);
+
+  let data = {};
+
+  // the fetch caching is set to 2MB... >.<
+  if (!cached) {
+    data = await api.Request({
+      'class': 'cbb_ranking',
+      'function': fxn,
+      'arguments': {
+        'season': season
+      }
+    });
+    cacheData.put(cachedLocation, data, 1000 * seconds);
+  } else {
+    data = cached;
+  }
 
   return {
     'data': data,
