@@ -1305,6 +1305,11 @@ const Ranking = (props) => {
     tableStyle.height = (rows.length + 2) * 29;
   }
 
+  if (height < 450) {
+    tableStyle.maxHeight = 250;
+    tableStyle.height = 250;
+  }
+
   const handleSearch = (filteredRows) => {
     setFilteredRows(filteredRows);
   };
