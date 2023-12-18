@@ -53,6 +53,10 @@ const Boxscore = (props) => {
   const boxscoreTotal = boxscoreSide === 'home' ? homeTotalBoxscore : awayTotalBoxscore;
 
   const handleClick = (player_id) => {
+    if (!player_id) {
+      console.warn('Missing player_id');
+      return;
+    }
     setSpin(true);
     startTransition(() => {
       router.push('/cbb/player/' + player_id);
@@ -436,66 +440,73 @@ const Boxscore = (props) => {
                   player_name = player.first_name + ' ' + player.last_name;
                 }
 
+                const getCells = () => {
+                  return (
+                    <>
+                      <TableCell>{player_name}</TableCell>
+                      <TableCell>{row.minutes_played}</TableCell>
+                      <TableCell>{row.points}</TableCell>
 
-                return (
-                  <StyledTableRow key={row.cbb_player_boxscore_id} onClick={() => {handleClick(row.player_id)}}>
-                    <TableCell>{player_name}</TableCell>
-                    <TableCell>{row.minutes_played}</TableCell>
-                    <TableCell>{row.points}</TableCell>
+                      <TableCell>
+                        <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+                          <div>
+                            {row.field_goal}-{row.field_goal_attempts}
+                          </div>
+                          <div style = {{'color': theme.palette.grey[500]}}>
+                            {row.field_goal_percentage}%
+                          </div>
+                        </div>
+                      </TableCell>
 
-                    <TableCell>
-                      <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
-                        <div>
-                          {row.field_goal}-{row.field_goal_attempts}
+                      <TableCell>
+                        <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+                          <div>
+                            {row.two_point_field_goal}-{row.two_point_field_goal_attempts}
+                          </div>
+                          <div style = {{'color': theme.palette.grey[500]}}>
+                            {row.two_point_field_goal_percentage}%
+                          </div>
                         </div>
-                        <div style = {{'color': theme.palette.grey[500]}}>
-                          {row.field_goal_percentage}%
-                        </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell>
-                      <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
-                        <div>
-                          {row.two_point_field_goal}-{row.two_point_field_goal_attempts}
+                      <TableCell>
+                        <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+                          <div>
+                            {row.three_point_field_goal}-{row.three_point_field_goal_attempts}
+                          </div>
+                          <div style = {{'color': theme.palette.grey[500]}}>
+                            {row.three_point_field_goal_percentage}%
+                          </div>
                         </div>
-                        <div style = {{'color': theme.palette.grey[500]}}>
-                          {row.two_point_field_goal_percentage}%
-                        </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell>
-                      <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
-                        <div>
-                          {row.three_point_field_goal}-{row.three_point_field_goal_attempts}
+                      <TableCell>
+                        <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
+                          <div>
+                            {row.free_throws}-{row.free_throw_attempts}
+                          </div>
+                          <div style = {{'color': theme.palette.grey[500]}}>
+                            {row.free_throw_percentage}%
+                          </div>
                         </div>
-                        <div style = {{'color': theme.palette.grey[500]}}>
-                          {row.three_point_field_goal_percentage}%
-                        </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell>
-                      <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
-                        <div>
-                          {row.free_throws}-{row.free_throw_attempts}
-                        </div>
-                        <div style = {{'color': theme.palette.grey[500]}}>
-                          {row.free_throw_percentage}%
-                        </div>
-                      </div>
-                    </TableCell>
+                      <TableCell>{row.offensive_rebounds}</TableCell>
+                      <TableCell>{row.defensive_rebounds}</TableCell>
+                      <TableCell>{row.assists}</TableCell>
+                      <TableCell>{row.steals}</TableCell>
+                      <TableCell>{row.blocks}</TableCell>
+                      <TableCell>{row.turnovers}</TableCell>
+                      <TableCell>{row.fouls}</TableCell>
+                    </>
+                  );
+                };
 
-                    <TableCell>{row.offensive_rebounds}</TableCell>
-                    <TableCell>{row.defensive_rebounds}</TableCell>
-                    <TableCell>{row.assists}</TableCell>
-                    <TableCell>{row.steals}</TableCell>
-                    <TableCell>{row.blocks}</TableCell>
-                    <TableCell>{row.turnovers}</TableCell>
-                    <TableCell>{row.fouls}</TableCell>
-                  </StyledTableRow>
-                );
+                if (!row.player_id) {
+                  return <TableRow key={row.cbb_player_boxscore_id}>{getCells()}</TableRow>
+                } else {
+                  return <StyledTableRow key={row.cbb_player_boxscore_id} onClick={() => {handleClick(row.player_id)}}>{getCells()}</StyledTableRow>
+                }
               })}
             </TableBody>
             <TableFooter>

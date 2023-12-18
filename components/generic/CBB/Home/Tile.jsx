@@ -1,9 +1,7 @@
 'use client';
-import React, { useState } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import React, { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
-
-import moment from 'moment';
 
 import HelperCBB from '../../../helpers/CBB';
 
@@ -16,6 +14,7 @@ import { Typography } from '@mui/material';
 const Tile = (props) => {
   const self = this;
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const theme = useTheme();
   const [hover, setHover] = useState(false);
   const [spin, setSpin] = useState(false);
@@ -37,7 +36,8 @@ const Tile = (props) => {
       props.onClick();
     }
     setSpin(true);
-    router.push('/cbb/games/' + cbb_game.cbb_game_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/games/' + cbb_game.cbb_game_id);
       setSpin(false);
     });
   };

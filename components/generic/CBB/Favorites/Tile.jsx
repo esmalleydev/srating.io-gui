@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
@@ -15,6 +15,7 @@ import BackdropLoader from '../../BackdropLoader';
 const Tile = (props) => {
   const self = this;
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const theme = useTheme();
   const [hover, setHover] = useState(false);
   const [spin, setSpin] = useState(false);
@@ -34,7 +35,8 @@ const Tile = (props) => {
       props.onClick();
     }
     setSpin(true);
-    router.push('/cbb/games/' + cbb_game.cbb_game_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/games/' + cbb_game.cbb_game_id);
       setSpin(false);
     });
   };

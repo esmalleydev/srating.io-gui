@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 
 import AppBar from '@mui/material/AppBar';
@@ -16,10 +15,6 @@ import IconButton from '@mui/material/IconButton';
 import CalendarIcon from '@mui/icons-material/Event';
 
 import moment from 'moment';
-
-
-import Api from './../Api.jsx';
-const api = new Api();
 
 
 const DateAppBar = (props) => {

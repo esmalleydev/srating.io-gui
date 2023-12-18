@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 
@@ -14,6 +14,7 @@ const ThrillerGames = (props) => {
   const games = props.games || {};
 
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
   const [spin, setSpin] = useState(false);
@@ -21,7 +22,8 @@ const ThrillerGames = (props) => {
 
   const handleClick = (cbb_game_id) => {
     setSpin(true);
-    router.push('/cbb/games/' + cbb_game_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/games/' + cbb_game_id);
       setSpin(false);
     });
   };

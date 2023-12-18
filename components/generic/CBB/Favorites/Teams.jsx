@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import moment from 'moment';
@@ -18,6 +18,7 @@ const Teams = (props) => {
   const teams = props.teams;
 
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
   const [spin, setSpin] = useState(false);
@@ -29,7 +30,8 @@ const Teams = (props) => {
 
   const handleTeamClick = (team_id) => {
     setSpin(true);
-    router.push('/cbb/team/' + team_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/team/' + team_id);
       setSpin(false);
     });
   };

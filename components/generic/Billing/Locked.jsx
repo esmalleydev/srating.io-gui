@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -16,6 +17,7 @@ const Locked = (props) => {
   const self = this;
 
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [openDialog, setOpenDialog] = useState(false);
   const [spin, setSpin] = useState(false);
@@ -23,7 +25,8 @@ const Locked = (props) => {
 
   const handleSubscribe = () => {
     setSpin(true);
-    router.push('/pricing').then(() => {
+    startTransition(() => {
+      router.push('/pricing');
       setSpin(false);
     });
   };

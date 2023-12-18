@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import { Link, Typography } from '@mui/material';
@@ -17,12 +17,14 @@ const Players = (props) => {
   const player_team_seasons = props.player_team_seasons;
 
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [spin, setSpin] = useState(false);
 
   const handlePlayerClick = (player_id) => {
     setSpin(true);
-    router.push('/cbb/player/' + player_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/player/' + player_id);
       setSpin(false);
     });
   };

@@ -27,6 +27,9 @@ const api = new Api();
 let intervalRefresher: NodeJS.Timeout;
 
 
+// todo fix the scrolling again!!!!!!!!!!!!!!!!!!!
+
+
 const Games = (props) => {
 
   interface Dimensions {
@@ -120,8 +123,6 @@ const Games = (props) => {
 
   // if stored session, refresh in 5 seconds, else normal 30 seconds
   const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
-
-  console.log(games)
 
   const { height, width } = useWindowDimensions() as Dimensions;
 

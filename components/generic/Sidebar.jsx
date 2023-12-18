@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { updateTheme } from '../../redux/features/theme-slice';
@@ -26,7 +26,9 @@ import ScoresIcon from '@mui/icons-material/Scoreboard';
 import PicksIcon from '@mui/icons-material/Casino';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArticleIcon from '@mui/icons-material/Article';
+import BackdropLoader from './BackdropLoader';
 
+// todo spin does nothing here, I think I need to use redux for a global spin and decorate it in another place
 
 const Sidebar = (props) => {
   const self = this;
@@ -36,7 +38,8 @@ const Sidebar = (props) => {
   const themeMode = themeSlice.mode;
 
   const router = useRouter();
-  // const [spin, setSpin] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [spin, setSpin] = useState(false);
 
   // todo allow keyboard to click the option on enter keydown
   /*
@@ -47,7 +50,8 @@ const Sidebar = (props) => {
  
   const handleRanking = () => {
     // setSpin(true);
-    router.push('/cbb/ranking').then(() => {
+    startTransition(() => {
+      router.push('/cbb/ranking');
       // setSpin(false);
     });
   };
@@ -55,14 +59,16 @@ const Sidebar = (props) => {
   const handleScores = () => {
     // setSpin(true);
     sessionStorage.removeItem('CBB.GAMES.DATA');
-    router.push('/cbb/games').then(() => {
+    startTransition(() => {
+      router.push('/cbb/games');
       // setSpin(false);
     });
   };
 
   const handlePicks = () => {
     // setSpin(true);
-    router.push('/cbb/picks').then(() => {
+    startTransition(() => {
+      router.push('/cbb/picks');
       // setSpin(false);
     });
   };
@@ -70,6 +76,7 @@ const Sidebar = (props) => {
 
   return (
     <div>
+      {spin ? <BackdropLoader /> : ''}
       <Box
         sx={{'width': 250}}
         role="presentation"
