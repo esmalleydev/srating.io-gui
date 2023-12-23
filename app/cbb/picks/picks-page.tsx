@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, RefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
-import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
+import useWindowDimensions from '@/components/hooks/useWindowDimensions';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -17,13 +17,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import moment from 'moment';
 
-import DateAppBar from '../../../components/generic/DateAppBar.jsx';
-import Picks_ from '../../../components/generic/CBB/Picks/Picks.jsx';
-import Calculator from '../../../components/generic/CBB/Picks/Calculator.jsx';
-import Stats from '../../../components/generic/CBB/Picks/Stats.jsx';
-import HelperCBB from '../../../components/helpers/CBB';
+import DateAppBar from '@/components/generic/DateAppBar.jsx';
+import Picks_ from '@/components/generic/CBB/Picks/Picks.jsx';
+import Calculator from '@/components/generic/CBB/Picks/Calculator.jsx';
+import Stats from '@/components/generic/CBB/Picks/Stats.jsx';
+import HelperCBB from '@/components/helpers/CBB';
 
-import Api from '../../../components/Api.jsx';
+import Api from '@/components/Api.jsx';
+import { useScrollContext } from '@/contexts/scrollContext';
 const api = new Api();
 
 const Picks = (props) => {
@@ -31,7 +32,9 @@ const Picks = (props) => {
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
-  const scrollRef: RefObject<HTMLDivElement> = useRef(null);
+  const scrollRefDateBar: RefObject<HTMLDivElement> = useRef(null);
+
+  const scrollRef  = useScrollContext();
 
   const tabDates = props.dates;
 
@@ -93,7 +96,7 @@ const Picks = (props) => {
   };
 
   const scrollToElement = () => {
-    scrollRef.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+    scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
   };
 
 
@@ -143,20 +146,17 @@ const Picks = (props) => {
   }, [date]);
 
   useEffect(() => {
-    if (firstRender && props.scrollRef && props.scrollRef.current) {
+    if (firstRender && scrollRef && scrollRef.current) {
       // todo something in nextjs is setting scrolltop to zero right after this, so trick it by putting this at the end of the execution :)
       // https://github.com/vercel/next.js/issues/20951
       setTimeout(function() {
-        props.scrollRef.current.scrollTop = scrollTop;
+        if (scrollRef && scrollRef.current) {
+          scrollRef.current.scrollTop = scrollTop;
+        }
       }, 1);
     }
 
     setFirstRender(false);
-
-    // return function clean_up() {
-    //   console.log('clean up')
-    //   console.log(props.scrollRef.current.scrollTop)
-    // }
   });
 
   if (firstRender) {
@@ -251,16 +251,21 @@ const Picks = (props) => {
       const search = current.toString();
       const query = search ? `?${search}` : "";
 
-      router.replace(`${pathName}${query}`);
+      // https://github.com/vercel/next.js/pull/58335
+
+      // this is dumb but w/e...
+      setTimeout(function() {
+        router.replace(`${pathName}${query}`);
+      }, 0);
     }
   }
 
   const onClickTile = () => {
     if (
-      props.scrollRef &&
-      props.scrollRef.current
+      scrollRef &&
+      scrollRef.current
     ) {
-      setScrollTop(props.scrollRef.current.scrollTop);
+      setScrollTop(scrollRef.current.scrollTop);
     }
   }
 
@@ -287,7 +292,7 @@ const Picks = (props) => {
           dates = {tabDates}
           tabsOnChange = {updateDate}
           calendarOnAccept = {(momentObj) => {getGames(momentObj.format('YYYY-MM-DD'));}}
-          scrollRef = {scrollRef}
+          scrollRef = {scrollRefDateBar}
         />
       </div>
       <Box display="flex" justifyContent="center" /*sx = {{'position': 'sticky', 'top': 100}}*/>

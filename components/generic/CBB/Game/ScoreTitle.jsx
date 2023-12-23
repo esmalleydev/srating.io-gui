@@ -76,7 +76,6 @@ const ScoreTitle = (props) => {
         </Typography>
         <Typography variant = {width < 600 ? 'h6' : 'h4'}>{game.home_score}</Typography>
       </div>
-
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import themeReducer from './features/theme-slice';
 import userReducer from './features/user-slice';
 
+
 export const makeStore = () => {
   return configureStore({
     reducer: {

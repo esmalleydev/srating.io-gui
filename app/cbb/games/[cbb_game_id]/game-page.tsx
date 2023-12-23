@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import useWindowDimensions from '../../../../components/hooks/useWindowDimensions';
+import useWindowDimensions from '@/components/hooks/useWindowDimensions';
 
 
 import { useTheme } from '@mui/material/styles';
@@ -10,12 +10,13 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from "@mui/material/Box";
 
-import HelperCBB from '../../../../components/helpers/CBB';
+import HelperCBB from '@/components/helpers/CBB';
 
-import ScoreTitle from '../../../../components/generic/CBB/Game/ScoreTitle.jsx';
-import GameDetails from '../../../../components/generic/CBB/Game/GameDetails.jsx';
-import Trends from '../../../../components/generic/CBB/Game/Trends.jsx';
-import Matchup from '../../../../components/generic/CBB/Game/Matchup.jsx';
+import ScoreTitle from '@/components/generic/CBB/Game/ScoreTitle.jsx';
+import GameDetails from '@/components/generic/CBB/Game/GameDetails.jsx';
+import Trends from '@/components/generic/CBB/Game/Trends.jsx';
+import Matchup from '@/components/generic/CBB/Game/Matchup.jsx';
+import { useScrollContext } from '@/contexts/scrollContext';
 
 
 let intervalRefresher: NodeJS.Timeout;
@@ -33,6 +34,8 @@ const Game = (props) => {
   const router = useRouter();
   const theme = useTheme();
   const { width } = useWindowDimensions() as Dimensions;
+
+  const scrollRef  = useScrollContext();
 
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -82,8 +85,8 @@ const Game = (props) => {
 
   const handleTabClick = (e, value) => {
     setTabIndex(value);
-    if (props.scrollRef && props.scrollRef.current) {
-      props.scrollRef.current.scrollTo(0, 0);
+    if (scrollRef && scrollRef.current) {
+      scrollRef.current.scrollTo(0, 0);
     }
   };
 

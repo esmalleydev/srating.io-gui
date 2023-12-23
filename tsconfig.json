@@ -5,6 +5,13 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/redux/*": ["redux/*"],
+      "@/lib/*": ["lib/*"],
+      "@/contexts/*": ["contexts/*"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,

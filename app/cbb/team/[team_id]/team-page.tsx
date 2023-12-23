@@ -100,7 +100,12 @@ const Team = (props) => {
       const search = current.toString();
       const query = search ? `?${search}` : "";
 
-      router.replace(`${pathName}${query}`);
+      // https://github.com/vercel/next.js/pull/58335
+
+      // this is dumb but w/e...
+      setTimeout(function() {
+        router.replace(`${pathName}${query}`);
+      }, 0);
     }
 
     // router.replace({

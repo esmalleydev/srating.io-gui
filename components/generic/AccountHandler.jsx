@@ -253,7 +253,7 @@ const AccountHandler = (props) => {
 
   if (tempLogin) {
     boxContents.push(
-      <DialogContent>
+      <DialogContent key = {'temp_login_content'}>
         <DialogContentText sx = {{'marginBottom': 2}}>Login with temporary code</DialogContentText>
         <TextField
             required
@@ -287,14 +287,14 @@ const AccountHandler = (props) => {
     );
 
     boxContents.push(
-      <DialogActions>
+      <DialogActions key = {'temp_login_actions'}>
         <Button onClick = {() => {setTempLogin(false); setForgotPassword(false);}}>Back</Button>
         <Button onClick = {useLoginCode}>Sign in</Button>
       </DialogActions>
     );
   } else if (forgotPassword) {
     boxContents.push(
-      <DialogContent sx = {{'minWidth': 320}}>
+      <DialogContent key = {'forgot_password_content'} sx = {{'minWidth': 320}}>
         <DialogContentText sx = {{'marginBottom': 2}}>Send a Forgot Password email</DialogContentText>
         <TextField
             autoFocus
@@ -314,14 +314,14 @@ const AccountHandler = (props) => {
     );
 
     boxContents.push(
-      <DialogActions>
+      <DialogActions key = {'forgot_password_actions'}>
         <Button onClick = {() => {setTempLogin(false); setForgotPassword(false);}}>Back</Button>
         <Button onClick = {sendLoginCode}>Send temporary code</Button>
       </DialogActions>
     );
   } else if (register) {
     boxContents.push(
-      <DialogContent>
+      <DialogContent key = {'register_content'}>
           <DialogContentText sx = {{'marginBottom': 2}}>Create an account</DialogContentText>
           <TextField
             autoFocus
@@ -365,13 +365,13 @@ const AccountHandler = (props) => {
     );
 
     boxContents.push(
-      <DialogActions>
+      <DialogActions key = {'register_actions'}>
         <Button onClick = {handleRegister}>Create account</Button>
       </DialogActions>
     );
   } else {
     boxContents.push(
-      <DialogContent>
+      <DialogContent key = {'login_content'}>
         <DialogContentText sx = {{'marginBottom': 2}}>Sign in to your account</DialogContentText>
         <TextField
             autoFocus
@@ -405,7 +405,7 @@ const AccountHandler = (props) => {
     );
 
     boxContents.push(
-      <DialogActions>
+      <DialogActions key = {'login_actions'}>
         <Button onClick = {handleLogin}>Sign in</Button>
       </DialogActions>
     );

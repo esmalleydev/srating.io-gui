@@ -4,8 +4,6 @@ import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTheme, styled } from '@mui/material/styles';
 
-import useWindowDimensions from '../hooks/useWindowDimensions';
-
 import Paper from '@mui/material/Paper';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -74,7 +72,6 @@ const FooterNavigation = (props) => {
     }
   }
 
-  const { height, width } = useWindowDimensions();
 
   const handleHome = () => {
     setSpin(true);
@@ -109,8 +106,6 @@ const FooterNavigation = (props) => {
     });
   }
 
-  const buttonColor = theme.palette.mode === 'light' ? '#F59242' : 'secondary';
-
   return (
     <div>
     {spin ? <BackdropLoader /> : ''}
@@ -121,7 +116,6 @@ const FooterNavigation = (props) => {
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handlePicks} label="Picks" icon={<PicksIcon />} />
-          {/* <StyledBottomNavigationAction color = 'secondary' onClick = {handleFavorites} label="Favorites" icon={<FavoriteIcon />} /> */}
         </BottomNavigation>
       </Paper>
       : ''}

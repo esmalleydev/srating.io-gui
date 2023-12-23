@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, useTransition, RefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
+import useWindowDimensions from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
@@ -11,23 +11,22 @@ import Chip from '@mui/material/Chip';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
-import ConferencePicker from '../../../components/generic/CBB/ConferencePicker';
-import AdditionalOptions from '../../../components/generic/CBB/Games/AdditionalOptions';
-import Tile from '../../../components/generic/CBB/Game/Tile.jsx';
+import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
+import AdditionalOptions from '@/components/generic/CBB/Games/AdditionalOptions';
+import Tile from '@/components/generic/CBB/Game/Tile.jsx';
 
-import DateAppBar from '../../../components/generic/DateAppBar.jsx';
+import DateAppBar from '@/components/generic/DateAppBar.jsx';
 
 
-import HelperCBB from '../../../components/helpers/CBB';
-import Api from '../../../components/Api.jsx';
-import BackdropLoader from '../../../components/generic/BackdropLoader';
+import HelperCBB from '@/components/helpers/CBB';
+import Api from '@/components/Api.jsx';
+import BackdropLoader from '@/components/generic/BackdropLoader';
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { useScrollContext } from '@/contexts/scrollContext';
 
 const api = new Api();
 
 let intervalRefresher: NodeJS.Timeout;
-
-
-// todo fix the scrolling again!!!!!!!!!!!!!!!!!!!
 
 
 const Games = (props) => {
@@ -84,13 +83,15 @@ const Games = (props) => {
     [cbb_game_id: string]: Game;
   };
 
-
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-  const scrollRef: RefObject<HTMLDivElement> = useRef(null);
+  const scrollRefDateBar: RefObject<HTMLDivElement> = useRef(null);
+
+  const scrollRef  = useScrollContext();
 
   const defaultDate = moment().format('YYYY-MM-DD');
   const season = searchParams?.get('season') || new HelperCBB().getCurrentSeason();
@@ -160,7 +161,12 @@ const Games = (props) => {
       const search = current.toString();
       const query = search ? `?${search}` : "";
 
-      router.replace(`${pathName}${query}`);
+      // https://github.com/vercel/next.js/pull/58335
+
+      // this is dumb but w/e...
+      setTimeout(function() {
+        router.replace(`${pathName}${query}`);
+      }, 0);
     }
 
     // if (router.query && router.query.date !== value) {
@@ -185,7 +191,7 @@ const Games = (props) => {
   };
 
   const scrollToElement = () => {
-    scrollRef.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+    scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
   };
 
 
@@ -239,11 +245,13 @@ const Games = (props) => {
   }, [date]);
 
   useEffect(() => {
-    if (firstRender && props.scrollRef && props.scrollRef.current) {
+    if (firstRender && scrollRef && scrollRef.current) {
       // todo something in nextjs is setting scrolltop to zero right after this, so trick it by putting this at the end of the execution :)
       // https://github.com/vercel/next.js/issues/20951
       setTimeout(function() {
-        props.scrollRef.current.scrollTop = scrollTop;
+        if (scrollRef && scrollRef.current) {
+          scrollRef.current.scrollTop = scrollTop;
+        }
       }, 1);
     }
 
@@ -275,6 +283,9 @@ const Games = (props) => {
 
   const updateDate = (e, value) => {
     setScrollTop(0);
+    if (scrollRef && scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
     getGames(tabDates[value]);
   }
 
@@ -367,12 +378,12 @@ const Games = (props) => {
 
   const onClickTile = () => {
     if (
-      props.scrollRef &&
-      props.scrollRef.current
+      scrollRef &&
+      scrollRef.current
     ) {
       // the scrollTop is still wrong in the triggerSessionStorage, so just pass the value I guess
-      setScrollTop(props.scrollRef.current.scrollTop);
-      triggerSessionStorage(props.scrollRef.current.scrollTop);
+      setScrollTop(scrollRef.current.scrollTop);
+      triggerSessionStorage(scrollRef.current.scrollTop);
     }
   }
 
@@ -484,7 +495,7 @@ const Games = (props) => {
           dates = {tabDates}
           tabsOnChange = {updateDate}
           calendarOnAccept = {(momentObj) => {getGames(momentObj.format('YYYY-MM-DD'));}}
-          scrollRef = {scrollRef}
+          scrollRef = {scrollRefDateBar}
         />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}>
