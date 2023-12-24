@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 // import { Link } from 'next/link';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 // import useMediaQuery from '../hooks/useMediaQuery';
@@ -27,10 +29,8 @@ import sratingLogo from '../../public/favicon-32x32.png';
 import Sidebar from './Sidebar';
 import Search from './Search';
 import AccountHandler from './AccountHandler';
-
-import Api from './../Api.jsx';
-const api = new Api();
-
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setSession, setValidSession } from '../../redux/features/user-slice';
 
 
 const SignUpButton = styled(Button)(({ theme }) => ({
@@ -45,7 +45,10 @@ const SignUpButton = styled(Button)(({ theme }) => ({
 const Header = (props) => {
   const self = this;
 
+  const dispatch = useAppDispatch();
+  const userSlice = useAppSelector(state => state.userReducer.value);
   const theme = useTheme();
+
   const router = useRouter();
   const { height, width } = useWindowDimensions();
 
@@ -56,7 +59,7 @@ const Header = (props) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const validSession = props.validSession;
+  const validSession = userSlice.isValidSession;
 
   useEffect(() => {
     setIsLoading(false);
@@ -98,6 +101,8 @@ const Header = (props) => {
     handleClose();
     localStorage.removeItem('session_id');
     sessionStorage.clear();
+    dispatch(setValidSession(false));
+    dispatch(setSession(null));
     router.push('/');
   };
 
@@ -112,7 +117,7 @@ const Header = (props) => {
     'cursor': 'pointer',
   };
 
-  if (props.theme === 'dark') {
+  if (theme.palette.mode === 'dark') {
     logoStyle.color = '#2ab92a';
     // purple #b92ab9
   }
@@ -139,7 +144,7 @@ const Header = (props) => {
                     open={drawerOpen}
                     onClose={toggleDrawer}
                   >
-                    <Sidebar theme = {props.theme} handleTheme = {props.handleTheme} />
+                    <Sidebar />
                   </Drawer>
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, 'alignItems': 'center' }} style = {logoStyle} onClick = {handleHome}>
@@ -187,7 +192,7 @@ const Header = (props) => {
               </Toolbar>
           }
         </Container>
-        <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {props.loginCallback} />
+        <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
       </div>
       }
     </AppBar>

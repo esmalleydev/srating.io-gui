@@ -1,5 +1,6 @@
+'use client';
 import React, {useState} from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';

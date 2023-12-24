@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
@@ -46,6 +47,7 @@ const Stats = (props) => {
 
   const theme = useTheme();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const season = props.season;
   const player = props.player;
@@ -81,7 +83,8 @@ const Stats = (props) => {
 
   const handleClick = (player_team_season) => {
     setSpin(true);
-    router.push('/cbb/team/' + player_team_season.team_id + '?season=' + player_team_season.season).then(() => {
+    startTransition(() => {
+      router.push('/cbb/team/' + player_team_season.team_id + '?season=' + player_team_season.season);
       setSpin(false);
     });
   };

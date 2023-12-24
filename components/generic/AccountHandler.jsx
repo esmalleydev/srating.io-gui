@@ -1,5 +1,6 @@
+'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -14,10 +15,13 @@ import Button from '@mui/material/Button';
 
 import Api from './../Api.jsx';
 import BackdropLoader from './BackdropLoader.jsx';
+import { useAppDispatch } from '../../redux/hooks';
+import { setValidSession } from '../../redux/features/user-slice';
 const api = new Api();
 
 
 const AccountHandler = (props) => {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const router = useRouter();
 
@@ -78,7 +82,8 @@ const AccountHandler = (props) => {
         return;
       } else {
         localStorage.setItem('session_id', session_id);
-        props.loginCallback();
+        sessionStorage.clear();
+        dispatch(setValidSession(true));
         props.closeHandler();
         window.location.reload();
       }
@@ -136,7 +141,8 @@ const AccountHandler = (props) => {
         return;
       } else if (response) {
         localStorage.setItem('session_id', response);
-        props.loginCallback();
+        sessionStorage.clear();
+        dispatch(setValidSession(true));
         props.closeHandler();
         router.push('/account');
       }
@@ -199,7 +205,8 @@ const AccountHandler = (props) => {
         setForgotPassword(false);
         setTempLogin(false);
         localStorage.setItem('session_id', response);
-        props.loginCallback();
+        sessionStorage.clear();
+        dispatch(setValidSession(true));
         props.closeHandler();
         router.push('/account?view=settings');
       }
@@ -246,7 +253,7 @@ const AccountHandler = (props) => {
 
   if (tempLogin) {
     boxContents.push(
-      <DialogContent>
+      <DialogContent key = {'temp_login_content'}>
         <DialogContentText sx = {{'marginBottom': 2}}>Login with temporary code</DialogContentText>
         <TextField
             required
@@ -280,14 +287,14 @@ const AccountHandler = (props) => {
     );
 
     boxContents.push(
-      <DialogActions>
+      <DialogActions key = {'temp_login_actions'}>
         <Button onClick = {() => {setTempLogin(false); setForgotPassword(false);}}>Back</Button>
         <Button onClick = {useLoginCode}>Sign in</Button>
       </DialogActions>
     );
   } else if (forgotPassword) {
     boxContents.push(
-      <DialogContent sx = {{'minWidth': 320}}>
+      <DialogContent key = {'forgot_password_content'} sx = {{'minWidth': 320}}>
         <DialogContentText sx = {{'marginBottom': 2}}>Send a Forgot Password email</DialogContentText>
         <TextField
             autoFocus
@@ -307,14 +314,14 @@ const AccountHandler = (props) => {
     );
 
     boxContents.push(
-      <DialogActions>
+      <DialogActions key = {'forgot_password_actions'}>
         <Button onClick = {() => {setTempLogin(false); setForgotPassword(false);}}>Back</Button>
         <Button onClick = {sendLoginCode}>Send temporary code</Button>
       </DialogActions>
     );
   } else if (register) {
     boxContents.push(
-      <DialogContent>
+      <DialogContent key = {'register_content'}>
           <DialogContentText sx = {{'marginBottom': 2}}>Create an account</DialogContentText>
           <TextField
             autoFocus
@@ -358,13 +365,13 @@ const AccountHandler = (props) => {
     );
 
     boxContents.push(
-      <DialogActions>
+      <DialogActions key = {'register_actions'}>
         <Button onClick = {handleRegister}>Create account</Button>
       </DialogActions>
     );
   } else {
     boxContents.push(
-      <DialogContent>
+      <DialogContent key = {'login_content'}>
         <DialogContentText sx = {{'marginBottom': 2}}>Sign in to your account</DialogContentText>
         <TextField
             autoFocus
@@ -398,7 +405,7 @@ const AccountHandler = (props) => {
     );
 
     boxContents.push(
-      <DialogActions>
+      <DialogActions key = {'login_actions'}>
         <Button onClick = {handleLogin}>Sign in</Button>
       </DialogActions>
     );

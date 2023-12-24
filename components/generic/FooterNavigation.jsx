@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useTheme, styled } from '@mui/material/styles';
+'use client';
 
-import useWindowDimensions from '../hooks/useWindowDimensions';
+import React, { useState, useTransition } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useTheme, styled } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -29,10 +29,13 @@ const FooterNavigation = (props) => {
 
   const theme = useTheme();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [spin, setSpin] = useState(false);
 
   let viewingSport = null;
-  let viewingPage = null;
+  let viewingPage = 'home';
+  const pathName = usePathname();
+
 
   // todo share this with header
   const sports = [
@@ -49,9 +52,8 @@ const FooterNavigation = (props) => {
     'picks',
   ];
 
-
-  if (router && router.pathname) {
-    const splat = router.pathname.split('/');
+  if (pathName) {
+    const splat = pathName.split('/');
     if (
       splat &&
       splat.length > 1 &&
@@ -70,18 +72,19 @@ const FooterNavigation = (props) => {
     }
   }
 
-  const { height, width } = useWindowDimensions();
 
   const handleHome = () => {
     setSpin(true);
-    router.push('/'+viewingSport.toLowerCase()+'/home').then(() => {
+    startTransition(() => {
+      router.push('/'+viewingSport.toLowerCase());
       setSpin(false);
     });
   }
 
   const handleRanking = () => {
     setSpin(true);
-    router.push('/'+viewingSport.toLowerCase()+'/ranking').then(() => {
+    startTransition(() => {
+      router.push('/'+viewingSport.toLowerCase()+'/ranking');
       setSpin(false);
     });
   }
@@ -89,30 +92,19 @@ const FooterNavigation = (props) => {
   const handleScores = () => {
     setSpin(true);
     sessionStorage.removeItem('CBB.GAMES.DATA');
-    router.push('/'+viewingSport.toLowerCase()+'/games').then(() => {
+    startTransition(() => {
+      router.push('/'+viewingSport.toLowerCase()+'/games');
       setSpin(false);
     });
   }
 
   const handlePicks = () => {
     setSpin(true);
-    router.push('/'+viewingSport.toLowerCase()+'/picks').then(() => {
+    startTransition(() => {
+      router.push('/'+viewingSport.toLowerCase()+'/picks');
       setSpin(false);
     });
   }
-
-  /*
-  const handleFavorites = () => {
-    setSpin(true);
-    router.push('/'+viewingSport.toLowerCase()+'/favorites').then(() => {
-      setSpin(false);
-    });
-  }
-  */
-
-  // console.log(theme);
-
-  const buttonColor = theme.palette.mode === 'light' ? '#F59242' : 'secondary';
 
   return (
     <div>
@@ -124,7 +116,6 @@ const FooterNavigation = (props) => {
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handlePicks} label="Picks" icon={<PicksIcon />} />
-          {/* <StyledBottomNavigationAction color = 'secondary' onClick = {handleFavorites} label="Favorites" icon={<FavoriteIcon />} /> */}
         </BottomNavigation>
       </Paper>
       : ''}

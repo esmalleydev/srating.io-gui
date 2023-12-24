@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useTransition } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 
 import BackdropLoader from '../../BackdropLoader';
@@ -13,6 +14,7 @@ const RankedGames = (props) => {
   const games = props.games || {};
 
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
   const [spin, setSpin] = useState(false);
@@ -20,7 +22,8 @@ const RankedGames = (props) => {
 
   const handleClick = (cbb_game_id) => {
     setSpin(true);
-    router.push('/cbb/games/' + cbb_game_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/games/' + cbb_game_id)
       setSpin(false);
     });
   };

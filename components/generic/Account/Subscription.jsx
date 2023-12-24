@@ -1,5 +1,6 @@
+'us client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import moment from 'moment';
 import Paper from '@mui/material/Paper';

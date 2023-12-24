@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-// import { useRouter } from 'next/router';
+import React from 'react';
 import { useTheme } from '@mui/material/styles';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -13,7 +11,6 @@ import HelperCBB from '../../../helpers/CBB';
 
 const PreviousMatchupTile = (props) => {
   const self = this;
-  const { height, width } = useWindowDimensions();
 
   const theme = useTheme();
 

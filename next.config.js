@@ -12,11 +12,15 @@ const commitDate = require('child_process')
 	.trim();
 
 // this is just for the github build to pass, since the configuration file is git ignored
-let config_ = {};
+let config_ = {
+	stripe_public_key: null,
+};
 try {
 	config_ = require('./configuration');
 } catch (e) {
-	config_ = {};
+	config_ = {
+		stripe_public_key: null,
+	};
 }
 
  

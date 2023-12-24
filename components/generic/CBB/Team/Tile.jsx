@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
+import React, { useState, useRef, useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+// import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 import moment from 'moment';
 
@@ -17,7 +17,8 @@ const Tile = (props) => {
   const myRef = useRef(null);
   const router = useRouter();
   const theme = useTheme();
-  const { height, width } = useWindowDimensions();
+  const [isPending, startTransition] = useTransition();
+  // const { height, width } = useWindowDimensions();
   const [scrolled, setScrolled] = useState(false);
   const [spin, setSpin] = useState(false);
 
@@ -64,7 +65,8 @@ const Tile = (props) => {
 
   const handleClick = () => {
     setSpin(true);
-    router.push('/cbb/games/' + game.cbb_game_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/games/' + game.cbb_game_id);
       setSpin(false);
     });
   }

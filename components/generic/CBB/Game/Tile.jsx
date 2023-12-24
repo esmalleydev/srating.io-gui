@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 import HelperCBB from '../../../helpers/CBB';
@@ -18,6 +19,7 @@ import Indicator from '../Indicator';
 const Tile = (props) => {
   const self = this;
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const theme = useTheme();
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(props.isPinned || false);
@@ -36,7 +38,8 @@ const Tile = (props) => {
       props.onClick();
     }
     setSpin(true);
-    router.push('/cbb/games/' + props.data.cbb_game_id).then(() => {
+    startTransition(() => {
+      router.push('/cbb/games/' + props.data.cbb_game_id);
       setSpin(false);
     });
   };
@@ -67,7 +70,7 @@ const Tile = (props) => {
 
     if (CBB.isNeutralSite()) {
       indicators.push(
-        <Indicator title = {'Neutral site'} code = {'N'} color = {'#ffa726'} />
+        <Indicator key = {'N'} title = {'Neutral site'} code = {'N'} color = {'#ffa726'} />
       );
     }
 
@@ -97,7 +100,7 @@ const Tile = (props) => {
     let network = [];
 
     if (!CBB.isFinal() && CBB.getNetwork()) {
-      network.push(<Typography sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
+      network.push(<Typography key = {CBB.getNetwork()} sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
     }
 
     return (

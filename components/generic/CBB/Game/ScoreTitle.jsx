@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 import Typography from '@mui/material/Typography';
@@ -11,6 +12,7 @@ import { Link } from '@mui/material';
 const ScoreTitle = (props) => {
   const self = this;
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const { height, width } = useWindowDimensions();
 
   const [spin, setSpin] = useState(false);
@@ -41,7 +43,8 @@ const ScoreTitle = (props) => {
 
   const handleClick = (team_id) => {
     setSpin(true);
-    router.push('/cbb/team/' + team_id + '?season=' + game.season).then(() => {
+    startTransition(() => {
+      router.push('/cbb/team/' + team_id + '?season=' + game.season);
       setSpin(false);
     });
   }
@@ -73,7 +76,6 @@ const ScoreTitle = (props) => {
         </Typography>
         <Typography variant = {width < 600 ? 'h6' : 'h4'}>{game.home_score}</Typography>
       </div>
-
     </div>
   );
 }

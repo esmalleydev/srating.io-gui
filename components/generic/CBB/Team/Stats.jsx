@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useRef } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 // import { useTheme } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
@@ -12,6 +13,8 @@ import Roster from './Roster';
 const Stats = (props) => {
   const self = this;
   const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
 
   const season = props.season;
   const team = props.team;
@@ -44,9 +47,23 @@ const Stats = (props) => {
 
     subView = tabOrder[value];
 
-    router.replace({
-      query: {...router.query, subview: subView},
-    });
+    if (searchParams) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('subview', subView);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+
+      // https://github.com/vercel/next.js/pull/58335
+
+      // this is dumb but w/e...
+      setTimeout(function() {
+        router.replace(`${pathName}${query}`);
+      }, 0);
+    }
+
+    // router.replace({
+    //   query: {...router.query, subview: subView},
+    // });
   }
 
   return (

@@ -1,5 +1,6 @@
+'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import useWindowDimensions from '../../../hooks/useWindowDimensions';
 
 import HelperCBB from '../../../helpers/CBB';
@@ -144,7 +145,7 @@ const Tile = (props) => {
     let network = [];
 
     if (!CBB.isFinal() && CBB.getNetwork()) {
-      network.push(<Typography sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
+      network.push(<Typography key = {CBB.getNetwork()} sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
     }
     return (
       <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
@@ -167,7 +168,7 @@ const Tile = (props) => {
 
     if (CBB.isNeutralSite()) {
       indicators.push(
-        <Indicator title = {'Neutral site'} code = {'N'} color = {'#ffa726'} />
+        <Indicator key = {'N'} title = {'Neutral site'} code = {'N'} color = {'#ffa726'} />
       );
     }
 

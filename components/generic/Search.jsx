@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+import React, { useState, useTransition } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import useDebounce from '../hooks/useDebounce';
 
 import { styled, alpha, useTheme } from '@mui/material/styles';
@@ -58,6 +59,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Search = (props) => {
   const theme = useTheme();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [value, setValue] = useState('');
   const [autoCompleteValue, setAutoCompleteValue] = useState(null);
@@ -114,14 +116,16 @@ const Search = (props) => {
     }
     setSpin(true);
     if (option && option.player_id) {
-      router.push('/cbb/player/' + option.player_id).then(() => {
+      startTransition(() => {
+        router.push('/cbb/player/' + option.player_id);
         setSpin(false);
         if (props.onRouter) {
           props.onRouter();
         }
       });
     } else if (option && option.team_id) {
-      router.push('/cbb/team/' + option.team_id).then(() => {
+      startTransition(() => {
+        router.push('/cbb/team/' + option.team_id);
         setSpin(false);
         if (props.onRouter) {
           props.onRouter();
