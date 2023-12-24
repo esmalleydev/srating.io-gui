@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, useTransition, MutableRefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import useWindowDimensions from '../../../components/hooks/useWindowDimensions';
+import useWindowDimensions from '@/components/hooks/useWindowDimensions';
 
 
 import moment from 'moment';
@@ -25,20 +25,19 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
-import Backdrop from '@mui/material/Backdrop';
 import { visuallyHidden } from '@mui/utils';
 
-import OptionPicker from '../../../components/generic/OptionPicker';
-import SeasonPicker from '../../../components/generic/CBB/SeasonPicker';
-import ConferencePicker from '../../../components/generic/CBB/ConferencePicker';
-import ColumnPicker from '../../../components/generic/CBB/ColumnPicker';
+import OptionPicker from '@/components/generic/OptionPicker';
+import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
+import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
+import ColumnPicker from '@/components/generic/CBB/ColumnPicker';
 
-import HelperCBB from '../../../components/helpers/CBB';
-import Api from '../../../components/Api.jsx';
-import BackdropLoader from '../../../components/generic/BackdropLoader';
-import RankSpan from '../../../components/generic/CBB/RankSpan';
-import RankSearch from '../../../components/generic/RankSearch';
-import PositionPicker from '../../../components/generic/CBB/PositionPicker.jsx';
+import HelperCBB from '@/components/helpers/CBB';
+import Api from '@/components/Api.jsx';
+import BackdropLoader from '@/components/generic/BackdropLoader';
+import RankSpan from '@/components/generic/CBB/RankSpan';
+import RankSearch from '@/components/generic/RankSearch';
+import PositionPicker from '@/components/generic/CBB/PositionPicker.jsx';
 
 
 const api = new Api();
