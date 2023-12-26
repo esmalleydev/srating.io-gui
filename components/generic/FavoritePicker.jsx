@@ -7,7 +7,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
 import Api from './../Api.jsx';
 import AccountHandler from './AccountHandler.jsx';
-import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice.js';
+import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice.ts';
 const api = new Api();
 
 const FavoritePicker = (props) => {
