@@ -6,7 +6,8 @@ import React from 'react';
 import Script from 'next/script'
 
 import StoreProvider from './StoreProvider';
-import SessionHandler from '../components/handlers/SessionHandler';
+import SessionHandler from '@/components/handlers/SessionHandler';
+import FavoriteHandler from '@/components/handlers/FavoriteHandler';
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
@@ -14,6 +15,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       <body>
         <StoreProvider>
           <SessionHandler />
+          <FavoriteHandler />
           {children}
           <Script src="https://www.googletagmanager.com/gtag/js?id=G-S67JFT2KZW" strategy="afterInteractive" />
           <Script id="google-analytics" strategy="afterInteractive">

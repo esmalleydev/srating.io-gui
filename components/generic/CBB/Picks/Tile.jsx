@@ -1,29 +1,21 @@
 'use client';
-import React, { useState } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
-
-import HelperCBB from '../../../helpers/CBB';
-import CompareStatistic from '../../CompareStatistic';
-
-import { useTheme } from '@mui/material/styles';
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import useWindowDimensions from '@/components/hooks/useWindowDimensions';
 
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import PinIcon from '@mui/icons-material/PushPin';
-import Indicator from '../Indicator';
-// import Link from '@mui/material/Link';
 
+import HelperCBB from '@/components/helpers/CBB';
+import CompareStatistic from '@/components/generic/CompareStatistic';
+import Indicator from '@/components/generic/CBB/Indicator';
+import Pin from '@/components/generic/CBB/Pin';
 
 
 const Tile = (props) => {
-  const self = this;
   const router = useRouter();
-  const theme = useTheme();
-  const [pin, setPin] = useState(props.isPinned || false);
   
   const rankDisplay = props.rankDisplay || 'composite_rank';
   const picksData = props.picks;
@@ -38,14 +30,8 @@ const Tile = (props) => {
     'cbb_game': game,
   });
 
-  const pinStyle = {};
 
-  if (pin) {
-    pinStyle.color = theme.palette.warning.light;
-  }
-
-
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
 
   const handleMatchup = (e) => {
@@ -54,12 +40,6 @@ const Tile = (props) => {
     router.push('/cbb/games/' + game.cbb_game_id);
   };
 
-  const handlePin = () => {
-    if (props.actionPin) {
-      props.actionPin(game.cbb_game_id);
-    }
-    setPin(!pin);
-  };
 
 
   const compareRows = [
@@ -150,9 +130,7 @@ const Tile = (props) => {
     return (
       <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
         <div><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
-        <IconButton id = {'pin-'+game.cbb_game_id} onClick = {handlePin}>
-          <PinIcon sx = {pinStyle} fontSize = 'small' />
-        </IconButton>
+        <Pin cbb_game_id = {game.cbb_game_id}  />
       </div>
     );
   };

@@ -2,10 +2,10 @@
 'use client';
 import React, { useRef, useState} from "react";
 
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
-import Api from "../Api";
-import { setSession, setValidSession } from "../../redux/features/user-slice";
+import Api from "@/components/Api";
+import { setSession, setValidSession } from "@/redux/features/user-slice";
 
 const api = new Api();
 

@@ -23,6 +23,7 @@ import Api from '@/components/Api.jsx';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useScrollContext } from '@/contexts/scrollContext';
+import { updateGameSort } from '@/redux/features/favorite-slice';
 
 const api = new Api();
 
@@ -84,6 +85,8 @@ const Games = (props) => {
   };
 
   const dispatch = useAppDispatch();
+  const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
+
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -116,11 +119,10 @@ const Games = (props) => {
   const [games, setGames] = useState<gamesDataType>(sessionData.games || {});
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
   const [conferences, setConferences] = useState<string[]>([]);
-  const sessionDataStringPins = typeof window !== 'undefined' ? sessionStorage.getItem('CBB.GAMES.PINS') : null;
-  const [pins, setPins] = useState(sessionDataStringPins ? JSON.parse(sessionDataStringPins) : []);
   const [status, setStatus] = useState(sessionData.status || statusOptions.map(item => item.value));
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
   const [firstRender, setFirstRender] = useState(true);
+
 
   // if stored session, refresh in 5 seconds, else normal 30 seconds
   const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
@@ -287,62 +289,28 @@ const Games = (props) => {
       scrollRef.current.scrollTop = 0;
     }
     getGames(tabDates[value]);
+    dispatch(updateGameSort(null));
   }
 
-  const handlePins = (cbb_game_id) => {
-    let currentPins = [...pins];
-
-    const index = currentPins.indexOf(cbb_game_id);
-
-    if (index > -1) {
-      currentPins.splice(index, 1);
-    } else {
-      currentPins.push(cbb_game_id);
-    } 
-
-    sessionStorage.setItem('CBB.GAMES.PINS', JSON.stringify(currentPins));
-    setPins(currentPins);
-  };
 
   const gameContainers: React.JSX.Element[] = [];
 
   let sorted_games = Object.values(games);
 
   sorted_games.sort(function(a, b) {
-    /*
     if (
-      a.status === 'live' &&
-      b.status === 'live'
+      favoriteSlice.skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
+      favoriteSlice.cbb_game_ids.length &&
+      favoriteSlice.cbb_game_ids.indexOf(a.cbb_game_id) > -1
     ) {
-      if (a.current_period === 'END 2ND') {
-        return -1;
-      }
-
-      if (b.current_period === 'END 2ND') {
-        return 1;
-      }
-
-      if (a.current_period !== b.current_period) {
-
-        if (a.current_period === '1ST HALF') {
-          return 1;
-        }
-
-        return -1;
-      }
-      let aD = new Date();
-      aD.setHours(12, a.clock.split(':')[0], a.clock.split(':')[1])
-      let bD = new Date();
-      bD.setHours(12, b.clock.split(':')[0], b.clock.split(':')[1])
-      return aD < bD ? -1 : 1;
-    }
-    */
-
-    if (pins.length && pins.indexOf(a.cbb_game_id) > -1) {
       return -1;
     }
-
-    if (pins.length && pins.indexOf(b.cbb_game_id) > -1) {
+      
+    if (
+      favoriteSlice.skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
+      favoriteSlice.cbb_game_ids.length &&
+      favoriteSlice.cbb_game_ids.indexOf(b.cbb_game_id) > -1
+    ) {
       return 1;
     }
 
@@ -385,6 +353,7 @@ const Games = (props) => {
       setScrollTop(scrollRef.current.scrollTop);
       triggerSessionStorage(scrollRef.current.scrollTop);
     }
+    dispatch(updateGameSort(null));
   }
 
   for (var i = 0; i < sorted_games.length; i++) {
@@ -423,7 +392,7 @@ const Games = (props) => {
       continue;
     }
 
-    gameContainers.push(<Tile onClick={onClickTile} key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} isPinned = {(pins.indexOf(game_.cbb_game_id) > -1)} actionPin = {handlePins} />);
+    gameContainers.push(<Tile onClick={onClickTile} key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} />);
   }
 
   const gameContainerStyle: React.CSSProperties = {

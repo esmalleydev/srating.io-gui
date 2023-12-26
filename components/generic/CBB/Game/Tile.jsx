@@ -9,12 +9,13 @@ import { useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import PinIcon from '@mui/icons-material/PushPin';
+
 import Locked from '../../Billing/Locked';
 import BackdropLoader from '../../BackdropLoader';
 import { Button } from '@mui/material';
 import Indicator from '../Indicator';
+
+import Pin from '@/components/generic/CBB/Pin';
 
 const Tile = (props) => {
   const self = this;
@@ -22,7 +23,6 @@ const Tile = (props) => {
   const [isPending, startTransition] = useTransition();
   const theme = useTheme();
   const [hover, setHover] = useState(false);
-  const [pin, setPin] = useState(props.isPinned || false);
   const [spin, setSpin] = useState(false);
 
   const CBB = new HelperCBB({
@@ -50,13 +50,6 @@ const Tile = (props) => {
   
   const handleMouseLeave = (e) => {
     setHover(false);
-  };
-
-  const handlePin = () => {
-    if (props.actionPin) {
-      props.actionPin(props.data.cbb_game_id);
-    }
-    setPin(!pin);
   };
 
   const getIndicators = () => {
@@ -106,9 +99,7 @@ const Tile = (props) => {
     return (
       <div style = {flexContainer} >
         <div style = {timeStyle}><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
-        <IconButton id = {'pin-'+props.data.cbb_game_id} onClick = {handlePin} style = {{'marginLeft': 20}}>
-          <PinIcon sx = {pinStyle} fontSize = 'small' />
-        </IconButton>
+        <Pin cbb_game_id = {props.data.cbb_game_id}  />
       </div>
     );
   };
@@ -299,14 +290,8 @@ const Tile = (props) => {
     'padding': '10px',
   };
 
-  const pinStyle = {};
-
   if (hover) {
     teamLineStyle.backgroundColor = theme.palette.action.hover;
-  }
-
-  if (pin) {
-    pinStyle.color = theme.palette.warning.light;
   }
 
   return (

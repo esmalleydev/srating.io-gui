@@ -25,10 +25,15 @@ import HelperCBB from '@/components/helpers/CBB';
 
 import Api from '@/components/Api.jsx';
 import { useScrollContext } from '@/contexts/scrollContext';
+import { useAppDispatch } from '@/redux/hooks';
+import { updateGameSort } from '@/redux/features/favorite-slice';
 const api = new Api();
 
 const Picks = (props) => {
   const self = this;
+
+  const dispatch = useAppDispatch();
+
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -209,6 +214,7 @@ const Picks = (props) => {
   const updateDate = (e, value) => {
     setScrollTop(0);
     getGames(tabDates[value]);
+    dispatch(updateGameSort(null));
   }
 
   // check the games, if the first one has no rating, then they dont have picks access
@@ -267,6 +273,7 @@ const Picks = (props) => {
     ) {
       setScrollTop(scrollRef.current.scrollTop);
     }
+    dispatch(updateGameSort(null));
   }
 
   let marginTop = '64px';

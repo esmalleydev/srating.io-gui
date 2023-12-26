@@ -3,8 +3,11 @@ import { useTheme } from '@mui/material/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from '@mui/material';
 
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+
 import Api from './../Api.jsx';
 import AccountHandler from './AccountHandler.jsx';
+import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice.js';
 const api = new Api();
 
 const FavoritePicker = (props) => {
@@ -12,13 +15,11 @@ const FavoritePicker = (props) => {
   const team_id = props.team_id || null;
   const player_id = props.player_id || null;
 
-  const sessionDataKey = 'FAVORITE';
-
-  // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
-  let sessionData = typeof window !== 'undefined' && sessionStorage.getItem(sessionDataKey) ? JSON.parse(sessionStorage.getItem(sessionDataKey)) : {};
+  const dispatch = useAppDispatch();
+  const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
+  const userSlice = useAppSelector(state => state.userReducer.value);
   
-  const [request, setRequest] = useState(sessionData.request || false);
-  const [favorite, setFavorite] = useState(sessionData.favorite || {});
+  const [requested, setRequested] = useState(sessionData.request || false);
   const [accountOpen, setAccountOpen] = useState(false);
 
   let selected = false;
@@ -28,15 +29,13 @@ const FavoritePicker = (props) => {
     (
       (
         team_id &&
-        favorite.json_team_ids &&
-        favorite.json_team_ids.length &&
-        favorite.json_team_ids.indexOf(team_id) > -1
+        favoriteSlice.team_ids.length &&
+        favoriteSlice.team_ids.indexOf(team_id) > -1
       ) ||
       (
         player_id &&
-        favorite.json_player_ids &&
-        favorite.json_player_ids.length &&
-        favorite.json_player_ids.indexOf(player_id) > -1
+        favoriteSlice.player_ids.length &&
+        favoriteSlice.player_ids.indexOf(player_id) > -1
       )
     )
   ) {
@@ -44,63 +43,45 @@ const FavoritePicker = (props) => {
   }
 
 
-  const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;
-
-  const triggerSessionStorage = () => {
-    sessionStorage.setItem(sessionDataKey, JSON.stringify({
-      'request': request,
-      'favorite': favorite,
-    }));
-  };
-
-  useEffect(() => {
-    triggerSessionStorage();
-  }, [request, favorite]);
-
-  const getFavorite = () => {
-    setRequest(true);
-    
-    api.Request({
-      'class': 'favorite',
-      'function': 'getFavorite',
-      'arguments': {}
-    }).then((favorite) => {
-      setFavorite(favorite);
-    }).catch((err) => {
-      // nothing for now
-    });
-  };
-
-  if (session_id && !request) {
-    getFavorite();
-  }
 
   const handleAccountClose = () => {
     setAccountOpen(false);
   };
 
   const handleFavorite = () => {
-    if (!session_id) {
+    if (!userSlice.isValidSession) {
       setAccountOpen(true);
       return;
     }
 
-    let args = {};
+    if (requested) {
+      return;
+    }
 
+    setRequested(true);
+    
+    let args = {};
+    
     if (team_id) {
       args.team_id = team_id;
     }
-
+    
     if (player_id) {
       args.player_id = player_id;
     }
-
+    
     api.Request({
       'class': 'favorite',
       'function': 'updateFavorite',
       'arguments': args
     }).then((favorite) => {
-      setFavorite(favorite);
+      if (favorite && favorite.json_team_ids && favorite.json_team_ids.length) {
+        dispatch(setTeamIds(favorite.json_team_ids));
+      }
+      if (favorite && favorite.json_player_ids && favorite.json_player_ids.length) {
+        dispatch(setPlayerIds(favorite.json_player_ids));
+      }
+      setRequested(false);
     }).catch((err) => {
       // nothing for now
     });
