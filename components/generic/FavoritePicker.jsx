@@ -19,29 +19,25 @@ const FavoritePicker = (props) => {
   const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
   const userSlice = useAppSelector(state => state.userReducer.value);
   
-  const [requested, setRequested] = useState(sessionData.request || false);
+  const [requested, setRequested] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
 
   let selected = false;
 
   if (
-    favorite &&
     (
-      (
-        team_id &&
-        favoriteSlice.team_ids.length &&
-        favoriteSlice.team_ids.indexOf(team_id) > -1
-      ) ||
-      (
-        player_id &&
-        favoriteSlice.player_ids.length &&
-        favoriteSlice.player_ids.indexOf(player_id) > -1
-      )
+      team_id &&
+      favoriteSlice.team_ids.length &&
+      favoriteSlice.team_ids.indexOf(team_id) > -1
+    ) ||
+    (
+      player_id &&
+      favoriteSlice.player_ids.length &&
+      favoriteSlice.player_ids.indexOf(player_id) > -1
     )
   ) {
     selected = true;
   }
-
 
 
   const handleAccountClose = () => {
