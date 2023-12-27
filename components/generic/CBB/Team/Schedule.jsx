@@ -6,7 +6,7 @@ import { CircularProgress } from '@mui/material';
 
 import moment from 'moment';
 
-import Tile from './Tile';
+import Tile from './Tile.tsx';
 import Api from './../../../Api.jsx';
 
 
@@ -75,7 +75,7 @@ const Schedule = (props) => {
     if (!lastMonth || lastMonth < +moment(game.start_datetime).format('MM') || lastYear < +moment(game.start_datetime).format('YYYY')) {
       lastMonth = +moment(game.start_datetime).format('MM');
       lastYear = +moment(game.start_datetime).format('YYYY');
-      gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px'}} variant = 'h5'>{moment(game.start_datetime).format('MMMM \'YY')}</Typography>);
+      gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px'}} variant = 'h6'>{moment(game.start_datetime).format('MMMM \'YY')}</Typography>);
     }
 
     if (!nextUpcomingGame && (game.status === 'pre' || game.status === 'live')) {
@@ -88,7 +88,7 @@ const Schedule = (props) => {
 
 
   return (
-    <div style = {{'padding': '68px 20px 20px 20px'}}>
+    <div style = {{'padding': '68px 5px 20px 5px'}}>
       {gameContainers}
     </div>
   );
