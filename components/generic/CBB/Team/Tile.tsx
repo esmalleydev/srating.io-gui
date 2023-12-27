@@ -127,7 +127,7 @@ const Tile = (props) => {
   }
 
   const supRankStyle: React.CSSProperties = {
-    'fontSize': '12px'
+    'fontSize': '11px'
   };
 
   const otherSideRank = CBB.getTeamRank(otherSide, 'composite_rank');
@@ -166,10 +166,10 @@ const Tile = (props) => {
               </div>
 
               <div style = {{'marginLeft': '10px', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'baseline',  'flexWrap': 'nowrap'}}>
-                <Typography color = 'text.secondary' variant = 'body2'>{game.home_team_id === team.team_id ? 'vs' : '@'}</Typography>
-                <Typography style = {titleStyle} variant = {'body1'} onClick={() => {handleTeamClick(game[otherSide + '_team_id'])}}>
+                <Typography color = 'text.secondary' variant = 'caption'>{game.home_team_id === team.team_id ? 'vs' : '@'}</Typography>
+                <Typography style = {titleStyle} variant = {'body2'} onClick={() => {handleTeamClick(game[otherSide + '_team_id'])}}>
                   <sup style = {supRankStyle}>{CBB.getTeamRank(otherSide, 'composite_rank')}</sup> <Link style = {{'cursor': 'pointer'}} underline='hover'>{CBB.getTeamName(otherSide)}</Link>
-                  <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography>
+                  {width > 375 ? <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography> : ''}
                 </Typography>
               </div>
             </div>
@@ -177,11 +177,11 @@ const Tile = (props) => {
         </CardContent>
       </Card>
       <div style = {{'display': 'flex'}}>
-        <Card style = {{'display': 'flex', 'width': 75, 'marginLeft': 10, 'alignContent': 'center', 'justifyContent': 'center', 'alignItems': 'center'}}>
-          <Typography variant = 'body2' onClick={handleGameClick}><Link style = {{'cursor': 'pointer'}} underline='hover'>{scoreLineText}</Link></Typography>
+        <Card style = {{'display': 'flex', 'width': 75, 'marginLeft': 5, 'alignContent': 'center', 'justifyContent': 'center', 'alignItems': 'center'}}>
+          <Typography variant = 'caption' onClick={handleGameClick}><Link style = {{'cursor': 'pointer'}} underline='hover'>{scoreLineText}</Link></Typography>
         </Card>
         <Tooltip enterTouchDelay={0} disableFocusListener placement = 'top' title={'Predicted win %'}>
-          <Card style = {{'display': 'flex', 'width': 50, 'marginLeft': 10, 'alignContent': 'center', 'justifyContent': 'center', 'alignItems': 'center'}}>
+          <Card style = {{'display': 'flex', 'width': 50, 'marginLeft': 5, 'alignContent': 'center', 'justifyContent': 'center', 'alignItems': 'center'}}>
           {
             predictionPercentage === null ?
               <Locked /> :

@@ -75,7 +75,7 @@ const Schedule = (props) => {
     if (!lastMonth || lastMonth < +moment(game.start_datetime).format('MM') || lastYear < +moment(game.start_datetime).format('YYYY')) {
       lastMonth = +moment(game.start_datetime).format('MM');
       lastYear = +moment(game.start_datetime).format('YYYY');
-      gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px'}} variant = 'h6'>{moment(game.start_datetime).format('MMMM \'YY')}</Typography>);
+      gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px', 'padding': 5}} variant = 'h6'>{moment(game.start_datetime).format('MMMM')}</Typography>);
     }
 
     if (!nextUpcomingGame && (game.status === 'pre' || game.status === 'live')) {
