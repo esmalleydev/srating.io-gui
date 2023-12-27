@@ -180,7 +180,7 @@ const Tile = (props) => {
         <Card style = {{'display': 'flex', 'width': 75, 'marginLeft': 5, 'alignContent': 'center', 'justifyContent': 'center', 'alignItems': 'center'}}>
           <Typography variant = 'caption' onClick={handleGameClick}><Link style = {{'cursor': 'pointer'}} underline='hover'>{scoreLineText}</Link></Typography>
         </Card>
-        <Tooltip enterTouchDelay={0} disableFocusListener disableHoverListener = {(width < 775)} placement = 'top' title={'Predicted win %'}>
+        <Tooltip enterTouchDelay={700} disableFocusListener disableHoverListener = {(width < 775)} placement = 'top' title={'Predicted win %'}>
           <Card style = {{'display': 'flex', 'width': 50, 'marginLeft': 5, 'alignContent': 'center', 'justifyContent': 'center', 'alignItems': 'center'}}>
           {
             predictionPercentage === null ?
