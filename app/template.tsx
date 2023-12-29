@@ -14,7 +14,8 @@ import { ScrollContainer, ScrollProvider } from "@/contexts/scrollContext";
 const Template = ({ children }: { children: React.ReactNode }) => {
   const themeSlice = useAppSelector(state => state.themeReducer.value);
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const windowDimensions = useWindowDimensions() as Dimensions;
+  const { width } = windowDimensions || {};
 
   /**
    * TODO this fixes some hydration issues...but shouldnt be needed...
