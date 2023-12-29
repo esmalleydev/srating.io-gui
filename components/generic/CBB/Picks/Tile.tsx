@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import useWindowDimensions from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
@@ -12,12 +12,20 @@ import HelperCBB from '@/components/helpers/CBB';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 import Indicator from '@/components/generic/CBB/Indicator';
 import Pin from '@/components/generic/CBB/Pin';
+import { useAppSelector } from '@/redux/hooks';
+import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.jsx';
+
+const ColorUtil = new Color();
 
 
 const Tile = (props) => {
   const router = useRouter();
+
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
+
+  const bestColor = getBestColor();
+  const worstColor = getWorstColor();
   
-  const rankDisplay = props.rankDisplay || 'composite_rank';
   const picksData = props.picks;
   const game = props.game;
 
@@ -31,7 +39,7 @@ const Tile = (props) => {
   });
 
 
-  const { width } = useWindowDimensions();
+  const { width } = useWindowDimensions() as Dimensions;
 
 
   const handleMatchup = (e) => {
@@ -122,7 +130,7 @@ const Tile = (props) => {
    * @return {Object} div container
    */
   const getTime = () => {
-    let network = [];
+    let network: React.JSX.Element[] = [];
 
     if (!CBB.isFinal() && CBB.getNetwork()) {
       network.push(<Typography key = {CBB.getNetwork()} sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
@@ -142,7 +150,7 @@ const Tile = (props) => {
       'margin': '0px 10px',
     };
 
-    const indicators = [];
+    const indicators: React.JSX.Element[] = [];
 
     if (CBB.isNeutralSite()) {
       indicators.push(
@@ -163,7 +171,7 @@ const Tile = (props) => {
    * @return {Object} div container 
    */
   const getHeader = () => {
-    const flexContainerStyle = {
+    const flexContainerStyle: React.CSSProperties = {
       'display': 'flex',
       'justifyContent': 'space-between',
       'flexWrap': 'nowrap',
@@ -178,17 +186,36 @@ const Tile = (props) => {
 
     const fontSize = width > 525 ? '1.1rem' : '1rem';
     const maxWidthTypography = width <= 425 ? 140 : (width <= 375 ? 120 : 1000);
+
+    const supRankStyle: React.CSSProperties = {
+      'marginRight': '5px',
+      'fontSize': 12,
+    };
+
+    const awayColorStyle: React.CSSProperties = {};
+    const homeColorStyle: React.CSSProperties = {};
+  
+    const awayRank = CBB.getTeamRank('away', displaySlice.rank);
+    const homeRank = CBB.getTeamRank('home', displaySlice.rank);
+  
+    if (awayRank) {
+      awayColorStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(awayRank / CBB.getNumberOfD1Teams(game.season))));
+    }
+
+    if (homeRank) {
+      homeColorStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(homeRank / CBB.getNumberOfD1Teams(game.season))));
+    }
     
     return (
       <div style={flexContainerStyle}>
         <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidthTypography}}>
-          {CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}{awayName}
+          {awayRank ? <sup style = {Object.assign(awayColorStyle, supRankStyle)}>{awayRank}</sup> : ''}{awayName}
         </Typography>
         {/* <Typography color = 'text.secondary' sx = {{'minWidth': 50, 'textAlign': 'center'}} variant = 'overline' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden'}}>
           {CBB.isNeutralSite() ? 'vs' : '@'}
         </Typography> */}
         <Typography variant = 'h6' style = {{'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'overflow': 'hidden', 'fontSize': fontSize, 'maxWidth': maxWidthTypography}}>
-          {CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px', 'fontSize': 12}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}{homeName}
+          {homeRank ? <sup style = {Object.assign(homeColorStyle, supRankStyle)}>{homeRank}</sup> : ''}{homeName}
         </Typography>
       </div>
     );
@@ -247,7 +274,7 @@ const Tile = (props) => {
    * @return {Array}
    */
   const getSkeleton = () => {
-    const skeletons = [];
+    const skeletons: React.JSX.Element[] = [];
 
     for (let i = 0; i < compareRows.length; i++) {
       skeletons.push(<Skeleton key = {i} variant="text" animation="wave" sx = {{'width': '100%', 'maxWidth': maxWidth, 'height': '30px', 'margin': '10px 0px'}} />)

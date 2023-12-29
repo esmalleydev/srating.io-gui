@@ -57,6 +57,20 @@ async function getData(params) {
     }
   },
   {next : {revalidate: seconds}});
+
+  const conference = await api.Request({
+    'class': 'team',
+    'function': 'getConference',
+    'arguments': {
+      'team_id': team_id,
+      'season': season,
+    }
+  },
+  {next : {revalidate: seconds}});
+
+  if (team && conference) {
+    team.conference = conference.conference;
+  }
   
   if (team && team.team_id) {
     const cbb_ranking = await api.Request({

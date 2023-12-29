@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, useTransition, RefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import useWindowDimensions from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
@@ -13,9 +13,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 import AdditionalOptions from '@/components/generic/CBB/Games/AdditionalOptions';
-import Tile from '@/components/generic/CBB/Game/Tile.jsx';
+import Tile from '@/components/generic/CBB/Game/Tile';
 
-import DateAppBar from '@/components/generic/DateAppBar.jsx';
+import DateAppBar from '@/components/generic/DateAppBar';
 
 
 import HelperCBB from '@/components/helpers/CBB';
@@ -24,6 +24,8 @@ import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { updateGameSort } from '@/redux/features/favorite-slice';
+import { gamesDataType } from '@/components/generic/types';
+import { updateConferences } from '@/redux/features/display-slice';
 
 const api = new Api();
 
@@ -31,61 +33,9 @@ let intervalRefresher: NodeJS.Timeout;
 
 
 const Games = (props) => {
-
-  interface Dimensions {
-    width: number;
-    height: number;
-  };
-
-  interface Team {
-    team_id: string;
-    char6: string;
-    code: string;
-    name: string;
-    alt_name: string;
-    primary_color: string;
-    secondary_color: string;
-    cbb_d1: number;
-    cbb: number;
-    cfb: number;
-    nba: number;
-    nfl: number;
-    nhl: number;
-    guid: string;
-    deleted: number;
-  };
-
-  interface Game {
-    cbb_game_id: string;
-    season: number;
-    away_team_id: string;
-    home_team_id: string;
-    network: string;
-    home_team_rating: number;
-    away_team_rating: number;
-    away_score: number;
-    home_score: number;
-    status: string;
-    current_period: string;
-    clock: string;
-    start_date: string;
-    start_datetime: string;
-    start_timestamp: number;
-    attendance: number;
-    neutral_site: number;
-    is_conf_game: number;
-    boxscore: number;
-    guid: string;
-    deleted: number;
-    teams: Team;
-  };
-
-  interface gamesDataType {
-    [cbb_game_id: string]: Game;
-  };
-
   const dispatch = useAppDispatch();
   const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
 
   const router = useRouter();
   const pathName = usePathname();
@@ -117,8 +67,6 @@ const Games = (props) => {
   const [date, setDate] = useState(sessionData.date || searchParams?.get('date') || null);
   const [now, setNow] = useState(defaultDate);
   const [games, setGames] = useState<gamesDataType>(sessionData.games || {});
-  const [rankDisplay, setRankDisplay] = useState('composite_rank');
-  const [conferences, setConferences] = useState<string[]>([]);
   const [status, setStatus] = useState(sessionData.status || statusOptions.map(item => item.value));
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
   const [firstRender, setFirstRender] = useState(true);
@@ -235,10 +183,6 @@ const Games = (props) => {
 
 
   useEffect(() => {
-    const localConfPicker = localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') || null;
-    const localRankPicker = localStorage.getItem('CBB.RANKPICKER.DEFAULT') || null;
-    setConferences(localConfPicker ? JSON.parse(localConfPicker) : []);
-    setRankDisplay(localRankPicker ? JSON.parse(localRankPicker) : 'composite_rank');
     triggerSessionStorage(false);
   }, []);
 
@@ -370,9 +314,9 @@ const Games = (props) => {
     }
 
     if (
-      conferences.length &&
-      conferences.indexOf(game_.teams[game_.away_team_id].conference) === -1 &&
-      conferences.indexOf(game_.teams[game_.home_team_id].conference) === -1
+      displaySlice.conferences.length &&
+      displaySlice.conferences.indexOf(game_.teams[game_.away_team_id].conference) === -1 &&
+      displaySlice.conferences.indexOf(game_.teams[game_.home_team_id].conference) === -1
     ) {
       continue;
     }
@@ -392,7 +336,7 @@ const Games = (props) => {
       continue;
     }
 
-    gameContainers.push(<Tile onClick={onClickTile} key={game_.cbb_game_id} data={game_} rankDisplay = {rankDisplay} />);
+    gameContainers.push(<Tile onClick={onClickTile} key={game_.cbb_game_id} data={game_} />);
   }
 
   const gameContainerStyle: React.CSSProperties = {
@@ -402,25 +346,6 @@ const Games = (props) => {
   };
 
 
-  const handleConferences = (conference) => {
-    let currentConferences = [...conferences];
-
-
-    if (conference && conference !== 'all') {
-      const conf_index = currentConferences.indexOf(conference);
-
-      if (conf_index > -1) {
-        currentConferences.splice(conf_index, 1);
-      } else {
-        currentConferences.push(conference);
-      }
-    } else {
-      currentConferences = [];
-    }
-
-    localStorage.setItem('CBB.CONFERENCEPICKER.DEFAULT', JSON.stringify(currentConferences));
-    setConferences(currentConferences);
-  }
 
   const handleStatuses = (status_) => {
    let currentStatuses = [...status];
@@ -441,8 +366,8 @@ const Games = (props) => {
 
 
   let confChips: React.JSX.Element[] = [];
-  for (let i = 0; i < conferences.length; i++) {
-    confChips.push(<Chip key = {conferences[i]} sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {handleConferences(conferences[i])}} />);
+  for (let i = 0; i < displaySlice.conferences.length; i++) {
+    confChips.push(<Chip key = {displaySlice.conferences[i]} sx = {{'margin': '5px'}} label={displaySlice.conferences[i]} onDelete={() => {dispatch(updateConferences(displaySlice.conferences[i]))}} />);
   }
 
 
@@ -468,8 +393,8 @@ const Games = (props) => {
         />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}>
-        <ConferencePicker selected = {conferences} actionHandler = {handleConferences} />
-        <AdditionalOptions rankDisplayHandler = {(value) => {setRankDisplay(value);}} rankDisplay = {rankDisplay} />
+        <ConferencePicker />
+        <AdditionalOptions />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px', 'flexWrap': 'wrap'}}>
         {statusOptions.map((statusOption, index) => (

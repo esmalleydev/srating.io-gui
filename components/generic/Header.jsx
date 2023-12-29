@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 // import { Link } from 'next/link';
-import useWindowDimensions from '../hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 // import useMediaQuery from '../hooks/useMediaQuery';
 
 import { styled, useTheme } from '@mui/material/styles';

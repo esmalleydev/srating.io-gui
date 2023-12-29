@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect, RefObject} from "react";
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import useWindowDimensions from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppSelector } from '@/redux/hooks';
 
 import Header from "@/components/generic/Header.jsx";
@@ -14,10 +14,6 @@ import { ScrollContainer, ScrollProvider } from "@/contexts/scrollContext";
 const Template = ({ children }: { children: React.ReactNode }) => {
   const themeSlice = useAppSelector(state => state.themeReducer.value);
 
-  interface Dimensions {
-    width: number;
-    height: number;
-  };
   const { width } = useWindowDimensions() as Dimensions;
 
   /**

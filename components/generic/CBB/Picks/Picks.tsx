@@ -1,36 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 
-import Tile from './Tile';
-import AdditionalOptions from './AdditionalOptions';
-import ConferencePicker from '../ConferencePicker';
+import Tile from '@/components/generic/CBB/Picks/Tile';
+import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
+import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 
 import Api from '@/components/Api.jsx';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { gamesDataType } from '@/components/generic/types';
+import { updateConferences } from '@/redux/features/display-slice';
 const api = new Api();
 
 // todo there is some bug, if I am on this page, not logged in, then login, with a subscription, after page reload, the skeleton lines never get replaced
 
 const Picks = (props) => {
-
+  const dispatch = useAppDispatch();
   const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
 
-  const games = props.games;
+  const games: gamesDataType = props.games;
 
   const [requested, setRequested] = useState(false);
-  const [picksData, setPicksData] = useState(null);
-  const [rankDisplay, setRankDisplay] = useState('composite_rank');
-  const [sortOrder, setSortOrder] = useState('start_time');
-  const [conferences, setConferences] = useState([]);
-
-  useEffect(() => {
-    setConferences(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT')) : []);
-    setRankDisplay(localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank');
-    setSortOrder(localStorage.getItem('CBB.SORTPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.SORTPICKER.DEFAULT')) : 'start_time');
-  }, []);
-
+  const [picksData, setPicksData] = useState<Object | null>(null);
 
   if (!requested) {
     setRequested(true);
@@ -66,7 +59,7 @@ const Picks = (props) => {
       return 1;
     }
 
-    if (sortOrder === 'win_percentage') {
+    if (displaySlice.picksSort === 'win_percentage') {
       const a_percentage = a.home_team_rating > a.away_team_rating ? a.home_team_rating : a.away_team_rating;
       const b_percentage = b.home_team_rating > b.away_team_rating ? b.home_team_rating : b.away_team_rating;
 
@@ -78,15 +71,15 @@ const Picks = (props) => {
     return a.start_datetime > b.start_datetime ? 1 : -1;
   });
 
-  const gameContainers = [];
+  const gameContainers: React.JSX.Element[] = [];
 
   for (let i = 0; i < sorted_games.length; i++) {
     const cbb_game = sorted_games[i];
 
     if (
-      conferences.length &&
-      conferences.indexOf(cbb_game.teams[cbb_game.away_team_id].conference) === -1 &&
-      conferences.indexOf(cbb_game.teams[cbb_game.home_team_id].conference) === -1
+      displaySlice.conferences.length &&
+      displaySlice.conferences.indexOf(cbb_game.teams[cbb_game.away_team_id].conference) === -1 &&
+      displaySlice.conferences.indexOf(cbb_game.teams[cbb_game.home_team_id].conference) === -1
     ) {
       continue;
     }
@@ -96,40 +89,21 @@ const Picks = (props) => {
     if (picksData && cbb_game.cbb_game_id in picksData) {
       picks = picksData[cbb_game.cbb_game_id];
     }
-    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} game = {cbb_game} picks = {picks} rankDisplay = {rankDisplay} onClickTile = {props.onClickTile} />);
+    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} game = {cbb_game} picks = {picks} onClickTile = {props.onClickTile} />);
   }
 
-  const handleConferences = (conference) => {
-    let currentConferences = [...conferences];
 
-
-    if (conference && conference !== 'all') {
-      const conf_index = currentConferences.indexOf(conference);
-
-      if (conf_index > -1) {
-        currentConferences.splice(conf_index, 1);
-      } else {
-        currentConferences.push(conference);
-      }
-    } else {
-      currentConferences = [];
-    }
-
-    localStorage.setItem('CBB.CONFERENCEPICKER.DEFAULT', JSON.stringify(currentConferences));
-    setConferences(currentConferences);
-  }
-
-  let confChips = [];
-  for (let i = 0; i < conferences.length; i++) {
-    confChips.push(<Chip key = {conferences[i]} sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {handleConferences(conferences[i])}} />);
+  let confChips: React.JSX.Element[] = [];
+  for (let i = 0; i < displaySlice.conferences.length; i++) {
+    confChips.push(<Chip key = {displaySlice.conferences[i]} sx = {{'margin': '5px'}} label={displaySlice.conferences[i]} onDelete={() => {dispatch(updateConferences(displaySlice.conferences[i]))}} />);
   }
 
 
   return (
     <div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
-        <ConferencePicker selected = {conferences} actionHandler = {handleConferences} />
-        <AdditionalOptions rankDisplayHandler = {(value) => {setRankDisplay(value);}} rankDisplay = {rankDisplay} sortHandler = {(value) => {setSortOrder(value);}} sortOrder = {sortOrder} />
+        <ConferencePicker />
+        <AdditionalOptions />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
         {confChips}

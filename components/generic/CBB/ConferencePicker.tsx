@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,19 +10,21 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
-import Slide from '@mui/material/Slide';
 
 import Typography from '@mui/material/Typography';
 
 import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { updateConferences } from '@/redux/features/display-slice';
 
-const ConferencePicker = (props) => {
+const ConferencePicker = () => {
+  const dispatch = useAppDispatch();
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const { width } = useWindowDimensions() as Dimensions;
 
-  const { width } = useWindowDimensions();
-
-  const selected = props.selected;
+  const selected = displaySlice.conferences;
   const [confOpen, setConfOpen] = useState(false);
 
   const conferenceOptions = [
@@ -111,9 +113,7 @@ const ConferencePicker = (props) => {
         <List>
           {conferenceOptions.map((confOption) => (
             <ListItem key={confOption.value} button onClick={() => {
-              if (props.actionHandler) {
-                props.actionHandler(confOption.value);
-              }
+              dispatch(updateConferences(confOption.value));
               handleConfClose();
             }}>
               <ListItemIcon>

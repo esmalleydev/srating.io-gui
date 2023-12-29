@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import moment from 'moment';
 

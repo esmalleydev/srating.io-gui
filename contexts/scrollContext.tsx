@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode, RefObject, useRef, useEffect, useState } from 'react';
-import useWindowDimensions from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 type ScrollContextType = RefObject<HTMLDivElement> | null;
@@ -35,12 +35,6 @@ const useScrollContext = (): RefObject<HTMLDivElement> => {
 };
 
 const ScrollContainer: React.FC<ScrollContainerProps> = ({ children }) => {
-
-  interface Dimensions {
-    width: number;
-    height: number;
-  };
-
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { width } = useWindowDimensions() as Dimensions;

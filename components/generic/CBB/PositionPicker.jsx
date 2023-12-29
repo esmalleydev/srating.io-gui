@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';

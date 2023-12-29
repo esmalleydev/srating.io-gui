@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, RefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
-import useWindowDimensions from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -18,7 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import moment from 'moment';
 
 import DateAppBar from '@/components/generic/DateAppBar.jsx';
-import Picks_ from '@/components/generic/CBB/Picks/Picks.jsx';
+import Picks_ from '@/components/generic/CBB/Picks/Picks';
 import Calculator from '@/components/generic/CBB/Picks/Calculator.jsx';
 import Stats from '@/components/generic/CBB/Picks/Stats.jsx';
 import HelperCBB from '@/components/helpers/CBB';
@@ -42,11 +42,6 @@ const Picks = (props) => {
   const scrollRef  = useScrollContext();
 
   const tabDates = props.dates;
-
-  interface Dimensions {
-    width: number;
-    height: number;
-  };
 
   const { width } = useWindowDimensions() as Dimensions;
 

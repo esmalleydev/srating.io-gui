@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import useWindowDimensions from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
 import { useTheme } from '@mui/material/styles';
@@ -23,11 +23,6 @@ let intervalRefresher: NodeJS.Timeout;
 
 const Game = (props) => {
   const self = this;
-
-  interface Dimensions {
-    width: number;
-    height: number;
-  };
   
   const game = props.cbb_game;
 

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, useTransition, MutableRefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import useWindowDimensions from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
 import moment from 'moment';
@@ -38,6 +38,8 @@ import BackdropLoader from '@/components/generic/BackdropLoader';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import RankSearch from '@/components/generic/RankSearch';
 import PositionPicker from '@/components/generic/CBB/PositionPicker.jsx';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { updateConferences } from '@/redux/features/display-slice';
 
 
 const api = new Api();
@@ -79,11 +81,8 @@ const Ranking = (props) => {
   const searchParams = useSearchParams();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-
-  interface Dimensions {
-    width: number;
-    height: number;
-  };
+  const dispatch = useAppDispatch();
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
 
   interface rowDatatype {
     team_id: string;
@@ -223,7 +222,6 @@ const Ranking = (props) => {
   const [firstRender, setFirstRender] = useState(true);
   const [season, setSeason] = useState(searchParams?.get('season') || new HelperCBB().getCurrentSeason());
   const [rankView, setRankView] = useState(searchParams?.get('view') || 'team');
-  const [conferences, setConferences] = useState<string[]>([]);
   const [positions, setPositions] = useState<string[]>([]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('composite_rank');
@@ -258,11 +256,9 @@ const Ranking = (props) => {
 
   useEffect(() => {
     setFirstRender(false);
-    const localConfPicker = localStorage.getItem('CBB.CONFERENCEPICKER.DEFAULT') || null;
     const localPosPicker = localStorage.getItem('CBB.POSITIONPICKER.DEFAULT') || null;
     const localRankView = localStorage.getItem('CBB.RANKING.VIEW') || null;
     const localRankCols = localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView) || null;
-    setConferences(localConfPicker ? JSON.parse(localConfPicker) : []);
     setPositions(localPosPicker ? JSON.parse(localPosPicker) : []);
     setView(localRankView ? localRankView : 'composite');
     setCustomColumns(localRankCols ?  JSON.parse(localRankCols) : ['composite_rank', 'name']);
@@ -323,29 +319,9 @@ const Ranking = (props) => {
     setSeason(season);
   }
 
-  const handleConferences = (conference) => {
-    let currentConferences = [...conferences];
-
-
-    if (conference && conference !== 'all') {
-      const conf_index = currentConferences.indexOf(conference);
-
-      if (conf_index > -1) {
-        currentConferences.splice(conf_index, 1);
-      } else {
-        currentConferences.push(conference);
-      }
-    } else {
-      currentConferences = [];
-    }
-
-    localStorage.setItem('CBB.CONFERENCEPICKER.DEFAULT', JSON.stringify(currentConferences));
-    setConferences(currentConferences);
-  }
-
   let confChips: React.JSX.Element[] = [];
-  for (let i = 0; i < conferences.length; i++) {
-    confChips.push(<Chip sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {handleConferences(conferences[i])}} />);
+  for (let i = 0; i < displaySlice.conferences.length; i++) {
+    confChips.push(<Chip sx = {{'margin': '5px'}} label={displaySlice.conferences[i]} onDelete={() => {dispatch(updateConferences(displaySlice.conferences[i]))}} />);
   }
 
   const handlePositions = (position) => {
@@ -1069,8 +1045,8 @@ const Ranking = (props) => {
     let row = data[id];
 
     if (
-      conferences.length &&
-      conferences.indexOf(row.conference) === -1
+      displaySlice.conferences.length &&
+      displaySlice.conferences.indexOf(row.conference) === -1
     ) {
       continue;
     }
@@ -1474,7 +1450,7 @@ const Ranking = (props) => {
             </div>
             <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center', 'marginTop': '10px'}}>
               <div style={{'display': 'flex'}}>
-                <ConferencePicker selected = {conferences} actionHandler = {handleConferences} />
+                <ConferencePicker />
                 {rankView === 'player' ? <PositionPicker selected = {positions} actionHandler = {handlePositions} /> : ''}
               </div>
               <RankSearch rows = {allRows} callback = {handleSearch} />

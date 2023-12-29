@@ -6,26 +6,21 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
-import RankPicker from '../RankPicker';
+import RankPicker from '@/components/generic/CBB/RankPicker';
+import SortPicker from '@/components/generic/CBB/SortPicker';
 
-const AdditionalOptions = (props) => {
-
-  const rankDisplay = props.rankDisplay;
-
+const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
   const [rankPickerOpen, setRankPickerOpen] = useState(false);
+  const [sortPickerOpen, setSortPickerOpen] = useState(false);
 
-  const handleRankDisplay = (value) => {
-    props.rankDisplayHandler(value);
-    setRankPickerOpen(false);
-  };
 
   const handleOpen = (event) => {
     setAnchor(event.currentTarget);
   };
 
-  const handleClose = (event) => {
+  const handleClose = () => {
     setAnchor(null);
   };
 
@@ -53,8 +48,15 @@ const AdditionalOptions = (props) => {
           }}>
             Rank display
           </MenuItem>
+          <MenuItem key='sort-display' onClick={() => {
+            setSortPickerOpen(true);
+            handleClose();
+          }}>
+            Sort order
+          </MenuItem>
         </Menu>
-        <RankPicker open = {rankPickerOpen} selected = {rankDisplay} openHandler = {() => {setRankPickerOpen(true);}} closeHandler = {() => {setRankPickerOpen(false);}} actionHandler = {handleRankDisplay} />
+        <SortPicker open = {sortPickerOpen} openHandler = {() => {setSortPickerOpen(true);}} closeHandler = {() => {setSortPickerOpen(false);}} />
+        <RankPicker open = {rankPickerOpen} openHandler = {() => {setRankPickerOpen(true);}} closeHandler = {() => {setRankPickerOpen(false);}} />
     </div>
   );
 }

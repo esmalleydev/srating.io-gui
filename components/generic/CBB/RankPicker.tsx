@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -6,23 +6,11 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
-import Slide from '@mui/material/Slide';
-
-import Typography from '@mui/material/Typography';
 
 import CheckIcon from '@mui/icons-material/Check';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setRank } from '@/redux/features/display-slice';
 
-
-// const Transition = React.forwardRef(
-//   function Transition(
-//     props: TransitionProps & {
-//       children: React.ReactElement<any, any>;
-//     },
-//     ref: React.Ref<unknown>,
-//   ) {
-//     return <Slide direction="up" ref={ref} {...props} />;
-//   }
-// );
 
 /**
  * RankPicker
@@ -30,12 +18,13 @@ import CheckIcon from '@mui/icons-material/Check';
  * @param  {Boolean} props.open
  * @param  {Function} props.closeHandler
  * @param  {Function} props.openHandler
- * @param  {Function} props.actionHandler
  * @return {<Dialog>}
  */
 const RankPicker = (props) => {
-
-  const selected = props.selected;
+  const dispatch = useAppDispatch();
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  
+  const selected = displaySlice.rank;
 
   const rankDisplayOptions = [
     {
@@ -79,7 +68,6 @@ const RankPicker = (props) => {
   return (
     <Dialog
       open={props.open}
-      // TransitionComponent={Transition}
       keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
@@ -88,7 +76,7 @@ const RankPicker = (props) => {
       <List>
         {rankDisplayOptions.map((rankDisplayOption) => (
           <ListItem key={rankDisplayOption.value} button onClick={() => {
-            props.actionHandler(rankDisplayOption.value);
+            dispatch(setRank(rankDisplayOption.value));
             handleClose();
           }}>
             <ListItemIcon>

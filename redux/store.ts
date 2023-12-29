@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import themeReducer from './features/theme-slice';
 import userReducer from './features/user-slice';
 import favoriteReducer from './features/favorite-slice';
+import displayReducer from './features/display-slice';
 
 
 export const makeStore = () => {
@@ -11,6 +12,7 @@ export const makeStore = () => {
       themeReducer,
       userReducer,
       favoriteReducer,
+      displayReducer,
     }
   });
 };

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 
-import useWindowDimensions from '../../../../components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import { useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -10,20 +10,14 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 
 
-import Stats from '../../../../components/generic/CBB/Player/Stats';
-import GameLogs from '../../../../components/generic/CBB/Player/GameLogs';
-import Trends from '../../../../components/generic/CBB/Player/Trends';
-import FavoritePicker from '../../../../components/generic/FavoritePicker';
+import Stats from '@/components/generic/CBB/Player/Stats';
+import GameLogs from '@/components/generic/CBB/Player/GameLogs';
+import Trends from '@/components/generic/CBB/Player/Trends';
+import FavoritePicker from '@/components/generic/FavoritePicker';
 
 
 const Player = (props) => {
   const self = this;
-
-  interface Dimensions {
-    width: number;
-    height: number;
-  };
-
 
   const theme = useTheme();
   const { width } = useWindowDimensions() as Dimensions;

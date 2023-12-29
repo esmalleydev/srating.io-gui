@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createTheme } from '@mui/material/styles';
 
+const localStorageKey = 'theme';
+
 const darkTheme = createTheme({
   'palette': {
     'mode': 'dark',
@@ -23,7 +25,7 @@ type InitialState = {
   };
 };
 
-const initalMode = (typeof window !== 'undefined' && localStorage.getItem('theme')) || 'dark';
+const initalMode = (typeof window !== 'undefined' && localStorage.getItem(localStorageKey)) || 'dark';
 
 const initialState = {
   value: {
@@ -37,6 +39,9 @@ export const theme = createSlice({
   initialState: initialState,
   reducers: {
     updateTheme: (state, action: PayloadAction<string>) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(localStorageKey, action.payload);
+      }
       return {
         value: {
           mode: action.payload,

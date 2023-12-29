@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -8,6 +8,8 @@ import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
 
 import CheckIcon from '@mui/icons-material/Check';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setPicksSort } from '@/redux/features/display-slice';
 
 
 /**
@@ -16,12 +18,12 @@ import CheckIcon from '@mui/icons-material/Check';
  * @param  {Boolean} props.open
  * @param  {Function} props.closeHandler
  * @param  {Function} props.openHandler
- * @param  {Function} props.actionHandler
  * @return {<Dialog>}
  */
 const SortPicker = (props) => {
-
-  const selected = props.selected;
+  const dispatch = useAppDispatch();
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const selected = displaySlice.picksSort;
 
   const options = [
     {
@@ -49,18 +51,15 @@ const SortPicker = (props) => {
   return (
     <Dialog
       open={props.open}
-      // fullWidth={true}
-      // maxWidth={'xs'}
-      // TransitionComponent={Transition}
       keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
     >
-      <DialogTitle>Pick sort order</DialogTitle>
+      <DialogTitle>Sort order</DialogTitle>
       <List>
         {options.map((option) => (
           <ListItem key={option.value} button onClick={() => {
-            props.actionHandler(option.value);
+            dispatch(setPicksSort(option.value));
             handleClose();
           }}>
             <ListItemIcon>

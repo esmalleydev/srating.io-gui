@@ -1,21 +1,25 @@
 'use client';
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import HelperCBB from '../../../helpers/CBB';
+import HelperCBB from '@/components/helpers/CBB';
 
 import { useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import Locked from '../../Billing/Locked';
-import BackdropLoader from '../../BackdropLoader';
+import Locked from '@/components/generic/Billing/Locked';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Button } from '@mui/material';
-import Indicator from '../Indicator';
-
+import Indicator from '@/components/generic/CBB/Indicator';
 import Pin from '@/components/generic/CBB/Pin';
+
+import Color, {getBestColor, getWorstColor} from '@/components/utils/Color';
+import { useAppSelector } from '@/redux/hooks';
+
+const ColorUtil = new Color();
 
 const Tile = (props) => {
   const self = this;
@@ -25,12 +29,16 @@ const Tile = (props) => {
   const [hover, setHover] = useState(false);
   const [spin, setSpin] = useState(false);
 
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
+
+  const game = props.data;
+
   const CBB = new HelperCBB({
-    'cbb_game': props.data,
+    'cbb_game': game,
   });
 
 
-  const { height, width } = useWindowDimensions();
+  const { height, width } = useWindowDimensions() as Dimensions;
 
 
   const handleClick = (e) => {
@@ -59,7 +67,7 @@ const Tile = (props) => {
       'margin': '0px 10px',
     };
 
-    const indicators = [];
+    const indicators: React.JSX.Element[] = [];
 
     if (CBB.isNeutralSite()) {
       indicators.push(
@@ -90,7 +98,7 @@ const Tile = (props) => {
     //   flexContainer.backgroundColor = theme.palette.action.hover;
     // }
 
-    let network = [];
+    let network: React.JSX.Element[] = [];
 
     if (!CBB.isFinal() && CBB.getNetwork()) {
       network.push(<Typography key = {CBB.getNetwork()} sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
@@ -105,12 +113,12 @@ const Tile = (props) => {
   };
 
   const getOddsLine = () => {
-    const awaySpreadCoverStyle = {};
-    const homeSpreadCoverStyle = {};
-    const awayMLStyle = {};
-    const homeMLStyle = {};
-    const overStyle = {};
-    const underStyle = {};
+    const awaySpreadCoverStyle: React.CSSProperties = {};
+    const homeSpreadCoverStyle: React.CSSProperties = {};
+    const awayMLStyle: React.CSSProperties = {};
+    const homeMLStyle: React.CSSProperties = {};
+    const overStyle: React.CSSProperties = {};
+    const underStyle: React.CSSProperties = {};
 
     let tdAwaySpreadTitle = 'Pre-game spread';
     let tdHomeSpreadTitle = 'Pre-game spread';
@@ -192,20 +200,20 @@ const Tile = (props) => {
 
 
   const getTeamLine = (side) => {
-    const flexContainer = {
+    const flexContainer: React.CSSProperties = {
       'display': 'flex',
       'margin': '5px 0px',
       'alignItems': 'self-end',
     };
 
-    const nameStyle = {
+    const nameStyle: React.CSSProperties = {
       'flex': 1,
       'whiteSpace': 'nowrap',
       'overflow': 'hidden',
       'textOverflow': 'ellipsis',
     }
 
-    const scoreStyle = {
+    const scoreStyle: React.CSSProperties = {
       'margin': '0px 5px',
       'width': '34px',
       'maxWidth': '34px',
@@ -258,11 +266,27 @@ const Tile = (props) => {
       losses = props.data.teams[team_id].stats.losses;
     }
 
+    const supRankStyle: React.CSSProperties = {
+      'marginRight': '5px',
+      'fontWeight': 700,
+    };
+
+    const teamRank = CBB.getTeamRank(side, displaySlice.rank);
+
+    if (teamRank) {
+      supRankStyle.color = ColorUtil.lerpColor(getBestColor(), getWorstColor(), (+(teamRank / CBB.getNumberOfD1Teams(game.season))));
+    }
+
     return (
       <div>
         <div style = {flexContainer} >
           <div style = {nameStyle}>
-            <Typography variant = 'h6' sx = {{'fontSize': 14, 'display': 'inline-block'}}>{CBB.getTeamRank(side, props.rankDisplay) ? <Typography variant = 'overline' color = 'text.secondary' sx = {{'fontSize': 12}}><sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank(side, props.rankDisplay)}</sup></Typography> : ''}{CBB.getTeamName(side)}</Typography>
+            <Typography variant = 'h6' sx = {{'fontSize': 14, 'display': 'inline-block'}}>
+              {teamRank ?
+                <Typography variant = 'overline' color = 'text.secondary' sx = {{'fontSize': 12}}><sup style = {supRankStyle}>{teamRank}</sup></Typography> :
+               ''}
+              {CBB.getTeamName(side)}
+              </Typography>
             <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography>
           </div>
           <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? props.data[side + '_score'] : '-'}</div>
@@ -285,7 +309,7 @@ const Tile = (props) => {
     'margin': '5px',
   };
 
-  const teamLineStyle = {
+  const teamLineStyle: React.CSSProperties = {
     // 'cursor': 'pointer',
     'padding': '10px',
   };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
@@ -91,9 +91,11 @@ const FavoritePicker = (props) => {
 
   return (
     <>
-      <IconButton color='primary' onClick = {handleFavorite}>
-        <FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />
-      </IconButton>
+      <Tooltip enterTouchDelay={1000} disableFocusListener title={'Save favorite'}>
+        <IconButton color='primary' onClick = {handleFavorite}>
+          <FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />
+        </IconButton>
+      </Tooltip>
       <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {() => {}} />
     </>
   );

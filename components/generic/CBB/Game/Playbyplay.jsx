@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import moment from 'moment';
 

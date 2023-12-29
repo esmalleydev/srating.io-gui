@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { styled, useTheme, alpha } from '@mui/material/styles';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import moment from 'moment';
 
@@ -31,6 +31,7 @@ import utilsSorter from  '../../../utils/Sorter.jsx';
 
 
 import Api from './../../../Api.jsx';
+import { useAppSelector } from '@/redux/hooks';
 const api = new Api();
 const Arrayifer = new utilsArrayifer();
 const Sorter = new utilsSorter();
@@ -56,6 +57,8 @@ const Calculator = (props) => {
   const router = useRouter();
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
+
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
   
   const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
   const [order, setOrder] = useState('asc');
@@ -69,7 +72,7 @@ const Calculator = (props) => {
   const games = props.games || {};
   const date = props.date;
 
-  const rankDisplay = localStorage.getItem('CBB.RANKPICKER.DEFAULT') ? JSON.parse(localStorage.getItem('CBB.RANKPICKER.DEFAULT')) : 'composite_rank';
+  
 
 
   const bet = inputBet ? +inputBet : 0;
@@ -510,9 +513,9 @@ const Calculator = (props) => {
       'cbb_game': row.game,
     });
 
-    const pickRank = CBB.getTeamRank(row.pick, rankDisplay);
+    const pickRank = CBB.getTeamRank(row.pick, displaySlice.rank);
     const pickName = CBB.getTeamName(row.pick);
-    const vsRank = CBB.getTeamRank(row.vs, rankDisplay);
+    const vsRank = CBB.getTeamRank(row.vs, displaySlice.rank);
     const vsName = CBB.getTeamName(row.vs);
 
     return (

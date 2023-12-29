@@ -1,3 +1,17 @@
+import { useTheme } from '@mui/material/styles';
+
+export const getBestColor = () => {
+  const theme = useTheme();
+
+  return theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
+};
+
+export const getWorstColor = () => {
+  const theme = useTheme();
+
+  return theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
+};
+
 
 class Color {
   constructor(args) {

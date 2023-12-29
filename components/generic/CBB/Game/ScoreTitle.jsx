@@ -1,13 +1,14 @@
 'use client';
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import useWindowDimensions from '../../../hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import Typography from '@mui/material/Typography';
 
 import HelperCBB from '../../../helpers/CBB';
 import BackdropLoader from '../../BackdropLoader';
 import { Link } from '@mui/material';
+import { useAppSelector } from '@/redux/hooks';
 
 const ScoreTitle = (props) => {
   const self = this;
@@ -15,9 +16,10 @@ const ScoreTitle = (props) => {
   const [isPending, startTransition] = useTransition();
   const { height, width } = useWindowDimensions();
 
+  const displaySlice = useAppSelector(state => state.displayReducer.value);
+
   const [spin, setSpin] = useState(false);
 
-  const rankDisplay = localStorage.getItem('default_cbb_rank_display') ? JSON.parse(localStorage.getItem('default_cbb_rank_display')) : 'composite_rank';
   const game = props.game;
 
   let awayTeamRecord = '';
@@ -62,7 +64,7 @@ const ScoreTitle = (props) => {
       <div style = {{'marginBottom': 10}}><Typography variant = 'h6' color = 'text.secondary'>{!CBB.isInProgress() ? CBB.getStartDate() + ' ' : ''}{CBB.getTime()}</Typography></div>
       <div style = {titleStyle}>
         <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.away_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>
-          {CBB.getTeamRank('away', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('away', rankDisplay)}</sup> : ''}
+          {CBB.getTeamRank('away', displaySlice.rank) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('away', displaySlice.rank)}</sup> : ''}
           <Link style = {{'cursor': 'pointer'}} underline='hover'>{CBB.getTeamName('away')}</Link>
           {awayTeamRecord}
         </Typography>
@@ -70,7 +72,7 @@ const ScoreTitle = (props) => {
       </div>
       <div style = {Object.assign({'position': 'sticky', 'top': 20},titleStyle)}>
         <Typography style = {{'cursor': 'pointer'}} onClick={() => {handleClick(game.home_team_id)}} variant = {width < 600 ? 'h6' : 'h4'}>
-          {CBB.getTeamRank('home', rankDisplay) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('home', rankDisplay)}</sup> : ''}
+          {CBB.getTeamRank('home', displaySlice.rank) ? <sup style = {{'marginRight': '5px'}}>{CBB.getTeamRank('home', displaySlice.rank)}</sup> : ''}
           <Link style = {{'cursor': 'pointer'}} underline='hover'>{CBB.getTeamName('home')}</Link>
           {homeTeamRecord}
         </Typography>
