@@ -28,7 +28,7 @@ import { updateConferences } from '@/redux/features/display-slice';
 import Dates from '@/components/utils/Dates';
 import { Fab, Typography, useTheme } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { useScrollPosition } from '@n8tb1t/use-scroll-position';
+// import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 
 const api = new Api();
 const dateUtil = new Dates();
