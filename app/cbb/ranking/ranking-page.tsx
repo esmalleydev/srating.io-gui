@@ -94,6 +94,8 @@ const Ranking = (props) => {
     conf: string;
     elo_rank: number;
     elo: number;
+    elo_sos: number;
+    elo_sos_rank: number;
     kenpom_rank: number;
     srs_rank: number;
     net_rank: number;
@@ -367,7 +369,7 @@ const Ranking = (props) => {
   const getColumns = () => {
     if (view === 'composite') {
       if (rankView === 'team') {
-        return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
+        return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'elo_sos', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
       }
@@ -667,7 +669,7 @@ const Ranking = (props) => {
         id: 'adjusted_efficiency_rating',
         numeric: true,
         label: 'aEM',
-        tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + SOS',
+        tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + aSOS',
         'sort': 'higher',
       },
       'opponent_offensive_rating': {
@@ -687,8 +689,15 @@ const Ranking = (props) => {
       'opponent_efficiency_rating': {
         id: 'opponent_efficiency_rating',
         numeric: true,
-        label: 'SOS',
+        label: 'aSOS',
         tooltip: 'Strength of schedule (Opponent Efficiency margin (oORT - oDRT))',
+        'sort': 'higher',
+      },
+      'elo_sos': {
+        id: 'elo_sos',
+        numeric: true,
+        label: 'eSOS',
+        tooltip: 'Strength of schedule (opponent elo)',
         'sort': 'higher',
       },
       'opponent_field_goal': {
@@ -1081,8 +1090,6 @@ const Ranking = (props) => {
         'srs_rank': (row.last_ranking && row.last_ranking.srs_rank) || null,
         'net_rank': (row.last_ranking && row.last_ranking.net_rank) || null,
         'coaches_rank': (row.last_ranking && row.last_ranking.coaches_rank) || null,
-        // 'sos': row.cbb_statistic_ranking && row.cbb_statistic_ranking.sos,
-        // 'sos_rank': row.cbb_statistic_ranking && row.cbb_statistic_ranking.sos_rank,
         'field_goal': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal) || null,
         'field_goal_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_attempts) || null,
         'field_goal_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_percentage) || null,
@@ -1134,7 +1141,8 @@ const Ranking = (props) => {
         'opponent_possessions': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_possessions) || null,
         'opponent_offensive_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rating) || null,
         'opponent_defensive_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rating) || null,
-        'opponent_efficiency_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating) || null,
+        'opponent_efficiency_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating) || null, // this is aSOS in the gui
+        'elo_sos': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos) || null, // this is eSoS
         'field_goal_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_rank) || null,
         'field_goal_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_attempts_rank) || null,
         'field_goal_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_percentage_rank) || null,
@@ -1187,6 +1195,7 @@ const Ranking = (props) => {
         'opponent_offensive_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rating_rank) || null,
         'opponent_defensive_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rating_rank) || null,
         'opponent_efficiency_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating_rank) || null,
+        'elo_sos_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos_rank) || null,
       });
     } else if (rankView === 'player') {
       if (
