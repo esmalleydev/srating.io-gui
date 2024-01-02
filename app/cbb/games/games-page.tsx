@@ -1,8 +1,7 @@
 'use client';
-import React, { useState, useEffect, useRef, useTransition, RefObject } from 'react';
+import React, { useState, useEffect, useRef, RefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
 
@@ -23,25 +22,28 @@ import Api from '@/components/Api.jsx';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useScrollContext } from '@/contexts/scrollContext';
-import { updateGameSort } from '@/redux/features/favorite-slice';
+import { updateCbbGameIds, updateGameSort } from '@/redux/features/favorite-slice';
 import { gamesDataType } from '@/components/generic/types';
 import { updateConferences } from '@/redux/features/display-slice';
+import Dates from '@/components/utils/Dates';
+import { Fab, Typography, useTheme } from '@mui/material';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 
 const api = new Api();
+const dateUtil = new Dates();
 
 let intervalRefresher: NodeJS.Timeout;
-
 
 const Games = (props) => {
   const dispatch = useAppDispatch();
   const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
   const displaySlice = useAppSelector(state => state.displayReducer.value);
 
+  const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
-  const theme = useTheme();
-  const [isPending, startTransition] = useTransition();
   const scrollRefDateBar: RefObject<HTMLDivElement> = useRef(null);
 
   const scrollRef  = useScrollContext();
@@ -70,12 +72,15 @@ const Games = (props) => {
   const [status, setStatus] = useState(sessionData.status || statusOptions.map(item => item.value));
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
   const [firstRender, setFirstRender] = useState(true);
+  const [loading, setLoading] = useState(false);
+  // todo figure out scroll thing
+  const [showScrollFAB, setShowScrolledFAB] = useState(true);
 
 
   // if stored session, refresh in 5 seconds, else normal 30 seconds
   const [refreshRate, setRefreshRate] = useState(sessionData.games ? 5 : 30);
 
-  const { height, width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions() as Dimensions;
 
   // For speed, lookups
   const tabDatesObject = {};
@@ -104,6 +109,7 @@ const Games = (props) => {
 
     setRequest(true);
     setDate(value);
+    setLoading(true);
 
     if (searchParams && searchParams?.get('date') !== value) {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -135,45 +141,30 @@ const Games = (props) => {
       setRefreshRate(30);
       setGames(cbb_games);
       setSpin(false);
+      setLoading(false);
     }).catch((err) => {
       // nothing for now
     });
   };
 
   const scrollToElement = () => {
-    scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+    // for some reason this doesnt work on first render, when executed immediately, so trigger the scroll in 750ms
+    if (firstRender) {
+      setTimeout(function() {
+        if (scrollRefDateBar && scrollRefDateBar.current) {
+          scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+        }
+      }, 750);
+    } else {
+      scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+    }
   };
 
-
-  /**
-   * Find the closest tabDates match to a date
-   * @param  {String} d a date to match YYYY-MM-DD
-   * @return {?String}
-   */
-  const getClosestDate = (d) => {
-    let closestDist: number | null = null;
-    let closestDate = null;
-
-    if (d in tabDatesObject) {
-      return d;
+  const handleScrollToTop = () => {
+    if (scrollRef && scrollRef.current) {
+      scrollRef.current.scrollTo({'top': 0, 'behavior': 'smooth'});
+      dispatch(updateGameSort(null));
     }
-
-    for (let i = 0; i < tabDates.length; i++) {
-      const a = new Date(tabDates[i]).getTime();
-      const b = new Date(d).getTime();
-
-      const dist = Math.abs(a - b);
-
-      if (
-        !closestDist ||
-        dist < closestDist
-      ) {
-        closestDist = dist;
-        closestDate = tabDates[i];
-      }
-    }
-
-    return closestDate;
   };
 
 
@@ -181,6 +172,20 @@ const Games = (props) => {
     return date || now;
   }
 
+  // todo figure out this scroll thing
+  /*
+  useScrollPosition(
+    ({ prevPos, currPos }) => {
+      console.log(currPos)
+      // if (currPos > 300) {
+      //   setShowScrolledFAB(true);
+      // }
+    },
+    [showScrollFAB],
+    undefined,
+    true
+  );
+  */
 
   useEffect(() => {
     triggerSessionStorage(false);
@@ -222,8 +227,13 @@ const Games = (props) => {
   }
 
   if (!request) {
-    const d = getClosestDate(getSelectedDate());
-    getGames(d || tabDates[0]);
+    const selectedDate = getSelectedDate();
+    if (selectedDate in tabDatesObject) {
+      getGames(selectedDate);
+    } else {
+      const d = dateUtil.getClosestDate(selectedDate, tabDates);
+      getGames(d || tabDates[0]);
+    }
   }
 
 
@@ -242,19 +252,23 @@ const Games = (props) => {
   let sorted_games = Object.values(games);
 
   sorted_games.sort(function(a, b) {
-    if (
+    const aIsPinned = (
       favoriteSlice.skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
       favoriteSlice.cbb_game_ids.length &&
       favoriteSlice.cbb_game_ids.indexOf(a.cbb_game_id) > -1
-    ) {
-      return -1;
-    }
-      
-    if (
+    );
+
+    const bIsPinned = (
       favoriteSlice.skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
       favoriteSlice.cbb_game_ids.length &&
       favoriteSlice.cbb_game_ids.indexOf(b.cbb_game_id) > -1
-    ) {
+    );
+
+    if (aIsPinned && !bIsPinned) {
+      return -1;
+    }
+      
+    if (!aIsPinned && bIsPinned) {
       return 1;
     }
 
@@ -373,14 +387,34 @@ const Games = (props) => {
 
   // TODO FADE IN / GROW CBBGAME TILES
 
+  const subHeaderHeight = 48;
+  let subHeaderTop = 112;
   let marginTop = '64px';
+  let minSubBarWidth = 75;
 
   if (width < 600) {
     marginTop = '56px';
+    minSubBarWidth = 0;
+    subHeaderTop = 104;
   }
 
+
+  const subHeaderStyle: React.CSSProperties = {
+    'height': subHeaderHeight,
+    'position': 'fixed',
+    'backgroundColor': theme.palette.background.default,
+    'zIndex': 1100,
+    'display': 'flex',
+    'justifyContent': 'space-between',
+    'alignItems': 'center',
+    'top': subHeaderTop,
+    'left': 0,
+    'right': 0,
+  };
+
+
   return (
-    <div style = {{'padding': '46px 2.5px 0px 2.5px'}}>
+    <div style = {{'padding': '46px 0px 0px 0px'}}>
       <BackdropLoader open = {(spin === true)} />
       <div>
         <DateAppBar
@@ -392,26 +426,37 @@ const Games = (props) => {
           scrollRef = {scrollRefDateBar}
         />
       </div>
-      <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px'}}>
-        <ConferencePicker />
-        <AdditionalOptions />
+      <div style = {subHeaderStyle}>
+        <div style = {{'minWidth': minSubBarWidth}}><ConferencePicker /></div>
+        <div style = {{'minWidth': minSubBarWidth}}>
+          {statusOptions.map((statusOption, index) => (
+            <Chip
+              key = {index}
+              sx = {{'margin': '5px', 'maxWidth': (width < 340 ? 60 : 'initial')}}
+              label={statusOption.label}
+              variant={status.indexOf(statusOption.value) === -1 ? 'outlined' : 'filled'}
+              color={status.indexOf(statusOption.value) === -1 ? 'primary' : 'success'}
+              onClick={() => handleStatuses(statusOption.value)}
+            />
+          ))}
+        </div>
+        <div style = {{'minWidth': minSubBarWidth}}><AdditionalOptions /></div>
       </div>
-      <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px', 'flexWrap': 'wrap'}}>
-        {statusOptions.map((statusOption, index) => (
-          <Chip
-            key = {index}
-            sx = {{'margin': '5px'}}
-            label={statusOption.label}
-            variant={status.indexOf(statusOption.value) === -1 ? 'outlined' : 'filled'}
-            color={status.indexOf(statusOption.value) === -1 ? 'primary' : 'success'}
-            onClick={() => handleStatuses(statusOption.value)}
-          />
-        ))}
-        {confChips}
+      <div style = {{'padding': '0px 2.5px 0px 2.5px', 'marginTop': subHeaderHeight}}>
+        <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center', 'marginTop': '10px', 'flexWrap': 'wrap'}}>
+          {confChips}
+        </div>
+        <div style = {gameContainerStyle}>
+          {
+            gameContainers.length ?
+              gameContainers :
+              (loading ?
+                <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :
+                <Typography variant = 'h5'>No games found :( please adjust filter. </Typography>)
+          }
+        </div>
       </div>
-      <div style = {gameContainerStyle}>
-        {gameContainers}
-      </div>
+      {showScrollFAB ? <div style = {{'position': 'absolute', 'bottom': 70, 'left': 15}}><Fab size = 'small' color = 'secondary' onClick={handleScrollToTop}>{<KeyboardArrowUpIcon />}</Fab></div> : ''}
     </div>
   );
 }

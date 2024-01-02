@@ -27,7 +27,10 @@ import Api from '@/components/Api.jsx';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
+import Dates from '@/components/utils/Dates';
+
 const api = new Api();
+const dateUtil = new Dates();
 
 const Picks = (props) => {
   const self = this;
@@ -96,7 +99,16 @@ const Picks = (props) => {
   };
 
   const scrollToElement = () => {
-    scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+    // for some reason this doesnt work on first render, when executed immediately, so trigger the scroll in 750ms
+    if (firstRender) {
+      setTimeout(function() {
+        if (scrollRefDateBar && scrollRefDateBar.current) {
+          scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+        }
+      }, 750);
+    } else {
+      scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+    }
   };
 
 
@@ -164,45 +176,19 @@ const Picks = (props) => {
   }
 
 
-   /**
-   * Find the closest tabDates match to a date
-   * @param  {String} d a date to match YYYY-MM-DD
-   * @return {?String}
-   */
-  const getClosestDate = (d) => {
-    let closestDist: number | null = null;
-    let closestDate = null;
-
-    if (d in tabDatesObject) {
-      return d;
-    }
-
-    for (let i = 0; i < tabDates.length; i++) {
-      const a = new Date(tabDates[i]).getTime();
-      const b = new Date(d).getTime();
-
-      const dist = Math.abs(a - b);
-
-      if (
-        !closestDist ||
-        dist < closestDist
-      ) {
-        closestDist = dist;
-        closestDate = tabDates[i];
-      }
-    }
-
-    return closestDate;
-  };
-
   const getSelectedDate = () => {
     return date || now;
   }
 
 
   if (!request) {
-    const d = getClosestDate(getSelectedDate());
-    getGames(d || tabDates[0]);
+    const selectedDate = getSelectedDate();
+    if (selectedDate in tabDatesObject) {
+      getGames(selectedDate);
+    } else {
+      const d = dateUtil.getClosestDate(selectedDate, tabDates);
+      getGames(d || tabDates[0]);
+    }
   }
 
 

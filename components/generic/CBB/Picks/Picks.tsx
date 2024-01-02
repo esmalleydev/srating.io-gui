@@ -43,19 +43,23 @@ const Picks = (props) => {
   let sorted_games = Object.values(games);
 
   sorted_games.sort(function(a, b) {
-    if (
+    const aIsPinned = (
       favoriteSlice.skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
       favoriteSlice.cbb_game_ids.length &&
       favoriteSlice.cbb_game_ids.indexOf(a.cbb_game_id) > -1
-    ) {
-      return -1;
-    }
-      
-    if (
+    );
+
+    const bIsPinned = (
       favoriteSlice.skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
       favoriteSlice.cbb_game_ids.length &&
       favoriteSlice.cbb_game_ids.indexOf(b.cbb_game_id) > -1
-    ) {
+    );
+
+    if (aIsPinned && !bIsPinned) {
+      return -1;
+    }
+      
+    if (!aIsPinned && bIsPinned) {
       return 1;
     }
 

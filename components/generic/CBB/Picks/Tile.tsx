@@ -48,8 +48,6 @@ const Tile = (props) => {
     router.push('/cbb/games/' + game.cbb_game_id);
   };
 
-
-
   const compareRows = [
     {
       'name': 'Win %',
@@ -71,6 +69,34 @@ const Tile = (props) => {
       'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].adjusted_efficiency_rating,
       'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].adjusted_efficiency_rating_rank,
       'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].adjusted_efficiency_rating_rank,
+      'favored': 'higher',
+      'showDifference': true,
+      'compareType': 'rank',
+    },
+    {
+      'name': 'aSOS',
+      'title': 'aEM SoS',
+      'tooltip': 'aEM Strength of schedule (Opponent Efficiency margin (oORT - oDRT))',
+      'away': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_efficiency_rating,
+      'home': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_efficiency_rating,
+      'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_efficiency_rating,
+      'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_efficiency_rating,
+      'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_efficiency_rating_rank,
+      'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_efficiency_rating_rank,
+      'favored': 'higher',
+      'showDifference': true,
+      'compareType': 'rank',
+    },
+    {
+      'name': 'eSOS',
+      'title': 'Elo SoS',
+      'tooltip': 'sRating elo Strength of schedule (Average opponent elo)',
+      'away': picksData && picksData[away_team_id] && picksData[away_team_id].elo_sos,
+      'home': picksData && picksData[home_team_id] && picksData[home_team_id].elo_sos,
+      'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].elo_sos,
+      'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].elo_sos,
+      'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].elo_sos_rank,
+      'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].elo_sos_rank,
       'favored': 'higher',
       'showDifference': true,
       'compareType': 'rank',
