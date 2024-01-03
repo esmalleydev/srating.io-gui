@@ -59,6 +59,7 @@ const Tile = (props) => {
 
   const dateStyle: React.CSSProperties = {
     'width': '55px',
+    'minWidth': '55px',
     'height': '55px',
     'borderRadius': '50%',
     'border': '2px solid ' + circleBackgroundColor,
