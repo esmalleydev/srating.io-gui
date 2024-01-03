@@ -1,7 +1,7 @@
 import PlayerPage from './player-page';
 import { Metadata, ResolvingMetadata } from 'next';
 
-import Api from '../../../../components/Api.jsx';
+import Api from '@/components/Api.jsx';
 
 const api = new Api();
 
@@ -9,6 +9,7 @@ type Props = {
   params: { team_id: string };
 };
 
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(
   { params }: Props,

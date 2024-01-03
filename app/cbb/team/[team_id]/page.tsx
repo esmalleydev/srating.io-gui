@@ -2,9 +2,9 @@ import TeamPage from './team-page';
 import { Metadata, ResolvingMetadata } from 'next';
 import { headers } from 'next/headers';
 
-import HelperCBB from '../../../../components/helpers/CBB';
-import HelperTeam from '../../../../components/helpers/Team';
-import Api from '../../../../components/Api.jsx';
+import HelperCBB from '@/components/helpers/CBB';
+import HelperTeam from '@/components/helpers/Team';
+import Api from '@/components/Api.jsx';
 
 const api = new Api();
 
@@ -12,6 +12,7 @@ type Props = {
   params: { team_id: string };
 };
 
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(
   { params }: Props,
