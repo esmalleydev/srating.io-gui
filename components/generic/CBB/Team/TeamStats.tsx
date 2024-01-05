@@ -1,17 +1,158 @@
-import React, { useState, useRef, useEffect } from 'react';
-// import { useTheme } from '@mui/material/styles';
+import React, { useState } from 'react';
 
-import { Tooltip, Typography } from '@mui/material';
+import { CircularProgress, Tooltip, Typography } from '@mui/material';
 
-import Api from './../../../Api.jsx';
-import RankSpan from '../RankSpan.jsx';
+import RankSpan from '@/components/generic/CBB/RankSpan';
+import Api from '@/components/Api.jsx';
 
 const api = new Api();
 
-const TeamStats = (props) => {
-  const self = this;
-  
-  const stats = props.stats || {};
+let season_ = null;
+
+const TeamStats = ({season, team_id}) => {
+  interface Stats {
+    adjusted_efficiency_rating: number;
+    adjusted_efficiency_rating_rank: number;
+    opponent_efficiency_rating: number;
+    opponent_efficiency_rating_rank: number;
+    offensive_rating: number;
+    offensive_rating_rank: number;
+    defensive_rating: number;
+    defensive_rating_rank: number;
+    points: number;
+    points_rank: number;
+    opponent_points: number;
+    opponent_points_rank: number;
+    win_margin: number;
+    win_margin_rank: number;
+    loss_margin: number;
+    loss_margin_rank: number;
+    confwin_margin: number;
+    confwin_margin_rank: number;
+    confloss_margin: number;
+    confloss_margin_rank: number;
+    field_goal: number;
+    field_goal_rank: number;
+    field_goal_attempts: number;
+    field_goal_attempts_rank: number;
+    field_goal_percentage: number;
+    field_goal_percentage_rank: number;
+    two_point_field_goal: number;
+    two_point_field_goal_rank: number;
+    two_point_field_goal_attempts: number;
+    two_point_field_goal_attempts_rank: number;
+    two_point_field_goal_percentage: number;
+    two_point_field_goal_percentage_rank: number;
+    three_point_field_goal: number;
+    three_point_field_goal_rank: number;
+    three_point_field_goal_attempts: number;
+    three_point_field_goal_attempts_rank: number;
+    three_point_field_goal_percentage: number;
+    three_point_field_goal_percentage_rank: number;
+    free_throws: number;
+    free_throws_rank: number;
+    free_throw_attempts: number;
+    free_throw_attempts_rank: number;
+    free_throw_percentage: number;
+    free_throw_percentage_rank: number;
+    offensive_rebounds: number;
+    offensive_rebounds_rank: number;
+    defensive_rebounds: number;
+    defensive_rebounds_rank: number;
+    assists: number;
+    assists_rank: number;
+    steals: number;
+    steals_rank: number;
+    blocks: number;
+    blocks_rank: number;
+    turnovers: number;
+    turnovers_rank: number;
+    fouls: number;
+    fouls_rank: number;
+    fatigue: number;
+    fatigue_rank: number;
+    desperation: number;
+    desperation_rank: number;
+    over_confidence: number;
+    over_confidence_rank: number;
+    wins: number;
+    wins_rank: number;
+    losses: number;
+    losses_rank: number;
+    confwins: number;
+    confwins_rank: number;
+    conflosses: number;
+    conflosses_rank: number;
+    neutralwins: number;
+    neutralwins_rank: number;
+    neutrallosses: number;
+    neutrallosses_rank: number;
+    homewins: number;
+    homewins_rank: number;
+    homelosses: number;
+    homelosses_rank: number;
+    roadwins: number;
+    roadwins_rank: number;
+    roadlosses: number;
+    roadlosses_rank: number;
+    opponent_field_goal: number;
+    opponent_field_goal_rank: number;
+    opponent_field_goal_attempts: number;
+    opponent_field_goal_attempts_rank: number;
+    opponent_field_goal_percentage: number;
+    opponent_field_goal_percentage_rank: number;
+    opponent_offensive_rebounds: number;
+    opponent_offensive_rebounds_rank: number;
+    opponent_defensive_rebounds: number;
+    opponent_defensive_rebounds_rank: number;
+    opponent_assists: number;
+    opponent_assists_rank: number;
+    opponent_steals: number;
+    opponent_steals_rank: number;
+    opponent_blocks: number;
+    opponent_blocks_rank: number;
+    opponent_turnovers: number;
+    opponent_turnovers_rank: number;
+    opponent_fouls: number;
+    opponent_fouls_rank: number;
+  };
+
+  const [requested, setRequested] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState<Stats | null>(null);
+
+
+  if (season_ && season_ != season) {
+    setRequested(false);
+    setStats(null);
+    setLoading(true);
+  }
+
+  season_ = season;
+
+
+  if (!requested) {
+    setLoading(true);
+    setRequested(true);
+    api.Request({
+      'class': 'team',
+      'function': 'getStats',
+      'arguments': {
+        'team_id': team_id,
+        'season': season,
+      },
+    }).then((response) => {
+      setStats(response || {});
+      setLoading(false);
+    }).catch((e) => {
+      setStats(null);
+      setLoading(false);
+    });
+  }
+
+  if (loading || stats === null) {
+    return <div style = {{'display': 'flex', 'justifyContent': 'center', 'paddingTop': 68}}><CircularProgress /></div>;
+  }
 
   const efficiencyRows = [
     {

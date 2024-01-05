@@ -6,7 +6,7 @@ import { styled, useTheme } from '@mui/material/styles';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import TableCell, { SortDirection } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -20,13 +20,15 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 
-import Api from './../../../Api.jsx';
-import RankSpan from '../RankSpan';
+import Api from '@/components/Api.jsx';
+import RankSpan from '@/components/generic/CBB/RankSpan';
 import { CircularProgress } from '@mui/material';
-import BackdropLoader from '../../BackdropLoader.jsx';
+import BackdropLoader from '@/components/generic/BackdropLoader';
+import utilsSorter from  '@/components/utils/Sorter';
 
 
 const api = new Api();
+const Sorter = new utilsSorter();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
@@ -48,24 +50,22 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 let season_ = null;
 
 
-const Roster = (props) => {
-  const self = this;
+const Roster = ({season, team_id}) => {
+  interface PlayerStats {
+
+  };
 
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const team = props.team;
-  const season = props.season;
-
-
   const [requestedPlayerStats, setRequestedPlayerStats] = useState(false);
   const [loading, setLoading] = useState(false);
   const [players, setPlayers] = useState({});
-  const [playerStatsData, setPlayerStatsData] = useState(null);
-  const [view, setView] = useState('overview');
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('minutes_per_game');
+  const [playerStatsData, setPlayerStatsData] = useState<PlayerStats | null>(null);
+  const [view, setView] = useState<string | null>('overview');
+  const [order, setOrder] = useState<string | null>('asc');
+  const [orderBy, setOrderBy] = useState<string | null>('minutes_per_game');
   const [spin, setSpin] = useState(false);
 
 
@@ -92,7 +92,7 @@ const Roster = (props) => {
       'class': 'team',
       'function': 'getRosterStats',
       'arguments': {
-        'team_id': team.team_id,
+        'team_id': team_id,
         'season': season,
       },
     }).then((response) => {
@@ -100,7 +100,7 @@ const Roster = (props) => {
       setPlayerStatsData((response && response.cbb_player_statistic_ranking) || {});
       setLoading(false);
     }).catch((e) => {
-      setPlayerStatsData({});
+      setPlayerStatsData(null);
       setLoading(false);
     });
   }
@@ -372,7 +372,7 @@ const Roster = (props) => {
     },
   ];
 
-  let statDisplayChips = [];
+  let statDisplayChips: React.JSX.Element[] = [];
 
   const handleView = (value) => {
     sessionStorage.setItem('CBB.TEAM.ROSTER.VIEW', value);
@@ -401,37 +401,10 @@ const Roster = (props) => {
     setOrderBy(id);
   };
 
-  const descendingComparator = (a, b, orderBy) => {
-    if ((orderBy in a) && b[orderBy] === null) {
-      return 1;
-    }
-    if (a[orderBy] === null && (orderBy in b)) {
-      return -1;
-    }
-
-    let a_value = a[orderBy];
-    let b_value = b[orderBy];
-
-    const direction = (headCells[orderBy] && headCells[orderBy].sort) || 'lower';
-
-    if (b_value < a_value) {
-      return direction === 'higher' ? 1 : -1;
-    }
-    if (b_value > a_value) {
-      return direction === 'higher' ? -1 : 1;
-    }
-    return 0;
-  }
-
-  const getComparator = (order, orderBy) => {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
 
   let b = 0;
 
-  const row_containers = rows.sort(getComparator(order, orderBy)).slice().map((row) => {
+  const row_containers = rows.sort(Sorter.getComparator(order, orderBy)).slice().map((row) => {
     let columns = getColumns();
 
 
@@ -442,7 +415,7 @@ const Roster = (props) => {
 
     b++;
 
-    const tableCells = [];
+    const tableCells: React.JSX.Element[] = [];
 
     for (let i = 0; i < columns.length; i++) {
       if (columns[i] === 'player') {
@@ -501,7 +474,7 @@ const Roster = (props) => {
                   <TableRow>
                     {getColumns().map((column) => {
                       const headCell = headCells[column];
-                      const tdStyle = {
+                      const tdStyle: React.CSSProperties = {
                         'padding': '4px 5px',
                       };
 
@@ -519,11 +492,11 @@ const Roster = (props) => {
                           sx = {tdStyle}
                           key={headCell.id}
                           align={'left'}
-                          sortDirection={orderBy === headCell.id ? order : false}
+                          sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
                         >
                           <TableSortLabel
                             active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
+                            direction={orderBy === headCell.id ?  (order as 'asc' | 'desc') : 'asc'}
                             onClick={() => {handleSort(headCell.id)}}
                           >
                             {headCell.label}

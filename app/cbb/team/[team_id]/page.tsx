@@ -1,10 +1,19 @@
-import TeamPage from './team-page';
+'use server';
+
 import { Metadata, ResolvingMetadata } from 'next';
 import { headers } from 'next/headers';
 
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import Api from '@/components/Api.jsx';
+import HeaderClientWrapper from '@/components/generic/CBB/Team//Header/HeaderClientWrapper';
+import HeaderServer from '@/components/generic/CBB/Team/Header/HeaderServer';
+import Schedule from '@/components/generic/CBB/Team/Schedule';
+import Trends from '@/components/generic/CBB/Team/Trends';
+import NavBar from '@/components/generic/CBB/Team/NavBar';
+import Stats from '@/components/generic/CBB/Team/Stats';
+import ScheduleClientWrapper from '@/components/generic/CBB/Team/Schedule/ScheduleClientWrapper';
+import ScheduleServer from '@/components/generic/CBB/Team/Schedule/ScheduleServer';
 
 const api = new Api();
 
@@ -12,9 +21,6 @@ type Props = {
   params: { team_id: string };
 };
 
-const revalidateSeconds = 30;
-
-export const revalidate = 0; // setting this to 30 does nothing lol... https://github.com/vercel/next.js/discussions/54075
 
 export async function generateMetadata(
   { params }: Props,
@@ -71,41 +77,37 @@ async function getData(params) {
   if (team && conference) {
     team.conference = conference.conference;
   }
-  
-
-  if (team && team.team_id) {
-    const cbb_ranking = await api.Request({
-      'class': 'cbb_ranking',
-      'function': 'get',
-      'arguments': {
-        'team_id': team_id,
-        'season': season,
-        'current': '1'
-      }
-    },
-    {next : {revalidate: revalidateSeconds}});
-
-    team.cbb_ranking = {};
-
-    if (cbb_ranking && cbb_ranking.cbb_ranking_id) {
-      team.cbb_ranking[cbb_ranking.cbb_ranking_id] = cbb_ranking;
-    }
-
-    team.stats = await api.Request({
-      'class': 'team',
-      'function': 'getStats',
-      'arguments': {
-        'team_id': team_id,
-        'season': season,
-      }
-    },
-    {next : {revalidate: revalidateSeconds}});
-  }
 
   return team;
 }
 
+// todo who need to redesign schedule component, need session_id to check for ratings
+
 export default async function Page({ params }) {
-  const data = await getData(params);
-  return <TeamPage team = {data} />;
+  const team_id = params.team_id;
+
+  const CBB = new HelperCBB();
+
+  const xUrl = headers().get('x-url') || '';
+  const url = new URL(xUrl);
+  const searchParams = new URLSearchParams(url.search);
+
+  const season = searchParams?.get('season') || CBB.getCurrentSeason();
+  const view = searchParams?.get('view') || 'schedule';
+
+  const tabOrder = ['schedule', 'stats', 'trends'];
+  const selectedTab = tabOrder[(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0)];
+
+  return (
+    <div>
+      <HeaderClientWrapper season = {season} team_id = {team_id}>
+        <HeaderServer season = {season} team_id = {team_id} />
+      </HeaderClientWrapper>
+      <NavBar view = {selectedTab} tabOrder = {tabOrder} />
+      {selectedTab == 'schedule' ? <Schedule key = {team_id} team_id = {team_id} season = {season} /> : ''}
+      {/* {selectedTab == 'schedule' ? <ScheduleClientWrapper><ScheduleServer team_id = {team_id} season = {season} /></ScheduleClientWrapper> : ''} */}
+      {selectedTab == 'stats' ? <Stats key = {team_id} team_id = {team_id} season = {season} /> : ''}
+      {selectedTab == 'trends' ? <Trends key = {team_id} team_id = {team_id} season = {season} /> : ''}
+    </div>
+  );
 };

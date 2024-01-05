@@ -1,29 +1,22 @@
 'use client';
 import React, { useState, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-// import { useTheme } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import TeamStats from './TeamStats';
-import Roster from './Roster';
+import TeamStats from '@/components/generic/CBB/Team/TeamStats';
+import Roster from '@/components/generic/CBB/Team/Roster';
 
 
-const Stats = (props) => {
+const Stats = ({season, team_id}) => {
   const self = this;
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
-
-  const season = props.season;
-  const team = props.team;
-  const stats = props.stats;
-
-  // const theme = useTheme();
   const scrollRef = useRef(null);
 
-  let subView = router.query && router.query.subview || 'team';
+  let subView = searchParams?.get('subview') || 'team';
   let tabOrder = ['team', 'player'];
 
   const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(subView) > -1 ? tabOrder.indexOf(subView) : 0);
@@ -33,7 +26,7 @@ const Stats = (props) => {
     'player': 'Players'
   };
 
-  let tabs = [];
+  let tabs: React.JSX.Element[] = [];
 
 
   for (let i = 0; i < tabOrder.length; i++) {
@@ -73,8 +66,8 @@ const Stats = (props) => {
           {tabs}
         </Tabs>
       </Box>
-      {selectedTab == 'team' ? <TeamStats season = {season} team = {team} stats = {stats} /> : ''}
-      {selectedTab == 'player' ? <Roster season = {season} team = {team} /> : ''}
+      {selectedTab == 'team' ? <TeamStats season = {season} team_id = {team_id} /> : ''}
+      {selectedTab == 'player' ? <Roster season = {season} team_id = {team_id} /> : ''}
     </div>
   );
 }

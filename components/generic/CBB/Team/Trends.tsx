@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -9,7 +10,7 @@ import { CircularProgress } from '@mui/material';
 
 import moment from 'moment';
 
-import Api from './../../../Api.jsx';
+import Api from '@/components/Api.jsx';
 
 
 const api = new Api();
@@ -18,14 +19,18 @@ const api = new Api();
 let season_ = null;
 
 const Trends = (props) => {
-  const self = this;
+  interface Trends {
+    cbb_elo: object;
+    cbb_ranking: object;
+    cbb_game: object;
+  };
 
-  const team = props.team;
+  const team_id = props.team_id;
   const season = props.season;
 
   const [requested, setRequested] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Trends | null>(null);
   // const theme = useTheme();
 
 
@@ -44,14 +49,14 @@ const Trends = (props) => {
       'class': 'team',
       'function': 'getTrends',
       'arguments': {
-        'team_id': team.team_id,
+        'team_id': team_id,
         'season': season,
       },
     }).then((response) => {
       setData(response || {});
       setLoading(false);
     }).catch((e) => {
-      setData({});
+      setData(null);
       setLoading(false);
     });
   }
@@ -89,7 +94,7 @@ const Trends = (props) => {
   });
 
 
-  let xAxis = [];
+  let xAxis: string[] = [];
   // let yAxis = [];
   let series = {
     'composite_rank': {
@@ -189,8 +194,8 @@ const Trends = (props) => {
     'series': Object.values(series),
   };
 
-  let elo_xAxis = [];
-  let elo_series = {
+  let elo_xAxis: string[] = [];
+  let elo_series: {name: string, data: number[]} = {
     'name': 'ELO',
     'data': [],
   };
