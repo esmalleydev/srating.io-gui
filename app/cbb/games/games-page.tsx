@@ -22,7 +22,7 @@ import Api from '@/components/Api.jsx';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useScrollContext } from '@/contexts/scrollContext';
-import favoriteSlice, { updateCbbGameIds, updateGameSort } from '@/redux/features/favorite-slice';
+import { updateGameSort } from '@/redux/features/favorite-slice';
 import { gamesDataType } from '@/components/generic/types';
 import { updateConferences } from '@/redux/features/display-slice';
 import Dates from '@/components/utils/Dates';
