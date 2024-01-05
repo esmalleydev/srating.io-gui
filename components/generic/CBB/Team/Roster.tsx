@@ -65,7 +65,7 @@ const Roster = ({season, team_id}) => {
   const [playerStatsData, setPlayerStatsData] = useState<PlayerStats | null>(null);
   const [view, setView] = useState<string | null>('overview');
   const [order, setOrder] = useState<string | null>('asc');
-  const [orderBy, setOrderBy] = useState<string | null>('minutes_per_game');
+  const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
   const [spin, setSpin] = useState(false);
 
 
@@ -79,9 +79,10 @@ const Roster = ({season, team_id}) => {
 
 
   useEffect(() => {
+    const sessionOrderby = sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') || null;
     setView(sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') ? sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') : 'overview');
     setOrder(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') : 'asc');
-    setOrderBy(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') : 'minutes_per_game');
+    setOrderBy(sessionOrderby ? sessionOrderby : 'minutes_per_game');
   }, []);
 
 
@@ -404,7 +405,7 @@ const Roster = ({season, team_id}) => {
 
   let b = 0;
 
-  const row_containers = rows.sort(Sorter.getComparator(order, orderBy)).slice().map((row) => {
+  const row_containers = rows.sort(Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort))).slice().map((row) => {
     let columns = getColumns();
 
 
