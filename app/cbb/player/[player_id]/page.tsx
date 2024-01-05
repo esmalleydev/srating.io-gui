@@ -11,7 +11,7 @@ type Props = {
 
 const revalidateSeconds = 60 * 5; // cache for 5 mins
 
-export const revalidate = revalidateSeconds;
+export const revalidate = 0; // setting this to 5 mins does nothing lol... https://github.com/vercel/next.js/discussions/54075
 
 export async function generateMetadata(
   { params }: Props,
