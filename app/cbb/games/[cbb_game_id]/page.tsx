@@ -14,7 +14,7 @@ type Props = {
 };
 
 
-const revalidateSeconds = 30;
+const revalidateSeconds = 0;
 
 export const revalidate = revalidateSeconds;
 
