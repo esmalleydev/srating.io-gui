@@ -34,6 +34,26 @@ const Game = (props) => {
 
   const [tabIndex, setTabIndex] = useState(0);
 
+  // https://nextjs.org/docs/app/building-your-application/caching#router-cache
+  // nextjs is turning into garbage with thier forced router caching...
+  // basically, the router caches a page anywhere from 30 seconds to 5 mins
+  // there is no way to clear this besides a router.refresh()...
+  // so keep this in session storage, so I can refresh on landing
+
+  const sessionDataKey = 'CBB.GAME.DATA.' + game.cbb_game_id + '.stored';
+
+  // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
+  const sessionDataString = typeof window !== 'undefined' ? sessionStorage.getItem(sessionDataKey) : null;
+  let sessionData = sessionDataString ? JSON.parse(sessionDataString) : null;
+
+
+  // if stored session, refresh in 1 seconds, else normal 30 seconds
+  const [refreshRate, setRefreshRate] = useState(sessionData ? 1 : 30);
+
+  if (!sessionData) {
+    sessionStorage.setItem(sessionDataKey, '1');
+  }
+
   const CBB = new HelperCBB({
     'cbb_game': game,
   });
@@ -42,8 +62,9 @@ const Game = (props) => {
   useEffect(() => {
     if (game && game.status === 'live') {
       intervalRefresher = setInterval(function() {
+        setRefreshRate(30);
         router.refresh();
-      }, 30 * 1000);
+      }, refreshRate * 1000);
     }
     return function clean_up() {
       clearInterval(intervalRefresher);
