@@ -12,7 +12,9 @@ type Props = {
   params: { team_id: string };
 };
 
-export const dynamic = 'force-dynamic';
+const revalidateSeconds = 30;
+
+export const revalidate = revalidateSeconds;
 
 export async function generateMetadata(
   { params }: Props,
@@ -39,7 +41,6 @@ export async function generateMetadata(
 
 
 async function getData(params) {
-  const seconds = 60 * 5; // cache for 5 mins
   const CBB = new HelperCBB();
 
   const team_id = params.team_id;
@@ -56,8 +57,7 @@ async function getData(params) {
     'arguments': {
       'team_id': team_id,
     }
-  },
-  {next : {revalidate: seconds}});
+  });
 
   const conference = await api.Request({
     'class': 'team',
@@ -66,13 +66,13 @@ async function getData(params) {
       'team_id': team_id,
       'season': season,
     }
-  },
-  {next : {revalidate: seconds}});
+  });
 
   if (team && conference) {
     team.conference = conference.conference;
   }
   
+
   if (team && team.team_id) {
     const cbb_ranking = await api.Request({
       'class': 'cbb_ranking',
@@ -83,7 +83,7 @@ async function getData(params) {
         'current': '1'
       }
     },
-    {next : {revalidate: seconds}});
+    {next : {revalidate: revalidateSeconds}});
 
     team.cbb_ranking = {};
 
@@ -99,7 +99,7 @@ async function getData(params) {
         'season': season,
       }
     },
-    {next : {revalidate: seconds}});
+    {next : {revalidate: revalidateSeconds}});
   }
 
   return team;

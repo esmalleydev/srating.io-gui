@@ -14,7 +14,9 @@ type Props = {
 };
 
 
-export const dynamic = 'force-dynamic';
+const revalidateSeconds = 30;
+
+export const revalidate = revalidateSeconds;
 
 export async function generateMetadata(
   { params }: Props,
@@ -42,40 +44,6 @@ export async function generateMetadata(
 };
 
 async function getData(params) {
-  // this next setting is supposed to cache for only 30 seconds... but it doesnt actually work lol
-  // so use my own caching since this is apparently complicated
-  const seconds = 30; // cache for 30 seconds
-
-  /*
-  const tag = 'cbb_game.getGamesFull.'+params.cbb_game_id;
-
-  const cachedLocation = 'CBB.GAMES.LOAD.getGamesFull.' + params.cbb_game_id;
-  const cached = cacheData.get(cachedLocation);
-
-  let data = {};
-
-  // so this will use my cache first (which works), if not, when we send a request, purge it right away so when this actually runs again, it should not be cached
-  if (!cached) {
-    const cbb_games = await api.Request({
-      'class': 'cbb_game',
-      'function': 'getGamesFull',
-      'arguments': {
-        'cbb_game_id': params.cbb_game_id,
-      }
-    },
-    {next : {revalidate: seconds, tags: tag}});
-
-    data = cbb_games[params.cbb_game_id];
-
-    cacheData.put(cachedLocation, data, 1000 * seconds);
-    revalidateTag(tag);
-  } else {
-    data = cached;
-  }
-
-  return data;
-  */
-
   const cbb_games = await api.Request({
     'class': 'cbb_game',
     'function': 'getGamesFull',
@@ -83,7 +51,7 @@ async function getData(params) {
       'cbb_game_id': params.cbb_game_id,
     }
   },
-  {next : {revalidate: seconds}});
+  {next : {revalidate: revalidateSeconds}});
 
   return cbb_games[params.cbb_game_id] || {};
 }

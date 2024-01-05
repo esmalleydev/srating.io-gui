@@ -9,7 +9,9 @@ type Props = {
   params: { team_id: string };
 };
 
-export const dynamic = 'force-dynamic';
+const revalidateSeconds = 60 * 5; // cache for 5 mins
+
+export const revalidate = revalidateSeconds;
 
 export async function generateMetadata(
   { params }: Props,
@@ -36,8 +38,6 @@ export async function generateMetadata(
 
 
 async function getData(params) {
-  const seconds = 60 * 5; // cache for 5 mins
-
   const player_id = params.player_id;
 
   const player = await api.Request({
@@ -47,7 +47,7 @@ async function getData(params) {
       'player_id': player_id,
     }
   },
-  {next : {revalidate: seconds}});
+  {next : {revalidate: revalidateSeconds}});
 
   return player;
 };
