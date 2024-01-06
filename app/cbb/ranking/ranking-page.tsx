@@ -1050,6 +1050,7 @@ const Ranking = (props) => {
 
   const row_length_before_filter = Object.keys(data).length;
 
+
   for (let id in data) {
     let row = data[id];
 
@@ -1224,8 +1225,8 @@ const Ranking = (props) => {
   }
 
   const allRows = rows;
-
-  if (filteredRows !== null) {
+  
+  if (filteredRows !== null && filteredRows !== false) {
     rows = filteredRows;
   }
 
@@ -1275,8 +1276,9 @@ const Ranking = (props) => {
     setView(value);
   };
 
- 
-  rows = rows.sort(getComparator(order, orderBy)).slice();
+  if (rows && rows.length) {
+    rows = rows.sort(getComparator(order, orderBy)).slice();
+  }
 
   const handlCustomColumnsSave = (columns) => {
     setCustomColumnsOpen(false);

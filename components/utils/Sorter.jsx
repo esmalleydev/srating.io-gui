@@ -6,20 +6,6 @@ class Sorter {
     };
     
     descendingComparator(a, b, orderBy, direction_) {
-        // if (a[orderBy] && !b[orderBy]) {
-        //   return 1;
-        // }
-        // if (!a[orderBy] && b[orderBy]) {
-        //   return -1;
-        // }
-        // if (b[orderBy] < a[orderBy]) {
-        //   return -1;
-        // }
-        // if (b[orderBy] > a[orderBy]) {
-        //   return 1;
-        // }
-        // return 0;
-      
       if ((orderBy in a) && b[orderBy] === null) {
         return 1;
       }
