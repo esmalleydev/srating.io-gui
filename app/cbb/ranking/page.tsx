@@ -35,7 +35,13 @@ async function getData() {
 
   const season = searchParams.get('season') || CBB.getCurrentSeason();
   const view = searchParams.get('view') || 'team';
-  const fxn = (view === 'player') ? 'getPlayerRanking': 'getTeamRanking';
+
+  let fxn = 'getTeamRanking';
+  if (view === 'player') {
+    fxn = 'getPlayerRanking';
+  } else if (view === 'conference') {
+    fxn = 'getConferenceRanking';
+  }
 
   const cachedLocation = 'CBB.RANKING.LOAD.'+season+ '.' + view;
   const cached = cacheData.get(cachedLocation);

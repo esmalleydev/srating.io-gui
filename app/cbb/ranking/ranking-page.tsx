@@ -33,16 +33,12 @@ import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 import ColumnPicker from '@/components/generic/CBB/ColumnPicker';
 
 import HelperCBB from '@/components/helpers/CBB';
-import Api from '@/components/Api.jsx';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import RankSearch from '@/components/generic/RankSearch';
 import PositionPicker from '@/components/generic/CBB/PositionPicker.jsx';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateConferences } from '@/redux/features/display-slice';
-
-
-const api = new Api();
 
 
 // TODO Filter out people who play under x minutes?
@@ -279,6 +275,7 @@ const Ranking = (props) => {
   const rankViewOptions = [
     {'value': 'team', 'label': 'Team rankings'},
     {'value': 'player', 'label': 'Player rankings'},
+    {'value': 'conference', 'label': 'Conference rankings'},
   ];
 
   const handleRankView = (newRankView) => {
@@ -372,24 +369,32 @@ const Ranking = (props) => {
         return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'elo_sos', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
+      } else if (rankView === 'conference') {
+        return ['composite_rank', 'name', 'elo', 'elo_sos', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'nonconfwins'];
       }
     } else if (view === 'offense') {
       if (rankView === 'team') {
         return ['composite_rank', 'name', 'offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists'];
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'offensive_rating', 'points_per_game', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds_per_game', 'assists_per_game'];
+      } else if (rankView === 'conference') {
+        return ['composite_rank', 'name','offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists'];
       }
     } else if (view === 'defense') {
       if (rankView === 'team') {
         return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage'];
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds_per_game', 'steals_per_game', 'blocks_per_game', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
+      } else if (rankView === 'conference') {
+        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage'];
       }
     } else if (view === 'special') {
       if (rankView === 'team') {
         return ['composite_rank', 'name', 'opponent_efficiency_rating', 'possessions', 'pace', 'turnovers', 'fouls'];
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'position', 'number', 'height', 'games', 'turnovers_per_game', 'fouls_per_game', 'turnover_percentage'];
+      } else if (rankView === 'conference') {
+        return ['composite_rank', 'name', 'opponent_efficiency_rating', 'possessions', 'pace', 'turnovers', 'fouls'];
       }
     } else if (view === 'custom') {
       return customColumns;
@@ -416,12 +421,6 @@ const Ranking = (props) => {
       tooltip: (rankView === 'player' ? 'Player name' : 'Team name'),
       'sticky': true,
       'disabled': true,
-    },
-    'conf': {
-      id: 'conf',
-      numeric: false,
-      label: 'Conf.',
-      tooltip: 'Conference',
     },
     'field_goal': {
       id: 'field_goal',
@@ -595,6 +594,12 @@ const Ranking = (props) => {
 
   if (rankView === 'team') {
     Object.assign(headCells, {
+      'conf': {
+        id: 'conf',
+        numeric: false,
+        label: 'Conf.',
+        tooltip: 'Conference',
+      },
       'ap_rank': {
         id: 'ap_rank',
         numeric: true,
@@ -1042,6 +1047,261 @@ const Ranking = (props) => {
         'sort': 'higher',
       },
     });
+  } else if (rankView === 'conference') {
+    Object.assign(headCells, {
+      'elo': {
+        id: 'elo',
+        numeric: true,
+        label: 'sRating',
+        tooltip: 'srating.io ELO rating',
+        'sort': 'higher',
+      },
+      'wins': {
+        id: 'wins',
+        numeric: false,
+        label: 'W',
+        tooltip: 'Avg. Wins',
+        'sort': 'higher',
+      },
+      'losses': {
+        id: 'losses',
+        numeric: false,
+        label: 'L',
+        tooltip: 'Avg. Losses',
+        'sort': 'lower',
+      },
+      'nonconfwins': {
+        id: 'nonconfwins',
+        numeric: false,
+        label: 'NONC W',
+        tooltip: 'Non-Conference Avg. Wins',
+        'sort': 'higher',
+      },
+      'nonconflosses': {
+        id: 'nonconflosses',
+        numeric: false,
+        label: 'NONC L',
+        tooltip: 'Non-Conference Avg. Losses',
+        'sort': 'lower',
+      },
+      'nonconfwin_margin': {
+        id: 'nonconfwin_margin',
+        numeric: false,
+        label: 'NONC W Margin',
+        tooltip: 'Non-Conference Avg. Win Margin',
+        'sort': 'higher',
+      },
+      'nonconfloss_margin': {
+        id: 'nonconfloss_margin',
+        numeric: false,
+        label: 'NONC L Margin',
+        tooltip: 'Non-Conference Avg. Loss Margin',
+        'sort': 'lower',
+      },
+      'possessions': {
+        id: 'possessions',
+        numeric: true,
+        label: 'Poss.',
+        tooltip: 'Average possessions per game',
+        'sort': 'higher',
+      },
+      'pace': {
+        id: 'pace',
+        numeric: true,
+        label: 'Pace',
+        tooltip: 'Average pace per game',
+        'sort': 'higher',
+      },
+      'adjusted_efficiency_rating': {
+        id: 'adjusted_efficiency_rating',
+        numeric: true,
+        label: 'aEM',
+        tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + aSOS',
+        'sort': 'higher',
+      },
+      'opponent_offensive_rating': {
+        id: 'opponent_offensive_rating',
+        numeric: true,
+        label: 'oORT',
+        tooltip: 'Opponent average Offensive rating',
+        'sort': 'higher',
+      },
+      'opponent_defensive_rating': {
+        id: 'opponent_defensive_rating',
+        numeric: true,
+        label: 'oDRT',
+        tooltip: 'Opponent average Defensive rating ',
+        'sort': 'lower',
+      },
+      'opponent_efficiency_rating': {
+        id: 'opponent_efficiency_rating',
+        numeric: true,
+        label: 'aSOS',
+        tooltip: 'Strength of schedule (Opponent Efficiency margin (oORT - oDRT))',
+        'sort': 'higher',
+      },
+      'elo_sos': {
+        id: 'elo_sos',
+        numeric: true,
+        label: 'eSOS',
+        tooltip: 'Strength of schedule (opponent elo)',
+        'sort': 'higher',
+      },
+      'opponent_field_goal': {
+        id: 'opponent_field_goal',
+        numeric: true,
+        label: 'Opp. FG',
+        tooltip: 'Opponent average field goals per game',
+        'sort': 'lower',
+      },
+      'opponent_field_goal_attempts': {
+        id: 'opponent_field_goal_attempts',
+        numeric: true,
+        label: 'Opp. FGA',
+        tooltip: 'Opponent average field goal attempts per game',
+        'sort': 'lower',
+      },
+      'opponent_field_goal_percentage': {
+        id: 'opponent_field_goal_percentage',
+        numeric: true,
+        label: 'Opp. FG%',
+        tooltip: 'Opponent average field goal percentage per game',
+        'sort': 'lower',
+      },
+      'opponent_two_point_field_goal': {
+        id: 'opponent_two_point_field_goal',
+        numeric: true,
+        label: 'Opp. 2FG',
+        tooltip: 'Opponent average two point field goals per game',
+        'sort': 'lower',
+      },
+      'opponent_two_point_field_goal_attempts': {
+        id: 'opponent_two_point_field_goal_attempts',
+        numeric: true,
+        label: 'Opp. 2FGA',
+        tooltip: 'Opponent average two point field goal attempts per game',
+        'sort': 'lower',
+      },
+      'opponent_two_point_field_goal_percentage': {
+        id: 'opponent_two_point_field_goal_percentage',
+        numeric: true,
+        label: 'Opp. 2FG%',
+        tooltip: 'Opponent average two point field goal percentage per game',
+        'sort': 'lower',
+      },
+      'opponent_three_point_field_goal': {
+        id: 'opponent_three_point_field_goal',
+        numeric: true,
+        label: 'Opp. 3FG',
+        tooltip: 'Opponent average three point field goals per game',
+        'sort': 'lower',
+      },
+      'opponent_three_point_field_goal_attempts': {
+        id: 'opponent_three_point_field_goal_attempts',
+        numeric: true,
+        label: 'Opp. 3FGA',
+        tooltip: 'Opponent average three point field goal attempts per game',
+        'sort': 'lower',
+      },
+      'opponent_three_point_field_goal_percentage': {
+        id: 'opponent_three_point_field_goal_percentage',
+        numeric: true,
+        label: 'Opp. 3FG%',
+        tooltip: 'Opponent average three point field goal percentage per game',
+        'sort': 'lower',
+      },
+      'opponent_free_throws': {
+        id: 'opponent_free_throws',
+        numeric: true,
+        label: 'Opp. FT',
+        tooltip: 'Opponent average free throws per game',
+        'sort': 'lower',
+      },
+      'opponent_free_throw_attempts': {
+        id: 'opponent_free_throw_attempts',
+        numeric: true,
+        label: 'Opp. FTA',
+        tooltip: 'Opponent average free throw attempts per game',
+        'sort': 'lower',
+      },
+      'opponent_free_throw_percentage': {
+        id: 'opponent_free_throw_percentage',
+        numeric: true,
+        label: 'Opp. FT%',
+        tooltip: 'Opponent average free throw percentage per game',
+        'sort': 'lower',
+      },
+      'opponent_offensive_rebounds': {
+        id: 'opponent_offensive_rebounds',
+        numeric: true,
+        label: 'Opp. ORB',
+        tooltip: 'Opponent average offensive rebounds per game',
+        'sort': 'lower',
+      },
+      'opponent_defensive_rebounds': {
+        id: 'opponent_defensive_rebounds',
+        numeric: true,
+        label: 'Opp. DRB',
+        tooltip: 'Opponent average defensive rebounds per game',
+        'sort': 'lower',
+      },
+      'opponent_total_rebounds': {
+        id: 'opponent_total_rebounds',
+        numeric: true,
+        label: 'Opp. TRB',
+        tooltip: 'Opponent average total rebounds per game',
+        'sort': 'lower',
+      },
+      'opponent_assists': {
+        id: 'opponent_assists',
+        numeric: true,
+        label: 'Opp. AST',
+        tooltip: 'Opponent average assists per game',
+        'sort': 'lower',
+      },
+      'opponent_steals': {
+        id: 'opponent_steals',
+        numeric: true,
+        label: 'Opp. STL',
+        tooltip: 'Opponent average steals per game',
+        'sort': 'lower',
+      },
+      'opponent_blocks': {
+        id: 'opponent_blocks',
+        numeric: true,
+        label: 'Opp. BLK',
+        tooltip: 'Opponent average blocks per game',
+        'sort': 'lower',
+      },
+      'opponent_turnovers': {
+        id: 'opponent_turnovers',
+        numeric: true,
+        label: 'Opp. TOV',
+        tooltip: 'Opponent average turnovers per game',
+        'sort': 'higher',
+      },
+      'opponent_fouls': {
+        id: 'opponent_fouls',
+        numeric: true,
+        label: 'Opp. PF',
+        tooltip: 'Opponent average fouls per game',
+        'sort': 'higher',
+      },
+      'opponent_points': {
+        id: 'opponent_points',
+        numeric: true,
+        label: 'Opp. PTS',
+        tooltip: 'Opponent average points per game',
+        'sort': 'lower',
+      },
+      'opponent_possessions': {
+        id: 'opponent_possessions',
+        numeric: true,
+        label: 'Opp. Poss.',
+        tooltip: 'Opponent average possessions per game',
+        'sort': 'lower',
+      },
+    });
   }
 
   let rows: rowDatatype[] = [];
@@ -1221,6 +1481,17 @@ const Ranking = (props) => {
       }
 
       rows.push(row);
+    } else if (rankView === 'conference') {
+      if (
+        !lastUpdated ||
+        lastUpdated < row.date_of_rank
+      ) {
+        lastUpdated = row.date_of_rank;
+      }
+      row.name = row.conference;
+      row.composite_rank = row.efficiency_rating_rank;
+
+      rows.push(row);
     }
   }
 
@@ -1303,10 +1574,13 @@ const Ranking = (props) => {
     TableRow: React.forwardRef<HTMLTableRowElement>((props, ref) => {
       return (
         <StyledTableRow {...props} ref={ref} onClick={() => {
-          if ((props as any).item.player_id) {
+          if (rankView === 'player' && (props as any).item.player_id) {
             handlePlayer((props as any).item.player_id);
-          } else {
+          } else if (rankView === 'team' && (props as any).item.team_id) {
             handleTeam((props as any).item.team_id);
+          } else if (rankView === 'conference' && (props as any).item.conference) {
+            dispatch(updateConferences((props as any).item.conference));
+            handleRankView('team');
           }
         }} />
       );
@@ -1406,7 +1680,7 @@ const Ranking = (props) => {
       } else if (columns[i] === 'composite_rank') {
         tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'center', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{row[columns[i]]}</TableCell>);
       } else {
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[columns[i] + '_rank'] && row[columns[i]] !== null ? <RankSpan rank = {row[columns[i] + '_rank']} useOrdinal = {(rankView === 'team')} max = {row_length_before_filter} />  : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[columns[i] + '_rank'] && row[columns[i]] !== null ? <RankSpan rank = {row[columns[i] + '_rank']} useOrdinal = {(rankView !== 'player')} max = {row_length_before_filter} />  : ''}</TableCell>);
       }
     } 
 
@@ -1461,7 +1735,7 @@ const Ranking = (props) => {
             </div>
             <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center', 'marginTop': '10px'}}>
               <div style={{'display': 'flex'}}>
-                <ConferencePicker />
+                {rankView === 'player' || rankView === 'team' ? <ConferencePicker /> : ''}
                 {rankView === 'player' ? <PositionPicker selected = {positions} actionHandler = {handlePositions} /> : ''}
               </div>
               <RankSearch rows = {allRows} callback = {handleSearch} />
