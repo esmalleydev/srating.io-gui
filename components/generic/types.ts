@@ -146,3 +146,18 @@ export interface PlaybyPlay {
 	date_of_entry: string;
 	order: number;
 };
+
+export interface Ranking {
+  cbb_ranking_id: string;
+	season: number;
+	team_id: string;
+	composite_rank: number;
+	elo_rank: number;
+	kenpom_rank: number;
+	srs_rank: number;
+	ap_rank: number;
+	coaches_rank: number;
+	net_rank: number;
+	date_of_rank: string;
+	current: number;
+};

@@ -1,56 +1,52 @@
-import React, { useState } from 'react';
+'use cleint';
+import React from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-import { useTheme } from '@mui/material/styles';
 
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import HelperCBB from '../../../../helpers/CBB';
+import HelperCBB from '@/components/helpers/CBB';
 
 import moment from 'moment';
+import { Ranking } from '@/components/generic/types';
 
 
 
-const Rank = (props) => {
-  const self = this;
+const RankChart = ({ cbb_game, compareKey, rankings }) => {
 
-  const game = props.game;
+  const homeColor = cbb_game.teams[cbb_game.home_team_id].primary_color;
+  const awayColor = cbb_game.teams[cbb_game.away_team_id].primary_color;
 
-  const homeColor = game.teams[game.home_team_id].primary_color;
-  const awayColor = game.teams[game.away_team_id].primary_color;
+  const homeRankings: Ranking[] = (cbb_game.home_team_id in rankings) ? rankings[cbb_game.home_team_id] : [];
+  const awayRankings: Ranking[] = (cbb_game.away_team_id in rankings) ? rankings[cbb_game.away_team_id] : [];
 
-  const homeRankings = (game.teams[game.home_team_id] && game.teams[game.home_team_id].cbb_rankings) || {};
-  const awayRankings = (game.teams[game.away_team_id] && game.teams[game.away_team_id].cbb_rankings) || {};
-
-  const sortedHomeRankings = Object.values(homeRankings).sort(function (a, b) {
+  const sortedHomeRankings: Ranking[] = Object.values(homeRankings).sort(function (a, b) {
     return a.date_of_rank  < b.date_of_rank ? -1 : 1;
   });
 
-  const sortedAwayRankings = Object.values(awayRankings).sort(function (a, b) {
+  const sortedAwayRankings: Ranking[] = Object.values(awayRankings).sort(function (a, b) {
     return a.date_of_rank  < b.date_of_rank ? -1 : 1;
   });
 
-  const compareKey = props.compareKey;
 
   const CBB = new HelperCBB({
-    'cbb_game': game,
+    'cbb_game': cbb_game,
   });
 
 
-  const theme = useTheme();
-
-  let xAxis = [];
+  let xAxis: string[] = [];
   let series = {
     'home': {
       'name': CBB.getTeamName('home'),
-      'data': [],
+      'data': [] as number[],
+      'color': null,
     },
     'away': {
       'name': CBB.getTeamName('away'),
-      'data': [],
+      'data': [] as number[],
+      'color': null,
     },
   };
 
@@ -119,4 +115,4 @@ const Rank = (props) => {
   );
 }
 
-export default Rank;
+export default RankChart;

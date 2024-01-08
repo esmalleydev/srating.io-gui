@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+'use client';
+import React from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import moment from 'moment';
@@ -8,55 +8,33 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 
-import CompareStatistic from '../../CompareStatistic';
-import HelperCBB from '../../../helpers/CBB';
-import TeamSubHeader from './TeamSubHeader';
+import CompareStatistic from '@/components/generic/CompareStatistic';
 
-import Api from './../../../Api.jsx';
-const api = new Api();
+import HelperCBB from '@/components/helpers/CBB';
+import { Game, gamesDataType } from '@/components/generic/types';
+
 
 // TODO update to show differential from season averages, build it into stats compare component?
-  
-const Momentum = (props) => {
-  const self = this;
-
-  const { height, width } = useWindowDimensions();
-
-  const game = props.game;
-
-  // console.log(game);
-
-  const awayStats = (game.stats && game.stats[game.away_team_id]) || {};
-  const homeStats = (game.stats && game.stats[game.home_team_id]) || {};
-
-  const [requestedMomentum, setRequestedMomentum] = useState(false);
-  const [momentumData, setMomentumData] = useState(null);
-
-  const awayMomentumStats = (momentumData && momentumData[game.away_team_id] && momentumData[game.away_team_id].stats) || {}; 
-  const homeMomentumStats = (momentumData && momentumData[game.home_team_id] && momentumData[game.home_team_id].stats) || {};
-
-  const awayTeamGames = (momentumData && momentumData[game.away_team_id] && momentumData[game.away_team_id].cbb_games) || {}; 
-  const homeTeamGames = (momentumData && momentumData[game.home_team_id] && momentumData[game.home_team_id].cbb_games) || {}; 
-
-  if (!requestedMomentum) {
-    setRequestedMomentum(true);
-    api.Request({
-      'class': 'cbb_game',
-      'function': 'getMomentumData',
-      'arguments': game.cbb_game_id,
-    }).then((response) => {
-      setMomentumData(response || {});
-    }).catch((e) => {
-      setMomentumData({});
-    });
-  }
 
 
-  const theme = useTheme();
+const Client = ({cbb_game, momentumData, stats}) => {
+  const { width } = useWindowDimensions() as Dimensions;
 
   const CBB = new HelperCBB({
-    'cbb_game': game,
+    'cbb_game': cbb_game,
   });
+
+
+  const awayStats = (cbb_game.away_team_id in stats) ? stats[cbb_game.away_team_id] : {};
+  const homeStats = (cbb_game.home_team_id in stats) ? stats[cbb_game.home_team_id] : {};
+
+
+  const awayMomentumStats = (momentumData && momentumData[cbb_game.away_team_id] && momentumData[cbb_game.away_team_id].stats) || {}; 
+  const homeMomentumStats = (momentumData && momentumData[cbb_game.home_team_id] && momentumData[cbb_game.home_team_id].stats) || {};
+
+  const awayTeamGames: gamesDataType = (momentumData && momentumData[cbb_game.away_team_id] && momentumData[cbb_game.away_team_id].cbb_games) || {}; 
+  const homeTeamGames: gamesDataType = (momentumData && momentumData[cbb_game.home_team_id] && momentumData[cbb_game.home_team_id].cbb_games) || {}; 
+
 
   const overviewRows = [
     {
@@ -494,15 +472,15 @@ const Momentum = (props) => {
     },
   ];
 
-  const sortedHomeGames = Object.values(homeTeamGames).sort(function(a, b) {
+  const sortedHomeGames: Game[] = Object.values(homeTeamGames).sort(function(a, b) {
     return a.start_date < b.start_date ? -1 : 1;
   });
 
-  const sortedAwayGames = Object.values(awayTeamGames).sort(function(a, b) {
+  const sortedAwayGames: Game[] = Object.values(awayTeamGames).sort(function(a, b) {
     return a.start_date < b.start_date ? -1 : 1;
   });
 
-  const flexContainerStyle = {
+  const flexContainerStyle: React.CSSProperties = {
     'display': 'flex',
     'flexFlow': 'row wrap',
     'justifyContent': 'space-evenly',
@@ -528,8 +506,7 @@ const Momentum = (props) => {
 
   return (
     <div>
-      <TeamSubHeader game = {game} />
-      <div style = {{'padding': '0px 20px 20px 20px'}}>
+      <div style = {{'padding': '0px 5px 20px 5px'}}>
         {
           momentumData === null ?
           <Paper elevation = {3} style = {{'padding': 10}}>
@@ -551,20 +528,20 @@ const Momentum = (props) => {
               <Paper elevation = {3} style = {{'padding': 10, 'margin': '0px 5px 10px 5px'}}>
                 <table style = {{'width': '100%'}}>
                   <tr>
-                    <th colspan='3'><Typography variant = 'caption'>{CBB.getTeamName('away')}</Typography></th>
+                    <th colSpan = {3}><Typography variant = 'caption'>{CBB.getTeamName('away')}</Typography></th>
                   </tr>
                   {
-                    sortedAwayGames.map((cbb_game) => {
+                    sortedAwayGames.map((cbb_game_) => {
                       const CBB_ = new HelperCBB({
-                        'cbb_game': cbb_game,
+                        'cbb_game': cbb_game_,
                       });
 
-                      const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === game.away_team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === game.away_team_id);
+                      const won = (cbb_game_.home_score > cbb_game_.away_score && cbb_game_.home_team_id === cbb_game.away_team_id) || (cbb_game_.home_score < cbb_game_.away_score && cbb_game_.away_team_id === cbb_game.away_team_id);
 
                       return (<tr>
-                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
-                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game.away_team_id === game.away_team_id ? '@ ' + CBB_.getTeamName('home') : 'vs ' +CBB_.getTeamName('away')}</Typography></td>
-                        <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
+                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game_.start_datetime).format('M/D')}</Typography></td>
+                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game_.away_team_id === cbb_game.away_team_id ? '@ ' + CBB_.getTeamName('home') : 'vs ' +CBB_.getTeamName('away')}</Typography></td>
+                        <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game_.away_score} - {cbb_game_.home_score}</Typography></td>
                       </tr>);
                     })
                   }
@@ -574,20 +551,20 @@ const Momentum = (props) => {
                 <Paper elevation = {3} style = {{'padding': 10, 'margin': '0px 5px 10px 5px'}}>
                 <table style = {{'width': '100%'}}>
                   <tr>
-                    <th colspan='3'><Typography variant = 'caption'>{CBB.getTeamName('home')}</Typography></th>
+                    <th colSpan = {3}><Typography variant = 'caption'>{CBB.getTeamName('home')}</Typography></th>
                   </tr>
                   {
-                    sortedHomeGames.map((cbb_game) => {
+                    sortedHomeGames.map((cbb_game_) => {
                       const CBB_ = new HelperCBB({
-                        'cbb_game': cbb_game,
+                        'cbb_game': cbb_game_,
                       });
 
-                      const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === game.home_team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === game.home_team_id);
+                      const won = (cbb_game_.home_score > cbb_game_.away_score && cbb_game_.home_team_id === cbb_game.home_team_id) || (cbb_game_.home_score < cbb_game_.away_score && cbb_game_.away_team_id === cbb_game.home_team_id);
 
                       return (<tr>
-                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game.start_datetime).format('M/D')}</Typography></td>
-                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game.home_team_id === game.home_team_id ? '@ ' + CBB_.getTeamName('away') : 'vs ' +CBB_.getTeamName('home')}</Typography></td>
-                        <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game.away_score} - {cbb_game.home_score}</Typography></td>
+                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{moment(cbb_game_.start_datetime).format('M/D')}</Typography></td>
+                        <td style = {{'padding': '0px 5px'}}><Typography variant = 'caption'>{cbb_game_.home_team_id === cbb_game.home_team_id ? '@ ' + CBB_.getTeamName('away') : 'vs ' +CBB_.getTeamName('home')}</Typography></td>
+                        <td style = {{'padding': '0px 5px', 'textAlign': 'right'}}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game_.away_score} - {cbb_game_.home_score}</Typography></td>
                       </tr>);
                     })
                   }
@@ -625,4 +602,4 @@ const Momentum = (props) => {
   );
 }
 
-export default Momentum;
+export default Client;

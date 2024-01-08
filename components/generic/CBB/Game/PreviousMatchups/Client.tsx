@@ -1,57 +1,30 @@
+'use client';
 import React, { useState } from 'react';
+import { Chip, Typography, Paper, Skeleton } from '@mui/material';
+
+import HelperCBB from '@/components/helpers/CBB';
+
+import PreviousMatchupTile from '@/components/generic/CBB/Game/PreviousMatchups/Tile';
+import { Game, gamesDataType } from '@/components/generic/types';
 
 
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import Skeleton from '@mui/material/Skeleton';
 
-import HelperCBB from '../../../helpers/CBB';
+const Client = ({cbb_game, previousMatchups}: {cbb_game: Game, previousMatchups: gamesDataType}) => {
 
-import PreviousMatchupTile from './PreviousMatchupTile';
-
-
-import Api from './../../../Api.jsx';
-const api = new Api();
-
-const PreviousMatchups = (props) => {
-  const self = this;
-
-  const game = props.game;
-
-  const [requestedPM, setRequestedPM] = useState(false);
-  const [previousMatchups, setPreviousMatchups] = useState(null);
   const [showAllPreviousMatchups, setShowAllPreviousMatchups] = useState(false);
 
-  console.log(previousMatchups);
-
-
   const CBB = new HelperCBB({
-    'cbb_game': game,
+    'cbb_game': cbb_game,
   });
 
 
-  if (!requestedPM) {
-    setRequestedPM(true);
-    api.Request({
-      'class': 'cbb_game',
-      'function': 'getPreviousMatchups',
-      'arguments': game.cbb_game_id,
-    }).then((cbb_games) => {
-      setPreviousMatchups(cbb_games || {});
-    }).catch((e) => {
-      setPreviousMatchups({});
-    });
-  }
-
-
-  let previousMatchupContainers = [];
-  let summaryPRContainers = [];
+  let previousMatchupContainers: React.JSX.Element[] = [];
+  let summaryPRContainers: React.JSX.Element[] = [];
 
   if (previousMatchups && !Object.keys(previousMatchups).length) {
     previousMatchupContainers.push(<Paper elevation = {3} style = {{'padding': 10}}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
   } else if (previousMatchups) {
-    const sorted_matchups = Object.values(previousMatchups).sort(function(a, b) {
+    const sorted_matchups: Game[] = Object.values(previousMatchups).sort(function(a, b) {
       return a.start_date > b.start_date ? -1 : 1;
     });
 
@@ -73,14 +46,14 @@ const PreviousMatchups = (props) => {
       const lastThree = sorted_matchups.length > 3 && i < 3;
 
       if (game_.away_score > game_.home_score) {
-        if (game_.away_team_id === game.away_team_id) {
+        if (game_.away_team_id === cbb_game.away_team_id) {
           away_wins++;
           away_points += game_.away_score - game_.home_score;
           if (lastThree) {
             lastThree_away_wins++;
             lastThree_away_points += game_.away_score - game_.home_score;
           }
-        } else if (game_.away_team_id === game.home_team_id) {
+        } else if (game_.away_team_id === cbb_game.home_team_id) {
           home_wins++;
           home_points += game_.away_score - game_.home_score;
           if (lastThree) {
@@ -89,14 +62,14 @@ const PreviousMatchups = (props) => {
           }
         }
       } else if (game_.away_score < game_.home_score) {
-        if (game_.home_team_id === game.away_team_id) {
+        if (game_.home_team_id === cbb_game.away_team_id) {
           away_wins++;
           away_points += game_.home_score - game_.away_score;
           if (lastThree) {
             lastThree_away_wins++;
             lastThree_away_points += game_.home_score - game_.away_score;
           }
-        } else if (game_.home_team_id === game.home_team_id) {
+        } else if (game_.home_team_id === cbb_game.home_team_id) {
           home_wins++;
           home_points += game_.home_score - game_.away_score;
           if (lastThree) {
@@ -106,7 +79,7 @@ const PreviousMatchups = (props) => {
         }
       }
       if (i < 3 || showAllPreviousMatchups) {
-        previousMatchupContainers.push(<PreviousMatchupTile game = {sorted_matchups[i]} />);
+        previousMatchupContainers.push(<PreviousMatchupTile cbb_game = {sorted_matchups[i]} />);
       }
     }
 
@@ -138,9 +111,9 @@ const PreviousMatchups = (props) => {
 
 
   return (
-    <div>
+    <div style = {{'padding': '0px 10px'}}>
       <Typography variant = 'body1'>Previous match-ups</Typography>
-      {
+      {/* {
         previousMatchups === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>
           <div>
@@ -152,7 +125,7 @@ const PreviousMatchups = (props) => {
           </div>
         </Paper>
         : ''
-      }
+      } */}
       {summaryPRContainers}
       {
         previousMatchups !== null ?
@@ -165,4 +138,4 @@ const PreviousMatchups = (props) => {
   );
 }
 
-export default PreviousMatchups;
+export default Client;

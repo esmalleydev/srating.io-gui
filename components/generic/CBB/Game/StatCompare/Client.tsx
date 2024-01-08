@@ -1,38 +1,15 @@
+'use client';
 import React, { useState } from 'react';
-
-
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
+import { Chip } from '@mui/material';
+import RankChart from '@/components/generic/CBB/Game/Trends/RankChart';
 
-import RankChart from './Charts/Rank';
 
-import Api from './../../../Api.jsx';
-const api = new Api();
 
-const StatCompare = (props) => {
-  const self = this;
+const Client = ({cbb_game, rankings}) => {
 
-  const game = props.game;
-
-  const [requestedStats, setRequestedStats] = useState(false);
-  const [statsData, setStatsData] = useState(null);
   const [selectedStatChip, setSelectedStatChip] = useState('elo_rank');
 
-   if (!requestedStats) {
-    setRequestedStats(true);
-    api.Request({
-      'class': 'cbb_statistic_ranking',
-      'function': 'read',
-      'arguments': {
-        'season': game.season,
-        'team_id': [game.home_team_id, game.away_team_id],
-      },
-    }).then((response) => {
-      setStatsData(response || {});
-    }).catch((e) => {
-      setStatsData({});
-    });
-  }
 
   const statsCompare = [
     {
@@ -53,7 +30,7 @@ const StatCompare = (props) => {
     },
   ];
 
-  let statsCompareChips = [];
+  let statsCompareChips: React.JSX.Element[] = [];
 
   for (let i = 0; i < statsCompare.length; i++) {
     statsCompareChips.push(
@@ -72,12 +49,12 @@ const StatCompare = (props) => {
   // todo show popular stats in chips, then a show more button that goes to a stat selector screen
 
   return (
-    <div>
+    <div style = {{'padding': '0px 10px'}}>
       <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Rank compare</Typography>
       {statsCompareChips}
-      {<RankChart game = {game} compareKey = {selectedStatChip} />}
+      {<RankChart cbb_game = {cbb_game} compareKey = {selectedStatChip} rankings = {rankings} />}
     </div>
   );
 }
 
-export default StatCompare;
+export default Client;

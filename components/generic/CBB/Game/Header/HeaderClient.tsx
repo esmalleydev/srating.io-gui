@@ -50,7 +50,8 @@ const HeaderClient = ({cbb_game, tag}) => {
   const getTime = () => {
     return (
       <div>
-        <Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{!CBB.isInProgress() ? CBB.getStartDate() + ' ' : ''}{CBB.getTime()}</Typography>
+        {!CBB.isInProgress() ? <div><Typography color = {'text.secondary'} variant = 'overline'>{CBB.getStartDate()}</Typography></div> : ''}
+        <div><Typography color = {'info.dark'} variant = 'overline'>{CBB.getTime()}</Typography></div>
       </div>
     )
   };

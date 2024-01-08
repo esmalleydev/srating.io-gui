@@ -1,67 +1,40 @@
-import React, { useState } from 'react';
+'use client';
+import React from 'react';
+import { Typography, Skeleton } from '@mui/material';
 
-import Typography from '@mui/material/Typography';
-import Skeleton from '@mui/material/Skeleton';
-
-import HelperCBB from '../../../helpers/CBB';
+import HelperCBB from '@/components/helpers/CBB';
 
 
-import Api from './../../../Api.jsx';
-const api = new Api();
 
-const OddsTrends = (props) => {
-  const self = this;
-
-  const game = props.game;
-
-  const [requestedOddsStats, setRequestedOddsStats] = useState(false);
-  const [oddsStats, setOddsStats] = useState(null);
+const Client = ({cbb_game, oddsStats}) => {
 
   const CBB = new HelperCBB({
-    'cbb_game': game,
+    'cbb_game': cbb_game,
   });
 
   let awayUnderdog = false;
   let homeUnderdog = false;
 
-  if (game.odds) {
-    awayUnderdog = game.odds.pre_game_money_line_away > 0;
-    homeUnderdog = game.odds.pre_game_money_line_home > 0;
+  if (cbb_game.odds) {
+    awayUnderdog = cbb_game.odds.pre_game_money_line_away > 0;
+    homeUnderdog = cbb_game.odds.pre_game_money_line_home > 0;
   }
 
 
-
-  if (!requestedOddsStats) {
-    setRequestedOddsStats(true);
-    api.Request({
-      'class': 'cbb_game',
-      'function': 'getOddsStats',
-      'arguments': game.cbb_game_id,
-    }).then((Stats) => {
-      setOddsStats(Stats || {});
-    }).catch((e) => {
-      setOddsStats({});
-    });
-  }
-
-
-
-
-  let awayOddsText = null;
-  if (oddsStats && oddsStats[game.away_team_id]) {
-    const awayOS = oddsStats[game.away_team_id];
+  let awayOddsText: string | null = null;
+  if (oddsStats && oddsStats[cbb_game.away_team_id]) {
+    const awayOS = oddsStats[cbb_game.away_team_id];
     awayOddsText = CBB.getTeamName('away') + ' is ' + (awayUnderdog ? awayOS.underdog_wins + '/' + awayOS.underdog_games + ', ' + (((awayOS.underdog_wins / awayOS.underdog_games) || 0) * 100).toFixed(0) + '% as the underdog this season.' : awayOS.favored_wins + '/' + awayOS.favored_games + ', ' + (((awayOS.favored_wins / awayOS.favored_games) || 0) * 100).toFixed(0) + '% when favored this season.');
   }
 
-  let homeOddsText = null;
-  if (oddsStats && oddsStats[game.home_team_id]) {
-    const homeOS = oddsStats[game.home_team_id];
+  let homeOddsText: string | null = null;
+  if (oddsStats && oddsStats[cbb_game.home_team_id]) {
+    const homeOS = oddsStats[cbb_game.home_team_id];
     homeOddsText = CBB.getTeamName('home') + ' is ' + (homeUnderdog ? homeOS.underdog_wins + '/' + homeOS.underdog_games + ', ' + (((homeOS.underdog_wins / homeOS.underdog_games) || 0) * 100).toFixed(0) + '% as the underdog this season.' : homeOS.favored_wins + '/' + homeOS.favored_games + ', ' + (((homeOS.favored_wins / homeOS.favored_games) || 0) * 100).toFixed(0) + '% when favored this season.');
   }
 
   return (
-    <div>
-
+    <div style = {{'padding': '0px 10px'}}>
       <Typography variant = 'body1'>Odds trends</Typography>
       <div>
         <Typography variant = 'body2'>{oddsStats === null ? <Skeleton /> : (awayOddsText ? awayOddsText : 'Missing data')}</Typography>
@@ -71,4 +44,4 @@ const OddsTrends = (props) => {
   );
 }
 
-export default OddsTrends;
+export default Client;

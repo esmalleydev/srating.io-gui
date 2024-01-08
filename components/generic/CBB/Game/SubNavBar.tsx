@@ -18,6 +18,13 @@ const SubNavBar = ({ view, subview, tabOrder}) => {
       'boxscore': 'Boxscore',
       'pbp': 'Play by play',
     };
+  } else if (view === 'trends') {
+    tabOptions = {
+      'stat_compare': 'Stat compare',
+      'previous_matchups': 'Prev. Matchups',
+      'odds': 'Odds',
+      'momentum': 'Momentum',
+    };
   }
 
   const index = tabOrder.indexOf(subview);
