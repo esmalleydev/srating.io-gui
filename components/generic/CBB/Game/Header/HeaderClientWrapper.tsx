@@ -84,10 +84,22 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
   let sideWidth = 115;
   let supFontSize = 12;
 
+  let modifier = 150;
+
+  if (CBB.isInProgress() || CBB.isFinal()) {
+    modifier = 600;
+  }
+
   if (width < getBreakPoint()) {
     sideWidth = 75;
     teamNameVariant = 'body1';
     supFontSize = 10;
+  } else if (width > getBreakPoint() && (width - (sideWidth * 2) - modifier) > 0) {
+    sideWidth += (width - (sideWidth * 2) - 150) / 2;
+  }
+
+  if (sideWidth > 225) {
+    sideWidth = 225;
   }
 
   const network: React.JSX.Element[] = [];
@@ -100,6 +112,17 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
     const teamHelper = new HelperTeam({'team': team});
     const rank = teamHelper.getRank(displaySlice.rank);
 
+    let justifyContent = 'left';
+    let teamName = teamHelper.getName();
+
+    if (team_id === cbb_game.home_team_id) {
+      justifyContent = 'right';
+    }
+
+    if (width < getBreakPoint()) {
+      teamName = teamHelper.getNameShort();
+    }
+
     const supStyle: React.CSSProperties = {
       'fontSize': supFontSize,
       'verticalAlign': 'super',
@@ -111,13 +134,13 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
 
     return (
       <div>
-        <div style = {{'display': 'flex', 'flexWrap': 'nowrap', 'cursor': 'pointer', 'justifyContent': 'center'}} onClick={() => {handleClick(team_id)}}>
+        <div style = {{'display': 'flex', 'flexWrap': 'nowrap', 'cursor': 'pointer', 'justifyContent': justifyContent}} onClick={() => {handleClick(team_id)}}>
           <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {teamNameVariant as 'h6' | 'body1'}>
             {rank ? <span style = {supStyle}>{rank} </span> : ''}
-            <Link style = {{'cursor': 'pointer'}} underline='hover'>{teamHelper.getName()}</Link>
+            <Link style = {{'cursor': 'pointer'}} underline='hover'>{teamName}</Link>
           </Typography>
         </div>
-        <div style = {{'fontSize': '16px', 'display': 'flex', 'justifyContent': 'center'}}>
+        <div style = {{'fontSize': '16px', 'display': 'flex', 'justifyContent': justifyContent}}>
           <Typography variant = 'overline' color = 'text.secondary'> ({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
         </div>
       </div>
