@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// import HelperCBB from '@/components/helpers/CBB';
 
 const rankLocalStorageKey = 'CBB.DISPLAY.RANK';
 const picksSortLocalStorageKey = 'CBB.DISPLAY.PICKS.SORT';
@@ -19,6 +20,7 @@ type InitialState = {
     rank: string,
     picksSort: string,
     conferences: string[],
+    // season: number,
   };
 };
 
@@ -27,6 +29,7 @@ const initialState = {
     rank: rankLocalStorage || 'composite_rank',
     picksSort: picksSortLocalStorage || 'start_time',
     conferences: (conferencesLocalStorage && JSON.parse(conferencesLocalStorage)) || [],
+    // season: new HelperCBB().getCurrentSeason(),
   },
 } as InitialState;
 
@@ -34,6 +37,9 @@ export const display = createSlice({
   name: 'display',
   initialState: initialState,
   reducers: {
+    // setSeason: (state, action: PayloadAction<number>) => {
+    //   state.value.season = action.payload;
+    // },
     setRank: (state, action: PayloadAction<string>) => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(rankLocalStorageKey, action.payload);
@@ -64,5 +70,5 @@ export const display = createSlice({
   }
 });
 
-export const { setRank, setPicksSort, updateConferences } = display.actions;
+export const { /*setSeason,*/ setRank, setPicksSort, updateConferences } = display.actions;
 export default display.reducer;

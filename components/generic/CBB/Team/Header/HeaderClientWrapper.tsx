@@ -37,8 +37,7 @@ const getMarginTop = () => {
 
 export { getHeaderHeight, getMarginTop };
 
-
-const HeaderClientWrapper = ({season, team_id, children}) => {
+const HeaderClientWrapper = ({season, children}) => {
   const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();

@@ -1,39 +1,47 @@
-import React, { useState } from 'react';
-// import { useTheme } from '@mui/material/styles';
-// import useWindowDimensions from '../../../hooks/useWindowDimensions';
+'use client';
+import React from 'react';
 
 
 import Typography from '@mui/material/Typography';
-import CompareStatistic from '../../CompareStatistic';
 
-// import HelperCBB from '../../../helpers/CBB';
-import TeamSubHeader from './TeamSubHeader';
-  
-const Matchup = (props) => {
-  const self = this;
-
-  // const { height, width } = useWindowDimensions();
-
-  const awayTeam = props.awayTeam;
-  const homeTeam = props.homeTeam;
+import CompareStatistic from '@/components/generic/CompareStatistic';
 
 
-  const awayStats = props.awayStats || {};
-  const homeStats = props.homeStats || {};
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 
-  // const theme = useTheme();
+let intervalRefresher: NodeJS.Timeout;
 
-  const game = props.game;
+// todo the win % doesnt show since no session on server, will need to make an api call for the prediction
+
+const Client = ({ cbb_game, stats, rankings /*tag*/}) => {
+
+  const { width } = useWindowDimensions() as Dimensions;
+
+  // useEffect(() => {
+  //   intervalRefresher = setInterval(function() {
+  //     refresh(tag);
+  //   }, 25 * 1000);
+  //   return function clean_up() {
+  //     clearInterval(intervalRefresher);
+  //   };
+  // });
+
+
+  const awayStats = (cbb_game.away_team_id in stats) ? stats[cbb_game.away_team_id] : {};
+  const homeStats = (cbb_game.home_team_id in stats) ? stats[cbb_game.home_team_id] : {};
+
+  const awayRankings = (cbb_game.away_team_id in rankings) ? rankings[cbb_game.away_team_id] : {};
+  const homeRankings = (cbb_game.home_team_id in rankings) ? rankings[cbb_game.home_team_id] : {};
 
 
   const baseRows = [
     {
       'name': 'Win %',
       'title': 'Predicted win %',
-      'away': (game.away_team_rating * 100).toFixed(0) + '%',
-      'home': (game.home_team_rating * 100).toFixed(0) + '%',
-      'awayCompareValue': game.away_team_rating,
-      'homeCompareValue': game.home_team_rating,
+      'away': (cbb_game.away_team_rating * 100).toFixed(0) + '%',
+      'home': (cbb_game.home_team_rating * 100).toFixed(0) + '%',
+      'awayCompareValue': cbb_game.away_team_rating,
+      'homeCompareValue': cbb_game.home_team_rating,
       'favored': 'higher',
       'showDifference': false,
     },
@@ -88,12 +96,12 @@ const Matchup = (props) => {
     {
       'name': 'aEM',
       'title': 'Adjusted Efficiency margin',
-      'away': awayStats.internal && awayStats.internal.adjusted_efficiency_rating,
-      'home': homeStats.internal && homeStats.internal.adjusted_efficiency_rating,
-      'awayCompareValue': awayStats.internal && awayStats.internal.adjusted_efficiency_rating,
-      'homeCompareValue': homeStats.internal && homeStats.internal.adjusted_efficiency_rating,
-      'awayRank': awayStats.internal && awayStats.internal.adjusted_efficiency_rating_rank,
-      'homeRank': homeStats.internal && homeStats.internal.adjusted_efficiency_rating_rank,
+      'away': awayStats.adjusted_efficiency_rating,
+      'home': homeStats.adjusted_efficiency_rating,
+      'awayCompareValue': awayStats.adjusted_efficiency_rating,
+      'homeCompareValue': homeStats.adjusted_efficiency_rating,
+      'awayRank': awayStats.adjusted_efficiency_rating_rank,
+      'homeRank': homeStats.adjusted_efficiency_rating_rank,
       'favored': 'higher',
       'showDifference': true,
       'compareType': 'rank',
@@ -101,12 +109,12 @@ const Matchup = (props) => {
     {
       'name': 'SOS',
       'title': 'Strength of schedule',
-      'away': awayStats.internal && awayStats.internal.opponent_efficiency_rating,
-      'home': homeStats.internal && homeStats.internal.opponent_efficiency_rating,
-      'awayCompareValue': awayStats.internal && awayStats.internal.opponent_efficiency_rating,
-      'homeCompareValue': homeStats.internal && homeStats.internal.opponent_efficiency_rating,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_efficiency_rating_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_efficiency_rating_rank,
+      'away': awayStats.opponent_efficiency_rating,
+      'home': homeStats.opponent_efficiency_rating,
+      'awayCompareValue': awayStats.opponent_efficiency_rating,
+      'homeCompareValue': homeStats.opponent_efficiency_rating,
+      'awayRank': awayStats.opponent_efficiency_rating_rank,
+      'homeRank': homeStats.opponent_efficiency_rating_rank,
       'favored': 'higher',
       'showDifference': true,
       'compareType': 'rank',
@@ -118,8 +126,8 @@ const Matchup = (props) => {
       'home': homeStats.offensive_rating,
       'awayCompareValue': awayStats.offensive_rating,
       'homeCompareValue': homeStats.offensive_rating,
-      'awayRank': awayStats.internal && awayStats.internal.offensive_rating_rank,
-      'homeRank': homeStats.internal && homeStats.internal.offensive_rating_rank,
+      'awayRank': awayStats.offensive_rating_rank,
+      'homeRank': homeStats.offensive_rating_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -130,8 +138,8 @@ const Matchup = (props) => {
       'home': homeStats.defensive_rating,
       'awayCompareValue': awayStats.defensive_rating,
       'homeCompareValue': homeStats.defensive_rating,
-      'awayRank': awayStats.internal && awayStats.internal.defensive_rating_rank,
-      'homeRank': homeStats.internal && homeStats.internal.defensive_rating_rank,
+      'awayRank': awayStats.defensive_rating_rank,
+      'homeRank': homeStats.defensive_rating_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -142,8 +150,8 @@ const Matchup = (props) => {
       'home': homeStats.points,
       'awayCompareValue': awayStats.points,
       'homeCompareValue': homeStats.points,
-      'awayRank': awayStats.internal && awayStats.internal.points_rank,
-      'homeRank': homeStats.internal && homeStats.internal.points_rank,
+      'awayRank': awayStats.points_rank,
+      'homeRank': homeStats.points_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -154,8 +162,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_points,
       'awayCompareValue': awayStats.opponent_points,
       'homeCompareValue': homeStats.opponent_points,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_points_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_points_rank,
+      'awayRank': awayStats.opponent_points_rank,
+      'homeRank': homeStats.opponent_points_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -208,10 +216,10 @@ const Matchup = (props) => {
     {
       'name': 'Rank',
       'title': 'Composite Rank',
-      'away': (awayTeam.ranking && awayTeam.ranking.composite_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.composite_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.composite_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.composite_rank) || Infinity,
+      'away': (awayRankings.composite_rank) || '-',
+      'home': (homeRankings.composite_rank) || '-',
+      'awayCompareValue': (awayRankings.composite_rank) || Infinity,
+      'homeCompareValue': (homeRankings.composite_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
       'precision': 0,
@@ -223,8 +231,8 @@ const Matchup = (props) => {
       'home': homeStats.elo,
       'awayCompareValue': awayStats.elo,
       'homeCompareValue': homeStats.elo,
-      'awayRank': (awayTeam.ranking && awayTeam.ranking.elo_rank),
-      'homeRank': (homeTeam.ranking && homeTeam.ranking.elo_rank),
+      'awayRank': (awayRankings.elo_rank),
+      'homeRank': (homeRankings.elo_rank),
       'favored': 'higher',
       'showDifference': true,
       'precision': 0,
@@ -232,10 +240,10 @@ const Matchup = (props) => {
     {
       'name': 'NET',
       'title': 'NET',
-      'away': (awayTeam.ranking && awayTeam.ranking.net_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.net_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.net_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.net_rank) || Infinity,
+      'away': (awayRankings.net_rank) || '-',
+      'home': (homeRankings.net_rank) || '-',
+      'awayCompareValue': (awayRankings.net_rank) || Infinity,
+      'homeCompareValue': (homeRankings.net_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
       'precision': 0,
@@ -243,10 +251,10 @@ const Matchup = (props) => {
     {
       'name': 'KP',
       'title': 'Kenpom',
-      'away': (awayTeam.ranking && awayTeam.ranking.kenpom_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.kenpom_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.kenpom_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.kenpom_rank) || Infinity,
+      'away': (awayRankings.kenpom_rank) || '-',
+      'home': (homeRankings.kenpom_rank) || '-',
+      'awayCompareValue': (awayRankings.kenpom_rank) || Infinity,
+      'homeCompareValue': (homeRankings.kenpom_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
       'precision': 0,
@@ -254,10 +262,10 @@ const Matchup = (props) => {
     {
       'name': 'SRS',
       'title': 'SRS',
-      'away': (awayTeam.ranking && awayTeam.ranking.srs_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.srs_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.srs_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.srs_rank) || Infinity,
+      'away': (awayRankings.srs_rank) || '-',
+      'home': (homeRankings.srs_rank) || '-',
+      'awayCompareValue': (awayRankings.srs_rank) || Infinity,
+      'homeCompareValue': (homeRankings.srs_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
       'precision': 0,
@@ -265,10 +273,10 @@ const Matchup = (props) => {
     {
       'name': 'AP',
       'title': 'AP',
-      'away': (awayTeam.ranking && awayTeam.ranking.ap_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.ap_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.ap_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.ap_rank) || Infinity,
+      'away': (awayRankings.ap_rank) || '-',
+      'home': (homeRankings.ap_rank) || '-',
+      'awayCompareValue': (awayRankings.ap_rank) || Infinity,
+      'homeCompareValue': (homeRankings.ap_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
       'precision': 0,
@@ -276,10 +284,10 @@ const Matchup = (props) => {
     {
       'name': 'Coaches',
       'title': 'Coaches Poll',
-      'away': (awayTeam.ranking && awayTeam.ranking.coaches_rank) || '-',
-      'home': (homeTeam.ranking && homeTeam.ranking.coaches_rank) || '-',
-      'awayCompareValue': (awayTeam.ranking && awayTeam.ranking.coaches_rank) || Infinity,
-      'homeCompareValue': (homeTeam.ranking && homeTeam.ranking.coaches_rank) || Infinity,
+      'away': (awayRankings.coaches_rank) || '-',
+      'home': (homeRankings.coaches_rank) || '-',
+      'awayCompareValue': (awayRankings.coaches_rank) || Infinity,
+      'homeCompareValue': (homeRankings.coaches_rank) || Infinity,
       'favored': 'lower',
       'showDifference': true,
       'precision': 0,
@@ -295,8 +303,8 @@ const Matchup = (props) => {
       'home': homeStats.possessions,
       'awayCompareValue': awayStats.possessions,
       'homeCompareValue': homeStats.possessions,
-      'awayRank': awayStats.internal && awayStats.internal.possessions_rank,
-      'homeRank': homeStats.internal && homeStats.internal.possessions_rank,
+      'awayRank': awayStats.possessions_rank,
+      'homeRank': homeStats.possessions_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -308,8 +316,8 @@ const Matchup = (props) => {
       'home': homeStats.field_goal,
       'awayCompareValue': awayStats.field_goal,
       'homeCompareValue': homeStats.field_goal,
-      'awayRank': awayStats.internal && awayStats.internal.field_goal_rank,
-      'homeRank': homeStats.internal && homeStats.internal.field_goal_rank,
+      'awayRank': awayStats.field_goal_rank,
+      'homeRank': homeStats.field_goal_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -321,8 +329,8 @@ const Matchup = (props) => {
       'home': homeStats.field_goal_attempts,
       'awayCompareValue': awayStats.field_goal_attempts,
       'homeCompareValue': homeStats.field_goal_attempts,
-      'awayRank': awayStats.internal && awayStats.internal.field_goal_attempts_rank,
-      'homeRank': homeStats.internal && homeStats.internal.field_goal_attempts_rank,
+      'awayRank': awayStats.field_goal_attempts_rank,
+      'homeRank': homeStats.field_goal_attempts_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -334,8 +342,8 @@ const Matchup = (props) => {
       'home': homeStats.field_goal_percentage + '%',
       'awayCompareValue': awayStats.field_goal_percentage,
       'homeCompareValue': homeStats.field_goal_percentage,
-      'awayRank': awayStats.internal && awayStats.internal.field_goal_percentage_rank,
-      'homeRank': homeStats.internal && homeStats.internal.field_goal_percentage_rank,
+      'awayRank': awayStats.field_goal_percentage_rank,
+      'homeRank': homeStats.field_goal_percentage_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -347,8 +355,8 @@ const Matchup = (props) => {
       'home': homeStats.two_point_field_goal,
       'awayCompareValue': awayStats.two_point_field_goal,
       'homeCompareValue': homeStats.two_point_field_goal,
-      'awayRank': awayStats.internal && awayStats.internal.two_point_field_goal_rank,
-      'homeRank': homeStats.internal && homeStats.internal.two_point_field_goal_rank,
+      'awayRank': awayStats.two_point_field_goal_rank,
+      'homeRank': homeStats.two_point_field_goal_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -360,8 +368,8 @@ const Matchup = (props) => {
       'home': homeStats.two_point_field_goal_attempts,
       'awayCompareValue': awayStats.two_point_field_goal_attempts,
       'homeCompareValue': homeStats.two_point_field_goal_attempts,
-      'awayRank': awayStats.internal && awayStats.internal.two_point_field_goal_attempts_rank,
-      'homeRank': homeStats.internal && homeStats.internal.two_point_field_goal_attempts_rank,
+      'awayRank': awayStats.two_point_field_goal_attempts_rank,
+      'homeRank': homeStats.two_point_field_goal_attempts_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -373,8 +381,8 @@ const Matchup = (props) => {
       'home': homeStats.two_point_field_goal_percentage + '%',
       'awayCompareValue': awayStats.two_point_field_goal_percentage,
       'homeCompareValue': homeStats.two_point_field_goal_percentage,
-      'awayRank': awayStats.internal && awayStats.internal.two_point_field_goal_percentage_rank,
-      'homeRank': homeStats.internal && homeStats.internal.two_point_field_goal_percentage_rank,
+      'awayRank': awayStats.two_point_field_goal_percentage_rank,
+      'homeRank': homeStats.two_point_field_goal_percentage_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -386,8 +394,8 @@ const Matchup = (props) => {
       'home': homeStats.three_point_field_goal,
       'awayCompareValue': awayStats.three_point_field_goal,
       'homeCompareValue': homeStats.three_point_field_goal,
-      'awayRank': awayStats.internal && awayStats.internal.three_point_field_goal_rank,
-      'homeRank': homeStats.internal && homeStats.internal.three_point_field_goal_rank,
+      'awayRank': awayStats.three_point_field_goal_rank,
+      'homeRank': homeStats.three_point_field_goal_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -399,8 +407,8 @@ const Matchup = (props) => {
       'home': homeStats.three_point_field_goal_attempts,
       'awayCompareValue': awayStats.three_point_field_goal_attempts,
       'homeCompareValue': homeStats.three_point_field_goal_attempts,
-      'awayRank': awayStats.internal && awayStats.internal.three_point_field_goal_attempts_rank,
-      'homeRank': homeStats.internal && homeStats.internal.three_point_field_goal_attempts_rank,
+      'awayRank': awayStats.three_point_field_goal_attempts_rank,
+      'homeRank': homeStats.three_point_field_goal_attempts_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -412,8 +420,8 @@ const Matchup = (props) => {
       'home': homeStats.three_point_field_goal_percentage + '%',
       'awayCompareValue': awayStats.three_point_field_goal_percentage,
       'homeCompareValue': homeStats.three_point_field_goal_percentage,
-      'awayRank': awayStats.internal && awayStats.internal.three_point_field_goal_percentage_rank,
-      'homeRank': homeStats.internal && homeStats.internal.three_point_field_goal_percentage_rank,
+      'awayRank': awayStats.three_point_field_goal_percentage_rank,
+      'homeRank': homeStats.three_point_field_goal_percentage_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -425,8 +433,8 @@ const Matchup = (props) => {
       'home': homeStats.free_throws,
       'awayCompareValue': awayStats.free_throws,
       'homeCompareValue': homeStats.free_throws,
-      'awayRank': awayStats.internal && awayStats.internal.free_throws_rank,
-      'homeRank': homeStats.internal && homeStats.internal.free_throws_rank,
+      'awayRank': awayStats.free_throws_rank,
+      'homeRank': homeStats.free_throws_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -438,8 +446,8 @@ const Matchup = (props) => {
       'home': homeStats.free_throw_attempts,
       'awayCompareValue': awayStats.free_throw_attempts,
       'homeCompareValue': homeStats.free_throw_attempts,
-      'awayRank': awayStats.internal && awayStats.internal.free_throw_attempts_rank,
-      'homeRank': homeStats.internal && homeStats.internal.free_throw_attempts_rank,
+      'awayRank': awayStats.free_throw_attempts_rank,
+      'homeRank': homeStats.free_throw_attempts_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -451,8 +459,8 @@ const Matchup = (props) => {
       'home': homeStats.free_throw_percentage + '%',
       'awayCompareValue': awayStats.free_throw_percentage,
       'homeCompareValue': homeStats.free_throw_percentage,
-      'awayRank': awayStats.internal && awayStats.internal.free_throw_percentage_rank,
-      'homeRank': homeStats.internal && homeStats.internal.free_throw_percentage_rank,
+      'awayRank': awayStats.free_throw_percentage_rank,
+      'homeRank': homeStats.free_throw_percentage_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -467,8 +475,8 @@ const Matchup = (props) => {
       'home': homeStats.offensive_rebounds,
       'awayCompareValue': awayStats.offensive_rebounds,
       'homeCompareValue': homeStats.offensive_rebounds,
-      'awayRank': awayStats.internal && awayStats.internal.offensive_rebounds_rank,
-      'homeRank': homeStats.internal && homeStats.internal.offensive_rebounds_rank,
+      'awayRank': awayStats.offensive_rebounds_rank,
+      'homeRank': homeStats.offensive_rebounds_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -480,8 +488,8 @@ const Matchup = (props) => {
       'home': homeStats.defensive_rebounds,
       'awayCompareValue': awayStats.defensive_rebounds,
       'homeCompareValue': homeStats.defensive_rebounds,
-      'awayRank': awayStats.internal && awayStats.internal.defensive_rebounds_rank,
-      'homeRank': homeStats.internal && homeStats.internal.defensive_rebounds_rank,
+      'awayRank': awayStats.defensive_rebounds_rank,
+      'homeRank': homeStats.defensive_rebounds_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -493,8 +501,8 @@ const Matchup = (props) => {
       'home': homeStats.assists,
       'awayCompareValue': awayStats.assists,
       'homeCompareValue': homeStats.assists,
-      'awayRank': awayStats.internal && awayStats.internal.assists_rank,
-      'homeRank': homeStats.internal && homeStats.internal.assists_rank,
+      'awayRank': awayStats.assists_rank,
+      'homeRank': homeStats.assists_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -506,8 +514,8 @@ const Matchup = (props) => {
       'home': homeStats.steals,
       'awayCompareValue': awayStats.steals,
       'homeCompareValue': homeStats.steals,
-      'awayRank': awayStats.internal && awayStats.internal.steals_rank,
-      'homeRank': homeStats.internal && homeStats.internal.steals_rank,
+      'awayRank': awayStats.steals_rank,
+      'homeRank': homeStats.steals_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -519,8 +527,8 @@ const Matchup = (props) => {
       'home': homeStats.blocks,
       'awayCompareValue': awayStats.blocks,
       'homeCompareValue': homeStats.blocks,
-      'awayRank': awayStats.internal && awayStats.internal.blocks_rank,
-      'homeRank': homeStats.internal && homeStats.internal.blocks_rank,
+      'awayRank': awayStats.blocks_rank,
+      'homeRank': homeStats.blocks_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -532,8 +540,8 @@ const Matchup = (props) => {
       'home': homeStats.turnovers,
       'awayCompareValue': awayStats.turnovers,
       'homeCompareValue': homeStats.turnovers,
-      'awayRank': awayStats.internal && awayStats.internal.turnovers_rank,
-      'homeRank': homeStats.internal && homeStats.internal.turnovers_rank,
+      'awayRank': awayStats.turnovers_rank,
+      'homeRank': homeStats.turnovers_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -545,8 +553,8 @@ const Matchup = (props) => {
       'home': homeStats.fouls,
       'awayCompareValue': awayStats.fouls,
       'homeCompareValue': homeStats.fouls,
-      'awayRank': awayStats.internal && awayStats.internal.fouls_rank,
-      'homeRank': homeStats.internal && homeStats.internal.fouls_rank,
+      'awayRank': awayStats.fouls_rank,
+      'homeRank': homeStats.fouls_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -591,8 +599,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_field_goal,
       'awayCompareValue': awayStats.opponent_field_goal,
       'homeCompareValue': homeStats.opponent_field_goal,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_field_goal_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_field_goal_rank,
+      'awayRank': awayStats.opponent_field_goal_rank,
+      'homeRank': homeStats.opponent_field_goal_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -604,8 +612,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_field_goal_attempts,
       'awayCompareValue': awayStats.opponent_field_goal_attempts,
       'homeCompareValue': homeStats.opponent_field_goal_attempts,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_field_goal_attempts_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_field_goal_attempts_rank,
+      'awayRank': awayStats.opponent_field_goal_attempts_rank,
+      'homeRank': homeStats.opponent_field_goal_attempts_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -617,8 +625,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_field_goal_percentage + '%',
       'awayCompareValue': awayStats.opponent_field_goal_percentage,
       'homeCompareValue': homeStats.opponent_field_goal_percentage,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_field_goal_percentage_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_field_goal_percentage_rank,
+      'awayRank': awayStats.opponent_field_goal_percentage_rank,
+      'homeRank': homeStats.opponent_field_goal_percentage_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -630,8 +638,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_offensive_rebounds,
       'awayCompareValue': awayStats.opponent_offensive_rebounds,
       'homeCompareValue': homeStats.opponent_offensive_rebounds,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_offensive_rebounds_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_offensive_rebounds_rank,
+      'awayRank': awayStats.opponent_offensive_rebounds_rank,
+      'homeRank': homeStats.opponent_offensive_rebounds_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -643,8 +651,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_defensive_rebounds,
       'awayCompareValue': awayStats.opponent_defensive_rebounds,
       'homeCompareValue': homeStats.opponent_defensive_rebounds,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_defensive_rebounds_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_defensive_rebounds_rank,
+      'awayRank': awayStats.opponent_defensive_rebounds_rank,
+      'homeRank': homeStats.opponent_defensive_rebounds_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -656,8 +664,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_assists,
       'awayCompareValue': awayStats.opponent_assists,
       'homeCompareValue': homeStats.opponent_assists,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_assists_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_assists_rank,
+      'awayRank': awayStats.opponent_assists_rank,
+      'homeRank': homeStats.opponent_assists_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -669,8 +677,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_steals,
       'awayCompareValue': awayStats.opponent_steals,
       'homeCompareValue': homeStats.opponent_steals,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_steals_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_steals_rank,
+      'awayRank': awayStats.opponent_steals_rank,
+      'homeRank': homeStats.opponent_steals_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -682,8 +690,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_blocks,
       'awayCompareValue': awayStats.opponent_blocks,
       'homeCompareValue': homeStats.opponent_blocks,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_blocks_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_blocks_rank,
+      'awayRank': awayStats.opponent_blocks_rank,
+      'homeRank': homeStats.opponent_blocks_rank,
       'favored': 'lower',
       'showDifference': true,
     },
@@ -695,8 +703,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_turnovers,
       'awayCompareValue': awayStats.opponent_turnovers,
       'homeCompareValue': homeStats.opponent_turnovers,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_turnovers_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_turnovers_rank,
+      'awayRank': awayStats.opponent_turnovers_rank,
+      'homeRank': homeStats.opponent_turnovers_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -708,8 +716,8 @@ const Matchup = (props) => {
       'home': homeStats.opponent_fouls,
       'awayCompareValue': awayStats.opponent_fouls,
       'homeCompareValue': homeStats.opponent_fouls,
-      'awayRank': awayStats.internal && awayStats.internal.opponent_fouls_rank,
-      'homeRank': homeStats.internal && homeStats.internal.opponent_fouls_rank,
+      'awayRank': awayStats.opponent_fouls_rank,
+      'homeRank': homeStats.opponent_fouls_rank,
       'favored': 'higher',
       'showDifference': true,
     },
@@ -717,32 +725,31 @@ const Matchup = (props) => {
 
 
   return (
-    <div>
-      <TeamSubHeader game = {game} />
-      <div style = {{'padding': '0px 20px 20px 20px'}}>
-        {(game.home_team_rating || game.away_team_rating) ? <CompareStatistic season = {game.season} rows = {baseRows} /> : ''}
-        <CompareStatistic season = {game.season} paper = {true} rows = {overviewRows} />
+    <div style = {{'padding': '0px 5px 20px 5px', 'marginTop': 58}}>
+      {(cbb_game.home_team_rating || cbb_game.away_team_rating) ? <CompareStatistic season = {cbb_game.season} rows = {baseRows} /> : ''}
 
-        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Efficiency</Typography>
-        <CompareStatistic season = {game.season} paper = {true} rows = {efficiencyRows} />
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Record</Typography>
+      <CompareStatistic season = {cbb_game.season} paper = {true} rows = {overviewRows} />
 
-        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Rank</Typography>
-        <CompareStatistic season = {game.season} paper = {true} rows = {rankRows} />
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Efficiency</Typography>
+      <CompareStatistic season = {cbb_game.season} paper = {true} rows = {efficiencyRows} />
 
-        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>
-        <CompareStatistic season = {game.season} paper = {true} rows = {marginRows} />
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Rank</Typography>
+      <CompareStatistic season = {cbb_game.season} paper = {true} rows = {rankRows} />
 
-        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
-        <CompareStatistic season = {game.season} paper = {true} rows = {offenseRows} />
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Win / Loss Margin</Typography>
+      <CompareStatistic season = {cbb_game.season} paper = {true} rows = {marginRows} />
 
-        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
-        <CompareStatistic season = {game.season} paper = {true} rows = {specialRows} />
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Offense</Typography>
+      <CompareStatistic season = {cbb_game.season} paper = {true} rows = {offenseRows} />
 
-        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
-        <CompareStatistic season = {game.season} paper = {true} rows = {opponentRows} />
-      </div>
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Special</Typography>
+      <CompareStatistic season = {cbb_game.season} paper = {true} rows = {specialRows} />
+
+      <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'body1'>Opponent stats against</Typography>
+      <CompareStatistic season = {cbb_game.season} paper = {true} rows = {opponentRows} />
     </div>
   );
 }
 
-export default Matchup;
+export default Client;

@@ -14,10 +14,13 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 
-import HelperCBB from '../../../helpers/CBB';
-import CompareStatistic from '../../CompareStatistic';
-import TeamSubHeader from './TeamSubHeader';
-import BackdropLoader from '../../BackdropLoader';
+import HelperCBB from '@/components/helpers/CBB';
+import CompareStatistic from '@/components/generic/CompareStatistic';
+import BackdropLoader from '@/components/generic/BackdropLoader';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Boxscore, PlayerBoxscore } from '@/components/generic/types';
+
+let intervalRefresher: NodeJS.Timeout;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {
@@ -28,8 +31,19 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }));
 
+const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/}) => {
 
-const Boxscore = (props) => {
+  const { width } = useWindowDimensions() as Dimensions;
+
+  // useEffect(() => {
+  //   intervalRefresher = setInterval(function() {
+  //     refresh(tag);
+  //   }, 25 * 1000);
+  //   return function clean_up() {
+  //     clearInterval(intervalRefresher);
+  //   };
+  // });
+
   const self = this;
 
   const theme = useTheme();
@@ -39,15 +53,35 @@ const Boxscore = (props) => {
 
   const [boxscoreSide, setBoxscoreSide] = useState('home');
 
-  const game = props.game;
+  const awayBoxscores: PlayerBoxscore[] = [];
+  const homeBoxscores: PlayerBoxscore[] = [];
 
-  const awayBoxscores = (game.player_boxscore && game.player_boxscore[game.away_team_id]) || [];
-  const homeBoxscores = (game.player_boxscore && game.player_boxscore[game.home_team_id]) || [];
+  for (let cbb_player_boxscore_id in cbb_player_boxscores) {
+    const row = cbb_player_boxscores[cbb_player_boxscore_id];
 
-  const awayTotalBoxscore = (game.boxscores && game.boxscores[game.away_team_id]) || {};
-  const homeTotalBoxscore = (game.boxscores && game.boxscores[game.home_team_id]) || {};
+    if (row.team_id === cbb_game.away_team_id) {
+      awayBoxscores.push(row);
+    } else if (row.team_id === cbb_game.home_team_id) {
+      homeBoxscores.push(row);
+    }
+  }
+
+  let awayTotalBoxscore: Boxscore = {} as Boxscore;
+  let homeTotalBoxscore: Boxscore = {} as Boxscore;
+
+  for (let cbb_boxscore_id in cbb_boxscores) {
+    const row = cbb_boxscores[cbb_boxscore_id];
+
+    if (row.team_id === cbb_game.away_team_id) {
+      awayTotalBoxscore = row;
+    } else if (row.team_id === cbb_game.home_team_id) {
+      homeTotalBoxscore = row;
+    }
+  }
+
 
   const hasBoxscoreData = ('points' in awayTotalBoxscore) && ('points' in homeTotalBoxscore);
+
 
   const boxscore = boxscoreSide === 'home' ? homeBoxscores : awayBoxscores;
   const boxscoreTotal = boxscoreSide === 'home' ? homeTotalBoxscore : awayTotalBoxscore;
@@ -65,7 +99,7 @@ const Boxscore = (props) => {
   };
 
   const CBB = new HelperCBB({
-    'cbb_game': game,
+    'cbb_game': cbb_game,
   });
 
   const headCells = [
@@ -389,12 +423,11 @@ const Boxscore = (props) => {
     <div>
       {spin ? <BackdropLoader /> : ''}
       <div>
-        <TeamSubHeader game = {game} />
-        <div style = {{'padding': 20}}>
+        <div style = {{'padding': '10px 5px'}}>
           {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}
         </div>
       </div>
-      <div style = {{'padding': 20}}>
+      <div style = {{'padding': '0px 5px'}}>
         <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Player boxscore</Typography>
         <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
         <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
@@ -414,8 +447,7 @@ const Boxscore = (props) => {
             </TableHead>
             <TableBody>
               {boxscore.map((row) => {
-                // Only have minutes played from post game boxscore
-                if (!row.minutes_played && +row.final === 1) {
+                if (!row.minutes_played) {
                   return;
                 }
 
@@ -435,8 +467,8 @@ const Boxscore = (props) => {
 
                 let player_name = row.first_name + ' ' + row.last_name;
 
-                if (row.player_id && game.players && row.player_id in game.players) {
-                  const player = game.players[row.player_id];
+                if (row.player_id && players && row.player_id in players) {
+                  const player = players[row.player_id];
                   player_name = player.first_name + ' ' + player.last_name;
                 }
 
@@ -534,4 +566,4 @@ const Boxscore = (props) => {
   );
 }
 
-export default Boxscore;
+export default Client;

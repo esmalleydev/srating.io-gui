@@ -100,7 +100,7 @@ export default async function Page({ params }) {
 
   return (
     <div>
-      <HeaderClientWrapper season = {season} team_id = {team_id}>
+      <HeaderClientWrapper season = {season}>
         <HeaderServer season = {season} team_id = {team_id} />
       </HeaderClientWrapper>
       <NavBar view = {selectedTab} tabOrder = {tabOrder} />

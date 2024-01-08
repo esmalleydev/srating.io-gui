@@ -1,50 +1,41 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-import { useTheme } from '@mui/material/styles';
-
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import HelperCBB from '../../../../helpers/CBB';
-
-import moment from 'moment';
-
+import HelperCBB from '@/components/helpers/CBB';
+import { ScoreIntervals } from '@/components/generic/types';
 
 
-const OddsSpread = (props) => {
-  const self = this;
-
-  const game = props.game;
+const OddsSpread = ({ cbb_game, cbb_game_score_intervals}) => {
 
   const CBB = new HelperCBB({
-    'cbb_game': game,
+    'cbb_game': cbb_game,
   });
 
-  const homeColor = game.teams[game.home_team_id].primary_color;
-  const awayColor = game.teams[game.away_team_id].primary_color;
+  const homeColor = cbb_game.teams[cbb_game.home_team_id].primary_color;
+  const awayColor = cbb_game.teams[cbb_game.away_team_id].primary_color;
 
-  const scoreIntervals = game.score_interval || {};
+  const scoreIntervals: ScoreIntervals = cbb_game_score_intervals;
 
-  const sorted_intervals = Object.values(scoreIntervals).sort(function (a, b) {
+  const sorted_intervals: ScoreIntervals[] = Object.values(scoreIntervals).sort(function (a, b) {
     // should probably use clock, but DoE should be fine for now
     return a.date_of_entry  < b.date_of_entry ? -1 : 1;
   });
 
-
-  const theme = useTheme();
-
-  let xAxis = [];
+  let xAxis: string[] = [];
   let series = {
     'home': {
       'name': CBB.getTeamName('home'),
-      'data': [],
+      'data': [] as number[],
+      'color': null,
     },
     'away': {
       'name': CBB.getTeamName('away'),
-      'data': [],
+      'data': [] as number[],
+      'color': null,
     },
   };
 
@@ -65,8 +56,10 @@ const OddsSpread = (props) => {
       sorted_intervals[i].spread_home
     ) {
       map[sorted_intervals[i].clock + sorted_intervals[i].current_period] = true;
-      if (!sorted_intervals[i].current_period.length && sorted_intervals[i].clock === ':00') {
-        xAxis.push('HALF');
+      if (!sorted_intervals[i].current_period.length && sorted_intervals[i].clock === ':00' && !sorted_intervals[i].home_score && !sorted_intervals[i].away_score) {
+        xAxis.push('1ST');
+      } else if (!sorted_intervals[i].current_period.length && sorted_intervals[i].clock === ':00') {
+        xAxis.push('2ND');
       } else {
         xAxis.push(sorted_intervals[i].clock);
       }
