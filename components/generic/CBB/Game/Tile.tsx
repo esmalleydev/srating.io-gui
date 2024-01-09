@@ -18,6 +18,7 @@ import Pin from '@/components/generic/CBB/Pin';
 
 import Color, {getBestColor, getWorstColor} from '@/components/utils/Color';
 import { useAppSelector } from '@/redux/hooks';
+import { refresh } from './actions';
 
 const ColorUtil = new Color();
 
@@ -45,6 +46,7 @@ const Tile = (props) => {
     if (props.onClick && typeof props.onClick === 'function') {
       props.onClick();
     }
+    refresh('cbb.games.'+ props.data.cbb_game_id);
     setSpin(true);
     startTransition(() => {
       router.push('/cbb/games/' + props.data.cbb_game_id);
