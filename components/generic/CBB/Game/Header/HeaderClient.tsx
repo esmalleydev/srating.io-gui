@@ -18,7 +18,7 @@ const HeaderClient = ({cbb_game, tag}) => {
     if (cbb_game.status !== 'final') {
       intervalRefresher = setInterval(function() {
         refresh(tag);
-      }, 25 * 1000);
+      }, 30 * 1000);
     }
     return function clean_up() {
       clearInterval(intervalRefresher);

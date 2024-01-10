@@ -7,7 +7,7 @@ import Api from '@/components/Api.jsx';
 const api = new Api();
 
 const Server = async({cbb_game}) => {
-  // const tag = 'cbb.games.'+ cbb_game_id;
+  const tag = 'cbb.games.' + cbb_game.cbb_game_id;
 
   const cbb_game_id = cbb_game.cbb_game_id;
   const revalidateSeconds = 30;
@@ -18,7 +18,7 @@ const Server = async({cbb_game}) => {
     'arguments': {
       'cbb_game_id': cbb_game_id
     },
-  }, {next: { revalidate: revalidateSeconds}});
+  }, {next: { tags: [tag], revalidate: revalidateSeconds}});
 
   return (
     <>
