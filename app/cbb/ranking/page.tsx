@@ -1,40 +1,59 @@
 import RankingPage from './ranking-page';
-import { Metadata } from 'next';
-import { headers } from 'next/headers';
+import { Metadata, ResolvingMetadata } from 'next';
 
 import cacheData from 'memory-cache';
 
-import HelperCBB from '../../../components/helpers/CBB';
-import Api from '../../../components/Api.jsx';
+import HelperCBB from '@/components/helpers/CBB';
+import Api from '@/components/Api.jsx';
 
 const api = new Api();
 
-
-export const metadata: Metadata = {
-  title: 'sRating | College basketball ranking',
-  description: 'View statistic ranking for all 362 teams',
-  openGraph: {
-    title: 'sRating.io college basketball ranking',
-    description: 'View statistic ranking for all 362 teams',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'View statistic ranking for all 362 teams',
-  }
+type Props = {
+  params: { cbb_game_id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 
-async function getData() {
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+
+  const view = searchParams?.view || 'team';
+
+  let title = 'sRating | College basketball team ranking';
+  let description = 'View statistic ranking for all 362 teams';
+
+  if (view === 'player') {
+    title = 'sRating | College basketball player ranking';
+    description = 'View statistic ranking for every player';
+  } else if (view === 'conference') {
+    title = 'sRating | College basketball conference ranking';
+    description = 'View statistic ranking for each conference';
+  }
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+    },
+    twitter: {
+      card: 'summary',
+      title: description,
+    }
+  };
+}
+
+
+async function getData(searchParams) {
   const seconds = 60 * 60 * 5; // cache for 5 hours
  
   const CBB = new HelperCBB();
 
-  const xUrl = headers().get('x-url') || '';
-  const url = new URL(xUrl);
-  const searchParams = new URLSearchParams(url.search);
-
-  const season = searchParams.get('season') || CBB.getCurrentSeason();
-  const view = searchParams.get('view') || 'team';
+  const season = searchParams?.season || CBB.getCurrentSeason();
+  const view = searchParams?.view || 'team';
 
   let fxn = 'getTeamRanking';
   if (view === 'player') {
@@ -68,7 +87,7 @@ async function getData() {
   };
 }
 
-export default async function Page() {
-  const data = await getData();
+export default async function Page({ searchParams }) {
+  const data = await getData(searchParams);
   return <RankingPage data = {data.data} generated = {data.generated} />;
 };

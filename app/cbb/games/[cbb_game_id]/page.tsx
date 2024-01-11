@@ -5,7 +5,7 @@ import HelperCBB from '@/components/helpers/CBB';
 import Api from '@/components/Api.jsx';
 import HeaderClientWrapper from '@/components/generic/CBB/Game/Header/HeaderClientWrapper';
 import HeaderServer from '@/components/generic/CBB/Game/Header/HeaderServer';
-import { headers } from 'next/headers';
+
 import NavBar from '@/components/generic/CBB/Game/NavBar';
 import SubNavBar from '@/components/generic/CBB/Game/SubNavBar';
 
@@ -37,14 +37,15 @@ const api = new Api();
 
 type Props = {
   params: { cbb_game_id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 
 export async function generateMetadata(
-  { params }: Props,
+  { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const cbb_game = await getData(params);
+  const cbb_game = await getData({params});
 
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,
@@ -65,7 +66,7 @@ export async function generateMetadata(
   };
 };
 
-async function getData(params) {
+async function getData({ params }) {
   const revalidateSeconds = 5 * 60;
   const cbb_game_id = params.cbb_game_id;
   const cbb_games = await api.Request({
@@ -79,19 +80,16 @@ async function getData(params) {
   return cbb_games[cbb_game_id] || {};
 }
 
-export default async function Page({ params }) {
-  const cbb_game = await getData(params);
+export default async function Page({ params, searchParams }) {
+  const cbb_game = await getData({params});
 
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,
   });
 
-  const xUrl = headers().get('x-url') || '';
-  const url = new URL(xUrl);
-  const searchParams = new URLSearchParams(url.search);
 
-  const view = searchParams?.get('view') || (CBB.isInProgress() || CBB.isFinal() ? 'game_details' : 'matchup');
-  const subview = searchParams?.get('subview') || (view === 'game_details' ? 'boxscore' : null) || (view === 'trends' ? 'stat_compare' : null);
+  const view = searchParams?.view || (CBB.isInProgress() || CBB.isFinal() ? 'game_details' : 'matchup');
+  const subview = searchParams?.subview || (view === 'game_details' ? 'boxscore' : null) || (view === 'trends' ? 'stat_compare' : null);
 
   let tabOrder = ['matchup', 'trends'];
   if (CBB.isInProgress() || CBB.isFinal()) {

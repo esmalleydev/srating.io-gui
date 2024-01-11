@@ -1,7 +1,6 @@
 'use server';
 
 import { Metadata, ResolvingMetadata } from 'next';
-import { headers } from 'next/headers';
 
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
@@ -12,21 +11,22 @@ import Schedule from '@/components/generic/CBB/Team/Schedule';
 import Trends from '@/components/generic/CBB/Team/Trends';
 import NavBar from '@/components/generic/CBB/Team/NavBar';
 import Stats from '@/components/generic/CBB/Team/Stats';
-import ScheduleClientWrapper from '@/components/generic/CBB/Team/Schedule/ScheduleClientWrapper';
-import ScheduleServer from '@/components/generic/CBB/Team/Schedule/ScheduleServer';
+// import ScheduleClientWrapper from '@/components/generic/CBB/Team/Schedule/ScheduleClientWrapper';
+// import ScheduleServer from '@/components/generic/CBB/Team/Schedule/ScheduleServer';
 
 const api = new Api();
 
 type Props = {
   params: { team_id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 
 export async function generateMetadata(
-  { params }: Props,
+  { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const team = await getData(params);
+  const team = await getData({params, searchParams});
 
   const helperTeam = new HelperTeam({'team': team});
 
@@ -46,16 +46,12 @@ export async function generateMetadata(
 };
 
 
-async function getData(params) {
+async function getData({params, searchParams}) {
   const CBB = new HelperCBB();
 
   const team_id = params.team_id;
 
-  const xUrl = headers().get('x-url') || '';
-  const url = new URL(xUrl);
-  const searchParams = new URLSearchParams(url.search);
-
-  const season = searchParams.get('season') || CBB.getCurrentSeason();
+  const season = searchParams?.season || CBB.getCurrentSeason();
 
   const team = await api.Request({
     'class': 'team',
@@ -83,17 +79,13 @@ async function getData(params) {
 
 // todo who need to redesign schedule component, need session_id to check for ratings
 
-export default async function Page({ params }) {
+export default async function Page({ params, searchParams }) {
   const team_id = params.team_id;
 
   const CBB = new HelperCBB();
 
-  const xUrl = headers().get('x-url') || '';
-  const url = new URL(xUrl);
-  const searchParams = new URLSearchParams(url.search);
-
-  const season = searchParams?.get('season') || CBB.getCurrentSeason();
-  const view = searchParams?.get('view') || 'schedule';
+  const season = searchParams?.season || CBB.getCurrentSeason();
+  const view = searchParams?.view || 'schedule';
 
   const tabOrder = ['schedule', 'stats', 'trends'];
   const selectedTab = tabOrder[(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0)];

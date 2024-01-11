@@ -1,9 +1,8 @@
 import PicksPage from './picks-page';
 import { Metadata } from 'next';
-import { headers } from 'next/headers';
 
-import HelperCBB from '../../../components/helpers/CBB';
-import Api from '../../../components/Api.jsx';
+import HelperCBB from '@/components/helpers/CBB';
+import Api from '@/components/Api.jsx';
 
 const api = new Api();
 
@@ -20,18 +19,12 @@ export const metadata: Metadata = {
   }
 };
 
-async function getSeasonDates() {
+async function getSeasonDates(searchParams) {
   const seconds = 60 * 60 * 12; // cache for 12 hours
 
   const CBB = new HelperCBB();
 
-  // const season =  (context.query && context.query.season) || CBB.getCurrentSeason();
-
-  const xUrl = headers().get('x-url') || '';
-  const url = new URL(xUrl);
-  const searchParams = new URLSearchParams(url.search);
-  const season = searchParams.get('season') || CBB.getCurrentSeason();
-
+  const season = searchParams?.season || CBB.getCurrentSeason();
 
   const dates = await api.Request({
     'class': 'cbb_game',
@@ -46,7 +39,7 @@ async function getSeasonDates() {
   return dates;
 }
 
-export default async function Page() {
-  const dates = await getSeasonDates();
+export default async function Page({ searchParams }) {
+  const dates = await getSeasonDates(searchParams);
   return <PicksPage dates = {dates} />;
 };

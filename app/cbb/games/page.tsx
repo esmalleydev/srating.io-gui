@@ -1,9 +1,8 @@
 import GamesPage from './games-page';
 import { Metadata } from 'next';
-import { headers } from 'next/headers';
 
-import HelperCBB from '../../../components/helpers/CBB';
-import Api from '../../../components/Api.jsx';
+import HelperCBB from '@/components/helpers/CBB';
+import Api from '@/components/Api.jsx';
 
 const api = new Api();
 
@@ -21,16 +20,12 @@ export const metadata: Metadata = {
   }
 };
 
-async function getData() {
+async function getData(searchParams) {
   const seconds = 60 * 60 * 12; // cache for 12 hours
  
   const CBB = new HelperCBB();
 
-  const xUrl = headers().get('x-url') || '';
-  const url = new URL(xUrl);
-  const searchParams = new URLSearchParams(url.search);
-
-  const season = searchParams.get('season') || CBB.getCurrentSeason();
+  const season = searchParams?.season || CBB.getCurrentSeason();
 
   const dates = await api.Request({
     'class': 'cbb_game',
@@ -44,7 +39,7 @@ async function getData() {
   return dates;
 }
 
-export default async function Page() {
-  const dates = await getData();
+export default async function Page({ searchParams }) {
+  const dates = await getData(searchParams);
   return <GamesPage dates = {dates} />;
 };

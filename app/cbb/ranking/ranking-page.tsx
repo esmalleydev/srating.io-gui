@@ -417,8 +417,8 @@ const Ranking = (props) => {
     'name': {
       id: 'name',
       numeric: false,
-      label: (rankView === 'player' ? 'Player' : 'Team'),
-      tooltip: (rankView === 'player' ? 'Player name' : 'Team name'),
+      label: (rankView === 'player' ? 'Player' : (rankView === 'conference' ? 'Conference' :'Team')),
+      tooltip: (rankView === 'player' ? 'Player name' : (rankView === 'conference' ? 'Conference name' :'Team name')),
       'sticky': true,
       'disabled': true,
     },
