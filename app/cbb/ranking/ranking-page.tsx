@@ -1609,6 +1609,10 @@ const Ranking = (props) => {
             'border': 0,
           };
 
+          if (width <= breakPoint) {
+            tdStyle.fontSize = '13px';
+          }
+
           if (headCell.sticky) {
             tdStyle.position = 'sticky';
             tdStyle.left = (headCell.id === 'name' ? rankCellMaxWidth : 0);
