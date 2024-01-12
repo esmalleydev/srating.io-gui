@@ -70,8 +70,6 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 
 
 const Ranking = (props) => {
-  const self = this;
-
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -212,6 +210,7 @@ const Ranking = (props) => {
   };
 
   const { height, width } = useWindowDimensions() as Dimensions;
+  const breakPoint = 425;
 
   const data = props.data;
 
@@ -366,6 +365,9 @@ const Ranking = (props) => {
   const getColumns = () => {
     if (view === 'composite') {
       if (rankView === 'team') {
+        if (width <= breakPoint) {
+          return ['composite_rank', 'name', 'wins', 'elo', 'elo_sos', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating'];
+        }
         return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'elo_sos', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
@@ -374,27 +376,19 @@ const Ranking = (props) => {
       }
     } else if (view === 'offense') {
       if (rankView === 'team') {
-        return ['composite_rank', 'name', 'offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists'];
+        return ['composite_rank', 'name', 'offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists', 'turnovers', 'possessions', 'pace'];
       } else if (rankView === 'player') {
-        return ['composite_rank', 'name', 'offensive_rating', 'points_per_game', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds_per_game', 'assists_per_game'];
+        return ['composite_rank', 'name', 'offensive_rating', 'points_per_game', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds_per_game', 'assists_per_game', 'turnovers_per_game', 'turnover_percentage'];
       } else if (rankView === 'conference') {
-        return ['composite_rank', 'name','offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists'];
+        return ['composite_rank', 'name','offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists', 'turnovers', 'possessions', 'pace'];
       }
     } else if (view === 'defense') {
       if (rankView === 'team') {
-        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage'];
+        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage', 'fouls'];
       } else if (rankView === 'player') {
-        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds_per_game', 'steals_per_game', 'blocks_per_game', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
+        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds_per_game', 'steals_per_game', 'blocks_per_game', 'fouls_per_game', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
       } else if (rankView === 'conference') {
-        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage'];
-      }
-    } else if (view === 'special') {
-      if (rankView === 'team') {
-        return ['composite_rank', 'name', 'opponent_efficiency_rating', 'possessions', 'pace', 'turnovers', 'fouls'];
-      } else if (rankView === 'player') {
-        return ['composite_rank', 'name', 'position', 'number', 'height', 'games', 'turnovers_per_game', 'fouls_per_game', 'turnover_percentage'];
-      } else if (rankView === 'conference') {
-        return ['composite_rank', 'name', 'opponent_efficiency_rating', 'possessions', 'pace', 'turnovers', 'fouls'];
+        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage', 'fouls'];
       }
     } else if (view === 'custom') {
       return customColumns;
@@ -1600,6 +1594,11 @@ const Ranking = (props) => {
     },
   }
 
+  let rankCellMaxWidth = 50;
+  if (width <= breakPoint) {
+    rankCellMaxWidth = 30;
+  }
+
   const getTableHeader = () => {
     return (
       <TableRow>
@@ -1611,10 +1610,19 @@ const Ranking = (props) => {
 
           if (headCell.sticky) {
             tdStyle.position = 'sticky';
-            tdStyle.left = (headCell.id === 'name' ? 50 : 0);
+            tdStyle.left = (headCell.id === 'name' ? rankCellMaxWidth : 0);
             tdStyle.zIndex = 3;
           } else {
             tdStyle.whiteSpace = 'nowrap';
+          }
+
+          let showSortArrow = true;
+          if (width <= breakPoint && (headCell.id === 'composite_rank' || headCell.id === 'wins')) {
+            showSortArrow = false;
+            if (headCell.id === 'composite_rank') {
+              tdStyle.maxWidth = rankCellMaxWidth;
+              tdStyle.minWidth = rankCellMaxWidth;
+            }
           }
 
           return (
@@ -1626,16 +1634,17 @@ const Ranking = (props) => {
                 sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
               >
                 <TableSortLabel
-                  active={orderBy === headCell.id}
+                  active={orderBy === headCell.id && showSortArrow}
+                  hideSortIcon = {!showSortArrow}
                   direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
                   onClick={() => {handleSort(headCell.id)}}
                 >
                   {headCell.label}
-                  {orderBy === headCell.id ? (
+                  {/* {orderBy === headCell.id ? (
                     <Box component="span" sx={visuallyHidden}>
                       {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                     </Box>
-                  ) : null}
+                  ) : null} */}
                 </TableSortLabel>
               </StyledTableHeadCell>
             </Tooltip>
@@ -1654,15 +1663,39 @@ const Ranking = (props) => {
       'backgroundColor': theme.palette.mode === 'light' ? (index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
     };
 
-    if (width <= 425) {
+    if (width <= breakPoint) {
       tdStyle.fontSize = '12px';
     }
 
-    let teamCellStyle: React.CSSProperties = {};
-    teamCellStyle.position = 'sticky';
-    teamCellStyle.left = 50;
-    teamCellStyle.minWidth = 125;
-    teamCellStyle.maxWidth = 125;
+
+    const teamCellStyle: React.CSSProperties = {
+      position: 'sticky',
+      left: rankCellMaxWidth,
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      minWidth: 125,
+      maxWidth: 125,
+    };
+
+    const conferenceCellStyle: React.CSSProperties = {
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      maxWidth: 100,
+    };
+
+    const rankCellStyle: React.CSSProperties = {
+      'textAlign': 'center',
+      'position': 'sticky',
+      'left': 0,
+      'maxWidth': rankCellMaxWidth
+    };
+
+    if (width <= breakPoint) {
+      teamCellStyle.minWidth = 85;
+      teamCellStyle.maxWidth = 85;
+    }
 
     const tableCells: React.JSX.Element[] = [];
 
@@ -1678,7 +1711,9 @@ const Ranking = (props) => {
       } else if (columns[i] === 'name') {
         tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, teamCellStyle)}>{row[columns[i]]}</TableCell>);
       } else if (columns[i] === 'composite_rank') {
-        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'center', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{row[columns[i]]}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, rankCellStyle)}>{row[columns[i]]}</TableCell>);
+      } else if (columns[i] === 'conf') {
+        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, conferenceCellStyle)}>{row[columns[i]]}</TableCell>);
       } else {
         tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[columns[i] + '_rank'] && row[columns[i]] !== null ? <RankSpan rank = {row[columns[i] + '_rank']} useOrdinal = {(rankView !== 'player')} max = {row_length_before_filter} />  : ''}</TableCell>);
       }
@@ -1691,14 +1726,23 @@ const Ranking = (props) => {
     );
   }
 
+  let confHeightModifier = 0;
+  if (confChips.length) {
+    if (confChips.length < 4) {
+      confHeightModifier = 40;
+    } else {
+      confHeightModifier = 80;
+    }
+  }
+
 
   const tableStyle = {
-    'maxHeight': height - 280 - (width < 470 ? 60 : 0) - (confChips.length ? 60 : 0) - 40,
-    'height': height - 280 - (width < 470 ? 60 : 0) - (confChips.length ? 60 : 0) - 40,
+    'maxHeight': height - 280 - (width < 380 ? 30 : 0) - confHeightModifier - 40,
+    'height': height - 280 - (width < 380 ? 30 : 0) - confHeightModifier - 40,
   };
 
-  if ((rows.length + 2) * 29 < tableStyle.height) {
-    tableStyle.height = (rows.length + 2) * 29;
+  if ((rows.length + 2) * 26 < tableStyle.height) {
+    tableStyle.height = (rows.length + 2) * 26;
   }
 
   if (height < 450) {
@@ -1729,7 +1773,6 @@ const Ranking = (props) => {
               <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
               <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
               <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : 'filled'} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
-              <Chip sx = {{'margin': '5px'}} label='Special' variant={view !== 'special' ? 'outlined' : 'filled'} color={view !== 'special' ? 'primary' : 'success'} onClick={() => handleRankingView('special')} />
               <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : 'filled'} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
               <ColumnPicker key = {rankView} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
             </div>
