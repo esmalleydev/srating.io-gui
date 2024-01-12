@@ -1618,7 +1618,7 @@ const Ranking = (props) => {
           }
 
           if (headCell.id === 'name') {
-            tdStyle.borderRight = '4px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.dark : theme.palette.info.dark);
+            tdStyle.borderRight = '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark);
           }
 
           let showSortArrow = true;
@@ -1682,7 +1682,7 @@ const Ranking = (props) => {
       textOverflow: 'ellipsis',
       minWidth: 125,
       maxWidth: 125,
-      borderRight: '4px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.dark : theme.palette.info.dark),
+      borderRight: '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark),
     };
 
     const conferenceCellStyle: React.CSSProperties = {
