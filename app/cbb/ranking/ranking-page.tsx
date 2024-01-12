@@ -52,13 +52,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // '&:nth-of-type(even)': {
   //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
   // },
-  // hide last border
   '&:last-child td, &:last-child th': {
-    border: 0,
+    // border: 0,
   },
   '&:hover td': {
     backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
   },
+  'border': 0,
   '&:hover': {
     cursor: 'pointer',
   }
@@ -1670,7 +1670,10 @@ const Ranking = (props) => {
     const tdStyle: React.CSSProperties = {
       'padding': '4px 5px',
       'backgroundColor': theme.palette.mode === 'light' ? (index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
-      'border': 0,
+      border: 0,
+      'borderTop': 0,
+      'borderLeft': 0,
+      'borderBottom': 0,
     };
 
     if (width <= breakPoint) {
