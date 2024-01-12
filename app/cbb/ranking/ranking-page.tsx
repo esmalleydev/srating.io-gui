@@ -65,7 +65,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
+  'backgroundColor':  theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
 }));
 
 
@@ -1606,6 +1606,7 @@ const Ranking = (props) => {
           const headCell = headCells[column];
           const tdStyle: React.CSSProperties = {
             'padding': '4px 5px',
+            'border': 0,
           };
 
           if (headCell.sticky) {
@@ -1614,6 +1615,10 @@ const Ranking = (props) => {
             tdStyle.zIndex = 3;
           } else {
             tdStyle.whiteSpace = 'nowrap';
+          }
+
+          if (headCell.id === 'name') {
+            tdStyle.borderRight = '4px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.dark : theme.palette.info.dark);
           }
 
           let showSortArrow = true;
@@ -1661,6 +1666,7 @@ const Ranking = (props) => {
     const tdStyle: React.CSSProperties = {
       'padding': '4px 5px',
       'backgroundColor': theme.palette.mode === 'light' ? (index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+      'border': 0,
     };
 
     if (width <= breakPoint) {
@@ -1676,6 +1682,7 @@ const Ranking = (props) => {
       textOverflow: 'ellipsis',
       minWidth: 125,
       maxWidth: 125,
+      borderRight: '4px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.dark : theme.palette.info.dark),
     };
 
     const conferenceCellStyle: React.CSSProperties = {
