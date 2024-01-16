@@ -8,6 +8,7 @@ const api = new Api();
 
 
 const HeaderServer = async({season, team_id}) => {
+  const revalidateSeconds = 60 * 60 * 2; // 2 hours
   interface Team {
     team_id: string;
     char6: string;
@@ -38,7 +39,7 @@ const HeaderServer = async({season, team_id}) => {
       'team_id': team_id,
       'season': season,
     },
-  });
+  }, {next: {revalidate: revalidateSeconds}});
 
   return (
     <>
