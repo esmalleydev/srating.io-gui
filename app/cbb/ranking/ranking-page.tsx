@@ -88,6 +88,7 @@ const Ranking = (props) => {
     conf: string;
     elo_rank: number;
     elo: number;
+    // adj_elo: number;
     elo_sos: number;
     elo_sos_rank: number;
     kenpom_rank: number;
@@ -365,10 +366,7 @@ const Ranking = (props) => {
   const getColumns = () => {
     if (view === 'composite') {
       if (rankView === 'team') {
-        if (width <= breakPoint) {
-          return ['composite_rank', 'name', 'wins', 'elo', 'elo_sos', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating'];
-        }
-        return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'elo_sos', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
+        return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'elo_sos', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'kenpom_rank', 'srs_rank', 'net_rank', 'ap_rank', 'coaches_rank', 'conf'];
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
       } else if (rankView === 'conference') {
@@ -588,6 +586,13 @@ const Ranking = (props) => {
 
   if (rankView === 'team') {
     Object.assign(headCells, {
+      // 'adj_elo': {
+      //   id: 'adj_elo',
+      //   numeric: true,
+      //   label: 'adj sRating',
+      //   tooltip: 'srating.io aELO rating',
+      //   'sort': 'higher',
+      // },
       'conf': {
         id: 'conf',
         numeric: false,
@@ -611,8 +616,8 @@ const Ranking = (props) => {
       'conf_record': {
         id: 'conf_record',
         numeric: false,
-        label: 'C W/L',
-        tooltip: 'Conference Win/Loss',
+        label: 'CR',
+        tooltip: 'Conference Record Win/Loss',
         'sort': 'higher',
       },
       'kenpom_rank': {
@@ -1043,6 +1048,13 @@ const Ranking = (props) => {
     });
   } else if (rankView === 'conference') {
     Object.assign(headCells, {
+      // 'adj_elo': {
+      //   id: 'adj_elo',
+      //   numeric: true,
+      //   label: 'adj sRating',
+      //   tooltip: 'srating.io aELO rating',
+      //   'sort': 'higher',
+      // },
       'elo': {
         id: 'elo',
         numeric: true,
@@ -1341,6 +1353,7 @@ const Ranking = (props) => {
         'conf': row.conference,
         'elo_rank': (row.last_ranking && row.last_ranking.elo_rank) || null,
         'elo': row.elo,
+        // 'adj_elo': +(+row.elo - +(row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos)).toFixed(2),
         'kenpom_rank': (row.last_ranking && row.last_ranking.kenpom_rank) || null,
         'srs_rank': (row.last_ranking && row.last_ranking.srs_rank) || null,
         'net_rank': (row.last_ranking && row.last_ranking.net_rank) || null,
@@ -1485,6 +1498,8 @@ const Ranking = (props) => {
       row.name = row.conference;
       row.composite_rank = row.efficiency_rating_rank;
 
+      // row.adj_elo = +(+row.elo - +row.elo_sos).toFixed(2);
+
       rows.push(row);
     }
   }
@@ -1621,12 +1636,16 @@ const Ranking = (props) => {
             tdStyle.whiteSpace = 'nowrap';
           }
 
+          if (headCell.id === 'conf_record') {
+            tdStyle.minWidth = 30;
+          }
+
           if (headCell.id === 'name') {
             tdStyle.borderRight = '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark);
           }
 
           let showSortArrow = true;
-          if (width <= breakPoint && (headCell.id === 'composite_rank' || headCell.id === 'wins')) {
+          if (width <= breakPoint && (headCell.id === 'composite_rank' || headCell.id === 'wins' || headCell.id === 'conf_record')) {
             showSortArrow = false;
             if (headCell.id === 'composite_rank') {
               tdStyle.maxWidth = rankCellMaxWidth;

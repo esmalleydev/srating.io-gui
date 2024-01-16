@@ -75,7 +75,7 @@ async function getData(searchParams) {
       'arguments': {
         'season': season
       }
-    });
+    }, {next: {revalidate: seconds}});
     cacheData.put(cachedLocation, data, 1000 * seconds);
   } else {
     data = cached;
