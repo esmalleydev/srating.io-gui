@@ -9,13 +9,11 @@ import Tab from '@mui/material/Tab';
 
 import Footer from '../../components/generic/Footer';
 
-import Api from '../../components/Api.jsx';
 import Subscription from '../../components/generic/Account/Subscription';
 import { Button, Paper, Typography } from '@mui/material';
 import Settings from '../../components/generic/Account/Settings';
+import { useClientAPI } from '@/components/clientAPI';
 // import AccountHandler from '../components/generic/AccountHandler';
-
-const api = new Api();
 
 
 const Account = (props) => {
@@ -81,7 +79,7 @@ const Account = (props) => {
 
   const loadAccount = () => {;
     setRequest(true);
-    api.Request({
+    useClientAPI({
       'class': 'billing',
       'function': 'loadAccount',
       'arguments': {}
