@@ -20,14 +20,13 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 
-import Api from '@/components/Api.jsx';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import { CircularProgress } from '@mui/material';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import utilsSorter from  '@/components/utils/Sorter';
+import { useClientAPI } from '@/components/clientAPI';
 
 
-const api = new Api();
 const Sorter = new utilsSorter();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -89,7 +88,7 @@ const Roster = ({season, team_id}) => {
   if (!requestedPlayerStats) {
     setLoading(true);
     setRequestedPlayerStats(true);
-    api.Request({
+    useClientAPI({
       'class': 'team',
       'function': 'getRosterStats',
       'arguments': {

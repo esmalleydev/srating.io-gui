@@ -13,11 +13,11 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 
 
-import Api from './../Api.jsx';
 import BackdropLoader from './BackdropLoader.jsx';
-import { useAppDispatch } from '../../redux/hooks';
-import { setValidSession } from '../../redux/features/user-slice';
-const api = new Api();
+import { useAppDispatch } from '@/redux/hooks';
+import { setValidSession } from '@/redux/features/user-slice';
+import { useClientAPI } from '@/components/clientAPI';
+import { clearDatesChecked } from '@/redux/features/games-slice';
 
 
 const AccountHandler = (props) => {
@@ -66,7 +66,7 @@ const AccountHandler = (props) => {
       setPasswordError(null);
     }
 
-    api.Request({
+    useClientAPI({
       'class': 'user',
       'function': 'login',
       'arguments': {
@@ -84,6 +84,7 @@ const AccountHandler = (props) => {
         localStorage.setItem('session_id', session_id);
         sessionStorage.clear();
         dispatch(setValidSession(true));
+        dispatch(clearDatesChecked());
         props.closeHandler();
         window.location.reload();
       }
@@ -127,7 +128,7 @@ const AccountHandler = (props) => {
       setPasswordErrorConfirm(null);
     }
 
-    api.Request({
+    useClientAPI({
       'class': 'user',
       'function': 'register',
       'arguments': {
@@ -161,7 +162,7 @@ const AccountHandler = (props) => {
 
     setSpin(true);
 
-    api.Request({
+    useClientAPI({
       'class': 'user',
       'function': 'forgotPassword',
       'arguments': {
@@ -191,7 +192,7 @@ const AccountHandler = (props) => {
       setLoginCodeError(null);
     }
 
-    api.Request({
+    useClientAPI({
       'class': 'user',
       'function': 'useLoginCode',
       'arguments': {

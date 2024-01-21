@@ -30,9 +30,7 @@ import utilsArrayifer from  '../../../utils/Arrayifer.jsx';
 import utilsSorter from  '../../../utils/Sorter.jsx';
 
 
-import Api from './../../../Api.jsx';
 import { useAppSelector } from '@/redux/hooks';
-const api = new Api();
 const Arrayifer = new utilsArrayifer();
 const Sorter = new utilsSorter();
 

@@ -34,8 +34,6 @@ const DateAppBar = (props) => {
     tabDatesObject[dates[i]] = true;
   }
 
-
-
   let tabComponents = [];
   for (let i = 0; i < dates.length; i++) {
     let label = moment(dates[i]).format('MMM D');

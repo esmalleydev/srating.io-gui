@@ -2,23 +2,21 @@
 import React from 'react';
 
 import Client from '@/components/generic/CBB/Game/Playbyplay/Client';
-import Api from '@/components/Api.jsx';
-
-const api = new Api();
+import { useServerAPI } from '@/components/serverAPI';
 
 const Server = async({cbb_game}) => {
-  const tag = 'cbb.games.' + cbb_game.cbb_game_id;
+  // const tag = 'cbb.games.' + cbb_game.cbb_game_id;
 
   const cbb_game_id = cbb_game.cbb_game_id;
   const revalidateSeconds = 30;
 
-  const cbb_game_pbp = await api.Request({
+  const cbb_game_pbp = await useServerAPI({
     'class': 'cbb_game_pbp',
     'function': 'read',
     'arguments': {
       'cbb_game_id': cbb_game_id
     },
-  }, {next: { tags: [tag], revalidate: revalidateSeconds}});
+  }, {revalidate: revalidateSeconds});
 
   return (
     <>

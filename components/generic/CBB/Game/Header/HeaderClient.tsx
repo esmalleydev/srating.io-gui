@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { refresh } from '@/components/generic/CBB/Game/actions';
+import { refresh } from '@/components/generic/CBB/actions';
 import { getBreakPoint } from '@/components/generic/CBB/Game/Header/HeaderClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 

@@ -6,10 +6,9 @@ import { IconButton, Tooltip } from '@mui/material';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
-import Api from './../Api.jsx';
 import AccountHandler from './AccountHandler.jsx';
 import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice.ts';
-const api = new Api();
+import { useClientAPI } from '@/components/clientAPI';
 
 const FavoritePicker = (props) => {
   const theme = useTheme();
@@ -67,7 +66,7 @@ const FavoritePicker = (props) => {
       args.player_id = player_id;
     }
     
-    api.Request({
+    useClientAPI({
       'class': 'favorite',
       'function': 'updateFavorite',
       'arguments': args

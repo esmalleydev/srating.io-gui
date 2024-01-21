@@ -9,12 +9,7 @@ import Typography from '@mui/material/Typography';
 import { CircularProgress } from '@mui/material';
 
 import moment from 'moment';
-
-import Api from '@/components/Api.jsx';
-
-
-const api = new Api();
-
+import { useClientAPI } from '@/components/clientAPI';
 
 let season_ = null;
 
@@ -45,7 +40,7 @@ const Trends = (props) => {
   if (!requested) {
     setLoading(true);
     setRequested(true);
-    api.Request({
+    useClientAPI({
       'class': 'team',
       'function': 'getTrends',
       'arguments': {

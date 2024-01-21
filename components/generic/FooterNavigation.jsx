@@ -72,6 +72,8 @@ const FooterNavigation = (props) => {
     }
   }
 
+  // TODO click away from scores, clear all the game data slice
+
 
   const handleHome = () => {
     setSpin(true);

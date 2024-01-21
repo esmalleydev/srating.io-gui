@@ -21,6 +21,8 @@
 
 #config
 configuration.js
+serverConfig.js
+clientConfig.js
 
 npm-debug.log*
 yarn-debug.log*

@@ -7,8 +7,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
 import RankPicker from '@/components/generic/CBB/RankPicker';
+import { Tooltip } from '@mui/material';
 
-const AdditionalOptions = (props) => {
+const AdditionalOptions = () => {
 
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
@@ -26,15 +27,17 @@ const AdditionalOptions = (props) => {
 
   return (
     <div>
-      <IconButton
-          id="additional-options"
-          aria-controls={open ? 'long-menu' : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-haspopup="true"
-          onClick={handleOpen}
-        >
-          <TripleDotsIcon />
+      <Tooltip title = {'Additional options'}>
+        <IconButton
+            id="additional-options"
+            aria-controls={open ? 'long-menu' : undefined}
+            aria-expanded={open ? 'true' : undefined}
+            aria-haspopup="true"
+            onClick={handleOpen}
+          >
+            <TripleDotsIcon />
         </IconButton>
+        </Tooltip>
         <Menu
           id="long-menu"
           anchorEl={anchor}

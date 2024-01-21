@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import { CircularProgress, Tooltip, Typography } from '@mui/material';
 
 import RankSpan from '@/components/generic/CBB/RankSpan';
-import Api from '@/components/Api.jsx';
+import { useClientAPI } from '@/components/clientAPI';
 
-const api = new Api();
 
 let season_ = null;
 
@@ -134,7 +133,7 @@ const TeamStats = ({season, team_id}) => {
   if (!requested) {
     setLoading(true);
     setRequested(true);
-    api.Request({
+    useClientAPI({
       'class': 'team',
       'function': 'getStats',
       'arguments': {

@@ -1,11 +1,15 @@
+'use client';
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
 
-import utilsColor from '../../utils/Color';
+import utilsColor from '@/components/utils/Color';
+import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 const ColorUtil = new utilsColor();
 
 const RankSpan = (props) => {
+
+  const { width } = useWindowDimensions() as Dimensions;
  
   const rank = props.rank;
   const max = props.max;
@@ -17,14 +21,18 @@ const RankSpan = (props) => {
   const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
   const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
 
-  const spanStyle = {
+  const spanStyle: React.CSSProperties = {
     'fontSize': '10px',
     'margin': '0px 5px',
     'padding': '3px',
     'borderRadius': '5px',
   };
 
-  let backgroundColor = null;
+  let backgroundColor: string | null = null;
+
+  if (width <= 425) {
+    spanStyle.fontSize = '9px';
+  }
 
   if (
     rank && 
@@ -45,7 +53,7 @@ const RankSpan = (props) => {
   const rankWithOrdinal = getNumberWithOrdinal(rank);
 
   return (
-    <Tooltip enterTouchDelay={0} disableFocusListener placement = 'top' title={'Ranked ' + rankWithOrdinal + ' out of ' + max}>
+    <Tooltip enterTouchDelay={1250} disableFocusListener placement = 'top' title={'Ranked ' + rankWithOrdinal + ' out of ' + max}>
       <span style = {spanStyle}>{useOrdinal ? rankWithOrdinal : rank}</span>
     </Tooltip>
   );

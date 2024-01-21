@@ -8,10 +8,7 @@ import { CircularProgress } from '@mui/material';
 import moment from 'moment';
 
 import Tile from './Tile';
-import Api from '@/components/Api.jsx';
-
-
-const api = new Api();
+import { useClientAPI } from '@/components/clientAPI';
 
 let season_ = null;
 
@@ -42,7 +39,7 @@ const Schedule = (props) => {
   if (!requested) {
     setLoading(true);
     setRequested(true);
-    api.Request({
+    useClientAPI({
       'class': 'team',
       'function': 'getSchedule',
       'arguments': {

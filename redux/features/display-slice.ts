@@ -4,15 +4,21 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const rankLocalStorageKey = 'CBB.DISPLAY.RANK';
 const picksSortLocalStorageKey = 'CBB.DISPLAY.PICKS.SORT';
 const conferencesLocalStorageKey = 'CBB.DISPLAY.CONFERENCES';
+const statusesLocalStorageKey = 'CBB.DISPLAY.STATUSES';
+const cardsViewLocalStorageKey = 'CBB.DISPLAY.GAMES.CARDSVIEW';
 
 let rankLocalStorage: string | null = null;
 let picksSortLocalStorage: string | null = null;
 let conferencesLocalStorage: string | null = null;
+let statusesLocalStorage: string | null = null;
+let cardsViewLocalStorage: string | null = null;
 
 if (typeof window !== 'undefined') {
   rankLocalStorage = localStorage.getItem(rankLocalStorageKey);
   picksSortLocalStorage = localStorage.getItem(picksSortLocalStorageKey);
   conferencesLocalStorage = localStorage.getItem(conferencesLocalStorageKey);
+  statusesLocalStorage = localStorage.getItem(statusesLocalStorageKey);
+  cardsViewLocalStorage = localStorage.getItem(cardsViewLocalStorageKey);
 }
 
 type InitialState = {
@@ -20,6 +26,8 @@ type InitialState = {
     rank: string,
     picksSort: string,
     conferences: string[],
+    statuses: string[],
+    cardsView: string,
     // season: number,
   };
 };
@@ -29,6 +37,8 @@ const initialState = {
     rank: rankLocalStorage || 'composite_rank',
     picksSort: picksSortLocalStorage || 'start_time',
     conferences: (conferencesLocalStorage && JSON.parse(conferencesLocalStorage)) || [],
+    statuses: (statusesLocalStorage && JSON.parse(statusesLocalStorage)) || ['pre', 'live', 'final'],
+    cardsView: cardsViewLocalStorage || 'compact',
     // season: new HelperCBB().getCurrentSeason(),
   },
 } as InitialState;
@@ -67,8 +77,29 @@ export const display = createSlice({
         localStorage.setItem(conferencesLocalStorageKey, JSON.stringify(state.value.conferences));
       }
     },
+    updateStatuses: (state, action: PayloadAction<string>) => {
+      const index = state.value.statuses.indexOf(action.payload);
+      if (index !== -1) {
+        state.value.statuses = [
+          ...state.value.statuses.slice(0, index),
+          ...state.value.statuses.slice(index + 1)
+        ];
+      } else {
+        state.value.statuses = [...state.value.statuses, action.payload];
+      }
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(statusesLocalStorageKey, JSON.stringify(state.value.statuses));
+      }
+    },
+    setCardView: (state, action: PayloadAction<string>) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(cardsViewLocalStorageKey, action.payload);
+      }
+      state.value.cardsView = action.payload;
+    },
   }
 });
 
-export const { /*setSeason,*/ setRank, setPicksSort, updateConferences } = display.actions;
+export const { /*setSeason,*/ setRank, setPicksSort, updateConferences, updateStatuses, setCardView } = display.actions;
 export default display.reducer;

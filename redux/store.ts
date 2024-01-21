@@ -4,6 +4,7 @@ import themeReducer from './features/theme-slice';
 import userReducer from './features/user-slice';
 import favoriteReducer from './features/favorite-slice';
 import displayReducer from './features/display-slice';
+import gamesReducer from './features/games-slice';
 
 
 export const makeStore = () => {
@@ -13,6 +14,7 @@ export const makeStore = () => {
       userReducer,
       favoriteReducer,
       displayReducer,
+      gamesReducer,
     }
   });
 };

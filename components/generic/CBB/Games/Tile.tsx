@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useTransition } from 'react';
+import React, { RefObject, useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -12,55 +12,68 @@ import Typography from '@mui/material/Typography';
 
 import Locked from '@/components/generic/Billing/Locked';
 import BackdropLoader from '@/components/generic/BackdropLoader';
-import { Button } from '@mui/material';
+import { Button, Skeleton } from '@mui/material';
 import Indicator from '@/components/generic/CBB/Indicator';
 import Pin from '@/components/generic/CBB/Pin';
 
 import Color, {getBestColor, getWorstColor} from '@/components/utils/Color';
-import { useAppSelector } from '@/redux/hooks';
-import { refresh } from './actions';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { refresh } from '@/components/generic/CBB/actions';
+import { useScrollContext } from '@/contexts/scrollContext';
+import { updateGameSort } from '@/redux/features/favorite-slice';
+import { setScrollTop } from '@/redux/features/games-slice';
+
 
 const ColorUtil = new Color();
 
-const Tile = (props) => {
-  const self = this;
+
+const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const theme = useTheme();
+
   const [hover, setHover] = useState(false);
   const [spin, setSpin] = useState(false);
-
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
-
-  const game = props.data;
-
+  const ref = useRef<HTMLDivElement>(null);
+  
+  const scrollRef  = useScrollContext();
+  
+  const dispatch = useAppDispatch();
+  const displayRank = useAppSelector(state => state.displayReducer.value.rank);
+  const displayCardView = useAppSelector(state => state.displayReducer.value.cardsView);
+  
   const CBB = new HelperCBB({
-    'cbb_game': game,
+    'cbb_game': cbb_game,
   });
 
-
-  const { height, width } = useWindowDimensions() as Dimensions;
-
+  const { width } = useWindowDimensions() as Dimensions;
 
   const handleClick = (e) => {
-    if (props.onClick && typeof props.onClick === 'function') {
-      props.onClick();
+    if (
+      scrollRef &&
+      scrollRef.current
+    ) {
+      console.log('set it ')
+      console.log(scrollRef.current.scrollTop)
+      dispatch(setScrollTop(scrollRef.current.scrollTop));
     }
-    refresh('cbb.games.'+ props.data.cbb_game_id);
+
+    dispatch(updateGameSort(null));
+    refresh('cbb.games.'+ cbb_game.cbb_game_id);
     setSpin(true);
     startTransition(() => {
-      router.push('/cbb/games/' + props.data.cbb_game_id);
+      router.push('/cbb/games/' + cbb_game.cbb_game_id);
       setSpin(false);
     });
   };
 
-  const handleMouseEnter = (e) => {
-    setHover(true);
-  };
+  // const handleMouseEnter = (e) => {
+  //   setHover(true);
+  // };
   
-  const handleMouseLeave = (e) => {
-    setHover(false);
-  };
+  // const handleMouseLeave = (e) => {
+  //   setHover(false);
+  // };
 
   const getIndicators = () => {
     const flexContainer = {
@@ -109,10 +122,28 @@ const Tile = (props) => {
     return (
       <div style = {flexContainer} >
         <div style = {timeStyle}><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
-        <Pin cbb_game_id = {props.data.cbb_game_id}  />
+        <Pin cbb_game_id = {cbb_game.cbb_game_id}  />
       </div>
     );
   };
+
+  let awayWinPercentageContainer: React.JSX.Element[] = [];
+  let homeWinPercentageContainer: React.JSX.Element[] = [];
+
+  const hasAccessToPercentages = !(cbb_game.away_team_rating === null && cbb_game.home_team_rating === null);
+
+  if (isLoadingWinPercentage) {
+    awayWinPercentageContainer.push(<Skeleton key = {1} />)
+    homeWinPercentageContainer.push(<Skeleton key = {2} />)
+  } else if (!hasAccessToPercentages) {
+    awayWinPercentageContainer.push(<Locked key = {1} />);
+    homeWinPercentageContainer.push(<Locked key = {2} />);
+  } else {
+    const awayPercentage = +(cbb_game.away_team_rating * 100).toFixed(0);
+    const homePercentage = +(cbb_game.home_team_rating * 100).toFixed(0);
+    awayWinPercentageContainer.push(<Typography variant = 'caption' style = {{'color': ColorUtil.lerpColor(getWorstColor(), getBestColor(), cbb_game.away_team_rating)}}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+    homeWinPercentageContainer.push(<Typography variant = 'caption' style = {{'color': ColorUtil.lerpColor(getWorstColor(), getBestColor(), cbb_game.home_team_rating)}}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+  }
 
   const getOddsLine = () => {
     const awaySpreadCoverStyle: React.CSSProperties = {};
@@ -180,20 +211,14 @@ const Tile = (props) => {
             <td title = {tdAwaySpreadTitle}><Typography variant = 'caption' style = {awaySpreadCoverStyle}>{CBB.getPreSpread('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('away') : ''}</Typography></td>
             <td title = {tdAwayMLTitle} style = {Object.assign({'color': CBB.oddsReversal('away') ? theme.palette.warning.main : theme.palette.text.primary}, awayMLStyle)}><Typography variant = 'caption'>{CBB.getPreML('away')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('away') : ''}</Typography></td>
             <td title = {tdOverTitle}><Typography variant = 'caption' style = {overStyle}>{CBB.getPreOver() !== '-' ? 'O ' + CBB.getPreOver() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveOver() : ''}</Typography></td>
-            <td style = {{'textAlign': 'right'}}>{
-              (props.data.away_team_rating === null && props.data.home_team_rating === null) ? <Locked />
-              : <Typography variant = 'caption'>{(props.data.away_team_rating * 100).toFixed(0)}</Typography>
-            }</td>
+            <td style = {{'textAlign': 'right'}}>{awayWinPercentageContainer}</td>
           </tr>
           <tr>
             <td style = {{'textAlign': 'left'}}><Typography variant = 'caption'>{CBB.getTeamNameShort('home')}</Typography></td>
             <td title = {tdHomeSpreadTitle}><Typography variant = 'caption' style = {homeSpreadCoverStyle}>{CBB.getPreSpread('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveSpread('home') : ''}</Typography></td>
             <td title = {tdHomeMLTitle} style = {Object.assign({'color': CBB.oddsReversal('home') ? theme.palette.warning.main : theme.palette.text.primary}, homeMLStyle)}><Typography variant = 'caption'>{CBB.getPreML('home')}{CBB.isInProgress() ? ' / ' + CBB.getLiveML('home') : ''}</Typography></td>
             <td title = {tdUnderTitle}><Typography variant = 'caption' style = {underStyle}>{CBB.getPreUnder() !== '-' ? 'U ' + CBB.getPreUnder() : '-'}{CBB.isInProgress() ? ' / ' + CBB.getLiveUnder() : ''}</Typography></td>
-            <td style = {{'textAlign': 'right'}}>{
-              (props.data.away_team_rating === null && props.data.home_team_rating === null) ? <Locked />
-              : <Typography variant = 'caption'>{(props.data.home_team_rating * 100).toFixed(0)}</Typography>
-            }</td>
+            <td style = {{'textAlign': 'right'}}>{homeWinPercentageContainer}</td>
           </tr>
         </tbody>
       </table>
@@ -205,7 +230,7 @@ const Tile = (props) => {
     const flexContainer: React.CSSProperties = {
       'display': 'flex',
       'margin': '5px 0px',
-      'alignItems': 'self-end',
+      'alignItems': displayCardView === 'compact' ? 'center' : 'self-end',
     };
 
     const nameStyle: React.CSSProperties = {
@@ -225,47 +250,45 @@ const Tile = (props) => {
       'flex': 2,
     };
 
-    let isPicked = false;
+    // is picked
     if (
       (
         side === 'home' &&
-        props.data.home_team_rating > props.data.away_team_rating
+        cbb_game.home_team_rating > cbb_game.away_team_rating
       ) ||
       (
         side === 'away' &&
-        props.data.home_team_rating < props.data.away_team_rating
+        cbb_game.home_team_rating < cbb_game.away_team_rating
       )
     ) {
-      isPicked = true;
       scoreStyle.border = '2px solid ' + theme.palette.secondary.dark;
     }
 
-    let won = false;
+    // won
     if (
       (
         side === 'home' &&
-        props.data.home_score > props.data.away_score
+        cbb_game.home_score > cbb_game.away_score
       ) ||
       (
         side === 'away' &&
-        props.data.home_score < props.data.away_score
+        cbb_game.home_score < cbb_game.away_score
       )
     ) {
-      won = true;
       scoreStyle.backgroundColor = 'rgba(66, 245, 96, 0.5)';
     }
     
-    let team_id = props.data[side + '_team_id'];
+    let team_id = cbb_game[side + '_team_id'];
     let wins = 0;
     let losses = 0;
 
     if (
       team_id &&
-      team_id in props.data.teams &&
-      'stats' in props.data.teams[team_id]
+      team_id in cbb_game.teams &&
+      'stats' in cbb_game.teams[team_id]
     ) {
-      wins = props.data.teams[team_id].stats.wins;
-      losses = props.data.teams[team_id].stats.losses;
+      wins = cbb_game.teams[team_id].stats.wins;
+      losses = cbb_game.teams[team_id].stats.losses;
     }
 
     const supRankStyle: React.CSSProperties = {
@@ -273,26 +296,91 @@ const Tile = (props) => {
       'fontWeight': 700,
     };
 
-    const teamRank = CBB.getTeamRank(side, displaySlice.rank);
+    const teamRank = CBB.getTeamRank(side, displayRank);
 
     if (teamRank) {
-      supRankStyle.color = ColorUtil.lerpColor(getBestColor(), getWorstColor(), (+(teamRank / CBB.getNumberOfD1Teams(game.season))));
+      supRankStyle.color = ColorUtil.lerpColor(getBestColor(), getWorstColor(), (+(teamRank / CBB.getNumberOfD1Teams(cbb_game.season))));
     }
 
+    let spread: string | null = null;
+    let overUnder: string | null = null;
+
+    let moneyLineToUse = (CBB.isInProgress() ? CBB.getLiveML(side) : CBB.getPreML(side));
+    let spreadToUseHome = (CBB.isInProgress() ? CBB.getLiveSpread('home') : CBB.getPreSpread('home'));
+    let spreadToUseAway = (CBB.isInProgress() ? CBB.getLiveSpread('away') : CBB.getPreSpread('away'));
+    let overUnderToUse = (CBB.isInProgress() ? CBB.getLiveOver() : CBB.getPreOver());
+
+    if (
+      side === 'home' &&
+      spreadToUseHome !== '-' &&
+      spreadToUseHome < spreadToUseAway
+    ) {
+      spread = spreadToUseHome;
+      if (overUnderToUse !== '-') {
+        overUnder = 'O ' + overUnderToUse;
+      }
+    } else if (
+      side === 'away' &&
+      spreadToUseAway !== '-' &&
+      spreadToUseAway < spreadToUseHome
+    ) {
+      spread = spreadToUseAway;
+      if (overUnderToUse !== '-') {
+        overUnder = 'O ' + overUnderToUse;
+      }
+    }
+
+
     return (
-      <div>
-        <div style = {flexContainer} >
-          <div style = {nameStyle}>
-            <Typography variant = 'h6' sx = {{'fontSize': 14, 'display': 'inline-block'}}>
-              {teamRank ?
-                <Typography variant = 'overline' color = 'text.secondary' sx = {{'fontSize': 12}}><sup style = {supRankStyle}>{teamRank}</sup></Typography> :
-               ''}
-              {CBB.getTeamName(side)}
-              </Typography>
-            <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography>
+      <div style = {flexContainer} >
+        <div style = {nameStyle}>
+          <div style={{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'baseline'}}>
+            <div>
+              <Typography variant = 'h6' sx = {{'fontSize': 14, 'display': 'inline-block'}}>
+                {teamRank ?
+                  <Typography variant = 'overline' color = 'text.secondary' sx = {{'fontSize': 12}}><sup style = {supRankStyle}>{teamRank}</sup></Typography> :
+                ''}
+                {CBB.getTeamName(side)}
+                </Typography>
+              <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography>
+            </div>
+            {
+              displayCardView === 'compact' && !CBB.isFinal() ?
+                <div><Typography style={{'fontSize': '11px'}} variant = 'overline' color={(CBB.oddsReversal(side) ? theme.palette.warning.main : 'text.secondary')}>{overUnder ? overUnder + ' | ' : ''}{spread ? spread + ' | ' : ''}{moneyLineToUse}</Typography></div>
+              : ''
+            }
           </div>
-          <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? props.data[side + '_score'] : '-'}</div>
         </div>
+        <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? cbb_game[side + '_score'] : '-'}</div>
+      </div>
+    );
+  };
+
+  const getTeamLines = () => {
+    const flexContainer = {
+      'display': 'flex',
+      'alignItems': 'center',
+    };
+
+    const teamStyle = {
+      'flex': 1,
+      'cursor': 'pointer',
+    };
+
+    return (
+      <div style = {flexContainer}>
+        <div style = {teamStyle} onClick={handleClick}>
+          {getTeamLine('away')}
+          {getTeamLine('home')}
+        </div>
+        {
+          displayCardView === 'compact' ?
+          <div style = {{'display': 'flex', 'flexFlow': 'column', 'padding': '0px ' + (hasAccessToPercentages || isLoadingWinPercentage ? 5 : 0) + 'px'}}>
+            <div style={{'minHeight': 40, 'minWidth': 24, 'textAlign': 'center', 'lineHeight': '40px'}}>{awayWinPercentageContainer}</div>
+            <div style={{'minHeight': 40, 'minWidth': 24, 'textAlign': 'center', 'lineHeight': '40px'}}>{homeWinPercentageContainer}</div>
+          </div>
+          : ''
+        }
       </div>
     );
   };
@@ -321,23 +409,28 @@ const Tile = (props) => {
   }
 
   return (
-    <Paper elevation={3} style = {divStyle}>
+    <Paper elevation={3} style = {divStyle} ref = {ref}>
       <BackdropLoader open = {(spin === true)} />
       {getIndicators()}
       <div style = {teamLineStyle}>
         {getHeader()}
-        <div style = {{'cursor': 'pointer'}} onClick={handleClick}>
-          {getTeamLine('away')}
-          {getTeamLine('home')}
+        {getTeamLines()}
+      </div>
+      {
+        displayCardView === 'large' ? 
+          <div style = {{'padding': '0px 10px 10px 10px'}}>
+            <hr style ={{'marginTop': 0}} />
+            {getOddsLine()}
+          </div>
+        : ''
+      }
+      {
+        displayCardView === 'large' ? 
+        <div style = {{'textAlign': 'right'}}>
+          <Button onClick = {handleClick}>Full Matchup</Button>
         </div>
-      </div>
-      <div style = {{'padding': '0px 10px 10px 10px'}}>
-        <hr style ={{'marginTop': 0}} />
-        {getOddsLine()}
-      </div>
-      <div style = {{'textAlign': 'right'}}>
-        <Button onClick = {handleClick}>View game / stats / matchup</Button>
-      </div>
+        : ''
+      }
     </Paper>
   );
 }

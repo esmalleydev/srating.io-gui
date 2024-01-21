@@ -3,11 +3,9 @@ import { useState} from "react";
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
-import Api from "@/components/Api";
 import { setCbbGameIds, setPlayerIds, setTeamIds } from "@/redux/features/favorite-slice";
+import { useClientAPI } from '@/components/clientAPI';
 
-
-const api = new Api();
 
 
 const FavoriteHandler = () => {
@@ -21,7 +19,7 @@ const FavoriteHandler = () => {
 
   if (!requested && validSession) {
     setRequested(true);
-    api.Request({
+    useClientAPI({
       'class': 'favorite',
       'function': 'getFavorite',
       'arguments': {}

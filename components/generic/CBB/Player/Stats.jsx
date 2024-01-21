@@ -20,12 +20,10 @@ import Chip from '@mui/material/Chip';
 
 
 import HelperTeam from '../../../helpers/Team';
-import Api from './../../../Api.jsx';
-import RankSpan from '../RankSpan.jsx';
+import RankSpan from '../RankSpan';
 import BackdropLoader from '../../BackdropLoader.jsx';
+import { useClientAPI } from '@/components/clientAPI';
 
-
-const api = new Api();
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -66,7 +64,7 @@ const Stats = (props) => {
 
   if (!requestedStats) {
     setRequestedStats(true);
-    api.Request({
+    useClientAPI({
       'class': 'cbb_player_statistic_ranking',
       'function': 'read',
       'arguments': {

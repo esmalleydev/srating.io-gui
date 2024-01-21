@@ -10,11 +10,9 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button } from '@mui/material';
 
-import Api from './../../Api.jsx';
 import BackdropLoader from '../BackdropLoader.jsx';
+import { useClientAPI } from '@/components/clientAPI';
 
-
-const api = new Api();
 
 const CheckoutForm = (props) => {
   const stripe = useStripe();
@@ -37,7 +35,7 @@ const CheckoutForm = (props) => {
   if (session_id && !request) {
     setSpin(true);
     setRequest(true);
-    api.Request({
+    useClientAPI({
       'class': 'user',
       'function': 'loadUser',
       'arguments': {},
@@ -88,7 +86,7 @@ const CheckoutForm = (props) => {
 
     setBackdrop(true);
 
-    const subscription = await api.Request({
+    const subscription = await useClientAPI({
       'class': 'billing',
       'function': 'createSubscription',
       'arguments': {

@@ -16,9 +16,7 @@ import moment from 'moment';
 
 import HelperCBB from '../../../helpers/CBB';
 
-import Api from './../../../Api.jsx';
 import BackdropLoader from '../../BackdropLoader';
-const api = new Api();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {

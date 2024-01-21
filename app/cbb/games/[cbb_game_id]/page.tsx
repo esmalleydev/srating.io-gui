@@ -2,7 +2,6 @@
 import { Metadata, ResolvingMetadata } from 'next';
 
 import HelperCBB from '@/components/helpers/CBB';
-import Api from '@/components/Api.jsx';
 import HeaderClientWrapper from '@/components/generic/CBB/Game/Header/HeaderClientWrapper';
 import HeaderServer from '@/components/generic/CBB/Game/Header/HeaderServer';
 
@@ -32,8 +31,9 @@ import OddsServer from '@/components/generic/CBB/Game/Odds/Server';
 
 import MomentumClientWrapper from '@/components/generic/CBB/Game/Momentum/ClientWrapper';
 import MomentumServer from '@/components/generic/CBB/Game/Momentum/Server';
+import { cache } from 'react';
+import { useServerAPI } from '@/components/serverAPI';
 
-const api = new Api();
 
 type Props = {
   params: { cbb_game_id: string };
@@ -45,7 +45,7 @@ export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const cbb_game = await getData({params});
+  const cbb_game = await getCachedData({params});
 
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,
@@ -66,22 +66,25 @@ export async function generateMetadata(
   };
 };
 
+// todo test this
+const getCachedData = cache(getData);
+
 async function getData({ params }) {
   const revalidateSeconds = 5 * 60;
   const cbb_game_id = params.cbb_game_id;
-  const cbb_games = await api.Request({
+  const cbb_games = await useServerAPI({
     'class': 'cbb_game',
     'function': 'getGames',
     'arguments': {
       'cbb_game_id': cbb_game_id,
     }
-  }, {next: {revalidate: revalidateSeconds}});
+  }, {revalidate: revalidateSeconds});
 
   return cbb_games[cbb_game_id] || {};
 }
 
 export default async function Page({ params, searchParams }) {
-  const cbb_game = await getData({params});
+  const cbb_game = await getCachedData({params});
 
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,

@@ -7,7 +7,6 @@ import moment from 'moment';
 import HelperCBB from '../../components/helpers/CBB';
 import HelperGames from '../../components/helpers/Games';
 
-import Api from '../../components/Api.jsx';
 import BackdropLoader from '../../components/generic/BackdropLoader';
 import Teams from '../../components/generic/CBB/Favorites/Teams';
 import Players from '../../components/generic/CBB/Favorites/Players';
@@ -15,7 +14,7 @@ import { CircularProgress } from '@mui/material';
 import RankedGames from '../../components/generic/CBB/Home/RankedGames.jsx';
 import ThrillerGames from '../../components/generic/CBB/Home/ThrillerGames.jsx';
 import CloseGames from '../../components/generic/CBB/Home/CloseGames.jsx';
-const api = new Api();
+import { useClientAPI } from '@/components/clientAPI';
 
 let intervalRefresher: NodeJS.Timeout;
 
@@ -47,7 +46,7 @@ const Home = (props) => {
   const getData = () => {;
     setRequest(true);
 
-    api.Request({
+    useClientAPI({
       'class': 'cbb',
       'function': 'loadHomePage',
       'arguments': {

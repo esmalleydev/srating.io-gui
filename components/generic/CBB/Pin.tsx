@@ -6,10 +6,9 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
-import Api from '@/components/Api.jsx';
 import AccountHandler from '@/components/generic/AccountHandler.jsx';
 import { updateCbbGameIds, updateGameSort } from '@/redux/features/favorite-slice';
-const api = new Api();
+import { useClientAPI } from '@/components/clientAPI';
 
 // const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 //   props,
@@ -77,7 +76,7 @@ const Pin = (props) => {
     // setAlertOpen(true);
     setRequested(true);
     
-    api.Request({
+    useClientAPI({
       'class': 'favorite',
       'function': 'updateFavorite',
       'arguments': {

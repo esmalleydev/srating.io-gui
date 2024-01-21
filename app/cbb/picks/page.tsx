@@ -2,9 +2,8 @@ import PicksPage from './picks-page';
 import { Metadata } from 'next';
 
 import HelperCBB from '@/components/helpers/CBB';
-import Api from '@/components/Api.jsx';
-
-const api = new Api();
+import { useServerAPI } from '@/components/serverAPI';
+import { unstable_noStore } from 'next/cache';
 
 export const metadata: Metadata = {
   title: 'sRating | College basketball betting picks',
@@ -20,20 +19,20 @@ export const metadata: Metadata = {
 };
 
 async function getSeasonDates(searchParams) {
-  const seconds = 60 * 60 * 12; // cache for 12 hours
+  unstable_noStore();
+  const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
 
   const CBB = new HelperCBB();
 
   const season = searchParams?.season || CBB.getCurrentSeason();
 
-  const dates = await api.Request({
+  const dates = await useServerAPI({
     'class': 'cbb_game',
     'function': 'getSeasonDates',
     'arguments': {
       'season': season
     }
-  },
-  {next : {revalidate: seconds}});
+  }, {revalidate: revalidateSeconds});
 
 
   return dates;

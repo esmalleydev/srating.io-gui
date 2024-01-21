@@ -1,4 +1,4 @@
-
+'use server';
 import '../styles/global.css';
 import 'typeface-roboto';
 
@@ -8,12 +8,16 @@ import Script from 'next/script'
 import StoreProvider from './StoreProvider';
 import SessionHandler from '@/components/handlers/SessionHandler';
 import FavoriteHandler from '@/components/handlers/FavoriteHandler';
+import SecretWrapper from '@/components/handlers/secret/SecretWrapper';
+import SecretHandler from '@/components/handlers/secret/SecretHandler';
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+// TODO GO THROUGH WHOLE APP, UPDATE THE REDUX REDUCERS TO ONLY GRAB THE SPECIFIC VALUE, TO ELIMINATE UNNESSACARY RENDERS
+export default async function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
       <body>
         <StoreProvider>
+          <SecretWrapper><SecretHandler /></SecretWrapper>
           <SessionHandler />
           <FavoriteHandler />
           {children}

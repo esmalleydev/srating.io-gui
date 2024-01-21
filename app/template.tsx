@@ -1,6 +1,6 @@
 'use client';
-import React, { useRef, useState, useEffect, RefObject} from "react";
-import { ThemeProvider } from '@mui/material/styles';
+import React, { useState, useEffect} from "react";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
@@ -27,6 +27,21 @@ const Template = ({ children }: { children: React.ReactNode }) => {
     setIsMounted(true);
   }, []);
 
+  const darkTheme = createTheme({
+    'palette': {
+      'mode': 'dark',
+    },
+  });
+  
+  const lightTheme = createTheme({
+    'palette': {
+      'mode': 'light',
+      'background': {
+        'default': "#efefef"
+      },
+    },
+  });
+
 
   let paddingTop = '64px';
 
@@ -35,7 +50,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <ThemeProvider theme={themeSlice.theme}>
+    <ThemeProvider theme={themeSlice.mode === 'dark' ? darkTheme : lightTheme}>
       <CssBaseline />
       {
       isMounted ?

@@ -2,20 +2,18 @@
 import React from 'react';
 
 import HeaderClient from '@/components/generic/CBB/Game/Header/HeaderClient';
-import Api from '@/components/Api.jsx';
-
-const api = new Api();
+import { useServerAPI } from '@/components/serverAPI';
 
 const HeaderServer = async({cbb_game_id}) => {
   const tag = 'cbb.games.'+ cbb_game_id;
 
-  const cbb_game = await api.Request({
+  const cbb_game = await useServerAPI({
     'class': 'cbb_game',
     'function': 'get',
     'arguments': {
       'cbb_game_id': cbb_game_id,
     },
-  }, {next: {tags: [tag], revalidate: 30}});
+  }, {revalidate: 30});
 
   return (
     <>

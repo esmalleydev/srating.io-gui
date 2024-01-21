@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 
 import { Button, Paper, TextField, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useClientAPI } from '@/components/clientAPI';
 
-
-import Api from '../../../components/Api.jsx';
-
-const api = new Api();
 
 
 const Settings = (props) => {
@@ -69,7 +66,7 @@ const Settings = (props) => {
 
     setIsReseting(true);
 
-    api.Request({
+    useClientAPI({
       'class': 'user',
       'function': 'resetPassword',
       'arguments': {

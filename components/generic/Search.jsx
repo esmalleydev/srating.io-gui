@@ -10,9 +10,8 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import Api from './../Api.jsx';
 import BackdropLoader from './BackdropLoader';
-const api = new Api();
+import { useClientAPI } from '../clientAPI';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -70,7 +69,7 @@ const Search = (props) => {
 
 
   const debouncedRequest = useDebounce(() => {
-    api.Request({
+    useClientAPI({
       'class': 'cbb',
       'function': 'search',
       'arguments': {

@@ -7,11 +7,10 @@ import Tile from '@/components/generic/CBB/Picks/Tile';
 import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
 import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 
-import Api from '@/components/Api.jsx';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { gamesDataType } from '@/components/generic/types';
 import { updateConferences } from '@/redux/features/display-slice';
-const api = new Api();
+import { useClientAPI } from '@/components/clientAPI';
 
 // todo there is some bug, if I am on this page, not logged in, then login, with a subscription, after page reload, the skeleton lines never get replaced
 
@@ -27,7 +26,7 @@ const Picks = (props) => {
 
   if (!requested) {
     setRequested(true);
-    api.Request({
+    useClientAPI({
       'class': 'cbb_game_odds',
       'function': 'getPicksData',
       'arguments': {

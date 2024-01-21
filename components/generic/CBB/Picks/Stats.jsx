@@ -17,9 +17,8 @@ import HelperCBB from '../../../helpers/CBB';
 
 
 import utilsColor from  '../../../utils/Color.jsx';
-import Api from './../../../Api.jsx';
+import { useClientAPI } from '@/components/clientAPI';
 
-const api = new Api();
 const ColorUtil = new utilsColor();
 
   
@@ -38,7 +37,7 @@ const Stats = (props) => {
 
   if (!requested) {
     setRequested(true);
-    api.Request({
+    useClientAPI({
       'class': 'cbb_game_odds',
       'function': 'getStatsData',
       'arguments': {

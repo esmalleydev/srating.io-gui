@@ -23,13 +23,12 @@ import Calculator from '@/components/generic/CBB/Picks/Calculator.jsx';
 import Stats from '@/components/generic/CBB/Picks/Stats.jsx';
 import HelperCBB from '@/components/helpers/CBB';
 
-import Api from '@/components/Api.jsx';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import Dates from '@/components/utils/Dates';
+import { useClientAPI } from '@/components/clientAPI';
 
-const api = new Api();
 const dateUtil = new Dates();
 
 const Picks = (props) => {
@@ -133,7 +132,7 @@ const Picks = (props) => {
       router.replace(`${pathName}${query}`);
     }
 
-    api.Request({
+    useClientAPI({
       'class': 'cbb_game',
       'function': 'getGames',
       'arguments': {

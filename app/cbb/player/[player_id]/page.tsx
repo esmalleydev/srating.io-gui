@@ -1,23 +1,17 @@
+import { useServerAPI } from '@/components/serverAPI';
 import PlayerPage from './player-page';
 import { Metadata, ResolvingMetadata } from 'next';
-
-import Api from '@/components/Api.jsx';
-
-const api = new Api();
+import { unstable_noStore } from 'next/cache';
 
 type Props = {
   params: { team_id: string };
 };
 
-const revalidateSeconds = 60 * 5; // cache for 5 mins
-
-export const revalidate = 0; // setting this to 5 mins does nothing lol... https://github.com/vercel/next.js/discussions/54075
-
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const player = await getData(params);
+  const player: any = await getData(params);
 
   const name = player.first_name + ' ' + player.last_name;
 
@@ -38,16 +32,17 @@ export async function generateMetadata(
 
 
 async function getData(params) {
+  unstable_noStore();
+  const revalidateSeconds = 300; // 60 * 5; // cache for 5 mins
   const player_id = params.player_id;
 
-  const player = await api.Request({
+  const player = await useServerAPI({
     'class': 'player',
     'function': 'getCBBPlayer',
     'arguments': {
       'player_id': player_id,
     }
-  },
-  {next : {revalidate: revalidateSeconds}});
+  }, {revalidate: revalidateSeconds});
 
   return player;
 };

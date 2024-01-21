@@ -1,12 +1,10 @@
 import RankingPage from './ranking-page';
 import { Metadata, ResolvingMetadata } from 'next';
 
-import cacheData from 'memory-cache';
-
 import HelperCBB from '@/components/helpers/CBB';
-import Api from '@/components/Api.jsx';
+import { useServerAPI } from '@/components/serverAPI';
+import { unstable_noStore } from 'next/cache';
 
-const api = new Api();
 
 type Props = {
   params: { cbb_game_id: string };
@@ -48,6 +46,7 @@ export async function generateMetadata(
 
 
 async function getData(searchParams) {
+  unstable_noStore();
   const seconds = 60 * 60 * 5; // cache for 5 hours
  
   const CBB = new HelperCBB();
@@ -62,24 +61,13 @@ async function getData(searchParams) {
     fxn = 'getConferenceRanking';
   }
 
-  const cachedLocation = 'CBB.RANKING.LOAD.'+season+ '.' + view;
-  const cached = cacheData.get(cachedLocation);
-
-  let data = {};
-
-  // the fetch caching is set to 2MB... >.<
-  if (!cached) {
-    data = await api.Request({
-      'class': 'cbb_ranking',
-      'function': fxn,
-      'arguments': {
-        'season': season
-      }
-    }, {next: {revalidate: seconds}});
-    cacheData.put(cachedLocation, data, 1000 * seconds);
-  } else {
-    data = cached;
-  }
+  const data = await useServerAPI({
+    'class': 'cbb_ranking',
+    'function': fxn,
+    'arguments': {
+      'season': season
+    }
+  }, {'revalidate': seconds});
 
   return {
     'data': data,

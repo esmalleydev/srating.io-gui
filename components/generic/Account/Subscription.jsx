@@ -13,10 +13,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 
-import Api from '../../../components/Api.jsx';
 import BackdropLoader from '../BackdropLoader.jsx';
+import { useClientAPI } from '@/components/clientAPI';
 
-const api = new Api();
 
 
 const Subscription = (props) => {
@@ -68,7 +67,7 @@ const Subscription = (props) => {
   const handleCancelSubscription = () => {
     setSpin(true);
     handleCancelClose();
-    api.Request({
+    useClientAPI({
       'class': 'billing',
       'function': 'cancelSubscription',
       'arguments': {
@@ -84,7 +83,7 @@ const Subscription = (props) => {
 
   const handleRegenerate = () => {
     setSpin(true);
-    api.Request({
+    useClientAPI({
       'class': 'api_key',
       'function': 'regenerate',
       'arguments': {

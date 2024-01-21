@@ -33,6 +33,11 @@ module.exports = {
 		COMMIT_DATE: commitDate,
 		NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: config_.stripe_public_key,
 	},
+	logging: {
+		fetches: {
+			fullUrl: true,
+		},
+	},
 	webpack: (config, options) => {
     config.module.rules.push({
       test: /\.md$/,

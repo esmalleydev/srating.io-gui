@@ -4,17 +4,18 @@ import { Metadata, ResolvingMetadata } from 'next';
 
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
-import Api from '@/components/Api.jsx';
 import HeaderClientWrapper from '@/components/generic/CBB/Team//Header/HeaderClientWrapper';
 import HeaderServer from '@/components/generic/CBB/Team/Header/HeaderServer';
 import Schedule from '@/components/generic/CBB/Team/Schedule';
 import Trends from '@/components/generic/CBB/Team/Trends';
 import NavBar from '@/components/generic/CBB/Team/NavBar';
 import Stats from '@/components/generic/CBB/Team/Stats';
+import { useServerAPI } from '@/components/serverAPI';
+import { Team } from '@/components/generic/types';
+import { unstable_noStore } from 'next/cache';
 // import ScheduleClientWrapper from '@/components/generic/CBB/Team/Schedule/ScheduleClientWrapper';
 // import ScheduleServer from '@/components/generic/CBB/Team/Schedule/ScheduleServer';
 
-const api = new Api();
 
 type Props = {
   params: { team_id: string };
@@ -47,13 +48,16 @@ export async function generateMetadata(
 
 
 async function getData({params, searchParams}) {
+  unstable_noStore();
   const CBB = new HelperCBB();
 
   const team_id = params.team_id;
 
   const season = searchParams?.season || CBB.getCurrentSeason();
 
-  const team = await api.Request({
+  type TeamWithConference = Team & {conference: string;}
+
+  const team: TeamWithConference | any = await useServerAPI({
     'class': 'team',
     'function': 'get',
     'arguments': {
@@ -61,7 +65,7 @@ async function getData({params, searchParams}) {
     }
   });
 
-  const conference = await api.Request({
+  const conference: any = await useServerAPI({
     'class': 'team',
     'function': 'getConference',
     'arguments': {
@@ -75,7 +79,7 @@ async function getData({params, searchParams}) {
   }
 
   return team;
-}
+};
 
 // todo who need to redesign schedule component, need session_id to check for ratings
 

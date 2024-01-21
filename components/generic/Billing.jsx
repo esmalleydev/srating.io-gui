@@ -12,13 +12,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-
-import Api from './../Api.jsx';
 import CheckoutForm from "./Billing/CheckoutForm";
 import FreeTrialForm from './Billing/FreeTrialForm';
 
 
-const api = new Api();
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.

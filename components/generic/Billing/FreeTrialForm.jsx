@@ -6,9 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 
 import { Button } from '@mui/material';
-
-import Api from './../../Api.jsx';
-const api = new Api();
+import { useClientAPI } from '@/components/clientAPI';
 
 const FreeTrialForm = (props) => {
   const router = useRouter();
@@ -26,7 +24,7 @@ const FreeTrialForm = (props) => {
   if (session_id && !request) {
     setSpin(true);
     setRequest(true);
-    api.Request({
+    useClientAPI({
       'class': 'user',
       'function': 'loadUser',
       'arguments': {},
@@ -58,7 +56,7 @@ const FreeTrialForm = (props) => {
 
     setIsLoading(true);
 
-    const session = await api.Request({
+    const session = await useClientAPI({
       'class': 'billing',
       'function': 'createTrial',
       'arguments': {
