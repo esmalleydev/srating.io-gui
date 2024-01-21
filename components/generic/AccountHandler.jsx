@@ -82,7 +82,7 @@ const AccountHandler = (props) => {
         return;
       } else {
         localStorage.setItem('session_id', session_id);
-        sessionStorage.clear();
+        // sessionStorage.clear();
         dispatch(setValidSession(true));
         dispatch(clearDatesChecked());
         props.closeHandler();
@@ -142,7 +142,7 @@ const AccountHandler = (props) => {
         return;
       } else if (response) {
         localStorage.setItem('session_id', response);
-        sessionStorage.clear();
+        // sessionStorage.clear();
         dispatch(setValidSession(true));
         props.closeHandler();
         router.push('/account');
@@ -206,7 +206,7 @@ const AccountHandler = (props) => {
         setForgotPassword(false);
         setTempLogin(false);
         localStorage.setItem('session_id', response);
-        sessionStorage.clear();
+        // sessionStorage.clear();
         dispatch(setValidSession(true));
         props.closeHandler();
         router.push('/account?view=settings');
