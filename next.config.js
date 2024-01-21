@@ -16,7 +16,7 @@ let config_ = {
 	stripe_public_key: null,
 };
 try {
-	config_ = require('./configuration');
+	config_ = require('./clientConfig');
 } catch (e) {
 	config_ = {
 		stripe_public_key: null,
