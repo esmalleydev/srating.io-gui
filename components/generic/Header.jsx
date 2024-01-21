@@ -102,7 +102,7 @@ const Header = (props) => {
   const handleLogout = () => {
     handleClose();
     localStorage.removeItem('session_id');
-    sessionStorage.clear();
+    // sessionStorage.clear();
     dispatch(setValidSession(false));
     dispatch(setSession(null));
     router.push('/');
