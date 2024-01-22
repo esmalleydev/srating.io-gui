@@ -8,16 +8,7 @@ import { updateGameSort } from '@/redux/features/favorite-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useScrollContext } from '@/contexts/scrollContext';
 import BackdropLoader from '../../BackdropLoader';
-import { clearDatesChecked } from '@/redux/features/games-slice';
 
-
-// TODO, GET ALL GAMES ON FIRST LOAD
-// THEN FOR REFRESHES, EACH GAME CONTROLS IT, ONES CURRENTLY VIEWABLE GO FIRST AND REFRESH MORE FREQUENTLY
-// ONES NOT VIEWABLE STILL REFRESH EVERY MIN? BUT THEY ARE NOT PRIO
-// IF YOU SCROLL INTO VIEW, TRIGGER FRESH? MUST BE SO FAST THAT IT GETS DATA BACK BEFORE SCROLLING OUT OF VIEW
-
-// TRIAL IT TO COMPARE SPEED VS 1 BIG CALL TO ALL GAMES, DO IT ON A DAY WITH A LOT OF GAMES AND SMALL AMOUNT
-// SHOW REFRESH COUNTER ON EACH GAME TILE?
 
 
 const getBreakPoint = () => {
@@ -115,16 +106,22 @@ const NavBar = ({ dates, sessionDataKey, season }) => {
 
 
 
-  const updateDate = (e, value) => {
+  const updateDate = (e, value, opt_extact) => {
     setSpin(true);
     setScrollTop(0);
     if (scrollRef && scrollRef.current) {
       scrollRef.current.scrollTop = 0;
     }
 
-    const newDate = tabDates[value];
+    let newDate: string | null = null;
 
-    if (searchParams?.get('date') !== newDate) {
+    if (opt_extact) {
+      newDate = value;
+    } else {
+      newDate = tabDates[value];
+    }
+
+    if (newDate !== null && searchParams?.get('date') !== newDate) {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
       current.set('date', newDate);
       const search = current.toString();
@@ -141,7 +138,9 @@ const NavBar = ({ dates, sessionDataKey, season }) => {
         setSpin(false);
       });
     }
-    setDate(newDate);
+    if (newDate !== null) {
+      setDate(newDate);
+    }
     dispatch(updateGameSort(null));
     if (date >= now && datesChecked[date]) {
       // dispatch(clearDatesChecked(null));
@@ -156,7 +155,7 @@ const NavBar = ({ dates, sessionDataKey, season }) => {
         selectedDate = {date}
         dates = {tabDates}
         tabsOnChange = {updateDate}
-        calendarOnAccept = {(momentObj) => {updateDate(null, momentObj.format('YYYY-MM-DD'));}}
+        calendarOnAccept = {(momentObj) => {updateDate(null, momentObj.format('YYYY-MM-DD'), true);}}
         scrollRef = {scrollRefDateBar}
       />
     </div>

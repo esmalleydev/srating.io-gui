@@ -53,8 +53,6 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
       scrollRef &&
       scrollRef.current
     ) {
-      console.log('set it ')
-      console.log(scrollRef.current.scrollTop)
       dispatch(setScrollTop(scrollRef.current.scrollTop));
     }
 
@@ -316,17 +314,15 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
       spreadToUseHome < spreadToUseAway
     ) {
       spread = spreadToUseHome;
-      if (overUnderToUse !== '-') {
-        overUnder = 'O ' + overUnderToUse;
-      }
     } else if (
       side === 'away' &&
       spreadToUseAway !== '-' &&
       spreadToUseAway < spreadToUseHome
     ) {
       spread = spreadToUseAway;
+    } else {
       if (overUnderToUse !== '-') {
-        overUnder = 'O ' + overUnderToUse;
+        overUnder = 'O' + overUnderToUse;
       }
     }
 

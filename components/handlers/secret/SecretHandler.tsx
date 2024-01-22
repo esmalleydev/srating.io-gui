@@ -10,16 +10,18 @@ const SecretHandler = async({}) => {
   unstable_noStore();
   const revalidateSeconds = 1800; //60 * 30; // 30 mins
 
+  const tag = 'refresher.secret';
+
   const secret = await useServerAPI({
     'class': 'secret',
     'function': 'find',
     'arguments': {},
-  }, {revalidate: revalidateSeconds});
+  }, {tags: [tag], revalidate: revalidateSeconds});
 
 
   return (
     <>
-      <SecretClient secret={secret} />
+      <SecretClient secret={secret} tag = {tag} />
     </>
   );
 }

@@ -28,6 +28,7 @@ const secret = (config && config.secret) || null;
 
 type OptionalFetchArgs = {
 	revalidate: number;
+	tags?: string[];
 };
 
 export async function useServerAPI(args, optional_fetch_args = {} as OptionalFetchArgs) {
