@@ -65,7 +65,18 @@ async function getData({ date, searchParams }) {
 export default async function Page({ searchParams }) {
   const CBB = new HelperCBB();
   const season = searchParams?.season || CBB.getCurrentSeason();
-  const date = searchParams?.date || moment().format('YYYY-MM-DD');
+
+  const formatYmd = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1).toString() : (date.getMonth() + 1);
+    const day = date.getDate() < 10 ? '0' + date.getDate().toString() : date.getDate();
+  
+    return year + '-' + month + '-' + day;
+  };
+  
+  const today = new Date(new Date().toLocaleString('en-US', {'timeZone': 'America/New_York'}));
+
+  const date = searchParams?.date || formatYmd(today);
 
   const data = await getData({date, searchParams});
 
