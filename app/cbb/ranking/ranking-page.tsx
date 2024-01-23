@@ -370,7 +370,7 @@ const Ranking = (props) => {
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
       } else if (rankView === 'conference') {
-        return ['composite_rank', 'name', 'elo', 'elo_sos', 'adjusted_efficiency_rating', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'nonconfwins'];
+        return ['composite_rank', 'name', 'adjusted_efficiency_rating', 'elo', 'elo_sos', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'nonconfwins'];
       }
     } else if (view === 'offense') {
       if (rankView === 'team') {
@@ -1496,7 +1496,7 @@ const Ranking = (props) => {
         lastUpdated = row.date_of_rank;
       }
       row.name = row.conference;
-      row.composite_rank = row.efficiency_rating_rank;
+      row.composite_rank = row.adjusted_efficiency_rating_rank;
 
       // row.adj_elo = +(+row.elo - +row.elo_sos).toFixed(2);
 

@@ -48,6 +48,10 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
 
   const { width } = useWindowDimensions() as Dimensions;
 
+  const spreadToUseHome = (CBB.isInProgress() ? CBB.getLiveSpread('home') : CBB.getPreSpread('home'));
+  const spreadToUseAway = (CBB.isInProgress() ? CBB.getLiveSpread('away') : CBB.getPreSpread('away'));
+  const overUnderToUse = (CBB.isInProgress() ? CBB.getLiveOver() : CBB.getPreOver());
+
   const handleClick = (e) => {
     if (
       scrollRef &&
@@ -117,9 +121,25 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
       network.push(<Typography key = {CBB.getNetwork()} sx = {{'marginLeft': '5px'}} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
     }
 
+    let oddsTexts: string[] = [];
+    if (
+      spreadToUseAway !== '-' &&
+      spreadToUseHome !== '-'
+    ) {
+      oddsTexts.push(spreadToUseHome < spreadToUseAway ? CBB.getTeamNameShort('home') + ' ' + spreadToUseHome : CBB.getTeamNameShort('away') + ' ' + spreadToUseAway);
+    }
+    if (overUnderToUse !== '-') {
+      oddsTexts.push('O' + overUnderToUse);
+    }
+
     return (
       <div style = {flexContainer} >
         <div style = {timeStyle}><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
+        {
+          displayCardView === 'compact' && !CBB.isFinal() && oddsTexts.length ?
+            <div><Typography style={{'fontSize': '11px'}} variant = 'overline' color={'text.secondary'}>{oddsTexts.join(' | ')}</Typography></div>
+          : ''
+        }
         <Pin cbb_game_id = {cbb_game.cbb_game_id}  />
       </div>
     );
@@ -300,31 +320,28 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
       supRankStyle.color = ColorUtil.lerpColor(getBestColor(), getWorstColor(), (+(teamRank / CBB.getNumberOfD1Teams(cbb_game.season))));
     }
 
-    let spread: string | null = null;
-    let overUnder: string | null = null;
+    // let spread: string | null = null;
+    // let overUnder: string | null = null;
 
     let moneyLineToUse = (CBB.isInProgress() ? CBB.getLiveML(side) : CBB.getPreML(side));
-    let spreadToUseHome = (CBB.isInProgress() ? CBB.getLiveSpread('home') : CBB.getPreSpread('home'));
-    let spreadToUseAway = (CBB.isInProgress() ? CBB.getLiveSpread('away') : CBB.getPreSpread('away'));
-    let overUnderToUse = (CBB.isInProgress() ? CBB.getLiveOver() : CBB.getPreOver());
 
-    if (
-      side === 'home' &&
-      spreadToUseHome !== '-' &&
-      spreadToUseHome < spreadToUseAway
-    ) {
-      spread = spreadToUseHome;
-    } else if (
-      side === 'away' &&
-      spreadToUseAway !== '-' &&
-      spreadToUseAway < spreadToUseHome
-    ) {
-      spread = spreadToUseAway;
-    } else {
-      if (overUnderToUse !== '-') {
-        overUnder = 'O' + overUnderToUse;
-      }
-    }
+    // if (
+    //   side === 'home' &&
+    //   spreadToUseHome !== '-' &&
+    //   spreadToUseHome < spreadToUseAway
+    // ) {
+    //   spread = spreadToUseHome;
+    // } else if (
+    //   side === 'away' &&
+    //   spreadToUseAway !== '-' &&
+    //   spreadToUseAway < spreadToUseHome
+    // ) {
+    //   spread = spreadToUseAway;
+    // } else {
+    //   if (overUnderToUse !== '-') {
+    //     overUnder = 'O' + overUnderToUse;
+    //   }
+    // }
 
 
     return (
@@ -342,7 +359,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
             </div>
             {
               displayCardView === 'compact' && !CBB.isFinal() ?
-                <div><Typography style={{'fontSize': '11px'}} variant = 'overline' color={(CBB.oddsReversal(side) ? theme.palette.warning.main : 'text.secondary')}>{overUnder ? overUnder + ' | ' : ''}{spread ? spread + ' | ' : ''}{moneyLineToUse}</Typography></div>
+                <div><Typography style={{'fontSize': '11px'}} variant = 'overline' color={(CBB.oddsReversal(side) ? theme.palette.warning.main : 'text.secondary')}>{/*overUnder ? overUnder + ' | ' : ''*/}{/*spread ? spread + ' | ' : ''*/}{moneyLineToUse}</Typography></div>
               : ''
             }
           </div>
