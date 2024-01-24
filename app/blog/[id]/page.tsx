@@ -1,9 +1,11 @@
 import React from 'react';
 import { Metadata, ResolvingMetadata } from 'next';
 
-import Post from '../../../components/generic/Blog/Post';
+import Post from '@/components/generic/Blog/Post';
 
-import { getAllPostIds, getPostData, getSidebarPosts } from '../../../lib/blog';
+import { getAllPostIds, getPostData, getSidebarPosts } from '@/lib/blog';
+
+export const dynamic = 'force-dynamic';
 
 type Props = {
   params: { id: string }
@@ -16,7 +18,7 @@ export async function generateMetadata(
   const blogData = await getData(params);
   const data = blogData.post;
   const metadata = data.metadata;
-
+  
   return {
     title: 'sRating | Blog | ' + metadata.title,
     description: metadata.excerpt,
@@ -32,8 +34,6 @@ export async function generateMetadata(
 };
 
 const Blog = async({ params }) => {
-  const self = this;
-
   const blogData = await getData(params);
 
   const data = blogData.post;
@@ -47,7 +47,7 @@ const Blog = async({ params }) => {
       </div>
     </div>
   );
-}
+};
 
 export async function generateStaticParams() {
   const paths = getAllPostIds();

@@ -2,8 +2,8 @@ import React from 'react';
 import { Metadata } from 'next';
 
 
-import Post from '../../components/generic/Blog/Post';
-import { getLastPost, getSidebarPosts } from '../../lib/blog';
+import Post from '@/components/generic/Blog/Post';
+import { getLastPost, getSidebarPosts } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'sRating | Blog',
@@ -30,23 +30,7 @@ const Blog = async() => {
       </div>
     </div>
   );
-}
-/*
-export async function getServerSideProps(context) {
-  const lastPost = getLastPost();
-  const sidebarPosts = getSidebarPosts();
-
-  return {
-    'props': {
-      'data': {
-        'main': lastPost,
-        'sidebar': sidebarPosts,
-      },
-      'generated': new Date().getTime(),
-    },
-  }
 };
-*/
 
 export default Blog;
 
