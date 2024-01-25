@@ -127,7 +127,10 @@ const CheckoutForm = (props) => {
   };
 
   const paymentElementOptions = {
-    layout: "tabs",
+    layout: 'tabs',
+    fields: {
+      billingDetails: 'never',
+    },
   };
 
   if (spin) {
@@ -141,7 +144,7 @@ const CheckoutForm = (props) => {
       <TextField
         style = {{'marginBottom': 20}}
         required
-        value = {email}
+        value = {email || ''}
         error = {emailError ? true : false}
         helperText = {emailError ? emailError : null}
         onChange = {handleEmail}

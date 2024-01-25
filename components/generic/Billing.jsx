@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -24,7 +23,6 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 const Billing = (props) => {
   const theme = useTheme();
-  const [clientSecret, setClientSecret] = useState(null);
 
   const pricing = props.pricing || {};
 
@@ -36,9 +34,13 @@ const Billing = (props) => {
     },
     rules: {
       '.Input': {
+        'padding': '5px',
         // 'boxShadow': 'none',
         // 'border': 'none'
-      }
+      },
+      '.Tab': {
+        'padding': '5px',
+      },
     }
   };
 
@@ -57,17 +59,12 @@ const Billing = (props) => {
       open={props.open}
       onClose={props.closeHandler}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          m: 'auto',
-        }}
-      >
       <DialogTitle id="alert-dialog-title">{pricing.name || 'Loading...'} {pricing.type === 'picks' ? 'picks access' : 'API access'}</DialogTitle>
       <DialogContent>
-        <DialogContentText sx = {{'marginBottom': 2}}>{pricing.description || 'loading...'}</DialogContentText>
-        <Typography color = 'text.secondary' variant = 'caption'>See <Link underline="hover"  href = "https://srating.io/terms-and-conditions" target = "_blank">terms and conditions</Link> before subscribing</Typography>
+        <div>
+          {!trial ? <Typography color = 'text.secondary' variant = 'caption'>See <Link underline="hover"  href = "https://srating.io/terms-and-conditions" target = "_blank">terms and conditions</Link> before subscribing.</Typography> : ''}
+          {!trial ? <Typography color = 'text.secondary' variant = 'caption'> Payments processed securely via <Link underline="hover"  href = "https://stripe.com" target = "_blank">Stripe</Link></Typography> : ''}
+        </div>
         {
         trial ?
           <div>
@@ -80,9 +77,7 @@ const Billing = (props) => {
             </Elements>
           </div>
         }
-        {!trial ? <Typography color = 'text.secondary' variant = 'caption'>Payments processed securely via <Link underline="hover"  href = "https://stripe.com" target = "_blank">Stripe</Link></Typography> : ''}
       </DialogContent>
-    </Box>
     </Dialog>
   );
 }

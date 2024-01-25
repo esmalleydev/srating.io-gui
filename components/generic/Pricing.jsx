@@ -141,7 +141,7 @@ const Pricing = (props) => {
               {option.requests ? <div><Typography color = 'primary.main' variant = 'caption'>{option.requests}</Typography><Typography color = 'text.secondary' variant = 'caption'> requests per month</Typography></div> : ''}
               {option.features.map((feature) => {
                 return (
-                  <div>
+                  <div key = {feature}>
                     <hr />
                     <Typography variant = 'body1'>{feature}</Typography>
                   </div>
@@ -149,7 +149,7 @@ const Pricing = (props) => {
               })}
               {option.missing_features.map((missing) => {
                 return (
-                  <div>
+                  <div key = {missing}>
                     <hr />
                     <Typography style = {{'textDecoration': 'line-through'}} color = 'text.secondary' variant = 'body1'>{missing}</Typography>
                   </div>
