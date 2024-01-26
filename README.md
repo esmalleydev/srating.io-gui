@@ -25,7 +25,7 @@ These calls run through the client... and will attach required headers to the fe
 
 In the project root you will need to create a `clientConfig.js` file. Use the provided `clientConfig_example.js` as a template. This points the gui api requests to the correct place.
 
-```
+```js
 module.exports = {
   'host': 'https://api.srating.io/v1/',
   'api_key': '[YOUR API KEY HERE]',
@@ -36,7 +36,7 @@ module.exports = {
 ```
 
 ### Using the component
-```
+```jsx
 'use client';
 import { useClientAPI } from '@/components/clientAPI';
 
@@ -58,7 +58,7 @@ These calls run through on the server. It will attach any required setting as we
 
 In the project root you will need to create a `serverConfig.js` file. Use the provided `serverConfig_example.js` as a template. This points the gui api requests to the correct place.
 
-```
+```js
 module.exports = {
   'host': 'localhost',
   'port': 5000,
@@ -67,7 +67,7 @@ module.exports = {
 ```
 
 ### Using the component
-```
+```jsx
 'use server';
 import { useServerAPI } from '@/components/serverAPI';
 
