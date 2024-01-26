@@ -6,7 +6,8 @@ This is the open-source GUI project for [srating.io](https://srating.io). This p
 
 Prerequisites: typescript, nodejs, npm.
 
-## [docs.srating.io](https://docs.srating.io)
+## Looking for the API documentation?
+### [docs.srating.io](https://docs.srating.io)
 
 ## Set up
 
