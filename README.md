@@ -1,10 +1,12 @@
 ![build](https://github.com/esmalleydev/srating.io-gui/actions/workflows/build.js.yml/badge.svg)
 ![version](https://img.shields.io/github/package-json/v/esmalleydev/srating.io-gui)
-# [>srating.io](https://srating.io)
+# [srating.io](https://srating.io)
 
 This is the open-source GUI project for [srating.io](https://srating.io). This project uses [nextjs](https://nextjs.org/), [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/).
 
-Prerequisites: Nodejs, npm.
+Prerequisites: typescript, nodejs, npm.
+
+## [docs.srating.io](https://docs.srating.io)
 
 ## Set up
 
@@ -16,7 +18,11 @@ To start developing run:
 
 If you would like to contribute, please [contact me](mailto:contact@srating.io) for an API key.
 
-In the project root you will need to create a `configuration.js` file. Use the provided `configuration_example.js` as a template. This points the gui api requests to the correct place.
+
+## Client api
+These calls run through the client... and will attach required headers to the fetch request.
+
+In the project root you will need to create a `clientConfig.js` file. Use the provided `clientConfig_example.js` as a template. This points the gui api requests to the correct place.
 
 ```
 module.exports = {
@@ -28,8 +34,54 @@ module.exports = {
 };
 ```
 
-## API Documentation
-### [docs.srating.io](https://docs.srating.io)
+### Using the component
+```
+'use client';
+import { useClientAPI } from '@/components/clientAPI';
+
+useClientAPI({
+  'class': 'cbb_game',
+  'function': 'getScores',
+  'arguments': {
+    'start_date': '2024-01-26',
+  },
+}).then((response) => {
+  console.log(response);
+}).catch((e) => {
+  console.log(e);
+});
+```
+
+## Server api
+These calls run through on the server. It will attach any required setting as well as handling caching the calls for performance
+
+In the project root you will need to create a `serverConfig.js` file. Use the provided `serverConfig_example.js` as a template. This points the gui api requests to the correct place.
+
+```
+module.exports = {
+  'host': 'localhost',
+  'port': 5000,
+  'http': 'http',
+};
+```
+
+### Using the component
+```
+'use server';
+import { useServerAPI } from '@/components/serverAPI';
+
+const revalidateScoresSeconds = 20; // cache scores for 20 seconds
+  
+const scores = await useServerAPI({
+  'class': 'cbb_game',
+  'function': 'getScores',
+  'arguments': {
+    'start_date': '2024-01-26',
+  }
+}, {revalidate: revalidateScoresSeconds});
+
+console.log(scores);
+```
 
 ## Pages
 
@@ -44,27 +96,6 @@ module.exports = {
 ### [Player](app/cbb/player/[player_id]/README.md)
 
 ### [Game](app/cbb/games/[cbb_game_id]/README.md)
-
-## API requests
-
-The `components\Api.jsx` Api class is a wrapper to handle requests.
-
-```
-import Api from './Api.jsx';
-const api = new Api();
-
-api.Request({
-  'class': 'team',
-  'function': 'get',
-  'arguments': {
-    'team_id': params.team_id,
-   }
-}).then((team) => {
-  console.log(team);
-}).catch((err) => {
-  console.log(err);
-});
-```
 
 ## Other Scripts
 
