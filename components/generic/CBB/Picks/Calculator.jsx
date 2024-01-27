@@ -25,9 +25,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelCircleIcon from '@mui/icons-material/Cancel';
 
 // import CompareStatistic from '../../CompareStatistic';
-import HelperCBB from '../../../helpers/CBB';
-import utilsArrayifer from  '../../../utils/Arrayifer.jsx';
-import utilsSorter from  '../../../utils/Sorter.jsx';
+import HelperCBB from '@/components/helpers/CBB';
+import utilsArrayifer from  '@/components/utils/Arrayifer.js';
+import utilsSorter from  '@/components/utils/Sorter.js';
 
 
 import { useAppSelector } from '@/redux/hooks';

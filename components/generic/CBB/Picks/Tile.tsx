@@ -13,7 +13,7 @@ import CompareStatistic from '@/components/generic/CompareStatistic';
 import Indicator from '@/components/generic/CBB/Indicator';
 import Pin from '@/components/generic/CBB/Pin';
 import { useAppSelector } from '@/redux/hooks';
-import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.jsx';
+import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.js';
 
 const ColorUtil = new Color();
 

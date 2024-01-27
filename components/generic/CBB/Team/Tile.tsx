@@ -11,15 +11,13 @@ import { useTheme } from '@mui/material/styles';
 import BackdropLoader from '../../BackdropLoader';
 import { Card, CardContent, Typography, Tooltip, Link, CardActionArea } from '@mui/material';
 import Locked from '../../Billing/Locked';
-import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.jsx';
+import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.js';
 import { useAppSelector } from '@/redux/hooks';
-
-
-const ColorUtil = new Color();
 
 
 const Tile = (props) => {
   const self = this;
+  const ColorUtil = new Color();
   const myRef: RefObject<HTMLDivElement> = useRef(null);
   const router = useRouter();
   const theme = useTheme();

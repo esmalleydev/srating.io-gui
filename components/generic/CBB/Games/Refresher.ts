@@ -5,23 +5,19 @@ import { updateDateChecked, updateScores } from '@/redux/features/games-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
-let intervalRefresher: NodeJS.Timeout;
-
-let date_ = null;
-
 const Refresher = ({ date }) => {
   const refreshRate = 30;
   const dispatch = useAppDispatch();
   
   const [loading, setLoading] = useState(false);
-  
+  const [lastDate, setLastDate] = useState(null);
 
   const getData = () => {
     if (loading) {
       return;
     }
-    
 
+    setLastDate(date);
     setLoading(true);
     
     useClientAPI({
@@ -40,21 +36,18 @@ const Refresher = ({ date }) => {
     });
   };
   
-  if (date_ !== date) {
+  if (lastDate !== date) {
     getData();
-    date_ = date;
   }
   
-
   useEffect(() => {
-    intervalRefresher = setInterval(function() {
+    let intervalRefresher: NodeJS.Timeout = setInterval(function() {
       getData();
     }, refreshRate * 1000);
-    return function clean_up() {
+    return () => {
       clearInterval(intervalRefresher);
     };
   });
-
 
   return null;
 };

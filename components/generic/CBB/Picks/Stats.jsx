@@ -16,7 +16,7 @@ import CardContent from '@mui/material/CardContent';
 import HelperCBB from '../../../helpers/CBB';
 
 
-import utilsColor from  '../../../utils/Color.jsx';
+import utilsColor from  '../../../utils/Color.js';
 import { useClientAPI } from '@/components/clientAPI';
 
 const ColorUtil = new utilsColor();
