@@ -1,5 +1,5 @@
 'use client';
-import React, { RefObject, useEffect, useRef, useState, useTransition } from 'react';
+import React, { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -22,6 +22,7 @@ import { refresh } from '@/components/generic/CBB/actions';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { setScrollTop } from '@/redux/features/games-slice';
+import useOnScreen from '@/components/hooks/useOnScreen';
 
 
 
@@ -48,8 +49,9 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,
   });
-
+  
   const { width } = useWindowDimensions() as Dimensions;
+  const isVisible = useOnScreen(ref);
 
   const spreadToUseHome = (CBB.isInProgress() ? CBB.getLiveSpread('home') : CBB.getPreSpread('home'));
   const spreadToUseAway = (CBB.isInProgress() ? CBB.getLiveSpread('away') : CBB.getPreSpread('away'));
@@ -427,26 +429,34 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
 
   return (
     <Paper elevation={3} style = {divStyle} ref = {ref}>
-      <BackdropLoader open = {(spin === true)} />
-      {getIndicators()}
-      <div style = {teamLineStyle}>
-        {getHeader()}
-        {getTeamLines()}
-      </div>
       {
-        displayCardView === 'large' ? 
-          <div style = {{'padding': '0px 10px 10px 10px'}}>
-            <hr style ={{'marginTop': 0}} />
-            {getOddsLine()}
+        isVisible ?
+        <>
+          <BackdropLoader open = {(spin === true)} />
+          {getIndicators()}
+          <div style = {teamLineStyle}>
+            {getHeader()}
+            {getTeamLines()}
           </div>
-        : ''
-      }
-      {
-        displayCardView === 'large' ? 
-        <div style = {{'textAlign': 'right'}}>
-          <Button onClick = {handleClick}>Full Matchup</Button>
-        </div>
-        : ''
+          {
+            displayCardView === 'large' ? 
+              <div style = {{'padding': '0px 10px 10px 10px'}}>
+                <hr style ={{'marginTop': 0}} />
+                {getOddsLine()}
+              </div>
+            : ''
+          }
+          {
+            displayCardView === 'large' ? 
+            <div style = {{'textAlign': 'right'}}>
+              <Button onClick = {handleClick}>Full Matchup</Button>
+            </div>
+            : ''
+          }
+          </>
+        : <>
+            <Skeleton style = {{'height': (displayCardView === 'compact' ? 138 : 305), 'transform': 'initial'}} />
+          </>
       }
     </Paper>
   );
