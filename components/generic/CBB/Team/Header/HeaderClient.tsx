@@ -41,6 +41,9 @@ const HeaderClient = ({team, season}) => {
   const teamHelper = new HelperTeam({'team': team});
   const CBB = new HelperCBB();
 
+  const bestColor = getBestColor();
+  const worstColor = getWorstColor();
+
 
   const supStyle: React.CSSProperties = {
     'fontSize': '20px',
@@ -50,7 +53,7 @@ const HeaderClient = ({team, season}) => {
   const rank = teamHelper.getRank(displaySlice.rank);
 
   if (rank) {
-    supStyle.color = ColorUtil.lerpColor(getBestColor(), getWorstColor(), (+(rank / CBB.getNumberOfD1Teams(season))));
+    supStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
   }
 
 

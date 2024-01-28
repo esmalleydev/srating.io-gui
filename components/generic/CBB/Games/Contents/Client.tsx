@@ -1,7 +1,7 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Chip, Typography } from '@mui/material';
+import { Chip, Paper, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Game } from '@/components/generic/types';
 import { getHeaderHeight } from '@/components/generic/CBB/Games/SubNavBar';
@@ -15,7 +15,8 @@ const Client = ({ cbb_games, date }) => {
 
   const dispatch = useAppDispatch();
   const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const conferences = useAppSelector(state => state.displayReducer.value.conferences);
+  const statuses = useAppSelector(state => state.displayReducer.value.statuses);
   const scores = useAppSelector(state => state.gamesReducer.value.scores);
   const datesChecked = useAppSelector(state => state.gamesReducer.value.dates_checked);
   const scrollTop = useAppSelector(state => state.gamesReducer.value.scrollTop);
@@ -116,14 +117,14 @@ const Client = ({ cbb_games, date }) => {
     }
 
     if (
-      displaySlice.conferences.length &&
-      displaySlice.conferences.indexOf(game_.teams[game_.away_team_id].conference) === -1 &&
-      displaySlice.conferences.indexOf(game_.teams[game_.home_team_id].conference) === -1
+      conferences.length &&
+      conferences.indexOf(game_.teams[game_.away_team_id].conference) === -1 &&
+      conferences.indexOf(game_.teams[game_.home_team_id].conference) === -1
     ) {
       continue;
     }
 
-    if (displaySlice.statuses.indexOf(game_.status) === -1) {
+    if (statuses.indexOf(game_.status) === -1) {
       continue;
     }
 
@@ -149,8 +150,8 @@ const Client = ({ cbb_games, date }) => {
 
 
   let confChips: React.JSX.Element[] = [];
-  for (let i = 0; i < displaySlice.conferences.length; i++) {
-    confChips.push(<Chip key = {displaySlice.conferences[i]} sx = {{'margin': '5px'}} label={displaySlice.conferences[i]} onDelete={() => {dispatch(updateConferences(displaySlice.conferences[i]))}} />);
+  for (let i = 0; i < conferences.length; i++) {
+    confChips.push(<Chip key = {conferences[i]} sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {dispatch(updateConferences(conferences[i]))}} />);
   }
 
   return (

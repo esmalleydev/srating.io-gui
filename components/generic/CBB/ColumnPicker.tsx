@@ -14,21 +14,24 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
+import { RankingColumns } from '@/components/generic/types';
 
 
-const ColumnPicker = (props) => {
+const ColumnPicker = (
+  {options, selected, open, saveHandler, closeHandler}:
+  {options: RankingColumns, selected: Array<string>, open: boolean, saveHandler: Function, closeHandler: Function}
+) => {
 
-  const options = props.options;
-  const [columns, setColumns] = useState(props.selected || []);
+  const [columns, setColumns] = useState(selected || []);
 
   return (
     <div>
      <Dialog
         fullScreen
-        open={props.open}
+        open={open}
         // TransitionComponent={Transition}
         keepMounted
-        onClose={() => {props.closeHandler()}}
+        onClose={() => {closeHandler()}}
         aria-describedby="alert-dialog-slide-description"
         scroll = 'paper'
       >
@@ -37,7 +40,7 @@ const ColumnPicker = (props) => {
             <IconButton
               edge="start"
               color="inherit"
-              onClick={() => {props.closeHandler()}}
+              onClick={() => {closeHandler()}}
               aria-label="close"
             >
               <CloseIcon />
@@ -45,7 +48,7 @@ const ColumnPicker = (props) => {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Set custom table columns
             </Typography>
-            <Button autoFocus color="inherit" onClick={() => {props.saveHandler(columns);}}>Save</Button>
+            <Button autoFocus color="inherit" onClick={() => {saveHandler(columns);}}>Save</Button>
           </Toolbar>
         </AppBar>
         <DialogContent sx = {{'padding': 0}}>

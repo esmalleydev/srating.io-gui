@@ -1,32 +1,10 @@
 'use client';
 import React from 'react';
-
-
 import Typography from '@mui/material/Typography';
-// import Paper from '@mui/material/Paper';
-// import Skeleton from '@mui/material/Skeleton';
-
-
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { PlaybyPlay } from '@/components/generic/types';
-
-let intervalRefresher: NodeJS.Timeout;
 
 
 const Client = ({ cbb_game_pbp, /*tag*/}) => {
-
-  const { width } = useWindowDimensions() as Dimensions;
-
-  // useEffect(() => {
-  //   intervalRefresher = setInterval(function() {
-  //     refresh(tag);
-  //   }, 25 * 1000);
-  //   return function clean_up() {
-  //     clearInterval(intervalRefresher);
-  //   };
-  // });
-
-
   const rows: PlaybyPlay = cbb_game_pbp;
 
   const sortedPBP: PlaybyPlay[] = Object.values(rows).sort(function(a, b) {

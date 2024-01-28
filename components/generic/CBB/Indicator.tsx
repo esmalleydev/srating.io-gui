@@ -3,14 +3,12 @@ import { useTheme } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
 
 
-const Indicator = (props) => {
+const Indicator = ({ title, code, color}) => {
   const theme = useTheme();
 
-  const title = props.title;
-  const code = props.code;
-  const backgroundColor = props.color || '#0288d1';
+  const backgroundColor = color || '#0288d1';
 
-  const spanStyle = {
+  const spanStyle: React.CSSProperties = {
     'fontSize': '10px',
     'padding': '3px',
     'minWidth': '18px',

@@ -161,3 +161,16 @@ export interface Ranking {
 	date_of_rank: string;
 	current: number;
 };
+
+
+export interface RankingColumns {
+  [key: string]: {
+    id: string;
+    numeric: boolean;
+    label: string;
+    tooltip: string;
+    sort?: string;
+    sticky?: boolean;
+    disabled?: boolean;
+  }
+};

@@ -16,16 +16,17 @@ import Typography from '@mui/material/Typography';
 import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useAppDispatch } from '@/redux/hooks';
+import { updatePositions } from '@/redux/features/display-slice';
 
 
-const PositionPicker = (props) => {
+const PositionPicker = ({ selected }) => {
+  const dispatch = useAppDispatch();
+  const { width } = useWindowDimensions() as Dimensions;
 
-  const { width } = useWindowDimensions();
+  const [open, setOpen] = useState(false);
 
-  const selected = props.selected;
-  const [posOpen, setPosOpen] = useState(false);
-
-  const conferenceOptions = [
+  const options = [
     {'value': 'all', 'label': 'All'},
     {'value': 'G', 'label': 'Gaurd'},
     {'value': 'F', 'label': 'Forward'},
@@ -33,34 +34,34 @@ const PositionPicker = (props) => {
   ];
 
 
-  const handlePosOpen = () => {
-    setPosOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
   };
 
-  const handlePosClose = () => {
-    setPosOpen(false);
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
     <div>
       <Button
         id="position-picker-button"
-        aria-controls={posOpen ? 'position-picker-menu' : undefined}
+        aria-controls={open ? 'position-picker-menu' : undefined}
         aria-haspopup="true"
-        aria-expanded={posOpen ? 'true' : undefined}
+        aria-expanded={open ? 'true' : undefined}
         variant="text"
         disableElevation
-        onClick={handlePosOpen}
+        onClick={handleOpen}
         endIcon={<KeyboardArrowDownIcon />}
       >
         {width < 500 ? 'Pos.' : 'Positions'}
       </Button>
       <Dialog
         fullScreen
-        open={posOpen}
+        open={open}
         // TransitionComponent={Transition}
         keepMounted
-        onClose={handlePosClose}
+        onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
         <AppBar sx={{ position: 'relative' }}>
@@ -68,7 +69,7 @@ const PositionPicker = (props) => {
             <IconButton
               edge="start"
               color="inherit"
-              onClick={handlePosClose}
+              onClick={handleClose}
               aria-label="close"
             >
               <CloseIcon />
@@ -79,17 +80,15 @@ const PositionPicker = (props) => {
           </Toolbar>
         </AppBar>
         <List>
-          {conferenceOptions.map((confOption) => (
-            <ListItem key={confOption.value} button onClick={() => {
-              if (props.actionHandler) {
-                props.actionHandler(confOption.value);
-              }
-              handlePosClose();
+          {options.map((option) => (
+            <ListItem key={option.value} button onClick={() => {
+              dispatch(updatePositions(option.value));
+              handleClose();
             }}>
               <ListItemIcon>
-                {selected.indexOf(confOption.value) > -1 ? <CheckIcon /> : ''}
+                {selected.indexOf(option.value) > -1 ? <CheckIcon /> : ''}
               </ListItemIcon>
-              <ListItemText primary={confOption.label} />
+              <ListItemText primary={option.label} />
             </ListItem>
           ))}
         </List>

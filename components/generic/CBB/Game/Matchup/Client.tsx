@@ -1,32 +1,10 @@
 'use client';
 import React from 'react';
-
-
 import Typography from '@mui/material/Typography';
-
 import CompareStatistic from '@/components/generic/CompareStatistic';
 
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-
-let intervalRefresher: NodeJS.Timeout;
-
-// todo the win % doesnt show since no session on server, will need to make an api call for the prediction
-
 const Client = ({ cbb_game, stats, rankings /*tag*/}) => {
-
-  const { width } = useWindowDimensions() as Dimensions;
-
-  // useEffect(() => {
-  //   intervalRefresher = setInterval(function() {
-  //     refresh(tag);
-  //   }, 25 * 1000);
-  //   return function clean_up() {
-  //     clearInterval(intervalRefresher);
-  //   };
-  // });
-
-
   const awayStats = (cbb_game.away_team_id in stats) ? stats[cbb_game.away_team_id] : {};
   const homeStats = (cbb_game.home_team_id in stats) ? stats[cbb_game.home_team_id] : {};
 

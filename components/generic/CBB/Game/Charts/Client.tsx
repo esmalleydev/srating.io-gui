@@ -10,25 +10,8 @@ import OddsML from '@/components/generic/CBB/Game/Charts/OddsML';
 import OddsSpread from '@/components/generic/CBB/Game/Charts/OddsSpread';
 import OddsOverUnder from '@/components/generic/CBB/Game/Charts/OddsOverUnder';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-
-let intervalRefresher: NodeJS.Timeout;
-
 
 const Client = ({ cbb_game, cbb_game_score_intervals, /*tag*/}) => {
-
-  const { width } = useWindowDimensions() as Dimensions;
-
-  // useEffect(() => {
-  //   intervalRefresher = setInterval(function() {
-  //     refresh(tag);
-  //   }, 25 * 1000);
-  //   return function clean_up() {
-  //     clearInterval(intervalRefresher);
-  //   };
-  // });
-
-
   const [selectedIntervalChip, setSelectedIntervalChip] = useState('scoring');
 
 

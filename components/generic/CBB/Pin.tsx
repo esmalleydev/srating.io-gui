@@ -21,8 +21,8 @@ const Pin = (props) => {
   const cbb_game_id = props.cbb_game_id || null;
 
   const dispatch = useAppDispatch();
-  const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
-  const userSlice = useAppSelector(state => state.userReducer.value);
+  const cbb_game_ids = useAppSelector(state => state.favoriteReducer.value.cbb_game_ids);
+  const isValidSession = useAppSelector(state => state.userReducer.value.isValidSession);
 
   const theme = useTheme();
 
@@ -31,7 +31,6 @@ const Pin = (props) => {
   const [requested, setRequested] = useState(false);
 
   let selected = false;
-  let cbb_game_ids = favoriteSlice.cbb_game_ids;
 
   if (
     cbb_game_id &&
@@ -56,7 +55,7 @@ const Pin = (props) => {
   };
   
   const handleFavorite = () => {
-    if (!userSlice.isValidSession) {
+    if (!isValidSession) {
       setAccountOpen(true);
       return;
     }

@@ -17,10 +17,8 @@ import Chip from '@mui/material/Chip';
 import HelperCBB from '@/components/helpers/CBB';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 import BackdropLoader from '@/components/generic/BackdropLoader';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Boxscore, PlayerBoxscore } from '@/components/generic/types';
 
-let intervalRefresher: NodeJS.Timeout;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {
@@ -32,20 +30,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/}) => {
-
-  const { width } = useWindowDimensions() as Dimensions;
-
-  // useEffect(() => {
-  //   intervalRefresher = setInterval(function() {
-  //     refresh(tag);
-  //   }, 25 * 1000);
-  //   return function clean_up() {
-  //     clearInterval(intervalRefresher);
-  //   };
-  // });
-
-  const self = this;
-
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
   const [spin, setSpin] = useState(false);

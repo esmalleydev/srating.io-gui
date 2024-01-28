@@ -4,12 +4,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const rankLocalStorageKey = 'CBB.DISPLAY.RANK';
 const picksSortLocalStorageKey = 'CBB.DISPLAY.PICKS.SORT';
 const conferencesLocalStorageKey = 'CBB.DISPLAY.CONFERENCES';
+const positionsLocalStorageKey = 'CBB.DISPLAY.POSITIONS';
 const statusesLocalStorageKey = 'CBB.DISPLAY.STATUSES';
 const cardsViewLocalStorageKey = 'CBB.DISPLAY.GAMES.CARDSVIEW';
 
 let rankLocalStorage: string | null = null;
 let picksSortLocalStorage: string | null = null;
 let conferencesLocalStorage: string | null = null;
+let positionsLocalStorage: string | null = null;
 let statusesLocalStorage: string | null = null;
 let cardsViewLocalStorage: string | null = null;
 
@@ -17,6 +19,7 @@ if (typeof window !== 'undefined') {
   rankLocalStorage = localStorage.getItem(rankLocalStorageKey);
   picksSortLocalStorage = localStorage.getItem(picksSortLocalStorageKey);
   conferencesLocalStorage = localStorage.getItem(conferencesLocalStorageKey);
+  positionsLocalStorage = localStorage.getItem(positionsLocalStorageKey);
   statusesLocalStorage = localStorage.getItem(statusesLocalStorageKey);
   cardsViewLocalStorage = localStorage.getItem(cardsViewLocalStorageKey);
 }
@@ -26,6 +29,7 @@ type InitialState = {
     rank: string,
     picksSort: string,
     conferences: string[],
+    positions: string[],
     statuses: string[],
     cardsView: string,
     // season: number,
@@ -37,6 +41,7 @@ const initialState = {
     rank: rankLocalStorage || 'composite_rank',
     picksSort: picksSortLocalStorage || 'start_time',
     conferences: (conferencesLocalStorage && JSON.parse(conferencesLocalStorage)) || [],
+    positions: (positionsLocalStorage && JSON.parse(positionsLocalStorage)) || [],
     statuses: (statusesLocalStorage && JSON.parse(statusesLocalStorage)) || ['pre', 'live', 'final'],
     cardsView: cardsViewLocalStorage || 'compact',
     // season: new HelperCBB().getCurrentSeason(),
@@ -72,9 +77,30 @@ export const display = createSlice({
       } else {
         state.value.conferences = [...state.value.conferences, action.payload];
       }
-
+      
       if (typeof window !== 'undefined') {
         localStorage.setItem(conferencesLocalStorageKey, JSON.stringify(state.value.conferences));
+      }
+    },
+    updatePositions: (state, action: PayloadAction<string>) => {
+      const index = state.value.positions.indexOf(action.payload);
+      if (index !== -1) {
+        state.value.positions = [
+          ...state.value.positions.slice(0, index),
+          ...state.value.positions.slice(index + 1)
+        ];
+      } else {
+        state.value.positions = [...state.value.positions, action.payload];
+      }
+      
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(positionsLocalStorageKey, JSON.stringify(state.value.positions));
+      }
+    },
+    clearPositions: (state) => {
+      state.value.positions = [];
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(positionsLocalStorageKey);
       }
     },
     updateStatuses: (state, action: PayloadAction<string>) => {
@@ -101,5 +127,5 @@ export const display = createSlice({
   }
 });
 
-export const { /*setSeason,*/ setRank, setPicksSort, updateConferences, updateStatuses, setCardView } = display.actions;
+export const { /*setSeason,*/ setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView } = display.actions;
 export default display.reducer;

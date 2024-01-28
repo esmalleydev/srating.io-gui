@@ -11,10 +11,10 @@ import { updateStatuses } from '@/redux/features/display-slice';
 
 const StatusPicker = () => {
   const dispatch = useAppDispatch();
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const statuses = useAppSelector(state => state.displayReducer.value.statuses);
   // const { width } = useWindowDimensions() as Dimensions;
 
-  const selected = displaySlice.statuses;
+  const selected = statuses;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -42,10 +42,10 @@ const StatusPicker = () => {
 
   let title = 'Status';
 
-  if (displaySlice.statuses.length === 1) {
-    title = code_x_label[displaySlice.statuses[0]] + ' only';
-  } else if (displaySlice.statuses.length === 2) {
-    title = code_x_label[displaySlice.statuses[0]] + ' & ' + code_x_label[displaySlice.statuses[1]];
+  if (statuses.length === 1) {
+    title = code_x_label[statuses[0]] + ' only';
+  } else if (statuses.length === 2) {
+    title = code_x_label[statuses[0]] + ' & ' + code_x_label[statuses[1]];
   }
 
   return (

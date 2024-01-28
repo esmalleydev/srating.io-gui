@@ -1,29 +1,16 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import Typography from '@mui/material/Typography';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { refresh } from '@/components/generic/CBB/actions';
 import { getBreakPoint } from '@/components/generic/CBB/Game/Header/HeaderClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import Refresher from '../Refresher';
 
-let intervalRefresher: NodeJS.Timeout;
 
 const HeaderClient = ({cbb_game, tag}) => {
-
   const { width } = useWindowDimensions() as Dimensions;
-
-  useEffect(() => {
-    if (cbb_game.status !== 'final') {
-      intervalRefresher = setInterval(function() {
-        refresh(tag);
-      }, 30 * 1000);
-    }
-    return function clean_up() {
-      clearInterval(intervalRefresher);
-    };
-  });
 
   let scoreVariant: string = 'h4';
 
@@ -57,11 +44,14 @@ const HeaderClient = ({cbb_game, tag}) => {
   };
 
   return (
-    <div style = {{'display': 'flex', 'justifyContent': 'space-evenly', 'alignItems': 'center', 'textAlign': 'center'}}>
-      {getScore(cbb_game.away_score)}
-      {getTime()}
-      {getScore(cbb_game.home_score)}
-    </div>
+    <>
+      <div style = {{'display': 'flex', 'justifyContent': 'space-evenly', 'alignItems': 'center', 'textAlign': 'center'}}>
+        {getScore(cbb_game.away_score)}
+        {getTime()}
+        {getScore(cbb_game.home_score)}
+      </div>
+      <Refresher cbb_game = {cbb_game} tag = {tag} />
+    </>
   );
 }
 

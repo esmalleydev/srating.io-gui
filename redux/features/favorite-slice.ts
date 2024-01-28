@@ -49,7 +49,7 @@ export const favorite = createSlice({
     updateGameSort: (state, action: PayloadAction<string | null>) => {
       if (action.payload) {
         state.value.skip_sort_cbb_game_ids = [...state.value.skip_sort_cbb_game_ids, action.payload];
-      } else {
+      } else if (state.value.skip_sort_cbb_game_ids.length) {
         state.value.skip_sort_cbb_game_ids = [];
       }
     },
