@@ -412,10 +412,11 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     tileWidth = '100%';
   }
 
-  const divStyle = {
+  const divStyle: React.CSSProperties = {
     'width': tileWidth,
     'minHeight': '100px',
     'margin': '5px',
+    'height': 139,
   };
 
   const teamLineStyle: React.CSSProperties = {
@@ -425,6 +426,10 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
 
   if (hover) {
     teamLineStyle.backgroundColor = theme.palette.action.hover;
+  }
+
+  if (displayCardView === 'large') {
+    divStyle.height = 306;
   }
 
   return (
@@ -455,7 +460,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
           }
           </>
         : <>
-            <Skeleton style = {{'height': (displayCardView === 'compact' ? 138 : 305), 'transform': 'initial'}} />
+            <Skeleton style = {{'height': divStyle.height, 'transform': 'initial'}} />
           </>
       }
     </Paper>

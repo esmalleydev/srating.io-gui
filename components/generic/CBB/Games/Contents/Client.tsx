@@ -146,6 +146,7 @@ const Client = ({ cbb_games, date }) => {
     'display': 'flex',
     'flexWrap': 'wrap',
     'justifyContent': 'center',
+    'paddingBottom': 60,
   };
 
 
