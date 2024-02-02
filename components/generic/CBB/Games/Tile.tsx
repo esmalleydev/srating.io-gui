@@ -429,7 +429,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   }
 
   if (displayCardView === 'large') {
-    divStyle.height = 306;
+    divStyle.height = 282;
   }
 
   return (
