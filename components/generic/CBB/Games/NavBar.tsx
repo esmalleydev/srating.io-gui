@@ -48,7 +48,7 @@ const NavBar = ({ dates, sessionDataKey, season }) => {
   const now =  moment().format('YYYY-MM-DD');
 
   const [date, setDate] = useState(searchParams?.get('date') || moment().format('YYYY-MM-DD'));
-  const datesChecked = useAppSelector(state => state.gamesReducer.value.dates_checked);
+  const datesChecked = useAppSelector(state => state.gamesReducer.dates_checked);
 
   const [firstRender, setFirstRender] = useState(true);
   const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);

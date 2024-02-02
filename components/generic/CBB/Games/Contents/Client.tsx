@@ -17,9 +17,9 @@ const Client = ({ cbb_games, date }) => {
   const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
   const conferences = useAppSelector(state => state.displayReducer.value.conferences);
   const statuses = useAppSelector(state => state.displayReducer.value.statuses);
-  const scores = useAppSelector(state => state.gamesReducer.value.scores);
-  const datesChecked = useAppSelector(state => state.gamesReducer.value.dates_checked);
-  const scrollTop = useAppSelector(state => state.gamesReducer.value.scrollTop);
+  const scores = useAppSelector(state => state.gamesReducer.scores);
+  const datesChecked = useAppSelector(state => state.gamesReducer.dates_checked);
+  const scrollTop = useAppSelector(state => state.gamesReducer.scrollTop);
 
   const [firstRender, setFirstRender] = useState(true);
   

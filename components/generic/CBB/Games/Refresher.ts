@@ -1,12 +1,12 @@
 'use client';
 
 import { useClientAPI } from '@/components/clientAPI';
-import { updateDateChecked, updateScores } from '@/redux/features/games-slice';
-import { useAppDispatch } from '@/redux/hooks';
+import { setRefreshCountdown, updateDateChecked, updateScores } from '@/redux/features/games-slice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
 const Refresher = ({ date }) => {
-  const refreshRate = 30;
+  const refreshRate = useAppSelector(state => state.gamesReducer.refreshRate);
   const dispatch = useAppDispatch();
   
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,6 @@ const Refresher = ({ date }) => {
       'class': 'cbb_game',
       'function': 'getScores',
       'arguments': {
-        // 'cbb_game_id': visibleGames,
         'start_date': date,
       },
     }).then((response) => {
@@ -44,8 +43,17 @@ const Refresher = ({ date }) => {
     let intervalRefresher: NodeJS.Timeout = setInterval(function() {
       getData();
     }, refreshRate * 1000);
+
+    const intervalRate = 500;
+    let refreshCountdown = refreshRate;
+
+    let intervalCountdown: NodeJS.Timeout = setInterval(function() {
+      refreshCountdown = refreshCountdown - (intervalRate / 1000);
+      dispatch(setRefreshCountdown(refreshCountdown));
+    }, intervalRate);
     return () => {
       clearInterval(intervalRefresher);
+      clearInterval(intervalCountdown);
     };
   });
 

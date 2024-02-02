@@ -7,6 +7,7 @@ import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 import AdditionalOptions from '@/components/generic/CBB/Games/AdditionalOptions';
 import StatusPicker from '@/components/generic/CBB/StatusPicker';
 import ViewPicker from './ViewPicker';
+import RefreshCounter from './RefreshCounter';
 
 const getHeaderHeight = () => {
   return 48;
@@ -50,7 +51,8 @@ const SubNavBar = () => {
         <StatusPicker />
       </div>
 
-      <div style = {{'minWidth': minSubBarWidth, 'display': 'flex'}}>
+      <div style = {{'minWidth': minSubBarWidth, 'display': 'flex', 'alignItems': 'center'}}>
+        <RefreshCounter />
         <ViewPicker />
         <AdditionalOptions />
       </div>
