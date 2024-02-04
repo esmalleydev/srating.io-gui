@@ -1,15 +1,16 @@
 'use client';
 
 import { useClientAPI } from '@/components/clientAPI';
-import { setRefreshCountdown, updateDateChecked, updateScores } from '@/redux/features/games-slice';
+import { setRefreshCountdown, setRefreshLoading, updateDateChecked, updateScores } from '@/redux/features/games-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
 const Refresher = ({ date }) => {
   const refreshRate = useAppSelector(state => state.gamesReducer.refreshRate);
+  const loading = useAppSelector(state => state.gamesReducer.refreshLoading);
   const dispatch = useAppDispatch();
   
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [lastDate, setLastDate] = useState(null);
 
   const getData = () => {
@@ -18,7 +19,8 @@ const Refresher = ({ date }) => {
     }
 
     setLastDate(date);
-    setLoading(true);
+    dispatch(setRefreshLoading(true));
+    // setLoading(true);
     
     useClientAPI({
       'class': 'cbb_game',
@@ -29,9 +31,11 @@ const Refresher = ({ date }) => {
     }).then((response) => {
       dispatch(updateDateChecked(date));
       dispatch(updateScores(response));
-      setLoading(false);
+      dispatch(setRefreshLoading(false));
+      // setLoading(false);
     }).catch((e) => {
-      setLoading(false);
+      dispatch(setRefreshLoading(false));
+      // setLoading(false);
     });
   };
   
