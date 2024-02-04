@@ -10,7 +10,7 @@ const SecretClient = ({ secret, tag }) => {
   const dispatch = useAppDispatch();
   const userSlice = useAppSelector(state => state.userReducer.value);
 
-  const refreshRate = 60 * 20; // 20 mins
+  const refreshRate = 60 * 10; // 10 mins
 
   useEffect(() => {
     intervalRefresher = setInterval(function() {

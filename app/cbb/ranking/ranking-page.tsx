@@ -124,7 +124,6 @@ const Ranking = (props) => {
   useEffect(() => {
     if (tableRef.current) {
       setTimeout(function() {
-        // tableRef.current.scrollLeft = tableHorizontalScroll;
         tableRef.current?.scrollTo({'left': tableHorizontalScroll});
       }, 0);
     }
@@ -392,7 +391,7 @@ const Ranking = (props) => {
           }
 
           if (headCell.id === 'conf_record') {
-            tdStyle.minWidth = 30;
+            tdStyle.minWidth = 41;
           }
 
           if (headCell.id === 'name') {
@@ -581,7 +580,7 @@ const Ranking = (props) => {
       }
     </div>
   );
-}
+};
 
 
 

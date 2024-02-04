@@ -20,8 +20,8 @@ const initialState = {
   scores: {},
   dates_checked: {},
   scrollTop: 0,
-  refreshRate: 30,
-  refreshCountdown: 30,
+  refreshRate: 15,
+  refreshCountdown: 15,
 } as InitialState;
 
 export const games = createSlice({

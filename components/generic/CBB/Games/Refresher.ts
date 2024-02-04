@@ -44,7 +44,7 @@ const Refresher = ({ date }) => {
       getData();
     }, refreshRate * 1000);
 
-    const intervalRate = 500;
+    const intervalRate = 100;
     let refreshCountdown = refreshRate;
 
     let intervalCountdown: NodeJS.Timeout = setInterval(function() {

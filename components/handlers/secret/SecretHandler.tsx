@@ -8,7 +8,6 @@ import { unstable_noStore } from 'next/cache';
 
 const SecretHandler = async({}) => {
   unstable_noStore();
-  const revalidateSeconds = 1800; //60 * 30; // 30 mins
 
   const tag = 'refresher.secret';
 
@@ -16,8 +15,7 @@ const SecretHandler = async({}) => {
     'class': 'secret',
     'function': 'find',
     'arguments': {},
-  }, {tags: [tag], revalidate: revalidateSeconds});
-
+  }, {tags: [tag], revalidate: 60});
 
   return (
     <>
