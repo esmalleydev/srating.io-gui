@@ -7,10 +7,9 @@ import { useEffect, useState } from 'react';
 
 const Refresher = ({ date }) => {
   const refreshRate = useAppSelector(state => state.gamesReducer.refreshRate);
-  const loading = useAppSelector(state => state.gamesReducer.refreshLoading);
   const dispatch = useAppDispatch();
   
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [lastDate, setLastDate] = useState(null);
 
   const getData = () => {
@@ -20,7 +19,7 @@ const Refresher = ({ date }) => {
 
     setLastDate(date);
     dispatch(setRefreshLoading(true));
-    // setLoading(true);
+    setLoading(true);
     
     useClientAPI({
       'class': 'cbb_game',
@@ -32,10 +31,10 @@ const Refresher = ({ date }) => {
       dispatch(updateDateChecked(date));
       dispatch(updateScores(response));
       dispatch(setRefreshLoading(false));
-      // setLoading(false);
+      setLoading(false);
     }).catch((e) => {
       dispatch(setRefreshLoading(false));
-      // setLoading(false);
+      setLoading(false);
     });
   };
   
