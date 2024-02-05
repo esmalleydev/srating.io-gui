@@ -1,16 +1,30 @@
 'use client';
 
 import { useClientAPI } from '@/components/clientAPI';
-import { setRefreshCountdown, setRefreshLoading, updateDateChecked, updateScores } from '@/redux/features/games-slice';
+import { setRefreshCountdown, setRefreshEnabled, setRefreshLoading, updateDateChecked, updateScores } from '@/redux/features/games-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
-const Refresher = ({ date }) => {
+const Refresher = ({ date, cbb_games }) => {
   const refreshRate = useAppSelector(state => state.gamesReducer.refreshRate);
   const dispatch = useAppDispatch();
   
   const [loading, setLoading] = useState(false);
   const [lastDate, setLastDate] = useState(null);
+
+  let finalCount = 0;
+  let total = 0;
+  for (let cbb_game_id in cbb_games) {
+    const cbb_game = cbb_games[cbb_game_id];
+
+    if (cbb_game.status === 'final') {
+      finalCount++;
+    }
+
+    total++;
+  }
+
+  const isFinal = (total === finalCount);
 
   const getData = () => {
     if (loading) {
@@ -18,8 +32,8 @@ const Refresher = ({ date }) => {
     }
 
     setLastDate(date);
-    dispatch(setRefreshLoading(true));
     setLoading(true);
+    dispatch(setRefreshLoading(true));
     
     useClientAPI({
       'class': 'cbb_game',
@@ -31,6 +45,7 @@ const Refresher = ({ date }) => {
       dispatch(updateDateChecked(date));
       dispatch(updateScores(response));
       dispatch(setRefreshLoading(false));
+      dispatch(setRefreshEnabled(!isFinal));
       setLoading(false);
     }).catch((e) => {
       dispatch(setRefreshLoading(false));
@@ -43,20 +58,30 @@ const Refresher = ({ date }) => {
   }
   
   useEffect(() => {
-    let intervalRefresher: NodeJS.Timeout = setInterval(function() {
-      getData();
-    }, refreshRate * 1000);
+    let intervalRefresher: NodeJS.Timeout;
+    let intervalCountdown: NodeJS.Timeout;
 
-    const intervalRate = 100;
-    let refreshCountdown = refreshRate;
+    if (!isFinal) {
+      intervalRefresher = setInterval(function() {
+        getData();
+      }, refreshRate * 1000);
 
-    let intervalCountdown: NodeJS.Timeout = setInterval(function() {
-      refreshCountdown = refreshCountdown - (intervalRate / 1000);
-      dispatch(setRefreshCountdown(refreshCountdown));
-    }, intervalRate);
+      const intervalRate = 100;
+      let refreshCountdown = refreshRate;
+
+      intervalCountdown = setInterval(function() {
+        refreshCountdown = refreshCountdown - (intervalRate / 1000);
+        dispatch(setRefreshCountdown(refreshCountdown));
+      }, intervalRate);
+    }
     return () => {
-      clearInterval(intervalRefresher);
-      clearInterval(intervalCountdown);
+      if (intervalRefresher) {
+        clearInterval(intervalRefresher);
+      }
+
+      if (intervalCountdown) {
+        clearInterval(intervalCountdown);
+      }
     };
   });
 

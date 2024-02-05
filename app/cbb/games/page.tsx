@@ -3,8 +3,6 @@ import { Metadata } from 'next';
 
 import HelperCBB from '@/components/helpers/CBB';
 
-import moment from 'moment';
-
 import ContentsClientWrapper from '@/components/generic/CBB/Games/Contents/ClientWrapper';
 import ContentsServer from '@/components/generic/CBB/Games/Contents/Server';
 import NavBar from '@/components/generic/CBB/Games/NavBar';
@@ -18,7 +16,6 @@ import { unstable_noStore } from 'next/cache';
 
 
 export async function generateMetadata(): Promise<Metadata> {
-
   return {
     title: 'sRating | College basketball live scores',
     description: 'Live college basketball scores and odds',
@@ -93,7 +90,7 @@ export default async function Page({ searchParams }) {
         </Suspense>
       </ContentsClientWrapper>
       <FloatingButtons />
-      <Refresher date = {date} />
+      <Refresher date = {date} cbb_games = {data.cbb_games} />
     </>
   );
 };

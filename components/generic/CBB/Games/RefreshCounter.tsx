@@ -8,10 +8,18 @@ import CircularProgress, {
 import { useAppSelector } from '@/redux/hooks';
 import { Box, Tooltip, Typography } from '@mui/material';
 
+/**
+ * Be very careful with any logic in this, it will be running a lot! On every interval tick
+ */
 const RefreshCounter = () => {
   const refreshCountdown = useAppSelector(state => state.gamesReducer.refreshCountdown);
   const refreshRate = useAppSelector(state => state.gamesReducer.refreshRate);
   const refreshLoading = useAppSelector(state => state.gamesReducer.refreshLoading);
+  const refreshEnabled = useAppSelector(state => state.gamesReducer.refreshEnabled);
+
+  if (!refreshEnabled) {
+    return null;
+  }
 
   const percentage = (1 - (refreshCountdown / refreshRate)) * 100;
 

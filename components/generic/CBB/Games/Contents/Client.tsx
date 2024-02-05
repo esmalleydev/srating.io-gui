@@ -25,7 +25,7 @@ const Client = ({ cbb_games, date }) => {
   
   const scrollRef  = useScrollContext();
   
-
+  
   useEffect(() => {
     if (firstRender && scrollRef && scrollRef.current) {
       // todo something in nextjs is setting scrolltop to zero right after this, so trick it by putting this at the end of the execution :)
@@ -36,10 +36,8 @@ const Client = ({ cbb_games, date }) => {
         }
       }, 1);
     }
-
     setFirstRender(false);
   });
-
 
   for (let cbb_game_id in scores) {
     if (cbb_game_id in cbb_games) {
