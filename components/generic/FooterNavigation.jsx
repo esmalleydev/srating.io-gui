@@ -32,7 +32,7 @@ const FooterNavigation = (props) => {
   const [isPending, startTransition] = useTransition();
   const [spin, setSpin] = useState(false);
 
-  let viewingSport = null;
+  let viewingSport = 'CBB';
   let viewingPage = 'home';
   const pathName = usePathname();
 
@@ -78,7 +78,8 @@ const FooterNavigation = (props) => {
   const handleHome = () => {
     setSpin(true);
     startTransition(() => {
-      router.push('/'+viewingSport.toLowerCase());
+      // router.push('/'+viewingSport.toLowerCase());
+      router.push('/');
       setSpin(false);
     });
   }
@@ -111,7 +112,7 @@ const FooterNavigation = (props) => {
   return (
     <div>
     {spin ? <BackdropLoader /> : ''}
-    {viewingSport ? 
+    {/* {viewingSport ?  */}
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, /*'zIndex': 9000,*/}} elevation={3}>
         <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}} showLabels value={pages.indexOf(viewingPage)}>
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleHome} label="Home" icon={<HomeIcon />} />
@@ -120,7 +121,7 @@ const FooterNavigation = (props) => {
           <StyledBottomNavigationAction color = 'secondary' onClick = {handlePicks} label="Picks" icon={<PicksIcon />} />
         </BottomNavigation>
       </Paper>
-      : ''}
+      {/* : ''} */}
     </div>
   );
 }
