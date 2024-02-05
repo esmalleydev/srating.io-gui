@@ -390,7 +390,7 @@ const Ranking = (props) => {
             tdStyle.whiteSpace = 'nowrap';
           }
 
-          if (headCell.id === 'conf_record') {
+          if (headCell.id === 'conf_record' || headCell.id === 'wins') {
             tdStyle.minWidth = 41;
           }
 
