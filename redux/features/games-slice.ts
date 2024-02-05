@@ -12,6 +12,7 @@ type InitialState = {
   refreshRate: number,
   refreshCountdown: number,
   refreshLoading: boolean,
+  refreshEnabled: boolean,
 };
 
 const initialState = {
@@ -24,12 +25,16 @@ const initialState = {
   refreshRate: 15,
   refreshCountdown: 15,
   refreshLoading: false,
+  refreshEnabled: true,
 } as InitialState;
 
 export const games = createSlice({
   name: 'games',
   initialState: initialState,
   reducers: {
+    setRefreshEnabled: (state, action: PayloadAction<boolean>) => {
+      state.refreshEnabled = action.payload;
+    },
     setRefreshLoading: (state, action: PayloadAction<boolean>) => {
       state.refreshLoading = action.payload;
     },
@@ -84,5 +89,5 @@ export const games = createSlice({
   }
 });
 
-export const { updateVisibleGames, updateNonVisibleGames, updateDisplayedGames, updateScores, updateDateChecked, clearDatesChecked, setScrollTop, setRefreshCountdown, setRefreshLoading } = games.actions;
+export const { updateVisibleGames, updateNonVisibleGames, updateDisplayedGames, updateScores, updateDateChecked, clearDatesChecked, setScrollTop, setRefreshCountdown, setRefreshLoading, setRefreshEnabled } = games.actions;
 export default games.reducer;
