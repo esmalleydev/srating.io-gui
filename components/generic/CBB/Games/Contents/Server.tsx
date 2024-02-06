@@ -21,6 +21,8 @@ const Server = async({ cbb_games, date }) => {
 
   for (let cbb_game_id in scores) {
     if (cbb_game_id in cbb_games) {
+      delete scores[cbb_game_id].home_team_rating;
+      delete scores[cbb_game_id].away_team_rating;
       Object.assign(cbb_games[cbb_game_id], scores[cbb_game_id]);
     }
   }
