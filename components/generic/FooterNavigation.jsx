@@ -36,7 +36,7 @@ const FooterNavigation = (props) => {
   let viewingPage = 'home';
   const pathName = usePathname();
 
-
+  // todo the /team page highlights home button, because there is no sport / viewing page
   // todo share this with header
   const sports = [
     'CBB',

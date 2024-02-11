@@ -250,7 +250,7 @@ export const getHeaderColumns = ({ rankView }: {rankView: string}) => {
       'elo': {
         id: 'elo',
         numeric: true,
-        label: 'sRating',
+        label: 'SR',
         tooltip: 'srating.io ELO rating',
         'sort': 'higher',
       },
@@ -664,7 +664,7 @@ export const getHeaderColumns = ({ rankView }: {rankView: string}) => {
       'elo': {
         id: 'elo',
         numeric: true,
-        label: 'sRating',
+        label: 'SR',
         tooltip: 'srating.io ELO rating',
         'sort': 'higher',
       },

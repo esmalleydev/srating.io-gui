@@ -6,6 +6,12 @@ import { getHeaderHeight, getMarginTop } from './Header/HeaderClientWrapper';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 
 
+const getNavHeaderHeight = () => {
+  return 48;
+};
+
+export { getNavHeaderHeight};
+
 const NavBar = ({ view, tabOrder}) => {
   // const CBB = new HelperCBB();
   const router = useRouter();

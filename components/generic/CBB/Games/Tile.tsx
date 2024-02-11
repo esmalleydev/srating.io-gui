@@ -25,7 +25,7 @@ import { setScrollTop } from '@/redux/features/games-slice';
 import useOnScreen from '@/components/hooks/useOnScreen';
 
 
-
+// TODO there is a bug where when a game starts, isVisible becomes false, even when visible!
 
 const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   const ColorUtil = new Color();

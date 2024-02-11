@@ -21,10 +21,8 @@ import { visuallyHidden } from '@mui/utils';
 
 
 import RankSpan from '@/components/generic/CBB/RankSpan';
-import { CircularProgress } from '@mui/material';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import utilsSorter from  '@/components/utils/Sorter';
-import { useClientAPI } from '@/components/clientAPI';
 
 
 const Sorter = new utilsSorter();
@@ -46,35 +44,20 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
 }));
 
-let season_ = null;
 
-
-const Roster = ({season, team_id}) => {
-  interface PlayerStats {
-
-  };
+const Roster = ({ rosterStats }) => {
 
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const [requestedPlayerStats, setRequestedPlayerStats] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [players, setPlayers] = useState({});
-  const [playerStatsData, setPlayerStatsData] = useState<PlayerStats | null>(null);
   const [view, setView] = useState<string | null>('overview');
   const [order, setOrder] = useState<string | null>('asc');
   const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
   const [spin, setSpin] = useState(false);
 
-
-  if (season_ && season_ != season) {
-    setRequestedPlayerStats(false);
-    setPlayerStatsData(null);
-    setLoading(true);
-  }
-
-  season_ = season;
+  const players = rosterStats.players;
+  const playerStatsData = rosterStats.cbb_player_statistic_ranking;
 
 
   useEffect(() => {
@@ -85,30 +68,6 @@ const Roster = ({season, team_id}) => {
   }, []);
 
 
-  if (!requestedPlayerStats) {
-    setLoading(true);
-    setRequestedPlayerStats(true);
-    useClientAPI({
-      'class': 'team',
-      'function': 'getRosterStats',
-      'arguments': {
-        'team_id': team_id,
-        'season': season,
-      },
-    }).then((response) => {
-      setPlayers((response && response.players) || {});
-      setPlayerStatsData((response && response.cbb_player_statistic_ranking) || {});
-      setLoading(false);
-    }).catch((e) => {
-      setPlayerStatsData(null);
-      setLoading(false);
-    });
-  }
-
-  if (loading) {
-    return <div style = {{'display': 'flex', 'justifyContent': 'center', 'padding': 20}}><CircularProgress /></div>;
-  }
- 
   const getColumns = () => {
     if (view === 'overview') {
       return ['player', 'games', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
@@ -343,7 +302,8 @@ const Roster = ({season, team_id}) => {
     },
   };
 
-  let rows = Object.values(playerStatsData || {});
+  // todo make a cbb_player_statistic TS interface
+  let rows: any = Object.values(playerStatsData || {});
 
   if (!rows.length && players && Object.keys(players).length) {
     for (let player_id in players) {

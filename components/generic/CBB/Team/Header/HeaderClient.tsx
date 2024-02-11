@@ -46,7 +46,7 @@ const HeaderClient = ({team, season}) => {
 
 
   const supStyle: React.CSSProperties = {
-    'fontSize': '20px',
+    'fontSize': '16px',
     'verticalAlign': 'super',
   };
 
@@ -55,7 +55,6 @@ const HeaderClient = ({team, season}) => {
   if (rank) {
     supStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
   }
-
 
 
   return (

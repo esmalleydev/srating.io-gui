@@ -9,7 +9,6 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
-import Slide from '@mui/material/Slide';
 
 import Typography from '@mui/material/Typography';
 
@@ -21,12 +20,11 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 // import { setSeason } from '@/redux/features/display-slice';
 
 
-const SeasonPicker = (props) => {
+const SeasonPicker = ({ selected, actionHandler }) => {
   // const dispatch = useAppDispatch();
   // const displaySlice = useAppSelector(state => state.displayReducer.value);
 
   // const selected = displaySlice.season;
-  const selected = props.selected;
   const [open, setOpen] = useState(false);
 
   const options = [
@@ -96,9 +94,7 @@ const SeasonPicker = (props) => {
           {options.map((option) => (
             <ListItem key={option.value} button onClick={() => {
               // dispatch(setSeason(option.value));
-              if (props.actionHandler) {
-                props.actionHandler(option.value);
-              }
+              actionHandler(option.value);
               handleClose();
             }}>
               <ListItemIcon>

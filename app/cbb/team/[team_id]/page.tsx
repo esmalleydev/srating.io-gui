@@ -6,15 +6,20 @@ import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import HeaderClientWrapper from '@/components/generic/CBB/Team//Header/HeaderClientWrapper';
 import HeaderServer from '@/components/generic/CBB/Team/Header/HeaderServer';
-import Schedule from '@/components/generic/CBB/Team/Schedule';
 import Trends from '@/components/generic/CBB/Team/Trends';
 import NavBar from '@/components/generic/CBB/Team/NavBar';
-import Stats from '@/components/generic/CBB/Team/Stats';
 import { useServerAPI } from '@/components/serverAPI';
 import { Team } from '@/components/generic/types';
 import { unstable_noStore } from 'next/cache';
-// import ScheduleClientWrapper from '@/components/generic/CBB/Team/Schedule/ScheduleClientWrapper';
-// import ScheduleServer from '@/components/generic/CBB/Team/Schedule/ScheduleServer';
+import SubNavBar from '@/components/generic/CBB/Team/SubNavbar';
+
+import ScheduleClientWrapper from '@/components/generic/CBB/Team/Schedule/ClientWrapper';
+import ScheduleServer from '@/components/generic/CBB/Team/Schedule/Server';
+import SchedulePredictionLoader from '@/components/generic/CBB/Team/Schedule/PredictionLoader';
+import ScheduleDifferentialLoader from '@/components/generic/CBB/Team/Schedule/DifferentialLoader';
+
+import StatsClientWrapper from '@/components/generic/CBB/Team/Stats/ClientWrapper';
+import StatsServer from '@/components/generic/CBB/Team/Stats/Server';
 
 
 type Props = {
@@ -81,7 +86,6 @@ async function getData({params, searchParams}) {
   return team;
 };
 
-// todo who need to redesign schedule component, need session_id to check for ratings
 
 export default async function Page({ params, searchParams }) {
   const team_id = params.team_id;
@@ -100,9 +104,27 @@ export default async function Page({ params, searchParams }) {
         <HeaderServer season = {season} team_id = {team_id} />
       </HeaderClientWrapper>
       <NavBar view = {selectedTab} tabOrder = {tabOrder} />
-      {selectedTab == 'schedule' ? <Schedule key = {team_id} team_id = {team_id} season = {season} /> : ''}
-      {/* {selectedTab == 'schedule' ? <ScheduleClientWrapper><ScheduleServer team_id = {team_id} season = {season} /></ScheduleClientWrapper> : ''} */}
-      {selectedTab == 'stats' ? <Stats key = {team_id} team_id = {team_id} season = {season} /> : ''}
+      <SubNavBar view = {selectedTab} />
+      {
+        selectedTab == 'schedule' ?
+          <>
+            <ScheduleClientWrapper>
+              <ScheduleServer team_id = {team_id} season = {season} />
+            </ScheduleClientWrapper>
+            <SchedulePredictionLoader team_id = {team_id} season = {season} />
+            <ScheduleDifferentialLoader team_id = {team_id} season = {season} />
+          </> :
+          ''
+      }
+      {
+        selectedTab == 'stats' ? 
+          <>
+            <StatsClientWrapper>
+              <StatsServer team_id = {team_id} season = {season} />
+            </StatsClientWrapper>
+          </> :
+          ''
+      }
       {selectedTab == 'trends' ? <Trends key = {team_id} team_id = {team_id} season = {season} /> : ''}
     </div>
   );

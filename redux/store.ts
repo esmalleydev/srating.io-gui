@@ -6,6 +6,7 @@ import favoriteReducer from './features/favorite-slice';
 import displayReducer from './features/display-slice';
 import gamesReducer from './features/games-slice';
 import rankingReducer from './features/ranking-slice';
+import teamReducer from './features/team-slice';
 
 
 export const makeStore = () => {
@@ -17,6 +18,7 @@ export const makeStore = () => {
       displayReducer,
       gamesReducer,
       rankingReducer,
+      teamReducer,
     }
   });
 };
