@@ -13,7 +13,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import BackdropLoader from '../BackdropLoader';
 
 
-const Locked = (props) => {
+const Locked = ({ iconFontSize }) => {
   const self = this;
 
   const router = useRouter();
@@ -38,7 +38,7 @@ const Locked = (props) => {
   return (
     <>
       <BackdropLoader open = {(spin === true)} />
-      <IconButton onClick={() => {setOpenDialog(true);}}><LockIcon fontSize='small' color='error' /></IconButton>
+      <IconButton onClick={() => {setOpenDialog(true);}}><LockIcon style={{'fontSize' : iconFontSize || '24px'}} color='error' /></IconButton>
       <Dialog
         open={openDialog}
         onClose={handleClose}

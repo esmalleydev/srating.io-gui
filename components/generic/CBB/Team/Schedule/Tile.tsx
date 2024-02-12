@@ -57,7 +57,7 @@ const Tile = ({ cbb_game, team}) => {
     'display': 'flex',
     'justifyContent': 'space-between',
     'alignItems': 'center',
-    'scrollMarginTop': '200px', // todo doesnt seem to work for games in Nov.
+    // 'scrollMarginTop': '200px', // todo doesnt seem to work for games in Nov.
   };
 
   const circleBackgroundColor = cbb_game.status === 'final' ? (won ? theme.palette.success.light : theme.palette.error.light) : (cbb_game.status !== 'pre' ? theme.palette.warning.light : theme.palette.info.light);
@@ -135,7 +135,7 @@ const Tile = ({ cbb_game, team}) => {
   if (isLoadingPredictions) {
     predictionContainer.push(<Skeleton style = {{'width': '100%', 'height': '100%', 'transform': 'initial'}} key = {1} />)
   } else if (!hasAccessToPercentages) {
-    predictionContainer.push(<Locked key = {1} />);
+    predictionContainer.push(<Locked key = {1} iconFontSize = {(width < 475 ? '22px' : '24px')} />);
   } else {
     const winPercentage = (cbb_game.home_team_id === team.team_id ? +(cbb_game.home_team_rating * 100).toFixed(0) : +(cbb_game.away_team_rating * 100).toFixed(0));
     predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{'color': ColorUtil.lerpColor(worstColor, bestColor, winPercentage / 100)}}>{winPercentage}%</Typography>);
@@ -171,7 +171,7 @@ const Tile = ({ cbb_game, team}) => {
         </Card>
       </div>
       <Card style = {{'width': '100%'}}>
-        <CardContent style = {{'padding': '0px 10px'}}>
+        <CardContent style = {{'padding': (CBB.isFinal() ? '0px' : '7px') + ' 0px'}}>
           <BackdropLoader open = {(spin === true)} />
           <div ref = {myRef} style = {containerStyle}>
             <div style = {{'display': 'flex', 'alignItems': 'center', 'overflow': 'hidden'}}>
@@ -204,7 +204,7 @@ const Tile = ({ cbb_game, team}) => {
                     id = 'differential-button'
                     onClick = {() => dispatch(updateVisibleScheduleDifferentials(cbb_game.cbb_game_id))}
                   >
-                    <LegendToggleIcon color = {isScheduleDiffVisible ? 'success' : 'primary'} />
+                    <LegendToggleIcon style = {{'fontSize': (width < 475 ? '22px' : '24px')}} color = {isScheduleDiffVisible ? 'success' : 'primary'} />
                   </IconButton>
                 </Tooltip>
               </div>
