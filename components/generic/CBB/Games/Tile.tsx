@@ -159,8 +159,8 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     awayWinPercentageContainer.push(<Skeleton key = {1} />)
     homeWinPercentageContainer.push(<Skeleton key = {2} />)
   } else if (!hasAccessToPercentages) {
-    awayWinPercentageContainer.push(<Locked key = {1} />);
-    homeWinPercentageContainer.push(<Locked key = {2} />);
+    awayWinPercentageContainer.push(<Locked iconFontSize={null} key = {1} />);
+    homeWinPercentageContainer.push(<Locked iconFontSize={null} key = {2} />);
   } else {
     const awayPercentage = +(cbb_game.away_team_rating * 100).toFixed(0);
     const homePercentage = +(cbb_game.home_team_rating * 100).toFixed(0);

@@ -102,7 +102,7 @@ const TableView = ({ sorted_games, team_id }) => {
         if (isLoadingPredictions) {
           predictionContainer.push(<Skeleton style = {{'width': '100%', 'height': '100%', 'transform': 'initial'}} key = {1} />)
         } else if (!hasAccessToPercentages) {
-          predictionContainer.push(<Locked key = {1} />);
+          predictionContainer.push(<Locked iconFontSize={null} key = {1} />);
         } else {
           const winPercentage = (cbb_game.home_team_id === team_id ? +(cbb_game.home_team_rating * 100).toFixed(0) : +(cbb_game.away_team_rating * 100).toFixed(0));
           predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{'color': ColorUtil.lerpColor(worstColor, bestColor, winPercentage / 100)}}>{winPercentage}%</Typography>);
