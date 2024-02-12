@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useTransition } from 'react';
 import { IconButton, Tab, Tabs, Tooltip, useTheme } from '@mui/material';
-import { getHeaderHeight, getMarginTop } from './Header/HeaderClientWrapper';
+import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
 import ViewPicker from './ViewPicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';

@@ -4,8 +4,8 @@ import { Metadata, ResolvingMetadata } from 'next';
 
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
-import HeaderClientWrapper from '@/components/generic/CBB/Team//Header/HeaderClientWrapper';
-import HeaderServer from '@/components/generic/CBB/Team/Header/HeaderServer';
+import HeaderClientWrapper from '@/components/generic/CBB/Team/Header/ClientWrapper';
+import HeaderServer from '@/components/generic/CBB/Team/Header/Server';
 import Trends from '@/components/generic/CBB/Team/Trends';
 import NavBar from '@/components/generic/CBB/Team/NavBar';
 import { useServerAPI } from '@/components/serverAPI';
@@ -100,7 +100,7 @@ export default async function Page({ params, searchParams }) {
 
   return (
     <div>
-      <HeaderClientWrapper season = {season}>
+      <HeaderClientWrapper>
         <HeaderServer season = {season} team_id = {team_id} />
       </HeaderClientWrapper>
       <NavBar view = {selectedTab} tabOrder = {tabOrder} />

@@ -12,6 +12,7 @@ import SecretWrapper from '@/components/handlers/secret/SecretWrapper';
 import SecretHandler from '@/components/handlers/secret/SecretHandler';
 
 // TODO GO THROUGH WHOLE APP, UPDATE THE REDUX REDUCERS TO ONLY GRAB THE SPECIFIC VALUE, TO ELIMINATE UNNESSACARY RENDERS
+// todo handle fetch failures
 export default async function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">

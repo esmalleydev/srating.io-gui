@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useTransition } from 'react';
 
 import Typography from '@mui/material/Typography';
 
@@ -8,11 +8,15 @@ import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import { useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
+import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import BackdropLoader from '@/components/generic/BackdropLoader';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 
 
 const ColorUtil = new Color();
 
-const HeaderClient = ({team, season}) => {
+const Client = ({team, season}) => {
   // interface Team {
   //   team_id: string;
   //   char6: string;
@@ -36,6 +40,17 @@ const HeaderClient = ({team, season}) => {
   //   };
   // };
 
+  const breakPoint = 475;
+
+  const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
+
+  const { width } = useWindowDimensions() as Dimensions;
+
+  const [isPending, startTransition] = useTransition();
+
+  const [spin, setSpin] = useState(false);
   const displaySlice = useAppSelector(state => state.displayReducer.value);
 
   const teamHelper = new HelperTeam({'team': team});
@@ -46,7 +61,7 @@ const HeaderClient = ({team, season}) => {
 
 
   const supStyle: React.CSSProperties = {
-    'fontSize': '16px',
+    'fontSize': (width < breakPoint ? '12px' : '16px'),
     'verticalAlign': 'super',
   };
 
@@ -56,11 +71,25 @@ const HeaderClient = ({team, season}) => {
     supStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
   }
 
+  const handleSeason = (season) => {
+    if (searchParams) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('season', season);
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+      setSpin(true);
+      startTransition(() => {
+        router.push(`${pathName}${query}`);
+        setSpin(false);
+      });
+    }
+  }
+
 
   return (
     <div style = {{'overflow': 'hidden', 'paddingLeft': 5, 'paddingRight': 5}}>
       <div style = {{'display': 'flex', 'flexWrap': 'nowrap'}}>
-        <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {'h5'}>
+        <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {(width < breakPoint ? 'h6' : 'h5')}>
           {rank ? <span style = {supStyle}>{rank} </span> : ''}
           {teamHelper.getName()}
           <span style = {{'fontSize': '16px', 'verticalAlign': 'middle'}}>
@@ -68,12 +97,14 @@ const HeaderClient = ({team, season}) => {
           </span>
         </Typography>
         <FavoritePicker team_id = {team?.team_id} />
+        <SeasonPicker selected = {season} actionHandler = {handleSeason} />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
         <Typography variant = 'overline' color = 'text.secondary'>{teamHelper.getConference()}</Typography>
       </div>
+      <BackdropLoader open = {(spin === true)} />
     </div>
   );
 }
 
-export default HeaderClient;
+export default Client;

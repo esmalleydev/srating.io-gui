@@ -2,7 +2,7 @@
 import React, { useState, useTransition } from 'react';
 import { AppBar, Tab, Tabs, useTheme } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { getHeaderHeight, getMarginTop } from './Header/HeaderClientWrapper';
+import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 
 
