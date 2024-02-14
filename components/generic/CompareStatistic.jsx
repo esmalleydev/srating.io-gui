@@ -280,7 +280,7 @@ const CompareStatistic = (props) => {
             <div style = {{'display': 'flex', 'alignItems':'center', 'justifyContent': 'space-between'}}>
               <div style = {{'margin': '0px 20px 0px 5px', 'minWidth': '100px', 'textAlign': 'left', 'overflow': 'hidden'}}>
                 {
-                row.locked ? <Locked iconFontSize={null} />
+                row.locked ? <Locked iconFontSize={'18px'} />
                 : <Typography variant = 'body2'>{row.away}{getRankSpan(row.awayRank)}<Typography style = {{'margin': '0px ' + (row.awayRank ? '5px' : '8px')}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
                 }
               </div>
@@ -289,7 +289,7 @@ const CompareStatistic = (props) => {
               </div>
               <div style = {{'margin': '0px 5px 0px 20px', 'minWidth': '100px', 'textAlign': 'right', 'overflow': 'hidden'}}>
                 {
-                row.locked ? <Locked iconFontSize={null} />
+                row.locked ? <Locked iconFontSize={'18px'} />
                 : <Typography variant = 'body2'><Typography style = {{'margin': '0px ' + (row.homeRank ? '5px' : '8px')}} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{getRankSpan(row.homeRank)}{row.home}</Typography>
                 }
               </div>
