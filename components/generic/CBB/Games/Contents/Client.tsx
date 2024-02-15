@@ -70,33 +70,33 @@ const Client = ({ cbb_games, date }) => {
       return 1;
     }
 
-    // if (
-    //   a.status === 'live' &&
-    //   b.status !== 'live'
-    // ) {
-    //   return -1;
-    // }
+    if (
+      a.status === 'live' &&
+      b.status !== 'live'
+    ) {
+      return -1;
+    }
 
-    // if (
-    //   a.status !== 'live' &&
-    //   b.status === 'live'
-    // ) {
-    //   return 1;
-    // }
+    if (
+      a.status !== 'live' &&
+      b.status === 'live'
+    ) {
+      return 1;
+    }
 
-    // if (
-    //   a.status === 'final' &&
-    //   b.status === 'pre'
-    // ) {
-    //   return 1;
-    // }
+    if (
+      a.status === 'final' &&
+      b.status === 'pre'
+    ) {
+      return 1;
+    }
 
-    // if (
-    //   a.status === 'pre' &&
-    //   b.status === 'final'
-    // ) {
-    //   return -1;
-    // }
+    if (
+      a.status === 'pre' &&
+      b.status === 'final'
+    ) {
+      return -1;
+    }
     return a.start_datetime > b.start_datetime ? 1 : -1;
   });
 
@@ -136,7 +136,7 @@ const Client = ({ cbb_games, date }) => {
     ) {
       continue;
     }
-    gameContainers.push(<Tile key={game_.cbb_game_id} cbb_game={game_} isLoadingWinPercentage = {!datesChecked[date]} />);
+    gameContainers.push(<Tile key={i} cbb_game={game_} isLoadingWinPercentage = {!datesChecked[date]} />);
   }
 
 
