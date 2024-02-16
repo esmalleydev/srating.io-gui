@@ -66,7 +66,8 @@ export async function useClientAPI(args, optional_fetch_args = {}) {
     return json;
   }).catch(error => {
     console.log(error);
-    throw new Error('Error');
+    return {};
+    // throw new Error('Error');
   });
 };
 

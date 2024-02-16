@@ -77,7 +77,7 @@ export async function useServerAPI(args, optional_fetch_args = {} as OptionalFet
       return json;
     }).catch(error => {
       console.log(error);
-      throw new Error('Error');
+      // throw new Error('Error');
     });
 
     if (cacheSeconds > 0) {
