@@ -108,8 +108,23 @@ const CheckoutForm = (props) => {
       elements,
       clientSecret,
       confirmParams: {
-        // return_url: 'http://localhost:3000/billing',
-        return_url: 'https://srating.io/billing',
+        payment_method_data: {
+          billing_details: {
+            name: null,
+            email: email,
+            phone: null,
+            address: {
+              city: null,
+              country: null,
+              line1: null,
+              line2: null,
+              postal_code: null,
+              state: null,
+            }
+          },
+        },
+        return_url: 'http://localhost:3000/billing',
+        // return_url: 'https://srating.io/billing',
       },
       // redirect: 'if_required',
     });
