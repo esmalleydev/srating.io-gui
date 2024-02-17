@@ -123,8 +123,8 @@ const CheckoutForm = (props) => {
             }
           },
         },
-        return_url: 'http://localhost:3000/billing',
-        // return_url: 'https://srating.io/billing',
+        // return_url: 'http://localhost:3000/billing',
+        return_url: 'https://srating.io/billing',
       },
       // redirect: 'if_required',
     });
