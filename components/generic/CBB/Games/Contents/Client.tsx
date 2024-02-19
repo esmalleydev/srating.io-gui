@@ -14,9 +14,10 @@ const Client = ({ cbb_games, date }) => {
   const now =  moment().format('YYYY-MM-DD');
 
   const dispatch = useAppDispatch();
-  const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
-  const conferences = useAppSelector(state => state.displayReducer.value.conferences);
-  const statuses = useAppSelector(state => state.displayReducer.value.statuses);
+  const skip_sort_cbb_game_ids = useAppSelector(state => state.favoriteReducer.skip_sort_cbb_game_ids);
+  const favorite_cbb_game_ids = useAppSelector(state => state.favoriteReducer.cbb_game_ids);
+  const conferences = useAppSelector(state => state.displayReducer.conferences);
+  const statuses = useAppSelector(state => state.displayReducer.statuses);
   const scores = useAppSelector(state => state.gamesReducer.scores);
   const datesChecked = useAppSelector(state => state.gamesReducer.dates_checked);
   const scrollTop = useAppSelector(state => state.gamesReducer.scrollTop);
@@ -51,15 +52,15 @@ const Client = ({ cbb_games, date }) => {
 
   sorted_games.sort(function(a, b) {
     const aIsPinned = (
-      favoriteSlice.skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
-      favoriteSlice.cbb_game_ids.length &&
-      favoriteSlice.cbb_game_ids.indexOf(a.cbb_game_id) > -1
+      skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
+      favorite_cbb_game_ids.length &&
+      favorite_cbb_game_ids.indexOf(a.cbb_game_id) > -1
     );
 
     const bIsPinned = (
-      favoriteSlice.skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
-      favoriteSlice.cbb_game_ids.length &&
-      favoriteSlice.cbb_game_ids.indexOf(b.cbb_game_id) > -1
+      skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
+      favorite_cbb_game_ids.length &&
+      favorite_cbb_game_ids.indexOf(b.cbb_game_id) > -1
     );
 
     if (aIsPinned && !bIsPinned) {

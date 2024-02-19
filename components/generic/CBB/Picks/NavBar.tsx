@@ -6,9 +6,8 @@ import DateAppBar from '@/components/generic/DateAppBar';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { useScrollContext } from '@/contexts/scrollContext';
-import BackdropLoader from '../../BackdropLoader';
-
+import BackdropLoader from '@/components/generic/BackdropLoader';
+import { setScrollTop } from '@/redux/features/picks-slice';
 
 
 const getBreakPoint = () => {
@@ -29,21 +28,13 @@ const getMarginTop = () => {
 export { getMarginTop, getBreakPoint };
 
 
-const NavBar = ({ dates, sessionDataKey, season }) => {
-
-   // this wil get cleared when clicking scores again, but if I arrived here from a back button we want to preserve the state
-   const sessionDataString = typeof window !== 'undefined' ? sessionStorage.getItem(sessionDataKey) : null;
-   let sessionData = sessionDataString ? JSON.parse(sessionDataString) : {};
- 
-   if ((sessionData.expire_session && sessionData.expire_session < new Date().getTime()) || +sessionData.season !== +season) {
-     sessionData = {};
-   }
-
+const NavBar = ({ dates }) => {
   const tabDates = dates || [];
 
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
 
   const now =  moment().format('YYYY-MM-DD');
 
@@ -51,20 +42,14 @@ const NavBar = ({ dates, sessionDataKey, season }) => {
   const datesChecked = useAppSelector(state => state.gamesReducer.dates_checked);
 
   const [firstRender, setFirstRender] = useState(true);
-  const [scrollTop, setScrollTop] = useState(sessionData.scrollTop || 0);
   const scrollRefDateBar: RefObject<HTMLDivElement> = useRef(null);
   const [spin, setSpin] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const scrollRef  = useScrollContext();
-
-
-  const dispatch = useAppDispatch();
 
   
   // For speed, lookups
   const tabDatesObject = {};
-
   for (let i = 0; i < tabDates.length; i++) {
     tabDatesObject[tabDates[i]] = true;
   }
@@ -88,28 +73,12 @@ const NavBar = ({ dates, sessionDataKey, season }) => {
   }, [date]);
 
   useEffect(() => {
-    if (firstRender && scrollRef && scrollRef.current) {
-      // todo something in nextjs is setting scrolltop to zero right after this, so trick it by putting this at the end of the execution :)
-      // https://github.com/vercel/next.js/issues/20951
-      setTimeout(function() {
-        if (scrollRef && scrollRef.current) {
-          // todo try to remove this
-          // scrollRef.current.scrollTop = scrollTop;
-        }
-      }, 1);
-    }
-
     setFirstRender(false);
   });
 
 
-
   const updateDate = (e, value, opt_extact) => {
     setSpin(true);
-    setScrollTop(0);
-    if (scrollRef && scrollRef.current) {
-      scrollRef.current.scrollTop = 0;
-    }
 
     let newDate: string | null = null;
 
@@ -133,6 +102,7 @@ const NavBar = ({ dates, sessionDataKey, season }) => {
       setSpin(true);
       startTransition(() => {
         router.replace(`${pathName}${query}`);
+        dispatch(setScrollTop(0));
         setSpin(false);
       });
     }

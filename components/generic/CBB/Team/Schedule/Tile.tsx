@@ -33,7 +33,7 @@ const Tile = ({ cbb_game, team}) => {
 
   const isScheduleDiffVisible = visibleScheduleDifferentials.indexOf(cbb_game.cbb_game_id) > -1;
 
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const displayRank = useAppSelector(state => state.displayReducer.rank);
 
   const scrollRef  = useScrollContext();
 
@@ -145,7 +145,7 @@ const Tile = ({ cbb_game, team}) => {
     'fontSize': '11px'
   };
 
-  const otherSideRank = CBB.getTeamRank(otherSide, displaySlice.rank);
+  const otherSideRank = CBB.getTeamRank(otherSide, displayRank);
 
   if (otherSideRank) {
     supRankStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(otherSideRank / CBB.getNumberOfD1Teams(cbb_game.season))));
@@ -190,7 +190,7 @@ const Tile = ({ cbb_game, team}) => {
               <div style = {{'marginLeft': '10px', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'baseline', 'overflow': 'hidden'  /*'flexWrap': 'nowrap'*/}}>
                 <Typography color = 'text.secondary' variant = 'caption'>{cbb_game.home_team_id === team.team_id ? 'vs' : '@'}</Typography>
                 <Typography style = {titleStyle} variant = {'body2'} onClick={() => {handleTeamClick(cbb_game[otherSide + '_team_id'])}}>
-                  <sup style = {supRankStyle}>{CBB.getTeamRank(otherSide, displaySlice.rank)}</sup> <Link style = {{'cursor': 'pointer'}} underline='hover'>{CBB.getTeamName(otherSide)}</Link>
+                  <sup style = {supRankStyle}>{CBB.getTeamRank(otherSide, displayRank)}</sup> <Link style = {{'cursor': 'pointer'}} underline='hover'>{CBB.getTeamName(otherSide)}</Link>
                   {width > 375 ? <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography> : ''}
                 </Typography>
               </div>

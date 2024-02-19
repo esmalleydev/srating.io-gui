@@ -26,9 +26,17 @@ const Server = async({cbb_game}) => {
     },
   }, {revalidate: revalidateSeconds});
 
+  const elo = await useServerAPI({
+    'class': 'cbb_game',
+    'function': 'getElos',
+    'arguments': {
+      'cbb_game_id': cbb_game_id
+    },
+  }, {revalidate: revalidateSeconds});
+
   return (
     <>
-      <Client cbb_game = {cbb_game} stats = {stats} rankings = {rankings} />
+      <Client cbb_game = {cbb_game} stats = {stats} rankings = {rankings} elo = {elo} />
     </>
   );
 }

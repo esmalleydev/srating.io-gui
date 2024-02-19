@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+'use client';
+import React from 'react';
 
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
@@ -10,48 +11,38 @@ import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { gamesDataType } from '@/components/generic/types';
 import { updateConferences } from '@/redux/features/display-slice';
-import { useClientAPI } from '@/components/clientAPI';
 
-// todo there is some bug, if I am on this page, not logged in, then login, with a subscription, after page reload, the skeleton lines never get replaced
 
-const Picks = (props) => {
+const Picks = ({ cbb_games }: {cbb_games: gamesDataType | object}) => {
   const dispatch = useAppDispatch();
-  const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const skip_sort_cbb_game_ids = useAppSelector(state => state.favoriteReducer.skip_sort_cbb_game_ids);
+  const cbb_game_ids = useAppSelector(state => state.favoriteReducer.cbb_game_ids);
+  const picksSort = useAppSelector(state => state.displayReducer.picksSort);
+  const conferences = useAppSelector(state => state.displayReducer.conferences);
+  
+  const picksData = useAppSelector(state => state.picksReducer.picks);
 
-  const games: gamesDataType = props.games;
-
-  const [requested, setRequested] = useState(false);
-  const [picksData, setPicksData] = useState<Object | null>(null);
-
-  if (!requested) {
-    setRequested(true);
-    useClientAPI({
-      'class': 'cbb_game_odds',
-      'function': 'getPicksData',
-      'arguments': {
-        'cbb_game_id': Object.keys(games),
-      },
-    }).then((response) => {
-      setPicksData(response || {});
-    }).catch((e) => {
-      setPicksData({});
-    });
+  for (let cbb_game_id in picksData) {
+    if (cbb_game_id in cbb_games) {
+      cbb_games[cbb_game_id].home_team_rating = picksData[cbb_game_id].home_team_rating;
+      cbb_games[cbb_game_id].away_team_rating = picksData[cbb_game_id].away_team_rating;
+    }
   }
 
-  let sorted_games = Object.values(games);
+
+  let sorted_games = Object.values(cbb_games);
 
   sorted_games.sort(function(a, b) {
     const aIsPinned = (
-      favoriteSlice.skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
-      favoriteSlice.cbb_game_ids.length &&
-      favoriteSlice.cbb_game_ids.indexOf(a.cbb_game_id) > -1
+      skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
+      cbb_game_ids.length &&
+      cbb_game_ids.indexOf(a.cbb_game_id) > -1
     );
 
     const bIsPinned = (
-      favoriteSlice.skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
-      favoriteSlice.cbb_game_ids.length &&
-      favoriteSlice.cbb_game_ids.indexOf(b.cbb_game_id) > -1
+      skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
+      cbb_game_ids.length &&
+      cbb_game_ids.indexOf(b.cbb_game_id) > -1
     );
 
     if (aIsPinned && !bIsPinned) {
@@ -62,7 +53,7 @@ const Picks = (props) => {
       return 1;
     }
 
-    if (displaySlice.picksSort === 'win_percentage') {
+    if (picksSort === 'win_percentage') {
       const a_percentage = a.home_team_rating > a.away_team_rating ? a.home_team_rating : a.away_team_rating;
       const b_percentage = b.home_team_rating > b.away_team_rating ? b.home_team_rating : b.away_team_rating;
 
@@ -80,9 +71,9 @@ const Picks = (props) => {
     const cbb_game = sorted_games[i];
 
     if (
-      displaySlice.conferences.length &&
-      displaySlice.conferences.indexOf(cbb_game.teams[cbb_game.away_team_id].conference) === -1 &&
-      displaySlice.conferences.indexOf(cbb_game.teams[cbb_game.home_team_id].conference) === -1
+      conferences.length &&
+      conferences.indexOf(cbb_game.teams[cbb_game.away_team_id].conference) === -1 &&
+      conferences.indexOf(cbb_game.teams[cbb_game.home_team_id].conference) === -1
     ) {
       continue;
     }
@@ -92,18 +83,18 @@ const Picks = (props) => {
     if (picksData && cbb_game.cbb_game_id in picksData) {
       picks = picksData[cbb_game.cbb_game_id];
     }
-    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} game = {cbb_game} picks = {picks} onClickTile = {props.onClickTile} />);
+    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} cbb_game = {cbb_game} picks = {picks} />);
   }
 
 
   let confChips: React.JSX.Element[] = [];
-  for (let i = 0; i < displaySlice.conferences.length; i++) {
-    confChips.push(<Chip key = {displaySlice.conferences[i]} sx = {{'margin': '5px'}} label={displaySlice.conferences[i]} onDelete={() => {dispatch(updateConferences(displaySlice.conferences[i]))}} />);
+  for (let i = 0; i < conferences.length; i++) {
+    confChips.push(<Chip key = {conferences[i]} sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {dispatch(updateConferences(conferences[i]))}} />);
   }
 
 
   return (
-    <div>
+    <>
       <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
         <ConferencePicker />
         <AdditionalOptions />
@@ -116,7 +107,7 @@ const Picks = (props) => {
           gameContainers.length ? gameContainers : <Typography variant = 'h5'>No games found :( please adjust filter. </Typography>
         }
       </div>
-    </div>
+    </>
   );
 }
 

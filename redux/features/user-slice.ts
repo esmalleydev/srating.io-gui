@@ -2,19 +2,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 type InitialState = {
-  value: {
-    session_id: string | null,
-    secret_id: string | null,
-    isValidSession: boolean,
-  };
+  session_id: string | null,
+  secret_id: string | null,
+  isValidSession: boolean,
 };
 
 const initialState = {
-  value: {
-    session_id: (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null,
-    secret_id: null,
-    isValidSession: false,
-  },
+  session_id: (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null,
+  secret_id: null,
+  isValidSession: false,
 } as InitialState;
 
 export const user = createSlice({
@@ -22,10 +18,10 @@ export const user = createSlice({
   initialState: initialState,
   reducers: {
     setSession: (state, action: PayloadAction<string|null>) => {
-      state.value.session_id = action.payload;
+      state.session_id = action.payload;
     },
     setValidSession: (state, action: PayloadAction<boolean>) => {
-      state.value.isValidSession = action.payload;
+      state.isValidSession = action.payload;
     },
     setSecret: (state, action: PayloadAction<string|null>) => {
       if (typeof window !== 'undefined') {
@@ -35,7 +31,7 @@ export const user = createSlice({
           sessionStorage.removeItem('secret');
         }
       }
-      state.value.secret_id = action.payload;
+      state.secret_id = action.payload;
     },
   }
 });

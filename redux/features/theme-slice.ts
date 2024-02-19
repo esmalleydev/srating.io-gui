@@ -3,17 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const localStorageKey = 'theme';
 
 type InitialState = {
-  value: {
-    mode: string,
-  };
+  mode: string,
 };
 
 const initalMode = (typeof window !== 'undefined' && localStorage.getItem(localStorageKey)) || 'dark';
 
 const initialState = {
-  value: {
-    mode: initalMode,
-  },
+  mode: initalMode,
 } as InitialState;
 
 export const theme = createSlice({
@@ -24,7 +20,7 @@ export const theme = createSlice({
       if (typeof window !== 'undefined') {
         localStorage.setItem(localStorageKey, action.payload);
       }
-      state.value.mode = action.payload;
+      state.mode = action.payload;
     }
   }
 });

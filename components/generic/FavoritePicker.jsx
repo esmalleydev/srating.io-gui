@@ -16,8 +16,9 @@ const FavoritePicker = (props) => {
   const player_id = props.player_id || null;
 
   const dispatch = useAppDispatch();
-  const favoriteSlice = useAppSelector(state => state.favoriteReducer.value);
-  const userSlice = useAppSelector(state => state.userReducer.value);
+  const favorite_team_ids = useAppSelector(state => state.favoriteReducer.team_ids);
+  const favorite_player_ids = useAppSelector(state => state.favoriteReducer.player_ids);
+  const isValidSession = useAppSelector(state => state.userReducer.isValidSession);
   
   const [requested, setRequested] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -27,13 +28,13 @@ const FavoritePicker = (props) => {
   if (
     (
       team_id &&
-      favoriteSlice.team_ids.length &&
-      favoriteSlice.team_ids.indexOf(team_id) > -1
+      favorite_team_ids.length &&
+      favorite_team_ids.indexOf(team_id) > -1
     ) ||
     (
       player_id &&
-      favoriteSlice.player_ids.length &&
-      favoriteSlice.player_ids.indexOf(player_id) > -1
+      favorite_player_ids.length &&
+      favorite_player_ids.indexOf(player_id) > -1
     )
   ) {
     selected = true;
@@ -45,7 +46,7 @@ const FavoritePicker = (props) => {
   };
 
   const handleFavorite = () => {
-    if (!userSlice.isValidSession) {
+    if (!isValidSession) {
       setAccountOpen(true);
       return;
     }

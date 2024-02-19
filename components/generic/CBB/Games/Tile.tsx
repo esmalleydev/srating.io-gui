@@ -42,8 +42,8 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   const scrollRef  = useScrollContext();
   
   const dispatch = useAppDispatch();
-  const displayRank = useAppSelector(state => state.displayReducer.value.rank);
-  const displayCardView = useAppSelector(state => state.displayReducer.value.cardsView);
+  const displayRank = useAppSelector(state => state.displayReducer.rank);
+  const displayCardView = useAppSelector(state => state.displayReducer.cardsView);
   
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,

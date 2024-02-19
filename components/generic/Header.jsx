@@ -48,7 +48,7 @@ const Header = (props) => {
   const self = this;
 
   const dispatch = useAppDispatch();
-  const userSlice = useAppSelector(state => state.userReducer.value);
+  const validSession = useAppSelector(state => state.userReducer.isValidSession);
   const theme = useTheme();
 
   const router = useRouter();
@@ -60,8 +60,6 @@ const Header = (props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const validSession = userSlice.isValidSession;
 
   useEffect(() => {
     setIsLoading(false);

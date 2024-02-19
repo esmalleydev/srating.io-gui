@@ -9,10 +9,9 @@ import { useClientAPI } from "@/components/clientAPI";
 
 const SessionHandler = () => {
   const dispatch = useAppDispatch();
-  const userSlice = useAppSelector(state => state.userReducer.value);
 
-  const session_id = userSlice.session_id;
-  const validSession = userSlice.isValidSession;
+  const session_id = useAppSelector(state => state.userReducer.session_id);
+  const validSession = useAppSelector(state => state.userReducer.isValidSession)
 
   const [requestedSession, setRequestedSession] = useState(false);
 

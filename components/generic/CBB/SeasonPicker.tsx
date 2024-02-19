@@ -16,15 +16,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-// import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-// import { setSeason } from '@/redux/features/display-slice';
-
 
 const SeasonPicker = ({ selected, actionHandler }) => {
-  // const dispatch = useAppDispatch();
-  // const displaySlice = useAppSelector(state => state.displayReducer.value);
-
-  // const selected = displaySlice.season;
   const [open, setOpen] = useState(false);
 
   const options = [

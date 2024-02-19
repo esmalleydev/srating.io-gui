@@ -33,9 +33,8 @@ import BackdropLoader from './BackdropLoader';
 const Sidebar = (props) => {
   const self = this;
 
-  const themeSlice = useAppSelector(state => state.themeReducer.value);
+  const themeMode = useAppSelector(state => state.themeReducer.mode);
   const dispatch = useAppDispatch();
-  const themeMode = themeSlice.mode;
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

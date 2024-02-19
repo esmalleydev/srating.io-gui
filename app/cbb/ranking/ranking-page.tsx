@@ -78,8 +78,8 @@ const Ranking = (props) => {
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
-  const conferences = useAppSelector(state => state.displayReducer.value.conferences);
-  const positions = useAppSelector(state => state.displayReducer.value.positions);
+  const conferences = useAppSelector(state => state.displayReducer.conferences);
+  const positions = useAppSelector(state => state.displayReducer.positions);
 
   interface TableComponentsType {
     Scroller: React.ComponentType<any>;

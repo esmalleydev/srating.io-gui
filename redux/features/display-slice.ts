@@ -25,27 +25,23 @@ if (typeof window !== 'undefined') {
 }
 
 type InitialState = {
-  value: {
-    rank: string,
-    picksSort: string,
-    conferences: string[],
-    positions: string[],
-    statuses: string[],
-    cardsView: string,
-    // season: number,
-  };
+  rank: string,
+  picksSort: string,
+  conferences: string[],
+  positions: string[],
+  statuses: string[],
+  cardsView: string,
+  // season: number,
 };
 
 const initialState = {
-  value: {
-    rank: rankLocalStorage || 'composite_rank',
-    picksSort: picksSortLocalStorage || 'start_time',
-    conferences: (conferencesLocalStorage && JSON.parse(conferencesLocalStorage)) || [],
-    positions: (positionsLocalStorage && JSON.parse(positionsLocalStorage)) || [],
-    statuses: (statusesLocalStorage && JSON.parse(statusesLocalStorage)) || ['pre', 'live', 'final'],
-    cardsView: cardsViewLocalStorage || 'compact',
-    // season: new HelperCBB().getCurrentSeason(),
-  },
+  rank: rankLocalStorage || 'composite_rank',
+  picksSort: picksSortLocalStorage || 'start_time',
+  conferences: (conferencesLocalStorage && JSON.parse(conferencesLocalStorage)) || [],
+  positions: (positionsLocalStorage && JSON.parse(positionsLocalStorage)) || [],
+  statuses: (statusesLocalStorage && JSON.parse(statusesLocalStorage)) || ['pre', 'live', 'final'],
+  cardsView: cardsViewLocalStorage || 'compact',
+  // season: new HelperCBB().getCurrentSeason(),
 } as InitialState;
 
 export const display = createSlice({
@@ -53,76 +49,76 @@ export const display = createSlice({
   initialState: initialState,
   reducers: {
     // setSeason: (state, action: PayloadAction<number>) => {
-    //   state.value.season = action.payload;
+    //   state.season = action.payload;
     // },
     setRank: (state, action: PayloadAction<string>) => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(rankLocalStorageKey, action.payload);
       }
-      state.value.rank = action.payload;
+      state.rank = action.payload;
     },
     setPicksSort: (state, action: PayloadAction<string>) => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(picksSortLocalStorageKey, action.payload);
       }
-      state.value.picksSort = action.payload;
+      state.picksSort = action.payload;
     },
     updateConferences: (state, action: PayloadAction<string>) => {
-      const index = state.value.conferences.indexOf(action.payload);
+      const index = state.conferences.indexOf(action.payload);
       if (index !== -1) {
-        state.value.conferences = [
-          ...state.value.conferences.slice(0, index),
-          ...state.value.conferences.slice(index + 1)
+        state.conferences = [
+          ...state.conferences.slice(0, index),
+          ...state.conferences.slice(index + 1)
         ];
       } else {
-        state.value.conferences = [...state.value.conferences, action.payload];
+        state.conferences = [...state.conferences, action.payload];
       }
       
       if (typeof window !== 'undefined') {
-        localStorage.setItem(conferencesLocalStorageKey, JSON.stringify(state.value.conferences));
+        localStorage.setItem(conferencesLocalStorageKey, JSON.stringify(state.conferences));
       }
     },
     updatePositions: (state, action: PayloadAction<string>) => {
-      const index = state.value.positions.indexOf(action.payload);
+      const index = state.positions.indexOf(action.payload);
       if (index !== -1) {
-        state.value.positions = [
-          ...state.value.positions.slice(0, index),
-          ...state.value.positions.slice(index + 1)
+        state.positions = [
+          ...state.positions.slice(0, index),
+          ...state.positions.slice(index + 1)
         ];
       } else {
-        state.value.positions = [...state.value.positions, action.payload];
+        state.positions = [...state.positions, action.payload];
       }
       
       if (typeof window !== 'undefined') {
-        localStorage.setItem(positionsLocalStorageKey, JSON.stringify(state.value.positions));
+        localStorage.setItem(positionsLocalStorageKey, JSON.stringify(state.positions));
       }
     },
     clearPositions: (state) => {
-      state.value.positions = [];
+      state.positions = [];
       if (typeof window !== 'undefined') {
         localStorage.removeItem(positionsLocalStorageKey);
       }
     },
     updateStatuses: (state, action: PayloadAction<string>) => {
-      const index = state.value.statuses.indexOf(action.payload);
+      const index = state.statuses.indexOf(action.payload);
       if (index !== -1) {
-        state.value.statuses = [
-          ...state.value.statuses.slice(0, index),
-          ...state.value.statuses.slice(index + 1)
+        state.statuses = [
+          ...state.statuses.slice(0, index),
+          ...state.statuses.slice(index + 1)
         ];
       } else {
-        state.value.statuses = [...state.value.statuses, action.payload];
+        state.statuses = [...state.statuses, action.payload];
       }
 
       if (typeof window !== 'undefined') {
-        localStorage.setItem(statusesLocalStorageKey, JSON.stringify(state.value.statuses));
+        localStorage.setItem(statusesLocalStorageKey, JSON.stringify(state.statuses));
       }
     },
     setCardView: (state, action: PayloadAction<string>) => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(cardsViewLocalStorageKey, action.payload);
       }
-      state.value.cardsView = action.payload;
+      state.cardsView = action.payload;
     },
   }
 });

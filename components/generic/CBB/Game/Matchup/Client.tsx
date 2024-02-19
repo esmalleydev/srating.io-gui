@@ -4,12 +4,15 @@ import Typography from '@mui/material/Typography';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 
 
-const Client = ({ cbb_game, stats, rankings /*tag*/}) => {
+const Client = ({ cbb_game, stats, rankings, elo /*tag*/}) => {
   const awayStats = (cbb_game.away_team_id in stats) ? stats[cbb_game.away_team_id] : {};
   const homeStats = (cbb_game.home_team_id in stats) ? stats[cbb_game.home_team_id] : {};
 
   const awayRankings = (cbb_game.away_team_id in rankings) ? rankings[cbb_game.away_team_id] : {};
   const homeRankings = (cbb_game.home_team_id in rankings) ? rankings[cbb_game.home_team_id] : {};
+
+  const awayElo = (cbb_game.away_team_id in elo) ? elo[cbb_game.away_team_id] : null;
+  const homeElo = (cbb_game.home_team_id in elo) ? elo[cbb_game.home_team_id] : null;
 
 
   const baseRows = [
@@ -203,12 +206,12 @@ const Client = ({ cbb_game, stats, rankings /*tag*/}) => {
       'precision': 0,
     },
     {
-      'name': 'sRating',
-      'title': 'sRating',
-      'away': awayStats.elo,
-      'home': homeStats.elo,
-      'awayCompareValue': awayStats.elo,
-      'homeCompareValue': homeStats.elo,
+      'name': 'sRating elo',
+      'title': 'sRating elo',
+      'away': awayElo,
+      'home': homeElo,
+      'awayCompareValue': awayElo,
+      'homeCompareValue': homeElo,
       'awayRank': (awayRankings.elo_rank),
       'homeRank': (homeRankings.elo_rank),
       'favored': 'higher',

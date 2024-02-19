@@ -21,7 +21,7 @@ import { updateConferences } from '@/redux/features/display-slice';
 
 const ConferencePicker = () => {
   const dispatch = useAppDispatch();
-  const conferences = useAppSelector(state => state.displayReducer.value.conferences);
+  const conferences = useAppSelector(state => state.displayReducer.conferences);
   const { width } = useWindowDimensions() as Dimensions;
 
   const selected = conferences;

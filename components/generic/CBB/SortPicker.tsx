@@ -22,8 +22,7 @@ import { setPicksSort } from '@/redux/features/display-slice';
  */
 const SortPicker = (props) => {
   const dispatch = useAppDispatch();
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
-  const selected = displaySlice.picksSort;
+  const selected = useAppSelector(state => state.displayReducer.picksSort)
 
   const options = [
     {

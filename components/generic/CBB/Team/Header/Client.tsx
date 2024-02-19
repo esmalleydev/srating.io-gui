@@ -51,7 +51,7 @@ const Client = ({team, season}) => {
   const [isPending, startTransition] = useTransition();
 
   const [spin, setSpin] = useState(false);
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const displayRank = useAppSelector(state => state.displayReducer.rank);
 
   const teamHelper = new HelperTeam({'team': team});
   const CBB = new HelperCBB();
@@ -65,7 +65,7 @@ const Client = ({team, season}) => {
     'verticalAlign': 'super',
   };
 
-  const rank = teamHelper.getRank(displaySlice.rank);
+  const rank = teamHelper.getRank(displayRank);
 
   if (rank) {
     supStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));

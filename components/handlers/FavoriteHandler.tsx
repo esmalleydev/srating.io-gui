@@ -10,9 +10,7 @@ import { useClientAPI } from '@/components/clientAPI';
 
 const FavoriteHandler = () => {
   const dispatch = useAppDispatch();
-  const userSlice = useAppSelector(state => state.userReducer.value);
-
-  const validSession = userSlice.isValidSession;
+  const validSession = useAppSelector(state => state.userReducer.isValidSession);
 
   const [requested, setRequested] = useState(false);
 

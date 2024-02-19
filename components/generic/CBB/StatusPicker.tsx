@@ -11,7 +11,7 @@ import { updateStatuses } from '@/redux/features/display-slice';
 
 const StatusPicker = () => {
   const dispatch = useAppDispatch();
-  const statuses = useAppSelector(state => state.displayReducer.value.statuses);
+  const statuses = useAppSelector(state => state.displayReducer.statuses);
   // const { width } = useWindowDimensions() as Dimensions;
 
   const selected = statuses;

@@ -10,7 +10,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const FloatingButtons = () => {
   const dispatch = useAppDispatch();
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const displaySlice = useAppSelector(state => state.displayReducer);
 
   // todo figure out scroll thing
   const [showScrollFAB, setShowScrolledFAB] = useState(true);

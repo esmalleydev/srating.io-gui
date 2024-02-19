@@ -13,7 +13,7 @@ import { setScrollTop } from '@/redux/features/games-slice';
 
 const ViewPicker = () => {
   const dispatch = useAppDispatch();
-  const cardsView = useAppSelector(state => state.displayReducer.value.cardsView);
+  const cardsView = useAppSelector(state => state.displayReducer.cardsView);
 
   const scrollRef  = useScrollContext();
 

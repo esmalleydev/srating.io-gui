@@ -12,63 +12,70 @@ import HelperCBB from '@/components/helpers/CBB';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 import Indicator from '@/components/generic/CBB/Indicator';
 import Pin from '@/components/generic/CBB/Pin';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.js';
+import { setScrollTop } from '@/redux/features/picks-slice';
+import { updateGameSort } from '@/redux/features/favorite-slice';
+import { useScrollContext } from '@/contexts/scrollContext';
 
 const ColorUtil = new Color();
 
 
-const Tile = (props) => {
+const Tile = ({ cbb_game, picks}) => {
   const router = useRouter();
 
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const scrollRef  = useScrollContext();
+  const { width } = useWindowDimensions() as Dimensions;
+  const dispatch = useAppDispatch();
+  const displayRank = useAppSelector(state => state.displayReducer.rank);
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
-  
-  const picksData = props.picks;
-  const game = props.game;
 
-  const home_team_id = game.home_team_id;
-  const away_team_id = game.away_team_id;
+  const home_team_id = cbb_game.home_team_id;
+  const away_team_id = cbb_game.away_team_id;
 
   const maxWidth = 750;
 
   const CBB = new HelperCBB({
-    'cbb_game': game,
+    'cbb_game': cbb_game,
   });
 
-
-  const { width } = useWindowDimensions() as Dimensions;
-
-
+  
+    
+    
   const handleMatchup = (e) => {
-    props.onClickTile();
-    // TODO support ?view=matchup
-    router.push('/cbb/games/' + game.cbb_game_id);
+    if (
+      scrollRef &&
+      scrollRef.current
+    ) {
+      dispatch(setScrollTop(scrollRef.current.scrollTop));
+    }
+    dispatch(updateGameSort(null));
+    router.push('/cbb/games/' + cbb_game.cbb_game_id);
   };
 
   const compareRows = [
     {
       'name': 'Win %',
       'title': 'Predicted win %',
-      'away': (game.away_team_rating * 100).toFixed(0) + '%',
-      'home': (game.home_team_rating * 100).toFixed(0) + '%',
-      'awayCompareValue': game.away_team_rating,
-      'homeCompareValue': game.home_team_rating,
+      'away': (cbb_game.away_team_rating * 100).toFixed(0) + '%',
+      'home': (cbb_game.home_team_rating * 100).toFixed(0) + '%',
+      'awayCompareValue': cbb_game.away_team_rating,
+      'homeCompareValue': cbb_game.home_team_rating,
       'favored': 'higher',
       'showDifference': false,
-      'locked': (game.away_team_rating === null && game.home_team_rating === null),
+      'locked': (cbb_game.away_team_rating === null && cbb_game.home_team_rating === null),
     },
     {
       'name': 'aEM',
       'title': 'Adjusted Efficiency margin',
-      'away': picksData && picksData[away_team_id] && picksData[away_team_id].adjusted_efficiency_rating,
-      'home': picksData && picksData[home_team_id] && picksData[home_team_id].adjusted_efficiency_rating,
-      'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].adjusted_efficiency_rating,
-      'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].adjusted_efficiency_rating,
-      'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].adjusted_efficiency_rating_rank,
-      'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].adjusted_efficiency_rating_rank,
+      'away': picks && picks[away_team_id] && picks[away_team_id].adjusted_efficiency_rating,
+      'home': picks && picks[home_team_id] && picks[home_team_id].adjusted_efficiency_rating,
+      'awayCompareValue': picks && picks[away_team_id] && picks[away_team_id].adjusted_efficiency_rating,
+      'homeCompareValue': picks && picks[home_team_id] && picks[home_team_id].adjusted_efficiency_rating,
+      'awayRank': picks && picks[away_team_id] && picks[away_team_id].adjusted_efficiency_rating_rank,
+      'homeRank': picks && picks[home_team_id] && picks[home_team_id].adjusted_efficiency_rating_rank,
       'favored': 'higher',
       'showDifference': true,
       'compareType': 'rank',
@@ -77,12 +84,12 @@ const Tile = (props) => {
       'name': 'aSOS',
       'title': 'aEM SoS',
       'tooltip': 'aEM Strength of schedule (Opponent Efficiency margin (oORT - oDRT))',
-      'away': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_efficiency_rating,
-      'home': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_efficiency_rating,
-      'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_efficiency_rating,
-      'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_efficiency_rating,
-      'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_efficiency_rating_rank,
-      'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_efficiency_rating_rank,
+      'away': picks && picks[away_team_id] && picks[away_team_id].opponent_efficiency_rating,
+      'home': picks && picks[home_team_id] && picks[home_team_id].opponent_efficiency_rating,
+      'awayCompareValue': picks && picks[away_team_id] && picks[away_team_id].opponent_efficiency_rating,
+      'homeCompareValue': picks && picks[home_team_id] && picks[home_team_id].opponent_efficiency_rating,
+      'awayRank': picks && picks[away_team_id] && picks[away_team_id].opponent_efficiency_rating_rank,
+      'homeRank': picks && picks[home_team_id] && picks[home_team_id].opponent_efficiency_rating_rank,
       'favored': 'higher',
       'showDifference': true,
       'compareType': 'rank',
@@ -91,12 +98,12 @@ const Tile = (props) => {
       'name': 'eSOS',
       'title': 'Elo SoS',
       'tooltip': 'sRating elo Strength of schedule (Average opponent elo)',
-      'away': picksData && picksData[away_team_id] && picksData[away_team_id].elo_sos,
-      'home': picksData && picksData[home_team_id] && picksData[home_team_id].elo_sos,
-      'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].elo_sos,
-      'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].elo_sos,
-      'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].elo_sos_rank,
-      'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].elo_sos_rank,
+      'away': picks && picks[away_team_id] && picks[away_team_id].elo_sos,
+      'home': picks && picks[home_team_id] && picks[home_team_id].elo_sos,
+      'awayCompareValue': picks && picks[away_team_id] && picks[away_team_id].elo_sos,
+      'homeCompareValue': picks && picks[home_team_id] && picks[home_team_id].elo_sos,
+      'awayRank': picks && picks[away_team_id] && picks[away_team_id].elo_sos_rank,
+      'homeRank': picks && picks[home_team_id] && picks[home_team_id].elo_sos_rank,
       'favored': 'higher',
       'showDifference': true,
       'compareType': 'rank',
@@ -104,48 +111,48 @@ const Tile = (props) => {
     {
       'name': 'ORT',
       'title': 'Offensive rating',
-      'away': picksData && picksData[away_team_id] && picksData[away_team_id].offensive_rating,
-      'home': picksData && picksData[home_team_id] && picksData[home_team_id].offensive_rating,
-      'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].offensive_rating,
-      'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].offensive_rating,
-      'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].offensive_rating_rank,
-      'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].offensive_rating_rank,
+      'away': picks && picks[away_team_id] && picks[away_team_id].offensive_rating,
+      'home': picks && picks[home_team_id] && picks[home_team_id].offensive_rating,
+      'awayCompareValue': picks && picks[away_team_id] && picks[away_team_id].offensive_rating,
+      'homeCompareValue': picks && picks[home_team_id] && picks[home_team_id].offensive_rating,
+      'awayRank': picks && picks[away_team_id] && picks[away_team_id].offensive_rating_rank,
+      'homeRank': picks && picks[home_team_id] && picks[home_team_id].offensive_rating_rank,
       'favored': 'higher',
       'showDifference': true,
     },
     // {
     //   'name': 'DRT',
     //   'title': 'Defensive rating',
-    //   'away': picksData && picksData[away_team_id] && picksData[away_team_id].defensive_rating,
-    //   'home': picksData && picksData[home_team_id] && picksData[home_team_id].defensive_rating,
-    //   'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].defensive_rating,
-    //   'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].defensive_rating,
-    //   'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].defensive_rating_rank,
-    //   'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].defensive_rating_rank,
+    //   'away': picks && picks[away_team_id] && picks[away_team_id].defensive_rating,
+    //   'home': picks && picks[home_team_id] && picks[home_team_id].defensive_rating,
+    //   'awayCompareValue': picks && picks[away_team_id] && picks[away_team_id].defensive_rating,
+    //   'homeCompareValue': picks && picks[home_team_id] && picks[home_team_id].defensive_rating,
+    //   'awayRank': picks && picks[away_team_id] && picks[away_team_id].defensive_rating_rank,
+    //   'homeRank': picks && picks[home_team_id] && picks[home_team_id].defensive_rating_rank,
     //   'favored': 'lower',
     //   'showDifference': true,
     // },
     // {
     //   'name': 'PTS Off.',
     //   'title': 'Avg points scored',
-    //   'away': picksData && picksData[away_team_id] && picksData[away_team_id].points,
-    //   'home': picksData && picksData[home_team_id] && picksData[home_team_id].points,
-    //   'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].points,
-    //   'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].points,
-    //   'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].points_rank,
-    //   'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].points_rank,
+    //   'away': picks && picks[away_team_id] && picks[away_team_id].points,
+    //   'home': picks && picks[home_team_id] && picks[home_team_id].points,
+    //   'awayCompareValue': picks && picks[away_team_id] && picks[away_team_id].points,
+    //   'homeCompareValue': picks && picks[home_team_id] && picks[home_team_id].points,
+    //   'awayRank': picks && picks[away_team_id] && picks[away_team_id].points_rank,
+    //   'homeRank': picks && picks[home_team_id] && picks[home_team_id].points_rank,
     //   'favored': 'higher',
     //   'showDifference': true,
     // },
     // {
     //   'name': 'PTS Def.',
     //   'title': 'Avg points allowed',
-    //   'away': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_points,
-    //   'home': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_points,
-    //   'awayCompareValue': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_points,
-    //   'homeCompareValue': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_points,
-    //   'awayRank': picksData && picksData[away_team_id] && picksData[away_team_id].opponent_points_rank,
-    //   'homeRank': picksData && picksData[home_team_id] && picksData[home_team_id].opponent_points_rank,
+    //   'away': picks && picks[away_team_id] && picks[away_team_id].opponent_points,
+    //   'home': picks && picks[home_team_id] && picks[home_team_id].opponent_points,
+    //   'awayCompareValue': picks && picks[away_team_id] && picks[away_team_id].opponent_points,
+    //   'homeCompareValue': picks && picks[home_team_id] && picks[home_team_id].opponent_points,
+    //   'awayRank': picks && picks[away_team_id] && picks[away_team_id].opponent_points_rank,
+    //   'homeRank': picks && picks[home_team_id] && picks[home_team_id].opponent_points_rank,
     //   'favored': 'lower',
     //   'showDifference': true,
     // },
@@ -164,7 +171,7 @@ const Tile = (props) => {
     return (
       <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
         <div><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
-        <Pin cbb_game_id = {game.cbb_game_id}  />
+        <Pin cbb_game_id = {cbb_game.cbb_game_id}  />
       </div>
     );
   };
@@ -221,15 +228,15 @@ const Tile = (props) => {
     const awayColorStyle: React.CSSProperties = {};
     const homeColorStyle: React.CSSProperties = {};
   
-    const awayRank = CBB.getTeamRank('away', displaySlice.rank);
-    const homeRank = CBB.getTeamRank('home', displaySlice.rank);
+    const awayRank = CBB.getTeamRank('away', displayRank);
+    const homeRank = CBB.getTeamRank('home', displayRank);
   
     if (awayRank) {
-      awayColorStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(awayRank / CBB.getNumberOfD1Teams(game.season))));
+      awayColorStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(awayRank / CBB.getNumberOfD1Teams(cbb_game.season))));
     }
 
     if (homeRank) {
-      homeColorStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(homeRank / CBB.getNumberOfD1Teams(game.season))));
+      homeColorStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(homeRank / CBB.getNumberOfD1Teams(cbb_game.season))));
     }
     
     return (
@@ -318,9 +325,9 @@ const Tile = (props) => {
         {getHeader()}
         {getSecondaryHeader()}
         {
-          picksData === null ?
+          picks === null ?
           getSkeleton() :
-          <CompareStatistic key = {game.cbb_game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
+          <CompareStatistic key = {cbb_game.cbb_game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
         }
         {getOdds()}
         <div style = {{'textAlign': 'right'}}>

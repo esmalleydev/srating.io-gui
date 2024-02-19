@@ -12,7 +12,7 @@ import { ScrollContainer, ScrollProvider } from "@/contexts/scrollContext";
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
-  const themeSlice = useAppSelector(state => state.themeReducer.value);
+  const themeMode = useAppSelector(state => state.themeReducer.mode);
 
   const windowDimensions = useWindowDimensions() as Dimensions;
   const { width } = windowDimensions || {};
@@ -50,7 +50,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <ThemeProvider theme={themeSlice.mode === 'dark' ? darkTheme : lightTheme}>
+    <ThemeProvider theme={themeMode === 'dark' ? darkTheme : lightTheme}>
       <CssBaseline />
       {
       isMounted ?

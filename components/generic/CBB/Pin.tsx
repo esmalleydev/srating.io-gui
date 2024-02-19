@@ -21,8 +21,8 @@ const Pin = (props) => {
   const cbb_game_id = props.cbb_game_id || null;
 
   const dispatch = useAppDispatch();
-  const cbb_game_ids = useAppSelector(state => state.favoriteReducer.value.cbb_game_ids);
-  const isValidSession = useAppSelector(state => state.userReducer.value.isValidSession);
+  const cbb_game_ids = useAppSelector(state => state.favoriteReducer.cbb_game_ids);
+  const isValidSession = useAppSelector(state => state.userReducer.isValidSession);
 
   const theme = useTheme();
 

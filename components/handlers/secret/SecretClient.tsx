@@ -8,7 +8,7 @@ let intervalRefresher: NodeJS.Timeout;
 
 const SecretClient = ({ secret, tag }) => {
   const dispatch = useAppDispatch();
-  const userSlice = useAppSelector(state => state.userReducer.value);
+  const secret_id = useAppSelector(state => state.userReducer.secret_id);
 
   const refreshRate = 60 * 10; // 10 mins
 
@@ -22,7 +22,7 @@ const SecretClient = ({ secret, tag }) => {
   });
 
 
-  if (userSlice.secret_id !== secret) {
+  if (secret_id !== secret) {
     dispatch(setSecret(secret));
   }
 

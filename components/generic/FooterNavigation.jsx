@@ -15,6 +15,9 @@ import PicksIcon from '@mui/icons-material/Casino';
 import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
 import BackdropLoader from './BackdropLoader';
+import { useAppDispatch } from '@/redux/hooks';
+import { setScrollTop as setPicksScrollTop } from '@/redux/features/picks-slice';
+import { setScrollTop as setGamesScrollTop } from '@/redux/features/games-slice';
 
 
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
@@ -31,6 +34,7 @@ const FooterNavigation = (props) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [spin, setSpin] = useState(false);
+  const dispatch = useAppDispatch();
 
   let viewingSport = 'CBB';
   let viewingPage = 'home';
@@ -93,6 +97,7 @@ const FooterNavigation = (props) => {
   }
 
   const handleScores = () => {
+    dispatch(setGamesScrollTop(0));
     setSpin(true);
     sessionStorage.removeItem('CBB.GAMES.DATA');
     startTransition(() => {
@@ -102,6 +107,7 @@ const FooterNavigation = (props) => {
   }
 
   const handlePicks = () => {
+    dispatch(setPicksScrollTop(0));
     setSpin(true);
     startTransition(() => {
       router.push('/'+viewingSport.toLowerCase()+'/picks');

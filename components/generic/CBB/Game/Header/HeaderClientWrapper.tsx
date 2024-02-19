@@ -54,7 +54,7 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
 
   const { width } = useWindowDimensions() as Dimensions;
 
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
+  const displayRank = useAppSelector(state => state.displayReducer.rank);
 
   const [spin, setSpin] = useState(false);
 
@@ -110,7 +110,7 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
   const getTeam = (team_id) => {
     const team = cbb_game.teams[team_id];
     const teamHelper = new HelperTeam({'team': team});
-    const rank = teamHelper.getRank(displaySlice.rank);
+    const rank = teamHelper.getRank(displayRank);
 
     let justifyContent = 'left';
     let teamName = teamHelper.getName();

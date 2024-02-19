@@ -22,9 +22,8 @@ import { setRank } from '@/redux/features/display-slice';
  */
 const RankPicker = (props) => {
   const dispatch = useAppDispatch();
-  const displaySlice = useAppSelector(state => state.displayReducer.value);
   
-  const selected = displaySlice.rank;
+  const selected = useAppSelector(state => state.displayReducer.rank);
 
   const rankDisplayOptions = [
     {

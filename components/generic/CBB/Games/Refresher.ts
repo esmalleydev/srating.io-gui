@@ -53,11 +53,12 @@ const Refresher = ({ date, cbb_games }) => {
     });
   };
   
-  if (lastDate !== date) {
-    getData();
-  }
   
   useEffect(() => {
+    if (lastDate !== date) {
+      getData();
+    }
+
     let intervalRefresher: NodeJS.Timeout;
     let intervalCountdown: NodeJS.Timeout;
 
