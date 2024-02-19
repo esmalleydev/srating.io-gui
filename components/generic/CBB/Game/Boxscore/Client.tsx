@@ -35,7 +35,7 @@ const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/
   const [spin, setSpin] = useState(false);
   const router = useRouter();
 
-  const [boxscoreSide, setBoxscoreSide] = useState('home');
+  const [boxscoreSide, setBoxscoreSide] = useState('away');
 
   const awayBoxscores: PlayerBoxscore[] = [];
   const homeBoxscores: PlayerBoxscore[] = [];
@@ -67,7 +67,9 @@ const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/
   const hasBoxscoreData = ('points' in awayTotalBoxscore) && ('points' in homeTotalBoxscore);
 
 
-  const boxscore = boxscoreSide === 'home' ? homeBoxscores : awayBoxscores;
+  const boxscore = (boxscoreSide === 'home' ? homeBoxscores : awayBoxscores).sort(function(a,b) {
+    return a.minutes_played > b.minutes_played ? -1 : 1;
+  });
   const boxscoreTotal = boxscoreSide === 'home' ? homeTotalBoxscore : awayTotalBoxscore;
 
   const handleClick = (player_id) => {
@@ -413,8 +415,8 @@ const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/
       </div>
       <div style = {{'padding': '0px 5px'}}>
         <Typography style = {{'margin': '10px 0px'}} variant = 'body1'>Player boxscore</Typography>
-        <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
         <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('away');}} label = {CBB.getTeamName('away')} />
+        <Chip sx = {{'margin': '0px 10px 10px 10px'}} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => {setBoxscoreSide('home');}} label = {CBB.getTeamName('home')} />
         <TableContainer component={Paper}>
           <Table size="small" aria-label="team boxscore table">
             <TableHead>
@@ -436,15 +438,7 @@ const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/
                 }
 
                 if (
-                  !row.field_goal_attempts &&
-                  !row.free_throw_attempts &&
-                  !row.total_rebounds &&
-                  !row.assists &&
-                  !row.steals &&
-                  !row.blocks &&
-                  !row.turnovers &&
-                  !row.fouls &&
-                  !row.points
+                  !row.minutes_played
                 ) {
                   return;
                 }
