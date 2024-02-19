@@ -7,6 +7,19 @@ interface rowDatatype {
   name: string;
   wins: string;
   conf_record: string;
+  confwins: number;
+  conflosses: number;
+  neutralwins: number;
+  neutrallosses: number;
+  homewins: number;
+  homelosses: number;
+  roadwins: number;
+  roadlosses: number;
+  streak: number;
+  win_margin: number;
+  loss_margin: number;
+  confwin_margin: number;
+  confloss_margin: number;
   conf: string;
   elo_rank: number;
   elo: number;
@@ -69,6 +82,19 @@ interface rowDatatype {
   opponent_offensive_rating: number;
   opponent_defensive_rating: number;
   opponent_efficiency_rating: number;
+  confwins_rank: number;
+  conflosses_rank: number;
+  neutralwins_rank: number;
+  neutrallosses_rank: number;
+  homewins_rank: number;
+  homelosses_rank: number;
+  roadwins_rank: number;
+  roadlosses_rank: number;
+  streak_rank: number;
+  win_margin_rank: number;
+  loss_margin_rank: number;
+  confwin_margin_rank: number;
+  confloss_margin_rank: number;
   field_goal_rank: number;
   field_goal_attempts_rank: number;
   field_goal_percentage_rank: number;
@@ -160,6 +186,19 @@ export const getRowsData = ({ data, rankView, conferences, positions }) => {
         'name': row.alt_name,
         'wins': wins + '-' + losses,
         'conf_record': confwins + '-' + conflosses,
+        'confwins': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwins) || null,
+        'conflosses': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.conflosses) || null,
+        'neutralwins': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutralwins) || null,
+        'neutrallosses': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutrallosses) || null,
+        'homewins': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homewins) || null,
+        'homelosses': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homelosses) || null,
+        'roadwins': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadwins) || null,
+        'roadlosses': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadlosses) || null,
+        'streak': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.streak) || null,
+        'win_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.win_margin) || null,
+        'loss_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.loss_margin) || null,
+        'confwin_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwin_margin) || null,
+        'confloss_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confloss_margin) || null,
         'conf': row.conference,
         'elo_rank': (row.last_ranking && row.last_ranking.elo_rank) || null,
         'elo': row.elo,
@@ -221,6 +260,19 @@ export const getRowsData = ({ data, rankView, conferences, positions }) => {
         'opponent_defensive_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rating) || null,
         'opponent_efficiency_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating) || null, // this is aSOS in the gui
         'elo_sos': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos) || null, // this is eSoS
+        'confwins_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwins_rank) || null,
+        'conflosses_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.conflosses_rank) || null,
+        'neutralwins_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutralwins_rank) || null,
+        'neutrallosses_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutrallosses_rank) || null,
+        'homewins_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homewins_rank) || null,
+        'homelosses_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homelosses_rank) || null,
+        'roadwins_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadwins_rank) || null,
+        'roadlosses_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadlosses_rank) || null,
+        'streak_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.streak_rank) || null,
+        'win_margin_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.win_margin_rank) || null,
+        'loss_margin_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.loss_margin_rank) || null,
+        'confwin_margin_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwin_margin_rank) || null,
+        'confloss_margin_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confloss_margin_rank) || null,
         'field_goal_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_rank) || null,
         'field_goal_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_attempts_rank) || null,
         'field_goal_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_percentage_rank) || null,
