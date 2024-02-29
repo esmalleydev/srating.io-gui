@@ -415,7 +415,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     'width': tileWidth,
     'minHeight': '100px',
     'margin': '5px',
-    'height': 139,
+    'height': 139 + (CBB.isNeutralSite() ? 21 : 0),
   };
 
   const teamLineStyle: React.CSSProperties = {
@@ -428,7 +428,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   }
 
   if (displayCardView === 'large') {
-    divStyle.height = 282 + (!hasAccessToPercentages ? 25 : 0);
+    divStyle.height = 282 + (!hasAccessToPercentages ? 25 : 0) + (CBB.isNeutralSite() ? 21 : 0);
   }
 
   return (
