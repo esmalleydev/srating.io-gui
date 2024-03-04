@@ -59,7 +59,6 @@ const FooterNavigation = (props) => {
   if (pathName) {
     const splat = pathName.split('/');
 
-    console.log(splat)
     if (
       splat &&
       splat.length > 1 &&
