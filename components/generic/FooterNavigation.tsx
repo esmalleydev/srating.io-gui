@@ -37,7 +37,7 @@ const FooterNavigation = (props) => {
   const dispatch = useAppDispatch();
 
   let viewingSport = 'CBB';
-  let viewingPage = 'home';
+  let viewingPage: string | null = null;
   const pathName = usePathname();
 
   // todo the /team page highlights home button, because there is no sport / viewing page
@@ -58,6 +58,8 @@ const FooterNavigation = (props) => {
 
   if (pathName) {
     const splat = pathName.split('/');
+
+    console.log(splat)
     if (
       splat &&
       splat.length > 1 &&
@@ -73,6 +75,12 @@ const FooterNavigation = (props) => {
       pages.indexOf(splat[2]) > -1
     ) {
       viewingPage = pages[pages.indexOf(splat[2])];
+    } else if (
+      splat &&
+      splat.length === 2 &&
+      splat[1] === ''
+    ) {
+      viewingPage = pages[pages.indexOf('home')];
     }
   }
 
@@ -115,12 +123,18 @@ const FooterNavigation = (props) => {
     });
   }
 
+  let hightlightValue = -1;
+
+  if (viewingPage) {
+    hightlightValue = pages.indexOf(viewingPage);
+  }
+
   return (
     <div>
     {spin ? <BackdropLoader /> : ''}
     {/* {viewingSport ?  */}
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, /*'zIndex': 9000,*/}} elevation={3}>
-        <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}} showLabels value={pages.indexOf(viewingPage)}>
+      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4}}>
+        <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}} showLabels value={hightlightValue}>
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleHome} label="Home" icon={<HomeIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />

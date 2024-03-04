@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useTransition } from 'react';
 import { useTheme } from '@mui/material/styles';
 
 import Typography from '@mui/material/Typography';
@@ -8,10 +8,15 @@ import Paper from '@mui/material/Paper';
 import moment from 'moment';
 
 import HelperCBB from '@/components/helpers/CBB';
+import { useRouter } from 'next/navigation';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 
 
 const Tile = ({ cbb_game }) => {
   const theme = useTheme();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [spin, setSpin] = useState(false);
 
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,
@@ -51,12 +56,21 @@ const Tile = ({ cbb_game }) => {
     return <span>{score}</span>;
   };
 
+  const handleClick = () => {
+    setSpin(true);
+    startTransition(() => {
+      router.push('/cbb/games/' + cbb_game.cbb_game_id);
+      setSpin(false);
+    });
+  };
+
   return (
-    <Paper elevation = {3} style = {{'margin': '5px 10px', 'padding': 10}}>
+    <Paper elevation = {3} style = {{'margin': '5px 10px', 'padding': 10, 'cursor': 'pointer'}} onClick = {handleClick}>
       <div>
         <Typography variant = 'body2'>{moment(cbb_game.start_date).format('MMM Do, YYYY')}</Typography>
         <Typography variant = 'body1'>{getTitle()} ({getScore()})</Typography>
       </div>
+      {spin ? <BackdropLoader /> : ''}
     </Paper>
   );
 }

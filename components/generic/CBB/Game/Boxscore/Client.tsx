@@ -21,13 +21,28 @@ import { Boxscore, PlayerBoxscore } from '@/components/generic/types';
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  // '&:nth-of-type(odd)': {
+  //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.grey[900],
+  // },
+  // '&:nth-of-type(even)': {
+  //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
+  // },
+  '&:last-child td, &:last-child th': {
+    // border: 0,
+  },
   '&:hover td': {
     backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
   },
+  'border': 0,
   '&:hover': {
     cursor: 'pointer',
   }
 }));
+
+const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
+  'backgroundColor':  theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
+}));
+
 
 const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/}) => {
   const theme = useTheme();
@@ -443,11 +458,11 @@ const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/
                   return;
                 }
 
-                let player_name = row.first_name + ' ' + row.last_name;
+                let player_name = (row.first_name ? row.first_name.charAt(0) + '. ' : '') + row.last_name;
 
                 if (row.player_id && players && row.player_id in players) {
                   const player = players[row.player_id];
-                  player_name = player.first_name + ' ' + player.last_name;
+                  player_name = (player.first_name ? player.first_name.charAt(0) + '. ' : '') + player.last_name;
                 }
 
                 const getCells = () => {

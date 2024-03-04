@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
+import { Skeleton, Paper, Typography, Tooltip } from '@mui/material';
 
 import Locked from './Billing/Locked';
 import RankSpan from './CBB/RankSpan';
@@ -274,6 +272,10 @@ const CompareStatistic = (props) => {
             <RankSpan rank = {rank} key = {key} max = {CBB.getNumberOfD1Teams(props.season || CBB.getCurrentSeason())} useOrdinal = {true} />
           );
         };
+
+        if (row.loading) {
+          return <Skeleton key = {key} />;
+        }
         
         return (
           <div key = {key} style = {{'margin': '10px 0px'}}>

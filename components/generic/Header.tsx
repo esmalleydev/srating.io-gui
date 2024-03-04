@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 // import { Link } from 'next/link';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
@@ -23,6 +23,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import sratingLogo from '../../public/favicon-32x32.png';
 
@@ -31,6 +35,7 @@ import Search from './Search';
 import AccountHandler from './AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSession, setValidSession } from '../../redux/features/user-slice';
+import { Avatar, Divider, ListItemIcon, Tooltip } from '@mui/material';
 
 
 const SignUpButton = styled(Button)(({ theme }) => ({
@@ -42,9 +47,9 @@ const SignUpButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// TODO COPY THIS FOR MENU https://mui.com/material-ui/react-menu/#account-menu
+// todo hook up settings with router
 
-const Header = (props) => {
+const Header = () => {
   const self = this;
 
   const dispatch = useAppDispatch();
@@ -52,12 +57,14 @@ const Header = (props) => {
   const theme = useTheme();
 
   const router = useRouter();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions() as Dimensions;
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [fullSearch, setFullSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
+  const [spin, setSpin] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -67,8 +74,20 @@ const Header = (props) => {
 
 
   const handleHome = () => {
-    router.push('/');
-  }
+    setSpin(true);
+    startTransition(() => {
+      router.push('/');
+      setSpin(false);
+    });
+  };
+
+  const handleCompare = () => {
+    setSpin(true);
+    startTransition(() => {
+      router.push('/cbb/compare');
+      setSpin(false);
+    });
+  };
 
 
   const toggleDrawer = () => {
@@ -79,7 +98,11 @@ const Header = (props) => {
   const handleAccount = () => {
     handleClose();
     if (validSession) {
-      router.push('/account');
+      setSpin(true);
+      startTransition(() => {
+        router.push('/account');
+        setSpin(false);
+      });
       return;
     }
     setAccountOpen(true);
@@ -103,11 +126,15 @@ const Header = (props) => {
     // sessionStorage.clear();
     dispatch(setValidSession(false));
     dispatch(setSession(null));
-    router.push('/');
+    setSpin(true);
+    startTransition(() => {
+      router.push('/');
+      setSpin(false);
+    });
   };
 
 
-  let logoStyle = {
+  let logoStyle: React.CSSProperties = {
     // 'fontFamily': 'Consolas',
     // 'fontFamily': 'Courier New',
     'fontWeight': 600,
@@ -153,8 +180,9 @@ const Header = (props) => {
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
+                <Box sx={{ flexGrow: 0 }}>{width > 425 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
                 <Box sx={{ flexGrow: 0, 'marginRight': (width < 600 ? 0 : '5px') }}>
-                  {width < 600 ? <IconButton  onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search />}
+                  {width < 600 ? <IconButton onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search />}
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
                   {
@@ -163,7 +191,7 @@ const Header = (props) => {
                       <IconButton  onClick={handleMenu} color="inherit">
                         <AccountCircle />
                       </IconButton>
-                      <Menu
+                      {/* <Menu
                         id="menu-appbar"
                         anchorEl={anchorEl}
                         anchorOrigin={{
@@ -180,6 +208,61 @@ const Header = (props) => {
                       >
                         <MenuItem onClick={handleAccount}>My account</MenuItem>
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                      </Menu> */}
+                       <Menu
+                        anchorEl={anchorEl}
+                        id="account-menu"
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                        onClick={handleClose}
+                        PaperProps={{
+                          elevation: 0,
+                          sx: {
+                            overflow: 'visible',
+                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            mt: 1.5,
+                            '& .MuiAvatar-root': {
+                              width: 32,
+                              height: 32,
+                              ml: -0.5,
+                              mr: 1,
+                            },
+                            '&::before': {
+                              content: '""',
+                              display: 'block',
+                              position: 'absolute',
+                              top: 0,
+                              right: 14,
+                              width: 10,
+                              height: 10,
+                              bgcolor: 'background.paper',
+                              transform: 'translateY(-50%) rotate(45deg)',
+                              zIndex: 0,
+                            },
+                          },
+                        }}
+                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                      >
+                        <MenuItem onClick={handleAccount}>
+                          <ListItemIcon>
+                            <AccountCircleIcon fontSize="small" />
+                          </ListItemIcon>
+                          My account
+                        </MenuItem>
+                        <Divider />
+                        {/* <MenuItem onClick={handleClose}>
+                          <ListItemIcon>
+                            <Settings fontSize="small" />
+                          </ListItemIcon>
+                          Settings
+                        </MenuItem> */}
+                        <MenuItem onClick={handleLogout}>
+                          <ListItemIcon>
+                            <Logout fontSize="small" />
+                          </ListItemIcon>
+                          Logout
+                        </MenuItem>
                       </Menu>
                     </div>
                   : 

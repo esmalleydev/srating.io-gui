@@ -14,7 +14,10 @@ const Server = async({cbb_game}) => {
   const previousMatchups: gamesDataType | any = await useServerAPI({
     'class': 'cbb_game',
     'function': 'getPreviousMatchups',
-    'arguments': cbb_game_id,
+    'arguments': {
+      'cbb_game_id': cbb_game_id,
+      'limit': 10,
+    },
   }, { revalidate: revalidateSeconds});
 
   return (

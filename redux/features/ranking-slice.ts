@@ -16,7 +16,7 @@ const initialState = {
   rank: rankLocalStorage || 'composite_rank',
 } as InitialState;
 
-export const display = createSlice({
+export const ranking = createSlice({
   name: 'ranking',
   initialState: initialState,
   reducers: {
@@ -26,5 +26,5 @@ export const display = createSlice({
   }
 });
 
-export const {  } = display.actions;
-export default display.reducer;
+export const {  } = ranking.actions;
+export default ranking.reducer;

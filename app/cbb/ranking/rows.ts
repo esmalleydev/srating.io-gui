@@ -335,7 +335,7 @@ export const getRowsData = ({ data, rankView, conferences, positions }) => {
         lastUpdated = row.date_of_rank;
       }
         
-      row.name = row.player ? (row.player.first_name + ' ' + row.player.last_name) : null;
+      row.name = row.player ? (row.player.first_name.charAt(0) + '. ' + row.player.last_name) : null;
       row.number = row.player ? row.player.number : null;
       row.position = row.player ? row.player.position : null;
       row.height = row.player ? row.player.height : null;

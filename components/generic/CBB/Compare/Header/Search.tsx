@@ -1,17 +1,17 @@
 'use client';
 import React, { useState, useTransition } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import useDebounce from '../hooks/useDebounce';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { styled, alpha, useTheme } from '@mui/material/styles';
-
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
+import { InputBase, Autocomplete } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import Autocomplete from '@mui/material/Autocomplete';
 
-import BackdropLoader from './BackdropLoader';
-import { useClientAPI } from '../clientAPI';
+import useDebounce from '@/components/hooks/useDebounce';
+import { useClientAPI } from '@/components/clientAPI';
+import BackdropLoader from '@/components/generic/BackdropLoader';
+import { Team } from '@/components/generic/types';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setHomeTeamID, setAwayTeamID, setNextSearch } from '@/redux/features/compare-slice';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -46,26 +46,24 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '200px',
-      '&:focus': {
-        width: '250px',
-      },
-    },
   },
 }));
 
 const Search = (props) => {
-  const theme = useTheme();
   const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
   const [value, setValue] = useState('');
-  const [autoCompleteValue, setAutoCompleteValue] = useState(null);
-  const [teams, setTeams] = useState([]);
-  const [players, setPlayers] = useState([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(false);
   const [spin, setSpin] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const home_team_id = useAppSelector(state => state.compareReducer.home_team_id); //|| searchParams?.get('home_team_id') || null;
+  const away_team_id = useAppSelector(state => state.compareReducer.away_team_id); //|| searchParams?.get('away_team_id') || null;
+  const next_search = useAppSelector(state => state.compareReducer.next_search);
 
 
   const debouncedRequest = useDebounce(() => {
@@ -74,14 +72,14 @@ const Search = (props) => {
       'function': 'search',
       'arguments': {
         'name': value,
+        'team': 1,
+        'player': 0,
       },
     }).then((response) => {
       setTeams((response && response.teams) || []);
-      setPlayers((response && response.players) || []);
       setLoading(false);
     }).catch((e) => {
       setTeams([]);
-      setPlayers([]);
       setLoading(false);
     });
   }, 200);
@@ -95,45 +93,57 @@ const Search = (props) => {
     debouncedRequest();
   };
 
-  const options = [].concat(teams.map((team) => {
+  const options = teams.map((team) => {
     return {
       'group': 'Teams',
       'team_id': team.team_id,
       'name': team.alt_name,
     }
-  })).concat(players.map((player) => {
-    return {
-      'group': 'Players',
-      'player_id': player.player_id,
-      'name': player.first_name + ' ' + player.last_name + ' (' + player.begin + '-' + player.end + ')',
-    }
-  }));
+  });
 
   const handleClick = (event, option) => {
     if (!option || (!option.player_id && !option.team_id)) {
       return;
     }
-    setSpin(true);
-    if (option && option.player_id) {
+
+    const new_team_id = (option && option.team_id);
+
+    if (new_team_id) {
+      setSpin(true);
       startTransition(() => {
-        router.push('/cbb/player/' + option.player_id);
-        setSpin(false);
-        if (props.onRouter) {
-          props.onRouter();
+        let key = next_search;
+
+        if (!away_team_id) {
+          key = 'away';
+        } else if (!home_team_id) {
+          key = 'home';
         }
-      });
-    } else if (option && option.team_id) {
-      startTransition(() => {
-        router.push('/cbb/team/' + option.team_id);
-        setSpin(false);
-        if (props.onRouter) {
-          props.onRouter();
+
+        if (!key) {
+          key = 'away';
         }
+
+        if (searchParams?.get(key + '_team_id') !== new_team_id) {
+          const current = new URLSearchParams(Array.from(searchParams.entries()));
+          current.set(key + '_team_id', new_team_id);
+          const search = current.toString();
+          const query = search ? `?${search}` : "";
+          router.replace(`${pathName}${query}`);
+        }
+
+        if (key === 'away') {
+          dispatch(setAwayTeamID(new_team_id));
+          dispatch(setNextSearch('home'));
+        } else if (key === 'home') {
+          dispatch(setHomeTeamID(new_team_id));
+          dispatch(setNextSearch('away'));
+        }
+        
+        setSpin(false);
+        setValue('');
+        setTeams([]);
       });
     }
-    setValue('');
-    setTeams([]);
-    setPlayers([]);
   };
 
 
@@ -144,14 +154,13 @@ const Search = (props) => {
         <SearchIcon />
       </SearchIconWrapper>
       <Autocomplete
-        id="search-team-player"
+        id = 'search-team-compare'
         freeSolo
         onChange = {handleClick}
         loading = {loading}
         value = {null}
         options = {options}
         autoHighlight = {true}
-        groupBy = {(option) => option.group}
         getOptionLabel = {(option) =>  {return option.name || 'Unknown';}}
         fullWidth = {true}
         renderInput={(params) => {
@@ -162,9 +171,9 @@ const Search = (props) => {
               {...params.InputProps}
               {...rest}
               value = {value}
-              placeholder = {'Search'}
+              placeholder = {'Add a team'}
               autoFocus = {props.focus}
-              sx = {{'minWidth': '200px'}}
+              sx = {{'minWidth': '250px'}}
               onChange = {onChange} 
             />
           );
