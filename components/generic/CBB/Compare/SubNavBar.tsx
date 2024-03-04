@@ -103,6 +103,10 @@ const SubNavBar = ({ view, home_team_id, away_team_id }) => {
 
   let minSubBarWidth = 75;
 
+  if (width < getBreakPoint()) {
+    minSubBarWidth = 40;
+  }
+
   const subHeaderStyle: React.CSSProperties = {
     'height': subHeaderHeight,
     'position': 'fixed',
@@ -114,13 +118,15 @@ const SubNavBar = ({ view, home_team_id, away_team_id }) => {
     'top': getHeaderHeight() + getMarginTop(),
     'left': 0,
     'right': 0,
-    'padding': (width < getBreakPoint() ? '0px 10px' : '0px 20px'),
+    'padding': (width < getBreakPoint() ? '0px 5px' : '0px 20px'),
   };
 
   const leftButtons: React.JSX.Element[] = [];
   const middleButtons: React.JSX.Element[] = [];
   const rightButtons: React.JSX.Element[] = [];
-
+  
+  
+  // BEWARE !!!! ON MOBILE, IF YOU ADD MORE BUTTONS, NEED TO REDESIGN, TABS TAKE UP TOO MUCH SPACE, SCROLL UP TO minSubBarWidth
 
   middleButtons.push(
     <Tabs key = {'tabs'} variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => {handleView(value)}} indicatorColor="secondary" textColor="inherit">
