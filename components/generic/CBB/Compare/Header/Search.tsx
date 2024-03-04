@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useTransition } from 'react';
+import React, { useEffect, useRef, useState, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { styled, alpha, useTheme } from '@mui/material/styles';
@@ -64,6 +64,8 @@ const Search = (props) => {
   const home_team_id = useAppSelector(state => state.compareReducer.home_team_id); //|| searchParams?.get('home_team_id') || null;
   const away_team_id = useAppSelector(state => state.compareReducer.away_team_id); //|| searchParams?.get('away_team_id') || null;
   const next_search = useAppSelector(state => state.compareReducer.next_search);
+
+  const [blur, setBlur] = useState<boolean>(false);
 
 
   const debouncedRequest = useDebounce(() => {
@@ -140,6 +142,7 @@ const Search = (props) => {
         }
         
         setSpin(false);
+        setBlur(true);
         setValue('');
         setTeams([]);
       });
@@ -163,6 +166,7 @@ const Search = (props) => {
         autoHighlight = {true}
         getOptionLabel = {(option) =>  {return option.name || 'Unknown';}}
         fullWidth = {true}
+        blurOnSelect = {blur}
         renderInput={(params) => {
           const {InputLabelProps,InputProps,...rest} = params;
           rest.inputProps.value = value;
