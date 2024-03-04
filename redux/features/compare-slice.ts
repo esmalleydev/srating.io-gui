@@ -61,10 +61,13 @@ export const compare = createSlice({
   name: 'compare',
   initialState: initialState,
   reducers: {
-    clear: (state, action) => {
+    clear: (state) => {
       for (let key in initialState) {
         state[key] = initialState[key];
       }
+    },
+    reset: (state) => {
+      updateStateFromUrlParams(state);
     },
     setNextSearch: (state, action: PayloadAction<string>) => {
       state.next_search = action.payload;
@@ -102,7 +105,7 @@ export const compare = createSlice({
   }
 });
 
-export const { setHomeTeamID, setAwayTeamID, setNeutralSite, setView, setSubView, setScrollTop, setHideLowerBench, setTopPlayersOnly, setPredictions, setPredictionsLoading, setNextSearch, clear } = compare.actions;
+export const { setHomeTeamID, setAwayTeamID, setNeutralSite, setView, setSubView, setScrollTop, setHideLowerBench, setTopPlayersOnly, setPredictions, setPredictionsLoading, setNextSearch, clear, reset } = compare.actions;
 export default compare.reducer;
 
 updateStateFromUrlParams(initialState);

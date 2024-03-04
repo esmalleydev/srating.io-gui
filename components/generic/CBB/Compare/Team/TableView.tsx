@@ -149,10 +149,14 @@ const TableView = ({ teams, season }) => {
       }
 
       const rankCellStyle: React.CSSProperties = {
-        'textAlign': 'center',
-        'position': 'sticky',
-        'left': 0,
-        'maxWidth': rankCellMaxWidth
+        position: 'sticky',
+        left: 0,
+        textAlign: 'center',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        'maxWidth': rankCellMaxWidth,
+        'minWidth': rankCellMaxWidth,
       };  
   
   
@@ -160,7 +164,7 @@ const TableView = ({ teams, season }) => {
         position: 'sticky',
         'minWidth': teamCellWidth,
         'maxWidth': teamCellWidth,
-        'left': 0,
+        'left': rankCellMaxWidth,
         'overflow': 'hidden',
         'whiteSpace': 'nowrap',
         'textOverflow': 'ellipsis',
@@ -212,12 +216,18 @@ const TableView = ({ teams, season }) => {
                 } else {
                   tdStyle.whiteSpace = 'nowrap';
                 }
+
+                if (headCell.id === 'composite_rank') {
+                  tdStyle.left = 0;
+                  tdStyle.maxWidth = rankCellMaxWidth;
+                  tdStyle.minWidth = rankCellMaxWidth;
+                }
       
                 if (headCell.id === 'name') {
                   tdStyle.borderRight = '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark);
                   tdStyle.minWidth = teamCellWidth;
                   tdStyle.maxWidth = teamCellWidth;
-                  tdStyle.left = 0;
+                  tdStyle.left = rankCellMaxWidth;
                 }
 
                 return (
@@ -230,6 +240,7 @@ const TableView = ({ teams, season }) => {
                     >
                       <TableSortLabel
                         active={orderBy === headCell.id}
+                        // hideSortIcon = {!showSortArrow}
                         direction={orderBy === headCell.id ?  (order as 'asc' | 'desc') : 'asc'}
                         onClick={() => {handleSort(headCell.id)}}
                       >

@@ -354,12 +354,30 @@ const Client = ({ teams }) => {
             {getTable(topPlayers)}
           </> :
           <>
-            <Typography variant='h6'>Gaurds</Typography>
-            {getTable(gaurds)}
-            <Typography variant='h6'>Forwards</Typography>
-            {getTable(forwards)}
-            <Typography variant='h6'>Centers</Typography>
-            {getTable(centers)}
+            {
+            gaurds.length ?
+              <>
+              <Typography variant='h6'>Gaurds</Typography>
+              {getTable(gaurds)}
+              </>
+              : ''
+            }
+            {
+            forwards.length ?
+              <>
+              <Typography variant='h6'>Forwards</Typography>
+              {getTable(forwards)}
+              </>
+              : ''
+            }
+            {
+            centers.length ?
+              <>
+              <Typography variant='h6'>Centers</Typography>
+              {getTable(centers)}
+              </>
+              : ''
+            }
           </>
       }    
       {spin ? <BackdropLoader /> : ''}

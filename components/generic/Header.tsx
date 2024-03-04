@@ -36,6 +36,7 @@ import AccountHandler from './AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSession, setValidSession } from '../../redux/features/user-slice';
 import { Avatar, Divider, ListItemIcon, Tooltip } from '@mui/material';
+import { clear } from '@/redux/features/compare-slice';
 
 
 const SignUpButton = styled(Button)(({ theme }) => ({
@@ -84,6 +85,7 @@ const Header = () => {
   const handleCompare = () => {
     setSpin(true);
     startTransition(() => {
+      dispatch(clear());
       router.push('/cbb/compare');
       setSpin(false);
     });

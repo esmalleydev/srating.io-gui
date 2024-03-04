@@ -22,8 +22,8 @@ import TeamServer from '@/components/generic/CBB/Compare/Team/Server';
 import TrendsClientWrapper from '@/components/generic/CBB/Compare/Trends/ClientWrapper';
 import TrendsServer from '@/components/generic/CBB/Compare/Trends/Server';
 
-import Clarity from '@/components/generic/CBB/Compare/Clarity';
 import PredictionLoader from '@/components/generic/CBB/Compare/Team/PredictionLoader';
+import Splash from '@/components/generic/CBB/Compare/Splash';
 
 type Props = {
   params: { team_ids: string };
@@ -106,29 +106,34 @@ export default async function Page({ params, searchParams }) {
       <HeaderClientWrapper>
         <HeaderClient home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
       </HeaderClientWrapper>
-      <SubNavBar view = {view} />
+      <SubNavBar home_team_id = {home_team_id} away_team_id = {away_team_id} view = {view} />
       {
-        view === 'team' ?
-          <TeamClientWrapper>
-            <TeamServer home_team_id = {home_team_id} away_team_id = {away_team_id} season = {season} teams = {teams} subview = {subview} />
-          </TeamClientWrapper>
-        : ''
+      !home_team_id || !away_team_id ?
+        <Splash /> :
+        <>
+          {
+            view === 'team' ?
+              <TeamClientWrapper>
+                <TeamServer home_team_id = {home_team_id} away_team_id = {away_team_id} season = {season} teams = {teams} subview = {subview} />
+              </TeamClientWrapper>
+            : ''
+          }
+          {
+            view === 'player' ?
+              <PlayerClientWrapper>
+                <PlayerServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
+              </PlayerClientWrapper>
+            : ''
+          }
+          {
+            view === 'trends' ?
+              <TrendsClientWrapper>
+                <TrendsServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
+              </TrendsClientWrapper>
+            : ''
+          }
+        </>
       }
-      {
-        view === 'player' ?
-          <PlayerClientWrapper>
-            <PlayerServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
-          </PlayerClientWrapper>
-        : ''
-      }
-      {
-        view === 'trends' ?
-          <TrendsClientWrapper>
-            <TrendsServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
-          </TrendsClientWrapper>
-        : ''
-      }
-      {/* <Clarity /> */}
       <PredictionLoader season = {season} />
     </div>
   );

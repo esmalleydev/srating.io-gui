@@ -27,7 +27,7 @@ const getSubNavHeaderHeight = () => {
 
 export { getSubNavHeaderHeight };
 
-const SubNavBar = ({ view }) => {
+const SubNavBar = ({ view, home_team_id, away_team_id }) => {
   const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
@@ -40,8 +40,8 @@ const SubNavBar = ({ view }) => {
 
   // const view = useAppSelector(state => state.compareReducer.view);
   const subview = useAppSelector(state => state.compareReducer.subview);
-  const home_team_id = useAppSelector(state => state.compareReducer.home_team_id);
-  const away_team_id = useAppSelector(state => state.compareReducer.away_team_id);
+  // const home_team_id = useAppSelector(state => state.compareReducer.home_team_id);
+  // const away_team_id = useAppSelector(state => state.compareReducer.away_team_id);
   const topPlayersOnly = useAppSelector(state => state.compareReducer.topPlayersOnly);
 
 
