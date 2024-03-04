@@ -180,9 +180,9 @@ const Header = () => {
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
-                <Box sx={{ flexGrow: 0 }}>{width > 425 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
+                <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
                 <Box sx={{ flexGrow: 0, 'marginRight': (width < 600 ? 0 : '5px') }}>
-                  {width < 600 ? <IconButton onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search />}
+                  {width < 625 ? <IconButton onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search />}
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
                   {
@@ -267,8 +267,8 @@ const Header = () => {
                     </div>
                   : 
                     <div>
-                      {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''}
-                      <Button color = {theme.palette.mode === 'light' ? 'secondary' : 'success'} variant = 'contained' disableElevation onClick={handleAccount}>Log in</Button>
+                      {/* {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''} */}
+                      <Button color = {theme.palette.mode === 'light' ? 'secondary' : 'success'} variant = 'contained' disableElevation onClick={handleAccount}>{width > 425 ? 'Signup / Login' : 'Login'}</Button>
                     </div>
                   }
                 </Box>
