@@ -50,7 +50,7 @@ const Client = ({ teams }) => {
   const hideLowerBench = useAppSelector(state => state.compareReducer.hideLowerBench);
   const topPlayersOnly = useAppSelector(state => state.compareReducer.topPlayersOnly);
 
-  const gaurds: string[] = [];
+  const guards: string[] = [];
   const forwards: string[] = [];
   const centers: string[] = [];
   let topPlayers: string[] = [];
@@ -76,7 +76,7 @@ const Client = ({ teams }) => {
           centers.push(player_id);
         }
         if (player.position === 'G') {
-          gaurds.push(player_id);
+          guards.push(player_id);
         }
 
         players[player_id] = player;
@@ -355,10 +355,10 @@ const Client = ({ teams }) => {
           </> :
           <>
             {
-            gaurds.length ?
+            guards.length ?
               <>
-              <Typography variant='h6'>Gaurds</Typography>
-              {getTable(gaurds)}
+              <Typography variant='h6'>Guards</Typography>
+              {getTable(guards)}
               </>
               : ''
             }
