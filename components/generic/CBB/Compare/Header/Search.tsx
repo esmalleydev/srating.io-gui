@@ -16,9 +16,9 @@ import { setHomeTeamID, setAwayTeamID, setNextSearch } from '@/redux/features/co
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  backgroundColor: theme.palette.mode === 'dark' ? alpha(theme.palette.common.white, 0.15) : alpha(theme.palette.common.black, 0.10),
   '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
+    backgroundColor: theme.palette.mode === 'dark' ? alpha(theme.palette.common.white, 0.25) : alpha(theme.palette.common.black, 0.20),
   },
   marginLeft: 0,
   width: '100%',
@@ -49,7 +49,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const Search = (props) => {
+const Search = () => {
+  const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -149,7 +150,10 @@ const Search = (props) => {
     }
   };
 
-
+  const inputBaseStyle: React.CSSProperties = {
+    'minWidth': '250px',
+  };
+  // sx={{backgroundColor: 'rgba(66, 165, 245, .5)'}}
   return (
     <Container>
       {spin ? <BackdropLoader /> : ''}
@@ -159,6 +163,7 @@ const Search = (props) => {
       <Autocomplete
         id = 'search-team-compare'
         freeSolo
+        filterOptions={(x) => x}
         onChange = {handleClick}
         loading = {loading}
         value = {null}
@@ -176,8 +181,8 @@ const Search = (props) => {
               {...rest}
               value = {value}
               placeholder = {'Add a team'}
-              autoFocus = {props.focus}
-              sx = {{'minWidth': '250px'}}
+              autoFocus = {true}
+              sx = {inputBaseStyle}
               onChange = {onChange} 
             />
           );

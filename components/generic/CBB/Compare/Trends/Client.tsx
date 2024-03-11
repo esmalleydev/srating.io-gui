@@ -15,7 +15,7 @@ const Client = ({cbb_games, teams, home_team_id, away_team_id}: {cbb_games: game
   let summaryPRContainers: React.JSX.Element[] = [];
 
   if (cbb_games && !Object.keys(cbb_games).length) {
-    previousMatchupContainers.push(<Paper elevation = {3} style = {{'padding': 10}}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
+    previousMatchupContainers.push(<Paper key = {1} elevation = {3} style = {{'padding': 10}}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
   } else if (cbb_games) {
     const sorted_matchups: Game[] = Object.values(cbb_games).sort(function(a, b) {
       return a.start_date > b.start_date ? -1 : 1;

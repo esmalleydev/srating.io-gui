@@ -69,6 +69,11 @@ class Team {
       this.team.ranking
     ) {
       last = this.team.ranking;
+    } else if (
+      this.team &&
+      this.team.rankings
+    ) {
+      last = this.team.rankings;
     }
     return last;
   };

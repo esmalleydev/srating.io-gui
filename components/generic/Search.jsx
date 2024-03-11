@@ -146,6 +146,7 @@ const Search = (props) => {
       <Autocomplete
         id="search-team-player"
         freeSolo
+        filterOptions={(x) => x}
         onChange = {handleClick}
         loading = {loading}
         value = {null}
