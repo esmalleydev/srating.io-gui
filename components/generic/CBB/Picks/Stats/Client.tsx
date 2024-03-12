@@ -23,13 +23,12 @@ export { getCardStyle, getOrderedBuckets };
 const Client = ({ date, stats }) => {
   const theme = useTheme();
 
-
   const orderedBuckets = getOrderedBuckets();
 
   const skeletonContainers: React.JSX.Element[] = [];
 
   for (let i = 0; i < orderedBuckets.length; i++) {
-    skeletonContainers.push(<Skeleton key = {i} variant="rounded" animation="wave" height={115} sx = {getCardStyle()} />);
+    skeletonContainers.push(<Skeleton key = {i} variant="rounded" animation="wave" height={220} sx = {getCardStyle()} />);
   }
 
   const statContainers: React.JSX.Element[] = [];
@@ -46,7 +45,19 @@ const Client = ({ date, stats }) => {
       if (orderedBuckets[i] in stats) {
         let label: string | null = null;
 
-        const totalGames = stats[orderedBuckets[i]].games;
+        const subBuckets = [90, 80, 70, 60, 50];
+
+        const subBucketsLabels = {
+          90: '90-100%:',
+          80: '80-90%:',
+          70: '70-80%:',
+          60: '60-70%:',
+          50: '50-60%:',
+        };
+
+        // const totalGames = stats[orderedBuckets[i]].games;
+        let totalGames = 0;
+        let totalCorrect = 0;
 
         if (orderedBuckets[i] === 'today') {
           label = todayDate;
@@ -60,11 +71,46 @@ const Client = ({ date, stats }) => {
           label = 'Season';
         }
 
-        const colorStyle: React.CSSProperties = {};
+        const subBucketContainers: React.JSX.Element[] = [];
+
+        for (let s = 0; s < subBuckets.length; s++) {
+          const subTotalGames = stats[orderedBuckets[i]][subBuckets[s] + '_total'];
+          const subCorrectGames = stats[orderedBuckets[i]][subBuckets[s] + '_correct'];
+
+          totalGames += subTotalGames;
+          totalCorrect += subCorrectGames;
+
+          const subColorStyle: React.CSSProperties = {
+            fontSize: 12,
+            minWidth: 60,
+            textAlign: 'center',
+          };
+
+          let subPercentCorrect: number = 0;
+          if (subTotalGames) {
+            subPercentCorrect = +((subCorrectGames / subTotalGames) * 100).toFixed(2);
+            let color = ColorUtil.lerpColor(worstColor, bestColor, (+subPercentCorrect / 100));
+            subColorStyle.color = color;
+          }
+
+          subBucketContainers.push(
+            <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
+              <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>{subBucketsLabels[subBuckets[s]]}</Typography>
+              <Typography sx={subColorStyle}>{subTotalGames ? subPercentCorrect + '%' : '-'}</Typography>
+              <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }}>({subCorrectGames + ' / ' + subTotalGames})</Typography>
+            </div>
+          );
+        }
+
+        const colorStyle: React.CSSProperties = {
+          fontSize: 12,
+          minWidth: 60,
+          textAlign: 'center',
+        };
 
         let percentCorrect: number = 0;
         if (totalGames) {
-          percentCorrect = +((stats[orderedBuckets[i]].correct / totalGames) * 100).toFixed(2);
+          percentCorrect = +((totalCorrect / totalGames) * 100).toFixed(2);
           let color = ColorUtil.lerpColor(worstColor, bestColor, (+percentCorrect / 100));
           colorStyle.color = color;
         }
@@ -73,9 +119,23 @@ const Client = ({ date, stats }) => {
         statContainers.push(
           <Card key = {i} sx = {getCardStyle()}>
             <CardContent>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>{label}</Typography>
-              <Typography sx = {Object.assign({'textAlign': 'center'}, colorStyle)} variant="h5" component="div">{totalGames ? percentCorrect + '%' : '-'}</Typography>
-              <Typography variant="body2">({stats[orderedBuckets[i]].correct} / {totalGames}) games</Typography>
+              <Typography sx={{ fontSize: 14, textAlign: 'center' }} color="text.secondary" gutterBottom>{label}</Typography>
+              {
+              totalGames === 0 ? <Typography sx = {Object.assign({'textAlign': 'center'}, colorStyle)} variant="h5" component="div">-</Typography> : 
+              <>
+                <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
+                  <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>Predicted</Typography>
+                  <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'center' }} color="text.secondary" gutterBottom>Accuracy</Typography>
+                  <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} color="text.secondary" gutterBottom># games</Typography>
+                </div>
+                {subBucketContainers}
+                <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
+                  <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>Total:</Typography>
+                  <Typography sx={colorStyle}>{percentCorrect + '%'}</Typography>
+                  <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }}>({totalCorrect} / {totalGames})</Typography>
+                </div>
+              </>
+              }
             </CardContent>
           </Card>
         )

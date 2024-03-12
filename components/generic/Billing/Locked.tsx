@@ -1,21 +1,12 @@
 'use client';
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
+import { Link, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
-import BackdropLoader from '../BackdropLoader';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 
 
 const Locked = ({ iconFontSize }) => {
-  const self = this;
-
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -25,8 +16,18 @@ const Locked = ({ iconFontSize }) => {
 
   const handleSubscribe = () => {
     setSpin(true);
+    setOpenDialog(false);
     startTransition(() => {
       router.push('/pricing');
+      setSpin(false);
+    });
+  };
+
+  const handleLiveWinRate = () => {
+    setSpin(true);
+    setOpenDialog(false);
+    startTransition(() => {
+      router.push('/cbb/picks?view=stats');
       setSpin(false);
     });
   };
@@ -51,6 +52,9 @@ const Locked = ({ iconFontSize }) => {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Subscribe for just $5 per month to get access to win percentages for every game!
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            <Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {handleLiveWinRate}>View the live win rate</Link>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

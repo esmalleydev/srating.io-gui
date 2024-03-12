@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useTransition } from 'react';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Tab, Tabs, useTheme } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Tab, Tabs, useTheme } from '@mui/material';
 import { getBreakPoint } from '@/components/generic/CBB/Picks/NavBar';
 // import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 // import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
@@ -19,6 +19,8 @@ const getHeaderHeight = () => {
 
 
 export { getHeaderHeight };
+
+// todo update the calc to use the billing locked component
 
 const SubNavBar = ({ view }) => {
   const theme = useTheme();
@@ -82,7 +84,20 @@ const SubNavBar = ({ view }) => {
   }
 
   const handleSubscribe = () => {
-    router.push('/pricing');
+    setSpin(true);
+    startTransition(() => {
+      router.push('/pricing');
+      setSpin(false);
+    });
+  };
+
+  const handleLiveWinRate = () => {
+    setSpin(true);
+    setShowLockedDialog(false);
+    startTransition(() => {
+      router.push('/cbb/picks?view=stats');
+      setSpin(false);
+    });
   };
 
   const handleCloseLockedDialog = () => {
@@ -140,6 +155,9 @@ const SubNavBar = ({ view }) => {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Subscribe for just $5 per month to get access to the betting calculator!
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            <Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {handleLiveWinRate}>View the live win rate</Link>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
