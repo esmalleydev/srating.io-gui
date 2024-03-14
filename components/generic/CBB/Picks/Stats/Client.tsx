@@ -124,7 +124,7 @@ const Client = ({ date, stats }) => {
               totalGames === 0 ? <Typography sx = {Object.assign({'textAlign': 'center'}, colorStyle)} variant="h5" component="div">-</Typography> : 
               <>
                 <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
-                  <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>Predicted</Typography>
+                  <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>Predicted win %</Typography>
                   <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'center' }} color="text.secondary" gutterBottom>Accuracy</Typography>
                   <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} color="text.secondary" gutterBottom># games</Typography>
                 </div>

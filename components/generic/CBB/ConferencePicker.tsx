@@ -28,7 +28,7 @@ const ConferencePicker = () => {
   const [confOpen, setConfOpen] = useState(false);
 
   const conferenceOptions = [
-    {'value': 'all', 'label': 'All'},
+    {'value': null, 'label': 'All'},
     {'value': 'ACC', 'label': 'ACC'},
     {'value': 'Big 12', 'label': 'Big 12'},
     {'value': 'SEC', 'label': 'SEC'},
@@ -111,17 +111,21 @@ const ConferencePicker = () => {
           </Toolbar>
         </AppBar>
         <List>
-          {conferenceOptions.map((confOption) => (
-            <ListItem key={confOption.value} button onClick={() => {
-              dispatch(updateConferences(confOption.value));
-              handleConfClose();
-            }}>
-              <ListItemIcon>
-                {selected.indexOf(confOption.value) > -1 ? <CheckIcon /> : ''}
-              </ListItemIcon>
-              <ListItemText primary={confOption.label} />
-            </ListItem>
-          ))}
+          {conferenceOptions.map((confOption) => {
+            const value = confOption.value;
+
+            return (
+              <ListItem key={value} button onClick={() => {
+                dispatch(updateConferences(value));
+                handleConfClose();
+              }}>
+                <ListItemIcon>
+                  {value && selected.indexOf(value) > -1 ? <CheckIcon /> : ''}
+                </ListItemIcon>
+                <ListItemText primary={confOption.label} />
+              </ListItem>
+            )
+          })}
         </List>
       </Dialog>
     </div>

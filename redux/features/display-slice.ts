@@ -63,15 +63,19 @@ export const display = createSlice({
       }
       state.picksSort = action.payload;
     },
-    updateConferences: (state, action: PayloadAction<string>) => {
-      const index = state.conferences.indexOf(action.payload);
-      if (index !== -1) {
-        state.conferences = [
-          ...state.conferences.slice(0, index),
-          ...state.conferences.slice(index + 1)
-        ];
+    updateConferences: (state, action: PayloadAction<string | null>) => {
+      if (action.payload) {
+        const index = state.conferences.indexOf(action.payload);
+        if (index !== -1) {
+          state.conferences = [
+            ...state.conferences.slice(0, index),
+            ...state.conferences.slice(index + 1)
+          ];
+        } else {
+          state.conferences = [...state.conferences, action.payload];
+        }
       } else {
-        state.conferences = [...state.conferences, action.payload];
+        state.conferences = [];
       }
       
       if (typeof window !== 'undefined') {
