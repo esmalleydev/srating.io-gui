@@ -19,7 +19,7 @@ const ClientWrapper = ({ children }) => {
 
   return (
     <>
-      <Typography style = {{'padding': '0px 5px'}} color = 'text.secondary' variant='body1'>Below is a break down of my win prediction percentage, and the actual percentage that were correct. You can view the data by date range, the whole season, by day, week or month.</Typography>
+      <Typography style = {{'padding': '0px 5px', 'textAlign': 'center'}} color = 'text.secondary' variant='body1'>Below is a break down of my win prediction percentage, and the actual percentage that were correct. You can view the data by date range, the whole season, by day, week or month.</Typography>
       <div style = {{'textAlign': 'center'}}><Button variant='contained' color='warning' onClick={handleSubscribe}>Subscribe</Button></div>
       {children}
       <BackdropLoader open = {(spin === true)} />
