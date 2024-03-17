@@ -287,7 +287,7 @@ const CompareStatistic = (props) => {
                 }
               </div>
               <div style = {{'textAlign': 'center', 'whiteSpace': 'nowrap'}}>
-                <Tooltip enterTouchDelay={0} key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography color = {'text.secondary'} variant = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
+                <Tooltip enterTouchDelay={0} key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography color = {'info.light'} variant = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
               </div>
               <div style = {{'margin': '0px 5px 0px 20px', 'minWidth': '100px', 'textAlign': 'right', 'overflow': 'hidden'}}>
                 {

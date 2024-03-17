@@ -6,7 +6,23 @@ type InitialState = {
   mode: string,
 };
 
-const initalMode = (typeof window !== 'undefined' && localStorage.getItem(localStorageKey)) || 'dark';
+const getInitialMode = () => {
+  if (typeof window !== 'undefined' && localStorage.getItem(localStorageKey)) {
+    return localStorage.getItem(localStorageKey);
+  }
+
+  if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+
+  if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    return 'light';
+  }
+
+  return 'dark';
+};
+
+const initalMode = getInitialMode();
 
 const initialState = {
   mode: initalMode,

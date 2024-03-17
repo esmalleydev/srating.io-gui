@@ -115,6 +115,7 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
     {
       'name': 'aSOS',
       'title': 'aSOS',
+      'tooltip': 'Adj efficiency Strength of Schedule',
       'away': awayStats.opponent_efficiency_rating,
       'home': homeStats.opponent_efficiency_rating,
       'awayCompareValue': awayStats.opponent_efficiency_rating,
@@ -128,6 +129,7 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
     {
       'name': 'eSOS',
       'title': 'eSOS',
+      'tooltip': 'SR (elo) Strength of Schedule',
       'away': awayStats.elo_sos,
       'home': homeStats.elo_sos,
       'awayCompareValue': awayStats.elo_sos,

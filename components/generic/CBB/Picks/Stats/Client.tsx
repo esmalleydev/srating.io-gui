@@ -14,7 +14,7 @@ const getCardStyle = () => {
 };
 
 const getOrderedBuckets = () => {
-  return ['today', 'yesterday', 'week', 'month', 'season'];
+  return ['season', 'today', 'yesterday', 'week', 'month'];
 };
 
 export { getCardStyle, getOrderedBuckets };
@@ -119,7 +119,7 @@ const Client = ({ date, stats }) => {
         statContainers.push(
           <Card key = {i} sx = {getCardStyle()}>
             <CardContent>
-              <Typography sx={{ fontSize: 14, textAlign: 'center' }} color="text.secondary" gutterBottom>{label}</Typography>
+              <Typography sx={{ fontSize: 14, textAlign: 'center' }} color = 'info.dark' gutterBottom>{label}</Typography>
               {
               totalGames === 0 ? <Typography sx = {Object.assign({'textAlign': 'center'}, colorStyle)} variant="h5" component="div">-</Typography> : 
               <>

@@ -15,6 +15,7 @@ import TeamAdditionalOptions from './TeamAdditionalOptions';
 
 import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
+import { useScrollContext } from '@/contexts/scrollContext';
 // import GroupsIcon from '@mui/icons-material/Groups';
 // import StadiumIcon from '@mui/icons-material/Stadium';
 // import LocalAirportIcon from '@mui/icons-material/LocalAirport';
@@ -37,6 +38,8 @@ const SubNavBar = ({ view, home_team_id, away_team_id }) => {
   const [spin, setSpin] = useState(false);
   const subHeaderHeight = getSubNavHeaderHeight();
   const { width } = useWindowDimensions() as Dimensions;
+
+  const scrollRef  = useScrollContext();
 
   // const view = useAppSelector(state => state.compareReducer.view);
   const subview = useAppSelector(state => state.compareReducer.subview);
@@ -76,6 +79,10 @@ const SubNavBar = ({ view, home_team_id, away_team_id }) => {
       dispatch(setView(newView));
       dispatch(setScrollTop(0));
       setSpin(false);
+
+      if (scrollRef && scrollRef.current) {
+        scrollRef.current.scrollTop = 0;
+      }
     });
   };
 
@@ -97,6 +104,10 @@ const SubNavBar = ({ view, home_team_id, away_team_id }) => {
       dispatch(setSubView(newView));
       dispatch(setScrollTop(0));
       setSpin(false);
+
+      if (scrollRef && scrollRef.current) {
+        scrollRef.current.scrollTop = 0;
+      }
     });
   };
 
