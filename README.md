@@ -56,7 +56,7 @@ useClientAPI({
 ## Server api
 These calls run through on the server. It will attach any required setting as well as handling caching the calls for performance
 
-In the project root you will need to create a `serverConfig.js` file. Use the provided `serverConfig_example.js` as a template. This points the gui api requests to the correct place.
+In the project root you will need to create a `serverConfig.js` file. Use the provided `serverConfig_example.js` as a template. This points the server api requests to the correct place.
 
 ```js
 module.exports = {

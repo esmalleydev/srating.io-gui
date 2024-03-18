@@ -13,6 +13,7 @@ import FloatingButtons from '@/components/generic/CBB/Games/FloatingButtons';
 import Refresher from '@/components/generic/CBB/Games/Refresher';
 import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
+import Dates from '@/components/utils/Dates';
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -30,15 +31,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 };
 
-async function getData({ date, searchParams }) {
+export async function getDates({ season }) {
   unstable_noStore();
   const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
 
-  const CBB = new HelperCBB();
-
-  const season = searchParams?.season || CBB.getCurrentSeason();
-
-  const dates = await useServerAPI({
+  const dates: string[] | object = await useServerAPI({
     'class': 'cbb_game',
     'function': 'getSeasonDates',
     'arguments': {
@@ -46,51 +43,50 @@ async function getData({ date, searchParams }) {
     }
   }, {revalidate: revalidateSeconds});
 
-  const revalidateGamesSeconds = 1200; // 60 * 20; // cache games for 20 mins
+  return dates;
+};
+
+export async function getGames({ date }) {
+  unstable_noStore();
+  const revalidateSeconds = 1200; // 60 * 20; // cache games for 20 mins
+
   const cbb_games = await useServerAPI({
     'class': 'cbb_game',
     'function': 'getGames',
     'arguments': {
       'start_date': date
     }
-  }, {revalidate: revalidateGamesSeconds});
+  }, {revalidate: revalidateSeconds});
 
-  return {dates, cbb_games};
+  return cbb_games;
 };
 
 
 export default async function Page({ searchParams }) {
   const CBB = new HelperCBB();
+  const datesHelper = new Dates();
   const season = searchParams?.season || CBB.getCurrentSeason();
 
-  const formatYmd = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1).toString() : (date.getMonth() + 1);
-    const day = date.getDate() < 10 ? '0' + date.getDate().toString() : date.getDate();
-  
-    return year + '-' + month + '-' + day;
-  };
-  
-  const today = new Date(new Date().toLocaleString('en-US', {'timeZone': 'America/New_York'}));
+  const dates = await getDates({ season });
 
-  const date = searchParams?.date || formatYmd(today);
+  const date = searchParams?.date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
 
-  const data = await getData({date, searchParams});
+  const cbb_games = await getGames({date});
 
-  const sessionDataKey = 'CBB.GAMES.DATA.'+season;
+  // const sessionDataKey = 'CBB.GAMES.DATA.'+season;
 
 
   return (
     <>
-      <NavBar dates = {data.dates} sessionDataKey = {sessionDataKey} season = {season} />
+      <NavBar dates = {dates} date = {date} />
       <SubNavBar />
       <ContentsClientWrapper>
         <Suspense fallback = {<Loading />}>
-          <ContentsServer cbb_games = {data.cbb_games} date = {date} />
+          <ContentsServer cbb_games = {cbb_games} date = {date} />
         </Suspense>
       </ContentsClientWrapper>
       <FloatingButtons />
-      <Refresher date = {date} cbb_games = {data.cbb_games} />
+      <Refresher date = {date} cbb_games = {cbb_games} />
     </>
   );
 };

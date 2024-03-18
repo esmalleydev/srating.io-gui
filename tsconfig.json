@@ -10,7 +10,8 @@
       "@/components/*": ["components/*"],
       "@/redux/*": ["redux/*"],
       "@/lib/*": ["lib/*"],
-      "@/contexts/*": ["contexts/*"]
+      "@/contexts/*": ["contexts/*"],
+      "@/app/*": ["app/*"],
     },
     "allowJs": true,
     "skipLibCheck": true,

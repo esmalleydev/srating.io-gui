@@ -16,6 +16,7 @@ import CalendarIcon from '@mui/icons-material/Event';
 
 import moment from 'moment';
 
+// todo when you convert this to TS, combine the games + picks navbar components into here, since they have the same logic
 
 const DateAppBar = (props) => {
   const theme = useTheme();
