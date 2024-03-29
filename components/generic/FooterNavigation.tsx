@@ -23,13 +23,11 @@ import { setScrollTop as setGamesScrollTop } from '@/redux/features/games-slice'
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
   'color': theme.palette.mode === 'light' ? '#fff' : theme.palette.text.primary,
   '&.Mui-selected': {
-    'color': theme.palette.mode === 'light' ? '#424CF5' : theme.palette.success.dark,
+    'color': theme.palette.mode === 'light' ? theme.palette.warning.light : theme.palette.success.dark,
   },
 }));
 
-const FooterNavigation = (props) => {
-  const self = this;
-
+const FooterNavigation = () => {
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -133,7 +131,7 @@ const FooterNavigation = (props) => {
     {spin ? <BackdropLoader /> : ''}
     {/* {viewingSport ?  */}
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4}}>
-        <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light}} showLabels value={hightlightValue}>
+        <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : '#1976d2'}} showLabels value={hightlightValue}>
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleHome} label="Home" icon={<HomeIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />

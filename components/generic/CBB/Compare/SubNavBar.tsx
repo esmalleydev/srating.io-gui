@@ -28,7 +28,7 @@ const getSubNavHeaderHeight = () => {
 
 export { getSubNavHeaderHeight };
 
-const SubNavBar = ({ view, home_team_id, away_team_id }) => {
+const SubNavBar = ({ view, home_team_id, away_team_id, neutral_site }) => {
   const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
@@ -146,7 +146,7 @@ const SubNavBar = ({ view, home_team_id, away_team_id }) => {
   );
 
   if (view === 'team') {
-    rightButtons.push(<TeamAdditionalOptions key = {'team-additional'} />);
+    rightButtons.push(<TeamAdditionalOptions key = {'team-additional'} neutral_site = {neutral_site} />);
 
     leftButtons.push(
       <Tooltip key = {'table-button'} title = {subview === 'table' ? 'View compare mode' : 'View table mode'}>

@@ -4,7 +4,7 @@ type InitialState = {
   home_team_id: string | null,
   away_team_id: string | null,
   next_search: string | null,
-  neutral_site: number,
+  neutral_site: boolean,
   view: string,
   subview: string | null,
   scrollTop: number,
@@ -18,7 +18,7 @@ const initialState = {
   home_team_id: null,
   away_team_id: null,
   next_search: null,
-  neutral_site: 0,
+  neutral_site: false,
   view: 'team',
   subview: null,
   scrollTop: 0,
@@ -35,7 +35,7 @@ const updateStateFromUrlParams = (state: InitialState) => {
   const urlParams = new URLSearchParams(window.location.search);
   const home_team_id = urlParams.get('home_team_id');
   const away_team_id = urlParams.get('away_team_id');
-  const neutral_site = urlParams.get('neutral_site');
+  const neutral_site = urlParams.get('neutral');
   const view = urlParams.get('view');
   const subview = urlParams.get('subview');
 
@@ -47,7 +47,7 @@ const updateStateFromUrlParams = (state: InitialState) => {
     state.away_team_id = away_team_id;
   }
   if (neutral_site !== null) {
-    state.neutral_site = +neutral_site;
+    state.neutral_site = (+neutral_site === 1);
   }
   if (view !== null) {
     state.view = view;
@@ -93,7 +93,7 @@ export const compare = createSlice({
     setView: (state, action: PayloadAction<string>) => {
       state.view = action.payload;
     },
-    setNeutralSite: (state, action: PayloadAction<number>) => {
+    setNeutralSite: (state, action: PayloadAction<boolean>) => {
       state.neutral_site = action.payload;
     },
     setHomeTeamID: (state, action: PayloadAction<string|null>) => {

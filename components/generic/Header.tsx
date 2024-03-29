@@ -37,6 +37,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSession, setValidSession } from '../../redux/features/user-slice';
 import { Avatar, Divider, ListItemIcon, Tooltip } from '@mui/material';
 import { clear } from '@/redux/features/compare-slice';
+import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 
 
 const SignUpButton = styled(Button)(({ theme }) => ({
@@ -146,10 +147,6 @@ const Header = () => {
     'cursor': 'pointer',
   };
 
-  if (theme.palette.mode === 'dark') {
-    logoStyle.color = '#2ab92a';
-    // purple #b92ab9
-  }
 
   return (
     <AppBar position="fixed">
@@ -178,7 +175,7 @@ const Header = () => {
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, 'alignItems': 'center' }} style = {logoStyle} onClick = {handleHome}>
                   <img src={sratingLogo.src} width = '20' height = '20' style = {{'marginRight': 5}} />
-                  <span style = {{'color': '#FDD835'}}>S</span>{'RATING'}
+                  <><span style = {{'color': getLogoColorPrimary()}}>S</span><span style = {{'color': (theme.palette.mode === 'dark' ? getLogoColorSecondary() : '#fff')}}>RATING</span></>
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>

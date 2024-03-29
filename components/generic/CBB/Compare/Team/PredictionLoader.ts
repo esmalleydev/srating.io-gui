@@ -5,12 +5,12 @@ import { setPredictions, setPredictionsLoading } from '@/redux/features/compare-
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useState } from 'react';
 
-const PredictionLoader = ({ season }) => {
+const PredictionLoader = ({ season, neutral_site }) => {
   const dispatch = useAppDispatch();
 
   const home_team_id = useAppSelector(state => state.compareReducer.home_team_id);
   const away_team_id = useAppSelector(state => state.compareReducer.away_team_id);
-  const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
+  // const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
   
   const [loading, setLoading] = useState(false);
   const [lastSeason, setLastSeason] = useState(null);

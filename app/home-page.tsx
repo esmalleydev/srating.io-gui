@@ -29,6 +29,7 @@ import playerImage from '../public/static/images/player.png';
 
 import Pricing from '../components/generic/Pricing';
 import BackdropLoader from '../components/generic/BackdropLoader';
+import { getLogoColorPrimary, getLogoColorSecondary } from '@/components/utils/Color';
 
 const Home = (props) => {
   const theme = useTheme();
@@ -121,7 +122,7 @@ const Home = (props) => {
               style = {{'fontWeight': 600, 'fontStyle': 'italic'}}
               gutterBottom
             >
-              {theme.palette.mode === 'dark' ? <><span style = {{'color': '#FDD835'}}>s</span><span style = {{'color': '#2ab92a'}}>Rating</span></> : 'sRating'}
+              {<><span style = {{'color': getLogoColorPrimary()}}>s</span><span style = {{'color': getLogoColorSecondary()}}>Rating</span></>}
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
               College basketball live scores, odds, picks, API, <br /> no ads, <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</Link>

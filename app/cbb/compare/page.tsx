@@ -37,7 +37,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
 
   return {
-    title: 'sRating | compare tool' ,
+    title: 'sRating | Compare tool' ,
     description: 'Compare any college basketball team statistics',
     openGraph: {
       title: 'Compare tool',
@@ -88,25 +88,26 @@ async function getData({ season, home_team_id, away_team_id}) {
 };
 
 
-export default async function Page({ params, searchParams }) {
+export default async function Page({ /*params,*/ searchParams }) {
   const CBB = new HelperCBB();
 
-  const home_team_id = searchParams?.home_team_id || null;
-  const away_team_id = searchParams?.away_team_id || null;
-  const season = searchParams?.season || CBB.getCurrentSeason();
-  const view = searchParams?.view || 'team';
-  const subview = searchParams?.subview || null;
-  // const neutral_site = searchParams?.neutral_site || 0;
-
+  const home_team_id: string | null = searchParams?.home_team_id || null;
+  const away_team_id: string | null = searchParams?.away_team_id || null;
+  const season: number = searchParams?.season || CBB.getCurrentSeason();
+  const view: string = searchParams?.view || 'team';
+  const subview: string | null = searchParams?.subview || null;
+  const neutral_site: boolean = (+searchParams?.neutral === 1);
   
   const teams = await getData({ season, home_team_id, away_team_id});
+
+  // todo wrap the whole thing in a client component to set redux values?
 
   return (
     <div>
       <HeaderClientWrapper>
-        <HeaderClient home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
+        <HeaderClient home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} neutral_site = {neutral_site} />
       </HeaderClientWrapper>
-      <SubNavBar home_team_id = {home_team_id} away_team_id = {away_team_id} view = {view} />
+      <SubNavBar home_team_id = {home_team_id} away_team_id = {away_team_id} view = {view} neutral_site = {neutral_site} />
       {
       !home_team_id || !away_team_id ?
         <Splash /> :
@@ -134,7 +135,7 @@ export default async function Page({ params, searchParams }) {
           }
         </>
       }
-      <PredictionLoader season = {season} />
+      <PredictionLoader season = {season} neutral_site = {neutral_site} />
     </div>
   );
 };

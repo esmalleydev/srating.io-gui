@@ -16,7 +16,7 @@ import BackdropLoader from '@/components/generic/BackdropLoader';
 import { setHomeTeamID, setAwayTeamID } from '@/redux/features/compare-slice';
 
 
-const Client = ({ home_team_id, away_team_id, teams, season }) => {
+const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => {
   const CBB = new HelperCBB();
   const ColorUtil = new Color();
 
@@ -32,7 +32,7 @@ const Client = ({ home_team_id, away_team_id, teams, season }) => {
 
   const dispatch = useAppDispatch();
   const displayRank = useAppSelector(state => state.displayReducer.rank);
-  const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
+  // const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
 
   const handleRemove = (team_id) => {
     setSpin(true);
