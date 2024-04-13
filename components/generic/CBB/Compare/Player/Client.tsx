@@ -42,7 +42,7 @@ const Client = ({ teams }) => {
   const breakPoint = 425;
 
   const [view, setView] = useState<string | null>('overview');
-  const [order, setOrder] = useState<string | null>('asc');
+  const [order, setOrder] = useState<string>('asc');
   const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
   const [spin, setSpin] = useState(false);
 

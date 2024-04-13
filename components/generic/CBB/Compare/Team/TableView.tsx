@@ -40,7 +40,7 @@ const TableView = ({ teams, season }) => {
   const CBB = new HelperCBB();
 
   const [view, setView] = useState<string | null>('overview');
-  const [order, setOrder] = useState<string | null>('asc');
+  const [order, setOrder] = useState<string>('asc');
   const [orderBy, setOrderBy] = useState<string>('composite_rank');
   const [spin, setSpin] = useState(false);
 
