@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import Footer from '../../components/generic/Footer';
+import Footer from '@/components/generic/Footer';
 
 import Subscription from '../../components/generic/Account/Subscription';
 import { Button, Paper, Typography } from '@mui/material';

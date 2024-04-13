@@ -7,9 +7,7 @@ import Link from '@mui/material/Link';
 
 
 
-const Footer = (props) => {
-  const self = this;
-
+const Footer = () => {
   const hash = process.env.COMMIT_HASH;
   const commitDate = process.env.COMMIT_DATE;
 

@@ -6,7 +6,7 @@ import { IconButton, Tooltip } from '@mui/material';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
-import AccountHandler from './AccountHandler.jsx';
+import AccountHandler from '@/components/generic/AccountHandler';
 import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice.ts';
 import { useClientAPI } from '@/components/clientAPI';
 

@@ -1,8 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -20,30 +19,29 @@ import { useClientAPI } from '@/components/clientAPI';
 import { clearDatesChecked } from '@/redux/features/games-slice';
 
 
-const AccountHandler = (props) => {
+const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const dispatch = useAppDispatch();
-  const theme = useTheme();
   const router = useRouter();
 
-  const [spin, setSpin] = useState(false);
+  const [spin, setSpin] = useState<boolean>(false);
 
-  const [register, setRegister] = useState(false);
-  const [requestedLogin, setRequestedLogin] = useState(false);
+  const [register, setRegister] = useState<boolean>(false);
+  const [requestedLogin, setRequestedLogin] = useState<boolean>(false);
 
-  const [email, setEmail] = useState(null);
-  const [emailError, setEmailError] = useState(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
-  const [password, setPassword] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
+  const [password, setPassword] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const [passwordConfirm, setPasswordConfirm] = useState(null);
-  const [passwordErrorConfirm, setPasswordErrorConfirm] = useState(null);
+  const [passwordConfirm, setPasswordConfirm] = useState<string | null>(null);
+  const [passwordErrorConfirm, setPasswordErrorConfirm] = useState<string | null>(null);
 
-  const [forgotPassword, setForgotPassword] = useState(false);
-  const [tempLogin, setTempLogin] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState<boolean>(false);
+  const [tempLogin, setTempLogin] = useState<boolean>(false);
 
-  const [loginCode, setLoginCode] = useState(null);
-  const [loginCodeError, setLoginCodeError] = useState(null);
+  const [loginCode, setLoginCode] = useState<string | null>(null);
+  const [loginCodeError, setLoginCodeError] = useState<string | null>(null);
 
   const checkEmail = (text) => {
     let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
@@ -84,8 +82,8 @@ const AccountHandler = (props) => {
         localStorage.setItem('session_id', session_id);
         // sessionStorage.clear();
         dispatch(setValidSession(true));
-        dispatch(clearDatesChecked());
-        props.closeHandler();
+        dispatch(clearDatesChecked(null));
+        closeHandler();
         window.location.reload();
       }
     }).catch((e) => {
@@ -144,7 +142,7 @@ const AccountHandler = (props) => {
         localStorage.setItem('session_id', response);
         // sessionStorage.clear();
         dispatch(setValidSession(true));
-        props.closeHandler();
+        closeHandler();
         router.push('/account');
       }
     }).catch((e) => {
@@ -208,7 +206,7 @@ const AccountHandler = (props) => {
         localStorage.setItem('session_id', response);
         // sessionStorage.clear();
         dispatch(setValidSession(true));
-        props.closeHandler();
+        closeHandler();
         router.push('/account?view=settings');
       }
     }).catch((e) => {
@@ -250,7 +248,7 @@ const AccountHandler = (props) => {
     setLoginCode(value || '');
   };
 
-  let boxContents = [];
+  let boxContents: React.JSX.Element[] = [];
 
   if (tempLogin) {
     boxContents.push(
@@ -416,8 +414,8 @@ const AccountHandler = (props) => {
 
   return (
     <Dialog
-      open={props.open}
-      onClose={props.closeHandler}
+      open={open}
+      onClose={closeHandler}
     >
       <BackdropLoader open = {spin} />
       <DialogTitle id="alert-dialog-title">Account</DialogTitle>

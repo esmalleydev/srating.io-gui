@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import PinIcon from '@mui/icons-material/PushPin';
-import { IconButton, Snackbar } from '@mui/material';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { IconButton } from '@mui/material';
+// import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
-import AccountHandler from '@/components/generic/AccountHandler.jsx';
+import AccountHandler from '@/components/generic/AccountHandler';
 import { updateCbbGameIds, updateGameSort } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
 

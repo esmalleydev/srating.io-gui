@@ -24,7 +24,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import Settings from '@mui/icons-material/Settings';
+// import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
@@ -32,10 +32,10 @@ import sratingLogo from '../../public/favicon-32x32.png';
 
 import Sidebar from './Sidebar';
 import Search from './Search';
-import AccountHandler from './AccountHandler';
+import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSession, setValidSession } from '../../redux/features/user-slice';
-import { Avatar, Divider, ListItemIcon, Tooltip } from '@mui/material';
+import { Divider, ListItemIcon, Tooltip } from '@mui/material';
 import { clear } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 
@@ -274,7 +274,7 @@ const Header = () => {
               </Toolbar>
           }
         </Container>
-        <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
+        <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback={() => {}} />
       </div>
       }
     </AppBar>
