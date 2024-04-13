@@ -1,6 +1,6 @@
 {
   "name": "srating.io-gui",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -26,6 +26,7 @@
     "next": "^14.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-idle-timer": "^5.7.2",
     "react-redux": "^9.0.4",
     "react-virtuoso": "^4.6.2",
     "typeface-roboto": "^1.1.13",

@@ -5,12 +5,14 @@ type InitialState = {
   session_id: string | null,
   secret_id: string | null,
   isValidSession: boolean,
+  loadingSecret: boolean,
 };
 
 const initialState = {
   session_id: (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null,
   secret_id: null,
   isValidSession: false,
+  loadingSecret: false,
 } as InitialState;
 
 export const user = createSlice({
@@ -33,8 +35,11 @@ export const user = createSlice({
       }
       state.secret_id = action.payload;
     },
+    setLoadingSecret: (state, action: PayloadAction<boolean>) => {
+      state.loadingSecret = action.payload;
+    },
   }
 });
 
-export const { setSession, setValidSession, setSecret } = user.actions;
+export const { setSession, setValidSession, setSecret, setLoadingSecret } = user.actions;
 export default user.reducer;

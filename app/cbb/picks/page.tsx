@@ -6,7 +6,7 @@ import HelperCBB from '@/components/helpers/CBB';
 import StatsClientWrapper from '@/components/generic/CBB/Picks/Stats/ClientWrapper';
 import StatsServer from '@/components/generic/CBB/Picks/Stats/Server';
 import StatsLoading from '@/components/generic/CBB/Picks/Stats/Loading';
-import NavBar from '@/components/generic/CBB/Picks/NavBar';
+// import NavBar from '@/components/generic/CBB/Picks/NavBar';
 import SubNavBar from '@/components/generic/CBB/Picks/SubNavBar';
 import Picks from '@/components/generic/CBB/Picks/Picks';
 import Calculator from '@/components/generic/CBB/Picks/Calculator';
@@ -14,6 +14,7 @@ import PicksLoader from '@/components/generic/CBB/Picks/PicksLoader';
 import ClientWrapper from '@/components/generic/CBB/Picks/ClientWrapper';
 import Dates from '@/components/utils/Dates';
 import { getDates, getGames } from '@/app/cbb/games/page';
+import DateAppBar from '@/components/generic/DateAppBar';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -46,7 +47,8 @@ export default async function Page({ searchParams }) {
 
   return (
     <>
-      <NavBar dates = {dates} date = {date} />
+      {/* <NavBar dates = {dates} date = {date} /> */}
+      <DateAppBar dates = {dates} date = {date} />
       <SubNavBar view = {view} />
       <PicksLoader date = {date} />
 

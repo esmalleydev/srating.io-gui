@@ -1,3 +1,4 @@
+'use client';
 
 // this is just for the github build to pass, since the configuration file is git ignored
 type Config = {

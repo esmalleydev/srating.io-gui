@@ -8,8 +8,8 @@ import Script from 'next/script'
 import StoreProvider from './StoreProvider';
 import SessionHandler from '@/components/handlers/SessionHandler';
 import FavoriteHandler from '@/components/handlers/FavoriteHandler';
-import SecretWrapper from '@/components/handlers/secret/SecretWrapper';
-import SecretHandler from '@/components/handlers/secret/SecretHandler';
+import SecretWrapper from '@/components/handlers/secret/ClientWrapper';
+import SecretHandler from '@/components/handlers/secret/Server';
 
 // TODO GO THROUGH WHOLE APP, UPDATE THE REDUX REDUCERS TO ONLY GRAB THE SPECIFIC VALUE, TO ELIMINATE UNNESSACARY RENDERS
 // todo handle fetch failures

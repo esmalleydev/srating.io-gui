@@ -2,7 +2,7 @@
 import React from 'react';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material';
-import { getBreakPoint } from '@/components/generic/CBB/Games/NavBar';
+import { getBreakPoint } from '@/components/generic/DateAppBar';
 import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 import AdditionalOptions from '@/components/generic/CBB/Games/AdditionalOptions';
 import StatusPicker from '@/components/generic/CBB/StatusPicker';

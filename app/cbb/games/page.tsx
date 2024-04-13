@@ -5,7 +5,8 @@ import HelperCBB from '@/components/helpers/CBB';
 
 import ContentsClientWrapper from '@/components/generic/CBB/Games/Contents/ClientWrapper';
 import ContentsServer from '@/components/generic/CBB/Games/Contents/Server';
-import NavBar from '@/components/generic/CBB/Games/NavBar';
+// import NavBar from '@/components/generic/CBB/Games/NavBar';
+import DateAppBar from '@/components/generic/DateAppBar';
 import SubNavBar from '@/components/generic/CBB/Games/SubNavBar';
 import { Suspense } from 'react';
 import Loading from '@/components/generic/CBB/Games/Contents/Loading';
@@ -78,7 +79,8 @@ export default async function Page({ searchParams }) {
 
   return (
     <>
-      <NavBar dates = {dates} date = {date} />
+      {/* <NavBar dates = {dates} date = {date} /> */}
+      <DateAppBar dates = {dates} date = {date} />
       <SubNavBar />
       <ContentsClientWrapper>
         <Suspense fallback = {<Loading />}>

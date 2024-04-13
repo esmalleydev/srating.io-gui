@@ -2,7 +2,7 @@
 import React, { useState, useTransition } from 'react';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Tab, Tabs, useTheme } from '@mui/material';
-import { getBreakPoint } from '@/components/generic/CBB/Picks/NavBar';
+import { getBreakPoint } from '@/components/generic/DateAppBar';
 // import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 // import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
 // import StatusPicker from '@/components/generic/CBB/StatusPicker';

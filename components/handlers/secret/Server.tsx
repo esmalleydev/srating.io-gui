@@ -2,11 +2,11 @@
 import React from 'react';
 
 import { useServerAPI } from '@/components/serverAPI';
-import SecretClient from './SecretClient';
+import Client from './Client';
 import { unstable_noStore } from 'next/cache';
 
 
-const SecretHandler = async({}) => {
+const Server = async({}) => {
   unstable_noStore();
 
   const tag = 'refresher.secret';
@@ -19,9 +19,9 @@ const SecretHandler = async({}) => {
 
   return (
     <>
-      <SecretClient secret={secret} tag = {tag} />
+      <Client secret={secret} tag = {tag} />
     </>
   );
 }
 
-export default SecretHandler;
+export default Server;
