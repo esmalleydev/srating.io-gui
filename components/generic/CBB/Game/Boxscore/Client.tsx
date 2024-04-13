@@ -17,7 +17,7 @@ import Chip from '@mui/material/Chip';
 import HelperCBB from '@/components/helpers/CBB';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 import BackdropLoader from '@/components/generic/BackdropLoader';
-import { Boxscore, PlayerBoxscore } from '@/components/generic/types';
+import { Boxscore, PlayerBoxscore } from '@/types/cbb';
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({

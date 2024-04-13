@@ -6,7 +6,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { ScoreIntervals } from '@/components/generic/types';
+import { ScoreIntervals } from '@/types/cbb';
 
 
 const OddsML = ({ cbb_game, cbb_game_score_intervals}) => {

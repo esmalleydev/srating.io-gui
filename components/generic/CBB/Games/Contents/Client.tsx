@@ -3,7 +3,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import moment from 'moment';
 import { Chip, Paper, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Game } from '@/components/generic/types';
+import { Game } from '@/types/cbb';
 import { getHeaderHeight } from '@/components/generic/CBB/Games/SubNavBar';
 import { updateConferences } from '@/redux/features/display-slice';
 import Tile from '@/components/generic/CBB/Games/Tile';

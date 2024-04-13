@@ -9,7 +9,7 @@ import HeaderServer from '@/components/generic/CBB/Team/Header/Server';
 import Trends from '@/components/generic/CBB/Team/Trends';
 import NavBar from '@/components/generic/CBB/Team/NavBar';
 import { useServerAPI } from '@/components/serverAPI';
-import { Team } from '@/components/generic/types';
+import { Team } from '@/types/cbb';
 import { unstable_noStore } from 'next/cache';
 import SubNavBar from '@/components/generic/CBB/Team/SubNavbar';
 

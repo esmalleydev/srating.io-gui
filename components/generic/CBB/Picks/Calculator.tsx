@@ -31,7 +31,7 @@ import utilsSorter from  '@/components/utils/Sorter.js';
 
 
 import { useAppSelector } from '@/redux/hooks';
-import { Game } from '@/components/generic/types';
+import { Game } from '@/types/cbb';
 import { CircularProgress } from '@mui/material';
 const Arrayifer = new utilsArrayifer();
 const Sorter = new utilsSorter();

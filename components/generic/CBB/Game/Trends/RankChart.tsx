@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import HelperCBB from '@/components/helpers/CBB';
 
 import moment from 'moment';
-import { Ranking } from '@/components/generic/types';
+import { Ranking } from '@/types/cbb';
 
 
 

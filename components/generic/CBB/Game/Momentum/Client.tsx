@@ -11,7 +11,7 @@ import Skeleton from '@mui/material/Skeleton';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { Game, gamesDataType } from '@/components/generic/types';
+import { Game, gamesDataType } from '@/types/cbb';
 
 
 // TODO update to show differential from season averages, build it into stats compare component?

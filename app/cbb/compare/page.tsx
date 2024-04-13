@@ -6,7 +6,7 @@ import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 
 import { useServerAPI } from '@/components/serverAPI';
-import { Team } from '@/components/generic/types';
+import { Team } from '@/types/cbb';
 import { unstable_noStore } from 'next/cache';
 import SubNavBar from '@/components/generic/CBB/Compare/SubNavBar';
 

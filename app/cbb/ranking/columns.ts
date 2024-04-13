@@ -1,4 +1,4 @@
-import { RankingColumns } from '@/components/generic/types';
+import { RankingColumns } from '@/types/cbb';
 
 
 export const getHeaderColumns = ({ rankView }: {rankView: string}) => {

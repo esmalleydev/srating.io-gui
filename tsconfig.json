@@ -12,6 +12,7 @@
       "@/lib/*": ["lib/*"],
       "@/contexts/*": ["contexts/*"],
       "@/app/*": ["app/*"],
+      "@/types/*": ["types/*"],
     },
     "allowJs": true,
     "skipLibCheck": true,

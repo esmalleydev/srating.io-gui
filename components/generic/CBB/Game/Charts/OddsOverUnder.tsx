@@ -5,7 +5,7 @@ import HighchartsReact from 'highcharts-react-official';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import { ScoreIntervals } from '@/components/generic/types';
+import { ScoreIntervals } from '@/types/cbb';
 
 
 const OddsOverUnder = ({ cbb_game_score_intervals }) => {

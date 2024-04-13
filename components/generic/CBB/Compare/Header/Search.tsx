@@ -9,7 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import useDebounce from '@/components/hooks/useDebounce';
 import { useClientAPI } from '@/components/clientAPI';
 import BackdropLoader from '@/components/generic/BackdropLoader';
-import { Team } from '@/components/generic/types';
+import { Team } from '@/types/cbb';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setHomeTeamID, setAwayTeamID, setNextSearch } from '@/redux/features/compare-slice';
 

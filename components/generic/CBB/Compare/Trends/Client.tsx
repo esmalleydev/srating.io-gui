@@ -5,7 +5,7 @@ import { Typography, Paper } from '@mui/material';
 import HelperTeam from '@/components/helpers/Team';
 
 import PreviousMatchupTile from '@/components/generic/CBB/Game/PreviousMatchups/Tile';
-import { Game, Team, gamesDataType } from '@/components/generic/types';
+import { Game, Team, gamesDataType } from '@/types/cbb';
 
 
 

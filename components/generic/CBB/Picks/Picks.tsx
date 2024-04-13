@@ -9,7 +9,7 @@ import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions'
 import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { gamesDataType } from '@/components/generic/types';
+import { gamesDataType } from '@/types/cbb';
 import { updateConferences } from '@/redux/features/display-slice';
 
 

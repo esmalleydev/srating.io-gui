@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { PlaybyPlay } from '@/components/generic/types';
+import { PlaybyPlay } from '@/types/cbb';
 
 
 const Client = ({ cbb_game_pbp, /*tag*/}) => {
