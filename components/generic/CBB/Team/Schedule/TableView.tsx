@@ -8,7 +8,7 @@ import { useAppSelector } from '@/redux/hooks';
 import { Paper, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Skeleton } from '@mui/material';
 import HelperCBB from '@/components/helpers/CBB';
 import Locked from '@/components/generic/Billing/Locked';
-import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.js';
+import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color';
 import { useRouter } from 'next/navigation';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 

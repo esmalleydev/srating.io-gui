@@ -1,25 +1,25 @@
 import { useTheme } from '@mui/material/styles';
 
-export const getBestColor = () => {
+export const getBestColor: () => string = () => {
   const theme = useTheme();
 
   return theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
 };
 
-export const getWorstColor = () => {
+export const getWorstColor: () => string = () => {
   const theme = useTheme();
 
   return theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
 };
 
-export const getLogoColorPrimary = () => {
+export const getLogoColorPrimary: () => string = () => {
   const theme = useTheme();
 
   // return theme.palette.mode === 'light' ? '#fd35ab' : '#FDD835';
   return theme.palette.mode === 'light' ? theme.palette.warning.light : '#FDD835';
 };
 
-export const getLogoColorSecondary = () => {
+export const getLogoColorSecondary: () => string = () => {
   const theme = useTheme();
 
   return theme.palette.mode === 'light' ? '#482ab9' : '#2ab92a';
@@ -27,21 +27,21 @@ export const getLogoColorSecondary = () => {
 
 
 class Color {
-  constructor(args) {
+  constructor() {
   };
 
 
   /**
    * A linear interpolator for hexadecimal colors
-   * @param {String} a
-   * @param {String} b
-   * @param {Number} amount
+   * @param {string} a
+   * @param {string} b
+   * @param {number} amount
    * @example
    * // returns #7F7F7F
    * lerpColor('#000000', '#ffffff', 0.5)
-   * @returns {String}
+   * @returns {string}
    */
-  lerpColor(a, b, amount) { 
+  lerpColor(a: string, b: string, amount: number): string { 
     var ah = ah = +a.replace('#', '0x'),
       ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
       bh =  +b.replace('#', '0x'),

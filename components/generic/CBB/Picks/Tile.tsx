@@ -13,7 +13,7 @@ import CompareStatistic from '@/components/generic/CompareStatistic';
 import Indicator from '@/components/generic/CBB/Indicator';
 import Pin from '@/components/generic/CBB/Pin';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.js';
+import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color';
 import { setScrollTop } from '@/redux/features/picks-slice';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { useScrollContext } from '@/contexts/scrollContext';

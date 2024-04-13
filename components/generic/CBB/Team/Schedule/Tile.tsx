@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Card, CardContent, Typography, Tooltip, Link, CardActionArea, Skeleton, IconButton } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
-import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color.js';
+import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
 import { setScrollTop, updateVisibleScheduleDifferentials } from '@/redux/features/team-slice';

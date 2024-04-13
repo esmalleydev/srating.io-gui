@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import moment from 'moment';
 import { Typography, Skeleton, Card, CardContent } from '@mui/material';
 
-import utilsColor from  '@/components/utils/Color.js';
+import utilsColor from  '@/components/utils/Color';
 
 const ColorUtil = new utilsColor();
 

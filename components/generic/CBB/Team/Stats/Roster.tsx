@@ -52,7 +52,7 @@ const Roster = ({ rosterStats }) => {
   const [isPending, startTransition] = useTransition();
 
   const [view, setView] = useState<string | null>('overview');
-  const [order, setOrder] = useState<string | null>('asc');
+  const [order, setOrder] = useState<string>('asc');
   const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
   const [spin, setSpin] = useState(false);
 
@@ -63,7 +63,7 @@ const Roster = ({ rosterStats }) => {
   useEffect(() => {
     const sessionOrderby = sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') || null;
     setView(sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') ? sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') : 'overview');
-    setOrder(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') : 'asc');
+    setOrder(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') as string : 'asc');
     setOrderBy(sessionOrderby ? sessionOrderby : 'minutes_per_game');
   }, []);
 

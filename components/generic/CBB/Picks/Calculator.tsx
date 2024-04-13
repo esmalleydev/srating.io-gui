@@ -26,8 +26,8 @@ import CancelCircleIcon from '@mui/icons-material/Cancel';
 
 // import CompareStatistic from '../../CompareStatistic';
 import HelperCBB from '@/components/helpers/CBB';
-import utilsArrayifer from  '@/components/utils/Arrayifer.js';
-import utilsSorter from  '@/components/utils/Sorter.js';
+import utilsArrayifer from  '@/components/utils/Arrayifer';
+import utilsSorter from  '@/components/utils/Sorter';
 
 
 import { useAppSelector } from '@/redux/hooks';
@@ -565,9 +565,9 @@ const Calculator = ({ cbb_games, date}) => {
     );
   };
 
-  const pickedRowsConatiner = rows_picked.sort(Sorter.getComparator(order, orderBy)).slice().map((row) => getStyledTableRow(row));
+  const pickedRowsContainer = rows_picked.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a, b)).slice().map((row: tableRow) => getStyledTableRow(row));
 
-  const otherRowsConatiner = rows_other.sort(Sorter.getComparator(order, orderBy)).slice().map((row) => getStyledTableRow(row));
+  const otherRowsConatiner = rows_other.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a, b)).slice().map((row: tableRow) => getStyledTableRow(row));
 
 
   if (date < now && games_bet > 2 && roundRobinLength) {
@@ -588,7 +588,7 @@ const Calculator = ({ cbb_games, date}) => {
     }
   }
 
-  const parleyRowsConatiner = rows_parlay.sort(Sorter.getComparator(order, orderBy)).slice().map((row) => getStyledTableRow(row));
+  const parleyRowsConatiner = rows_parlay.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a, b)).slice().map((row: tableRow) => getStyledTableRow(row));
 
 
   const getTable = (rowContainers) => {
@@ -731,7 +731,7 @@ const Calculator = ({ cbb_games, date}) => {
           {rows_parlay.length ? <Typography style = {{'margin': '10px 0px'}} variant="h5">Parley games</Typography> : ''}
           {rows_parlay.length ? getTable(parleyRowsConatiner) : ''}
           {rows_picked.length ? <Typography style = {{'margin': '10px 0px'}} variant="h5">Games bet</Typography> : ''}
-          {rows_picked.length ? getTable(pickedRowsConatiner) : ''}
+          {rows_picked.length ? getTable(pickedRowsContainer) : ''}
           {rows_other.length ? <Typography style = {{'margin': '10px 0px'}} variant="h5">Other games</Typography> : ''}
           {rows_other.length ? getTable(otherRowsConatiner) : ''}
         </div>
