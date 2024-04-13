@@ -14,7 +14,7 @@ import PicksIcon from '@mui/icons-material/Casino';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
-import BackdropLoader from './BackdropLoader';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppDispatch } from '@/redux/hooks';
 import { setScrollTop as setPicksScrollTop } from '@/redux/features/picks-slice';
 import { setScrollTop as setGamesScrollTop } from '@/redux/features/games-slice';
@@ -128,7 +128,7 @@ const FooterNavigation = () => {
 
   return (
     <div>
-    {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
     {/* {viewingSport ?  */}
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4}}>
         <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : '#1976d2'}} showLabels value={hightlightValue}>

@@ -156,7 +156,7 @@ const Search = () => {
   // sx={{backgroundColor: 'rgba(66, 165, 245, .5)'}}
   return (
     <Container>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>

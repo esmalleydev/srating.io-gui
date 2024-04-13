@@ -183,7 +183,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
           (home_team_id in teams ? <>{getTeam(home_team_id)}</> : <Skeleton style={{'height': 60, 'transform': 'initial'}} />)
         }
       </div>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
     </div>
   );
 }

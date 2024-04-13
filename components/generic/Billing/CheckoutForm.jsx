@@ -10,7 +10,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button } from '@mui/material';
 
-import BackdropLoader from '../BackdropLoader.jsx';
+import BackdropLoader from '../BackdropLoader';
 import { useClientAPI } from '@/components/clientAPI';
 
 
@@ -155,7 +155,7 @@ const CheckoutForm = (props) => {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      {backdrop ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {backdrop} />
       <TextField
         style = {{'marginBottom': 20}}
         required

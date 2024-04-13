@@ -78,7 +78,7 @@ const SubNavBar = ({ view, subview, tabOrder}) => {
       <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} indicatorColor="secondary" textColor="inherit">
         {tabs}
       </Tabs>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
     </div>
   );
 }

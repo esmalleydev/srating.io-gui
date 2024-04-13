@@ -70,7 +70,7 @@ const Tile = ({ cbb_game }) => {
         <Typography variant = 'body2'>{moment(cbb_game.start_date).format('MMM Do, YYYY')}</Typography>
         <Typography variant = 'body1'>{getTitle()} ({getScore()})</Typography>
       </div>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
     </Paper>
   );
 }

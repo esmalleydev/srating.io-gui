@@ -166,7 +166,7 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
           <div style = {{'maxWidth': sideWidth, 'minWidth': sideWidth,}}>{getTeam(cbb_game.home_team_id)}</div>
         </div>
       </div>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
     </>
   );
 }

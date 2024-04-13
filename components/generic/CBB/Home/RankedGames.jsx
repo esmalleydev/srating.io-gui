@@ -45,7 +45,7 @@ const RankedGames = (props) => {
 
   return (
     <div>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       {gameContainers.length ? <Typography variant='h6' >Top 30 ranked games</Typography> : ''}
       <div style = {{'display': 'flex', 'overflowY': 'auto'}}>{gameContainers}</div>
     </div>

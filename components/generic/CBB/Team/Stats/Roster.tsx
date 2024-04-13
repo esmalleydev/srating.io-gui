@@ -403,7 +403,7 @@ const Roster = ({ rosterStats }) => {
 
   return (
     <div style = {{'paddingTop': 10}}>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
     {
       playerStatsData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>

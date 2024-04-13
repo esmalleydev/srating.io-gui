@@ -178,7 +178,7 @@ const SubNavBar = ({ view, home_team_id, away_team_id, neutral_site }) => {
     {
       home_team_id && away_team_id ?
       <div style = {subHeaderStyle}>
-        {spin ? <BackdropLoader /> : ''}
+        <BackdropLoader open = {spin} />
         <div style = {{'minWidth': minSubBarWidth, 'display': 'flex', 'justifyContent': 'flex-start'}}>
           {leftButtons}
         </div>

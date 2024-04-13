@@ -21,7 +21,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
-import BackdropLoader from './BackdropLoader';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 
 
 
@@ -155,7 +155,7 @@ const DateAppBar = ({ dates, date }) => {
 
   return (
     <div>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       <AppBar position="fixed" style = {Object.assign({}, {'marginTop': getMarginTop()}, {'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light})}>
         <Toolbar variant = 'dense'>
           <Tabs value={tabIndex} onChange={updateDate} variant="scrollable" scrollButtons = {true} allowScrollButtonsMobile = {false} indicatorColor="secondary" textColor="inherit" /* sx = {{'backgroundImage': 'linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)'}}*/>

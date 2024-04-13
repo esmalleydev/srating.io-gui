@@ -123,7 +123,7 @@ const TableView = ({ sorted_games, team_id }) => {
 
   return (
     <>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       <TableContainer component={Paper}>
         <Table size="small" aria-label="player stats table">
           <TableHead>

@@ -21,7 +21,7 @@ import Chip from '@mui/material/Chip';
 
 import HelperTeam from '../../../helpers/Team';
 import RankSpan from '../RankSpan';
-import BackdropLoader from '../../BackdropLoader.jsx';
+import BackdropLoader from '../../BackdropLoader';
 import { useClientAPI } from '@/components/clientAPI';
 
 
@@ -400,7 +400,7 @@ const Stats = (props) => {
 
   return (
     <div style = {{'paddingTop': 20}}>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       {
       statsData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>

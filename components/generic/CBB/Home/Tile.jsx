@@ -158,7 +158,7 @@ const Tile = (props) => {
 
   return (
     <Paper elevation={3} style = {divStyle}>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       <div style = {teamLineStyle} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>
         {getHeader()}
         <div onClick = {handleClick}>

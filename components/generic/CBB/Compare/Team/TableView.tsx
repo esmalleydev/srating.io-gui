@@ -271,7 +271,7 @@ const TableView = ({ teams, season }) => {
         {statDisplayChips}
       </div>
         {getTable()}
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
     </div>
   );
 }

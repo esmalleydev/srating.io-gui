@@ -52,7 +52,7 @@ const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
 
   return (
     <div>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
       <IconButton
           id="team-additional-options"
           aria-controls={open ? 'long-menu' : undefined}

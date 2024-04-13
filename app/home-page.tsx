@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useTransition, RefObject } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import Image from 'next/image'
 import Button from '@mui/material/Button';
@@ -15,7 +15,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
-import { useTheme } from '@mui/material/styles';
 
 import Footer from '../components/generic/Footer';
 
@@ -28,15 +27,12 @@ import gameImage from '../public/static/images/statcompare.png';
 import playerImage from '../public/static/images/player.png';
 
 import Pricing from '../components/generic/Pricing';
-import BackdropLoader from '../components/generic/BackdropLoader';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 import { getLogoColorPrimary, getLogoColorSecondary } from '@/components/utils/Color';
 
-const Home = (props) => {
-  const theme = useTheme();
+const Home = () => {
 
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
   const [spin, setSpin] = useState(false);
@@ -107,7 +103,7 @@ const Home = (props) => {
   return (
     <div>
       <main>
-        <BackdropLoader open = {(spin === true)} />
+        <BackdropLoader open = {spin} />
         <Box
           sx={{
             pt: 2,

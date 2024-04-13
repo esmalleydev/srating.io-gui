@@ -380,7 +380,7 @@ const Client = ({ teams }) => {
             }
           </>
       }    
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
     </div>
   );
 }

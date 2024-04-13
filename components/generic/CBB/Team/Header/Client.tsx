@@ -102,7 +102,7 @@ const Client = ({team, season}) => {
       <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
         <Typography variant = 'overline' color = 'text.secondary'>{teamHelper.getConference()}</Typography>
       </div>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
     </div>
   );
 }

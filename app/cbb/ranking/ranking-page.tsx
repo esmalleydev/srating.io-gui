@@ -544,7 +544,7 @@ const Ranking = (props) => {
 
   return (
     <div>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
       {
         loading ? 
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :

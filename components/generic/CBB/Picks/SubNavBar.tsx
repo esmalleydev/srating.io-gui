@@ -131,7 +131,7 @@ const SubNavBar = ({ view }) => {
 
   return (
     <div style = {subHeaderStyle}>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
 
       <Box display="flex" justifyContent="center" /*sx = {{'position': 'sticky', 'top': 100}}*/>
         <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabClick} indicatorColor="secondary" textColor="inherit">

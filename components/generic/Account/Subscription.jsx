@@ -13,7 +13,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 
-import BackdropLoader from '../BackdropLoader.jsx';
+import BackdropLoader from '../BackdropLoader';
 import { useClientAPI } from '@/components/clientAPI';
 
 
@@ -108,7 +108,7 @@ const Subscription = (props) => {
 
   return (
     <Paper elevation={3} style = {{'minWidth': 320, 'maxWidth': 450, 'width': 'auto', 'padding': 15}}>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
       <Typography style = {{'textAlign': 'center'}} variant='h5'>{pricing.type === 'api' || pricing.type === 'trial' ? 'API' : 'Picks'} subscription ({pricing.name})</Typography>
       <Typography style = {{'marginTop': 5}} color = {'text.secondary'} variant='body1'>{pricing.description}</Typography>
       {pricing.type !== 'trial' && cancelledSub === null && !subscription.expires ? <Typography variant='body1'>Automatically renews on {due.format('MMM Do \'YY')}</Typography> : ''}

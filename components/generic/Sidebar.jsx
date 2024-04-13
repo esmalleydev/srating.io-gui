@@ -27,7 +27,7 @@ import PicksIcon from '@mui/icons-material/Casino';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArticleIcon from '@mui/icons-material/Article';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import BackdropLoader from './BackdropLoader';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 import { clear } from '@/redux/features/compare-slice';
 
 // todo spin does nothing here, I think I need to use redux for a global spin and decorate it in another place
@@ -86,7 +86,7 @@ const Sidebar = (props) => {
 
   return (
     <div>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
       <Box
         sx={{'width': 250}}
         role="presentation"

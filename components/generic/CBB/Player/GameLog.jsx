@@ -165,7 +165,7 @@ const GameLog = (props) => {
 
   return (
     <div style = {{'paddingTop': 20}}>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       {
       data === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>

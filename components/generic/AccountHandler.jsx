@@ -13,7 +13,7 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 
 
-import BackdropLoader from './BackdropLoader.jsx';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppDispatch } from '@/redux/hooks';
 import { setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
@@ -419,7 +419,7 @@ const AccountHandler = (props) => {
       open={props.open}
       onClose={props.closeHandler}
     >
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
       <DialogTitle id="alert-dialog-title">Account</DialogTitle>
       {boxContents}
     </Dialog>

@@ -7,7 +7,7 @@ import moment from 'moment';
 import HelperCBB from '../../components/helpers/CBB';
 import HelperGames from '../../components/helpers/Games';
 
-import BackdropLoader from '../../components/generic/BackdropLoader';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 import Teams from '../../components/generic/CBB/Favorites/Teams';
 import Players from '../../components/generic/CBB/Favorites/Players';
 import { CircularProgress } from '@mui/material';
@@ -18,7 +18,7 @@ import { useClientAPI } from '@/components/clientAPI';
 
 let intervalRefresher: NodeJS.Timeout;
 
-const Home = (props) => {
+const Home = () => {
   const self = this;
   const searchParams = useSearchParams();
 
@@ -89,7 +89,7 @@ const Home = (props) => {
 
   return (
     <div style = {{'padding': '20px 20px 0px 20px'}}>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       {
         loading ?
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :

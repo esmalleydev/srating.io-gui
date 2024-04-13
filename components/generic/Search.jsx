@@ -10,7 +10,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import BackdropLoader from './BackdropLoader';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useClientAPI } from '../clientAPI';
 
 const Container = styled('div')(({ theme }) => ({
@@ -139,7 +139,7 @@ const Search = (props) => {
 
   return (
     <Container>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>

@@ -436,7 +436,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
       {
         isVisible ?
         <>
-          <BackdropLoader open = {(spin === true)} />
+          <BackdropLoader open = {spin} />
           {getIndicators()}
           <div style = {teamLineStyle}>
             {getHeader()}

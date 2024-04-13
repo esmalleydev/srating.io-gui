@@ -186,7 +186,7 @@ const Teams = (props) => {
 
   return (
     <div>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       {scheduleContainers}
     </div>
   );

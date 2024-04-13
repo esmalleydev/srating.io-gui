@@ -172,7 +172,7 @@ const Tile = ({ cbb_game, team}) => {
       </div>
       <Card style = {{'width': '100%'}}>
         <CardContent style = {{'padding': (CBB.isFinal() ? '0px' : '7px') + ' 0px'}}>
-          <BackdropLoader open = {(spin === true)} />
+          <BackdropLoader open = {spin} />
           <div ref = {myRef} style = {containerStyle}>
             <div style = {{'display': 'flex', 'alignItems': 'center', 'overflow': 'hidden'}}>
 

@@ -68,7 +68,7 @@ const NavBar = ({ view, tabOrder}) => {
           </Tabs>
         </Box>
       </AppBar>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
     </>
   );
 }

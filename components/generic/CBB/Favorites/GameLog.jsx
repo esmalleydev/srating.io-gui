@@ -138,7 +138,7 @@ const GameLog = (props) => {
 
   return (
     <>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       <TableContainer component={Paper} style = {{'marginBottom': 20}}>
         <Table size="small" aria-label="game log table">
           <TableHead>

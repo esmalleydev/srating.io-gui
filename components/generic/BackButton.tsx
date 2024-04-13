@@ -3,7 +3,7 @@ import React, { useState, useTransition} from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { IconButton } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import BackdropLoader from './BackdropLoader';
+import BackdropLoader from '@/components/generic/BackdropLoader';
 
 
 const BackButton = () => {
@@ -24,7 +24,7 @@ const BackButton = () => {
       <IconButton color='primary' onClick = {handleClick}>
         <ArrowBackIcon  fontSize = 'small' />
       </IconButton>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
     </>
   );
 }

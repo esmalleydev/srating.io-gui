@@ -422,7 +422,7 @@ const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/
 
   return (
     <div>
-      {spin ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {spin} />
       <div>
         <div style = {{'padding': '10px 5px'}}>
           {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}

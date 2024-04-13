@@ -38,7 +38,7 @@ const Locked = ({ iconFontSize }) => {
 
   return (
     <>
-      <BackdropLoader open = {(spin === true)} />
+      <BackdropLoader open = {spin} />
       <IconButton onClick={() => {setOpenDialog(true);}}><LockIcon style={{'fontSize' : iconFontSize || '24px'}} color='error' /></IconButton>
       <Dialog
         open={openDialog}

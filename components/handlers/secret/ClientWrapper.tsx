@@ -8,7 +8,7 @@ const ClientWrapper = ({ children }) => {
 
   return (
     <>
-      {loadingSecret ? <BackdropLoader /> : ''}
+      <BackdropLoader open = {loadingSecret} />
       {children}
     </>
   );
