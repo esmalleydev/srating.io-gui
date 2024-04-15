@@ -15,8 +15,8 @@ export const getHeaderColumns = ({ rankView }: {rankView: string}) => {
     'name': {
       id: 'name',
       numeric: false,
-      label: (rankView === 'player' ? 'Player' : (rankView === 'conference' ? 'Conference' :'Team')),
-      tooltip: (rankView === 'player' ? 'Player name' : (rankView === 'conference' ? 'Conference name' :'Team name')),
+      label: (rankView === 'player' || rankView === 'transfer' ? 'Player' : (rankView === 'conference' ? 'Conference' :'Team')),
+      tooltip: (rankView === 'player' || rankView === 'transfer' ? 'Player name' : (rankView === 'conference' ? 'Conference name' :'Team name')),
       'sticky': true,
       'disabled': true,
     },
@@ -542,13 +542,29 @@ export const getHeaderColumns = ({ rankView }: {rankView: string}) => {
         'sort': 'lower',
       },
     });
-  } else if (rankView === 'player') {
+  } else if (rankView === 'player' || rankView === 'transfer') {
+    if (rankView === 'transfer') {
+      Object.assign(headCells, {
+        'committed': {
+          id: 'committed',
+          numeric: false,
+          label: 'Committed',
+          tooltip: 'Player committed',
+        },
+        'committed_team_name': {
+          id: 'committed_team_name',
+          numeric: false,
+          label: 'New team',
+          tooltip: 'New team player committed',
+        },
+      });
+    }
     Object.assign(headCells, {
       'team_name': {
         id: 'team_name',
         numeric: false,
-        label: 'Team',
-        tooltip: 'Team name',
+        label: (rankView === 'transfer' ? 'Prev. team' : 'Team'),
+        tooltip: (rankView === 'transfer' ? 'Previous team name' : 'Team name'),
       },
       'games': {
         id: 'games',

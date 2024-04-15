@@ -149,7 +149,7 @@ interface rowDatatype {
   opponent_efficiency_rating_rank: number;
 };
 
-export const getRowsData = ({ data, rankView, conferences, positions }) => {
+export const getRowsData = ({ data, rankView, conferences, positions, hideCommitted, hideUnderTwoMPG }) => {
   let rows: rowDatatype[] = [];
   let lastUpdated: string | null = null;
 
@@ -161,6 +161,17 @@ export const getRowsData = ({ data, rankView, conferences, positions }) => {
       conferences.indexOf(row.conference) === -1
     ) {
       continue;
+    }
+
+    // transfers
+    if (hideCommitted && +row.committed === 1) {
+      continue;
+    }
+
+    if (rankView === 'player' || rankView === 'transfer') {
+      if (hideUnderTwoMPG && row.minutes_per_game < 2) {
+        continue;
+      }
     }
 
     if (rankView === 'team') {
@@ -327,7 +338,7 @@ export const getRowsData = ({ data, rankView, conferences, positions }) => {
         'opponent_efficiency_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating_rank) || null,
         'elo_sos_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos_rank) || null,
       });
-    } else if (rankView === 'player') {
+    } else if (rankView === 'player' || rankView === 'transfer') {
       if (
         !lastUpdated ||
         lastUpdated < row.date_of_rank

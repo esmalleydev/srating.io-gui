@@ -28,6 +28,9 @@ export async function generateMetadata(
   } else if (view === 'conference') {
     title = 'sRating | College basketball conference ranking';
     description = 'View statistic ranking for each conference';
+  } else if (view === 'transfer') {
+    title = 'sRating | College basketball transfer portal ranking';
+    description = 'College basketball transfer portal tool, search, rank all players';
   }
 
   return {
@@ -55,19 +58,57 @@ async function getData(searchParams) {
   const view = searchParams?.view || 'team';
 
   let fxn = 'getTeamRanking';
-  if (view === 'player') {
+  if (view === 'player' || view === 'transfer') {
     fxn = 'getPlayerRanking';
   } else if (view === 'conference') {
     fxn = 'getConferenceRanking';
   }
 
-  const data = await useServerAPI({
+  let data = await useServerAPI({
     'class': 'cbb_ranking',
     'function': fxn,
     'arguments': {
       'season': season
     }
   }, {'revalidate': seconds});
+
+  if (view === 'transfer') {
+    data = Object.assign({}, data);
+    const cbb_transfer_player_seasons = await useServerAPI({
+      'class': 'cbb_transfer_player_season',
+      'function': 'read',
+      'arguments': {
+        'season': season,
+      }
+    });
+
+    const teams = await useServerAPI({
+      'class': 'team',
+      'function': 'read',
+      'arguments': {
+        'cbb': 1,
+        'cbb_d1': 1,
+      }
+    });
+
+    const player_id_x_cbb_transfer_player_season = {}
+    for (let cbb_transfer_player_season_id in cbb_transfer_player_seasons) {
+      player_id_x_cbb_transfer_player_season[cbb_transfer_player_seasons[cbb_transfer_player_season_id].player_id] = cbb_transfer_player_seasons[cbb_transfer_player_season_id];
+    }
+
+    for (let id in data) {
+      if (
+        !data[id].player_id ||
+        !(data[id].player_id in player_id_x_cbb_transfer_player_season)
+      ) {
+        delete data[id];
+      } else {
+        data[id].committed = player_id_x_cbb_transfer_player_season[data[id].player_id].committed;
+        data[id].committed_team_id = player_id_x_cbb_transfer_player_season[data[id].player_id].committed_team_id;
+        data[id].committed_team_name = (data[id].committed_team_id in teams ? teams[data[id].committed_team_id].alt_name : '-');
+      }
+    }
+  }
 
   return {
     'data': data,

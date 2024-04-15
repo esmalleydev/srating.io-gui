@@ -9,7 +9,6 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
-import Slide from '@mui/material/Slide';
 
 import Typography from '@mui/material/Typography';
 
@@ -17,21 +16,28 @@ import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
+type optionType = {
+  value: string;
+  label: string;
+};
 
-const OptionPicker = (props) => {
 
-  const selected = props.selected;
-
-  const title = props.title || 'Title';
-
-  /**
-   * Options must be an array of objects with a value and label
-   * [{'value': 'foo', 'label': 'Foo'}, {...}]
-   * @type {Array}
-   */
-  const options = props.options || [];
-
-  let selectedLabel = props.selectedLabel || null;
+const OptionPicker = (
+  { 
+    selected, 
+    title,
+    options,
+    selectedLabel,
+    actionHandler
+  }: 
+  { 
+    selected: string, 
+    title: string, 
+    options: Array<optionType>,
+    selectedLabel?: string,
+    actionHandler?: Function
+  }
+) => {
 
   for (let i = 0; i < options.length; i++) {
     if (selected === options[i].value) {
@@ -91,8 +97,8 @@ const OptionPicker = (props) => {
         <List>
           {options.map((option) => (
             <ListItem key={option.value} button onClick={() => {
-              if (props.actionHandler) {
-                props.actionHandler(option.value);
+              if (actionHandler) {
+                actionHandler(option.value);
               }
               handleClose();
             }}>
