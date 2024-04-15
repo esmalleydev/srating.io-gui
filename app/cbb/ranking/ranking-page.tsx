@@ -372,7 +372,7 @@ const Ranking = (props) => {
 
   let rankCellMaxWidth = 50;
   if (width <= breakPoint) {
-    rankCellMaxWidth = 30;
+    rankCellMaxWidth = 35;
   }
 
   const getTableHeader = () => {
