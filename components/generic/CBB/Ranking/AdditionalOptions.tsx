@@ -39,6 +39,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
 
   const handleCommitted = () => {
     const newValue: boolean = !hideCommitted;
+    handleClose();
     setSpin(true);
     startTransition(() => {
       if (newValue !== hideCommitted) {
@@ -49,13 +50,13 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         router.replace(`${pathName}${query}`);
         dispatch(setHideCommitted(newValue));
       }
-      handleClose();
       setSpin(false);
     });
   };
 
   const handleUnderTwo = () => {
     const newValue: boolean = !hideUnderTwoMPG;
+    handleClose();
     setSpin(true);
     startTransition(() => {
       if (newValue !== hideUnderTwoMPG) {
@@ -66,7 +67,6 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         router.replace(`${pathName}${query}`);
         dispatch(setHideUnderTwoMPG(newValue));
       }
-      handleClose();
       setSpin(false);
     });
   };

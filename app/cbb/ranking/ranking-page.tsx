@@ -43,6 +43,7 @@ import { clearPositions, updateConferences, updatePositions } from '@/redux/feat
 import { getHeaderColumns } from './columns';
 import { getRowsData } from './rows';
 import AdditionalOptions from '@/components/generic/CBB/Ranking/AdditionalOptions';
+import { setOrder, setOrderBy, setTableScrollTop } from '@/redux/features/ranking-slice';
 
 
 // TODO Filter out people who play under x minutes?
@@ -82,8 +83,11 @@ const Ranking = (props) => {
   const dispatch = useAppDispatch();
   const conferences = useAppSelector(state => state.displayReducer.conferences);
   const positions = useAppSelector(state => state.displayReducer.positions);
+  const order = useAppSelector(state => state.rankingReducer.order);
+  const orderBy = useAppSelector(state => state.rankingReducer.orderBy);
   const hideCommitted = useAppSelector(state => state.rankingReducer.hideCommitted);
   const hideUnderTwoMPG = useAppSelector(state => state.rankingReducer.hideUnderTwoMPG);
+  const tableScrollTop = useAppSelector(state => state.rankingReducer.tableScrollTop);
 
   interface TableComponentsType {
     Scroller: React.ComponentType<any>;
@@ -101,11 +105,8 @@ const Ranking = (props) => {
 
   const [loading, setLoading] = useState(false);
   const [spin, setSpin] = useState(false);
-  const [firstRender, setFirstRender] = useState(true);
   const [season, setSeason] = useState(searchParams?.get('season') || new HelperCBB().getCurrentSeason());
   const [rankView, setRankView] = useState(searchParams?.get('view') || 'team');
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('composite_rank');
   const [view, setView] = useState('composite');
   const [customColumns, setCustomColumns] = useState(['composite_rank', 'name']);
   const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
@@ -135,22 +136,13 @@ const Ranking = (props) => {
 
 
   useEffect(() => {
-    setFirstRender(false);
     const localRankView = localStorage.getItem('CBB.RANKING.VIEW') || null;
     const localRankCols = localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView) || null;
     setView(localRankView ? localRankView : 'composite');
     setCustomColumns(localRankCols ?  JSON.parse(localRankCols) : ['composite_rank', 'name']);
   }, []);
 
-  if (firstRender) {
-    return (
-      <div>
-        <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
-          <CircularProgress />
-        </div>
-      </div>
-    );
-  }
+
 
   const rankViewOptions = [
     {'value': 'team', 'label': 'Team rankings'},
@@ -165,6 +157,8 @@ const Ranking = (props) => {
     if (searchParams) {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
       current.set('view', newRankView);
+      current.delete('hideCommitted');
+      current.delete('hideUnderTwoMPG');
       const search = current.toString();
       const query = search ? `?${search}` : "";
       setLoading(true);
@@ -176,8 +170,9 @@ const Ranking = (props) => {
 
     setCustomColumns(['composite_rank', 'name']);
     dispatch(clearPositions());
-    setOrder('asc');
-    setOrderBy('composite_rank');
+    dispatch(setOrder('asc'));
+    dispatch(setOrderBy('composite_rank'));
+    dispatch(setTableScrollTop(0));
     setView('composite');
     setRankView(newRankView);
   }
@@ -210,6 +205,9 @@ const Ranking = (props) => {
 
   const handleTeam = (team_id) => {
     setSpin(true);
+    if (tableRef && tableRef.current) {
+      dispatch(setTableScrollTop(tableRef.current.scrollTop));
+    }
     startTransition(() => {
       router.push('/cbb/team/' + team_id+'?season='+season);
       setSpin(false);
@@ -218,6 +216,9 @@ const Ranking = (props) => {
 
   const handlePlayer = (player_id) => {
     setSpin(true);
+    if (tableRef && tableRef.current) {
+      dispatch(setTableScrollTop(tableRef.current.scrollTop));
+    }
     startTransition(() => {
       router.push('/cbb/player/' + player_id+'?season='+season);
       setSpin(false);
@@ -276,8 +277,8 @@ const Ranking = (props) => {
     if (tableRef && tableRef.current) {
       setTableHorizontalScroll(tableRef.current.scrollLeft);
     }
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(id);
+    dispatch(setOrder(isAsc ? 'desc' : 'asc'));
+    dispatch(setOrderBy(id));
   };
 
   const descendingComparator = (a, b, orderBy) => {
@@ -577,7 +578,7 @@ const Ranking = (props) => {
               <OptionPicker title = 'View' options = {rankViewOptions} selected = {rankView} actionHandler = {handleRankView} />
               <SeasonPicker selected = {season} actionHandler = {handleSeason} />
             </div>
-            <Typography variant = 'h5'>{'College basketball' + (rankView === 'transfer' ? ' transfers.' : 'rankings.')}</Typography>
+            <Typography variant = 'h5'>{'College basketball' + (rankView === 'transfer' ? ' transfers.' : ' rankings.')}</Typography>
             {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>{'Last updated: ' + getLastUpdated()}</Typography> : ''}
             <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
               <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
@@ -598,7 +599,7 @@ const Ranking = (props) => {
             {positionChips}
           </div>
           <div style = {{'padding': width < 600 ? '0px 10px' : '0px 20px'}}>
-            {rows.length ? <TableVirtuoso scrollerRef={scrollerRef}  /*onScroll={(e) => console.log(e.target.scrollLeft)}*/ style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
+            {rows.length ? <TableVirtuoso scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
           </div>
         </div>
       }

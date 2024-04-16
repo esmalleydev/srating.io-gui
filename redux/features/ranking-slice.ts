@@ -10,14 +10,20 @@ if (typeof window !== 'undefined') {
 
 type InitialState = {
   rank: string,
+  order: string,
+  orderBy: string,
   hideCommitted: boolean,
   hideUnderTwoMPG: boolean,
+  tableScrollTop: number,
 };
 
 const initialState = {
   rank: rankLocalStorage || 'composite_rank',
+  order: 'asc',
+  orderBy: 'composite_rank',
   hideCommitted: false,
   hideUnderTwoMPG: false,
+  tableScrollTop: 0,
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -46,11 +52,20 @@ export const ranking = createSlice({
   name: 'ranking',
   initialState: initialState,
   reducers: {
+    setOrder: (state, action: PayloadAction<string>) => {
+      state.order = action.payload;
+    },
+    setOrderBy: (state, action: PayloadAction<string>) => {
+      state.orderBy = action.payload;
+    },
     setHideCommitted: (state, action: PayloadAction<boolean>) => {
       state.hideCommitted = action.payload;
     },
     setHideUnderTwoMPG: (state, action: PayloadAction<boolean>) => {
       state.hideUnderTwoMPG = action.payload;
+    },
+    setTableScrollTop: (state, action: PayloadAction<number>) => {
+      state.tableScrollTop = action.payload;
     },
     // setSeason: (state, action: PayloadAction<number>) => {
     //   state.value.season = action.payload;
@@ -58,7 +73,7 @@ export const ranking = createSlice({
   }
 });
 
-export const { setHideCommitted, setHideUnderTwoMPG } = ranking.actions;
+export const { setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setTableScrollTop } = ranking.actions;
 export default ranking.reducer;
 
 updateStateFromUrlParams(initialState);
