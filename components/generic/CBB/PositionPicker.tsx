@@ -28,7 +28,7 @@ const PositionPicker = ({ selected }) => {
 
   const options = [
     {'value': 'all', 'label': 'All'},
-    {'value': 'G', 'label': 'Gaurd'},
+    {'value': 'G', 'label': 'Guard'},
     {'value': 'F', 'label': 'Forward'},
     {'value': 'C', 'label': 'Center'},
   ];
