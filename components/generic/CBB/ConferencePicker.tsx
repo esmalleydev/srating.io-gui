@@ -43,7 +43,7 @@ const ConferencePicker = () => {
     {'value': 'MVC', 'label': 'MVC'},
     {'value': 'WCC', 'label': 'WCC'},
     {'value': 'Big West', 'label': 'Big West'},
-    {'value': 'C-USA', 'label': 'C-USA'},
+    {'value': 'CUSA', 'label': 'C-USA'},
     {'value': 'Ivy League', 'label': 'Ivy League'},
     {'value': 'Summit League', 'label': 'Summit League'},
     {'value': 'Horizon', 'label': 'Horizon'},

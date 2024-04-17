@@ -49,6 +49,8 @@ import { setOrder, setOrderBy, setTableScrollTop } from '@/redux/features/rankin
 // TODO Filter out people who play under x minutes?
 // TODO ADD A POWER 5 CONF quick button TO THIS
 
+// todo store horizontal scroll position
+
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // '&:nth-of-type(odd)': {
@@ -204,10 +206,10 @@ const Ranking = (props) => {
   }
 
   const handleTeam = (team_id) => {
-    setSpin(true);
     if (tableRef && tableRef.current) {
       dispatch(setTableScrollTop(tableRef.current.scrollTop));
     }
+    setSpin(true);
     startTransition(() => {
       router.push('/cbb/team/' + team_id+'?season='+season);
       setSpin(false);
@@ -215,10 +217,10 @@ const Ranking = (props) => {
   }
 
   const handlePlayer = (player_id) => {
-    setSpin(true);
     if (tableRef && tableRef.current) {
       dispatch(setTableScrollTop(tableRef.current.scrollTop));
     }
+    setSpin(true);
     startTransition(() => {
       router.push('/cbb/player/' + player_id+'?season='+season);
       setSpin(false);
