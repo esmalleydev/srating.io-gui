@@ -91,6 +91,21 @@ async function getData(searchParams) {
       }
     });
 
+    const team_season_conferences = await useServerAPI({
+      'class': 'team_season_conference',
+      'function': 'read',
+      'arguments': {
+        'season': season,
+        'team_id': Object.values(teams).map(team => team.team_id),
+      }
+    });
+
+    const team_id_x_team_season_conference_id = {};
+    for (let team_season_conference_id in team_season_conferences) {
+      const row = team_season_conferences[team_season_conference_id];
+      team_id_x_team_season_conference_id[row.team_id] = team_season_conference_id;
+    }
+
     const player_id_x_cbb_transfer_player_season = {}
     for (let cbb_transfer_player_season_id in cbb_transfer_player_seasons) {
       player_id_x_cbb_transfer_player_season[cbb_transfer_player_seasons[cbb_transfer_player_season_id].player_id] = cbb_transfer_player_seasons[cbb_transfer_player_season_id];
@@ -106,6 +121,11 @@ async function getData(searchParams) {
         data[id].committed = player_id_x_cbb_transfer_player_season[data[id].player_id].committed;
         data[id].committed_team_id = player_id_x_cbb_transfer_player_season[data[id].player_id].committed_team_id;
         data[id].committed_team_name = (data[id].committed_team_id in teams ? teams[data[id].committed_team_id].alt_name : '-');
+        data[id].committed_conference = (
+          data[id].committed_team_id && data[id].committed_team_id in team_id_x_team_season_conference_id ? 
+          team_season_conferences[team_id_x_team_season_conference_id[data[id].committed_team_id]].conference :
+          null
+        );
       }
     }
   }

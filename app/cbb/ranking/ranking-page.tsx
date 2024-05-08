@@ -89,6 +89,8 @@ const Ranking = (props) => {
   const orderBy = useAppSelector(state => state.rankingReducer.orderBy);
   const hideCommitted = useAppSelector(state => state.rankingReducer.hideCommitted);
   const hideUnderTwoMPG = useAppSelector(state => state.rankingReducer.hideUnderTwoMPG);
+  const filterCommittedConf = useAppSelector(state => state.rankingReducer.filterCommittedConf);
+  const filterOriginalConf = useAppSelector(state => state.rankingReducer.filterOriginalConf);
   const tableScrollTop = useAppSelector(state => state.rankingReducer.tableScrollTop);
 
   interface TableComponentsType {
@@ -263,7 +265,7 @@ const Ranking = (props) => {
 
   const headCells = getHeaderColumns({rankView});
   
-  const rowsData = getRowsData({ data, rankView, conferences, positions, hideCommitted, hideUnderTwoMPG });
+  const rowsData = getRowsData({ data, rankView, conferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf });
   let rows = rowsData.rows;
   let lastUpdated = rowsData.lastUpdated;
 

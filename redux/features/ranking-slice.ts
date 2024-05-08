@@ -14,6 +14,8 @@ type InitialState = {
   orderBy: string,
   hideCommitted: boolean,
   hideUnderTwoMPG: boolean,
+  filterCommittedConf: boolean,
+  filterOriginalConf: boolean,
   tableScrollTop: number,
 };
 
@@ -23,6 +25,8 @@ const initialState = {
   orderBy: 'composite_rank',
   hideCommitted: false,
   hideUnderTwoMPG: false,
+  filterCommittedConf: true,
+  filterOriginalConf: true,
   tableScrollTop: 0,
 } as InitialState;
 
@@ -33,6 +37,8 @@ const updateStateFromUrlParams = (state: InitialState) => {
   const urlParams = new URLSearchParams(window.location.search);
   const hideCommitted = urlParams.get('hideCommitted');
   const hideUnderTwoMPG = urlParams.get('hideUnderTwoMPG');
+  const filterCommittedConf = urlParams.get('filterCommittedConf');
+  const filterOriginalConf = urlParams.get('filterOriginalConf');
   // const view = urlParams.get('view');
 
   // Update state if URL parameters are present
@@ -41,6 +47,12 @@ const updateStateFromUrlParams = (state: InitialState) => {
   }
   if (hideUnderTwoMPG !== null) {
     state.hideUnderTwoMPG = (+hideUnderTwoMPG === 1);
+  }
+  if (filterCommittedConf !== null) {
+    state.filterCommittedConf = (+filterCommittedConf === 1);
+  }
+  if (filterOriginalConf !== null) {
+    state.filterOriginalConf = (+filterOriginalConf === 1);
   }
   
   // if (view !== null) {
@@ -64,6 +76,12 @@ export const ranking = createSlice({
     setHideUnderTwoMPG: (state, action: PayloadAction<boolean>) => {
       state.hideUnderTwoMPG = action.payload;
     },
+    setFilterCommittedConf: (state, action: PayloadAction<boolean>) => {
+      state.filterCommittedConf = action.payload;
+    },
+    setFilterOriginalConf: (state, action: PayloadAction<boolean>) => {
+      state.filterOriginalConf = action.payload;
+    },
     setTableScrollTop: (state, action: PayloadAction<number>) => {
       state.tableScrollTop = action.payload;
     },
@@ -73,7 +91,7 @@ export const ranking = createSlice({
   }
 });
 
-export const { setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setTableScrollTop } = ranking.actions;
+export const { setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setFilterCommittedConf, setFilterOriginalConf, setTableScrollTop } = ranking.actions;
 export default ranking.reducer;
 
 updateStateFromUrlParams(initialState);

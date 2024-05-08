@@ -19,6 +19,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateConferences } from '@/redux/features/display-slice';
 
+// todo put these in url?
+
 const ConferencePicker = () => {
   const dispatch = useAppDispatch();
   const conferences = useAppSelector(state => state.displayReducer.conferences);

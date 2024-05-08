@@ -149,7 +149,7 @@ interface rowDatatype {
   opponent_efficiency_rating_rank: number;
 };
 
-export const getRowsData = ({ data, rankView, conferences, positions, hideCommitted, hideUnderTwoMPG }) => {
+export const getRowsData = ({ data, rankView, conferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf }) => {
   let rows: rowDatatype[] = [];
   let lastUpdated: string | null = null;
 
@@ -157,11 +157,29 @@ export const getRowsData = ({ data, rankView, conferences, positions, hideCommit
     let row = data[id];
 
     if (
+      rankView !== 'transfer' &&
       conferences.length &&
       conferences.indexOf(row.conference) === -1
     ) {
       continue;
     }
+
+    // if transfer and conference is not in original or new conf conference, remove them
+    if (
+      rankView === 'transfer' &&
+      conferences.length &&
+      (
+        (
+          filterOriginalConf && filterCommittedConf && (conferences.indexOf(row.conference) === -1 && conferences.indexOf(row.committed_conference) === -1)
+        ) ||
+        (
+          (!filterCommittedConf && filterOriginalConf && conferences.indexOf(row.conference) === -1) || (!filterOriginalConf && filterCommittedConf && conferences.indexOf(row.committed_conference) === -1)
+        )
+      )
+    ) {
+      continue;
+    }
+
 
     // transfers
     if (hideCommitted && +row.committed === 1) {

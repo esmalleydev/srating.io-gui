@@ -9,11 +9,12 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
-import { ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { Divider, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setHideCommitted, setHideUnderTwoMPG } from '@/redux/features/ranking-slice';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import ConferenceFilterOptions from './ConferenceFilterOptions';
 
 const AdditionalOptions = ({ view }: {view: string}) => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
   const [isPending, startTransition] = useTransition();
   const [spin, setSpin] = useState(false);
   const [anchor, setAnchor] = useState(null);
+  const [confOptionsOpen, setConfOptionsOpen] = useState(false);
   const open = Boolean(anchor);
 
   const dispatch = useAppDispatch();
@@ -71,6 +73,11 @@ const AdditionalOptions = ({ view }: {view: string}) => {
     });
   };
 
+  const handleConferenceFilter = () => {
+    handleClose();
+    setConfOptionsOpen(true);
+  };
+
   const getMenuItems = () => {
     const menuItems: React.JSX.Element[] = [];
 
@@ -100,6 +107,21 @@ const AdditionalOptions = ({ view }: {view: string}) => {
       );
     }
 
+    if (view === 'transfer') {
+      menuItems.push(<Divider />);
+
+      menuItems.push(
+        <MenuItem key='conf-picker-options' onClick={() => {
+          handleConferenceFilter();
+        }}>
+          <ListItemIcon>
+            <SettingsIcon fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Conference filter</ListItemText>
+        </MenuItem>
+      );
+    }
+
     return menuItems;
   };
 
@@ -117,15 +139,16 @@ const AdditionalOptions = ({ view }: {view: string}) => {
           >
             <SettingsIcon />
         </IconButton>
-        </Tooltip>
-        <Menu
-          id="long-menu"
-          anchorEl={anchor}
-          open={open}
-          onClose={handleClose}
-        >
-          {getMenuItems()}
-        </Menu>
+      </Tooltip>
+      <Menu
+        id="long-menu"
+        anchorEl={anchor}
+        open={open}
+        onClose={handleClose}
+      >
+        {getMenuItems()}
+      </Menu>
+      <ConferenceFilterOptions open={confOptionsOpen} onClose = {() => setConfOptionsOpen(false)} />
     </div>
   );
 }
