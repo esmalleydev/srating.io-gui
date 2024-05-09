@@ -96,7 +96,7 @@ async function getData(searchParams) {
       'function': 'read',
       'arguments': {
         'season': season,
-        'team_id': Object.values(teams).map(team => team.team_id),
+        'team_id': teams ? Object.values(teams).map(team => team.team_id) : null,
       }
     });
 

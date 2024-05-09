@@ -26,7 +26,9 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
+
 import CheckIcon from '@mui/icons-material/Check';
+import HelpIcon from '@mui/icons-material/Help';
 
 import OptionPicker from '@/components/generic/OptionPicker';
 import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
@@ -44,6 +46,8 @@ import { getHeaderColumns } from './columns';
 import { getRowsData } from './rows';
 import AdditionalOptions from '@/components/generic/CBB/Ranking/AdditionalOptions';
 import { setOrder, setOrderBy, setTableScrollTop } from '@/redux/features/ranking-slice';
+import { Link } from '@mui/material';
+import Legend from '@/components/generic/CBB/Ranking/Legend';
 
 
 // TODO Filter out people who play under x minutes?
@@ -109,6 +113,7 @@ const Ranking = (props) => {
 
   const [loading, setLoading] = useState(false);
   const [spin, setSpin] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);
   const [season, setSeason] = useState(searchParams?.get('season') || new HelperCBB().getCurrentSeason());
   const [rankView, setRankView] = useState(searchParams?.get('view') || 'team');
   const [view, setView] = useState('composite');
@@ -569,10 +574,15 @@ const Ranking = (props) => {
     return moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY');
   };
 
+  const handleLegend = () => {
+    setLegendOpen(!legendOpen);
+  };
+
 
   return (
     <div>
       <BackdropLoader open = {spin} />
+      <Legend open = {legendOpen} onClose={handleLegend} columns={getColumns()} rankView={rankView} />
       {
         loading ? 
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :
@@ -583,7 +593,15 @@ const Ranking = (props) => {
               <SeasonPicker selected = {season} actionHandler = {handleSeason} />
             </div>
             <Typography variant = 'h5'>{'College basketball' + (rankView === 'transfer' ? ' transfers.' : ' rankings.')}</Typography>
-            {lastUpdated ? <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>{'Last updated: ' + getLastUpdated()}</Typography> : ''}
+            {
+              lastUpdated ?
+              <div style = {{'display': 'flex', 'alignItems': 'center', 'alignContent': 'center'}}>
+                <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>{'Last updated: ' + getLastUpdated()}</Typography>
+                <HelpIcon style = {{'margin': '0px 5px'}} fontSize='small' color = 'info' />
+                <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}><Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {handleLegend}>{'Legend'}</Link></Typography>
+              </div> : 
+              ''
+            }
             <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
               <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
               <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
@@ -597,7 +615,7 @@ const Ranking = (props) => {
                 {rankView === 'player' || rankView === 'team' || rankView === 'transfer' ? <ConferencePicker /> : ''}
                 {rankView === 'player' || rankView === 'transfer' ? <PositionPicker selected = {positions} /> : ''}
               </div>
-              <RankSearch rows = {allRows} callback = {handleSearch} />
+              <RankSearch rows = {allRows} callback = {handleSearch} rankView = {rankView} />
             </div>
             {confChips}
             {positionChips}

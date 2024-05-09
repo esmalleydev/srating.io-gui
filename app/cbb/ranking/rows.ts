@@ -1,6 +1,6 @@
 
 
-interface rowDatatype {
+export interface rowDatatype {
   team_id: string;
   composite_rank: number;
   ap_rank: number,
@@ -147,6 +147,11 @@ interface rowDatatype {
   opponent_offensive_rating_rank: number;
   opponent_defensive_rating_rank: number;
   opponent_efficiency_rating_rank: number;
+  committed?: boolean;
+  committed_team_id?: string;
+  committed_team_name?: string;
+  committed_conference?: string;
+  team_name?: string;
 };
 
 export const getRowsData = ({ data, rankView, conferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf }) => {

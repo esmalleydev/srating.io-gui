@@ -3,6 +3,7 @@ import { styled, alpha, useTheme } from '@mui/material/styles';
 
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { rowDatatype } from '@/app/cbb/ranking/rows';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -39,9 +40,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-const RankSearch = (props) => {
-  const rows = props.rows;
-  const [value, setValue] = useState('');
+const RankSearch = ({ rows, callback, rankView }: {rows: Array<rowDatatype>, callback: Function, rankView: string}) => {
+  const [value, setValue] = useState<string>('');
 
   const onChange = (e) => {
     const value = e.target.value;
@@ -49,10 +49,15 @@ const RankSearch = (props) => {
 
     if (value.length) {
       const regex = new RegExp(value, 'i');
-      const filteredRows = rows.filter(row => regex.test(row.name));
-      props.callback(filteredRows);
+      let filteredRows = rows.filter(row => regex.test(row.name));
+
+      if (rankView === 'transfer') {
+        filteredRows = filteredRows.concat(rows.filter(row => regex.test(row.committed_team_name || '')));
+        filteredRows = filteredRows.concat(rows.filter(row => regex.test(row.team_name || '')));
+      }
+      callback(filteredRows);
     } else {
-      props.callback(false);
+      callback(false);
     }
   };
 
