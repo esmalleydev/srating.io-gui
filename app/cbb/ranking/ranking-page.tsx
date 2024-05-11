@@ -48,6 +48,7 @@ import AdditionalOptions from '@/components/generic/CBB/Ranking/AdditionalOption
 import { setOrder, setOrderBy, setTableScrollTop } from '@/redux/features/ranking-slice';
 import { Link } from '@mui/material';
 import Legend from '@/components/generic/CBB/Ranking/Legend';
+import FloatingButtons from '@/components/generic/CBB/Ranking/FloatingButtons';
 
 
 // TODO Filter out people who play under x minutes?
@@ -96,6 +97,7 @@ const Ranking = (props) => {
   const filterCommittedConf = useAppSelector(state => state.rankingReducer.filterCommittedConf);
   const filterOriginalConf = useAppSelector(state => state.rankingReducer.filterOriginalConf);
   const tableScrollTop = useAppSelector(state => state.rankingReducer.tableScrollTop);
+  const tableFullscreen = useAppSelector(state => state.rankingReducer.tableFullscreen);
 
   interface TableComponentsType {
     Scroller: React.ComponentType<any>;
@@ -543,8 +545,8 @@ const Ranking = (props) => {
 
 
   const tableStyle = {
-    'maxHeight': height - 280 - (width < 380 ? 30 : 0) - confHeightModifier - 40,
-    'height': height - 280 - (width < 380 ? 30 : 0) - confHeightModifier - 40,
+    'maxHeight': height - (tableFullscreen ? 100 : 280) - (width < 380 ? 30 : 0) - (tableFullscreen ? 0 : confHeightModifier) - 40,
+    'height': height - (tableFullscreen ? 100 : 280) - (width < 380 ? 30 : 0) - (tableFullscreen ? 0 : confHeightModifier) - 40,
   };
 
   if ((rows.length + 2) * 26 < tableStyle.height) {
@@ -587,40 +589,45 @@ const Ranking = (props) => {
         loading ? 
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :
         <div>
-          <div style = {{'padding': '5px 20px 0px 20px'}}>
-            <div style = {{'display': 'flex', 'justifyContent': 'right', 'flexWrap': 'wrap'}}>
-              <OptionPicker title = 'View' options = {rankViewOptions} selected = {rankView} actionHandler = {handleRankView} />
-              <SeasonPicker selected = {season} actionHandler = {handleSeason} />
-            </div>
-            <Typography variant = 'h5'>{'College basketball' + (rankView === 'transfer' ? ' transfers.' : ' rankings.')}</Typography>
-            {
-              lastUpdated ?
-              <div style = {{'display': 'flex', 'alignItems': 'center', 'alignContent': 'center'}}>
-                <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>{'Last updated: ' + getLastUpdated()}</Typography>
-                <HelpIcon style = {{'margin': '0px 5px'}} fontSize='small' color = 'info' />
-                <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}><Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {handleLegend}>{'Legend'}</Link></Typography>
-              </div> : 
-              ''
-            }
-            <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
-              <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
-              <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
-              <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : 'filled'} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
-              <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : 'filled'} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
-              <ColumnPicker key = {rankView} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
-            </div>
-            <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'baseline', 'marginTop': '10px'}}>
-              <div style={{'display': 'flex', 'alignItems': 'center',}}>
-                {rankView === 'player' || rankView === 'transfer' ? <AdditionalOptions view = {rankView} /> : ''}
-                {rankView === 'player' || rankView === 'team' || rankView === 'transfer' ? <ConferencePicker /> : ''}
-                {rankView === 'player' || rankView === 'transfer' ? <PositionPicker selected = {positions} /> : ''}
+          <FloatingButtons />
+          {
+          !tableFullscreen ? 
+            <div style = {{'padding': '5px 20px 0px 20px'}}>
+              <div style = {{'display': 'flex', 'justifyContent': 'right', 'flexWrap': 'wrap'}}>
+                <OptionPicker title = 'View' options = {rankViewOptions} selected = {rankView} actionHandler = {handleRankView} />
+                <SeasonPicker selected = {season} actionHandler = {handleSeason} />
               </div>
-              <RankSearch rows = {allRows} callback = {handleSearch} rankView = {rankView} />
+              <Typography variant = 'h5'>{'College basketball' + (rankView === 'transfer' ? ' transfers.' : ' rankings.')}</Typography>
+              {
+                lastUpdated ?
+                <div style = {{'display': 'flex', 'alignItems': 'center', 'alignContent': 'center'}}>
+                  <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>{'Last updated: ' + getLastUpdated()}</Typography>
+                  <HelpIcon style = {{'margin': '0px 5px'}} fontSize='small' color = 'info' />
+                  <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}><Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {handleLegend}>{'Legend'}</Link></Typography>
+                </div> : 
+                ''
+              }
+              <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
+                <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
+                <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
+                <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : 'filled'} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
+                <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : 'filled'} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
+                <ColumnPicker key = {rankView} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
+              </div>
+              <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'baseline', 'marginTop': '10px'}}>
+                <div style={{'display': 'flex', 'alignItems': 'center',}}>
+                  {rankView === 'player' || rankView === 'transfer' ? <AdditionalOptions view = {rankView} /> : ''}
+                  {rankView === 'player' || rankView === 'team' || rankView === 'transfer' ? <ConferencePicker /> : ''}
+                  {rankView === 'player' || rankView === 'transfer' ? <PositionPicker selected = {positions} /> : ''}
+                </div>
+                <RankSearch rows = {allRows} callback = {handleSearch} rankView = {rankView} />
+              </div>
+              {confChips}
+              {positionChips}
             </div>
-            {confChips}
-            {positionChips}
-          </div>
-          <div style = {{'padding': width < 600 ? '0px 10px' : '0px 20px'}}>
+          : ''
+          }
+          <div style = {{'padding': width < 600 ? (tableFullscreen ? '10px' : '0px') + ' 10px 0px 10px' : (tableFullscreen ? '10px' : '0px') + ' 20px 0px 20px'}}>
             {rows.length ? <TableVirtuoso scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
           </div>
         </div>

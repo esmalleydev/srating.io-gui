@@ -17,6 +17,7 @@ type InitialState = {
   filterCommittedConf: boolean,
   filterOriginalConf: boolean,
   tableScrollTop: number,
+  tableFullscreen: boolean,
 };
 
 const initialState = {
@@ -28,6 +29,7 @@ const initialState = {
   filterCommittedConf: true,
   filterOriginalConf: true,
   tableScrollTop: 0,
+  tableFullscreen: false,
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -85,13 +87,16 @@ export const ranking = createSlice({
     setTableScrollTop: (state, action: PayloadAction<number>) => {
       state.tableScrollTop = action.payload;
     },
+    setTableFullscreen: (state, action: PayloadAction<boolean>) => {
+      state.tableFullscreen = action.payload;
+    },
     // setSeason: (state, action: PayloadAction<number>) => {
     //   state.value.season = action.payload;
     // },
   }
 });
 
-export const { setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setFilterCommittedConf, setFilterOriginalConf, setTableScrollTop } = ranking.actions;
+export const { setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setFilterCommittedConf, setFilterOriginalConf, setTableScrollTop, setTableFullscreen } = ranking.actions;
 export default ranking.reducer;
 
 updateStateFromUrlParams(initialState);
