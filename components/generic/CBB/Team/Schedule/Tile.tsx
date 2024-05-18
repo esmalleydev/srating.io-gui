@@ -163,6 +163,17 @@ const Tile = ({ cbb_game, team}) => {
     losses = otherTeam.stats.losses;
   }
 
+
+  const neutralStyle: React.CSSProperties = {
+    'fontSize': '10px',
+    'padding': '3px',
+    'minWidth': '18px',
+    'textAlign': 'center',
+    'borderRadius': '5px',
+    'backgroundColor': '#ffa726',
+    'color': theme.palette.getContrastText('#ffa726'),
+  };
+
   return (
     <div style = {{'display': 'flex', 'margin': '5px 0px', 'justifyContent': 'space-between'}}>
       <div style = {{'display': 'flex'}}>
@@ -188,7 +199,13 @@ const Tile = ({ cbb_game, team}) => {
 
 
               <div style = {{'marginLeft': '10px', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'baseline', 'overflow': 'hidden'  /*'flexWrap': 'nowrap'*/}}>
-                <Typography color = 'text.secondary' variant = 'caption'>{cbb_game.home_team_id === team.team_id ? 'vs' : '@'}</Typography>
+                <Typography color = 'text.secondary' variant = 'caption'>
+                  {
+                    cbb_game.neutral_site ? 
+                      <Tooltip enterTouchDelay={0} disableFocusListener placement = 'top' title = {'Neutral site'}><span style = {neutralStyle}>N</span></Tooltip>
+                    : (cbb_game.home_team_id === team.team_id ? 'vs' : '@')
+                  }
+                </Typography>
                 <Typography style = {titleStyle} variant = {'body2'} onClick={() => {handleTeamClick(cbb_game[otherSide + '_team_id'])}}>
                   <sup style = {supRankStyle}>{CBB.getTeamRank(otherSide, displayRank)}</sup> <Link style = {{'cursor': 'pointer'}} underline='hover'>{CBB.getTeamName(otherSide)}</Link>
                   {width > 375 ? <Typography variant = 'overline' color = 'text.secondary'> ({wins}-{losses})</Typography> : ''}
