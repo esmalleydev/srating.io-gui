@@ -3,7 +3,7 @@
 import { useClientAPI } from '@/components/clientAPI';
 import { setSchedulePredictionsLoading, updateSchedulePredictions } from '@/redux/features/team-slice';
 import { useAppDispatch } from '@/redux/hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const PredictionLoader = ({ season, team_id }) => {
   const dispatch = useAppDispatch();
@@ -36,11 +36,13 @@ const PredictionLoader = ({ season, team_id }) => {
       setLoading(false);
     });
   };
-  
-  if (lastSeason !== season) {
-    getData();
-  }
 
+  useEffect(() => {
+    if (lastSeason !== season) {
+      getData();
+    }
+  }, [season, lastSeason]);
+  
   return null;
 };
 

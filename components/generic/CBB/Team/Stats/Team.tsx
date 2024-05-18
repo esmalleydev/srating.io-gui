@@ -447,7 +447,7 @@ const Team = ({ teamStats }: { teamStats: Stats}) => {
 
   const getStatBlock = (statistic) => {
     return (
-      <div style = {{'textAlign': 'center', 'flex': '1', 'minWidth': 100, 'maxWidth': 100, 'margin': 10}}>
+      <div key = {statistic.name + '-div'} style = {{'textAlign': 'center', 'flex': '1', 'minWidth': 100, 'maxWidth': 100, 'margin': 10}}>
         <Tooltip key={statistic.name} disableFocusListener placement = 'top' title={statistic.title}><Typography color = {'text.secondary'} variant='body1'>{statistic.name}</Typography></Tooltip>
         {/* <hr style = {{'padding': 0, 'margin': 'auto', 'width': 50}} /> */}
         <div><Typography variant='caption'>{statistic.value || 0}</Typography>{statistic.rank ? <RankSpan rank = {statistic.rank} useOrdinal = {true} max = {362} /> : ''}</div>
