@@ -276,7 +276,7 @@ const Client = ({ teams }) => {
     });
     return (
       <TableContainer component={Paper}>
-        <Table size="small" aria-label="player stats table">
+        <Table size="small" aria-label="player stats table" style={{ borderCollapse: 'separate' }}>
           <TableHead>
             <TableRow>
               {getColumns().map((column) => {

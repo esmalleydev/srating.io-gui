@@ -23,25 +23,27 @@ import { visuallyHidden } from '@mui/utils';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import utilsSorter from  '@/components/utils/Sorter';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 
 
 const Sorter = new utilsSorter();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
+  // '&:last-child td, &:last-child th': {
+  //   border: 0,
+  // },
   '&:hover td': {
     backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
   },
+  // 'border': 0,
   '&:hover': {
     cursor: 'pointer',
   }
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
+  'backgroundColor':  theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
 }));
 
 
@@ -55,6 +57,9 @@ const Roster = ({ rosterStats }) => {
   const [order, setOrder] = useState<string>('asc');
   const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
   const [spin, setSpin] = useState(false);
+
+  const { width } = useWindowDimensions() as Dimensions;
+  const breakPoint = 425;
 
   const players = rosterStats.players;
   const playerStatsData = rosterStats.cbb_player_statistic_ranking;
@@ -363,14 +368,35 @@ const Roster = ({ rosterStats }) => {
 
 
   let b = 0;
+  const playerCellWidth = (width <= breakPoint) ? 85 : 100;
 
   const row_containers = rows.sort(Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort))).slice().map((row) => {
     let columns = getColumns();
 
 
-    const tdStyle = {
+    const tdStyle: React.CSSProperties = {
       'padding': '4px 5px',
       'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+      border: 0,
+      'borderTop': 0,
+      'borderLeft': 0,
+      'borderBottom': 0,
+    };
+
+    if (width <= breakPoint) {
+      tdStyle.fontSize = '12px';
+    }
+
+
+    const playerCellStyle: React.CSSProperties = {
+      position: 'sticky',
+      left: 0,
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      minWidth: playerCellWidth,
+      maxWidth: playerCellWidth,
+      borderRight: '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark),
     };
 
     b++;
@@ -381,7 +407,7 @@ const Roster = ({ rosterStats }) => {
       if (columns[i] === 'player') {
         const player = (row.player_id in players && players[row.player_id]) || null;
         if (player) {
-          tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'maxWidth': 50})}>{player ? player.first_name + ' ' + player.last_name : 'Unknown'}</TableCell>);
+          tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, playerCellStyle)}>{player ? player.first_name.charAt(0) + '. ' + player.last_name : 'Unknown'}</TableCell>);
         }
       } else {
         // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
@@ -391,8 +417,8 @@ const Roster = ({ rosterStats }) => {
 
     return (
       <StyledTableRow
-        key={row.name}
-        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        key={row.name + '-' + b}
+        // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         onClick={() => {handleClick(row.player_id)}}
       >
         {tableCells}
@@ -401,52 +427,66 @@ const Roster = ({ rosterStats }) => {
   });
 
 
-  return (
-    <div style = {{'paddingTop': 10}}>
-      <BackdropLoader open = {spin} />
-    {
-      playerStatsData === null ?
+  const getDisplay = () => {
+    if (playerStatsData === null) {
+      return (
         <Paper elevation = {3} style = {{'padding': 10}}>
-            <div>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-            </div>
-          </Paper>
-        : ''
-      }
-      {playerStatsData !== null ? <div style = {{'textAlign': 'center'}}>{statDisplayChips}</div> : ''}
-      {
-        playerStatsData !== null ?    
           <div>
-            <TableContainer component={Paper}>
-              <Table size="small" aria-label="player stats table">
-                <TableHead>
-                  <TableRow>
-                    {getColumns().map((column) => {
-                      const headCell = headCells[column];
-                      const tdStyle: React.CSSProperties = {
-                        'padding': '4px 5px',
-                      };
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+            <Typography variant = 'h5'><Skeleton /></Typography>
+          </div>
+        </Paper>
+      );
+    }
 
-                      if (headCell.sticky) {
-                        tdStyle.position = 'sticky';
-                        tdStyle.left = 0;
-                        tdStyle.zIndex = 3;
-                      } else {
-                        tdStyle.whiteSpace = 'nowrap';
-                      }
+    if (playerStatsData !== null && Object.keys(players).length === 0) {
+      return (
+        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No player data yet :(</Typography>
+      );
+    }
 
-                      return (
+    return (
+      <>
+        <div style = {{'textAlign': 'center'}}>{statDisplayChips}</div>
+        <div style = {{'padding': '0px 5px'}}>
+          <TableContainer component={Paper}>
+            <Table size="small" aria-label="player stats table" style={{ borderCollapse: 'separate' }}>
+              <TableHead>
+                <TableRow>
+                  {getColumns().map((column) => {
+                    const headCell = headCells[column];
+                    const tdStyle: React.CSSProperties = {
+                      'padding': '4px 5px',
+                      'border': 0,
+                    };
+          
+                    if (width <= breakPoint) {
+                      tdStyle.fontSize = '13px';
+                    }
+          
+                    if (headCell.sticky) {
+                      tdStyle.position = 'sticky';
+                      tdStyle.zIndex = 3;
+                    } else {
+                      tdStyle.whiteSpace = 'nowrap';
+                    }
+    
+                    if (headCell.id === 'player') {
+                      tdStyle.left = 0;
+                      tdStyle.borderRight = '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark);
+                    }
+
+                    return (
                       <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
                         <StyledTableHeadCell
                           sx = {tdStyle}
@@ -469,17 +509,25 @@ const Roster = ({ rosterStats }) => {
                         </StyledTableHeadCell>
                       </Tooltip>
                       );
-                    })}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row_containers}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-         : ''
-      }
+                    })
+                  }
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {row_containers}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      </>
+    )
+  };
+
+
+  return (
+    <div style = {{'paddingTop': 10}}>
+      <BackdropLoader open = {spin} />
+      {getDisplay()}
     </div>
   );
 }
