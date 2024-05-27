@@ -12,34 +12,30 @@ import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Coach, Team } from '@/types/cbb';
+import { Link } from '@mui/material';
 
 
 const ColorUtil = new Color();
 
-const Client = ({team, season, seasons}) => {
-  // interface Team {
-  //   team_id: string;
-  //   char6: string;
-  //   code: string;
-  //   name: string;
-  //   alt_name: string;
-  //   primary_color: string;
-  //   secondary_color: string;
-  //   cbb_d1: number;
-  //   cbb: number;
-  //   cfb: number;
-  //   nba: number;
-  //   nfl: number;
-  //   nhl: number;
-  //   guid: string;
-  //   deleted: number;
-  //   cbb_ranking: object;
-  //   stats: {
-  //     wins: number;
-  //     losses: number;
-  //   };
-  // };
+const Client = ({cbb_coach_statistic_ranking, season}) => {
 
+  // todo dont use any
+  const coach: Coach | any = useAppSelector(state => state.coachReducer.coach);
+  const coach_team_seasons = useAppSelector(state => state.coachReducer.coach_team_seasons);
+  const teams = useAppSelector(state => state.coachReducer.teams);
+
+  let team;
+
+  for (let coach_team_season_id in coach_team_seasons) {
+    const row = coach_team_seasons[coach_team_season_id];
+    if (
+      +season === +row.season &&
+      row.team_id in teams
+    ) {
+      team = teams[row.team_id];
+    }
+  }
   const breakPoint = 475;
 
   const router = useRouter();
@@ -71,19 +67,16 @@ const Client = ({team, season, seasons}) => {
     supStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
   }
 
-  const handleSeason = (season) => {
-    if (searchParams) {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      current.set('season', season);
-      const search = current.toString();
-      const query = search ? `?${search}` : "";
-      setSpin(true);
-      startTransition(() => {
-        router.push(`${pathName}${query}`);
-        setSpin(false);
-      });
+  const handleTeamClick = () => {
+    if (!team || !team.team_id) {
+      return;
     }
-  }
+    setSpin(true);
+    startTransition(() => {
+      router.push('/cbb/team/' + team.team_id + '?season=' + season);
+      setSpin(false);
+    });
+  };
 
 
   return (
@@ -91,16 +84,14 @@ const Client = ({team, season, seasons}) => {
       <div style = {{'display': 'flex', 'flexWrap': 'nowrap'}}>
         <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {(width < breakPoint ? 'h6' : 'h5')}>
           {rank ? <span style = {supStyle}>{rank} </span> : ''}
-          {teamHelper.getName()}
+          {coach.first_name + ' ' + coach.last_name}
           <span style = {{'fontSize': '16px', 'verticalAlign': 'middle'}}>
-            <Typography variant = 'overline' color = 'text.secondary'> ({team?.stats.wins || 0}-{team?.stats.losses || 0})</Typography>
+            <Typography variant = 'overline' color = 'text.secondary'> ({cbb_coach_statistic_ranking?.wins || 0}-{cbb_coach_statistic_ranking?.losses || 0})</Typography>
           </span>
         </Typography>
-        <FavoritePicker team_id = {team?.team_id} />
-        <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
       </div>
-      <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
-        <Typography variant = 'overline' color = 'text.secondary'>{teamHelper.getConference()}</Typography>
+      <div style = {{'display': 'flex', 'justifyContent': 'center', 'cursor': 'pointer'}} onClick={handleTeamClick}>
+        <Typography variant = 'overline' color = 'text.secondary'><Link underline='hover'>{teamHelper.getName()}</Link></Typography>
       </div>
       <BackdropLoader open = {spin} />
     </div>

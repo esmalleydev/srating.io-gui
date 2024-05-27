@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/redux/hooks";
 
 
 export interface rowDatatype {
@@ -20,7 +21,8 @@ export interface rowDatatype {
   loss_margin: number;
   confwin_margin: number;
   confloss_margin: number;
-  conf: string;
+  conference_id: string;
+  conference_code?: string;
   elo_rank: number;
   elo: number;
   // adj_elo: number;
@@ -150,21 +152,23 @@ export interface rowDatatype {
   committed?: boolean;
   committed_team_id?: string;
   committed_team_name?: string;
-  committed_conference?: string;
+  committed_conference_id?: string;
   team_name?: string;
 };
 
-export const getRowsData = ({ data, rankView, conferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf }) => {
+export const getRowsData = ({ data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf }) => {
   let rows: rowDatatype[] = [];
   let lastUpdated: string | null = null;
+
+  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
 
   for (let id in data) {
     let row = data[id];
 
     if (
       rankView !== 'transfer' &&
-      conferences.length &&
-      conferences.indexOf(row.conference) === -1
+      selectedConferences.length &&
+      selectedConferences.indexOf(row.conference_id) === -1
     ) {
       continue;
     }
@@ -172,13 +176,13 @@ export const getRowsData = ({ data, rankView, conferences, positions, hideCommit
     // if transfer and conference is not in original or new conf conference, remove them
     if (
       rankView === 'transfer' &&
-      conferences.length &&
+      selectedConferences.length &&
       (
         (
-          filterOriginalConf && filterCommittedConf && (conferences.indexOf(row.conference) === -1 && conferences.indexOf(row.committed_conference) === -1)
+          filterOriginalConf && filterCommittedConf && (selectedConferences.indexOf(row.conference_id) === -1 && selectedConferences.indexOf(row.committed_conference_id) === -1)
         ) ||
         (
-          (!filterCommittedConf && filterOriginalConf && conferences.indexOf(row.conference) === -1) || (!filterOriginalConf && filterCommittedConf && conferences.indexOf(row.committed_conference) === -1)
+          (!filterCommittedConf && filterOriginalConf && selectedConferences.indexOf(row.conference_id) === -1) || (!filterOriginalConf && filterCommittedConf && selectedConferences.indexOf(row.committed_conference_id) === -1)
         )
       )
     ) {
@@ -233,7 +237,8 @@ export const getRowsData = ({ data, rankView, conferences, positions, hideCommit
         'loss_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.loss_margin) || null,
         'confwin_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwin_margin) || null,
         'confloss_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confloss_margin) || null,
-        'conf': row.conference,
+        'conference_id': row.conference_id,
+        'conference_code': (row.conference_id && row.conference_id in conferences) ? conferences[row.conference_id].code : 'Unknown',
         'elo_rank': (row.last_ranking && row.last_ranking.elo_rank) || null,
         'elo': row.elo,
         // 'adj_elo': +(+row.elo - +(row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos)).toFixed(2),
@@ -373,7 +378,11 @@ export const getRowsData = ({ data, rankView, conferences, positions, hideCommit
       row.number = row.player ? row.player.number : null;
       row.position = row.player ? row.player.position : null;
       row.height = row.player ? row.player.height : null;
-      row.conf = row.conference;
+
+      if (row.conference_id && row.conference_id in conferences) {
+        row.conference_code = conferences[row.conference_id].code;
+      }
+
       row.composite_rank = row.efficiency_rating_rank;
 
       if (
@@ -391,10 +400,20 @@ export const getRowsData = ({ data, rankView, conferences, positions, hideCommit
       ) {
         lastUpdated = row.date_of_rank;
       }
-      row.name = row.conference;
+      row.name = conferences[row.conference_id].code;
       row.composite_rank = row.adjusted_efficiency_rating_rank;
 
       // row.adj_elo = +(+row.elo - +row.elo_sos).toFixed(2);
+
+      rows.push(row);
+    }  else if (rankView === 'coach') {
+      if (
+        !lastUpdated ||
+        lastUpdated < row.date_of_rank
+      ) {
+        lastUpdated = row.date_of_rank;
+      }
+      row.composite_rank = row.elo_rank;
 
       rows.push(row);
     }

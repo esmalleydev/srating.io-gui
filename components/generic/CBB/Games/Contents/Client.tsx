@@ -16,7 +16,8 @@ const Client = ({ cbb_games, date }) => {
   const dispatch = useAppDispatch();
   const skip_sort_cbb_game_ids = useAppSelector(state => state.favoriteReducer.skip_sort_cbb_game_ids);
   const favorite_cbb_game_ids = useAppSelector(state => state.favoriteReducer.cbb_game_ids);
-  const conferences = useAppSelector(state => state.displayReducer.conferences);
+  const selectedConferences = useAppSelector(state => state.displayReducer.conferences);
+  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
   const statuses = useAppSelector(state => state.displayReducer.statuses);
   const scores = useAppSelector(state => state.gamesReducer.scores);
   const datesChecked = useAppSelector(state => state.gamesReducer.dates_checked);
@@ -116,9 +117,9 @@ const Client = ({ cbb_games, date }) => {
     }
 
     if (
-      conferences.length &&
-      conferences.indexOf(game_.teams[game_.away_team_id].conference) === -1 &&
-      conferences.indexOf(game_.teams[game_.home_team_id].conference) === -1
+      selectedConferences.length &&
+      selectedConferences.indexOf(game_.teams[game_.away_team_id].conference_id) === -1 &&
+      selectedConferences.indexOf(game_.teams[game_.home_team_id].conference_id) === -1
     ) {
       continue;
     }
@@ -150,8 +151,8 @@ const Client = ({ cbb_games, date }) => {
 
 
   let confChips: React.JSX.Element[] = [];
-  for (let i = 0; i < conferences.length; i++) {
-    confChips.push(<Chip key = {conferences[i]} sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {dispatch(updateConferences(conferences[i]))}} />);
+  for (let i = 0; i < selectedConferences.length; i++) {
+    confChips.push(<Chip key = {selectedConferences[i]} sx = {{'margin': '5px'}} label={conferences[selectedConferences[i]].code} onDelete={() => {dispatch(updateConferences(selectedConferences[i]))}} />);
   }
 
   return (

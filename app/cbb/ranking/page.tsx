@@ -31,6 +31,9 @@ export async function generateMetadata(
   } else if (view === 'transfer') {
     title = 'sRating | College basketball transfer portal ranking';
     description = 'College basketball transfer portal tool, search, rank all players';
+  } else if (view === 'coach') {
+    title = 'sRating | College basketball coach ranking';
+    description = 'View statistic ranking for each coach';
   }
 
   return {
@@ -62,6 +65,8 @@ async function getData(searchParams) {
     fxn = 'getPlayerRanking';
   } else if (view === 'conference') {
     fxn = 'getConferenceRanking';
+  } else if (view === 'coach') {
+    fxn = 'getCoachRanking';
   }
 
   let data = await useServerAPI({
@@ -121,9 +126,9 @@ async function getData(searchParams) {
         data[id].committed = player_id_x_cbb_transfer_player_season[data[id].player_id].committed;
         data[id].committed_team_id = player_id_x_cbb_transfer_player_season[data[id].player_id].committed_team_id;
         data[id].committed_team_name = (data[id].committed_team_id in teams ? teams[data[id].committed_team_id].alt_name : '-');
-        data[id].committed_conference = (
+        data[id].committed_conference_id = (
           data[id].committed_team_id && data[id].committed_team_id in team_id_x_team_season_conference_id ? 
-          team_season_conferences[team_id_x_team_season_conference_id[data[id].committed_team_id]].conference :
+          team_season_conferences[team_id_x_team_season_conference_id[data[id].committed_team_id]].conference_id :
           null
         );
       }
@@ -138,5 +143,8 @@ async function getData(searchParams) {
 
 export default async function Page({ searchParams }) {
   const data = await getData(searchParams);
-  return <RankingPage data = {data.data} generated = {data.generated} />;
+
+  const rankView = searchParams?.view || 'team';
+
+  return <RankingPage data = {data.data} generated = {data.generated} rankView = {rankView} />;
 };

@@ -108,7 +108,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
     }
 
     if (view === 'transfer') {
-      menuItems.push(<Divider />);
+      menuItems.push(<Divider key = {'transfer-divider'} />);
 
       menuItems.push(
         <MenuItem key='conf-picker-options' onClick={() => {

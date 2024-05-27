@@ -24,7 +24,7 @@ const Legend = ({ open, onClose, columns, rankView }) => {
           {
             columns.map((column) => {
               return (
-                <div style = {{'display': 'flex', 'margin': '5px 0px'}}>
+                <div key = {column} style = {{'display': 'flex', 'margin': '5px 0px'}}>
                   <Typography color = 'info.main' variant = 'subtitle2'>{headers[column].label}:</Typography>
                   <Typography style = {{'marginLeft': 10}} variant = 'body2'>{headers[column].tooltip}</Typography>
                 </div>

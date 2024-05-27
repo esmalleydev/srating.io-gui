@@ -9,6 +9,7 @@ import { useAppSelector } from '@/redux/hooks';
 import Header from "@/components/generic/Header";
 import FooterNavigation from "@/components/generic/FooterNavigation";
 import { ScrollContainer, ScrollProvider } from "@/contexts/scrollContext";
+import BackdropLoader from "@/components/generic/BackdropLoader";
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
@@ -57,6 +58,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
       <ScrollProvider>
         <ScrollContainer>
           <div>
+            {/* <BackdropLoader /> */}
             <Header />
               <div style = {{'padding': paddingTop + ' 0px 56px 0px'}}>
                 {children}

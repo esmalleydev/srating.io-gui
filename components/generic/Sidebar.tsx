@@ -27,20 +27,17 @@ import PicksIcon from '@mui/icons-material/Casino';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArticleIcon from '@mui/icons-material/Article';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { clear } from '@/redux/features/compare-slice';
+import { setLoading } from '@/redux/features/display-slice';
 
 // todo spin does nothing here, I think I need to use redux for a global spin and decorate it in another place
 
-const Sidebar = (props) => {
-  const self = this;
-
+const Sidebar = () => {
   const themeMode = useAppSelector(state => state.themeReducer.mode);
   const dispatch = useAppDispatch();
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
 
   // todo allow keyboard to click the option on enter keydown
   /*
@@ -50,19 +47,19 @@ const Sidebar = (props) => {
   */
  
   const handleRanking = () => {
-    // setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/ranking');
-      // setSpin(false);
+      dispatch(setLoading(false));
     });
   };
 
   const handleScores = () => {
-    // setSpin(true);
+    dispatch(setLoading(true));
     sessionStorage.removeItem('CBB.GAMES.DATA');
     startTransition(() => {
       router.push('/cbb/games');
-      // setSpin(false);
+      dispatch(setLoading(false));
     });
   };
 
@@ -86,7 +83,6 @@ const Sidebar = (props) => {
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
       <Box
         sx={{'width': 250}}
         role="presentation"

@@ -5,11 +5,11 @@ import { Typography, Paper } from '@mui/material';
 import HelperTeam from '@/components/helpers/Team';
 
 import PreviousMatchupTile from '@/components/generic/CBB/Game/PreviousMatchups/Tile';
-import { Game, Team, gamesDataType } from '@/types/cbb';
+import { Game, Team, Games } from '@/types/cbb';
 
 
 
-const Client = ({cbb_games, teams, home_team_id, away_team_id}: {cbb_games: gamesDataType, teams: Team[], home_team_id: string, away_team_id: string}) => {
+const Client = ({cbb_games, teams, home_team_id, away_team_id}: {cbb_games: Games, teams: Team[], home_team_id: string, away_team_id: string}) => {
 
   let previousMatchupContainers: React.JSX.Element[] = [];
   let summaryPRContainers: React.JSX.Element[] = [];

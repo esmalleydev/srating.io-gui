@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const rankLocalStorageKey = 'CBB.DISPLAY.RANK';
 const picksSortLocalStorageKey = 'CBB.DISPLAY.PICKS.SORT';
-const conferencesLocalStorageKey = 'CBB.DISPLAY.CONFERENCES';
+const conferencesLocalStorageKey = 'CBB.DISPLAY.CONFERENCE_IDS';
 const positionsLocalStorageKey = 'CBB.DISPLAY.POSITIONS';
 const statusesLocalStorageKey = 'CBB.DISPLAY.STATUSES';
 const cardsViewLocalStorageKey = 'CBB.DISPLAY.GAMES.CARDSVIEW';
@@ -31,6 +31,7 @@ type InitialState = {
   positions: string[],
   statuses: string[],
   cardsView: string,
+  loading: boolean,
   // season: number,
 };
 
@@ -41,6 +42,7 @@ const initialState = {
   positions: (positionsLocalStorage && JSON.parse(positionsLocalStorage)) || [],
   statuses: (statusesLocalStorage && JSON.parse(statusesLocalStorage)) || ['pre', 'live', 'final'],
   cardsView: cardsViewLocalStorage || 'compact',
+  loading: false,
   // season: new HelperCBB().getCurrentSeason(),
 } as InitialState;
 
@@ -124,8 +126,11 @@ export const display = createSlice({
       }
       state.cardsView = action.payload;
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
   }
 });
 
-export const { /*setSeason,*/ setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView } = display.actions;
+export const { /*setSeason,*/ setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView, setLoading } = display.actions;
 export default display.reducer;

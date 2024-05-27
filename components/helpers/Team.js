@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/redux/hooks";
 
 class Team {
   constructor(args) {
@@ -34,9 +35,10 @@ class Team {
 
   getConference() {
     let name = 'Unknown';
+    const conferences = useAppSelector(state => state.dictionaryReducer.conference);
 
-    if (this.team.conference) {
-      name = this.team.conference;
+    if (this.team.conference_id) {
+      name = conferences[this.team.conference_id].code;
     }
 
     return name;

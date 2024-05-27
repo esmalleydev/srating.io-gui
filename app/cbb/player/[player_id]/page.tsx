@@ -4,7 +4,7 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { unstable_noStore } from 'next/cache';
 
 type Props = {
-  params: { team_id: string };
+  params: { player_id: string };
 };
 
 export async function generateMetadata(

@@ -23,48 +23,74 @@ import { updateConferences } from '@/redux/features/display-slice';
 
 const ConferencePicker = () => {
   const dispatch = useAppDispatch();
-  const conferences = useAppSelector(state => state.displayReducer.conferences);
+  const selected = useAppSelector(state => state.displayReducer.conferences);
+  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
   const { width } = useWindowDimensions() as Dimensions;
 
-  const selected = conferences;
   const [confOpen, setConfOpen] = useState(false);
 
-  const conferenceOptions = [
+  type conferenceOption = {
+    value: string | null;
+    label: string;
+  };
+
+  const conferenceOptions: conferenceOption[] = [
     {'value': null, 'label': 'All'},
-    {'value': 'ACC', 'label': 'ACC'},
-    {'value': 'Big 12', 'label': 'Big 12'},
-    {'value': 'SEC', 'label': 'SEC'},
-    {'value': 'Big Ten', 'label': 'Big Ten'},
-    {'value': 'Pac-12', 'label': 'Pac-12'},
-    {'value': 'Big East', 'label': 'Big East'},
-    {'value': 'Atlantic 10', 'label': 'Atlantic 10'},
-    {'value': 'Sun Belt', 'label': 'Sun Belt'},
-    {'value': 'Patriot', 'label': 'Patriot'},
-    {'value': 'Mountain West', 'label': 'Mountain West'},
-    {'value': 'MAC', 'label': 'MAC'},
-    {'value': 'MVC', 'label': 'MVC'},
-    {'value': 'WCC', 'label': 'WCC'},
-    {'value': 'Big West', 'label': 'Big West'},
-    {'value': 'CUSA', 'label': 'C-USA'},
-    {'value': 'Ivy League', 'label': 'Ivy League'},
-    {'value': 'Summit League', 'label': 'Summit League'},
-    {'value': 'Horizon', 'label': 'Horizon'},
-    {'value': 'MAAC', 'label': 'MAAC'},
-    {'value': 'OVC', 'label': 'OVC'},
-    {'value': 'SoCon', 'label': 'SoCon'},
-    {'value': 'SWAC', 'label': 'SWAC'},
-    {'value': 'Big Sky', 'label': 'Big Sky'},
-    {'value': 'Southland', 'label': 'Southland'},
-    {'value': 'ASUN', 'label': 'ASUN'},
-    {'value': 'America East', 'label': 'America East'},
-    {'value': 'WAC', 'label': 'WAC'},
-    {'value': 'AAC', 'label': 'AAC'},
-    {'value': 'CAA', 'label': 'CAA'},
-    {'value': 'Big South', 'label': 'Big South'},
-    {'value': 'NEC', 'label': 'NEC'},
-    {'value': 'MEAC', 'label': 'MEAC'},
-    {'value': 'DI Independent', 'label': 'DI Independent'},
   ];
+
+  for (let conference_id in conferences) {
+    const row = conferences[conference_id];
+    if (row.inactive === 0) {
+      let label = row.code;
+
+      if (row.code.toLowerCase() === row.name.toLowerCase()) {
+        label = row.name;
+      }
+
+      conferenceOptions.push({
+        'value': row.conference_id,
+        'label': label,
+      });
+    }
+  }
+
+  // rip PAC-12, you are now garbo
+  const priority = [
+    'a9f23620-1095-11ef-9686-72fab666226a', // Big 12
+    'a933edfd-1095-11ef-9686-72fab666226a', // ACC
+    'aa230787-1095-11ef-9686-72fab666226a', // Big east
+    'aaa5086f-1095-11ef-9686-72fab666226a', // Big ten
+    'ad5f5c4f-1095-11ef-9686-72fab666226a', // SEC
+  ];
+
+  conferenceOptions.sort((a, b) => {
+    // sort all first
+    if (!a.value) {
+      return -1;
+    }
+    if (!b.value) {
+      return 1;
+    }
+
+    // other
+    if (a.value === '006bbb2b-10c2-11ef-9686-72fab666226a') {
+      return 1;
+    }
+    if (b.value === '006bbb2b-10c2-11ef-9686-72fab666226a') {
+      return -1;
+    }
+
+    // sort priority first
+    if (priority.indexOf(a.value) > -1 && priority.indexOf(b.value) == -1) {
+      return -1;
+    }
+    if (priority.indexOf(b.value) > -1 && priority.indexOf(a.value) === -1) {
+      return 1;
+    }
+
+    // sort alphabetically
+    return a.label.localeCompare(b.label);
+  });
 
 
   const handleConfOpen = () => {

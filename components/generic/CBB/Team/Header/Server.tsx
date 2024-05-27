@@ -20,9 +20,19 @@ const Server = async({season, team_id}) => {
     },
   }, {revalidate: revalidateSeconds});
 
+  const team_season_conferences = await useServerAPI({
+    'class': 'team_season_conference',
+    'function': 'read',
+    'arguments': {
+      'team_id': team_id
+    }
+  });
+
+  const seasons = Object.values(team_season_conferences).map((row => row.season));
+
   return (
     <>
-      <HeaderClient team = {team} season = {season} />
+      <HeaderClient team = {team} season = {season} seasons = {seasons} />
     </>
   );
 }

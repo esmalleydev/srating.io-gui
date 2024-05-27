@@ -81,14 +81,15 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-const Ranking = (props) => {
+const Ranking = ({ data, generated, rankView }) => {
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
-  const conferences = useAppSelector(state => state.displayReducer.conferences);
+  const selectedConferences = useAppSelector(state => state.displayReducer.conferences);
+  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
   const positions = useAppSelector(state => state.displayReducer.positions);
   const order = useAppSelector(state => state.rankingReducer.order);
   const orderBy = useAppSelector(state => state.rankingReducer.orderBy);
@@ -98,6 +99,9 @@ const Ranking = (props) => {
   const filterOriginalConf = useAppSelector(state => state.rankingReducer.filterOriginalConf);
   const tableScrollTop = useAppSelector(state => state.rankingReducer.tableScrollTop);
   const tableFullscreen = useAppSelector(state => state.rankingReducer.tableFullscreen);
+
+  // todo grab this on page load
+  const seasons = [2024,2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011];
 
   interface TableComponentsType {
     Scroller: React.ComponentType<any>;
@@ -111,13 +115,10 @@ const Ranking = (props) => {
   const { height, width } = useWindowDimensions() as Dimensions;
   const breakPoint = 425;
 
-  const data = props.data;
-
   const [loading, setLoading] = useState(false);
   const [spin, setSpin] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);
   const [season, setSeason] = useState(searchParams?.get('season') || new HelperCBB().getCurrentSeason());
-  const [rankView, setRankView] = useState(searchParams?.get('view') || 'team');
   const [view, setView] = useState('composite');
   const [customColumns, setCustomColumns] = useState(['composite_rank', 'name']);
   const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
@@ -149,7 +150,14 @@ const Ranking = (props) => {
   useEffect(() => {
     const localRankView = localStorage.getItem('CBB.RANKING.VIEW') || null;
     const localRankCols = localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView) || null;
-    setView(localRankView ? localRankView : 'composite');
+
+    // since the coach view does not have off or def chips, reset it
+    let view_ = localRankView ? localRankView : 'composite';
+    if (rankView === 'coach' && view_ !== 'composite' && view_ !== 'custom') {
+      view_ = 'composite';
+    }
+
+    setView(view_);
     setCustomColumns(localRankCols ?  JSON.parse(localRankCols) : ['composite_rank', 'name']);
   }, []);
 
@@ -160,6 +168,7 @@ const Ranking = (props) => {
     {'value': 'player', 'label': 'Player rankings'},
     {'value': 'conference', 'label': 'Conference rankings'},
     {'value': 'transfer', 'label': 'Transfer rankings'},
+    {'value': 'coach', 'label': 'Coach rankings'},
   ];
 
   const handleRankView = (newRankView) => {
@@ -185,7 +194,6 @@ const Ranking = (props) => {
     dispatch(setOrderBy('composite_rank'));
     dispatch(setTableScrollTop(0));
     setView('composite');
-    setRankView(newRankView);
   }
 
   const handleSeason = (season) => {
@@ -205,13 +213,14 @@ const Ranking = (props) => {
   }
 
   let confChips: React.JSX.Element[] = [];
-  for (let i = 0; i < conferences.length; i++) {
-    confChips.push(<Chip sx = {{'margin': '5px'}} label={conferences[i]} onDelete={() => {dispatch(updateConferences(conferences[i]))}} />);
+  for (let i = 0; i < selectedConferences.length; i++) {
+    const conference = conferences[selectedConferences[i]]
+    confChips.push(<Chip key = {selectedConferences[i]} sx = {{'margin': '5px'}} label={conference.code} onDelete={() => {dispatch(updateConferences(selectedConferences[i]))}} />);
   }
 
   let positionChips: React.JSX.Element[] = [];
   for (let i = 0; i < positions.length; i++) {
-    positionChips.push(<Chip sx = {{'margin': '5px'}} label={positions[i]} onDelete={() => {dispatch(updatePositions(positions[i]))}} />);
+    positionChips.push(<Chip key = {positions[i]} sx = {{'margin': '5px'}} label={positions[i]} onDelete={() => {dispatch(updatePositions(positions[i]))}} />);
   }
 
   const handleTeam = (team_id) => {
@@ -236,16 +245,51 @@ const Ranking = (props) => {
     });
   }
 
+  const handleCoach = (coach_id) => {
+    if (tableRef && tableRef.current) {
+      dispatch(setTableScrollTop(tableRef.current.scrollTop));
+    }
+    setSpin(true);
+    startTransition(() => {
+      router.push('/cbb/coach/' + coach_id+'?season='+season);
+      setSpin(false);
+    });
+  }
+
   const getColumns = () => {
     if (view === 'composite') {
       if (rankView === 'team') {
-        return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'elo_sos', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'streak', 'conf'];
+        return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'elo_sos', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'streak', 'conference_code'];
       } else if (rankView === 'player') {
         return ['composite_rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
       } else if (rankView === 'conference') {
         return ['composite_rank', 'name', 'adjusted_efficiency_rating', 'elo', 'elo_sos', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'nonconfwins'];
       } else if (rankView === 'transfer') {
         return ['composite_rank', 'name', 'team_name', 'committed_team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
+      } else if (rankView === 'coach') {
+        return [
+          'composite_rank',
+          'name',
+          'team_name',
+          'elo',
+          'games',
+          // 'wins',
+          // 'losses',
+          // 'nonconfwins',
+          // 'nonconflosses',
+          // 'neutralwins',
+          // 'neutrallosses',
+          // 'homewins',
+          // 'homelosses',
+          // 'roadwins',
+          // 'roadlosses',
+          'win_percentage',
+          'conf_win_percentage',
+          'nonconf_win_percentage',
+          'home_win_percentage',
+          'road_win_percentage',
+          'neutral_win_percentage',
+        ];
       }
     } else if (view === 'offense') {
       if (rankView === 'team') {
@@ -272,7 +316,8 @@ const Ranking = (props) => {
 
   const headCells = getHeaderColumns({rankView});
   
-  const rowsData = getRowsData({ data, rankView, conferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf });
+  const rowsData = getRowsData({ data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf });
+
   let rows = rowsData.rows;
   let lastUpdated = rowsData.lastUpdated;
 
@@ -302,7 +347,7 @@ const Ranking = (props) => {
 
     let a_value = a[orderBy];
     let b_value = b[orderBy];
-    if (orderBy === 'wins' || orderBy === 'conf_record') {
+    if ((rankView !== 'coach' && orderBy === 'wins') || orderBy === 'conf_record') {
       a_value = +a[orderBy].split('-')[0];
       b_value = +b[orderBy].split('-')[0];
     }
@@ -360,9 +405,11 @@ const Ranking = (props) => {
             handlePlayer((props as any).item.player_id);
           } else if (rankView === 'team' && (props as any).item.team_id) {
             handleTeam((props as any).item.team_id);
-          } else if (rankView === 'conference' && (props as any).item.conference) {
-            dispatch(updateConferences((props as any).item.conference));
+          } else if (rankView === 'conference' && (props as any).item.conference_id) {
+            dispatch(updateConferences((props as any).item.conference_id));
             handleRankView('team');
+          } else if (rankView === 'coach' && (props as any).item.coach_id) {
+            handleCoach((props as any).item.coach_id);
           }
         }} />
       );
@@ -595,9 +642,9 @@ const Ranking = (props) => {
             <div style = {{'padding': '5px 20px 0px 20px'}}>
               <div style = {{'display': 'flex', 'justifyContent': 'right', 'flexWrap': 'wrap'}}>
                 <OptionPicker title = 'View' options = {rankViewOptions} selected = {rankView} actionHandler = {handleRankView} />
-                <SeasonPicker selected = {season} actionHandler = {handleSeason} />
+                <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
               </div>
-              <Typography variant = 'h5'>{'College basketball' + (rankView === 'transfer' ? ' transfers.' : ' rankings.')}</Typography>
+              <Typography variant = 'h5'>{'College basketball ' + rankView + ' rankings.'}</Typography>
               {
                 lastUpdated ?
                 <div style = {{'display': 'flex', 'alignItems': 'center', 'alignContent': 'center'}}>
@@ -609,15 +656,15 @@ const Ranking = (props) => {
               }
               <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
                 <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
-                <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} />
-                <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : 'filled'} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} />
+                {rankView !== 'coach' ? <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} /> : ''}
+                {rankView !== 'coach' ? <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : 'filled'} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} /> : ''}
                 <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : 'filled'} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
                 <ColumnPicker key = {rankView} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
               </div>
               <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'baseline', 'marginTop': '10px'}}>
                 <div style={{'display': 'flex', 'alignItems': 'center',}}>
                   {rankView === 'player' || rankView === 'transfer' ? <AdditionalOptions view = {rankView} /> : ''}
-                  {rankView === 'player' || rankView === 'team' || rankView === 'transfer' ? <ConferencePicker /> : ''}
+                  {rankView !== 'conference' ? <ConferencePicker /> : ''}
                   {rankView === 'player' || rankView === 'transfer' ? <PositionPicker selected = {positions} /> : ''}
                 </div>
                 <RankSearch rows = {allRows} callback = {handleSearch} rankView = {rankView} />

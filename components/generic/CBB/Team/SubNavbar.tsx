@@ -71,7 +71,7 @@ const SubNavBar = ({ view }) => {
   if (view === 'schedule') {
     if (scheduleView === 'default') {
       leftButtons.push(
-        <Tooltip title = {'Toggle all historical charts'}>
+        <Tooltip key = {'toggle-all-historical-charts-tooltip'} title = {'Toggle all historical charts'}>
           <IconButton
             id = 'differential-button'
             onClick = {() => dispatch(setShowScheduleDifferentials(!showScheduleDifferentials))}
@@ -81,7 +81,7 @@ const SubNavBar = ({ view }) => {
         </Tooltip>
       );
     }
-    rightButtons.push(<ViewPicker view = {view} />);
+    rightButtons.push(<ViewPicker key = {'view-picker'} view = {view} />);
   } else if (view === 'stats') {
     let tabs: React.JSX.Element[] = [];
     
@@ -120,7 +120,7 @@ const SubNavBar = ({ view }) => {
 
 
     middleButtons.push(
-      <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} indicatorColor="secondary" textColor="inherit">
+      <Tabs key = {'tabs'} variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} indicatorColor="secondary" textColor="inherit">
         {tabs}
       </Tabs>
     );

@@ -70,17 +70,17 @@ async function getData({params, searchParams}) {
     }
   });
 
-  const conference: any = await useServerAPI({
-    'class': 'team',
-    'function': 'getConference',
+  const team_season_conference: any = await useServerAPI({
+    'class': 'team_season_conference',
+    'function': 'get',
     'arguments': {
       'team_id': team_id,
       'season': season,
     }
   });
 
-  if (team && conference) {
-    team.conference = conference.conference;
+  if (team && team_season_conference) {
+    team.conference_id = team_season_conference.conference_id;
   }
 
   return team;

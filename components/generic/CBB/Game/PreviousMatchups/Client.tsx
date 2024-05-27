@@ -5,11 +5,11 @@ import { Chip, Typography, Paper, Skeleton } from '@mui/material';
 import HelperCBB from '@/components/helpers/CBB';
 
 import PreviousMatchupTile from '@/components/generic/CBB/Game/PreviousMatchups/Tile';
-import { Game, gamesDataType } from '@/types/cbb';
+import { Game, Games } from '@/types/cbb';
 
 
 
-const Client = ({cbb_game, previousMatchups}: {cbb_game: Game, previousMatchups: gamesDataType}) => {
+const Client = ({cbb_game, previousMatchups}: {cbb_game: Game, previousMatchups: Games}) => {
 
   const [showAllPreviousMatchups, setShowAllPreviousMatchups] = useState(false);
 

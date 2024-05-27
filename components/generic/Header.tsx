@@ -70,6 +70,9 @@ const Header = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const logoPrimaryColor = getLogoColorPrimary();
+  const logoSecondaryColor = getLogoColorSecondary();
+
   useEffect(() => {
     setIsLoading(false);
   }, []);
@@ -175,7 +178,7 @@ const Header = () => {
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, 'alignItems': 'center' }} style = {logoStyle} onClick = {handleHome}>
                   <img src={sratingLogo.src} width = '20' height = '20' style = {{'marginRight': 5}} />
-                  <><span style = {{'color': getLogoColorPrimary()}}>S</span><span style = {{'color': (theme.palette.mode === 'dark' ? getLogoColorSecondary() : '#fff')}}>RATING</span></>
+                  <><span style = {{'color': logoPrimaryColor}}>S</span><span style = {{'color': (theme.palette.mode === 'dark' ? logoSecondaryColor : '#fff')}}>RATING</span></>
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>

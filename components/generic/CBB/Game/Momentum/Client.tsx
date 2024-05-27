@@ -11,7 +11,7 @@ import Skeleton from '@mui/material/Skeleton';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { Game, gamesDataType } from '@/types/cbb';
+import { Game, Games } from '@/types/cbb';
 
 
 // TODO update to show differential from season averages, build it into stats compare component?
@@ -32,8 +32,8 @@ const Client = ({cbb_game, momentumData, stats}) => {
   const awayMomentumStats = (momentumData && momentumData[cbb_game.away_team_id] && momentumData[cbb_game.away_team_id].stats) || {}; 
   const homeMomentumStats = (momentumData && momentumData[cbb_game.home_team_id] && momentumData[cbb_game.home_team_id].stats) || {};
 
-  const awayTeamGames: gamesDataType = (momentumData && momentumData[cbb_game.away_team_id] && momentumData[cbb_game.away_team_id].cbb_games) || {}; 
-  const homeTeamGames: gamesDataType = (momentumData && momentumData[cbb_game.home_team_id] && momentumData[cbb_game.home_team_id].cbb_games) || {}; 
+  const awayTeamGames: Games = (momentumData && momentumData[cbb_game.away_team_id] && momentumData[cbb_game.away_team_id].cbb_games) || {}; 
+  const homeTeamGames: Games = (momentumData && momentumData[cbb_game.home_team_id] && momentumData[cbb_game.home_team_id].cbb_games) || {}; 
 
 
   const overviewRows = [

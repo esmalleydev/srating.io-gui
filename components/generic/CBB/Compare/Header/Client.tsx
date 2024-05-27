@@ -32,6 +32,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
 
   const dispatch = useAppDispatch();
   const displayRank = useAppSelector(state => state.displayReducer.rank);
+  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
   // const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
 
   const handleRemove = (team_id) => {
@@ -139,7 +140,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
             </Typography>
           </div>
           <div style = {{'fontSize': '14px', 'display': 'flex', 'justifyContent': justifyContent}}>
-            <Typography variant = 'overline' color = 'text.secondary' style = {{'lineHeight': 'initial'}}>{(width > breakPoint ? team?.conference + ' ' : '')}({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
+            <Typography variant = 'overline' color = 'text.secondary' style = {{'lineHeight': 'initial'}}>{(width > breakPoint ? (team ? conferences[team.conference_id].code : '') + ' ' : '')}({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
           </div>
         </div>
         {team_id === away_team_id ? getRemoveButton() : ''}
