@@ -98,6 +98,11 @@ console.log(scores);
 
 ### [Game](app/cbb/games/[cbb_game_id]/README.md)
 
+### Tips
+May need to clear out .next and node_modules folder before rebuilding
+`rm -r node_modules`
+`rm -r .next`
+
 ## Other Scripts
 
 ### `npm run build`

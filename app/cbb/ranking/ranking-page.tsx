@@ -644,7 +644,7 @@ const Ranking = ({ data, generated, rankView }) => {
                 <OptionPicker title = 'View' options = {rankViewOptions} selected = {rankView} actionHandler = {handleRankView} />
                 <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
               </div>
-              <Typography variant = 'h5'>{'College basketball ' + rankView + ' rankings.'}</Typography>
+              <Typography variant = {width < 500 ? 'h6' : 'h5'}>{'College basketball ' + rankView + ' rankings.'}</Typography>
               {
                 lastUpdated ?
                 <div style = {{'display': 'flex', 'alignItems': 'center', 'alignContent': 'center'}}>
