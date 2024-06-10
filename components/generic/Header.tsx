@@ -184,7 +184,7 @@ const Header = () => {
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
                 <Box sx={{ flexGrow: 0, 'marginRight': (width < 600 ? 0 : '5px') }}>
-                  {width < 625 ? <IconButton onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search />}
+                  {width < 625 ? <IconButton onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search onRouter={null} focus={false} />}
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
                   {
