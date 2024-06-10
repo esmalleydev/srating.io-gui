@@ -10,7 +10,7 @@ const Server = async({cbb_game}) => {
   const cbb_game_id = cbb_game.cbb_game_id;
   const revalidateSeconds = 3600; // 60 * 60; // 1 hour
 
-  const rankings = await useServerAPI({
+  const data = await useServerAPI({
     'class': 'cbb_game',
     'function': 'getTrendsRankings',
     'arguments': {
@@ -20,7 +20,7 @@ const Server = async({cbb_game}) => {
 
   return (
     <>
-      <Client cbb_game = {cbb_game} rankings = {rankings} />
+      <Client cbb_game = {cbb_game} cbb_rankings = {data.cbb_rankings} cbb_statistic_rankings = {data.cbb_statistic_rankings} />
     </>
   );
 }

@@ -19,7 +19,6 @@ import { useScrollContext } from '@/contexts/scrollContext';
 
 const Tile = ({ cbb_game, team}) => {
   const self = this;
-  const ColorUtil = new Color();
   const myRef: RefObject<HTMLDivElement> = useRef(null);
   const router = useRouter();
   const theme = useTheme();
@@ -138,7 +137,7 @@ const Tile = ({ cbb_game, team}) => {
     predictionContainer.push(<Locked key = {1} iconFontSize = {(width < 475 ? '18px' : '20px')} />);
   } else {
     const winPercentage = (cbb_game.home_team_id === team.team_id ? +(cbb_game.home_team_rating * 100).toFixed(0) : +(cbb_game.away_team_rating * 100).toFixed(0));
-    predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{'color': ColorUtil.lerpColor(worstColor, bestColor, winPercentage / 100)}}>{winPercentage}%</Typography>);
+    predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{'color': Color.lerpColor(worstColor, bestColor, winPercentage / 100)}}>{winPercentage}%</Typography>);
   }
 
   const supRankStyle: React.CSSProperties = {
@@ -148,7 +147,7 @@ const Tile = ({ cbb_game, team}) => {
   const otherSideRank = CBB.getTeamRank(otherSide, displayRank);
 
   if (otherSideRank) {
-    supRankStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(otherSideRank / CBB.getNumberOfD1Teams(cbb_game.season))));
+    supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(otherSideRank / CBB.getNumberOfD1Teams(cbb_game.season))));
   }
 
   // other team W-L

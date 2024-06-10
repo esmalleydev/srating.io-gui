@@ -27,7 +27,6 @@ import useOnScreen from '@/components/hooks/useOnScreen';
 
 
 const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
-  const ColorUtil = new Color();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const theme = useTheme();
@@ -164,8 +163,8 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     const awayPercentage = +(cbb_game.away_team_rating * 100).toFixed(0);
     const homePercentage = +(cbb_game.home_team_rating * 100).toFixed(0);
 
-    awayWinPercentageContainer.push(<Typography key = {'away_percent'} variant = 'caption' style = {{'color': ColorUtil.lerpColor(worstColor, bestColor, cbb_game.away_team_rating)}}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
-    homeWinPercentageContainer.push(<Typography key = {'home_percent'} variant = 'caption' style = {{'color': ColorUtil.lerpColor(worstColor, bestColor, cbb_game.home_team_rating)}}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+    awayWinPercentageContainer.push(<Typography key = {'away_percent'} variant = 'caption' style = {{'color': Color.lerpColor(worstColor, bestColor, cbb_game.away_team_rating)}}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+    homeWinPercentageContainer.push(<Typography key = {'home_percent'} variant = 'caption' style = {{'color': Color.lerpColor(worstColor, bestColor, cbb_game.home_team_rating)}}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
   }
 
   const getOddsLine = () => {
@@ -322,7 +321,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     const teamRank = CBB.getTeamRank(side, displayRank);
 
     if (teamRank) {
-      supRankStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(teamRank / CBB.getNumberOfD1Teams(cbb_game.season))));
+      supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(teamRank / CBB.getNumberOfD1Teams(cbb_game.season))));
     }
 
     // let spread: string | null = null;

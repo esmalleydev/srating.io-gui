@@ -4,6 +4,7 @@ import { Metadata, ResolvingMetadata } from 'next';
 import HelperCBB from '@/components/helpers/CBB';
 import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
+import { Teams, TeamSeasonConferences, TransferPlayerSeasons } from '@/types/cbb';
 
 
 type Props = {
@@ -79,7 +80,7 @@ async function getData(searchParams) {
 
   if (view === 'transfer') {
     data = Object.assign({}, data);
-    const cbb_transfer_player_seasons = await useServerAPI({
+    const cbb_transfer_player_seasons: TransferPlayerSeasons = await useServerAPI({
       'class': 'cbb_transfer_player_season',
       'function': 'read',
       'arguments': {
@@ -87,7 +88,7 @@ async function getData(searchParams) {
       }
     });
 
-    const teams = await useServerAPI({
+    const teams: Teams = await useServerAPI({
       'class': 'team',
       'function': 'read',
       'arguments': {
@@ -96,7 +97,7 @@ async function getData(searchParams) {
       }
     });
 
-    const team_season_conferences = await useServerAPI({
+    const team_season_conferences: TeamSeasonConferences = await useServerAPI({
       'class': 'team_season_conference',
       'function': 'read',
       'arguments': {

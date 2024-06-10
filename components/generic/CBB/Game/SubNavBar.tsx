@@ -4,6 +4,7 @@ import { Tab, Tabs } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 
+// todo fix the tabIndex, go to trends -> prev. matchups -> game details -> trends, it is on the stat compare contents but prev.matchups tab
 
 const SubNavBar = ({ view, subview, tabOrder}) => {
   const router = useRouter();

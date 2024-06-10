@@ -16,26 +16,47 @@ import { Coach, Team } from '@/types/cbb';
 import { Link } from '@mui/material';
 
 
-const ColorUtil = new Color();
-
-const Client = ({cbb_coach_statistic_ranking, season}) => {
+const Client = ({cbb_coach_statistic_rankings, season}) => {
 
   // todo dont use any
   const coach: Coach | any = useAppSelector(state => state.coachReducer.coach);
   const coach_team_seasons = useAppSelector(state => state.coachReducer.coach_team_seasons);
   const teams = useAppSelector(state => state.coachReducer.teams);
 
-  let team;
+  const season_x_team_id = {};
+
+  let maxSeason = null;
 
   for (let coach_team_season_id in coach_team_seasons) {
     const row = coach_team_seasons[coach_team_season_id];
-    if (
-      +season === +row.season &&
-      row.team_id in teams
-    ) {
-      team = teams[row.team_id];
+    season_x_team_id[row.season] = row.team_id;
+
+    if (!maxSeason || maxSeason < row.season) {
+      maxSeason = row.season;
     }
   }
+
+  const lastSeason = (season in season_x_team_id ? season : (
+    maxSeason ? maxSeason : Object.keys(teams)[0]
+  ));
+
+  console.log(lastSeason)
+
+  const season_x_cbb_statistic_ranking_id = {};
+
+  console.log(cbb_coach_statistic_rankings)
+
+  for (let cbb_statistic_ranking_id in cbb_coach_statistic_rankings) {
+    const row = cbb_coach_statistic_rankings[cbb_statistic_ranking_id];
+
+    season_x_cbb_statistic_ranking_id[row.season] = cbb_statistic_ranking_id;
+  }
+
+  console.log(season_x_cbb_statistic_ranking_id)
+
+  const cbb_coach_statistic_ranking = cbb_coach_statistic_rankings[season_x_cbb_statistic_ranking_id[lastSeason]];
+
+  const team = teams[season_x_team_id[lastSeason]];
   const breakPoint = 475;
 
   const router = useRouter();
@@ -64,7 +85,7 @@ const Client = ({cbb_coach_statistic_ranking, season}) => {
   const rank = teamHelper.getRank(displayRank);
 
   if (rank) {
-    supStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
+    supStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
   }
 
   const handleTeamClick = () => {

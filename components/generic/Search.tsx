@@ -5,13 +5,13 @@ import useDebounce from '../hooks/useDebounce';
 
 import { styled, alpha, useTheme } from '@mui/material/styles';
 
-import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useClientAPI } from '../clientAPI';
+import { Coach, Player, Team } from '@/types/cbb';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -55,15 +55,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const Search = (props) => {
+
+
+const Search = ({ onRouter, focus }) => {
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
+  type searchPlayer = Player & {
+    begin: string;
+    end: string;
+  };
+
+  type searchCoach = Coach & {
+    begin: string;
+    end: string;
+  };
+
   const [value, setValue] = useState('');
   const [autoCompleteValue, setAutoCompleteValue] = useState(null);
-  const [teams, setTeams] = useState([]);
-  const [players, setPlayers] = useState([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [players, setPlayers] = useState<searchPlayer[]>([]);
+  const [coaches, setCoaches] = useState<searchCoach[]>([]);
   const [loading, setLoading] = useState(false);
   const [spin, setSpin] = useState(false);
 
@@ -78,10 +91,12 @@ const Search = (props) => {
     }).then((response) => {
       setTeams((response && response.teams) || []);
       setPlayers((response && response.players) || []);
+      setCoaches((response && response.coaches) || []);
       setLoading(false);
     }).catch((e) => {
       setTeams([]);
       setPlayers([]);
+      setCoaches([]);
       setLoading(false);
     });
   }, 200);
@@ -95,45 +110,78 @@ const Search = (props) => {
     debouncedRequest();
   };
 
-  const options = [].concat(teams.map((team) => {
+  type OptionsType = {
+    group: string;
+    name: string;
+    team_id?: string;
+    player_id?: string;
+    coach_id?: string;
+  };
+
+  const teamOptions: OptionsType[] = teams.map((team) => {
     return {
-      'group': 'Teams',
-      'team_id': team.team_id,
-      'name': team.alt_name,
-    }
-  })).concat(players.map((player) => {
+      group: 'Teams',
+      team_id: team.team_id,
+      name: team.alt_name,
+    };
+  });
+  
+  const playerOptions: OptionsType[] = players.map((player) => {
     return {
-      'group': 'Players',
-      'player_id': player.player_id,
-      'name': player.first_name + ' ' + player.last_name + ' (' + player.begin + '-' + player.end + ')',
-    }
-  }));
+      group: 'Players',
+      player_id: player.player_id,
+      name: player.first_name + ' ' + player.last_name + ' (' + player.begin + '-' + player.end + ')',
+    };
+  });
+  
+  const coachOptions: OptionsType[] = coaches.map((coach) => {
+    return {
+      group: 'Coaches',
+      coach_id: coach.coach_id,
+      name: coach.first_name + ' ' + coach.last_name + ' (' + coach.begin + '-' + coach.end + ')',
+    };
+  });
+  
+  const options: OptionsType[] = [
+    ...teamOptions,
+    ...playerOptions,
+    ...coachOptions,
+  ];
 
   const handleClick = (event, option) => {
-    if (!option || (!option.player_id && !option.team_id)) {
+    if (!option || (!option.player_id && !option.team_id && !option.coach_id)) {
       return;
     }
     setSpin(true);
-    if (option && option.player_id) {
+    if (option && option.coach_id) {
+      startTransition(() => {
+        router.push('/cbb/coach/' + option.coach_id);
+        setSpin(false);
+        if (onRouter) {
+          onRouter();
+        }
+      });
+    } else if (option && option.player_id) {
       startTransition(() => {
         router.push('/cbb/player/' + option.player_id);
         setSpin(false);
-        if (props.onRouter) {
-          props.onRouter();
+        if (onRouter) {
+          onRouter();
         }
       });
     } else if (option && option.team_id) {
       startTransition(() => {
         router.push('/cbb/team/' + option.team_id);
         setSpin(false);
-        if (props.onRouter) {
-          props.onRouter();
+        if (onRouter) {
+          onRouter();
         }
       });
     }
     setValue('');
     setTeams([]);
     setPlayers([]);
+    setCoaches([]);
   };
 
 
@@ -144,7 +192,7 @@ const Search = (props) => {
         <SearchIcon />
       </SearchIconWrapper>
       <Autocomplete
-        id="search-team-player"
+        id="search-team-player-coach"
         freeSolo
         filterOptions={(x) => x}
         onChange = {handleClick}
@@ -164,7 +212,7 @@ const Search = (props) => {
               {...rest}
               value = {value}
               placeholder = {'Search'}
-              autoFocus = {props.focus}
+              autoFocus = {focus}
               sx = {{'minWidth': '200px'}}
               onChange = {onChange} 
             />

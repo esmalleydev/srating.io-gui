@@ -6,6 +6,7 @@ import { Box, SortDirection, Table, TableBody, TableContainer, TableHead, TableR
 import { styled, useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
+import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import utilsSorter from  '@/components/utils/Sorter';
@@ -44,6 +45,8 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
   const [orderBy, setOrderBy] = useState<string>('season');
   const [spin, setSpin] = useState(false);
 
+  const CBB = new HelperCBB();
+
   const rows: any = [];
 
   const team_id_x_season_x_cbb_statistic_ranking = {};
@@ -72,8 +75,10 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
     ) {
       const stats = team_id_x_season_x_cbb_statistic_ranking[coach_team_season.team_id][coach_team_season.season];
 
-      row.wins = stats.wins || 0;
-      row.losses = stats.losses || 0;
+      row.record = (stats.wins || 0) + ' - ' + (stats.losses || 0);
+      row.conf_record = (stats.confwins === null || stats.conflosses === null) ? '-' : (stats.confwins || 0) + ' - ' + (stats.conflosses || 0);
+
+      Object.assign(row, stats);
     }
 
     rows.push(row);
@@ -82,7 +87,7 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
 
   // starting elo, ending elo?
   const getColumns = () => {
-    return ['season', 'team', 'wins', 'losses'];
+    return ['season', 'team', 'record', 'conf_record', 'adjusted_efficiency_rating', 'offensive_rating', 'defensive_rating'];
   };
 
   const handleClick = (team_id, season) => {
@@ -109,19 +114,47 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
       tooltip: 'Team',
       sticky: false,
     },
-    'wins': {
-      id: 'wins',
-      numeric: true,
-      label: 'Wins',
-      tooltip: 'Wins',
+    'record': {
+      id: 'record',
+      numeric: false,
+      label: 'W/L',
+      tooltip: 'Record',
       sticky: false,
     },
-    'losses': {
-      id: 'losses',
-      numeric: true,
-      label: 'Losses',
-      tooltip: 'Losses',
+    'conf_record': {
+      id: 'conf_record',
+      numeric: false,
+      label: 'CR',
+      tooltip: 'Conference record',
       sticky: false,
+    },
+    'adjusted_efficiency_rating': {
+      id: 'adjusted_efficiency_rating',
+      numeric: true,
+      label: 'aEM',
+      tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + aSOS',
+      'sort': 'higher',
+    },
+    'points': {
+      id: 'points',
+      numeric: true,
+      label: 'PTS',
+      tooltip: 'Average points per game',
+      'sort': 'higher',
+    },
+    'offensive_rating': {
+      id: 'offensive_rating',
+      numeric: true,
+      label: 'ORT',
+      tooltip: 'Offensive rating ((PTS / Poss) * 100)',
+      'sort': 'higher',
+    },
+    'defensive_rating': {
+      id: 'defensive_rating',
+      numeric: true,
+      label: 'DRT',
+      tooltip: 'Defensive rating ((Opp. PTS / Opp. Poss) * 100)',
+      'sort': 'lower',
     },
   };
 
@@ -134,8 +167,7 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
     setOrderBy(id);
   };
 
-  // todo this makes no sense...doesnt actually match what is in the gui
-  const seasonCellMaxWidth = 25;
+  const seasonCellMaxWidth = 75;
 
   const getTable = () => {
     let b = 0;
@@ -168,12 +200,12 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
 
       for (let i = 0; i < columns.length; i++) {
         if (columns[i] === 'season') {
-          tableCells.push(<TableCell key = {i} sx = {Object.assign(tdStyle, {'maxWidth': seasonCellMaxWidth, 'minWidth': seasonCellMaxWidth, 'width': seasonCellMaxWidth})}>{row[columns[i]] || 0}</TableCell>);
+          tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'maxWidth': seasonCellMaxWidth, 'minWidth': seasonCellMaxWidth, 'width': seasonCellMaxWidth})}>{row[columns[i]] || 0}</TableCell>);
         } else if (columns[i] === 'team') {
           const teamHelper = new HelperTeam({'team': teams[row.team_id]});
           tableCells.push(<TableCell key = {i} sx = {tdStyle}>{teamHelper.getName()}</TableCell>);
         } else {
-          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}</TableCell>);
+          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[columns[i] + '_rank'] && row[columns[i]] !== null ? <RankSpan rank = {row[columns[i] + '_rank']} useOrdinal = {true} max = {CBB.getNumberOfD1Teams(row.season)} />  : ''}</TableCell>);
         }
       } 
 

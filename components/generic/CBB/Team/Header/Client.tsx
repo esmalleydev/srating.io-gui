@@ -12,34 +12,11 @@ import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Link } from '@mui/material';
 
 
-const ColorUtil = new Color();
 
-const Client = ({team, season, seasons}) => {
-  // interface Team {
-  //   team_id: string;
-  //   char6: string;
-  //   code: string;
-  //   name: string;
-  //   alt_name: string;
-  //   primary_color: string;
-  //   secondary_color: string;
-  //   cbb_d1: number;
-  //   cbb: number;
-  //   cfb: number;
-  //   nba: number;
-  //   nfl: number;
-  //   nhl: number;
-  //   guid: string;
-  //   deleted: number;
-  //   cbb_ranking: object;
-  //   stats: {
-  //     wins: number;
-  //     losses: number;
-  //   };
-  // };
-
+const Client = ({team, season, seasons, coach}) => {
   const breakPoint = 475;
 
   const router = useRouter();
@@ -68,7 +45,7 @@ const Client = ({team, season, seasons}) => {
   const rank = teamHelper.getRank(displayRank);
 
   if (rank) {
-    supStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
+    supStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
   }
 
   const handleSeason = (season) => {
@@ -83,7 +60,15 @@ const Client = ({team, season, seasons}) => {
         setSpin(false);
       });
     }
-  }
+  };
+
+  const handleCoach = () => {
+    setSpin(true);
+    startTransition(() => {
+      router.push('/cbb/coach/' + coach.coach_id/*+'?season='+season*/);
+      setSpin(false);
+    });
+  };
 
 
   return (
@@ -100,7 +85,7 @@ const Client = ({team, season, seasons}) => {
         <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
-        <Typography variant = 'overline' color = 'text.secondary'>{teamHelper.getConference()}</Typography>
+        <Typography variant = 'overline' color = 'text.secondary'>{teamHelper.getConference()} | <Link onClick = {handleCoach} underline='hover' style={{cursor: 'pointer'}}>{coach.first_name.charAt(0) + '. ' + coach.last_name}</Link></Typography>
       </div>
       <BackdropLoader open = {spin} />
     </div>

@@ -57,7 +57,7 @@ export async function useServerAPI(args, optional_fetch_args = {} as OptionalFet
     headers['X-SECRET-ID'] = secret;
   }
 
-  let data: object = {};
+  let data: any = {};
 
   if (isCached === false) {
     // console.log('MISS')

@@ -18,8 +18,6 @@ import { setScrollTop } from '@/redux/features/picks-slice';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
 
-const ColorUtil = new Color();
-
 
 const Tile = ({ cbb_game, picks}) => {
   const router = useRouter();
@@ -232,11 +230,11 @@ const Tile = ({ cbb_game, picks}) => {
     const homeRank = CBB.getTeamRank('home', displayRank);
   
     if (awayRank) {
-      awayColorStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(awayRank / CBB.getNumberOfD1Teams(cbb_game.season))));
+      awayColorStyle.color = Color.lerpColor(bestColor, worstColor, (+(awayRank / CBB.getNumberOfD1Teams(cbb_game.season))));
     }
 
     if (homeRank) {
-      homeColorStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(homeRank / CBB.getNumberOfD1Teams(cbb_game.season))));
+      homeColorStyle.color = Color.lerpColor(bestColor, worstColor, (+(homeRank / CBB.getNumberOfD1Teams(cbb_game.season))));
     }
     
     return (

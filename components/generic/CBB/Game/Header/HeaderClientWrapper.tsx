@@ -15,9 +15,6 @@ import Pin from '@/components/generic/CBB/Pin';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 
 
-const ColorUtil = new Color();
-
-
 const getBreakPoint = () => {
   return 450;
 };
@@ -129,7 +126,7 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
     };
 
     if (rank) {
-      supStyle.color = ColorUtil.lerpColor(getBestColor(), getWorstColor(), (+(rank / CBB.getNumberOfD1Teams(cbb_game.season))));
+      supStyle.color = Color.lerpColor(getBestColor(), getWorstColor(), (+(rank / CBB.getNumberOfD1Teams(cbb_game.season))));
     }
 
     return (

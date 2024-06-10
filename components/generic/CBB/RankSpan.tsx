@@ -3,9 +3,8 @@ import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
 
-import utilsColor from '@/components/utils/Color';
+import Color from '@/components/utils/Color';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-const ColorUtil = new utilsColor();
 
 const RankSpan = (props) => {
 
@@ -36,7 +35,7 @@ const RankSpan = (props) => {
 
   if (
     rank && 
-    (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+rank / max))) &&
+    (backgroundColor = Color.lerpColor(bestColor, worstColor, (+rank / max))) &&
     backgroundColor !== '#'
   ) {
     spanStyle.backgroundColor = backgroundColor;

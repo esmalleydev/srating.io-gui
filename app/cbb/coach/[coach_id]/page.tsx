@@ -75,7 +75,7 @@ async function getData({params, searchParams}): Promise<Data> {
 
   const coach = await getCoach({params, searchParams});
 
-  const coach_team_seasons = await useServerAPI({
+  const coach_team_seasons: CoachTeamSeasons = await useServerAPI({
     'class': 'coach_team_season', 
     'function': 'read',
     'arguments': {
@@ -83,7 +83,7 @@ async function getData({params, searchParams}): Promise<Data> {
     }
   }, {revalidate: revalidateSeconds});
 
-  const teams = await useServerAPI({
+  const teams: Teams = await useServerAPI({
     'class': 'team', 
     'function': 'read',
     'arguments': {
@@ -91,7 +91,7 @@ async function getData({params, searchParams}): Promise<Data> {
     }
   }, {revalidate: revalidateSeconds});
 
-  const cbb_statistic_rankings = await useServerAPI({
+  const cbb_statistic_rankings: StatisticRankings = await useServerAPI({
     'class': 'cbb_statistic_ranking', 
     'function': 'read',
     'arguments': {
@@ -113,7 +113,7 @@ export default async function Page({ params, searchParams }) {
   const CBB = new HelperCBB();
 
   const season = searchParams?.season || CBB.getCurrentSeason();
-  const view: string = searchParams?.view || 'seasons';
+  const view: string = searchParams?.view || 'trends';
 
   return (
     <ReduxWrapper coach = {data.coach} coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} cbb_statistic_rankings = {data.cbb_statistic_rankings} >
@@ -123,17 +123,17 @@ export default async function Page({ params, searchParams }) {
       <SubNavBar view = {view} />
       <>
         {
-          view === 'seasons' ?
-            <SeasonsClientWrapper>
-              <SeasonsClient coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} cbb_statistic_rankings = {data.cbb_statistic_rankings} />
-            </SeasonsClientWrapper>
-          : ''
-        }
-        {
           view === 'trends' ?
             <TrendsClientWrapper>
               <TrendsServer coach_id = {coach_id} />
             </TrendsClientWrapper>
+          : ''
+        }
+        {
+          view === 'seasons' ?
+            <SeasonsClientWrapper>
+              <SeasonsClient coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} cbb_statistic_rankings = {data.cbb_statistic_rankings} />
+            </SeasonsClientWrapper>
           : ''
         }
       </>

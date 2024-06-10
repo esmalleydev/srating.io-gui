@@ -5,9 +5,8 @@ import { useTheme } from '@mui/material/styles';
 import moment from 'moment';
 import { Typography, Skeleton, Card, CardContent } from '@mui/material';
 
-import utilsColor from  '@/components/utils/Color';
+import Color from  '@/components/utils/Color';
 
-const ColorUtil = new utilsColor();
 
 const getCardStyle = () => {
   return {'width': 300, 'minWidth': 200, 'margin': '5px'};
@@ -89,7 +88,7 @@ const Client = ({ date, stats }) => {
           let subPercentCorrect: number = 0;
           if (subTotalGames) {
             subPercentCorrect = +((subCorrectGames / subTotalGames) * 100).toFixed(2);
-            let color = ColorUtil.lerpColor(worstColor, bestColor, (+subPercentCorrect / 100));
+            let color = Color.lerpColor(worstColor, bestColor, (+subPercentCorrect / 100));
             subColorStyle.color = color;
           }
 
@@ -111,7 +110,7 @@ const Client = ({ date, stats }) => {
         let percentCorrect: number = 0;
         if (totalGames) {
           percentCorrect = +((totalCorrect / totalGames) * 100).toFixed(2);
-          let color = ColorUtil.lerpColor(worstColor, bestColor, (+percentCorrect / 100));
+          let color = Color.lerpColor(worstColor, bestColor, (+percentCorrect / 100));
           colorStyle.color = color;
         }
 

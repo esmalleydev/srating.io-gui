@@ -27,8 +27,6 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 
 
 const TableView = ({ sorted_games, team_id }) => {
-  const ColorUtil = new Color();
-
   const isLoadingPredictions = useAppSelector(state => state.teamReducer.schedulePredictionsLoading);
 
   const bestColor = getBestColor();
@@ -105,7 +103,7 @@ const TableView = ({ sorted_games, team_id }) => {
           predictionContainer.push(<Locked iconFontSize={null} key = {1} />);
         } else {
           const winPercentage = (cbb_game.home_team_id === team_id ? +(cbb_game.home_team_rating * 100).toFixed(0) : +(cbb_game.away_team_rating * 100).toFixed(0));
-          predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{'color': ColorUtil.lerpColor(worstColor, bestColor, winPercentage / 100)}}>{winPercentage}%</Typography>);
+          predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{'color': Color.lerpColor(worstColor, bestColor, winPercentage / 100)}}>{winPercentage}%</Typography>);
         }
         tableCells.push(<TableCell key = {j} style = {{'padding': '6px', 'width': 75}}>{predictionContainer}</TableCell>);
       }

@@ -78,6 +78,26 @@ export interface Boxscore {
   final: number;
 };
 
+export interface Player {
+  player_id: string;
+	first_name: string;
+  last_name: string;
+  position: string;
+  height: string;
+  weight: string;
+  number: string;
+  hometown: string;
+  guid: string;
+  cbb: number;
+	cfb: number;
+	nba: number;
+	nfl: number;
+	nhl: number;
+  deleted: number;
+};
+
+export type Players = {[player_id: string]: Player};
+
 export interface PlayerBoxscore {
   cbb_player_boxscore_id: string;
   cbb_game_id: string;
@@ -163,6 +183,8 @@ export interface Ranking {
 	date_of_rank: string;
 	current: number;
 };
+
+export type Rankings = {[cbb_ranking_id: string]: Ranking};
 
 
 export interface RankingColumns {
@@ -337,6 +359,29 @@ export interface StatisticRanking {
 
 export type StatisticRankings = {[cbb_statistic_ranking_id: string]: StatisticRanking};
 
+export interface TeamSeasonConference {
+  team_season_conference_id: string;
+	team_id: string;
+	season: number;
+	conference_id: string;
+	guid: string;
+  deleted: number;
+};
+
+export type TeamSeasonConferences = {[coach_team_season_id: string]: TeamSeasonConference};
+
+export interface TransferPlayerSeason {
+  cbb_transfer_player_season_id: string;
+	player_id: string;
+	season: number;
+	committed_team_id: string | null;
+  committed: number;
+	guid: string;
+  deleted: number;
+};
+
+export type TransferPlayerSeasons = {[coach_team_season_id: string]: TransferPlayerSeason};
+
 export interface Conference {
   conference_id: string;
   code: string;
@@ -387,3 +432,18 @@ export interface CoachElo {
 };
 
 export type CoachElos = {[cbb_coach_elo_id: string]: CoachElo};
+
+export interface Elo {
+  cbb_elo_id: string;
+	team_id: string;
+	cbb_game_id: string;
+	season: number;
+	elo: number;
+  current: number;
+  date_of_entry: string;
+  updated_at: string;
+  guid: string;
+  deleted: number;
+};
+
+export type Elos = {[cbb_coach_elo_id: string]: Elo};

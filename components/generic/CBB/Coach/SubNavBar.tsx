@@ -35,7 +35,7 @@ const SubNavBar = ({ view }) => {
 
   const scrollRef  = useScrollContext();
 
-  const tabOrder: string[] = ['seasons', 'trends'];
+  const tabOrder: string[] = ['trends', 'seasons'];
   const tabOptions = {
     'seasons': 'Seasons',
     'trends': 'Trends',

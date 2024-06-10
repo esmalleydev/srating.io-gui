@@ -98,12 +98,11 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
 
   return (
     <div style={{'padding': '0px 10px'}}>
+      <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant='subtitle2'>SR (elo)</Typography></div>
       <div style = {{'display': 'flex', 'height': 400}}>
         <div style = {{'alignContent': 'center', 'transform': 'rotate(-90deg)', 'maxWidth': '20px', 'width': '20px'}}><Typography color = 'info.main' variant='subtitle2'>Rating</Typography></div>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            width={500}
-            height={400}
             data={formattedData}
             margin={{
               right: 10,
@@ -115,7 +114,7 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
             </XAxis>
             <YAxis dataKey = 'value' scale = 'linear' domain = {[minYaxis, maxYaxis]} />
             <Tooltip cursor = {{stroke: theme.palette.warning.main, strokeWidth: 2}} content={<CustomTooltip />} />
-            <Line type="monotone" dataKey = 'value' stroke = {theme.palette.info.main} strokeWidth={2} dot = {false} />
+            <Line type = 'monotone' dataKey = 'value' stroke = {theme.palette.info.main} strokeWidth={2} dot = {false} />
           </LineChart>
         </ResponsiveContainer>
       </div>

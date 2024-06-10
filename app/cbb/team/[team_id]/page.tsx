@@ -6,7 +6,6 @@ import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import HeaderClientWrapper from '@/components/generic/CBB/Team/Header/ClientWrapper';
 import HeaderServer from '@/components/generic/CBB/Team/Header/Server';
-import Trends from '@/components/generic/CBB/Team/Trends';
 import NavBar from '@/components/generic/CBB/Team/NavBar';
 import { useServerAPI } from '@/components/serverAPI';
 import { Team } from '@/types/cbb';
@@ -20,6 +19,9 @@ import ScheduleDifferentialLoader from '@/components/generic/CBB/Team/Schedule/D
 
 import StatsClientWrapper from '@/components/generic/CBB/Team/Stats/ClientWrapper';
 import StatsServer from '@/components/generic/CBB/Team/Stats/Server';
+
+import TrendsClientWrapper from '@/components/generic/CBB/Team/Trends/ClientWrapper';
+import TrendsServer from '@/components/generic/CBB/Team/Trends/Server';
 
 
 type Props = {
@@ -125,7 +127,15 @@ export default async function Page({ params, searchParams }) {
           </> :
           ''
       }
-      {selectedTab == 'trends' ? <Trends key = {team_id} team_id = {team_id} season = {season} /> : ''}
+      {
+        selectedTab == 'trends' ? 
+          <>
+            <TrendsClientWrapper>
+              <TrendsServer team_id = {team_id} season = {season} />
+            </TrendsClientWrapper>
+          </> :
+          ''
+      }
     </div>
   );
 };

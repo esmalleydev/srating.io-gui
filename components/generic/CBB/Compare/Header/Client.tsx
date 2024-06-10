@@ -18,7 +18,6 @@ import { setHomeTeamID, setAwayTeamID } from '@/redux/features/compare-slice';
 
 const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => {
   const CBB = new HelperCBB();
-  const ColorUtil = new Color();
 
   const breakPoint = getBreakPoint();
   const bestColor = getBestColor();
@@ -108,7 +107,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
     };
 
     if (rank) {
-      supStyle.color = ColorUtil.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(CBB.getCurrentSeason()))));
+      supStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(CBB.getCurrentSeason()))));
     }
 
     const getRemoveButton = () => {
