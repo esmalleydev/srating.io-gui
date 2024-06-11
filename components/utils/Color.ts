@@ -41,7 +41,7 @@ class Color {
    * lerpColor('#000000', '#ffffff', 0.5)
    * @return {string}
    */
-  static lerpColor(a: string, b: string, amount: number): string { 
+  public static lerpColor(a: string, b: string, amount: number): string { 
     var ah = ah = +a.replace('#', '0x'),
       ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
       bh =  +b.replace('#', '0x'),

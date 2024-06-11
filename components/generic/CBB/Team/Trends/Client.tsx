@@ -9,6 +9,7 @@ import moment from 'moment';
 
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import { Elos, Games, Rankings } from '@/types/cbb';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 
 export interface Trends {
   cbb_elo: Elos;
@@ -19,6 +20,10 @@ export interface Trends {
 
 const Trends = ({ data }: { data: Trends}) => {
   const theme = useTheme();
+
+  const { width } = useWindowDimensions() as Dimensions;
+
+  const breakPoint = 600;
 
   const elo = data && data.cbb_elo || {};
   const ranking = data && data.cbb_ranking || {};
@@ -104,13 +109,20 @@ const Trends = ({ data }: { data: Trends}) => {
         }
       };
 
+      const divStyle: React.CSSProperties = {
+        display: (width > breakPoint ? 'flex' : 'inline-flex'),
+        alignItems: 'center',
+        margin: (width > breakPoint ? '5px 0px' : '5px 5px'),
+        cursor: 'pointer',
+      };
+
       return (
-        <div style = {{'marginLeft': 10}}>
+        <div style = {{'marginLeft': 10, 'textAlign': (width > breakPoint ? 'initial' : 'center')}}>
           {
             payload.map((entry, index) => {
               const color = entry.dataKey && inactiveSeries.includes(entry.dataKey as string) ? theme.palette.grey[500] : entry.color;
               return (
-                <div key={`item-${index}`} style = {{'display': 'flex', alignItems: 'center', margin: '5px 0px', 'cursor': 'pointer'}} onClick={() => {onClick(entry.dataKey)}}>
+                <div key={`item-${index}`} style = {divStyle} onClick={() => {onClick(entry.dataKey)}}>
                   <div style = {{display: 'flex'}}>
                     <LinearScaleIcon style = {{'fontSize': '14px', color: color}} />
                   </div>
@@ -152,9 +164,8 @@ const Trends = ({ data }: { data: Trends}) => {
 
     return (
       <>
-        <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant = 'h5'>Rankings</Typography></div>
+        {width > breakPoint ? <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant = 'h6'>Rankings</Typography></div> : ''}
         <div style = {{'display': 'flex', 'height': 400}}>
-          <div style = {{'alignContent': 'center', 'transform': 'rotate(-90deg)', 'maxWidth': '20px', 'width': '20px'}}><Typography color = 'info.main' variant='subtitle2'>Rank</Typography></div>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={formattedData}
@@ -166,9 +177,19 @@ const Trends = ({ data }: { data: Trends}) => {
               <XAxis dataKey = 'name' minTickGap={20} tickLine = {false} axisLine = {false}>
                 <Label value = 'Date of rank' position={'bottom'} />
               </XAxis>
-              <YAxis scale = 'auto' />
-              <Legend layout='vertical' align='right' verticalAlign='middle' margin = {{top: 0, left: 10, right: 0, bottom: 0}} content={CustomLegend} />
-              <Brush dataKey = 'name' startIndex={0} height={20} stroke = {theme.palette.success.dark} />
+              <YAxis scale = 'auto'>
+                <Label offset={10} value={'Rank'} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fill: theme.palette.info.main, fontSize: 18 }} />
+              </YAxis>
+              {
+                width > breakPoint ?
+                <Legend layout='vertical' align='right' verticalAlign='middle' content={CustomLegend} /> :
+                <Legend layout='horizontal' align='center' verticalAlign='top' content={CustomLegend} />
+              }
+              {
+                width > breakPoint ?
+                  <Brush dataKey = 'name' startIndex={0} height={20} stroke = {theme.palette.success.dark} /> :
+                  ''
+              }
               <Tooltip cursor = {{stroke: theme.palette.warning.main, strokeWidth: 2}} content={<CustomTooltip />} />
               <Line type = 'monotone' hide={inactiveSeries.includes('composite_rank')} name = 'Composite' dataKey = 'composite_rank' stroke = {purple[500]} strokeWidth={2} dot = {false} />
               <Line type = 'monotone' hide={inactiveSeries.includes('elo_rank')} name = 'SR (elo)' dataKey = 'elo_rank' stroke = {green[500]} strokeWidth={2} dot = {false} />
@@ -231,9 +252,8 @@ const Trends = ({ data }: { data: Trends}) => {
 
     return (
       <div style = {{'marginTop': 20}}>
-        <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant='h5'>SR (elo)</Typography></div>
+        <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant='h6'>SR (elo)</Typography></div>
         <div style = {{'display': 'flex', 'height': 400}}>
-          <div style = {{'alignContent': 'center', 'transform': 'rotate(-90deg)', 'maxWidth': '20px', 'width': '20px'}}><Typography color = 'info.main' variant='subtitle2'>Rating</Typography></div>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={formattedData}
@@ -245,7 +265,9 @@ const Trends = ({ data }: { data: Trends}) => {
               <XAxis dataKey = 'name' minTickGap={20} tickLine = {false} axisLine = {false}>
                 <Label value = 'Date of rank' position={'bottom'} />
               </XAxis>
-              <YAxis scale = 'linear' domain = {[minYaxisElo, maxYaxisElo]} />
+              <YAxis scale = 'linear' domain = {[minYaxisElo, maxYaxisElo]}>
+                <Label offset={10} value={'Rating'} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fill: theme.palette.info.main, fontSize: 18 }} />
+              </YAxis>
               {/* <Legend layout='vertical' align='right' verticalAlign='middle' margin = {{top: 0, left: 10, right: 0, bottom: 0}} content={CustomLegend} /> */}
               <Tooltip cursor = {{stroke: theme.palette.warning.main, strokeWidth: 2}} content={<CustomTooltip />} />
               <Line type = 'monotone' name = 'Elo' dataKey = 'elo' stroke = {theme.palette.info.main} strokeWidth={2} dot = {false} />
