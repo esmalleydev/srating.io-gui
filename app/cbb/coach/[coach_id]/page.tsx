@@ -1,5 +1,5 @@
 import { useServerAPI } from '@/components/serverAPI';
-import { Coach, CoachTeamSeasons, StatisticRankings, Teams } from '@/types/cbb';
+import { Coach, CoachTeamSeasons, Rankings, StatisticRankings, Teams } from '@/types/cbb';
 import { Metadata, ResolvingMetadata } from 'next';
 import { unstable_noStore } from 'next/cache';
 
@@ -16,6 +16,7 @@ import TrendsClientWrapper from '@/components/generic/CBB/Coach/Trends/ClientWra
 
 import SubNavBar from '@/components/generic/CBB/Coach/SubNavBar';
 import ReduxWrapper from '@/components/generic/CBB/Coach/ReduxWrapper';
+import NavBar from '@/components/generic/CBB/Coach/NavBar';
 
 
 type Props = {
@@ -67,11 +68,16 @@ type Data = {
   coach_team_seasons: CoachTeamSeasons | {};
   teams: Teams | {};
   cbb_statistic_rankings: StatisticRankings | {};
+  cbb_rankings: Rankings | {};
 }
 
 async function getData({params, searchParams}): Promise<Data> {
   unstable_noStore();
   const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
+
+  // const CBB = new HelperCBB();
+
+  // const season = searchParams?.season || CBB.getCurrentSeason();
 
   const coach = await getCoach({params, searchParams});
 
@@ -95,13 +101,23 @@ async function getData({params, searchParams}): Promise<Data> {
     'class': 'cbb_statistic_ranking', 
     'function': 'read',
     'arguments': {
-      'team_id': Object.values(coach_team_seasons).map(row => row.team_id),
+      'team_id': Object.values(teams).map(row => row.team_id),
       'season': Object.values(coach_team_seasons).map(row => row.season),
       'current': '1',
     }
   }, {revalidate: revalidateSeconds});
 
-  return { coach, coach_team_seasons, teams, cbb_statistic_rankings };
+  const cbb_rankings: Rankings = await useServerAPI({
+    'class': 'cbb_ranking', 
+    'function': 'read',
+    'arguments': {
+      'team_id': Object.values(teams).map(row => row.team_id),
+      'season': Object.values(coach_team_seasons).map(row => row.season),
+      'current': '1',
+    }
+  }, {revalidate: revalidateSeconds});
+
+  return { coach, coach_team_seasons, teams, cbb_statistic_rankings, cbb_rankings };
 };
 
 
@@ -115,12 +131,16 @@ export default async function Page({ params, searchParams }) {
   const season = searchParams?.season || CBB.getCurrentSeason();
   const view: string = searchParams?.view || 'trends';
 
+  const tabOrder = ['trends', 'seasons'];
+  const selectedTab = tabOrder[(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0)];
+
   return (
-    <ReduxWrapper coach = {data.coach} coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} cbb_statistic_rankings = {data.cbb_statistic_rankings} >
+    <ReduxWrapper coach = {data.coach} coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} cbb_statistic_rankings = {data.cbb_statistic_rankings} cbb_rankings = {data.cbb_rankings} >
       <HeaderClientWrapper>
         <HeaderServer coach_id = {coach_id} season = {season} />
       </HeaderClientWrapper>
-      <SubNavBar view = {view} />
+      <NavBar view = {selectedTab} tabOrder = {tabOrder} />
+      {/* <SubNavBar view = {view} /> */}
       <>
         {
           view === 'trends' ?

@@ -9,8 +9,6 @@ import { unstable_noStore } from 'next/cache';
 // look at bruce weber, his record is 0-0
 // then after retro add to the ranking page a toggle to show all time coaches (not active) etc filters
 
-// check api users to see how many I have
-
 
 const Server = async({season, coach_id}) => {
   unstable_noStore();
@@ -24,8 +22,6 @@ const Server = async({season, coach_id}) => {
       'current': '1'
     },
   }, {revalidate: revalidateSeconds});
-
-  console.log(cbb_coach_statistic_rankings)
 
 
   return (

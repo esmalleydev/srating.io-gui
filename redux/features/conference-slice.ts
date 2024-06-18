@@ -1,11 +1,10 @@
-import { Coach, CoachTeamSeasons, Rankings, StatisticRankings, Teams } from "@/types/cbb";
+import { TeamSeasonConferences, Rankings, StatisticRankings, Teams } from "@/types/cbb";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type InitialState = {
   view: string,
   scrollTop: number,
-  coach: Coach | {},
-  coach_team_seasons: CoachTeamSeasons | {};
+  team_season_conferences: TeamSeasonConferences | {};
   teams: Teams | {};
   cbb_statistic_rankings: StatisticRankings | {};
   cbb_rankings: Rankings | {};
@@ -14,8 +13,7 @@ type InitialState = {
 const initialState = {
   view: 'trends',
   scrollTop: 0,
-  coach: {},
-  coach_team_seasons: {},
+  team_season_conferences: {},
   teams: {},
   cbb_statistic_rankings: {},
   cbb_rankings: {},
@@ -34,8 +32,8 @@ const updateStateFromUrlParams = (state: InitialState) => {
   }
 };
 
-export const coach = createSlice({
-  name: 'coach',
+export const conference = createSlice({
+  name: 'conference',
   initialState: initialState,
   reducers: {
     clear: (state) => {
@@ -52,11 +50,8 @@ export const coach = createSlice({
     setView: (state, action: PayloadAction<string>) => {
       state.view = action.payload;
     },
-    setCoach: (state, action: PayloadAction<Coach | {}>) => {
-      state.coach = action.payload;
-    },
-    setCoachTeamSeasons: (state, action: PayloadAction<CoachTeamSeasons | {}>) => {
-      state.coach_team_seasons = action.payload;
+    setTeamSeasonConferences: (state, action: PayloadAction<TeamSeasonConferences | {}>) => {
+      state.team_season_conferences = action.payload;
     },
     setTeams: (state, action: PayloadAction<Teams | {}>) => {
       state.teams = action.payload;
@@ -70,7 +65,7 @@ export const coach = createSlice({
   }
 });
 
-export const { setView, setScrollTop, clear, reset, setCoach, setCoachTeamSeasons, setTeams, setStatisticRankings, setRankings } = coach.actions;
-export default coach.reducer;
+export const { setView, setScrollTop, clear, reset, setTeamSeasonConferences, setTeams, setStatisticRankings, setRankings } = conference.actions;
+export default conference.reducer;
 
 updateStateFromUrlParams(initialState);

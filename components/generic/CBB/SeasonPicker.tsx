@@ -85,18 +85,20 @@ const SeasonPicker = ({ selected, actionHandler, seasons }) => {
           </Toolbar>
         </AppBar>
         <List>
-          {options.map((option) => (
-            <ListItem key={option.value} button onClick={() => {
-              // dispatch(setSeason(option.value));
-              actionHandler(option.value);
-              handleClose();
-            }}>
-              <ListItemIcon>
-                {+selected === +option.value ? <CheckIcon /> : ''}
-              </ListItemIcon>
-              <ListItemText primary={option.label} />
-            </ListItem>
-          ))}
+          {options.map((option) => {
+            return (
+              <ListItem key={option.value} button onClick={() => {
+                // dispatch(setSeason(option.value));
+                actionHandler(option.value);
+                handleClose();
+              }}>
+                <ListItemIcon>
+                  {+selected === +option.value ? <CheckIcon /> : ''}
+                </ListItemIcon>
+                <ListItemText primary={option.label} />
+              </ListItem>
+            );
+          })}
         </List>
       </Dialog>
     </div>

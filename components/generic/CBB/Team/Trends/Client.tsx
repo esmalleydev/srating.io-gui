@@ -253,7 +253,7 @@ const Trends = ({ data }: { data: Trends}) => {
     return (
       <div style = {{'marginTop': 20}}>
         <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant='h6'>SR (elo)</Typography></div>
-        <div style = {{'display': 'flex', 'height': 400}}>
+        <div style = {{'display': 'flex', 'height': 300}}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={formattedData}

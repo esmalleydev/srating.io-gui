@@ -16,7 +16,7 @@ import { Link } from '@mui/material';
 
 
 
-const Client = ({team, season, seasons, coach}) => {
+const Client = ({team, season, seasons, coach, cbb_coach_statistic_ranking, cbb_conference_statistic_ranking}) => {
   const breakPoint = 475;
 
   const router = useRouter();
@@ -30,8 +30,12 @@ const Client = ({team, season, seasons, coach}) => {
   const [spin, setSpin] = useState(false);
   const displayRank = useAppSelector(state => state.displayReducer.rank);
 
-  const teamHelper = new HelperTeam({'team': team});
   const CBB = new HelperCBB();
+  const teamHelper = new HelperTeam({'team': team});
+
+  const conferenceName = teamHelper.getConference();
+  const conferenceNumber = CBB.getNumberOfConferences();
+
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
@@ -42,10 +46,30 @@ const Client = ({team, season, seasons, coach}) => {
     'verticalAlign': 'super',
   };
 
+  const coachSupStyle: React.CSSProperties = {
+    'fontSize': '10px',
+    'verticalAlign': 'super',
+  };
+
+  const conferenceSupStyle: React.CSSProperties = {
+    'fontSize': '10px',
+    'verticalAlign': 'super',
+  };
+
   const rank = teamHelper.getRank(displayRank);
+  const coachRank = cbb_coach_statistic_ranking.rank;
+  const conferenceRank = cbb_conference_statistic_ranking.adjusted_efficiency_rating_rank;
 
   if (rank) {
     supStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));
+  }
+
+  if (coachRank) {
+    coachSupStyle.color = Color.lerpColor(bestColor, worstColor, (+(coachRank / CBB.getNumberOfD1Teams(season))));
+  }
+
+  if (conferenceRank) {
+    conferenceSupStyle.color = Color.lerpColor(bestColor, worstColor, (+(conferenceRank / conferenceNumber)));
   }
 
   const handleSeason = (season) => {
@@ -70,6 +94,14 @@ const Client = ({team, season, seasons, coach}) => {
     });
   };
 
+  const handleConference = () => {
+    setSpin(true);
+    startTransition(() => {
+      router.push('/cbb/conference/' + team.conference_id + '?season='+season);
+      setSpin(false);
+    });
+  };
+
 
   return (
     <div style = {{'overflow': 'hidden', 'paddingLeft': 5, 'paddingRight': 5}}>
@@ -85,7 +117,7 @@ const Client = ({team, season, seasons, coach}) => {
         <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
-        <Typography variant = 'overline' color = 'text.secondary'>{teamHelper.getConference()} | <Link onClick = {handleCoach} underline='hover' style={{cursor: 'pointer'}}>{coach.first_name.charAt(0) + '. ' + coach.last_name}</Link></Typography>
+        <Typography variant = 'overline' color = 'text.secondary'>{conferenceRank ? <span style = {conferenceSupStyle}>{conferenceRank} </span> : ''}<Link onClick = {handleConference} underline='hover' style={{cursor: 'pointer'}}>{conferenceName}</Link> | {coachRank ? <span style = {coachSupStyle}>{coachRank} </span> : ''}<Link onClick = {handleCoach} underline='hover' style={{cursor: 'pointer'}}>{coach.first_name.charAt(0) + '. ' + coach.last_name}</Link></Typography>
       </div>
       <BackdropLoader open = {spin} />
     </div>

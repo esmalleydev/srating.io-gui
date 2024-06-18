@@ -106,7 +106,7 @@ const Chart = (
 
 
   return (
-    <div style = {{'display': 'flex', 'height': 400, 'padding': '0px 5px'}}>
+    <div style = {{'display': 'flex', 'height': 300, 'padding': '0px 5px'}}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={rows}

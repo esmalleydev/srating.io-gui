@@ -97,6 +97,7 @@ export default async function Page({ params, searchParams }) {
   const season = searchParams?.season || CBB.getCurrentSeason();
   const view = searchParams?.view || 'schedule';
 
+  // const tabOrder = ['schedule', 'stats', 'trends', 'seasons'];
   const tabOrder = ['schedule', 'stats', 'trends'];
   const selectedTab = tabOrder[(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0)];
 

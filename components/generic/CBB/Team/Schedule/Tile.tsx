@@ -106,7 +106,7 @@ const Tile = ({ cbb_game, team}) => {
 
     setSpin(true);
     startTransition(() => {
-      router.push('/cbb/team/' + team_id);
+      router.push('/cbb/team/' + team_id + '?season=' + cbb_game.season);
       setSpin(false);
     });
   };

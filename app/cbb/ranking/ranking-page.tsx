@@ -272,6 +272,7 @@ const Ranking = ({ data, generated, rankView }) => {
           'name',
           'team_name',
           'elo',
+          'elo_sos',
           'games',
           // 'wins',
           // 'losses',

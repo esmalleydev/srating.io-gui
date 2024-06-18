@@ -20,7 +20,10 @@ const getSubNavHeaderHeight = () => {
 
 export { getSubNavHeaderHeight };
 
+// not used atm
+
 const SubNavBar = ({ view }) => {
+  return null;
   const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();

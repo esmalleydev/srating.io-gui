@@ -1,6 +1,7 @@
 
 import moment from 'moment';
 import Team from './Team';
+import { useAppSelector } from "@/redux/hooks";
 
 
 
@@ -36,6 +37,11 @@ class CBB {
     }
 
     return 363;
+  };
+
+  getNumberOfConferences() {
+    const conferences = useAppSelector(state => state.dictionaryReducer.conference);
+    return Object.keys(conferences).length;
   };
 
 

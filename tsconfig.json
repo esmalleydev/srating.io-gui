@@ -30,6 +30,7 @@
         "name": "next"
       }
     ],
+    "target": "ESNext",
     "strictNullChecks": true
   },
   "include": [

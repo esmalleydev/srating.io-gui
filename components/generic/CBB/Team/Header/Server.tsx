@@ -46,11 +46,33 @@ const Server = async({season, team_id}) => {
     }
   });
 
+  const cbb_coach_statistic_ranking = await useServerAPI({
+    'class': 'cbb_coach_statistic_ranking',
+    'function': 'get',
+    'arguments': {
+      'coach_id': coach_team_season.coach_id,
+      'season': coach_team_season.season,
+      'current': '1',
+    }
+  });
+
+  const cbb_conference_statistic_ranking = await useServerAPI({
+    'class': 'cbb_conference_statistic_ranking',
+    'function': 'get',
+    'arguments': {
+      'conference_id': team.conference_id,
+      'season': season,
+      'current': '1',
+    }
+  });
+
   const seasons = Object.values(team_season_conferences).map((row => row.season));
+  // above should be unique already... but if not, uncomment
+  // const seasons = [...new Set(allSeasons)];
 
   return (
     <>
-      <HeaderClient team = {team} season = {season} seasons = {seasons} coach = {coach} />
+      <HeaderClient team = {team} season = {season} seasons = {seasons} coach = {coach} cbb_coach_statistic_ranking = {cbb_coach_statistic_ranking} cbb_conference_statistic_ranking = {cbb_conference_statistic_ranking} />
     </>
   );
 }

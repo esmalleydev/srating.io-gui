@@ -20,10 +20,7 @@ const NavBar = ({ view, tabOrder}) => {
   const theme = useTheme();
 
   let tabOptions = {
-    'schedule': 'Schedule',
-    'stats': 'Stats / Roster',
-    'trends': 'Trends',
-    // 'seasons': 'Seasons',
+    'teams': 'Teams',
   };
     
     

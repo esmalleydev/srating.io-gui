@@ -33,6 +33,7 @@ class Team {
     return name.toUpperCase().substring(0,3);
   };
 
+  // todo this causes bugs by using the appselector
   getConference() {
     let name = 'Unknown';
     const conferences = useAppSelector(state => state.dictionaryReducer.conference);

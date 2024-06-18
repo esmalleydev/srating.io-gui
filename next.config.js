@@ -11,6 +11,10 @@ const commitDate = require('child_process')
 	.toString()
 	.trim();
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+	enabled: false,
+});
+
 // this is just for the github build to pass, since the configuration file is git ignored
 let config_ = {
 	stripe_public_key: null,
@@ -24,7 +28,7 @@ try {
 }
 
  
-module.exports = {
+module.exports = withBundleAnalyzer({
 	// experimental: {
 	// 	scrollRestoration: false,
 	// },
@@ -53,7 +57,7 @@ module.exports = {
  
     return config
   },
-};
+});
 
 
 

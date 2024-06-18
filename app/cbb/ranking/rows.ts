@@ -413,7 +413,7 @@ export const getRowsData = ({ data, rankView, selectedConferences, positions, hi
       ) {
         lastUpdated = row.date_of_rank;
       }
-      row.composite_rank = row.elo_rank;
+      row.composite_rank = row.rank;
 
       rows.push(row);
     }

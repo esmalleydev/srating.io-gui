@@ -12,6 +12,8 @@ import { CoachElo, CoachElos, Games } from '@/types/cbb';
 import { useTheme } from '@mui/material';
 
 
+// todo compare to 2 or more coach elos on the same graph? might be cool to see them with the time comparison. ex: and old coach vs relativiely new
+// add these graphs to the compare tool as well!
 
 const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_games: Games}) => {
 
@@ -50,8 +52,10 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
   let maxYaxis = 2000;
 
   let highestElo = 0;
+  let highestEloDate: string = '';
 
   for (let i = 0; i < sorted_elo.length; i++) {
+    const date = sorted_elo[i].cbb_game_id && sorted_elo[i].cbb_game_id in cbb_games ? cbb_games[sorted_elo[i].cbb_game_id].start_date : null;
     if (sorted_elo[i].elo < minYaxis) {
       minYaxis = sorted_elo[i].elo;
     }
@@ -62,12 +66,16 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
 
     if (sorted_elo[i].elo > highestElo) {
       highestElo = sorted_elo[i].elo;
+
+      if (date) {
+        highestEloDate = date;
+      }
     }
 
     formattedData.push({
       'name': sorted_elo[i].season,
       'value': sorted_elo[i].elo,
-      'date': sorted_elo[i].cbb_game_id && sorted_elo[i].cbb_game_id in cbb_games ? cbb_games[sorted_elo[i].cbb_game_id].start_date : null,
+      'date': date,
     });
   }
 
@@ -93,13 +101,17 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
     return null;
   };
 
+  const formatXAxis = (value) => {
+    return moment(value).format('YYYY');
+  };
 
+  const referenceLineStroke = theme.palette.success[(theme.palette.mode === 'dark' ? 'light' : 'dark')];
 
 
   return (
     <div style={{'padding': '0px 10px'}}>
       <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant='subtitle2'>SR (elo)</Typography></div>
-      <div style = {{'display': 'flex', 'height': 400}}>
+      <div style = {{'display': 'flex', 'height': 300}}>
         <div style = {{'alignContent': 'center', 'transform': 'rotate(-90deg)', 'maxWidth': '20px', 'width': '20px'}}><Typography color = 'info.main' variant='subtitle2'>Rating</Typography></div>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
@@ -109,16 +121,21 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
             }}
           >
             <CartesianGrid strokeDasharray = '3 3' />
-            <XAxis dataKey = 'name' minTickGap={20} tickLine = {false} axisLine = {false}>
-              <Label value = 'Season' position={'bottom'} />
-            </XAxis>
+            <XAxis dataKey = 'date' minTickGap={20} tickLine = {false} axisLine = {false} tickFormatter={formatXAxis} />
             <YAxis dataKey = 'value' scale = 'linear' domain = {[minYaxis, maxYaxis]} />
             <Tooltip cursor = {{stroke: theme.palette.warning.main, strokeWidth: 2}} content={<CustomTooltip />} />
+            <ReferenceLine y = {highestElo} stroke = {referenceLineStroke}>
+              <Label value={highestElo} style={{ textAnchor: 'middle', fill: referenceLineStroke, fontSize: 18 }} dy={-10} />
+            </ReferenceLine>
+            <ReferenceLine x = {highestEloDate} stroke = {referenceLineStroke}>
+              <Label value = {moment(highestEloDate).format('MMM Do \'YY')} angle={-90} dx={-15} style={{ textAnchor: 'middle', fill: referenceLineStroke, fontSize: 18 }} />
+            </ReferenceLine>
+            {/* {formattedData.length > 1 ? <ReferenceLine label="Segment" stroke="green" strokeDasharray="3 3" segment={[{x: formattedData[0].name, y: formattedData[0].value}, {x: formattedData[formattedData.length - 1].name, y: formattedData[formattedData.length - 1].value}]} /> : ''} */}
             <Line type = 'monotone' dataKey = 'value' stroke = {theme.palette.info.main} strokeWidth={2} dot = {false} />
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <div style = {{'textAlign': 'center', 'marginLeft': 20}}><Typography color = 'info.main' variant='subtitle2'>Season</Typography></div>
+      <div style = {{'textAlign': 'center', 'marginLeft': 20}}><Typography color = 'info.main' variant='subtitle2'>Year</Typography></div>
     </div>
   );
 }

@@ -11,6 +11,7 @@ import picksReducer from './features/picks-slice';
 import compareReducer from './features/compare-slice';
 import dictionaryReducer from './features/dictionary-slice';
 import coachReducer from './features/coach-slice';
+import conferenceReducer from './features/conference-slice';
 
 
 export const makeStore = () => {
@@ -27,6 +28,7 @@ export const makeStore = () => {
       compareReducer,
       dictionaryReducer,
       coachReducer,
+      conferenceReducer,
     }
   });
 };
