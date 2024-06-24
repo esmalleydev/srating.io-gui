@@ -12,13 +12,15 @@ import SecretWrapper from '@/components/handlers/secret/ClientWrapper';
 import SecretHandler from '@/components/handlers/secret/Server';
 import DictionaryWrapper from '@/components/handlers/dictionary/ClientWrapper';
 import DictionaryHandler from '@/components/handlers/dictionary/Server';
+import LayoutWrapper from './LayoutWrapper';
+
 
 
 export default async function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
-      <body>
-        <StoreProvider>
+      <StoreProvider>
+        <LayoutWrapper>
           <SecretWrapper><SecretHandler /></SecretWrapper>
           <SessionHandler />
           <FavoriteHandler />
@@ -34,8 +36,8 @@ export default async function RootLayout({children}: {children: React.ReactNode}
               gtag('config', 'G-S67JFT2KZW');
             `}
           </Script>
-        </StoreProvider>
-      </body>
+        </LayoutWrapper>
+      </StoreProvider>
     </html>
   );
 };
