@@ -8,13 +8,17 @@ import LinearScaleIcon from '@mui/icons-material/LinearScale';
 import moment from 'moment';
 
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
-import { Elos, Games, Rankings } from '@/types/cbb';
+import { ConferenceStatisticRankings, Elos, Games, LeagueStatistics, Rankings, StatisticRankings } from '@/types/cbb';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import StatsGraph from './StatsGraph';
 
 export interface Trends {
   cbb_elo: Elos;
   cbb_ranking: Rankings;
   cbb_game: Games;
+  cbb_statistic_ranking: StatisticRankings;
+  cbb_conference_statistic_ranking: ConferenceStatisticRankings;
+  cbb_league_statistic: LeagueStatistics
 };
 
 
@@ -28,41 +32,12 @@ const Trends = ({ data }: { data: Trends}) => {
   const elo = data && data.cbb_elo || {};
   const ranking = data && data.cbb_ranking || {};
   const games = data && data.cbb_game || {};
+  const cbb_statistic_rankings = data && data.cbb_statistic_ranking || {};
+  const cbb_conference_statistic_rankings = data && data.cbb_conference_statistic_ranking || {};
+  const cbb_league_statistics = data && data.cbb_league_statistic || {};
 
   const [inactiveSeries, setInactiveSeries] = useState<Array<string>>([]);
 
-  let minYaxisElo = 1100;
-  let maxYaxisElo = 2000;
-
-  for (let id in elo) {
-    if (elo[id].elo < minYaxisElo) {
-      minYaxisElo = elo[id].elo;
-    }
-
-    if (elo[id].elo > maxYaxisElo) {
-      maxYaxisElo = elo[id].elo;
-    }
-  }
-
-  const sorted_elo = Object.values(elo).sort(function(a, b) {
-    if (!(a.cbb_game_id)) {
-      return -1;
-    }
-
-    if (!(b.cbb_game_id)) {
-      return 1;
-    }
-
-    if (!(a.cbb_game_id in games)) {
-      return 1;
-    }
-
-    if (!(b.cbb_game_id in games)) {
-      return -1;
-    }
-
-    return games[a.cbb_game_id].start_date < games[b.cbb_game_id].start_date ? -1 : 1;
-  });
 
   const sorted_ranking = Object.values(ranking).sort(function(a, b) {
     return a.date_of_rank > b.date_of_rank ? 1 : -1;
@@ -206,85 +181,12 @@ const Trends = ({ data }: { data: Trends}) => {
     );
   };
 
-  const getEloGraph = () => {
-    type Data = {
-      name: string;
-      elo: number;
-    };
 
-    const formattedData: Data[] = [];
-
-    for (let i = 0; i < sorted_elo.length; i++) {
-      const row = sorted_elo[i];
-      let date_of_game = row.cbb_game_id in games ? moment(games[row.cbb_game_id].start_date).format('MMM Do') : 'Preseason';
-
-
-      formattedData.push({
-        'name': date_of_game,
-        'elo': row.elo,
-      });
-    }
-
-    type TooltipProps = {
-      active?: boolean;
-      payload?: { value: number, name: string, stroke: string, payload: {date: string} }[];
-      label?: number;
-    };
-  
-    const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
-      if (active && payload && payload.length) {
-        return (
-          <Paper elevation={3} style = {{'padding': '5px 10px'}}>
-            <div><Typography color = 'text.secondary' variant='subtitle2'>{payload[0].payload?.date ? moment(payload[0].payload?.date).format('MMM Do \'YY') : label}</Typography></div>
-            {
-              payload.map((entry, index) => {
-                return (
-                  <div key = {index} style = {{'display': 'flex'}}><Typography variant='body1' color = {entry.stroke} >{entry.name}:</Typography><Typography style = {{'marginLeft': 5}} variant='body1' color = {entry.stroke}>{entry.value}</Typography></div>
-                );
-              })
-            }
-          </Paper>
-        );
-      }
-    
-      return null;
-    };
-
-    return (
-      <div style = {{'marginTop': 20}}>
-        <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant='h6'>SR (elo)</Typography></div>
-        <div style = {{'display': 'flex', 'height': 300}}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={formattedData}
-              margin={{
-                right: 10,
-              }}
-            >
-              <CartesianGrid strokeDasharray = '3 3' />
-              <XAxis dataKey = 'name' minTickGap={20} tickLine = {false} axisLine = {false}>
-                <Label value = 'Date of rank' position={'bottom'} />
-              </XAxis>
-              <YAxis scale = 'linear' domain = {[minYaxisElo, maxYaxisElo]}>
-                <Label offset={10} value={'Rating'} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fill: theme.palette.info.main, fontSize: 18 }} />
-              </YAxis>
-              {/* <Legend layout='vertical' align='right' verticalAlign='middle' margin = {{top: 0, left: 10, right: 0, bottom: 0}} content={CustomLegend} /> */}
-              <Tooltip cursor = {{stroke: theme.palette.warning.main, strokeWidth: 2}} content={<CustomTooltip />} />
-              <Line type = 'monotone' name = 'Elo' dataKey = 'elo' stroke = {theme.palette.info.main} strokeWidth={2} dot = {false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div style = {{'textAlign': 'center', 'marginLeft': 20}}><Typography color = 'info.main' variant='subtitle2'>Date</Typography></div>
-      </div>
-    );
-  };
-
-  
 
   return (
     <div style={{'padding': '48px 20px 20px 20px'}}>
       {getRankingGraph()}
-      {getEloGraph()}
+      {<StatsGraph cbb_statistic_rankings = {cbb_statistic_rankings} cbb_elos = {elo} cbb_games = {games} cbb_conference_statistic_rankings = {cbb_conference_statistic_rankings} cbb_league_statistics = {cbb_league_statistics} />}
     </div>
   );
 }

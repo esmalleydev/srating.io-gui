@@ -2,6 +2,8 @@
 import moment from 'moment';
 import Team from './Team';
 import { useAppSelector } from "@/redux/hooks";
+import Color from '@/components/utils/Color';
+import { useTheme } from '@mui/material';
 
 
 
@@ -452,7 +454,39 @@ class CBB {
     }
 
     return false;
-  }
+  };
+
+  /**
+   * Get the homeColor and awayColor for a game
+   * @return {object} {homeColor: string, awayColor: string}
+   */
+  getGameColors() {
+    const theme = useTheme();
+
+    const cbb_game = this.cbb_game;
+
+    let homeColor = cbb_game.teams[cbb_game.home_team_id].primary_color || theme.palette.info.main;
+    let awayColor = cbb_game.teams[cbb_game.away_team_id].primary_color === homeColor ? theme.palette.info.main : cbb_game.teams[cbb_game.away_team_id].primary_color;
+
+    if (Color.areColorsSimilar(homeColor, awayColor)) {
+      const analogousColors = Color.getAnalogousColors(awayColor);
+      let any = false;
+
+      for (let i = 0; i < analogousColors.length; i++) {
+        if (!Color.areColorsSimilar(homeColor, analogousColors[i])) {
+          awayColor = analogousColors[i];
+          any = true;
+          break;
+        }
+      }
+
+      if (!any) {
+        awayColor = Color.invertColor(awayColor);
+      }
+    }
+
+    return {homeColor, awayColor};
+  };
 
 };
 

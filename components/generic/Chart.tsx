@@ -1,46 +1,15 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label, ReferenceLine, LineProps } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label, ReferenceLine, LineProps, ReferenceLineProps, YAxisProps } from 'recharts';
 
 
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-
 import { useTheme } from '@mui/material';
-import Color from '@/components/utils/Color';
-import { Game } from '@/types/cbb';
 
-
-const getGameColors = (cbb_game: Game) => {
-  const theme = useTheme();
-
-  let homeColor = cbb_game.teams[cbb_game.home_team_id].primary_color || theme.palette.info.main;
-  let awayColor = cbb_game.teams[cbb_game.away_team_id].primary_color === homeColor ? theme.palette.info.main : cbb_game.teams[cbb_game.away_team_id].primary_color;
-
-  if (Color.areColorsSimilar(homeColor, awayColor)) {
-    const analogousColors = Color.getAnalogousColors(awayColor);
-    let any = false;
-
-    for (let i = 0; i < analogousColors.length; i++) {
-      if (!Color.areColorsSimilar(homeColor, analogousColors[i])) {
-        awayColor = analogousColors[i];
-        any = true;
-        break;
-      }
-    }
-
-    if (!any) {
-      awayColor = Color.invertColor(awayColor);
-    }
-  }
-
-  return {homeColor, awayColor};
-};
-
-export { getGameColors };
 
 const Chart = (
-  {rows, lines, XAxisDataKey, YAxisLabel}:
-  {rows: any[], lines: LineProps[], XAxisDataKey: string, YAxisLabel: string}
+  {rows, lines, referenceLines, YAxisProps, XAxisDataKey, YAxisLabel}:
+  {rows: any[], lines: LineProps[], referenceLines?: ReferenceLineProps[], YAxisProps: YAxisProps, XAxisDataKey: string, YAxisLabel: string}
 ) => {
   
   const theme = useTheme();
@@ -116,17 +85,24 @@ const Chart = (
         >
           <CartesianGrid strokeDasharray = '3 3' />
           <XAxis dataKey = {XAxisDataKey} minTickGap={20} tickLine = {false} axisLine = {false} type='category' /*interval={'preserveStartEnd'}*/ />
-          <YAxis scale = 'auto'>
+          <YAxis {...YAxisProps}>
             <Label offset={10} value={YAxisLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fill: theme.palette.info.main, fontSize: 18 }} />
           </YAxis>
-          <ReferenceLine x = '2ND' stroke = {theme.palette.success.main} label = 'Half time' />
+          {
+            referenceLines ? 
+            referenceLines.map((referenceLine, index) => {
+              // {..referenceLine} spread doesnt work for some reason... I guess if you add a prop then add it here too >.<
+              <ReferenceLine key = {index} x = {referenceLine.x} stroke = {referenceLine.stroke} label = {referenceLine.label} />
+            }) :
+            ''
+          }
           <Legend layout='horizontal' align='center' verticalAlign='bottom' margin = {{top: 0, left: 10, right: 0, bottom: 0}} /*content={CustomLegend}*/ />
           <Tooltip cursor = {{stroke: theme.palette.warning.main, strokeWidth: 2}} content={<CustomTooltip />} />
           {
             lines.map((line, index) => {
-              // {..lines} spread doesnt work for some reason... I guess if you add a prop then add it here too >.<
+              // {..line} spread doesnt work for some reason... I guess if you add a prop then add it here too >.<
               return (
-                <Line key = {index} type={line.type} name={line.name} dataKey={line.dataKey} stroke={line.stroke} strokeWidth={line.strokeWidth} dot={line.dot} connectNulls={line.connectNulls} />
+                <Line key = {index} type={line.type} name={line.name} dataKey={line.dataKey} stroke={line.stroke} strokeWidth={line.strokeWidth} dot={line.dot} connectNulls={line.connectNulls}  />
               );
             })
           }

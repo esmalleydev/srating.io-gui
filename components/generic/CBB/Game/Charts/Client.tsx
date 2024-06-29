@@ -7,7 +7,7 @@ import Chip from '@mui/material/Chip';
 
 import HelperCBB from '@/components/helpers/CBB';
 import { Game, ScoreIntervals } from '@/types/cbb';
-import Chart, { getGameColors } from '../Chart';
+import Chart from '@/components/generic/Chart';
 import { LineProps } from 'recharts';
 import { useTheme } from '@mui/material';
 import Color from '@/components/utils/Color';
@@ -153,7 +153,9 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
 
   let intervalChart: React.JSX.Element | null = null;
 
-  const colors = getGameColors(cbb_game);
+
+
+  const colors = CBB.getGameColors();
 
   if (selectedIntervalChip === 'scoring') {
     let lines: LineProps[] = [
@@ -176,7 +178,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         connectNulls: true
       },
     ];
-    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Score'} rows={formattedData} lines={lines} />;
+    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Score'} rows={formattedData} lines={lines} YAxisProps={{scale: 'auto'}} />;
   } else if (selectedIntervalChip === 'liveML') {
     let lines: LineProps[] = [
       {
@@ -198,7 +200,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         connectNulls: true
       },
     ];
-    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Odds'} rows={formattedData} lines={lines} />;
+    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Odds'} rows={formattedData} lines={lines} YAxisProps={{scale: 'auto'}} />;
   } else if (selectedIntervalChip === 'liveSpread') {
     let lines: LineProps[] = [
       {
@@ -220,7 +222,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         connectNulls: true
       },
     ];
-    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Points spread'} rows={formattedData} lines={lines} />;
+    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Points spread'} rows={formattedData} lines={lines} YAxisProps={{scale: 'auto'}} />;
   } else if (selectedIntervalChip === 'liveOverUnder') {
     let lines: LineProps[] = [
       {
@@ -233,7 +235,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         connectNulls: true
       },
     ];
-    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Over / Under'} rows={formattedData} lines={lines} />;
+    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Over / Under'} rows={formattedData} lines={lines} YAxisProps={{scale: 'auto'}} />;
   }
 
 

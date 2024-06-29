@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Chip, useTheme } from '@mui/material';
-import Chart, { getGameColors } from '../Chart';
+import Chart from '@/components/generic/Chart';
 import { LineProps } from 'recharts';
 import HelperCBB from '@/components/helpers/CBB';
 import Color from '@/components/utils/Color';
@@ -114,7 +114,7 @@ const Client = ({cbb_game, cbb_rankings, cbb_statistic_rankings}) => {
 
   let chart: React.JSX.Element | null = null;
 
-  const colors = getGameColors(cbb_game);
+  const colors = CBB.getGameColors();
 
   if (selectedChip === 'composite_rank') {
     let lines: LineProps[] = [
@@ -137,7 +137,7 @@ const Client = ({cbb_game, cbb_rankings, cbb_statistic_rankings}) => {
         connectNulls: true
       },
     ];
-    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={'Rank'} rows={formattedData} lines={lines} />;
+    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={'Rank'} rows={formattedData} lines={lines} YAxisProps = {{scale: 'auto'}} />;
   } else if (selectedChip === 'elo_rank') {
     let lines: LineProps[] = [
       {
@@ -159,7 +159,7 @@ const Client = ({cbb_game, cbb_rankings, cbb_statistic_rankings}) => {
         connectNulls: true
       },
     ];
-    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={'SR (elo) rank'} rows={formattedData} lines={lines} />;
+    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={'SR (elo) rank'} rows={formattedData} lines={lines} YAxisProps = {{scale: 'auto'}} />;
   } else if (selectedChip === 'adjusted_efficiency_rating') {
     let lines: LineProps[] = [
       {
@@ -181,7 +181,7 @@ const Client = ({cbb_game, cbb_rankings, cbb_statistic_rankings}) => {
         connectNulls: true
       },
     ];
-    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={'aEM'} rows={formattedData} lines={lines} />;
+    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={'aEM'} rows={formattedData} lines={lines} YAxisProps = {{scale: 'auto'}} />;
   } else if (selectedChip === 'points') {
     let lines: LineProps[] = [
       {
@@ -203,7 +203,7 @@ const Client = ({cbb_game, cbb_rankings, cbb_statistic_rankings}) => {
         connectNulls: true
       },
     ];
-    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={'Points'} rows={formattedData} lines={lines} />;
+    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={'Points'} rows={formattedData} lines={lines} YAxisProps = {{scale: 'auto'}} />;
   }
 
 

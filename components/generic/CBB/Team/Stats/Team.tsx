@@ -457,7 +457,7 @@ const Team = ({ teamStats }: { teamStats: Stats}) => {
 
 
   return (
-    <div>
+    <div style = {{'padding': '0px 5px'}}>
       <Typography variant='h6'>Efficiency</Typography>
       <div style = {{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
         {efficiencyRows.map((row) => {
