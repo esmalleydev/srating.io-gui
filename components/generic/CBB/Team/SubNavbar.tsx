@@ -41,6 +41,12 @@ const SubNavBar = ({ view }) => {
       'team': 'Team',
       'player': 'Players'
     };
+  } else if (view === 'trends') {
+    tabOrder = ['stats', 'ranking'];
+    tabOptions = {
+      'ranking': 'Ranking',
+      'stats': 'Stats'
+    };
   }
 
   const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(subView) > -1 ? tabOrder.indexOf(subView) : 0);
@@ -82,7 +88,7 @@ const SubNavBar = ({ view }) => {
       );
     }
     rightButtons.push(<ViewPicker key = {'view-picker'} view = {view} />);
-  } else if (view === 'stats') {
+  } else if (tabOrder.length) {
     let tabs: React.JSX.Element[] = [];
     
     const handleTabClick = (value) => {
@@ -102,15 +108,6 @@ const SubNavBar = ({ view }) => {
           setSpin(false);
         });
       }
-      
-      // router.replace({
-      //   query: {...router.query, view: view},
-      // });
-        
-      // todo scroll stuff?
-      // if (value > 0 && props.scrollRef && props.scrollRef.current) {
-      //   props.scrollRef.current.scrollTo(0, 0);
-      // }
     };
   
   
@@ -125,11 +122,6 @@ const SubNavBar = ({ view }) => {
       </Tabs>
     );
   }
-
-  if (view === 'trends') {
-    return null;
-  }
-
 
   return (
     <div style = {subHeaderStyle}>

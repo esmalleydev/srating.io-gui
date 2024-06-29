@@ -11,6 +11,7 @@ import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import { ConferenceStatisticRankings, Elos, Games, LeagueStatistics, Rankings, StatisticRankings } from '@/types/cbb';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import StatsGraph from './StatsGraph';
+import { useSearchParams } from 'next/navigation';
 
 export interface Trends {
   cbb_elo: Elos;
@@ -28,6 +29,9 @@ const Trends = ({ data }: { data: Trends}) => {
   const { width } = useWindowDimensions() as Dimensions;
 
   const breakPoint = 600;
+
+  const searchParams = useSearchParams();
+  let subView = searchParams?.get('subview') || 'stats';
 
   const elo = data && data.cbb_elo || {};
   const ranking = data && data.cbb_ranking || {};
@@ -139,7 +143,6 @@ const Trends = ({ data }: { data: Trends}) => {
 
     return (
       <>
-        {width > breakPoint ? <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant = 'h6'>Rankings</Typography></div> : ''}
         <div style = {{'display': 'flex', 'height': 400}}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -184,9 +187,9 @@ const Trends = ({ data }: { data: Trends}) => {
 
 
   return (
-    <div style={{'padding': '48px 20px 20px 20px'}}>
-      {getRankingGraph()}
-      {<StatsGraph cbb_statistic_rankings = {cbb_statistic_rankings} cbb_elos = {elo} cbb_games = {games} cbb_conference_statistic_rankings = {cbb_conference_statistic_rankings} cbb_league_statistics = {cbb_league_statistics} />}
+    <div style={{'padding': '5px'}}>
+      {subView === 'ranking' ? getRankingGraph() : ''}
+      {subView === 'stats' ? <StatsGraph cbb_statistic_rankings = {cbb_statistic_rankings} cbb_elos = {elo} cbb_games = {games} cbb_conference_statistic_rankings = {cbb_conference_statistic_rankings} cbb_league_statistics = {cbb_league_statistics} /> : ''}
     </div>
   );
 }

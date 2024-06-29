@@ -18,8 +18,8 @@ import { RankingColumns } from '@/types/cbb';
 
 
 const ColumnPicker = (
-  {options, selected, open, saveHandler, closeHandler}:
-  {options: RankingColumns, selected: Array<string>, open: boolean, saveHandler: Function, closeHandler: Function}
+  {options, selected, open, saveHandler, closeHandler, limit, title = 'Set custom table columns'}:
+  {options: RankingColumns, selected: Array<string>, open: boolean, saveHandler: Function, closeHandler: Function, limit?: number, title?: string}
 ) => {
 
   const [columns, setColumns] = useState(selected || []);
@@ -46,7 +46,7 @@ const ColumnPicker = (
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Set custom table columns
+              {title}
             </Typography>
             <Button autoFocus color="inherit" onClick={() => {saveHandler(columns);}}>Save</Button>
           </Toolbar>
@@ -55,6 +55,7 @@ const ColumnPicker = (
           <List style = {{'marginBottom': 60}}>
             {Object.values(options).map((option) => (
               <ListItem key={option.id} button disabled = {(option.disabled === true)} onClick={() => {
+                let autoClose = false;
                 let currentColumns = [...columns];
                 const index = currentColumns.indexOf(option.id);
 
@@ -64,7 +65,21 @@ const ColumnPicker = (
                   currentColumns.push(option.id);
                 }
 
+                // auto close if limit is reached
+                if (limit && currentColumns.length >= limit) {
+                  autoClose = true;
+                }
+
+                // remove first if greater than limit
+                if (limit && currentColumns.length > limit) {
+                  currentColumns.shift();
+                }
+
                 setColumns(currentColumns);
+
+                if (autoClose) {
+                  saveHandler(currentColumns);
+                }
               }}>
                 <ListItemIcon>
                   {columns.indexOf(option.id) > -1 ? <CheckIcon /> : ''}
