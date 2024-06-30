@@ -11,7 +11,6 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 import Locked from '@/components/generic/Billing/Locked';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Button, Skeleton } from '@mui/material';
 import Indicator from '@/components/generic/CBB/Indicator';
 import Pin from '@/components/generic/CBB/Pin';
@@ -23,6 +22,7 @@ import { useScrollContext } from '@/contexts/scrollContext';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { setScrollTop } from '@/redux/features/games-slice';
 import useOnScreen from '@/components/hooks/useOnScreen';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 
@@ -32,7 +32,6 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   const theme = useTheme();
 
   const [hover, setHover] = useState(false);
-  const [spin, setSpin] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const bestColor = getBestColor();
@@ -65,10 +64,9 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
 
     dispatch(updateGameSort(null));
     refresh('cbb.games.'+ cbb_game.cbb_game_id);
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/games/' + cbb_game.cbb_game_id);
-      setSpin(false);
     });
   };
 
@@ -435,7 +433,6 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
       {
         isVisible ?
         <>
-          <BackdropLoader open = {spin} />
           {getIndicators()}
           <div style = {teamLineStyle}>
             {getHeader()}

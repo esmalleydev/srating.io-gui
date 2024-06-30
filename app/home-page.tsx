@@ -27,23 +27,22 @@ import gameImage from '../public/static/images/statcompare.png';
 import playerImage from '../public/static/images/player.png';
 
 import Pricing from '../components/generic/Pricing';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { getLogoColorPrimary, getLogoColorSecondary } from '@/components/utils/Color';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 const Home = () => {
-
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const [spin, setSpin] = useState(false);
 
   const ref: RefObject<HTMLDivElement> = useRef(null);
 
   const handlePath = (path) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push(path);
-      setSpin(false);
     });
   };
 
@@ -103,7 +102,6 @@ const Home = () => {
   return (
     <div>
       <main>
-        <BackdropLoader open = {spin} />
         <Box
           sx={{
             pt: 2,

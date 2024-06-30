@@ -12,18 +12,16 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 
 
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppDispatch } from '@/redux/hooks';
 import { setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { clearDatesChecked } from '@/redux/features/games-slice';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-
-  const [spin, setSpin] = useState<boolean>(false);
 
   const [register, setRegister] = useState<boolean>(false);
   const [requestedLogin, setRequestedLogin] = useState<boolean>(false);
@@ -158,8 +156,8 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
       setEmailError(null);
     }
 
-    setSpin(true);
-
+    dispatch(setLoading(true));
+    
     useClientAPI({
       'class': 'user',
       'function': 'forgotPassword',
@@ -167,7 +165,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
         'email': email,
       },
     }).then((response) => {
-      setSpin(false);
+      dispatch(setLoading(false));
       setForgotPassword(false);
       setTempLogin(true);
     }).catch((e) => {
@@ -417,7 +415,6 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
       open={open}
       onClose={closeHandler}
     >
-      <BackdropLoader open = {spin} />
       <DialogTitle id="alert-dialog-title">Account</DialogTitle>
       {boxContents}
     </Dialog>

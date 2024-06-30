@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -17,6 +17,7 @@ import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color';
 import { setScrollTop } from '@/redux/features/picks-slice';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Tile = ({ cbb_game, picks}) => {
@@ -24,6 +25,7 @@ const Tile = ({ cbb_game, picks}) => {
 
   const scrollRef  = useScrollContext();
   const { width } = useWindowDimensions() as Dimensions;
+  const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
   const displayRank = useAppSelector(state => state.displayReducer.rank);
 
@@ -39,7 +41,6 @@ const Tile = ({ cbb_game, picks}) => {
     'cbb_game': cbb_game,
   });
 
-  
     
     
   const handleMatchup = (e) => {
@@ -50,7 +51,10 @@ const Tile = ({ cbb_game, picks}) => {
       dispatch(setScrollTop(scrollRef.current.scrollTop));
     }
     dispatch(updateGameSort(null));
-    router.push('/cbb/games/' + cbb_game.cbb_game_id);
+    dispatch(setLoading(true));
+    startTransition(() => {
+      router.push('/cbb/games/' + cbb_game.cbb_game_id);
+    });
   };
 
   const compareRows = [

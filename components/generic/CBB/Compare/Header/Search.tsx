@@ -8,10 +8,10 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import useDebounce from '@/components/hooks/useDebounce';
 import { useClientAPI } from '@/components/clientAPI';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Team } from '@/types/cbb';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setHomeTeamID, setAwayTeamID, setNextSearch } from '@/redux/features/compare-slice';
+import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -59,7 +59,6 @@ const Search = () => {
   const [value, setValue] = useState('');
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(false);
-  const [spin, setSpin] = useState(false);
 
   const dispatch = useAppDispatch();
   const home_team_id = useAppSelector(state => state.compareReducer.home_team_id); //|| searchParams?.get('home_team_id') || null;
@@ -112,7 +111,7 @@ const Search = () => {
     const new_team_id = (option && option.team_id);
 
     if (new_team_id) {
-      setSpin(true);
+      dispatch(setLoadingDisplay(true));
       startTransition(() => {
         let key = next_search;
 
@@ -126,12 +125,14 @@ const Search = () => {
           key = 'away';
         }
 
+        let changing = false;
         if (searchParams?.get(key + '_team_id') !== new_team_id) {
           const current = new URLSearchParams(Array.from(searchParams.entries()));
           current.set(key + '_team_id', new_team_id);
           const search = current.toString();
           const query = search ? `?${search}` : "";
           router.replace(`${pathName}${query}`);
+          changing = true;
         }
 
         if (key === 'away') {
@@ -141,8 +142,9 @@ const Search = () => {
           dispatch(setHomeTeamID(new_team_id));
           dispatch(setNextSearch('away'));
         }
-        
-        setSpin(false);
+        if (!changing) {
+          dispatch(setLoadingDisplay(false));
+        }
         setBlur(true);
         setValue('');
         setTeams([]);
@@ -156,7 +158,6 @@ const Search = () => {
   // sx={{backgroundColor: 'rgba(66, 165, 245, .5)'}}
   return (
     <Container>
-      <BackdropLoader open = {spin} />
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>

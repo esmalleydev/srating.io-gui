@@ -3,28 +3,27 @@ import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 
-import BackdropLoader from '../../BackdropLoader';
 import Tile from './Tile';
 import { Typography } from '@mui/material';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const RankedGames = (props) => {
   const self = this;
-
+  const dispatch = useAppDispatch();
   const games = props.games || {};
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
-  const [spin, setSpin] = useState(false);
 
 
   const handleClick = (cbb_game_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/games/' + cbb_game_id)
-      setSpin(false);
+      router.push('/cbb/games/' + cbb_game_id);
     });
   };
 
@@ -45,7 +44,6 @@ const RankedGames = (props) => {
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
       {gameContainers.length ? <Typography variant='h6' >Top 30 ranked games</Typography> : ''}
       <div style = {{'display': 'flex', 'overflowY': 'auto'}}>{gameContainers}</div>
     </div>

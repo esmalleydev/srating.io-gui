@@ -50,7 +50,6 @@ const Sidebar = () => {
     dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/ranking');
-      dispatch(setLoading(false));
     });
   };
 
@@ -59,24 +58,21 @@ const Sidebar = () => {
     sessionStorage.removeItem('CBB.GAMES.DATA');
     startTransition(() => {
       router.push('/cbb/games');
-      dispatch(setLoading(false));
     });
   };
-
+  
   const handlePicks = () => {
-    // setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/picks');
-      // setSpin(false);
     });
   };
-
+  
   const handleCompareTool = () => {
-    // setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       dispatch(clear());
       router.push('/cbb/compare');
-      // setSpin(false);
     });
   };
 

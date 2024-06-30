@@ -3,32 +3,31 @@ import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Link, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Locked = ({ iconFontSize }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const dispatch = useAppDispatch();
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [spin, setSpin] = useState(false);
 
 
   const handleSubscribe = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     setOpenDialog(false);
     startTransition(() => {
       router.push('/pricing');
-      setSpin(false);
     });
   };
 
   const handleLiveWinRate = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     setOpenDialog(false);
     startTransition(() => {
       router.push('/cbb/picks?view=stats');
-      setSpin(false);
     });
   };
 
@@ -38,7 +37,6 @@ const Locked = ({ iconFontSize }) => {
 
   return (
     <>
-      <BackdropLoader open = {spin} />
       <IconButton onClick={() => {setOpenDialog(true);}}><LockIcon style={{'fontSize' : iconFontSize || '24px'}} color='error' /></IconButton>
       <Dialog
         open={openDialog}

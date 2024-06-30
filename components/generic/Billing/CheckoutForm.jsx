@@ -10,8 +10,9 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button } from '@mui/material';
 
-import BackdropLoader from '../BackdropLoader';
 import { useClientAPI } from '@/components/clientAPI';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const CheckoutForm = (props) => {
@@ -20,8 +21,8 @@ const CheckoutForm = (props) => {
 
   const pricing = props.pricing;
 
+  const dispatch = useAppDispatch();
   const [spin, setSpin] = useState(false);
-  const [backdrop, setBackdrop] = useState(false);
   const [request, setRequest] = useState(false);
   const [email, setEmail] = useState(null);
   const [emailError, setEmailError] = useState(null);
@@ -51,7 +52,7 @@ const CheckoutForm = (props) => {
 
   const handleError = (error) => {
     setIsLoading(false);
-    setBackdrop(false);
+    dispatch(setLoading(false));
     setErrorMessage(error.message);
   }
 
@@ -84,7 +85,7 @@ const CheckoutForm = (props) => {
       return;
     }
 
-    setBackdrop(true);
+    dispatch(setLoading(true));
 
     const subscription = await useClientAPI({
       'class': 'billing',
@@ -155,7 +156,6 @@ const CheckoutForm = (props) => {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <BackdropLoader open = {backdrop} />
       <TextField
         style = {{'marginBottom': 20}}
         required

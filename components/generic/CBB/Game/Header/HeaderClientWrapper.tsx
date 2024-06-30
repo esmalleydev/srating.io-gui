@@ -7,12 +7,12 @@ import Typography from '@mui/material/Typography';
 
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Link, useTheme } from '@mui/material';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import BackButton from '@/components/generic/BackButton';
 import Pin from '@/components/generic/CBB/Pin';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const getBreakPoint = () => {
@@ -45,6 +45,7 @@ export { getHeaderHeight, getMarginTop, getBreakPoint };
 
 const HeaderClientWrapper = ({ cbb_game, children}) => {
   const self = this;
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
@@ -53,17 +54,14 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
 
   const displayRank = useAppSelector(state => state.displayReducer.rank);
 
-  const [spin, setSpin] = useState(false);
-
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,
   });
 
   const handleClick = (team_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/team/' + team_id + '?season=' + cbb_game.season);
-      setSpin(false);
     });
   }
 
@@ -163,7 +161,6 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
           <div style = {{'maxWidth': sideWidth, 'minWidth': sideWidth,}}>{getTeam(cbb_game.home_team_id)}</div>
         </div>
       </div>
-      <BackdropLoader open = {spin} />
     </>
   );
 }

@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
 import { setShowScheduleDifferentials } from '@/redux/features/team-slice';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { setLoading } from '@/redux/features/display-slice';
 
 const getSubNavHeaderHeight = () => {
   return 48;
@@ -27,10 +28,8 @@ const SubNavBar = ({ view }) => {
   const dispatch = useAppDispatch();
   const scheduleView = useAppSelector(state => state.teamReducer.scheduleView);
   const showScheduleDifferentials = useAppSelector(state => state.teamReducer.showScheduleDifferentials);
-  
-  const [spin, setSpin] = useState(false);
 
-  let subView = searchParams?.get('subview') || 'team';
+  let subView = searchParams?.get('subview') || (view === 'stats' ? 'team' : 'stats');
 
   let tabOrder: string[] = [];
   let tabOptions = {};
@@ -48,8 +47,6 @@ const SubNavBar = ({ view }) => {
       'stats': 'Stats'
     };
   }
-
-  const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(subView) > -1 ? tabOrder.indexOf(subView) : 0);
 
 
   const subHeaderHeight = getSubNavHeaderHeight();
@@ -92,8 +89,6 @@ const SubNavBar = ({ view }) => {
     let tabs: React.JSX.Element[] = [];
     
     const handleTabClick = (value) => {
-      setTabIndex(value);
-      
       subView = tabOrder[value];
       
       if (searchParams) {
@@ -102,10 +97,9 @@ const SubNavBar = ({ view }) => {
         const search = current.toString();
         const query = search ? `?${search}` : "";
       
-        setSpin(true);
+        dispatch(setLoading(true));
         startTransition(() => {
           router.replace(`${pathName}${query}`);
-          setSpin(false);
         });
       }
     };
@@ -117,7 +111,7 @@ const SubNavBar = ({ view }) => {
 
 
     middleButtons.push(
-      <Tabs key = {'tabs'} variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} indicatorColor="secondary" textColor="inherit">
+      <Tabs key = {'tabs'} variant="scrollable" scrollButtons="auto" value={tabOrder.indexOf(subView)} onChange={(e, value) => {handleTabClick(value)}} indicatorColor="secondary" textColor="inherit">
         {tabs}
       </Tabs>
     );

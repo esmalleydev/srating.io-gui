@@ -4,13 +4,13 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Paper, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Skeleton } from '@mui/material';
 import HelperCBB from '@/components/helpers/CBB';
 import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color';
 import { useRouter } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { setLoading } from '@/redux/features/display-slice';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {
@@ -27,12 +27,12 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 
 
 const TableView = ({ sorted_games, team_id }) => {
+  const dispatch = useAppDispatch();
   const isLoadingPredictions = useAppSelector(state => state.teamReducer.schedulePredictionsLoading);
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
 
-  const [spin, setSpin] = useState(false);
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -58,10 +58,9 @@ const TableView = ({ sorted_games, team_id }) => {
   ];
 
   const handleGameClick = (cbb_game_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/games/' + cbb_game_id);
-      setSpin(false);
     });
   };
 
@@ -121,7 +120,6 @@ const TableView = ({ sorted_games, team_id }) => {
 
   return (
     <>
-      <BackdropLoader open = {spin} />
       <TableContainer component={Paper}>
         <Table size="small" aria-label="player stats table">
           <TableHead>

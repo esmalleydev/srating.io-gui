@@ -14,10 +14,10 @@ import PicksIcon from '@mui/icons-material/Casino';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppDispatch } from '@/redux/hooks';
 import { setScrollTop as setPicksScrollTop } from '@/redux/features/picks-slice';
 import { setScrollTop as setGamesScrollTop } from '@/redux/features/games-slice';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
@@ -31,7 +31,6 @@ const FooterNavigation = () => {
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
   const dispatch = useAppDispatch();
 
   let viewingSport = 'CBB';
@@ -85,38 +84,34 @@ const FooterNavigation = () => {
 
 
   const handleHome = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       // router.push('/'+viewingSport.toLowerCase());
       router.push('/');
-      setSpin(false);
     });
   }
 
   const handleRanking = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/'+viewingSport.toLowerCase()+'/ranking');
-      setSpin(false);
     });
   }
 
   const handleScores = () => {
     dispatch(setGamesScrollTop(0));
-    setSpin(true);
+    dispatch(setLoading(true));
     sessionStorage.removeItem('CBB.GAMES.DATA');
     startTransition(() => {
       router.push('/'+viewingSport.toLowerCase()+'/games');
-      setSpin(false);
     });
   }
 
   const handlePicks = () => {
     dispatch(setPicksScrollTop(0));
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/'+viewingSport.toLowerCase()+'/picks');
-      setSpin(false);
     });
   }
 
@@ -128,7 +123,6 @@ const FooterNavigation = () => {
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
     {/* {viewingSport ?  */}
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4}}>
         <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : '#1976d2'}} showLabels value={hightlightValue}>

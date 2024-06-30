@@ -1,21 +1,21 @@
 'use client';
-import React, { useState, useTransition} from 'react';
+import React, {useTransition} from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { IconButton } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { setLoading } from '@/redux/features/display-slice';
+import { useAppDispatch } from '@/redux/hooks';
 
 
 const BackButton = () => {
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const handleClick = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.back();
-      setSpin(false);
     });
   };
 
@@ -24,7 +24,6 @@ const BackButton = () => {
       <IconButton color='primary' onClick = {handleClick}>
         <ArrowBackIcon  fontSize = 'small' />
       </IconButton>
-      <BackdropLoader open = {spin} />
     </>
   );
 }

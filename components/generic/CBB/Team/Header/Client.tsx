@@ -1,24 +1,25 @@
 'use client';
-import React, { useState, useTransition } from 'react';
+import React, { useTransition } from 'react';
 
 import Typography from '@mui/material/Typography';
 
 import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Link } from '@mui/material';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 
 const Client = ({team, season, seasons, coach, cbb_coach_statistic_ranking, cbb_conference_statistic_ranking}) => {
   const breakPoint = 475;
 
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -27,7 +28,6 @@ const Client = ({team, season, seasons, coach, cbb_coach_statistic_ranking, cbb_
 
   const [isPending, startTransition] = useTransition();
 
-  const [spin, setSpin] = useState(false);
   const displayRank = useAppSelector(state => state.displayReducer.rank);
 
   const CBB = new HelperCBB();
@@ -78,27 +78,24 @@ const Client = ({team, season, seasons, coach, cbb_coach_statistic_ranking, cbb_
       current.set('season', season);
       const search = current.toString();
       const query = search ? `?${search}` : "";
-      setSpin(true);
+      dispatch(setLoading(true));
       startTransition(() => {
         router.push(`${pathName}${query}`);
-        setSpin(false);
       });
     }
   };
 
   const handleCoach = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/coach/' + coach.coach_id/*+'?season='+season*/);
-      setSpin(false);
     });
   };
-
+  
   const handleConference = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/conference/' + team.conference_id + '?season='+season);
-      setSpin(false);
     });
   };
 
@@ -119,7 +116,6 @@ const Client = ({team, season, seasons, coach, cbb_coach_statistic_ranking, cbb_
       <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
         <Typography variant = 'overline' color = 'text.secondary'>{conferenceRank ? <span style = {conferenceSupStyle}>{conferenceRank} </span> : ''}<Link onClick = {handleConference} underline='hover' style={{cursor: 'pointer'}}>{conferenceName}</Link> | {coachRank ? <span style = {coachSupStyle}>{coachRank} </span> : ''}<Link onClick = {handleCoach} underline='hover' style={{cursor: 'pointer'}}>{coach.first_name.charAt(0) + '. ' + coach.last_name}</Link></Typography>
       </div>
-      <BackdropLoader open = {spin} />
     </div>
   );
 }

@@ -7,7 +7,6 @@ import moment from 'moment';
 import HelperCBB from '../../components/helpers/CBB';
 import HelperGames from '../../components/helpers/Games';
 
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import Teams from '../../components/generic/CBB/Favorites/Teams';
 import Players from '../../components/generic/CBB/Favorites/Players';
 import { CircularProgress } from '@mui/material';
@@ -15,11 +14,14 @@ import RankedGames from '../../components/generic/CBB/Home/RankedGames.jsx';
 import ThrillerGames from '../../components/generic/CBB/Home/ThrillerGames.jsx';
 import CloseGames from '../../components/generic/CBB/Home/CloseGames.jsx';
 import { useClientAPI } from '@/components/clientAPI';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 
 let intervalRefresher: NodeJS.Timeout;
 
 const Home = () => {
   const self = this;
+  const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
 
   interface favoriteDataType {
@@ -37,7 +39,6 @@ const Home = () => {
   const [request, setRequest] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<favoriteDataType | null>(null);
-  const [spin, setSpin] = useState(false);
 
   const season = searchParams?.get('season') || new HelperCBB().getCurrentSeason();
 
@@ -55,7 +56,7 @@ const Home = () => {
       }
     }).then((homeData) => {
       setData(homeData);
-      setSpin(false);
+      dispatch(setLoadingDisplay(false));
       setLoading(false);
     }).catch((err) => {
       // nothing for now
@@ -63,7 +64,7 @@ const Home = () => {
   }
 
   if (!request) {
-    setSpin(true);
+    dispatch(setLoadingDisplay(true));
     setLoading(true);
     getData();
   }
@@ -89,7 +90,6 @@ const Home = () => {
 
   return (
     <div style = {{'padding': '20px 20px 0px 20px'}}>
-      <BackdropLoader open = {spin} />
       {
         loading ?
         <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :

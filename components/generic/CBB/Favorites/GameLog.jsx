@@ -15,8 +15,9 @@ import TableRow from '@mui/material/TableRow';
 import moment from 'moment';
 
 import HelperCBB from '../../../helpers/CBB';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
-import BackdropLoader from '../../BackdropLoader';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {
@@ -35,6 +36,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 const GameLog = (props) => {
   const self = this;
 
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -42,13 +44,11 @@ const GameLog = (props) => {
   const gamelogs = props.gamelogs;
   const player_team_season = props.player_team_season;
 
-  const [spin, setSpin] = useState(false);
 
   const handleClick = (cbb_game_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/games/' + cbb_game_id);
-      setSpin(false);
     });
   };
 
@@ -138,7 +138,6 @@ const GameLog = (props) => {
 
   return (
     <>
-      <BackdropLoader open = {spin} />
       <TableContainer component={Paper} style = {{'marginBottom': 20}}>
         <Table size="small" aria-label="game log table">
           <TableHead>

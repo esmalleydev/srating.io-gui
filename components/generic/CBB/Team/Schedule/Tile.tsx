@@ -7,7 +7,6 @@ import moment from 'moment';
 import HelperCBB from '@/components/helpers/CBB';
 
 import { useTheme } from '@mui/material/styles';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Card, CardContent, Typography, Tooltip, Link, CardActionArea, Skeleton, IconButton } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from  '@/components/utils/Color';
@@ -15,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
 import { setScrollTop, updateVisibleScheduleDifferentials } from '@/redux/features/team-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Tile = ({ cbb_game, team}) => {
@@ -24,7 +24,6 @@ const Tile = ({ cbb_game, team}) => {
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
   const [scrolled, setScrolled] = useState(false);
-  const [spin, setSpin] = useState(false);
 
   const dispatch = useAppDispatch();
   const isLoadingPredictions = useAppSelector(state => state.teamReducer.schedulePredictionsLoading);
@@ -89,10 +88,9 @@ const Tile = ({ cbb_game, team}) => {
       dispatch(setScrollTop(scrollRef.current.scrollTop));
     }
 
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/games/' + cbb_game.cbb_game_id);
-      setSpin(false);
     });
   };
 
@@ -104,10 +102,9 @@ const Tile = ({ cbb_game, team}) => {
       dispatch(setScrollTop(scrollRef.current.scrollTop));
     }
 
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/team/' + team_id + '?season=' + cbb_game.season);
-      setSpin(false);
     });
   };
 
@@ -182,7 +179,6 @@ const Tile = ({ cbb_game, team}) => {
       </div>
       <Card style = {{'width': '100%'}}>
         <CardContent style = {{'padding': (CBB.isFinal() ? '0px' : '7px') + ' 0px'}}>
-          <BackdropLoader open = {spin} />
           <div ref = {myRef} style = {containerStyle}>
             <div style = {{'display': 'flex', 'alignItems': 'center', 'overflow': 'hidden'}}>
 

@@ -3,7 +3,8 @@ import React, { useState, useTransition } from 'react';
 import { AppBar, Tab, Tabs, useTheme } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const getNavHeaderHeight = () => {
@@ -18,6 +19,7 @@ const NavBar = ({ view, tabOrder}) => {
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const theme = useTheme();
+  const dispatch = useAppDispatch();
 
   let tabOptions = {
     'teams': 'Teams',
@@ -25,7 +27,6 @@ const NavBar = ({ view, tabOrder}) => {
     
     
   const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0);
-  const [spin, setSpin] = useState(false);
   const [isPending, startTransition] = useTransition();
     
     
@@ -47,10 +48,9 @@ const NavBar = ({ view, tabOrder}) => {
       const search = current.toString();
       const query = search ? `?${search}` : "";
     
-      setSpin(true);
+      dispatch(setLoading(true));
       startTransition(() => {
         router.replace(`${pathName}${query}`);
-        setSpin(false);
       });
     }
     
@@ -71,7 +71,6 @@ const NavBar = ({ view, tabOrder}) => {
           {tabs}
         </Tabs>
       </AppBar>
-      <BackdropLoader open = {spin} />
     </>
   );
 }

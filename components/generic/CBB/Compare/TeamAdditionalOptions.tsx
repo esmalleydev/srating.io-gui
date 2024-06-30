@@ -8,7 +8,7 @@ import LuggageIcon from '@mui/icons-material/Luggage';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setNeutralSite } from '@/redux/features/compare-slice';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
@@ -16,7 +16,6 @@ const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
 
@@ -26,7 +25,7 @@ const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
 
   const handleNeutral = () => {
     const newValue: boolean = !neutral_site;
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       if (newValue !== neutral_site) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -37,7 +36,6 @@ const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
         dispatch(setNeutralSite(newValue));
       }
       handleClose();
-      setSpin(false);
     });
   };
 
@@ -52,7 +50,6 @@ const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
       <IconButton
           id="team-additional-options"
           aria-controls={open ? 'long-menu' : undefined}

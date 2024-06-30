@@ -12,7 +12,6 @@ import { teamColumns } from '@/components/generic/CBB/columns';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import utilsSorter from  '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 
 const Sorter = new utilsSorter();
 
@@ -42,7 +41,6 @@ const TableView = ({ teams, season }) => {
   const [view, setView] = useState<string | null>('overview');
   const [order, setOrder] = useState<string>('asc');
   const [orderBy, setOrderBy] = useState<string>('composite_rank');
-  const [spin, setSpin] = useState(false);
 
   const getColumns = () => {
     if (view === 'overview') {
@@ -271,7 +269,6 @@ const TableView = ({ teams, season }) => {
         {statDisplayChips}
       </div>
         {getTable()}
-      <BackdropLoader open = {spin} />
     </div>
   );
 }

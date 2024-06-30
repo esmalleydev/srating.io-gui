@@ -1,10 +1,12 @@
 'use client';
-import React, { useState, useTransition } from 'react';
+import React, { useTransition } from 'react';
 import { Tab, Tabs } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 const SubNavBar = ({ view, subview, tabOrder}) => {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -27,7 +29,6 @@ const SubNavBar = ({ view, subview, tabOrder}) => {
   }
 
   const tabIndex = tabOrder.indexOf(subview);
-  const [spin, setSpin] = useState(false);
   const [isPending, startTransition] = useTransition();
 
     
@@ -51,10 +52,9 @@ const SubNavBar = ({ view, subview, tabOrder}) => {
       const search = current.toString();
       const query = search ? `?${search}` : "";
     
-      setSpin(true);
+      dispatch(setLoading(true));
       startTransition(() => {
         router.replace(`${pathName}${query}`);
-        setSpin(false);
       });
     }
     
@@ -73,7 +73,6 @@ const SubNavBar = ({ view, subview, tabOrder}) => {
       <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => {handleTabClick(value)}} indicatorColor="secondary" textColor="inherit">
         {tabs}
       </Tabs>
-      <BackdropLoader open = {spin} />
     </div>
   );
 }

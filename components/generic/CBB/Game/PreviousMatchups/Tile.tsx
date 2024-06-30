@@ -9,14 +9,15 @@ import moment from 'moment';
 
 import HelperCBB from '@/components/helpers/CBB';
 import { useRouter } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Tile = ({ cbb_game }) => {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
 
   const CBB = new HelperCBB({
     'cbb_game': cbb_game,
@@ -57,10 +58,9 @@ const Tile = ({ cbb_game }) => {
   };
 
   const handleClick = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/games/' + cbb_game.cbb_game_id);
-      setSpin(false);
     });
   };
 
@@ -70,7 +70,6 @@ const Tile = ({ cbb_game }) => {
         <Typography variant = 'body2'>{moment(cbb_game.start_date).format('MMM Do, YYYY')}</Typography>
         <Typography variant = 'body1'>{getTitle()} ({getScore()})</Typography>
       </div>
-      <BackdropLoader open = {spin} />
     </Paper>
   );
 }

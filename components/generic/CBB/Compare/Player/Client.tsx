@@ -11,8 +11,8 @@ import { playerColumns } from '@/components/generic/CBB/columns';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import utilsSorter from  '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 const Sorter = new utilsSorter();
 
@@ -44,7 +44,6 @@ const Client = ({ teams }) => {
   const [view, setView] = useState<string | null>('overview');
   const [order, setOrder] = useState<string>('asc');
   const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
-  const [spin, setSpin] = useState(false);
 
   const dispatch = useAppDispatch();
   const hideLowerBench = useAppSelector(state => state.compareReducer.hideLowerBench);
@@ -122,10 +121,9 @@ const Client = ({ teams }) => {
   };
 
   const handleClick = (player_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/player/' + player_id);
-      setSpin(false);
     });
   };
 
@@ -379,8 +377,7 @@ const Client = ({ teams }) => {
               : ''
             }
           </>
-      }    
-      <BackdropLoader open = {spin} />
+      }
     </div>
   );
 }

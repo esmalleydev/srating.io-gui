@@ -21,9 +21,10 @@ import { visuallyHidden } from '@mui/utils';
 
 
 import RankSpan from '@/components/generic/CBB/RankSpan';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import utilsSorter from  '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Sorter = new utilsSorter();
@@ -48,7 +49,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 
 
 const Roster = ({ rosterStats }) => {
-
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -56,7 +57,6 @@ const Roster = ({ rosterStats }) => {
   const [view, setView] = useState<string | null>('overview');
   const [order, setOrder] = useState<string>('asc');
   const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
-  const [spin, setSpin] = useState(false);
 
   const { width } = useWindowDimensions() as Dimensions;
   const breakPoint = 425;
@@ -87,10 +87,9 @@ const Roster = ({ rosterStats }) => {
   };
 
   const handleClick = (player_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/player/' + player_id);
-      setSpin(false);
     });
   };
 
@@ -526,7 +525,6 @@ const Roster = ({ rosterStats }) => {
 
   return (
     <div style = {{'paddingTop': 10}}>
-      <BackdropLoader open = {spin} />
       {getDisplay()}
     </div>
   );

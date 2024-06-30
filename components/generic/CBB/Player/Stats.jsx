@@ -21,8 +21,9 @@ import Chip from '@mui/material/Chip';
 
 import HelperTeam from '../../../helpers/Team';
 import RankSpan from '../RankSpan';
-import BackdropLoader from '../../BackdropLoader';
 import { useClientAPI } from '@/components/clientAPI';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 
@@ -43,6 +44,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 const Stats = (props) => {
   const self = this;
 
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -55,7 +57,6 @@ const Stats = (props) => {
   const [requestedStats, setRequestedStats] = useState(false);
   const [statsData, setStatsData] = useState(null);
   const [view, setView] = useState('overview');
-  const [spin, setSpin] = useState(false);
 
   useEffect(() => {
     setView(sessionStorage.getItem('CBB.PLAYER.STATS.VIEW') ? sessionStorage.getItem('CBB.PLAYER.STATS.VIEW') : 'overview');
@@ -80,10 +81,9 @@ const Stats = (props) => {
 
 
   const handleClick = (player_team_season) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/team/' + player_team_season.team_id + '?season=' + player_team_season.season);
-      setSpin(false);
     });
   };
   
@@ -400,7 +400,6 @@ const Stats = (props) => {
 
   return (
     <div style = {{'paddingTop': 20}}>
-      <BackdropLoader open = {spin} />
       {
       statsData === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>

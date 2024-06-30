@@ -5,15 +5,16 @@ import Typography from '@mui/material/Typography';
 
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperCBB from '@/components/helpers/CBB';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Client = ({cbb_conference_statistic_ranking, season, conference_id, seasons }) => {
+  const dispatch = useAppDispatch();
   const conferences = useAppSelector(state => state.dictionaryReducer.conference);
   const cbb_statistic_rankings = useAppSelector(state => state.conferenceReducer.cbb_statistic_rankings);
 
@@ -39,7 +40,6 @@ const Client = ({cbb_conference_statistic_ranking, season, conference_id, season
   
   const [isPending, startTransition] = useTransition();
   
-  const [spin, setSpin] = useState(false);
   
   const CBB = new HelperCBB();
 
@@ -66,10 +66,9 @@ const Client = ({cbb_conference_statistic_ranking, season, conference_id, season
       current.set('season', season);
       const search = current.toString();
       const query = search ? `?${search}` : "";
-      setSpin(true);
+      dispatch(setLoading(true));
       startTransition(() => {
         router.push(`${pathName}${query}`);
-        setSpin(false);
       });
     }
   };
@@ -88,7 +87,6 @@ const Client = ({cbb_conference_statistic_ranking, season, conference_id, season
           <Typography variant = 'overline' color = 'text.secondary'> ({totalWins}-{totalLosses})</Typography>
         </span>
       </div>
-      <BackdropLoader open = {spin} />
     </div>
   );
 }

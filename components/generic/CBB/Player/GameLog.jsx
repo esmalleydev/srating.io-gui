@@ -19,8 +19,9 @@ import moment from 'moment';
 
 import HelperCBB from '../../../helpers/CBB';
 
-import BackdropLoader from '../../BackdropLoader';
 import { useClientAPI } from '@/components/clientAPI';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {
@@ -42,6 +43,7 @@ const GameLog = (props) => {
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const dispatch = useAppDispatch();
 
   // const season = props.season;
   // const player = props.player;
@@ -51,7 +53,6 @@ const GameLog = (props) => {
 
   const [requestedLog, setRequestedLog] = useState(false);
   const [data, setData] = useState(null);
-  const [spin, setSpin] = useState(false);
 
 
   if (!requestedLog) {
@@ -72,10 +73,9 @@ const GameLog = (props) => {
 
 
   const handleClick = (cbb_game_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/games/' + cbb_game_id);
-      setSpin(false);
     });
   };
 
@@ -165,7 +165,6 @@ const GameLog = (props) => {
 
   return (
     <div style = {{'paddingTop': 20}}>
-      <BackdropLoader open = {spin} />
       {
       data === null ?
         <Paper elevation = {3} style = {{'padding': 10}}>

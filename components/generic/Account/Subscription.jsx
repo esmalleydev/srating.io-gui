@@ -13,8 +13,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 
-import BackdropLoader from '../BackdropLoader';
 import { useClientAPI } from '@/components/clientAPI';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 
@@ -22,6 +23,7 @@ const Subscription = (props) => {
   const self = this;
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const subscription = props.subscription;
   const pricing = props.pricing;
@@ -30,7 +32,6 @@ const Subscription = (props) => {
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelledSub, setCancelledSub] = useState(null);
   const [apiKey, setApiKey] = useState(null);
-  const [spin, setSpin] = useState(false);
 
 
   // should only be one...
@@ -65,7 +66,7 @@ const Subscription = (props) => {
   };
 
   const handleCancelSubscription = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     handleCancelClose();
     useClientAPI({
       'class': 'billing',
@@ -74,7 +75,7 @@ const Subscription = (props) => {
         'subscription_id': subscription.subscription_id
       }
     }).then(response => {
-      setSpin(false);
+      dispatch(setLoading(false));
       setCancelledSub(response);
     }).catch((err) => {
       // nothing for now
@@ -82,7 +83,7 @@ const Subscription = (props) => {
   };
 
   const handleRegenerate = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     useClientAPI({
       'class': 'api_key',
       'function': 'regenerate',
@@ -92,7 +93,7 @@ const Subscription = (props) => {
     }).then((response) => {
       setApiKey(null);
       setApiKey(response);
-      setSpin(false);
+      dispatch(setLoading(false));
       if (response.api_key_id) {
         api_keys[api_key.api_key_id] = response;
       }
@@ -102,13 +103,12 @@ const Subscription = (props) => {
   };
 
   const handleRenewClick = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     router.push('/pricing');
   };
 
   return (
     <Paper elevation={3} style = {{'minWidth': 320, 'maxWidth': 450, 'width': 'auto', 'padding': 15}}>
-      <BackdropLoader open = {spin} />
       <Typography style = {{'textAlign': 'center'}} variant='h5'>{pricing.type === 'api' || pricing.type === 'trial' ? 'API' : 'Picks'} subscription ({pricing.name})</Typography>
       <Typography style = {{'marginTop': 5}} color = {'text.secondary'} variant='body1'>{pricing.description}</Typography>
       {pricing.type !== 'trial' && cancelledSub === null && !subscription.expires ? <Typography variant='body1'>Automatically renews on {due.format('MMM Do \'YY')}</Typography> : ''}

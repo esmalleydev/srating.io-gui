@@ -38,6 +38,7 @@ import { setSession, setValidSession } from '../../redux/features/user-slice';
 import { Divider, ListItemIcon, Tooltip } from '@mui/material';
 import { clear } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const SignUpButton = styled(Button)(({ theme }) => ({
@@ -66,7 +67,6 @@ const Header = () => {
   const [fullSearch, setFullSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -79,19 +79,17 @@ const Header = () => {
 
 
   const handleHome = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/');
-      setSpin(false);
     });
   };
-
+  
   const handleCompare = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
+    dispatch(clear());
     startTransition(() => {
-      dispatch(clear());
       router.push('/cbb/compare');
-      setSpin(false);
     });
   };
 
@@ -104,10 +102,9 @@ const Header = () => {
   const handleAccount = () => {
     handleClose();
     if (validSession) {
-      setSpin(true);
+      dispatch(setLoading(true));
       startTransition(() => {
         router.push('/account');
-        setSpin(false);
       });
       return;
     }
@@ -132,10 +129,9 @@ const Header = () => {
     // sessionStorage.clear();
     dispatch(setValidSession(false));
     dispatch(setSession(null));
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/');
-      setSpin(false);
     });
   };
 

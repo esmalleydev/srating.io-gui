@@ -1,4 +1,5 @@
 import { useAppSelector } from "@/redux/hooks";
+import HelperCBB from '@/components/helpers/CBB';
 
 
 export interface rowDatatype {
@@ -156,9 +157,11 @@ export interface rowDatatype {
   team_name?: string;
 };
 
-export const getRowsData = ({ data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf }) => {
+export const getRowsData = ({ data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, season }) => {
   let rows: rowDatatype[] = [];
   let lastUpdated: string | null = null;
+
+  const CBB = new HelperCBB();
 
   const conferences = useAppSelector(state => state.dictionaryReducer.conference);
 

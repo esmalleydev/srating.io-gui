@@ -12,8 +12,8 @@ import { IconButton, Link, Skeleton, Tooltip, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { setHomeTeamID, setAwayTeamID } from '@/redux/features/compare-slice';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => {
@@ -27,7 +27,6 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
 
   const dispatch = useAppDispatch();
   const displayRank = useAppSelector(state => state.displayReducer.rank);
@@ -35,7 +34,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
   // const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
 
   const handleRemove = (team_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
       let key: string | null = null;
@@ -55,13 +54,11 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
       } else if (key === 'away') {
         dispatch(setAwayTeamID(null));
       }
-
-      setSpin(false);
     });
   };
 
   const handleSwap = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       if (home_team_id && away_team_id) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -73,15 +70,13 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
       }
       dispatch(setHomeTeamID(away_team_id));
       dispatch(setAwayTeamID(home_team_id));
-      setSpin(false);
     });
   };
 
   const handleTeamClick = (team_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/team/' + team_id + '?season=' + season);
-      setSpin(false);
     });
   };
 
@@ -183,7 +178,6 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
           (home_team_id in teams ? <>{getTeam(home_team_id)}</> : <Skeleton style={{'height': 60, 'transform': 'initial'}} />)
         }
       </div>
-      <BackdropLoader open = {spin} />
     </div>
   );
 }

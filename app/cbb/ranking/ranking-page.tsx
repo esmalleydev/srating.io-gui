@@ -36,12 +36,11 @@ import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 import ColumnPicker from '@/components/generic/CBB/ColumnPicker';
 
 import HelperCBB from '@/components/helpers/CBB';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import RankSearch from '@/components/generic/RankSearch';
 import PositionPicker from '@/components/generic/CBB/PositionPicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { clearPositions, updateConferences, updatePositions } from '@/redux/features/display-slice';
+import { clearPositions, setLoading as setLoadingDisplay, updateConferences, updatePositions } from '@/redux/features/display-slice';
 import { getHeaderColumns } from './columns';
 import { getRowsData } from './rows';
 import AdditionalOptions from '@/components/generic/CBB/Ranking/AdditionalOptions';
@@ -116,7 +115,6 @@ const Ranking = ({ data, generated, rankView }) => {
   const breakPoint = 425;
 
   const [loading, setLoading] = useState(false);
-  const [spin, setSpin] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);
   const [season, setSeason] = useState(searchParams?.get('season') || new HelperCBB().getCurrentSeason());
   const [view, setView] = useState('composite');
@@ -182,6 +180,7 @@ const Ranking = ({ data, generated, rankView }) => {
       const search = current.toString();
       const query = search ? `?${search}` : "";
       setLoading(true);
+      dispatch(setLoadingDisplay(true));
       startTransition(() => {
         router.push(`${pathName}${query}`);
         setLoading(false);
@@ -203,6 +202,7 @@ const Ranking = ({ data, generated, rankView }) => {
       const search = current.toString();
       const query = search ? `?${search}` : "";
       setLoading(true);
+      dispatch(setLoadingDisplay(true));
       startTransition(() => {
         router.push(`${pathName}${query}`);
         setLoading(false);
@@ -227,10 +227,9 @@ const Ranking = ({ data, generated, rankView }) => {
     if (tableRef && tableRef.current) {
       dispatch(setTableScrollTop(tableRef.current.scrollTop));
     }
-    setSpin(true);
+    dispatch(setLoadingDisplay(true));
     startTransition(() => {
       router.push('/cbb/team/' + team_id+'?season='+season);
-      setSpin(false);
     });
   }
 
@@ -238,10 +237,9 @@ const Ranking = ({ data, generated, rankView }) => {
     if (tableRef && tableRef.current) {
       dispatch(setTableScrollTop(tableRef.current.scrollTop));
     }
-    setSpin(true);
+    dispatch(setLoadingDisplay(true));
     startTransition(() => {
       router.push('/cbb/player/' + player_id+'?season='+season);
-      setSpin(false);
     });
   }
 
@@ -249,10 +247,9 @@ const Ranking = ({ data, generated, rankView }) => {
     if (tableRef && tableRef.current) {
       dispatch(setTableScrollTop(tableRef.current.scrollTop));
     }
-    setSpin(true);
+    dispatch(setLoadingDisplay(true));
     startTransition(() => {
       router.push('/cbb/coach/' + coach_id+'?season='+season);
-      setSpin(false);
     });
   }
 
@@ -317,7 +314,7 @@ const Ranking = ({ data, generated, rankView }) => {
 
   const headCells = getHeaderColumns({rankView});
   
-  const rowsData = getRowsData({ data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf });
+  const rowsData = getRowsData({ data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, season });
 
   let rows = rowsData.rows;
   let lastUpdated = rowsData.lastUpdated;
@@ -631,7 +628,6 @@ const Ranking = ({ data, generated, rankView }) => {
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
       <Legend open = {legendOpen} onClose={handleLegend} columns={getColumns()} rankView={rankView} />
       {
         loading ? 

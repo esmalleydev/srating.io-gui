@@ -3,7 +3,8 @@ import React, { useState, useTransition } from 'react';
 import { AppBar, Tab, Tabs, useTheme } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { setLoading } from '@/redux/features/display-slice';
+import { useAppDispatch } from '@/redux/hooks';
 
 
 const getNavHeaderHeight = () => {
@@ -14,6 +15,7 @@ export { getNavHeaderHeight};
 
 const NavBar = ({ view, tabOrder}) => {
   // const CBB = new HelperCBB();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -28,7 +30,6 @@ const NavBar = ({ view, tabOrder}) => {
     
     
   const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0);
-  const [spin, setSpin] = useState(false);
   const [isPending, startTransition] = useTransition();
     
     
@@ -47,13 +48,13 @@ const NavBar = ({ view, tabOrder}) => {
     if (searchParams) {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
       current.set('view', view);
+      current.delete('subview');
       const search = current.toString();
       const query = search ? `?${search}` : "";
     
-      setSpin(true);
+      dispatch(setLoading(true));
       startTransition(() => {
         router.replace(`${pathName}${query}`);
-        setSpin(false);
       });
     }
     
@@ -74,7 +75,6 @@ const NavBar = ({ view, tabOrder}) => {
           {tabs}
         </Tabs>
       </AppBar>
-      <BackdropLoader open = {spin} />
     </>
   );
 }

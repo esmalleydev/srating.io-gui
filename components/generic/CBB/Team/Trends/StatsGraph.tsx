@@ -266,27 +266,6 @@ const StatsGraph = ({ cbb_statistic_rankings, cbb_elos, cbb_games, cbb_conferenc
 
 const getAllColumns = () => {
   return {
-      'adjusted_efficiency_rating': {
-        id: 'adjusted_efficiency_rating',
-        numeric: true,
-        label: 'aEM',
-        tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + aSOS',
-        'sort': 'higher',
-      },
-      'points': {
-        id: 'points',
-        numeric: true,
-        label: 'PTS',
-        tooltip: 'Average points per game',
-        'sort': 'higher',
-      },
-      'elo': {
-        id: 'elo',
-        numeric: true,
-        label: 'SR',
-        tooltip: 'srating.io ELO rating',
-        'sort': 'higher',
-      },
       'field_goal': {
         id: 'field_goal',
         numeric: true,
@@ -706,6 +685,27 @@ const getAllColumns = () => {
         label: 'Opp. Poss.',
         tooltip: 'Opponent average possessions per game',
         'sort': 'lower',
+      },
+      'adjusted_efficiency_rating': {
+        id: 'adjusted_efficiency_rating',
+        numeric: true,
+        label: 'aEM',
+        tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + aSOS',
+        'sort': 'higher',
+      },
+      'points': {
+        id: 'points',
+        numeric: true,
+        label: 'PTS',
+        tooltip: 'Average points per game',
+        'sort': 'higher',
+      },
+      'elo': {
+        id: 'elo',
+        numeric: true,
+        label: 'SR',
+        tooltip: 'srating.io ELO rating',
+        'sort': 'higher',
       },
   };
 };

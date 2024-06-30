@@ -7,9 +7,9 @@ import { getBreakPoint } from '@/components/generic/DateAppBar';
 // import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
 // import StatusPicker from '@/components/generic/CBB/StatusPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setScrollTop } from '@/redux/features/picks-slice';
+import { setLoading } from '@/redux/features/display-slice';
 // import ViewPicker from './ViewPicker';
 // import RefreshCounter from './RefreshCounter';
 
@@ -41,7 +41,6 @@ const SubNavBar = ({ view }) => {
 
   const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view));
   const [showLockedDialog, setShowLockedDialog] = useState(false);
-  const [spin, setSpin] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const calcAccess = useAppSelector(state => state.userReducer.isValidSession);
@@ -84,19 +83,17 @@ const SubNavBar = ({ view }) => {
   }
 
   const handleSubscribe = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/pricing');
-      setSpin(false);
     });
   };
 
   const handleLiveWinRate = () => {
-    setSpin(true);
+    dispatch(setLoading(true));
     setShowLockedDialog(false);
     startTransition(() => {
       router.push('/cbb/picks?view=stats');
-      setSpin(false);
     });
   };
 
@@ -120,18 +117,16 @@ const SubNavBar = ({ view }) => {
     const search = current.toString();
     const query = search ? `?${search}` : "";
     
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.replace(`${pathName}${query}`);
       dispatch(setScrollTop(0));
-      setSpin(false);
     });
   }
 
 
   return (
     <div style = {subHeaderStyle}>
-      <BackdropLoader open = {spin} />
 
       <Box display="flex" justifyContent="center" /*sx = {{'position': 'sticky', 'top': 100}}*/>
         <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabClick} indicatorColor="secondary" textColor="inherit">

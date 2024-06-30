@@ -10,15 +10,16 @@ import HelperCBB from '../../../helpers/CBB';
 import { useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
-import BackdropLoader from '../../BackdropLoader';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 const Tile = (props) => {
   const self = this;
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const theme = useTheme();
   const [hover, setHover] = useState(false);
-  const [spin, setSpin] = useState(false);
 
   const cbb_game = props.data;
 
@@ -34,10 +35,9 @@ const Tile = (props) => {
     if (props.onClick && typeof props.onClick === 'function') {
       props.onClick();
     }
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/games/' + cbb_game.cbb_game_id);
-      setSpin(false);
     });
   };
 
@@ -151,7 +151,6 @@ const Tile = (props) => {
 
   return (
     <Paper elevation={3} style = {divStyle}>
-      <BackdropLoader open = {spin} />
       <div style = {teamLineStyle} onMouseEnter = {handleMouseEnter} onMouseLeave = {handleMouseLeave}>
         {getHeader()}
         <div onClick = {handleClick}>

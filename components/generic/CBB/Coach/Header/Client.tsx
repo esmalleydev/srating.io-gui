@@ -6,13 +6,13 @@ import Typography from '@mui/material/Typography';
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useRouter } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Coach, Team } from '@/types/cbb';
 import { Link } from '@mui/material';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Client = ({cbb_coach_statistic_rankings, season}) => {
@@ -65,13 +65,13 @@ const Client = ({cbb_coach_statistic_rankings, season}) => {
   const team = teams[season_x_team_id[lastSeason]];
   const breakPoint = 475;
 
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const { width } = useWindowDimensions() as Dimensions;
 
   const [isPending, startTransition] = useTransition();
 
-  const [spin, setSpin] = useState(false);
 
   const teamHelper = new HelperTeam({'team': team});
   const CBB = new HelperCBB();
@@ -105,10 +105,9 @@ const Client = ({cbb_coach_statistic_rankings, season}) => {
     if (!team || !team.team_id) {
       return;
     }
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/team/' + team.team_id + '?season=' + season);
-      setSpin(false);
     });
   };
 
@@ -130,7 +129,6 @@ const Client = ({cbb_coach_statistic_rankings, season}) => {
           <Link style = {{'cursor': 'pointer'}} underline='hover'>{teamHelper.getName()}</Link>
         </Typography>
       </div>
-      <BackdropLoader open = {spin} />
     </div>
   );
 }

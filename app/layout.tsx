@@ -13,6 +13,7 @@ import SecretHandler from '@/components/handlers/secret/Server';
 import DictionaryWrapper from '@/components/handlers/dictionary/ClientWrapper';
 import DictionaryHandler from '@/components/handlers/dictionary/Server';
 import LayoutWrapper from './LayoutWrapper';
+import MutationHandler from '@/components/handlers/MutationHandler';
 
 
 
@@ -21,6 +22,7 @@ export default async function RootLayout({children}: {children: React.ReactNode}
     <html lang="en">
       <StoreProvider>
         <LayoutWrapper>
+          <MutationHandler />
           <SecretWrapper><SecretHandler /></SecretWrapper>
           <SessionHandler />
           <FavoriteHandler />

@@ -5,12 +5,14 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Link, Typography } from '@mui/material';
 
 import GameLog from './GameLog';
-import BackdropLoader from '../../BackdropLoader';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Players = (props) => {
   const self = this;
 
+  const dispatch = useAppDispatch();
   const favorite = props.favorite;
   const players = props.players;
   const gamelogs = props.gamelogs;
@@ -22,10 +24,9 @@ const Players = (props) => {
   const [spin, setSpin] = useState(false);
 
   const handlePlayerClick = (player_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/player/' + player_id);
-      setSpin(false);
     });
   };
 
@@ -126,7 +127,6 @@ const Players = (props) => {
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
       {gamelogContainers}
     </div>
   );

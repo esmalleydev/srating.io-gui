@@ -12,16 +12,15 @@ import MenuItem from '@mui/material/MenuItem';
 import { Divider, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setHideCommitted, setHideUnderTwoMPG } from '@/redux/features/ranking-slice';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import ConferenceFilterOptions from './ConferenceFilterOptions';
+import { setLoading } from '@/redux/features/display-slice';
 
 const AdditionalOptions = ({ view }: {view: string}) => {
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
   const [anchor, setAnchor] = useState(null);
   const [confOptionsOpen, setConfOptionsOpen] = useState(false);
   const open = Boolean(anchor);
@@ -42,7 +41,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
   const handleCommitted = () => {
     const newValue: boolean = !hideCommitted;
     handleClose();
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       if (newValue !== hideCommitted) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -52,14 +51,13 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         router.replace(`${pathName}${query}`);
         dispatch(setHideCommitted(newValue));
       }
-      setSpin(false);
     });
   };
 
   const handleUnderTwo = () => {
     const newValue: boolean = !hideUnderTwoMPG;
     handleClose();
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       if (newValue !== hideUnderTwoMPG) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -69,7 +67,6 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         router.replace(`${pathName}${query}`);
         dispatch(setHideUnderTwoMPG(newValue));
       }
-      setSpin(false);
     });
   };
 
@@ -128,7 +125,6 @@ const AdditionalOptions = ({ view }: {view: string}) => {
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
       <Tooltip title = {'Additional filters'}>
         <IconButton
             id="additional-filters"

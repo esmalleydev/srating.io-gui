@@ -8,9 +8,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { setScrollTop, setView } from '@/redux/features/coach-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const getSubNavHeaderHeight = () => {
@@ -30,7 +30,6 @@ const SubNavBar = ({ view }) => {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
-  const [spin, setSpin] = useState(false);
   const subHeaderHeight = getSubNavHeaderHeight();
   const { width } = useWindowDimensions() as Dimensions;
 
@@ -54,7 +53,7 @@ const SubNavBar = ({ view }) => {
 
   const handleView = (value) => {
     setTabIndex(value);
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       const newView = tabOrder[value];
       if (newView !== view) {
@@ -66,7 +65,6 @@ const SubNavBar = ({ view }) => {
       }
       dispatch(setView(newView));
       dispatch(setScrollTop(0));
-      setSpin(false);
 
       if (scrollRef && scrollRef.current) {
         scrollRef.current.scrollTop = 0;
@@ -109,7 +107,6 @@ const SubNavBar = ({ view }) => {
 
   return (
     <div style = {subHeaderStyle}>
-      <BackdropLoader open = {spin} />
       <div style = {{'minWidth': minSubBarWidth, 'display': 'flex', 'justifyContent': 'flex-start'}}>
         {leftButtons}
       </div>

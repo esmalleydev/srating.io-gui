@@ -4,6 +4,7 @@ import { setLoadingSecret, setSecret } from '@/redux/features/user-slice';
 import { useIdleTimer } from 'react-idle-timer';
 import { useEffect, useState } from 'react';
 import { refresh } from '@/components/generic/CBB/actions';
+import { setLoading } from '@/redux/features/display-slice';
 
 let intervalRefresher: NodeJS.Timeout;
 
@@ -37,9 +38,11 @@ const Client = ({ secret, tag }) => {
 
   useEffect(() => {
     intervalRefresher = setInterval(function() {
-      dispatch(setLoadingSecret(true));
+      dispatch(setLoading(true));
+      // dispatch(setLoadingSecret(true));
       refresh(tag).then(() => {
-        dispatch(setLoadingSecret(false));
+        dispatch(setLoading(false));
+        // dispatch(setLoadingSecret(false));
       });
     }, refreshRate * 1000);
     return function clean_up() {

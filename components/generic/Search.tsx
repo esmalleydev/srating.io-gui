@@ -1,17 +1,18 @@
 'use client';
 import React, { useState, useTransition } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import useDebounce from '../hooks/useDebounce';
 
-import { styled, alpha, useTheme } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useClientAPI } from '../clientAPI';
 import { Coach, Player, Team } from '@/types/cbb';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -58,7 +59,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 const Search = ({ onRouter, focus }) => {
-  const theme = useTheme();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -78,7 +79,6 @@ const Search = ({ onRouter, focus }) => {
   const [players, setPlayers] = useState<searchPlayer[]>([]);
   const [coaches, setCoaches] = useState<searchCoach[]>([]);
   const [loading, setLoading] = useState(false);
-  const [spin, setSpin] = useState(false);
 
 
   const debouncedRequest = useDebounce(() => {
@@ -152,11 +152,10 @@ const Search = ({ onRouter, focus }) => {
     if (!option || (!option.player_id && !option.team_id && !option.coach_id)) {
       return;
     }
-    setSpin(true);
+    dispatch(setLoadingDisplay(true));
     if (option && option.coach_id) {
       startTransition(() => {
         router.push('/cbb/coach/' + option.coach_id);
-        setSpin(false);
         if (onRouter) {
           onRouter();
         }
@@ -164,7 +163,6 @@ const Search = ({ onRouter, focus }) => {
     } else if (option && option.player_id) {
       startTransition(() => {
         router.push('/cbb/player/' + option.player_id);
-        setSpin(false);
         if (onRouter) {
           onRouter();
         }
@@ -172,7 +170,6 @@ const Search = ({ onRouter, focus }) => {
     } else if (option && option.team_id) {
       startTransition(() => {
         router.push('/cbb/team/' + option.team_id);
-        setSpin(false);
         if (onRouter) {
           onRouter();
         }
@@ -187,7 +184,6 @@ const Search = ({ onRouter, focus }) => {
 
   return (
     <Container>
-      <BackdropLoader open = {spin} />
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>

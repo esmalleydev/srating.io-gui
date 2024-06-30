@@ -8,14 +8,13 @@ import { FormControlLabel, FormGroup, IconButton, Switch } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setFilterCommittedConf, setFilterOriginalConf } from '@/redux/features/ranking-slice';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+import { setLoading } from '@/redux/features/display-slice';
 
 const ConferenceFilterOptions = ({ open, onClose }) => {
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
 
   const dispatch = useAppDispatch();
   const filterCommittedConf = useAppSelector(state => state.rankingReducer.filterCommittedConf);
@@ -23,7 +22,7 @@ const ConferenceFilterOptions = ({ open, onClose }) => {
 
   const handleOrginalConfSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue: boolean = event.target.checked;
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       if (newValue !== filterOriginalConf) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -33,13 +32,12 @@ const ConferenceFilterOptions = ({ open, onClose }) => {
         router.replace(`${pathName}${query}`);
         dispatch(setFilterOriginalConf(newValue));
       }
-      setSpin(false);
     });
   };
 
   const handleCommittedConfSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue: boolean = event.target.checked;
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       if (newValue !== filterCommittedConf) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -49,7 +47,6 @@ const ConferenceFilterOptions = ({ open, onClose }) => {
         router.replace(`${pathName}${query}`);
         dispatch(setFilterCommittedConf(newValue));
       }
-      setSpin(false);
     });
   };
 
@@ -59,7 +56,6 @@ const ConferenceFilterOptions = ({ open, onClose }) => {
         open={open}
         onClose={onClose}
       >
-        <BackdropLoader open = {spin} />
         <DialogTitle id="alert-dialog-title">
           {'Conference filter options'}
           {<IconButton aria-label="close" onClick={onClose}><CloseIcon /></IconButton>}

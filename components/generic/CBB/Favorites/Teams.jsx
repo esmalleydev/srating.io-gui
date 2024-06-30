@@ -7,7 +7,8 @@ import moment from 'moment';
 import HelperTeam from '../../../helpers/Team';
 import Tile from './Tile';
 import { Link, Typography } from '@mui/material';
-import BackdropLoader from '../../BackdropLoader';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const Teams = (props) => {
@@ -17,11 +18,11 @@ const Teams = (props) => {
   const schedule = props.schedule;
   const teams = props.teams;
 
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
-  const [spin, setSpin] = useState(false);
 
   const team_id_x_last_cbb_game = {};
   const team_id_x_next_2_cbb_games = {};
@@ -29,10 +30,9 @@ const Teams = (props) => {
   const now = moment().format('YYYY-MM-DD');
 
   const handleTeamClick = (team_id) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/team/' + team_id);
-      setSpin(false);
     });
   };
 
@@ -186,7 +186,6 @@ const Teams = (props) => {
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
       {scheduleContainers}
     </div>
   );

@@ -16,8 +16,9 @@ import Chip from '@mui/material/Chip';
 
 import HelperCBB from '@/components/helpers/CBB';
 import CompareStatistic from '@/components/generic/CompareStatistic';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { Boxscore, PlayerBoxscore } from '@/types/cbb';
+import { useAppDispatch } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -45,9 +46,9 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 
 
 const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/}) => {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-  const [spin, setSpin] = useState(false);
   const router = useRouter();
 
   const [boxscoreSide, setBoxscoreSide] = useState('away');
@@ -92,10 +93,9 @@ const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/
       console.warn('Missing player_id');
       return;
     }
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/player/' + player_id);
-      setSpin(false);
     });
   };
 
@@ -422,7 +422,6 @@ const Client = ({cbb_game, cbb_boxscores, cbb_player_boxscores, players, /*tag*/
 
   return (
     <div>
-      <BackdropLoader open = {spin} />
       <div>
         <div style = {{'padding': '10px 5px'}}>
           {hasBoxscoreData ? <CompareStatistic paper = {true} rows = {compareRows} /> : <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No boxscore data yet...</Typography>}

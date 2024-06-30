@@ -1,14 +1,13 @@
 'use client';
 import React from 'react';
-import { useAppSelector } from '@/redux/hooks';
-import BackdropLoader from '@/components/generic/BackdropLoader';
+// import { useAppSelector } from '@/redux/hooks';
 
 const ClientWrapper = ({ children }) => {
-  const loadingSecret = useAppSelector(state => state.userReducer.loadingSecret);
+  // const loadingSecret = useAppSelector(state => state.userReducer.loadingSecret);
 
   return (
     <>
-      <BackdropLoader open = {loadingSecret} />
+      {/* <BackdropLoader open = {loadingSecret} /> */}
       {children}
     </>
   );

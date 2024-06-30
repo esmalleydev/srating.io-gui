@@ -11,8 +11,8 @@ import HelperTeam from '@/components/helpers/Team';
 import RankSpan from '@/components/generic/CBB/RankSpan';
 import utilsSorter from  '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import BackdropLoader from '@/components/generic/BackdropLoader';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setLoading } from '@/redux/features/display-slice';
 
 const Sorter = new utilsSorter();
 
@@ -37,13 +37,13 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const dispatch = useAppDispatch();
 
   const { width } = useWindowDimensions() as Dimensions;
   const breakPoint = 425;
 
   const [order, setOrder] = useState<string>('desc');
   const [orderBy, setOrderBy] = useState<string>('season');
-  const [spin, setSpin] = useState(false);
 
   const CBB = new HelperCBB();
 
@@ -91,10 +91,9 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
   };
 
   const handleClick = (team_id, season) => {
-    setSpin(true);
+    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/cbb/team/' + team_id + '?season=' + season);
-      setSpin(false);
     });
   };
 
@@ -278,7 +277,6 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
   return (
     <div style = {{'padding': '0px 5px 20px 5px', 'textAlign': 'center'}}>
       {getTable()}
-      <BackdropLoader open = {spin} />
     </div>
   );
 }
