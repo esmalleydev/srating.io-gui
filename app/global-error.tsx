@@ -10,8 +10,6 @@ export default function GlobalError({
   reset: () => void
 }) {
 
-  console.log(error);
-
   const handleReload = () => {
     window.location.reload();
   };
@@ -33,7 +31,6 @@ export default function GlobalError({
             <Button variant="contained" color="primary" onClick={handleReload}>
               Reload Page
             </Button>
-            <Typography variant='caption'>{JSON.stringify(error)}</Typography>
           </Box>
         </Container>
       </body>
