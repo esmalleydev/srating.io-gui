@@ -57,13 +57,13 @@ export async function generateMetadata(
 async function getData({params, searchParams}) {
   unstable_noStore();
   const CBB = new HelperCBB();
-
+  
   const team_id = params.team_id;
-
+  
   const season = searchParams?.season || CBB.getCurrentSeason();
-
+  
   type TeamWithConference = Team & {conference: string;}
-
+  
   const team: TeamWithConference | any = await useServerAPI({
     'class': 'team',
     'function': 'get',
@@ -71,16 +71,17 @@ async function getData({params, searchParams}) {
       'team_id': team_id,
     }
   });
-
+  
   const team_season_conference: any = await useServerAPI({
     'class': 'team_season_conference',
     'function': 'get',
     'arguments': {
       'team_id': team_id,
       'season': season,
+      'organization_id': 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
     }
   });
-
+  
   if (team && team_season_conference) {
     team.conference_id = team_season_conference.conference_id;
   }

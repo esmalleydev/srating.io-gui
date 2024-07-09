@@ -7,12 +7,6 @@ export interface Team {
   alt_name: string;
   primary_color: string;
   secondary_color: string;
-  cbb_d1: number;
-  cbb: number;
-  cfb: number;
-  nba: number;
-  nfl: number;
-  nhl: number;
   guid: string;
   deleted: number;
 };
@@ -648,11 +642,67 @@ export interface LeaguePlayerStatistic {
 
 export type LeaguePlayerStatistics = {[cbb_conference_statistic_ranking_id: string]: LeaguePlayerStatistic};
 
+export interface CoachStatistic {
+  cbb_coach_statistic_ranking_id: string;
+	season: number;
+	coach_id: string;
+	rank: number;
+	elo: number;
+	games: number;
+	wins: number;
+	losses: number;
+	confwins: number;
+  conflosses: number;
+	nonconfwins: number;
+  nonconflosses: number;
+	neutralwins: number;
+	neutrallosses: number;
+	homewins: number;
+	homelosses: number;
+	roadwins: number;
+	roadlosses: number;
+	elo_sos: number;
+	win_percentage: number;
+	conf_win_percentage: number;
+	nonconf_win_percentage: number;
+	home_win_percentage: number;
+	road_win_percentage: number;
+	neutral_win_percentage: number;
+	elo_rank: number;
+	wins_rank: number;
+	losses_rank: number;
+	confwins_rank: number;
+	conflosses_rank: number;
+	nonconfwins_rank: number;
+	nonconflosses_rank: number;
+	neutralwins_rank: number;
+	neutrallosses_rank: number;
+	homewins_rank: number;
+	homelosses_rank: number;
+	roadwins_rank: number;
+	roadlosses_rank: number;
+	elo_sos_rank: number;
+	win_percentage_rank: number;
+	conf_win_percentage_rank: number;
+	nonconf_win_percentage_rank: number;
+	home_win_percentage_rank: number;
+	road_win_percentage_rank: number;
+	neutral_win_percentage_rank: number;
+  guid: string;
+  date_of_rank: string;
+	current: number;
+	deleted: number;
+};
+
+export type CoachStatistics = {[cbb_coach_statistic_ranking_id: string]: CoachStatistic};
+
 export interface TeamSeasonConference {
   team_season_conference_id: string;
+	organization_id: string;
 	team_id: string;
 	season: number;
 	conference_id: string;
+	division_id: string;
 	guid: string;
   deleted: number;
 };
@@ -670,6 +720,24 @@ export interface TransferPlayerSeason {
 };
 
 export type TransferPlayerSeasons = {[coach_team_season_id: string]: TransferPlayerSeason};
+
+export interface Organization {
+  organization_id: string;
+  code: string;
+  name: string;
+  guid: string;
+  inactive: number;
+  deleted: number;
+};
+
+export interface Division {
+  division_id: string;
+  code: string;
+  name: string;
+  guid: string;
+  inactive: number;
+  deleted: number;
+};
 
 export interface Conference {
   conference_id: string;

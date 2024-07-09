@@ -57,7 +57,7 @@ const Client = ({team, season, seasons, coach, cbb_coach_statistic_ranking, cbb_
   };
 
   const rank = teamHelper.getRank(displayRank);
-  const coachRank = cbb_coach_statistic_ranking.rank;
+  const coachRank = cbb_coach_statistic_ranking ? cbb_coach_statistic_ranking.rank : null;
   const conferenceRank = cbb_conference_statistic_ranking.adjusted_efficiency_rating_rank;
 
   if (rank) {
@@ -114,7 +114,7 @@ const Client = ({team, season, seasons, coach, cbb_coach_statistic_ranking, cbb_
         <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
       </div>
       <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
-        <Typography variant = 'overline' color = 'text.secondary'>{conferenceRank ? <span style = {conferenceSupStyle}>{conferenceRank} </span> : ''}<Link onClick = {handleConference} underline='hover' style={{cursor: 'pointer'}}>{conferenceName}</Link> | {coachRank ? <span style = {coachSupStyle}>{coachRank} </span> : ''}<Link onClick = {handleCoach} underline='hover' style={{cursor: 'pointer'}}>{coach.first_name.charAt(0) + '. ' + coach.last_name}</Link></Typography>
+        <Typography variant = 'overline' color = 'text.secondary'>{conferenceRank ? <span style = {conferenceSupStyle}>{conferenceRank} </span> : ''}<Link onClick = {handleConference} underline='hover' style={{cursor: 'pointer'}}>{conferenceName}</Link> | {coachRank ? <span style = {coachSupStyle}>{coachRank} </span> : ''}{coach ? <Link onClick = {handleCoach} underline='hover' style={{cursor: 'pointer'}}>{coach.first_name.charAt(0) + '. ' + coach.last_name}</Link> : 'UNKNOWN'}</Typography>
       </div>
     </div>
   );

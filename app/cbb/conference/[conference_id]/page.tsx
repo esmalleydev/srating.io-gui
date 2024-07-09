@@ -86,6 +86,7 @@ async function getData({params, searchParams}): Promise<Data> {
     'arguments': {
       'conference_id': conference.conference_id,
       'season': season,
+      'organization_id': 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
     }
   }, {revalidate: revalidateSeconds});
 

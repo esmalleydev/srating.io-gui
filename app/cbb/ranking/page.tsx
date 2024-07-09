@@ -88,21 +88,22 @@ async function getData(searchParams) {
       }
     });
 
-    const teams: Teams = await useServerAPI({
-      'class': 'team',
-      'function': 'read',
-      'arguments': {
-        'cbb': 1,
-        'cbb_d1': 1,
-      }
-    });
 
     const team_season_conferences: TeamSeasonConferences = await useServerAPI({
       'class': 'team_season_conference',
       'function': 'read',
       'arguments': {
         'season': season,
-        'team_id': teams ? Object.values(teams).map(team => team.team_id) : null,
+        'organization_id': 'f1c37c98-3b4c-11ef-94bc-2a93761010b8', // NCAAM
+        'division_id': 'bf602dc4-3b4a-11ef-94bc-2a93761010b8', // D1
+      }
+    });
+
+    const teams: Teams = await useServerAPI({
+      'class': 'team',
+      'function': 'read',
+      'arguments': {
+        'team_id': Object.values(team_season_conferences).map((row => row.team_id)),
       }
     });
 

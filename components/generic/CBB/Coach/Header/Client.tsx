@@ -90,8 +90,8 @@ const Client = ({cbb_coach_statistic_rankings, season}) => {
     'verticalAlign': 'super',
   };
 
-  const coachRank = cbb_coach_statistic_ranking.rank;
-  const teamRank = cbb_ranking.composite_rank;
+  const coachRank = cbb_coach_statistic_ranking ? cbb_coach_statistic_ranking.rank : null;
+  const teamRank = cbb_ranking ? cbb_ranking.composite_rank : null;
 
   if (coachRank) {
     supStyle.color = Color.lerpColor(bestColor, worstColor, (+(coachRank / CBB.getNumberOfD1Teams(season))));
