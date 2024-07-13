@@ -9,4 +9,4 @@ const clientConfig = {
   stripe_public_key: undefined,
 };
 
-export { clientConfig as clientConfigExample };
+export { clientConfig };

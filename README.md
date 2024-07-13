@@ -23,16 +23,19 @@ If you would like to contribute, please [contact me](mailto:contact@srating.io) 
 ## Client api
 These calls run through the client... and will attach required headers to the fetch request.
 
-In the project root you will need to create a `clientConfig.js` file. Use the provided `clientConfig_example.js` as a template. This points the gui api requests to the correct place.
+In the project root you will need to create a `clientConfig.js` file. Use the example below as a template. This points the gui api requests to the correct place.
 
 ```js
-module.exports = {
-  'host': 'https://api.srating.io/v1/',
-  'api_key': '[YOUR API KEY HERE]',
-  'http': 'https',
-  'use_origin': false, // If true, requests will use the window.location.origin
-  'path': null, // if using origin and need a path, ex: /api
+const clientConfig = {
+  host: 'https://api.srating.io',
+  api_key: '[YOUR API KEY HERE]',
+  http: 'https',
+  use_origin: false, // If true, requests will use the window.location.origin. If you want to use origin for requests, but need local with nextjs do (typeof window !== 'undefined')
+  path: null, // if using origin and need a path, ex: /api
+  stripe_public_key: undefined,
 };
+
+export { clientConfig };
 ```
 
 ### Using the component
@@ -56,14 +59,17 @@ useClientAPI({
 ## Server api
 These calls run through on the server. It will attach any required setting as well as handling caching the calls for performance
 
-In the project root you will need to create a `serverConfig.js` file. Use the provided `serverConfig_example.js` as a template. This points the server api requests to the correct place.
+In the project root you will need to create a `serverConfig.js` file. Use the example below as a template. This points the server api requests to the correct place.
 
 ```js
-module.exports = {
-  'host': 'localhost',
-  'port': 5000,
-  'http': 'http',
+const serverConfig = {
+  host: 'localhost',
+  port: 4000,
+  http: 'http',
+  secret: null,
 };
+
+export { serverConfig };
 ```
 
 ### Using the component
