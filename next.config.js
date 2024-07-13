@@ -1,6 +1,5 @@
 import { execSync } from 'child_process';
 import withBundleAnalyzer from '@next/bundle-analyzer';
-import { clientConfig } from './clientConfig.js';
 
 
 const commitHash = execSync('git rev-parse --short HEAD')
@@ -16,10 +15,23 @@ const bundleAnalyzer = withBundleAnalyzer({
   enabled: false,
 });
 
-
-const config = clientConfig || {
-  stripe_public_key: undefined,
+// this is just for the github build to pass, since the configuration file is git ignored
+let config = {
+  host: 'localhost',
+  port: 5000,
+  http: 'http',
+  use_origin: false,
+  path: null,
+  api_key: null,
+  stripe_public_key: null,
 };
+
+try {
+  const { clientConfig } = await import('./clientConfig.js');
+  config = clientConfig;
+} catch (e) {
+  // dont care
+}
 
 
 export default bundleAnalyzer({

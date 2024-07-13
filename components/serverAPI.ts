@@ -1,20 +1,27 @@
 'use server';
+
 import cacheData from 'memory-cache';
-import { serverConfig } from '../serverConfig';
 import { ServerConfig } from '@/types/config';
 
 
-const config: ServerConfig = serverConfig || {
-  'host': 'localhost',
-  'port': 5000,
-  'http': 'http',
-  'secret': null,
+let config: ServerConfig = {
+  host: 'localhost',
+  port: 5000,
+  http: 'http',
+  secret: null,
 };
 
-const protocol = (config && config.http) || 'http';
-const hostname = (config && config.host) || 'localhost';
-const port = (config && config.port) || 5000;
-const secret = (config && config.secret) || null;
+try {
+  const { serverConfig } = await import('../serverConfig.js');
+  config = serverConfig;
+} catch (e) {
+  // dont care
+}
+
+const protocol = config.http;
+const hostname = config.host;
+const { port } = config;
+const { secret } = config;
 
 type OptionalFetchArgs = {
   revalidate: number;
@@ -24,7 +31,7 @@ type OptionalFetchArgs = {
 export async function useServerAPI(args, optional_fetch_args = {} as OptionalFetchArgs) {
   const request = JSON.stringify(args);
 
-  const cachedLocation = 'API.REQUESTS.' + request;
+  const cachedLocation = `API.REQUESTS.${request}`;
 
   let isCached = false;
   let cacheSeconds = 0;
@@ -52,21 +59,13 @@ export async function useServerAPI(args, optional_fetch_args = {} as OptionalFet
 
   if (isCached === false) {
     // console.log('MISS')
-    data = await fetch(protocol + '://' + hostname + ':' + port, Object.assign(
-      {
-        next: {revalidate: 0}
-      },
-      optional_fetch_args,
-      {
-        'method': 'POST',
-        'headers': headers,
-        'body': request,
-      }
-    )).then(response => {
-      return response.json();
-    }).then(json => {
-      return json;
-    }).catch(error => {
+    data = await fetch(`${protocol}://${hostname}:${port}`, {
+      next: { revalidate: 0 },
+      ...optional_fetch_args,
+      method: 'POST',
+      headers,
+      body: request,
+    }).then((response) => response.json()).then((json) => json).catch((error) => {
       console.log(error);
       // throw new Error('Error');
     });
@@ -80,7 +79,7 @@ export async function useServerAPI(args, optional_fetch_args = {} as OptionalFet
   }
 
   return data;
-};
+}
 
 
 
