@@ -1,28 +1,15 @@
 'use client';
+import { ClientConfig } from '@/types/config';
+import { clientConfig } from '../clientConfig';
 
-// this is just for the github build to pass, since the configuration file is git ignored
-type Config = {
-  host: string;
-  port: number;
-  http: string;
-  use_origin: boolean;
-  path: string;
-  api_key: string | null;
+const config: ClientConfig = clientConfig || {
+	'host': 'localhost',
+	'port': 5000,
+	'http': 'http',
+  'use_origin': false,
+  'path': '',
+  'api_key': null,
 };
-
-let config: Config | null = null;
-try {
-	config = require('../clientConfig');
-} catch (e) {
-	config = {
-		'host': 'localhost',
-	  'port': 5000,
-	  'http': 'http',
-    'use_origin': false,
-    'path': '',
-    'api_key': null,
-	};
-}
 
 const protocol = (config && config.http) || 'http';
 const hostname = (config && config.host) || 'localhost';

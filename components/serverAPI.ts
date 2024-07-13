@@ -1,26 +1,16 @@
 'use server';
 import cacheData from 'memory-cache';
+import { serverConfig } from '../serverConfig';
+import { ServerConfig } from '@/types/config';
 
 
-// this is just for the github build to pass, since the configuration file is git ignored
-type Config = {
-  host: string;
-  port: number;
-  http: string;
-  secret: string | null;
+const config: ServerConfig = serverConfig || {
+  'host': 'localhost',
+  'port': 5000,
+  'http': 'http',
+  'secret': null,
 };
 
-let config: Config | null = null;
-try {
-  config = require('../serverConfig');
-} catch (e) {
-  config = {
-    'host': 'localhost',
-    'port': 5000,
-    'http': 'http',
-    'secret': null,
-  };
-}
 const protocol = (config && config.http) || 'http';
 const hostname = (config && config.host) || 'localhost';
 const port = (config && config.port) || 5000;
@@ -57,6 +47,7 @@ export async function useServerAPI(args, optional_fetch_args = {} as OptionalFet
     headers['X-SECRET-ID'] = secret;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let data: any = {};
 
   if (isCached === false) {

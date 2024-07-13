@@ -23,7 +23,9 @@ analyze
 #config
 configuration.js
 serverConfig.js
+serverConfig.ts
 clientConfig.js
+clientConfig.ts
 
 npm-debug.log*
 yarn-debug.log*

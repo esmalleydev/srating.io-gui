@@ -1,7 +1,8 @@
 {
   "name": "srating.io-gui",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -30,10 +31,7 @@
     "react-virtuoso": "^4.6.2",
     "recharts": "^2.12.7",
     "typeface-roboto": "^1.1.13",
-    "typescript": "^5.3.3",
     "web-vitals": "^3.5.0"
-  },
-  "devDependencies": {
   },
   "scripts": {
     "dev": "next dev -p 3000",
@@ -57,5 +55,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "@types/eslint__js": "^8.42.3",
+    "eslint": "^8.57.0",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.16.0"
   }
 }
