@@ -1,32 +1,10 @@
 'use client';
 
-import { ClientConfig } from '@/types/config';
-
-// this is just for the github build to pass, since the configuration file is git ignored
-let config: ClientConfig = {
-  host: 'localhost',
-  port: 5000,
-  http: 'http',
-  use_origin: false,
-  path: null,
-  api_key: null,
-  stripe_public_key: undefined,
-};
-
-try {
-  const { clientConfig } = await import('../clientConfig.js');
-  config = clientConfig;
-} catch (e) {
-  // dont care
-}
-
-const protocol = config.http;
-const hostname = config.host;
-const { port } = config;
-const useOrigin = config.use_origin;
-const path = config.path || '';
-const apiKey = config.api_key;
-
+const protocol = process.env.NEXT_PUBLIC_CLIENT_PROTOCAL;
+const hostname = process.env.NEXT_PUBLIC_CLIENT_HOST;
+const port = +(process.env.NEXT_PUBLIC_CLIENT_PORT || 4000);
+const useOrigin = (typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_CLIENT_USE_ORIGIN === 'true') : false);
+const path = process.env.NEXT_PUBLIC_CLIENT_PATH || '';
 
 export async function useClientAPI(args, optional_fetch_args = {}) {
   let url: string = `${protocol}://${hostname}:${port}`;
@@ -41,9 +19,9 @@ export async function useClientAPI(args, optional_fetch_args = {}) {
     'Content-Type': 'application/json',
   };
 
-  if (apiKey) {
-    headers['X-API-KEY'] = apiKey;
-  }
+  // if (apiKey) {
+  //   headers['X-API-KEY'] = apiKey;
+  // }
 
   if (session_id) {
     headers['X-SESSION-ID'] = session_id;

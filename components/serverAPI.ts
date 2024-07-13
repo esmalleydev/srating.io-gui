@@ -1,32 +1,16 @@
 'use server';
 
 import cacheData from 'memory-cache';
-import { ServerConfig } from '@/types/config';
-
-
-let config: ServerConfig = {
-  host: 'localhost',
-  port: 5000,
-  http: 'http',
-  secret: null,
-};
-
-try {
-  const { serverConfig } = await import('../serverConfig.js');
-  config = serverConfig;
-} catch (e) {
-  // dont care
-}
-
-const protocol = config.http;
-const hostname = config.host;
-const { port } = config;
-const { secret } = config;
 
 type OptionalFetchArgs = {
   revalidate: number;
   tags?: string[];
 };
+
+const protocol = process.env.SERVER_PROTOCAL;
+const hostname = process.env.SERVER_HOST;
+const port = process.env.SERVER_PORT;
+const secret = process.env.SERVER_SECRET;
 
 export async function useServerAPI(args, optional_fetch_args = {} as OptionalFetchArgs) {
   const request = JSON.stringify(args);

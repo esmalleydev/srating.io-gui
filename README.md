@@ -17,26 +17,9 @@ After cloning project, in the project directory run:
 To start developing run:
 `npm run dev`
 
-If you would like to contribute, please [contact me](mailto:contact@srating.io) for an API key.
-
 
 ## Client api
-These calls run through the client... and will attach required headers to the fetch request.
-
-In the project root you will need to create a `clientConfig.js` file. Use the example below as a template. This points the gui api requests to the correct place.
-
-```js
-const clientConfig = {
-  host: 'https://api.srating.io',
-  api_key: '[YOUR API KEY HERE]',
-  http: 'https',
-  use_origin: false, // If true, requests will use the window.location.origin. If you want to use origin for requests, but need local with nextjs do (typeof window !== 'undefined')
-  path: null, // if using origin and need a path, ex: /api
-  stripe_public_key: undefined,
-};
-
-export { clientConfig };
-```
+These calls run on the client. It will attach any required headers to the fetch request.
 
 ### Using the component
 ```jsx
@@ -57,20 +40,7 @@ useClientAPI({
 ```
 
 ## Server api
-These calls run through on the server. It will attach any required setting as well as handling caching the calls for performance
-
-In the project root you will need to create a `serverConfig.js` file. Use the example below as a template. This points the server api requests to the correct place.
-
-```js
-const serverConfig = {
-  host: 'localhost',
-  port: 4000,
-  http: 'http',
-  secret: null,
-};
-
-export { serverConfig };
-```
+These calls run on the server. It will attach any required setting as well as handling caching the calls for performance
 
 ### Using the component
 ```jsx
@@ -108,6 +78,22 @@ console.log(scores);
 May need to clear out .next and node_modules folder before rebuilding
 `rm -r node_modules`
 `rm -r .next`
+
+### .env.local
+You will need to set up a .env.local file. Below is an example
+```
+SERVER_PROTOCAL=http
+SERVER_HOST=localhost
+SERVER_PORT=3500
+SERVER_SECRET=foo
+
+NEXT_PUBLIC_CLIENT_PROTOCAL=http
+NEXT_PUBLIC_CLIENT_HOST=localhost
+NEXT_PUBLIC_CLIENT_PORT=4000
+NEXT_PUBLIC_CLIENT_USE_ORIGIN=false
+NEXT_PUBLIC_CLIENT_PATH=''
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=foo
+```
 
 ## Other Scripts
 
