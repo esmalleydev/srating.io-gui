@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useTransition } from 'react';
 import { IconButton, Tab, Tabs, Tooltip, useTheme } from '@mui/material';
 import { getBreakPoint, getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
@@ -35,20 +36,20 @@ const SubNavBar = ({ view }) => {
 
   // const view = useAppSelector(state => state.compareReducer.view);
 
-  const scrollRef  = useScrollContext();
+  const scrollRef = useScrollContext();
 
   const tabOrder: string[] = ['trends', 'seasons'];
   const tabOptions = {
-    'seasons': 'Seasons',
-    'trends': 'Trends',
+    seasons: 'Seasons',
+    trends: 'Trends',
   };
 
   const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0);
 
-  let tabs: React.JSX.Element[] = [];
-    
+  const tabs: React.JSX.Element[] = [];
+
   for (let i = 0; i < tabOrder.length; i++) {
-    tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{'fontSize': '12px'}}>{tabOptions[tabOrder[i]]}</span>)} />);
+    tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{ fontSize: '12px' }}>{tabOptions[tabOrder[i]]}</span>)} />);
   }
 
   const handleView = (value) => {
@@ -60,7 +61,7 @@ const SubNavBar = ({ view }) => {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
         current.set('view', newView);
         const search = current.toString();
-        const query = search ? `?${search}` : "";
+        const query = search ? `?${search}` : '';
         router.replace(`${pathName}${query}`);
       }
       dispatch(setView(newView));
@@ -81,41 +82,41 @@ const SubNavBar = ({ view }) => {
   }
 
   const subHeaderStyle: React.CSSProperties = {
-    'height': subHeaderHeight,
-    'position': 'fixed',
-    'backgroundColor': theme.palette.background.default,
-    'zIndex': theme.zIndex.drawer,
-    'display': 'flex',
-    'justifyContent': 'space-between',
-    'alignItems': 'center',
-    'top': getHeaderHeight() + getMarginTop(),
-    'left': 0,
-    'right': 0,
-    'padding': (width < getBreakPoint() ? '0px 5px' : '0px 20px'),
+    height: subHeaderHeight,
+    position: 'fixed',
+    backgroundColor: theme.palette.background.default,
+    zIndex: theme.zIndex.drawer,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    top: getHeaderHeight() + getMarginTop(),
+    left: 0,
+    right: 0,
+    padding: (width < getBreakPoint() ? '0px 5px' : '0px 20px'),
   };
 
   const leftButtons: React.JSX.Element[] = [];
   const middleButtons: React.JSX.Element[] = [];
   const rightButtons: React.JSX.Element[] = [];
-  
+
 
   middleButtons.push(
-    <Tabs key = {'tabs'} variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => {handleView(value)}} indicatorColor="secondary" textColor="inherit">
+    <Tabs key = {'tabs'} variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => { handleView(value); }} indicatorColor="secondary" textColor="inherit">
       {tabs}
-    </Tabs>
+    </Tabs>,
   );
 
   return (
     <div style = {subHeaderStyle}>
-      <div style = {{'minWidth': minSubBarWidth, 'display': 'flex', 'justifyContent': 'flex-start'}}>
+      <div style = {{ minWidth: minSubBarWidth, display: 'flex', justifyContent: 'flex-start' }}>
         {leftButtons}
       </div>
 
-      <div style = {{'minWidth': minSubBarWidth, 'display': 'flex', 'justifyContent': 'center'}}>
+      <div style = {{ minWidth: minSubBarWidth, display: 'flex', justifyContent: 'center' }}>
         {middleButtons}
       </div>
 
-      <div style = {{'minWidth': minSubBarWidth, 'display': 'flex', 'justifyContent': 'flex-end'}}>
+      <div style = {{ minWidth: minSubBarWidth, display: 'flex', justifyContent: 'flex-end' }}>
         {rightButtons}
       </div>
     </div>

@@ -1,40 +1,29 @@
 'use client';
+
 import React from 'react';
 
-import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
 
 import Tile from '@/components/generic/CBB/Picks/Tile';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { updateConferences } from '@/redux/features/display-slice';
 import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
 import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
-
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Games } from '@/types/cbb';
-import { updateConferences } from '@/redux/features/display-slice';
 
 
 const Picks = ({ cbb_games }: {cbb_games: Games | object}) => {
   const dispatch = useAppDispatch();
-  const skip_sort_cbb_game_ids = useAppSelector(state => state.favoriteReducer.skip_sort_cbb_game_ids);
-  const cbb_game_ids = useAppSelector(state => state.favoriteReducer.cbb_game_ids);
-  const picksSort = useAppSelector(state => state.displayReducer.picksSort);
-  const selectedConferences = useAppSelector(state => state.displayReducer.conferences);
-  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
-  
-  
-  const picksData = useAppSelector(state => state.picksReducer.picks);
+  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
+  const skip_sort_cbb_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_cbb_game_ids);
+  const cbb_game_ids = useAppSelector((state) => state.favoriteReducer.cbb_game_ids);
+  const picksSort = useAppSelector((state) => state.displayReducer.picksSort);
+  const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
 
-  for (let cbb_game_id in picksData) {
-    if (cbb_game_id in cbb_games) {
-      cbb_games[cbb_game_id].home_team_rating = picksData[cbb_game_id].home_team_rating;
-      cbb_games[cbb_game_id].away_team_rating = picksData[cbb_game_id].away_team_rating;
-    }
-  }
+  const sorted_games = Object.values(cbb_games);
 
-
-  let sorted_games = Object.values(cbb_games);
-
-  sorted_games.sort(function(a, b) {
+  sorted_games.sort((a, b) => {
     const aIsPinned = (
       skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
       cbb_game_ids.length &&
@@ -50,7 +39,7 @@ const Picks = ({ cbb_games }: {cbb_games: Games | object}) => {
     if (aIsPinned && !bIsPinned) {
       return -1;
     }
-      
+
     if (!aIsPinned && bIsPinned) {
       return 1;
     }
@@ -80,37 +69,30 @@ const Picks = ({ cbb_games }: {cbb_games: Games | object}) => {
       continue;
     }
 
-    let picks = null;
-
-    if (picksData && cbb_game.cbb_game_id in picksData) {
-      picks = picksData[cbb_game.cbb_game_id];
-    }
-    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} cbb_game = {cbb_game} picks = {picks} />);
+    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} cbb_game = {cbb_game} />);
   }
 
-
-  let confChips: React.JSX.Element[] = [];
+  const confChips: React.JSX.Element[] = [];
   for (let i = 0; i < selectedConferences.length; i++) {
-    confChips.push(<Chip key = {selectedConferences[i]} sx = {{'margin': '5px'}} label={conferences[selectedConferences[i]].code} onDelete={() => {dispatch(updateConferences(selectedConferences[i]))}} />);
+    confChips.push(<Chip key = {selectedConferences[i]} sx = {{ margin: '5px' }} label={conferences[selectedConferences[i]].code} onDelete={() => { dispatch(updateConferences(selectedConferences[i])); }} />);
   }
-
 
   return (
     <>
-      <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
+      <div style = {{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <ConferencePicker />
         <AdditionalOptions />
       </div>
-      <div style = {{'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}}>
+      <div style = {{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         {confChips}
       </div>
-      <div style = {{'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center'}}>
+      <div style = {{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {
           gameContainers.length ? gameContainers : <Typography variant = 'h5'>No games found :( please adjust filter. </Typography>
         }
       </div>
     </>
   );
-}
+};
 
 export default Picks;

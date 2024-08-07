@@ -39,24 +39,25 @@ import { Divider, ListItemIcon, Tooltip } from '@mui/material';
 import { clear } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/display-slice';
+import OrganizationPicker from './OrganizationPicker';
 
 
 const SignUpButton = styled(Button)(({ theme }) => ({
-  'color': theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main,
-  'border': '1px solid ' + (theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main),
+  color: theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main,
+  border: `1px solid ${theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main}`,
   '&:hover': {
-    'border': '1px solid ' + (theme.palette.mode === 'light' ? '#fff' : theme.palette.success.light),
+    border: `1px solid ${theme.palette.mode === 'light' ? '#fff' : theme.palette.success.light}`,
     // backgroundColor: (theme.palette.mode === 'light' ? '#fff' : theme.palette.success.dark),
   },
 }));
 
 // todo hook up settings with router
 
-const Header = () => {
-  const self = this;
+export const headerBarHeight = 64;
 
+const Header = () => {
   const dispatch = useAppDispatch();
-  const validSession = useAppSelector(state => state.userReducer.isValidSession);
+  const validSession = useAppSelector((state) => state.userReducer.isValidSession);
   const theme = useTheme();
 
   const router = useRouter();
@@ -84,7 +85,7 @@ const Header = () => {
       router.push('/');
     });
   };
-  
+
   const handleCompare = () => {
     dispatch(setLoading(true));
     dispatch(clear());
@@ -136,14 +137,14 @@ const Header = () => {
   };
 
 
-  let logoStyle: React.CSSProperties = {
+  const logoStyle: React.CSSProperties = {
     // 'fontFamily': 'Consolas',
     // 'fontFamily': 'Courier New',
-    'fontWeight': 600,
-    'fontSize': '20px',
-    'fontStyle': 'italic',
-    'verticalAlign':'middle',
-    'cursor': 'pointer',
+    fontWeight: 600,
+    fontSize: '20px',
+    fontStyle: 'italic',
+    verticalAlign: 'middle',
+    cursor: 'pointer',
   };
 
 
@@ -155,11 +156,11 @@ const Header = () => {
           {
             fullSearch ?
               <Toolbar disableGutters>
-                <IconButton onClick = {() => {setFullSearch(false);}} size="large" edge="start" color="inherit" aria-label="menu">
+                <IconButton onClick = {() => { setFullSearch(false); }} size="large" edge="start" color="inherit" aria-label="menu">
                   <ArrowBackIcon />
                 </IconButton>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
-                  <Search onRouter = {() => {setFullSearch(false);}} focus = {true} />
+                  <Search onRouter = {() => { setFullSearch(false); }} focus = {true} />
                 </Box>
               </Toolbar> :
               <Toolbar disableGutters>
@@ -172,21 +173,24 @@ const Header = () => {
                     <Sidebar />
                   </Drawer>
                 </IconButton>
-                <Box sx = {{ display: 'flex', mr: 1, 'alignItems': 'center' }} style = {logoStyle} onClick = {handleHome}>
-                  <img src={sratingLogo.src} width = '20' height = '20' style = {{'marginRight': 5}} />
-                  <><span style = {{'color': logoPrimaryColor}}>S</span><span style = {{'color': (theme.palette.mode === 'dark' ? logoSecondaryColor : '#fff')}}>RATING</span></>
+                <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }} style = {logoStyle} onClick = {handleHome}>
+                  <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} />
+                  <><span style = {{ color: logoPrimaryColor }}>S</span><span style = {{ color: (theme.palette.mode === 'dark' ? logoSecondaryColor : '#fff') }}>RATING</span></>
                 </Box>
+                {/* <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }}>
+                  <OrganizationPicker />
+                </Box> */}
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
-                <Box sx={{ flexGrow: 0, 'marginRight': (width < 600 ? 0 : '5px') }}>
-                  {width < 625 ? <IconButton onClick={() => {setFullSearch(true);}} color="inherit"><SearchIcon /></IconButton> : <Search onRouter={null} focus={false} />}
+                <Box sx={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px') }}>
+                  {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search onRouter={null} focus={false} />}
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
                   {
-                  validSession ? 
+                  validSession ?
                     <div>
-                      <IconButton  onClick={handleMenu} color="inherit">
+                      <IconButton onClick={handleMenu} color="inherit">
                         <AccountCircle />
                       </IconButton>
                       {/* <Menu
@@ -263,7 +267,7 @@ const Header = () => {
                         </MenuItem>
                       </Menu>
                     </div>
-                  : 
+                    :
                     <div>
                       {/* {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''} */}
                       <Button color = {theme.palette.mode === 'light' ? 'secondary' : 'success'} variant = 'contained' disableElevation onClick={handleAccount}>{width > 425 ? 'Signup / Login' : 'Login'}</Button>
@@ -278,6 +282,6 @@ const Header = () => {
       }
     </AppBar>
   );
-}
+};
 
 export default Header;

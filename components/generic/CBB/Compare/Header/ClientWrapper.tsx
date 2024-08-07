@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -43,26 +44,26 @@ const ClientWrapper = ({ children }) => {
   const theme = useTheme();
 
   const titleStyle: React.CSSProperties = {
-    'paddingTop': 5,
-    'height': getHeaderHeight(),
-    'position': 'fixed',
-    'left': 0,
-    'right': 0,
-    'top': getMarginTop(),
-    'backgroundColor': theme.palette.background.default,
-    'zIndex': 1100,
+    paddingTop: 5,
+    height: getHeaderHeight(),
+    position: 'fixed',
+    left: 0,
+    right: 0,
+    top: getMarginTop(),
+    backgroundColor: theme.palette.background.default,
+    zIndex: 1100,
   };
 
 
   return (
     <>
       <div style = {titleStyle}>
-        <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': 5}}>
-          <div style = {{'width': 50, 'display': 'flex', 'alignItems': 'baseline'}}>
+        <div style = {{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+          <div style = {{ width: 50, display: 'flex', alignItems: 'baseline' }}>
             <BackButton />
           </div>
-          <div style={{'width': '100%', 'maxWidth': 500}}><Search /></div>
-          <div style = {{'display': 'flex', 'justifyContent': 'end', 'position': 'relative', 'alignItems': 'baseline', 'width': 50}}>
+          <div style={{ width: '100%', maxWidth: 500 }}><Search /></div>
+          <div style = {{ display: 'flex', justifyContent: 'end', position: 'relative', alignItems: 'baseline', width: 50 }}>
             {<AdditionalOptions />}
           </div>
         </div>
@@ -70,6 +71,6 @@ const ClientWrapper = ({ children }) => {
       </div>
     </>
   );
-}
+};
 
 export default ClientWrapper;

@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState } from 'react';
 
 
@@ -9,52 +10,86 @@ import HelperCBB from '@/components/helpers/CBB';
 import { Game, ScoreIntervals } from '@/types/cbb';
 import Chart from '@/components/generic/Chart';
 import { LineProps } from 'recharts';
-import { useTheme } from '@mui/material';
+import { LinearProgress, useTheme } from '@mui/material';
 import Color from '@/components/utils/Color';
+import { getNavHeaderHeight } from '../NavBar';
+import { getSubNavHeaderHeight } from '../SubNavBar';
+import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
+import { headerBarHeight } from '@/components/generic/Header';
+
+/**
+ * The main wrapper div for all the contents
+ */
+const Contents = ({ children }): React.JSX.Element => {
+  return (
+    <div style = {{ textAlign: 'center' }}>
+      {children}
+    </div>
+  );
+};
 
 
-const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game_score_intervals: ScoreIntervals}) => {
+const ClientSkeleton = () => {
+  const paddingTop = getNavHeaderHeight() + getSubNavHeaderHeight();
+
+  const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
+  return (
+    <Contents>
+      <div style = {{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: `calc(100vh - ${heightToRemove}px)`,
+      }}>
+        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+      </div>
+    </Contents>
+  );
+};
+
+const Client = ({ cbb_game, cbb_game_score_intervals }: {cbb_game: Game, cbb_game_score_intervals: ScoreIntervals}) => {
   const [selectedIntervalChip, setSelectedIntervalChip] = useState('scoring');
 
   const theme = useTheme();
   const backgroundColor = theme.palette.background.default;
 
   const CBB = new HelperCBB({
-    'cbb_game': cbb_game,
+    cbb_game,
   });
 
 
   const intervalCompare = [
     {
-      'label': 'Scoring',
-      'value': 'scoring',
+      label: 'Scoring',
+      value: 'scoring',
     },
     {
-      'label': 'Live ML',
-      'value': 'liveML',
+      label: 'Live ML',
+      value: 'liveML',
     },
     {
-      'label': 'Live Spread',
-      'value': 'liveSpread',
+      label: 'Live Spread',
+      value: 'liveSpread',
     },
     {
-      'label': 'Live O/U',
-      'value': 'liveOverUnder',
+      label: 'Live O/U',
+      value: 'liveOverUnder',
     },
   ];
 
-  let intervalCompareChips: React.JSX.Element[] = [];
+  const intervalCompareChips: React.JSX.Element[] = [];
 
   for (let i = 0; i < intervalCompare.length; i++) {
     intervalCompareChips.push(
       <Chip
         key = {intervalCompare[i].value}
-        sx = {{'margin': '5px 5px 10px 5px'}}
+        sx = {{ margin: '5px 5px 10px 5px' }}
         variant = {selectedIntervalChip === intervalCompare[i].value ? 'filled' : 'outlined'}
         color = {selectedIntervalChip === intervalCompare[i].value ? 'success' : 'primary'}
-        onClick = {() => {setSelectedIntervalChip(intervalCompare[i].value);}}
-        label = {intervalCompare[i].label} 
-      />
+        onClick = {() => { setSelectedIntervalChip(intervalCompare[i].value); }}
+        label = {intervalCompare[i].label}
+      />,
     );
   }
 
@@ -63,7 +98,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
   const getPeriod = (row) => {
     if (row.current_period === '1ST HALF' || (!row.current_period.length && row.clock === ':00' && !row.home_score && !row.away_score)) {
       return 1;
-    } else if (row.current_period === '2ND HALF' || (!row.current_period.length && row.clock === ':00')) {
+    } if (row.current_period === '2ND HALF' || (!row.current_period.length && row.clock === ':00')) {
       return 2;
     }
 
@@ -79,12 +114,12 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
       const [minutes, seconds] = parts;
       return (isNaN(minutes) ? 0 : minutes) * 60 + (isNaN(seconds) ? 0 : seconds);
     }
-    
+
     console.warn('Invalid time format');
     return 0;
   };
 
-  const sorted_intervals: ScoreIntervals[] = Object.values(cbb_game_score_intervals || {}).sort(function (a, b) {
+  const sorted_intervals: ScoreIntervals[] = Object.values(cbb_game_score_intervals || {}).sort((a, b) => {
     // const a_period = getPeriod(a);
     // const b_period = getPeriod(b);
 
@@ -106,7 +141,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
     //   return 1;
     // }
 
-    return a.date_of_entry  < b.date_of_entry ? -1 : 1;
+    return a.date_of_entry < b.date_of_entry ? -1 : 1;
   });
 
 
@@ -124,7 +159,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
 
   const formattedData: Data[] = [];
 
-  let map = {};
+  const map = {};
 
   for (let i = 0; i < sorted_intervals.length; i++) {
     if (!map[sorted_intervals[i].clock + sorted_intervals[i].current_period]) {
@@ -139,7 +174,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
 
 
       formattedData.push({
-        time: time,
+        time,
         home_score: sorted_intervals[i].home_score,
         away_score: sorted_intervals[i].away_score,
         money_line_home: sorted_intervals[i].money_line_home < -10000 ? -10000 : sorted_intervals[i].money_line_home,
@@ -158,7 +193,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
   const colors = CBB.getGameColors();
 
   if (selectedIntervalChip === 'scoring') {
-    let lines: LineProps[] = [
+    const lines: LineProps[] = [
       {
         type: 'monotone',
         name: CBB.getTeamName('home'),
@@ -166,7 +201,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         stroke: Color.getTextColor(colors.homeColor, backgroundColor),
         strokeWidth: 2,
         dot: false,
-        connectNulls: true
+        connectNulls: true,
       },
       {
         type: 'monotone',
@@ -175,12 +210,12 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         stroke: Color.getTextColor(colors.awayColor, backgroundColor),
         strokeWidth: 2,
         dot: false,
-        connectNulls: true
+        connectNulls: true,
       },
     ];
-    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Score'} rows={formattedData} lines={lines} YAxisProps={{scale: 'auto'}} />;
+    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Score'} rows={formattedData} lines={lines} YAxisProps={{ scale: 'auto' }} />;
   } else if (selectedIntervalChip === 'liveML') {
-    let lines: LineProps[] = [
+    const lines: LineProps[] = [
       {
         type: 'monotone',
         name: CBB.getTeamName('home'),
@@ -188,7 +223,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         stroke: Color.getTextColor(colors.homeColor, backgroundColor),
         strokeWidth: 2,
         dot: true,
-        connectNulls: true
+        connectNulls: true,
       },
       {
         type: 'monotone',
@@ -197,12 +232,12 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         stroke: Color.getTextColor(colors.awayColor, backgroundColor),
         strokeWidth: 2,
         dot: true,
-        connectNulls: true
+        connectNulls: true,
       },
     ];
-    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Odds'} rows={formattedData} lines={lines} YAxisProps={{scale: 'auto'}} />;
+    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Odds'} rows={formattedData} lines={lines} YAxisProps={{ scale: 'auto' }} />;
   } else if (selectedIntervalChip === 'liveSpread') {
-    let lines: LineProps[] = [
+    const lines: LineProps[] = [
       {
         type: 'monotone',
         name: CBB.getTeamName('home'),
@@ -210,7 +245,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         stroke: Color.getTextColor(colors.homeColor, backgroundColor),
         strokeWidth: 2,
         dot: true,
-        connectNulls: true
+        connectNulls: true,
       },
       {
         type: 'monotone',
@@ -219,12 +254,12 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         stroke: Color.getTextColor(colors.awayColor, backgroundColor),
         strokeWidth: 2,
         dot: true,
-        connectNulls: true
+        connectNulls: true,
       },
     ];
-    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Points spread'} rows={formattedData} lines={lines} YAxisProps={{scale: 'auto'}} />;
+    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Points spread'} rows={formattedData} lines={lines} YAxisProps={{ scale: 'auto' }} />;
   } else if (selectedIntervalChip === 'liveOverUnder') {
-    let lines: LineProps[] = [
+    const lines: LineProps[] = [
       {
         type: 'monotone',
         name: 'O/U',
@@ -232,20 +267,20 @@ const Client = ({ cbb_game, cbb_game_score_intervals}: {cbb_game: Game, cbb_game
         stroke: Color.getTextColor(colors.homeColor, backgroundColor),
         strokeWidth: 2,
         dot: true,
-        connectNulls: true
+        connectNulls: true,
       },
     ];
-    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Over / Under'} rows={formattedData} lines={lines} YAxisProps={{scale: 'auto'}} />;
+    intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Over / Under'} rows={formattedData} lines={lines} YAxisProps={{ scale: 'auto' }} />;
   }
 
 
   return (
-    <div style = {{'textAlign': 'center'}}>
+    <Contents>
       {intervalCompareChips}
-      {!sorted_intervals.length ? <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>Nothing here yet...</Typography> : ''}
+      {!sorted_intervals.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'h5'>Nothing here yet...</Typography> : ''}
       {sorted_intervals.length ? intervalChart : ''}
-    </div>
+    </Contents>
   );
-}
+};
 
-export default Client;
+export { Client, ClientSkeleton };

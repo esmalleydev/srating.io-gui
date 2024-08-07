@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 
@@ -10,7 +11,7 @@ import { setScheduleView, setScrollTop } from '@/redux/features/team-slice';
 const ViewPicker = ({ view }) => {
   const dispatch = useAppDispatch();
 
-  const scheduleView = useAppSelector(state => state.teamReducer.scheduleView);
+  const scheduleView = useAppSelector((state) => state.teamReducer.scheduleView);
 
   const handleView = (nextView: string) => {
     dispatch(setScheduleView(nextView));

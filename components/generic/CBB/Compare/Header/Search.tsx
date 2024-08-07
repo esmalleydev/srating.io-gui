@@ -1,8 +1,9 @@
 'use client';
-import React, { useEffect, useRef, useState, useTransition } from 'react';
+
+import React, { useState, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { styled, alpha, useTheme } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import { InputBase, Autocomplete } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -50,7 +51,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Search = () => {
-  const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -61,21 +61,21 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useAppDispatch();
-  const home_team_id = useAppSelector(state => state.compareReducer.home_team_id); //|| searchParams?.get('home_team_id') || null;
-  const away_team_id = useAppSelector(state => state.compareReducer.away_team_id); //|| searchParams?.get('away_team_id') || null;
-  const next_search = useAppSelector(state => state.compareReducer.next_search);
+  const home_team_id = useAppSelector((state) => state.compareReducer.home_team_id); // || searchParams?.get('home_team_id') || null;
+  const away_team_id = useAppSelector((state) => state.compareReducer.away_team_id); // || searchParams?.get('away_team_id') || null;
+  const next_search = useAppSelector((state) => state.compareReducer.next_search);
 
   const [blur, setBlur] = useState<boolean>(false);
 
 
   const debouncedRequest = useDebounce(() => {
     useClientAPI({
-      'class': 'cbb',
-      'function': 'search',
-      'arguments': {
-        'name': value,
-        'team': 1,
-        'player': 0,
+      class: 'cbb',
+      function: 'search',
+      arguments: {
+        name: value,
+        team: 1,
+        player: 0,
       },
     }).then((response) => {
       setTeams((response && response.teams) || []);
@@ -88,7 +88,7 @@ const Search = () => {
 
 
   const onChange = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setValue(value || '');
 
     setLoading(true);
@@ -97,10 +97,10 @@ const Search = () => {
 
   const options = teams.map((team) => {
     return {
-      'group': 'Teams',
-      'team_id': team.team_id,
-      'name': team.alt_name,
-    }
+      group: 'Teams',
+      team_id: team.team_id,
+      name: team.alt_name,
+    };
   });
 
   const handleClick = (event, option) => {
@@ -126,11 +126,11 @@ const Search = () => {
         }
 
         let changing = false;
-        if (searchParams?.get(key + '_team_id') !== new_team_id) {
+        if (searchParams?.get(`${key}_team_id`) !== new_team_id) {
           const current = new URLSearchParams(Array.from(searchParams.entries()));
-          current.set(key + '_team_id', new_team_id);
+          current.set(`${key}_team_id`, new_team_id);
           const search = current.toString();
-          const query = search ? `?${search}` : "";
+          const query = search ? `?${search}` : '';
           router.replace(`${pathName}${query}`);
           changing = true;
         }
@@ -153,7 +153,7 @@ const Search = () => {
   };
 
   const inputBaseStyle: React.CSSProperties = {
-    'minWidth': '250px',
+    minWidth: '250px',
   };
   // sx={{backgroundColor: 'rgba(66, 165, 245, .5)'}}
   return (
@@ -170,28 +170,28 @@ const Search = () => {
         value = {null}
         options = {options}
         autoHighlight = {true}
-        getOptionLabel = {(option) =>  {return option.name || 'Unknown';}}
+        getOptionLabel = {(option) => { return option.name || 'Unknown'; }}
         fullWidth = {true}
         blurOnSelect = {blur}
         renderInput={(params) => {
-          const {InputLabelProps,InputProps,...rest} = params;
+          const { InputLabelProps, InputProps, ...rest } = params;
           rest.inputProps.value = value;
           return (
-            <StyledInputBase 
+            <StyledInputBase
               {...params.InputProps}
               {...rest}
               value = {value}
               placeholder = {'Add a team'}
               autoFocus = {true}
               sx = {inputBaseStyle}
-              onChange = {onChange} 
+              onChange = {onChange}
             />
           );
         }}
       />
     </Container>
   );
-}
+};
 
 export default Search;
 

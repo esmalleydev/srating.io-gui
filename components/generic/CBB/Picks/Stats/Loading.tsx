@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { Skeleton } from '@mui/material';
 import { getCardStyle, getOrderedBuckets } from './Client';
@@ -13,7 +14,7 @@ const Loading = () => {
   }
 
   return (
-    <div style = {{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
+    <div style = {{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
       {skeletonContainers}
     </div>
   );

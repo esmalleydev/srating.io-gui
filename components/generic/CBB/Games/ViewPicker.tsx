@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 
@@ -13,16 +14,16 @@ import { setScrollTop } from '@/redux/features/games-slice';
 
 const ViewPicker = () => {
   const dispatch = useAppDispatch();
-  const cardsView = useAppSelector(state => state.displayReducer.cardsView);
+  const cardsView = useAppSelector((state) => state.displayReducer.cardsView);
 
-  const scrollRef  = useScrollContext();
+  const scrollRef = useScrollContext();
 
   const handleView = (nextView: string) => {
     dispatch(setCardView(nextView));
     if (
       scrollRef &&
       scrollRef.current
-      ) {
+    ) {
       dispatch(setScrollTop(scrollRef.current.scrollTop));
     }
   };

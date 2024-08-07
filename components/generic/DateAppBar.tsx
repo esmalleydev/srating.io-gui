@@ -1,5 +1,8 @@
 'use client';
-import React, { RefObject, useEffect, useRef, useState, useTransition } from 'react';
+
+import React, {
+  RefObject, useEffect, useRef, useState, useTransition,
+} from 'react';
 import { useTheme } from '@mui/material/styles';
 
 import AppBar from '@mui/material/AppBar';
@@ -44,35 +47,35 @@ export { getMarginTop, getBreakPoint };
 
 const DateAppBar = ({ dates, date }) => {
   const theme = useTheme();
-  
+
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
-  
+
   const scrollRefDateBar: RefObject<HTMLDivElement> = useRef(null);
   const [isPending, startTransition] = useTransition();
-  
-  const scrollRef  = useScrollContext();
-  
+
+  const scrollRef = useScrollContext();
+
   const dispatch = useAppDispatch();
-  
-  
+
+
   // For speed, lookups
   const tabDatesObject = {};
-  
+
   for (let i = 0; i < dates.length; i++) {
     tabDatesObject[dates[i]] = true;
   }
-  
+
   const scrollToElement = () => {
-    scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
+    scrollRefDateBar.current?.scrollIntoView({ inline: 'center', behavior: 'smooth' });
     // setTimeout(function() {
     //   if (scrollRefDateBar && scrollRefDateBar.current) {
     //     scrollRefDateBar.current?.scrollIntoView({'inline': 'center', 'behavior': 'smooth'});
     //   }
     // }, 50);
   };
-  
+
   useEffect(() => {
     scrollToElement();
   }, [date]);
@@ -95,7 +98,7 @@ const DateAppBar = ({ dates, date }) => {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
       current.set('date', newDate);
       const search = current.toString();
-      const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : '';
 
       dispatch(setLoading(true));
       startTransition(() => {
@@ -103,7 +106,7 @@ const DateAppBar = ({ dates, date }) => {
       });
     }
     dispatch(updateGameSort(null));
-  }
+  };
 
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calAncor, setCalAncor] = useState(null);
@@ -119,23 +122,23 @@ const DateAppBar = ({ dates, date }) => {
   // } = props;
 
 
-  let tabComponents: React.JSX.Element[] = [];
+  const tabComponents: React.JSX.Element[] = [];
   for (let i = 0; i < dates.length; i++) {
     let label = moment(dates[i]).format('MMM D');
     if (dates[i] === moment().format('YYYY-MM-DD')) {
       label = 'TODAY';
     } else if (
-      dates[i] === moment().add(1,'days').format('YYYY-MM-DD') ||
-      dates[i] === moment().add(2,'days').format('YYYY-MM-DD') ||
-      dates[i] === moment().add(3,'days').format('YYYY-MM-DD')
+      dates[i] === moment().add(1, 'days').format('YYYY-MM-DD') ||
+      dates[i] === moment().add(2, 'days').format('YYYY-MM-DD') ||
+      dates[i] === moment().add(3, 'days').format('YYYY-MM-DD')
     ) {
       label = moment(dates[i]).format('ddd');
     }
-    let ref_: RefObject<HTMLDivElement> | null = null;
+    let dateBarRef: RefObject<HTMLDivElement> | null = null;
     if (dates[i] === date) {
-      ref_ = scrollRefDateBar;
+      dateBarRef = scrollRefDateBar;
     }
-    tabComponents.push(<Tab ref = {ref_} key = {dates[i]} value = {i} label = {label} sx = {{'fontSize': '12px', 'minWidth': 60}} />);
+    tabComponents.push(<Tab ref = {dateBarRef} key = {dates[i]} value = {i} label = {label} sx = {{ fontSize: '12px', minWidth: 60 }} />);
   }
 
   const tabIndex = dates.indexOf(date) > -1 ? dates.indexOf(date) : dates.length - 1;
@@ -143,22 +146,22 @@ const DateAppBar = ({ dates, date }) => {
 
   const toggleCalendar = (e) => {
     if (calendarOpen) {
-      setCalAncor(null)
+      setCalAncor(null);
     } else if (e) {
       setCalAncor(e.currentTarget);
     }
     setCalendarOpen(!calendarOpen);
-  }
+  };
 
 
   return (
     <div>
-      <AppBar position="fixed" style = {Object.assign({}, {'marginTop': getMarginTop()}, {'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light})}>
+      <AppBar position="fixed" style = {({ marginTop: getMarginTop(), backgroundColor: theme.palette.mode == 'dark' ? theme.palette.grey[900] : theme.palette.primary.light })}>
         <Toolbar variant = 'dense'>
-          <Tabs value={tabIndex} onChange={updateDate} variant="scrollable" scrollButtons = {true} allowScrollButtonsMobile = {false} indicatorColor="secondary" textColor="inherit" /* sx = {{'backgroundImage': 'linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)'}}*/>
+          <Tabs value={tabIndex} onChange={updateDate} variant="scrollable" scrollButtons = {true} allowScrollButtonsMobile = {false} indicatorColor="secondary" textColor="inherit" /* sx = {{'backgroundImage': 'linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)'}} */>
             {tabComponents}
           </Tabs>
-          <IconButton sx = {{'padding': 0}} onClick={toggleCalendar} color="inherit">
+          <IconButton sx = {{ padding: 0 }} onClick={toggleCalendar} color="inherit">
             <CalendarIcon />
           </IconButton>
           <Popover
@@ -198,7 +201,7 @@ const DateAppBar = ({ dates, date }) => {
       </AppBar>
     </div>
   );
-}
+};
 
 export default DateAppBar;
 

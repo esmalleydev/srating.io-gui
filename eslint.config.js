@@ -66,7 +66,7 @@ export default tseslint.config(
 
       // make sure for-in loops have an if statement
       // https://eslint.org/docs/rules/guard-for-in
-      'guard-for-in': 'error',
+      'guard-for-in': 'off',
 
       // enforce a maximum number of classes per file
       // https://eslint.org/docs/rules/max-classes-per-file
@@ -244,6 +244,7 @@ export default tseslint.config(
       'no-param-reassign': ['error', {
         props: true,
         ignorePropertyModificationsFor: [
+          'state', // for redux
           'acc', // for reduce accumulators
           'accumulator', // for reduce accumulators
           'e', // for e.returnvalue
@@ -452,7 +453,7 @@ export default tseslint.config(
       'no-compare-neg-zero': 'error',
 
       // disallow assignment in conditional expressions
-      'no-cond-assign': ['error', 'always'],
+      // 'no-cond-assign': ['error', 'always'],
 
       // disallow use of console
       'no-console': 'warn',
@@ -622,9 +623,8 @@ export default tseslint.config(
     rules: {
       // enforces no braces where they can be omitted
       // https://eslint.org/docs/rules/arrow-body-style
-      // TODO: enable requireReturnForObjectLiteral?
-      'arrow-body-style': ['error', 'as-needed', {
-        requireReturnForObjectLiteral: false,
+      'arrow-body-style': ['off', 'as-needed', {
+        requireReturnForObjectLiteral: true,
       }],
 
       // require parens in arrow function arguments
@@ -1075,7 +1075,7 @@ export default tseslint.config(
 
       // disallow use of the continue statement
       // https://eslint.org/docs/rules/no-continue
-      'no-continue': 'error',
+      'no-continue': 'off',
 
       // disallow comments inline after code
       'no-inline-comments': 'off',
@@ -1126,16 +1126,16 @@ export default tseslint.config(
 
       // disallow use of unary operators, ++ and --
       // https://eslint.org/docs/rules/no-plusplus
-      'no-plusplus': 'error',
+      'no-plusplus': 'off',
 
       // disallow certain syntax forms
       // https://eslint.org/docs/rules/no-restricted-syntax
       'no-restricted-syntax': [
         'error',
-        {
-          selector: 'ForInStatement',
-          message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
-        },
+        // {
+        //   selector: 'ForInStatement',
+        //   message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
+        // },
         {
           selector: 'ForOfStatement',
           message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.',
@@ -1194,10 +1194,10 @@ export default tseslint.config(
       // enforce line breaks between braces
       // https://eslint.org/docs/rules/object-curly-newline
       'object-curly-newline': ['error', {
-        ObjectExpression: { minProperties: 4, multiline: true, consistent: true },
-        ObjectPattern: { minProperties: 4, multiline: true, consistent: true },
-        ImportDeclaration: { minProperties: 4, multiline: true, consistent: true },
-        ExportDeclaration: { minProperties: 4, multiline: true, consistent: true },
+        ObjectExpression: { minProperties: 8, multiline: true, consistent: true },
+        ObjectPattern: { minProperties: 8, multiline: true, consistent: true },
+        ImportDeclaration: { minProperties: 8, multiline: true, consistent: true },
+        ExportDeclaration: { minProperties: 8, multiline: true, consistent: true },
       }],
 
       // enforce "same line" or "multiple line" on object properties.

@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -21,7 +22,7 @@ import { visuallyHidden } from '@mui/utils';
 
 
 import RankSpan from '@/components/generic/CBB/RankSpan';
-import utilsSorter from  '@/components/utils/Sorter';
+import utilsSorter from '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
@@ -40,11 +41,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // 'border': 0,
   '&:hover': {
     cursor: 'pointer',
-  }
+  },
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  'backgroundColor':  theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
 }));
 
 
@@ -61,7 +62,7 @@ const Roster = ({ rosterStats }) => {
   const { width } = useWindowDimensions() as Dimensions;
   const breakPoint = 425;
 
-  const players = rosterStats.players;
+  const { players } = rosterStats;
   const playerStatsData = rosterStats.cbb_player_statistic_ranking;
 
 
@@ -69,18 +70,18 @@ const Roster = ({ rosterStats }) => {
     const sessionOrderby = sessionStorage.getItem('CBB.TEAM.ROSTER.ORDERBY') || null;
     setView(sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') ? sessionStorage.getItem('CBB.TEAM.ROSTER.VIEW') : 'overview');
     setOrder(sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') ? sessionStorage.getItem('CBB.TEAM.ROSTER.ORDER') as string : 'asc');
-    setOrderBy(sessionOrderby ? sessionOrderby : 'minutes_per_game');
+    setOrderBy(sessionOrderby || 'minutes_per_game');
   }, []);
 
 
   const getColumns = () => {
     if (view === 'overview') {
       return ['player', 'games', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
-    } else if (view === 'per_game') {
+    } if (view === 'per_game') {
       return ['player', 'games', 'minutes_per_game', 'points_per_game', 'offensive_rebounds_per_game', 'defensive_rebounds_per_game', 'assists_per_game', 'steals_per_game', 'blocks_per_game', 'turnovers_per_game', 'fouls_per_game'];
-    } else if (view === 'offensive') {
+    } if (view === 'offensive') {
       return ['player', 'games', 'minutes_per_game', 'points_per_game', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
-    } else if (view === 'defensive') {
+    } if (view === 'defensive') {
       return ['player', 'games', 'minutes_per_game', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
     }
     return [];
@@ -89,270 +90,270 @@ const Roster = ({ rosterStats }) => {
   const handleClick = (player_id) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/player/' + player_id);
+      router.push(`/cbb/player/${player_id}`);
     });
   };
 
 
   const headCells = {
-    'player': {
+    player: {
       id: 'player',
       numeric: true,
       label: 'Player',
       tooltip: 'Player',
-      'sticky': true,
+      sticky: true,
     },
-    'field_goal_percentage': {
+    field_goal_percentage: {
       id: 'field_goal_percentage',
       numeric: true,
       label: 'FG%',
       tooltip: 'Average field goals percentage per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'two_point_field_goal_percentage': {
+    two_point_field_goal_percentage: {
       id: 'two_point_field_goal_percentage',
       numeric: true,
       label: '2FG%',
       tooltip: 'Average two field goals percentage per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'three_point_field_goal_percentage': {
+    three_point_field_goal_percentage: {
       id: 'three_point_field_goal_percentage',
       numeric: true,
       label: '3FG%',
       tooltip: 'Average three field goals percentage per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'free_throw_percentage': {
+    free_throw_percentage: {
       id: 'free_throw_percentage',
       numeric: true,
       label: 'FT%',
       tooltip: 'Average free throws percentage per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'offensive_rating': {
+    offensive_rating: {
       id: 'offensive_rating',
       numeric: true,
       label: 'ORT',
       tooltip: 'Offensive rating',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'defensive_rating': {
+    defensive_rating: {
       id: 'defensive_rating',
       numeric: true,
       label: 'DRT',
       tooltip: 'Defensive rating',
-      'sort': 'lower',
+      sort: 'lower',
     },
-    'player_efficiency_rating': {
+    player_efficiency_rating: {
       id: 'player_efficiency_rating',
       numeric: true,
       label: 'PER',
       tooltip: 'Player efficiency rating',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'efficiency_rating': {
+    efficiency_rating: {
       id: 'efficiency_rating',
       numeric: true,
       label: 'ERT',
       tooltip: 'Efficiency rating',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'games': {
+    games: {
       id: 'games',
       numeric: false,
       label: 'G',
       tooltip: 'Games played',
     },
-    'minutes_per_game': {
+    minutes_per_game: {
       id: 'minutes_per_game',
       numeric: true,
       label: 'MPG',
       tooltip: 'Minutes played per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'points_per_game': {
+    points_per_game: {
       id: 'points_per_game',
       numeric: true,
       label: 'PPG',
       tooltip: 'Points per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'offensive_rebounds_per_game': {
+    offensive_rebounds_per_game: {
       id: 'offensive_rebounds_per_game',
       numeric: true,
       label: 'ORB-G',
       tooltip: 'Offensive rebounds per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'defensive_rebounds_per_game': {
+    defensive_rebounds_per_game: {
       id: 'defensive_rebounds_per_game',
       numeric: true,
       label: 'DRB-G',
       tooltip: 'Defensive rebounds per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'total_rebounds_per_game': {
+    total_rebounds_per_game: {
       id: 'total_rebounds_per_game',
       numeric: true,
       label: 'TRB-G',
       tooltip: 'Total rebounds per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'assists_per_game': {
+    assists_per_game: {
       id: 'assists_per_game',
       numeric: true,
       label: 'AST-G',
       tooltip: 'Assists per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'steals_per_game': {
+    steals_per_game: {
       id: 'steals_per_game',
       numeric: true,
       label: 'STL-G',
       tooltip: 'Steals per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'blocks_per_game': {
+    blocks_per_game: {
       id: 'blocks_per_game',
       numeric: true,
       label: 'BLK-G',
       tooltip: 'Blocks per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'turnovers_per_game': {
+    turnovers_per_game: {
       id: 'turnovers_per_game',
       numeric: true,
       label: 'TO-G',
       tooltip: 'Blocks per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'fouls_per_game': {
+    fouls_per_game: {
       id: 'fouls_per_game',
       numeric: true,
       label: 'PF-G',
       tooltip: 'Fouls per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'true_shooting_percentage': {
+    true_shooting_percentage: {
       id: 'true_shooting_percentage',
       numeric: true,
       label: 'TS%',
       tooltip: 'True shooting percentage, takes into account all field goals and free throws.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'effective_field_goal_percentage': {
+    effective_field_goal_percentage: {
       id: 'effective_field_goal_percentage',
       numeric: true,
       label: 'eFG%',
       tooltip: 'Effective field goal percentage, adjusted field goal % since 3 points greater than 2.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'offensive_rebound_percentage': {
+    offensive_rebound_percentage: {
       id: 'offensive_rebound_percentage',
       numeric: true,
       label: 'ORB%',
       tooltip: 'Offensive rebound percentage, estimate of % of offensive rebounds player had while on floor.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'defensive_rebound_percentage': {
+    defensive_rebound_percentage: {
       id: 'defensive_rebound_percentage',
       numeric: true,
       label: 'DRB%',
       tooltip: 'Defensive rebound percentage, estimate of % of defensive rebounds player had while on floor.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'total_rebound_percentage': {
+    total_rebound_percentage: {
       id: 'total_rebound_percentage',
       numeric: true,
       label: 'TRB%',
       tooltip: 'Total rebound percentage, estimate of % of total rebounds player had while on floor.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'assist_percentage': {
+    assist_percentage: {
       id: 'assist_percentage',
       numeric: true,
       label: 'AST%',
       tooltip: 'Assist percentage, estimate of % of assists player had while on floor.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'steal_percentage': {
+    steal_percentage: {
       id: 'steal_percentage',
       numeric: true,
       label: 'STL%',
       tooltip: 'Steal percentage, estimate of % of steals player had while on floor.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'block_percentage': {
+    block_percentage: {
       id: 'block_percentage',
       numeric: true,
       label: 'BLK%',
       tooltip: 'Block percentage, estimate of % of blocks player had while on floor.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'turnover_percentage': {
+    turnover_percentage: {
       id: 'turnover_percentage',
       numeric: true,
       label: 'TOV%',
       tooltip: 'Turnover percentage, estimate of % of turnovers player had while on floor.',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'usage_percentage': {
+    usage_percentage: {
       id: 'usage_percentage',
       numeric: true,
       label: 'USG%',
       tooltip: 'Usage percentage, estimate of % of plays ran through player while on floor.',
-      'sort': 'higher',
+      sort: 'higher',
     },
   };
 
   // todo make a cbb_player_statistic TS interface
-  let rows: any = Object.values(playerStatsData || {});
+  const rows: any = Object.values(playerStatsData || {});
 
   if (!rows.length && players && Object.keys(players).length) {
-    for (let player_id in players) {
+    for (const player_id in players) {
       rows.push({
-        'player_id': player_id,
+        player_id,
       });
     }
   }
 
   const statDisplay = [
     {
-      'label': 'Overview',
-      'value': 'overview',
+      label: 'Overview',
+      value: 'overview',
     },
     {
-      'label': 'Per game',
-      'value': 'per_game',
+      label: 'Per game',
+      value: 'per_game',
     },
     {
-      'label': 'Offensive',
-      'value': 'offensive',
+      label: 'Offensive',
+      value: 'offensive',
     },
     {
-      'label': 'Defensive',
-      'value': 'defensive',
+      label: 'Defensive',
+      value: 'defensive',
     },
   ];
 
-  let statDisplayChips: React.JSX.Element[] = [];
+  const statDisplayChips: React.JSX.Element[] = [];
 
   const handleView = (value) => {
     sessionStorage.setItem('CBB.TEAM.ROSTER.VIEW', value);
     setView(value);
-  }
+  };
 
   for (let i = 0; i < statDisplay.length; i++) {
     statDisplayChips.push(
       <Chip
         key = {statDisplay[i].value}
-        sx = {{'margin': '5px 5px 10px 5px'}}
+        sx = {{ margin: '5px 5px 10px 5px' }}
         variant = {view === statDisplay[i].value ? 'filled' : 'outlined'}
         color = {view === statDisplay[i].value ? 'success' : 'primary'}
-        onClick = {() => {handleView(statDisplay[i].value);}}
-        label = {statDisplay[i].label} 
-      />
+        onClick = {() => { handleView(statDisplay[i].value); }}
+        label = {statDisplay[i].label}
+      />,
     );
   }
 
@@ -370,16 +371,16 @@ const Roster = ({ rosterStats }) => {
   const playerCellWidth = (width <= breakPoint) ? 85 : 100;
 
   const row_containers = rows.sort(Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort))).slice().map((row) => {
-    let columns = getColumns();
+    const columns = getColumns();
 
 
     const tdStyle: React.CSSProperties = {
-      'padding': '4px 5px',
-      'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+      padding: '4px 5px',
+      backgroundColor: theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
       border: 0,
-      'borderTop': 0,
-      'borderLeft': 0,
-      'borderBottom': 0,
+      borderTop: 0,
+      borderLeft: 0,
+      borderBottom: 0,
     };
 
     if (width <= breakPoint) {
@@ -395,7 +396,7 @@ const Roster = ({ rosterStats }) => {
       textOverflow: 'ellipsis',
       minWidth: playerCellWidth,
       maxWidth: playerCellWidth,
-      borderRight: '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark),
+      borderRight: `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`,
     };
 
     b++;
@@ -406,19 +407,19 @@ const Roster = ({ rosterStats }) => {
       if (columns[i] === 'player') {
         const player = (row.player_id in players && players[row.player_id]) || null;
         if (player) {
-          tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, playerCellStyle)}>{player ? player.first_name.charAt(0) + '. ' + player.last_name : 'Unknown'}</TableCell>);
+          tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...playerCellStyle })}>{player ? `${player.first_name.charAt(0)}. ${player.last_name}` : 'Unknown'}</TableCell>);
         }
       } else {
         // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <RankSpan key = {i} rank = {row[columns[i] + '_rank']} max = {5300} useOrdinal = {false} /> : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[`${columns[i]}_rank`] ? <RankSpan key = {i} rank = {row[`${columns[i]}_rank`]} max = {5300} useOrdinal = {false} /> : ''}</TableCell>);
       }
-    } 
+    }
 
     return (
       <StyledTableRow
-        key={row.name + '-' + b}
+        key={`${row.name}-${b}`}
         // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-        onClick={() => {handleClick(row.player_id)}}
+        onClick={() => { handleClick(row.player_id); }}
       >
         {tableCells}
       </StyledTableRow>
@@ -429,7 +430,7 @@ const Roster = ({ rosterStats }) => {
   const getDisplay = () => {
     if (playerStatsData === null) {
       return (
-        <Paper elevation = {3} style = {{'padding': 10}}>
+        <Paper elevation = {3} style = {{ padding: 10 }}>
           <div>
             <Typography variant = 'h5'><Skeleton /></Typography>
             <Typography variant = 'h5'><Skeleton /></Typography>
@@ -450,14 +451,14 @@ const Roster = ({ rosterStats }) => {
 
     if (playerStatsData !== null && Object.keys(players).length === 0) {
       return (
-        <Typography style = {{'textAlign': 'center', 'margin': '10px 0px'}} variant = 'h5'>No player data yet :(</Typography>
+        <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'h5'>No player data yet :(</Typography>
       );
     }
 
     return (
       <>
-        <div style = {{'textAlign': 'center'}}>{statDisplayChips}</div>
-        <div style = {{'padding': '0px 5px'}}>
+        <div style = {{ textAlign: 'center' }}>{statDisplayChips}</div>
+        <div style = {{ padding: '0px 5px' }}>
           <TableContainer component={Paper}>
             <Table size="small" aria-label="player stats table" style={{ borderCollapse: 'separate' }}>
               <TableHead>
@@ -465,24 +466,24 @@ const Roster = ({ rosterStats }) => {
                   {getColumns().map((column) => {
                     const headCell = headCells[column];
                     const tdStyle: React.CSSProperties = {
-                      'padding': '4px 5px',
-                      'border': 0,
+                      padding: '4px 5px',
+                      border: 0,
                     };
-          
+
                     if (width <= breakPoint) {
                       tdStyle.fontSize = '13px';
                     }
-          
+
                     if (headCell.sticky) {
                       tdStyle.position = 'sticky';
                       tdStyle.zIndex = 3;
                     } else {
                       tdStyle.whiteSpace = 'nowrap';
                     }
-    
+
                     if (headCell.id === 'player') {
                       tdStyle.left = 0;
-                      tdStyle.borderRight = '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark);
+                      tdStyle.borderRight = `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`;
                     }
 
                     return (
@@ -495,8 +496,8 @@ const Roster = ({ rosterStats }) => {
                         >
                           <TableSortLabel
                             active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ?  (order as 'asc' | 'desc') : 'asc'}
-                            onClick={() => {handleSort(headCell.id)}}
+                            direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
+                            onClick={() => { handleSort(headCell.id); }}
                           >
                             {headCell.label}
                             {orderBy === headCell.id ? (
@@ -507,8 +508,8 @@ const Roster = ({ rosterStats }) => {
                           </TableSortLabel>
                         </StyledTableHeadCell>
                       </Tooltip>
-                      );
-                    })
+                    );
+                  })
                   }
                 </TableRow>
               </TableHead>
@@ -519,16 +520,16 @@ const Roster = ({ rosterStats }) => {
           </TableContainer>
         </div>
       </>
-    )
+    );
   };
 
 
   return (
-    <div style = {{'paddingTop': 10}}>
+    <div style = {{ paddingTop: 10 }}>
       {getDisplay()}
     </div>
   );
-}
+};
 
 
 export default Roster;

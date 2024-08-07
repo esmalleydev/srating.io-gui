@@ -27,6 +27,8 @@ const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) 
   },
 }));
 
+export const footerNavigationHeight = 56;
+
 const FooterNavigation = () => {
   const theme = useTheme();
   const router = useRouter();

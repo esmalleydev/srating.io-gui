@@ -1,15 +1,16 @@
 'use client';
+
 import React from 'react';
 
 import Typography from '@mui/material/Typography';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { getBreakPoint } from '@/components/generic/CBB/Game/Header/HeaderClientWrapper';
+import { getBreakPoint } from '@/components/generic/CBB/Game/Header/ClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Refresher from '../Refresher';
 
 
-const HeaderClient = ({cbb_game, tag}) => {
+const Client = ({ cbb_game, tag }) => {
   const { width } = useWindowDimensions() as Dimensions;
 
   let scoreVariant: string = 'h4';
@@ -19,7 +20,7 @@ const HeaderClient = ({cbb_game, tag}) => {
   }
 
   const CBB = new HelperCBB({
-    'cbb_game': cbb_game
+    cbb_game,
   });
 
   const getScore = (score) => {
@@ -40,12 +41,14 @@ const HeaderClient = ({cbb_game, tag}) => {
         {!CBB.isInProgress() ? <div><Typography color = {'text.secondary'} variant = 'overline'>{CBB.getStartDate()}</Typography></div> : ''}
         <div><Typography color = {'info.dark'} variant = 'overline'>{CBB.getTime()}</Typography></div>
       </div>
-    )
+    );
   };
 
   return (
     <>
-      <div style = {{'display': 'flex', 'justifyContent': 'space-evenly', 'alignItems': 'center', 'textAlign': 'center'}}>
+      <div style = {{
+        display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', textAlign: 'center',
+      }}>
         {getScore(cbb_game.away_score)}
         {getTime()}
         {getScore(cbb_game.home_score)}
@@ -53,6 +56,6 @@ const HeaderClient = ({cbb_game, tag}) => {
       <Refresher cbb_game = {cbb_game} tag = {tag} />
     </>
   );
-}
+};
 
-export default HeaderClient;
+export default Client;

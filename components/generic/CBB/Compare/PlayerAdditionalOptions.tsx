@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState } from 'react';
 
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
@@ -9,12 +10,11 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setHideLowerBench } from '@/redux/features/compare-slice';
 
 const PlayerAdditionalOptions = () => {
-
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
 
   const dispatch = useAppDispatch();
-  const hideLowerBench = useAppSelector(state => state.compareReducer.hideLowerBench);
+  const hideLowerBench = useAppSelector((state) => state.compareReducer.hideLowerBench);
 
 
   const handleOpen = (event) => {
@@ -54,6 +54,6 @@ const PlayerAdditionalOptions = () => {
         </Menu>
     </div>
   );
-}
+};
 
 export default PlayerAdditionalOptions;

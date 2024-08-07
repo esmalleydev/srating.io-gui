@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -10,15 +11,15 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const FloatingButtons = () => {
   const dispatch = useAppDispatch();
-  const displaySlice = useAppSelector(state => state.displayReducer);
+  const displaySlice = useAppSelector((state) => state.displayReducer);
 
   // todo figure out scroll thing
   const [showScrollFAB, setShowScrolledFAB] = useState(true);
-  const scrollRef  = useScrollContext();
+  const scrollRef = useScrollContext();
 
   const handleScrollToTop = () => {
     if (scrollRef && scrollRef.current) {
-      scrollRef.current.scrollTo({'top': 0, 'behavior': 'smooth'});
+      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
       dispatch(updateGameSort(null));
     }
   };
@@ -46,7 +47,7 @@ const FloatingButtons = () => {
 
   return (
     <div>
-      {showScrollFAB ? <div style = {{'position': 'absolute', 'bottom': 70, 'left': 15}}><Fab size = 'small' color = 'secondary' onClick={handleScrollToTop}>{<KeyboardArrowUpIcon />}</Fab></div> : ''}
+      {showScrollFAB ? <div style = {{ position: 'absolute', bottom: 70, left: 15 }}><Fab size = 'small' color = 'secondary' onClick={handleScrollToTop}>{<KeyboardArrowUpIcon />}</Fab></div> : ''}
     </div>
   );
 };

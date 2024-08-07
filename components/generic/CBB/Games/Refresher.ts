@@ -1,20 +1,22 @@
 'use client';
 
 import { useClientAPI } from '@/components/clientAPI';
-import { setRefreshCountdown, setRefreshEnabled, setRefreshLoading, updateDateChecked, updateScores } from '@/redux/features/games-slice';
+import {
+  setRefreshCountdown, setRefreshEnabled, setRefreshLoading, updateDateChecked, updateScores,
+} from '@/redux/features/games-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
 const Refresher = ({ date, cbb_games }) => {
-  const refreshRate = useAppSelector(state => state.gamesReducer.refreshRate);
+  const refreshRate = useAppSelector((state) => state.gamesReducer.refreshRate);
   const dispatch = useAppDispatch();
-  
+
   const [loading, setLoading] = useState(false);
   const [lastDate, setLastDate] = useState(null);
 
   let finalCount = 0;
   let total = 0;
-  for (let cbb_game_id in cbb_games) {
+  for (const cbb_game_id in cbb_games) {
     const cbb_game = cbb_games[cbb_game_id];
 
     if (cbb_game.status === 'final') {
@@ -34,12 +36,12 @@ const Refresher = ({ date, cbb_games }) => {
     setLastDate(date);
     setLoading(true);
     dispatch(setRefreshLoading(true));
-    
+
     useClientAPI({
-      'class': 'cbb_game',
-      'function': 'getScores',
-      'arguments': {
-        'start_date': date,
+      class: 'cbb_game',
+      function: 'getScores',
+      arguments: {
+        start_date: date,
       },
     }).then((response) => {
       dispatch(updateDateChecked(date));
@@ -52,8 +54,8 @@ const Refresher = ({ date, cbb_games }) => {
       setLoading(false);
     });
   };
-  
-  
+
+
   useEffect(() => {
     if (lastDate !== date) {
       getData();
@@ -63,15 +65,15 @@ const Refresher = ({ date, cbb_games }) => {
     let intervalCountdown: NodeJS.Timeout;
 
     if (!isFinal) {
-      intervalRefresher = setInterval(function() {
+      intervalRefresher = setInterval(() => {
         getData();
       }, refreshRate * 1000);
 
       const intervalRate = 100;
       let refreshCountdown = refreshRate;
 
-      intervalCountdown = setInterval(function() {
-        refreshCountdown = refreshCountdown - (intervalRate / 1000);
+      intervalCountdown = setInterval(() => {
+        refreshCountdown -= (intervalRate / 1000);
         dispatch(setRefreshCountdown(refreshCountdown));
       }, intervalRate);
     }

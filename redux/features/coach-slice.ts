@@ -1,14 +1,13 @@
-import { Coach, CoachTeamSeasons, Rankings, StatisticRankings, Teams } from "@/types/cbb";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Coach, CoachTeamSeasons, StatisticRankings, Teams } from '@/types/cbb';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
   view: string,
   scrollTop: number,
-  coach: Coach | {},
-  coach_team_seasons: CoachTeamSeasons | {};
-  teams: Teams | {};
-  cbb_statistic_rankings: StatisticRankings | {};
-  cbb_rankings: Rankings | {};
+  coach: Coach | object,
+  coach_team_seasons: CoachTeamSeasons | object;
+  teams: Teams | object;
+  cbb_statistic_rankings: StatisticRankings | object;
 };
 
 const initialState = {
@@ -18,7 +17,6 @@ const initialState = {
   coach_team_seasons: {},
   teams: {},
   cbb_statistic_rankings: {},
-  cbb_rankings: {},
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -36,10 +34,10 @@ const updateStateFromUrlParams = (state: InitialState) => {
 
 export const coach = createSlice({
   name: 'coach',
-  initialState: initialState,
+  initialState,
   reducers: {
     clear: (state) => {
-      for (let key in initialState) {
+      for (const key in initialState) {
         state[key] = initialState[key];
       }
     },
@@ -64,13 +62,12 @@ export const coach = createSlice({
     setStatisticRankings: (state, action: PayloadAction<StatisticRankings | {}>) => {
       state.cbb_statistic_rankings = action.payload;
     },
-    setRankings: (state, action: PayloadAction<Rankings | {}>) => {
-      state.cbb_rankings = action.payload;
-    },
-  }
+  },
 });
 
-export const { setView, setScrollTop, clear, reset, setCoach, setCoachTeamSeasons, setTeams, setStatisticRankings, setRankings } = coach.actions;
+export const {
+  setView, setScrollTop, clear, reset, setCoach, setCoachTeamSeasons, setTeams, setStatisticRankings,
+} = coach.actions;
 export default coach.reducer;
 
 updateStateFromUrlParams(initialState);

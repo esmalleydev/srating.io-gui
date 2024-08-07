@@ -1,5 +1,6 @@
 'use client';
-import React, { useState, useTransition } from 'react';
+
+import React, { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -8,11 +9,12 @@ import Typography from '@mui/material/Typography';
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import { Link, useTheme } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppDispatch } from '@/redux/hooks';
 import BackButton from '@/components/generic/BackButton';
 import Pin from '@/components/generic/CBB/Pin';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { setLoading } from '@/redux/features/display-slice';
+import Rank from './Rank';
+import Record from './Record';
 
 
 const getBreakPoint = () => {
@@ -43,8 +45,7 @@ const getMarginTop = () => {
 
 export { getHeaderHeight, getMarginTop, getBreakPoint };
 
-const HeaderClientWrapper = ({ cbb_game, children}) => {
-  const self = this;
+const ClientWrapper = ({ cbb_game, children }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const theme = useTheme();
@@ -52,32 +53,30 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
 
   const { width } = useWindowDimensions() as Dimensions;
 
-  const displayRank = useAppSelector(state => state.displayReducer.rank);
 
   const CBB = new HelperCBB({
-    'cbb_game': cbb_game,
+    cbb_game,
   });
 
   const handleClick = (team_id) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/team/' + team_id + '?season=' + cbb_game.season);
+      router.push(`/cbb/team/${team_id}?season=${cbb_game.season}`);
     });
-  }
+  };
 
   const titleStyle: React.CSSProperties = {
-    'paddingTop': 5,
-    'height': getHeaderHeight(),
-    'position': 'sticky',
-    'top': getMarginTop(),
-    'backgroundColor': theme.palette.background.default,
-    'zIndex': 1100,
+    paddingTop: 5,
+    height: getHeaderHeight(),
+    position: 'sticky',
+    top: getMarginTop(),
+    backgroundColor: theme.palette.background.default,
+    zIndex: 1100,
   };
 
 
   let teamNameVariant: string = 'h6';
   let sideWidth = 115;
-  let supFontSize = 12;
 
   let modifier = 150;
 
@@ -88,7 +87,6 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
   if (width < getBreakPoint()) {
     sideWidth = 75;
     teamNameVariant = 'body1';
-    supFontSize = 10;
   } else if (width > getBreakPoint() && (width - (sideWidth * 2) - modifier) > 0) {
     sideWidth += (width - (sideWidth * 2) - 150) / 2;
   }
@@ -104,8 +102,7 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
 
   const getTeam = (team_id) => {
     const team = cbb_game.teams[team_id];
-    const teamHelper = new HelperTeam({'team': team});
-    const rank = teamHelper.getRank(displayRank);
+    const teamHelper = new HelperTeam({ team });
 
     let justifyContent = 'left';
     let teamName = teamHelper.getName();
@@ -118,25 +115,18 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
       teamName = teamHelper.getNameShort();
     }
 
-    const supStyle: React.CSSProperties = {
-      'fontSize': supFontSize,
-      'verticalAlign': 'super',
-    };
-
-    if (rank) {
-      supStyle.color = Color.lerpColor(getBestColor(), getWorstColor(), (+(rank / CBB.getNumberOfD1Teams(cbb_game.season))));
-    }
-
     return (
       <div>
-        <div style = {{'display': 'flex', 'flexWrap': 'nowrap', 'cursor': 'pointer', 'justifyContent': justifyContent}} onClick={() => {handleClick(team_id)}}>
-          <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {teamNameVariant as 'h6' | 'body1'}>
-            {rank ? <span style = {supStyle}>{rank} </span> : ''}
-            <Link style = {{'cursor': 'pointer'}} underline='hover'>{teamName}</Link>
+        <div style = {{
+          display: 'flex', flexWrap: 'nowrap', cursor: 'pointer', justifyContent,
+        }} onClick={() => { handleClick(team_id); }}>
+          <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {teamNameVariant as 'h6' | 'body1'}>
+            <Rank cbb_game={cbb_game} team_id={team_id} />
+            <Link style = {{ cursor: 'pointer' }} underline='hover'>{teamName}</Link>
           </Typography>
         </div>
-        <div style = {{'fontSize': '16px', 'display': 'flex', 'justifyContent': justifyContent}}>
-          <Typography variant = 'overline' color = 'text.secondary'> ({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
+        <div style = {{ fontSize: '16px', display: 'flex', justifyContent }}>
+          <Record cbb_game={cbb_game} team_id={team_id} />
         </div>
       </div>
     );
@@ -146,23 +136,27 @@ const HeaderClientWrapper = ({ cbb_game, children}) => {
   return (
     <>
       <div style = {titleStyle}>
-        <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': 5}}>
-          <div style = {{'width': sideWidth, 'display': 'flex', 'alignItems': 'baseline'}}>
+        <div style = {{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+          <div style = {{ width: sideWidth, display: 'flex', alignItems: 'baseline' }}>
             <BackButton />
           </div>
           <div><Typography key = {CBB.getNetwork()} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography></div>
-          <div style = {{'display': 'flex', 'justifyContent': 'end', 'position': 'relative', 'alignItems': 'baseline', 'width': sideWidth, 'minWidth': sideWidth}}>
+          <div style = {{
+            display: 'flex', justifyContent: 'end', position: 'relative', alignItems: 'baseline', width: sideWidth, minWidth: sideWidth,
+          }}>
             <Pin cbb_game_id = {cbb_game.cbb_game_id} />
           </div>
         </div>
-        <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'padding': '0px 5px', 'alignItems': 'center'}}>
-          <div style = {{'maxWidth': sideWidth, 'minWidth': sideWidth,}}>{getTeam(cbb_game.away_team_id)}</div>
-          <div style = {{'width': '100%'}}>{children}</div>
-          <div style = {{'maxWidth': sideWidth, 'minWidth': sideWidth,}}>{getTeam(cbb_game.home_team_id)}</div>
+        <div style = {{
+          display: 'flex', justifyContent: 'space-between', padding: '0px 5px', alignItems: 'center',
+        }}>
+          <div style = {{ maxWidth: sideWidth, minWidth: sideWidth }}>{getTeam(cbb_game.away_team_id)}</div>
+          <div style = {{ width: '100%' }}>{children}</div>
+          <div style = {{ maxWidth: sideWidth, minWidth: sideWidth }}>{getTeam(cbb_game.home_team_id)}</div>
         </div>
       </div>
     </>
   );
-}
+};
 
-export default HeaderClientWrapper;
+export default ClientWrapper;

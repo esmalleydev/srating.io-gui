@@ -12,26 +12,28 @@ import compareReducer from './features/compare-slice';
 import dictionaryReducer from './features/dictionary-slice';
 import coachReducer from './features/coach-slice';
 import conferenceReducer from './features/conference-slice';
+import organizationReducer from './features/organization-slice';
+import gameReducer from './features/game-slice';
 
 
-export const makeStore = () => {
-  return configureStore({
-    reducer: {
-      themeReducer,
-      userReducer,
-      favoriteReducer,
-      displayReducer,
-      gamesReducer,
-      rankingReducer,
-      teamReducer,
-      picksReducer,
-      compareReducer,
-      dictionaryReducer,
-      coachReducer,
-      conferenceReducer,
-    }
-  });
-};
+export const makeStore = () => configureStore({
+  reducer: {
+    themeReducer,
+    userReducer,
+    favoriteReducer,
+    displayReducer,
+    gamesReducer,
+    rankingReducer,
+    teamReducer,
+    picksReducer,
+    compareReducer,
+    dictionaryReducer,
+    coachReducer,
+    conferenceReducer,
+    organizationReducer,
+    gameReducer,
+  },
+});
 
 // Infer the type of makeStore
 export type AppStore = ReturnType<typeof makeStore>;

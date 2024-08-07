@@ -1,18 +1,26 @@
 'use client';
+
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Box, SortDirection, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Paper, TableSortLabel, Tooltip, Typography, Chip } from '@mui/material';
+import {
+  Box, SortDirection, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Paper, TableSortLabel, Tooltip, Typography, Chip,
+} from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
 import HelperTeam from '@/components/helpers/Team';
 import { playerColumns } from '@/components/generic/CBB/columns';
 import RankSpan from '@/components/generic/CBB/RankSpan';
-import utilsSorter from  '@/components/utils/Sorter';
+import utilsSorter from '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
+import { LinearProgress } from '@mui/material';
+import { getHeaderHeight } from '../Header/ClientWrapper';
+import { getSubNavHeaderHeight } from '../SubNavBar';
+import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
+import { headerBarHeight } from '@/components/generic/Header';
 
 const Sorter = new utilsSorter();
 
@@ -26,12 +34,43 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
   '&:hover': {
     cursor: 'pointer',
-  }
+  },
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  'backgroundColor':  theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
 }));
+
+/**
+ * The main wrapper div for all the contents
+ */
+const Contents = ({ children }): React.JSX.Element => {
+  return (
+    <div style = {{ padding: '0px 5px 20px 5px', textAlign: 'center' }}>
+      {children}
+    </div>
+  );
+};
+
+
+const ClientSkeleton = () => {
+  const paddingTop = getHeaderHeight() + getSubNavHeaderHeight();
+
+  const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
+  return (
+    <Contents>
+      <div style = {{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: `calc(100vh - ${heightToRemove}px)`,
+      }}>
+        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+      </div>
+    </Contents>
+  );
+};
 
 const Client = ({ teams }) => {
   const theme = useTheme();
@@ -46,8 +85,8 @@ const Client = ({ teams }) => {
   const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
 
   const dispatch = useAppDispatch();
-  const hideLowerBench = useAppSelector(state => state.compareReducer.hideLowerBench);
-  const topPlayersOnly = useAppSelector(state => state.compareReducer.topPlayersOnly);
+  const hideLowerBench = useAppSelector((state) => state.compareReducer.hideLowerBench);
+  const topPlayersOnly = useAppSelector((state) => state.compareReducer.topPlayersOnly);
 
   const guards: string[] = [];
   const forwards: string[] = [];
@@ -57,7 +96,7 @@ const Client = ({ teams }) => {
   const players = {};
   const team_id_x_stats = {};
 
-  for (let team_id in teams) {
+  for (const team_id in teams) {
     const team = teams[team_id];
 
     if (!(team_id in team_id_x_stats)) {
@@ -65,8 +104,8 @@ const Client = ({ teams }) => {
     }
 
     if (team.playerStats && team.playerStats.players) {
-      for (let player_id in  team.playerStats.players) {
-        const player =  team.playerStats.players[player_id];
+      for (const player_id in team.playerStats.players) {
+        const player = team.playerStats.players[player_id];
 
         if (player.position === 'F') {
           forwards.push(player_id);
@@ -83,7 +122,7 @@ const Client = ({ teams }) => {
     }
 
     if (team.playerStats && team.playerStats.cbb_player_statistic_ranking) {
-      for (let cbb_player_statistic_ranking_id in team.playerStats.cbb_player_statistic_ranking) {
+      for (const cbb_player_statistic_ranking_id in team.playerStats.cbb_player_statistic_ranking) {
         const row = team.playerStats.cbb_player_statistic_ranking[cbb_player_statistic_ranking_id];
 
         row.height = players[row.player_id].height;
@@ -93,8 +132,8 @@ const Client = ({ teams }) => {
     }
   }
 
-  for (let team_id in team_id_x_stats) {
-    team_id_x_stats[team_id].sort(function(a, b) {
+  for (const team_id in team_id_x_stats) {
+    team_id_x_stats[team_id].sort((a, b) => {
       if (
         (!a.minutes_per_game && !b.minutes_per_game) ||
         (a.minutes_per_game === b.minutes_per_game)
@@ -112,9 +151,9 @@ const Client = ({ teams }) => {
   const getColumns = () => {
     if (view === 'overview') {
       return ['player', 'team', 'height', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
-    } else if (view === 'offensive') {
+    } if (view === 'offensive') {
       return ['player', 'team', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
-    } else if (view === 'defensive') {
+    } if (view === 'defensive') {
       return ['player', 'team', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
     }
     return [];
@@ -123,46 +162,46 @@ const Client = ({ teams }) => {
   const handleClick = (player_id) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/player/' + player_id);
+      router.push(`/cbb/player/${player_id}`);
     });
   };
 
 
   const headCells = playerColumns;
 
-  
+
   const statDisplay = [
     {
-      'label': 'Overview',
-      'value': 'overview',
+      label: 'Overview',
+      value: 'overview',
     },
     {
-      'label': 'Offense',
-      'value': 'offensive',
+      label: 'Offense',
+      value: 'offensive',
     },
     {
-      'label': 'Defense',
-      'value': 'defensive',
+      label: 'Defense',
+      value: 'defensive',
     },
   ];
 
-  let statDisplayChips: React.JSX.Element[] = [];
+  const statDisplayChips: React.JSX.Element[] = [];
 
   const handleView = (value) => {
     sessionStorage.setItem('CBB.COMPARE.PLAYER.VIEW', value);
     setView(value);
-  }
+  };
 
   for (let i = 0; i < statDisplay.length; i++) {
     statDisplayChips.push(
       <Chip
         key = {statDisplay[i].value}
-        sx = {{'margin': '5px 5px 10px 5px'}}
+        sx = {{ margin: '5px 5px 10px 5px' }}
         variant = {view === statDisplay[i].value ? 'filled' : 'outlined'}
         color = {view === statDisplay[i].value ? 'success' : 'primary'}
-        onClick = {() => {handleView(statDisplay[i].value);}}
-        label = {statDisplay[i].label} 
-      />
+        onClick = {() => { handleView(statDisplay[i].value); }}
+        label = {statDisplay[i].label}
+      />,
     );
   }
 
@@ -181,11 +220,11 @@ const Client = ({ teams }) => {
     let b = 0;
 
     // todo TS
-    let rows: any = [];
+    const rows: any = [];
 
     for (let i = 0; i < player_ids.length; i++) {
       if (player_ids[i] in player_id_x_stats) {
-        const stats = player_id_x_stats[player_ids[i]]
+        const stats = player_id_x_stats[player_ids[i]];
 
         if (hideLowerBench && stats.minutes_per_game < 3) {
           continue;
@@ -199,7 +238,7 @@ const Client = ({ teams }) => {
     const teamCellWidth = 50;
 
     const row_containers = rows.sort(Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort))).slice().map((row) => {
-      let columns = getColumns();
+      const columns = getColumns();
 
       // const tdStyle = {
       //   'padding': '4px 5px',
@@ -209,19 +248,19 @@ const Client = ({ teams }) => {
       b++;
 
       const tdStyle: React.CSSProperties = {
-        'padding': '4px 5px',
-        'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+        padding: '4px 5px',
+        backgroundColor: theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
         border: 0,
-        'borderTop': 0,
-        'borderLeft': 0,
-        'borderBottom': 0,
+        borderTop: 0,
+        borderLeft: 0,
+        borderBottom: 0,
       };
-  
+
       if (width <= breakPoint) {
         tdStyle.fontSize = '12px';
       }
-  
-  
+
+
       const playerCellStyle: React.CSSProperties = {
         position: 'sticky',
         left: 0,
@@ -231,18 +270,18 @@ const Client = ({ teams }) => {
         minWidth: playerCellWidth,
         maxWidth: playerCellWidth,
       };
-  
+
 
 
       const teamCellStyle: React.CSSProperties = {
         position: 'sticky',
-        'minWidth': teamCellWidth,
-        'maxWidth': teamCellWidth,
-        'left': playerCellWidth,
-        'overflow': 'hidden',
-        'whiteSpace': 'nowrap',
-        'textOverflow': 'ellipsis',
-        borderRight: '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark),
+        minWidth: teamCellWidth,
+        maxWidth: teamCellWidth,
+        left: playerCellWidth,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        borderRight: `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`,
       };
 
       const tableCells: React.JSX.Element[] = [];
@@ -251,22 +290,22 @@ const Client = ({ teams }) => {
         if (columns[i] === 'player') {
           const player = (row.player_id in players && players[row.player_id]) || null;
           if (player) {
-            tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, playerCellStyle)}>{player ? player.first_name.charAt(0) + '. ' + player.last_name : 'Unknown'}</TableCell>);
+            tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...playerCellStyle })}>{player ? `${player.first_name.charAt(0)}. ${player.last_name}` : 'Unknown'}</TableCell>);
           }
         } else if (columns[i] === 'team') {
-          const teamHelper = new HelperTeam({'team': teams[row.team_id]});
-          tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, teamCellStyle)}>{teamHelper.getNameShort()}</TableCell>);
+          const teamHelper = new HelperTeam({ team: teams[row.team_id] });
+          tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...teamCellStyle })}>{teamHelper.getNameShort()}</TableCell>);
         } else {
           // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
-          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[columns[i] + '_rank'] ? <RankSpan key = {i} rank = {row[columns[i] + '_rank']} max = {5300} useOrdinal = {true} /> : ''}</TableCell>);
+          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[`${columns[i]}_rank`] ? <RankSpan key = {i} rank = {row[`${columns[i]}_rank`]} max = {5300} useOrdinal = {true} /> : ''}</TableCell>);
         }
-      } 
+      }
 
       return (
         <StyledTableRow
           key={row.player_id}
           // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          onClick={() => {handleClick(row.player_id)}}
+          onClick={() => { handleClick(row.player_id); }}
         >
           {tableCells}
         </StyledTableRow>
@@ -280,14 +319,14 @@ const Client = ({ teams }) => {
               {getColumns().map((column) => {
                 const headCell = headCells[column];
                 const tdStyle: React.CSSProperties = {
-                  'padding': '4px 5px',
-                  'border': 0,
+                  padding: '4px 5px',
+                  border: 0,
                 };
-      
+
                 if (width <= breakPoint) {
                   tdStyle.fontSize = '13px';
                 }
-      
+
                 if (headCell.sticky) {
                   tdStyle.position = 'sticky';
                   tdStyle.zIndex = 3;
@@ -298,9 +337,9 @@ const Client = ({ teams }) => {
                 if (headCell.id === 'player') {
                   tdStyle.left = 0;
                 }
-      
+
                 if (headCell.id === 'team') {
-                  tdStyle.borderRight = '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark);
+                  tdStyle.borderRight = `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`;
                   tdStyle.minWidth = teamCellWidth;
                   tdStyle.maxWidth = teamCellWidth;
                   tdStyle.left = playerCellWidth;
@@ -316,8 +355,8 @@ const Client = ({ teams }) => {
                     >
                       <TableSortLabel
                         active={orderBy === headCell.id}
-                        direction={orderBy === headCell.id ?  (order as 'asc' | 'desc') : 'asc'}
-                        onClick={() => {handleSort(headCell.id)}}
+                        direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
+                        onClick={() => { handleSort(headCell.id); }}
                       >
                         {headCell.label}
                         {orderBy === headCell.id ? (
@@ -341,8 +380,8 @@ const Client = ({ teams }) => {
   };
 
   return (
-    <div style = {{'padding': '0px 5px 20px 5px', 'textAlign': 'center'}}>
-      <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
+    <Contents>
+      <div style = {{ display: 'flex', justifyContent: 'center' }}>
         {statDisplayChips}
       </div>
       {
@@ -378,8 +417,8 @@ const Client = ({ teams }) => {
             }
           </>
       }
-    </div>
+    </Contents>
   );
-}
+};
 
-export default Client;
+export { Client, ClientSkeleton };

@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect, useRef, useTransition, MutableRefObject } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
@@ -54,6 +55,7 @@ import FloatingButtons from '@/components/generic/CBB/Ranking/FloatingButtons';
 // TODO ADD A POWER 5 CONF quick button TO THIS
 
 // todo store horizontal scroll position
+// todo on coach ranking, add filter to show all coaches, including retired / inactive toggle, copy the transfer tool
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -69,14 +71,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover td': {
     backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
   },
-  'border': 0,
+  border: 0,
   '&:hover': {
     cursor: 'pointer',
-  }
+  },
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  'backgroundColor':  theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
 }));
 
 
@@ -87,20 +89,20 @@ const Ranking = ({ data, generated, rankView }) => {
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
-  const selectedConferences = useAppSelector(state => state.displayReducer.conferences);
-  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
-  const positions = useAppSelector(state => state.displayReducer.positions);
-  const order = useAppSelector(state => state.rankingReducer.order);
-  const orderBy = useAppSelector(state => state.rankingReducer.orderBy);
-  const hideCommitted = useAppSelector(state => state.rankingReducer.hideCommitted);
-  const hideUnderTwoMPG = useAppSelector(state => state.rankingReducer.hideUnderTwoMPG);
-  const filterCommittedConf = useAppSelector(state => state.rankingReducer.filterCommittedConf);
-  const filterOriginalConf = useAppSelector(state => state.rankingReducer.filterOriginalConf);
-  const tableScrollTop = useAppSelector(state => state.rankingReducer.tableScrollTop);
-  const tableFullscreen = useAppSelector(state => state.rankingReducer.tableFullscreen);
+  const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
+  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
+  const positions = useAppSelector((state) => state.displayReducer.positions);
+  const order = useAppSelector((state) => state.rankingReducer.order);
+  const orderBy = useAppSelector((state) => state.rankingReducer.orderBy);
+  const hideCommitted = useAppSelector((state) => state.rankingReducer.hideCommitted);
+  const hideUnderTwoMPG = useAppSelector((state) => state.rankingReducer.hideUnderTwoMPG);
+  const filterCommittedConf = useAppSelector((state) => state.rankingReducer.filterCommittedConf);
+  const filterOriginalConf = useAppSelector((state) => state.rankingReducer.filterOriginalConf);
+  const tableScrollTop = useAppSelector((state) => state.rankingReducer.tableScrollTop);
+  const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
 
   // todo grab this on page load
-  const seasons = [2024,2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011];
+  const seasons = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011];
 
   interface TableComponentsType {
     Scroller: React.ComponentType<any>;
@@ -109,7 +111,7 @@ const Ranking = ({ data, generated, rankView }) => {
     TableRow: React.ComponentType<any>;
     TableBody: React.ComponentType<any>;
     FillerRow: React.ComponentType<{ height: number }>;
-  };
+  }
 
   const { height, width } = useWindowDimensions() as Dimensions;
   const breakPoint = 425;
@@ -118,7 +120,7 @@ const Ranking = ({ data, generated, rankView }) => {
   const [legendOpen, setLegendOpen] = useState(false);
   const [season, setSeason] = useState(searchParams?.get('season') || new HelperCBB().getCurrentSeason());
   const [view, setView] = useState('composite');
-  const [customColumns, setCustomColumns] = useState(['composite_rank', 'name']);
+  const [customColumns, setCustomColumns] = useState(['rank', 'name']);
   const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
   const [filteredRows, setFilteredRows] = useState(null);
 
@@ -133,13 +135,13 @@ const Ranking = ({ data, generated, rankView }) => {
         tableRef.current = null;
       }
     },
-    []
+    [],
   );
-  
+
   useEffect(() => {
     if (tableRef.current) {
-      setTimeout(function() {
-        tableRef.current?.scrollTo({'left': tableHorizontalScroll});
+      setTimeout(() => {
+        tableRef.current?.scrollTo({ left: tableHorizontalScroll });
       }, 0);
     }
   }, [tableHorizontalScroll, order, orderBy]);
@@ -147,30 +149,30 @@ const Ranking = ({ data, generated, rankView }) => {
 
   useEffect(() => {
     const localRankView = localStorage.getItem('CBB.RANKING.VIEW') || null;
-    const localRankCols = localStorage.getItem('CBB.RANKING.COLUMNS.' + rankView) || null;
+    const localRankCols = localStorage.getItem(`CBB.RANKING.COLUMNS.${rankView}`) || null;
 
     // since the coach view does not have off or def chips, reset it
-    let view_ = localRankView ? localRankView : 'composite';
+    let view_ = localRankView || 'composite';
     if (rankView === 'coach' && view_ !== 'composite' && view_ !== 'custom') {
       view_ = 'composite';
     }
 
     setView(view_);
-    setCustomColumns(localRankCols ?  JSON.parse(localRankCols) : ['composite_rank', 'name']);
+    setCustomColumns(localRankCols ? JSON.parse(localRankCols) : ['rank', 'name']);
   }, []);
 
 
 
   const rankViewOptions = [
-    {'value': 'team', 'label': 'Team rankings'},
-    {'value': 'player', 'label': 'Player rankings'},
-    {'value': 'conference', 'label': 'Conference rankings'},
-    {'value': 'transfer', 'label': 'Transfer rankings'},
-    {'value': 'coach', 'label': 'Coach rankings'},
+    { value: 'team', label: 'Team rankings' },
+    { value: 'player', label: 'Player rankings' },
+    { value: 'conference', label: 'Conference rankings' },
+    { value: 'transfer', label: 'Transfer rankings' },
+    { value: 'coach', label: 'Coach rankings' },
   ];
 
   const handleRankView = (newRankView) => {
-    localStorage.removeItem('CBB.RANKING.COLUMNS.' + rankView);
+    localStorage.removeItem(`CBB.RANKING.COLUMNS.${rankView}`);
 
     if (searchParams) {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -178,7 +180,7 @@ const Ranking = ({ data, generated, rankView }) => {
       current.delete('hideCommitted');
       current.delete('hideUnderTwoMPG');
       const search = current.toString();
-      const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : '';
       setLoading(true);
       dispatch(setLoadingDisplay(true));
       startTransition(() => {
@@ -187,20 +189,20 @@ const Ranking = ({ data, generated, rankView }) => {
       });
     }
 
-    setCustomColumns(['composite_rank', 'name']);
+    setCustomColumns(['rank', 'name']);
     dispatch(clearPositions());
     dispatch(setOrder('asc'));
-    dispatch(setOrderBy('composite_rank'));
+    dispatch(setOrderBy('rank'));
     dispatch(setTableScrollTop(0));
     setView('composite');
-  }
+  };
 
   const handleSeason = (season) => {
     if (searchParams) {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
       current.set('season', season);
       const search = current.toString();
-      const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : '';
       setLoading(true);
       dispatch(setLoadingDisplay(true));
       startTransition(() => {
@@ -210,17 +212,17 @@ const Ranking = ({ data, generated, rankView }) => {
     }
 
     setSeason(season);
-  }
+  };
 
-  let confChips: React.JSX.Element[] = [];
+  const confChips: React.JSX.Element[] = [];
   for (let i = 0; i < selectedConferences.length; i++) {
-    const conference = conferences[selectedConferences[i]]
-    confChips.push(<Chip key = {selectedConferences[i]} sx = {{'margin': '5px'}} label={conference.code} onDelete={() => {dispatch(updateConferences(selectedConferences[i]))}} />);
+    const conference = conferences[selectedConferences[i]];
+    confChips.push(<Chip key = {selectedConferences[i]} sx = {{ margin: '5px' }} label={conference.code} onDelete={() => { dispatch(updateConferences(selectedConferences[i])); }} />);
   }
 
-  let positionChips: React.JSX.Element[] = [];
+  const positionChips: React.JSX.Element[] = [];
   for (let i = 0; i < positions.length; i++) {
-    positionChips.push(<Chip key = {positions[i]} sx = {{'margin': '5px'}} label={positions[i]} onDelete={() => {dispatch(updatePositions(positions[i]))}} />);
+    positionChips.push(<Chip key = {positions[i]} sx = {{ margin: '5px' }} label={positions[i]} onDelete={() => { dispatch(updatePositions(positions[i])); }} />);
   }
 
   const handleTeam = (team_id) => {
@@ -229,9 +231,9 @@ const Ranking = ({ data, generated, rankView }) => {
     }
     dispatch(setLoadingDisplay(true));
     startTransition(() => {
-      router.push('/cbb/team/' + team_id+'?season='+season);
+      router.push(`/cbb/team/${team_id}?season=${season}`);
     });
-  }
+  };
 
   const handlePlayer = (player_id) => {
     if (tableRef && tableRef.current) {
@@ -239,9 +241,9 @@ const Ranking = ({ data, generated, rankView }) => {
     }
     dispatch(setLoadingDisplay(true));
     startTransition(() => {
-      router.push('/cbb/player/' + player_id+'?season='+season);
+      router.push(`/cbb/player/${player_id}?season=${season}`);
     });
-  }
+  };
 
   const handleCoach = (coach_id) => {
     if (tableRef && tableRef.current) {
@@ -249,23 +251,23 @@ const Ranking = ({ data, generated, rankView }) => {
     }
     dispatch(setLoadingDisplay(true));
     startTransition(() => {
-      router.push('/cbb/coach/' + coach_id+'?season='+season);
+      router.push(`/cbb/coach/${coach_id}?season=${season}`);
     });
-  }
+  };
 
   const getColumns = () => {
     if (view === 'composite') {
       if (rankView === 'team') {
-        return ['composite_rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'elo_sos', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'streak', 'conference_code'];
-      } else if (rankView === 'player') {
-        return ['composite_rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
-      } else if (rankView === 'conference') {
-        return ['composite_rank', 'name', 'adjusted_efficiency_rating', 'elo', 'elo_sos', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'nonconfwins'];
-      } else if (rankView === 'transfer') {
-        return ['composite_rank', 'name', 'team_name', 'committed_team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
-      } else if (rankView === 'coach') {
+        return ['rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'elo_sos', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'streak', 'conference_code'];
+      } if (rankView === 'player') {
+        return ['rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
+      } if (rankView === 'conference') {
+        return ['rank', 'name', 'adjusted_efficiency_rating', 'elo', 'elo_sos', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'nonconfwins'];
+      } if (rankView === 'transfer') {
+        return ['rank', 'name', 'team_name', 'committed_team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
+      } if (rankView === 'coach') {
         return [
-          'composite_rank',
+          'rank',
           'name',
           'team_name',
           'elo',
@@ -291,19 +293,19 @@ const Ranking = ({ data, generated, rankView }) => {
       }
     } else if (view === 'offense') {
       if (rankView === 'team') {
-        return ['composite_rank', 'name', 'offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists', 'turnovers', 'possessions', 'pace'];
-      } else if (rankView === 'player' || rankView === 'transfer') {
-        return ['composite_rank', 'name', 'offensive_rating', 'points_per_game', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds_per_game', 'assists_per_game', 'turnovers_per_game', 'turnover_percentage'];
-      } else if (rankView === 'conference') {
-        return ['composite_rank', 'name','offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists', 'turnovers', 'possessions', 'pace'];
+        return ['rank', 'name', 'offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists', 'turnovers', 'possessions', 'pace'];
+      } if (rankView === 'player' || rankView === 'transfer') {
+        return ['rank', 'name', 'offensive_rating', 'points_per_game', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds_per_game', 'assists_per_game', 'turnovers_per_game', 'turnover_percentage'];
+      } if (rankView === 'conference') {
+        return ['rank', 'name', 'offensive_rating', 'points', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'offensive_rebounds', 'assists', 'turnovers', 'possessions', 'pace'];
       }
     } else if (view === 'defense') {
       if (rankView === 'team') {
-        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage', 'fouls'];
-      } else if (rankView === 'player' || rankView === 'transfer') {
-        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds_per_game', 'steals_per_game', 'blocks_per_game', 'fouls_per_game', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
-      } else if (rankView === 'conference') {
-        return ['composite_rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage', 'fouls'];
+        return ['rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage', 'fouls'];
+      } if (rankView === 'player' || rankView === 'transfer') {
+        return ['rank', 'name', 'defensive_rating', 'defensive_rebounds_per_game', 'steals_per_game', 'blocks_per_game', 'fouls_per_game', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
+      } if (rankView === 'conference') {
+        return ['rank', 'name', 'defensive_rating', 'defensive_rebounds', 'steals', 'blocks', 'opponent_points', 'opponent_field_goal_percentage', 'opponent_two_point_field_goal_percentage', 'opponent_three_point_field_goal_percentage', 'fouls'];
       }
     } else if (view === 'custom') {
       return customColumns;
@@ -312,16 +314,18 @@ const Ranking = ({ data, generated, rankView }) => {
     return [];
   };
 
-  const headCells = getHeaderColumns({rankView});
-  
-  const rowsData = getRowsData({ data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, season });
+  const headCells = getHeaderColumns({ rankView });
 
-  let rows = rowsData.rows;
-  let lastUpdated = rowsData.lastUpdated;
+  const rowsData = getRowsData({
+    data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, season,
+  });
+
+  let { rows } = rowsData;
+  const { lastUpdated } = rowsData;
 
   const row_length_before_filter = (rankView === 'transfer' ? 5300 : Object.keys(data).length);
   const allRows = rows;
-  
+
   if (filteredRows !== null && filteredRows !== false) {
     rows = filteredRows;
   }
@@ -359,13 +363,13 @@ const Ranking = ({ data, generated, rankView }) => {
       return direction === 'higher' ? -1 : 1;
     }
     return 0;
-  }
+  };
 
   const getComparator = (order, orderBy) => {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
-  }
+  };
 
   const handleRankingView = (value) => {
     localStorage.setItem('CBB.RANKING.VIEW', value);
@@ -378,7 +382,7 @@ const Ranking = ({ data, generated, rankView }) => {
 
   const handlCustomColumnsSave = (columns) => {
     setCustomColumnsOpen(false);
-    localStorage.setItem('CBB.RANKING.COLUMNS.' + rankView, JSON.stringify(columns));
+    localStorage.setItem(`CBB.RANKING.COLUMNS.${rankView}`, JSON.stringify(columns));
     setCustomColumns(columns);
     handleRankingView('custom');
   };
@@ -395,7 +399,7 @@ const Ranking = ({ data, generated, rankView }) => {
       );
     }),
     Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
-    TableHead: TableHead,
+    TableHead,
     TableRow: React.forwardRef<HTMLTableRowElement>((props, ref) => {
       return (
         <StyledTableRow {...props} ref={ref} onClick={() => {
@@ -420,12 +424,12 @@ const Ranking = ({ data, generated, rankView }) => {
         <TableRow>
           <TableCell
             colSpan={getColumns().length}
-            style={{ height: height, padding: 0, border: 0 }}
+            style={{ height, padding: 0, border: 0 }}
           ></TableCell>
         </TableRow>
       );
     },
-  }
+  };
 
   let rankCellMaxWidth = 50;
   if (width <= breakPoint) {
@@ -438,8 +442,8 @@ const Ranking = ({ data, generated, rankView }) => {
         {getColumns().map((column) => {
           const headCell = headCells[column];
           const tdStyle: React.CSSProperties = {
-            'padding': '4px 5px',
-            'border': 0,
+            padding: '4px 5px',
+            border: 0,
           };
 
           if (width <= breakPoint) {
@@ -459,13 +463,13 @@ const Ranking = ({ data, generated, rankView }) => {
           }
 
           if (headCell.id === 'name') {
-            tdStyle.borderRight = '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark);
+            tdStyle.borderRight = `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`;
           }
 
           let showSortArrow = true;
-          if (width <= breakPoint && (headCell.id === 'composite_rank' || headCell.id === 'wins' || headCell.id === 'conf_record')) {
+          if (width <= breakPoint && (headCell.id === 'rank' || headCell.id === 'wins' || headCell.id === 'conf_record')) {
             showSortArrow = false;
-            if (headCell.id === 'composite_rank') {
+            if (headCell.id === 'rank') {
               tdStyle.maxWidth = rankCellMaxWidth;
               tdStyle.minWidth = rankCellMaxWidth;
             }
@@ -483,7 +487,7 @@ const Ranking = ({ data, generated, rankView }) => {
                   active={orderBy === headCell.id && showSortArrow}
                   hideSortIcon = {!showSortArrow}
                   direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
-                  onClick={() => {handleSort(headCell.id)}}
+                  onClick={() => { handleSort(headCell.id); }}
                 >
                   {headCell.label}
                   {orderBy === headCell.id ? (
@@ -498,19 +502,19 @@ const Ranking = ({ data, generated, rankView }) => {
         })}
       </TableRow>
     );
-  }
+  };
 
 
   const getTableContents = (index, row) => {
-    let columns = getColumns();
+    const columns = getColumns();
 
     const tdStyle: React.CSSProperties = {
-      'padding': '4px 5px',
-      'backgroundColor': theme.palette.mode === 'light' ? (index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+      padding: '4px 5px',
+      backgroundColor: theme.palette.mode === 'light' ? (index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
       border: 0,
-      'borderTop': 0,
-      'borderLeft': 0,
-      'borderBottom': 0,
+      borderTop: 0,
+      borderLeft: 0,
+      borderBottom: 0,
     };
 
     if (width <= breakPoint) {
@@ -526,7 +530,7 @@ const Ranking = ({ data, generated, rankView }) => {
       textOverflow: 'ellipsis',
       minWidth: 125,
       maxWidth: 125,
-      borderRight: '3px solid ' + (theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark),
+      borderRight: `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`,
     };
 
     const conferenceCellStyle: React.CSSProperties = {
@@ -537,10 +541,10 @@ const Ranking = ({ data, generated, rankView }) => {
     };
 
     const rankCellStyle: React.CSSProperties = {
-      'textAlign': 'center',
-      'position': 'sticky',
-      'left': 0,
-      'maxWidth': rankCellMaxWidth
+      textAlign: 'center',
+      position: 'sticky',
+      left: 0,
+      maxWidth: rankCellMaxWidth,
     };
 
     if (width <= breakPoint) {
@@ -552,32 +556,33 @@ const Ranking = ({ data, generated, rankView }) => {
 
     for (let i = 0; i < columns.length; i++) {
       if (columns[i] === 'team_name') {
-        tableCells.push(<TableCell title = {row[columns[i]]} key = {i} sx = {Object.assign({}, tdStyle, {
-          'minWidth': 85,
-          'maxWidth': 85,
-          'overflow': 'hidden',
-          'whiteSpace': 'nowrap',
-          'textOverflow': 'ellipsis',
+        tableCells.push(<TableCell title = {row[columns[i]]} key = {i} sx = {({
+          ...tdStyle,
+          minWidth: 85,
+          maxWidth: 85,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
         })}>{row[columns[i]]}</TableCell>);
       } else if (columns[i] === 'name') {
-        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, teamCellStyle)}>{row[columns[i]]}</TableCell>);
-      } else if (columns[i] === 'composite_rank') {
-        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, rankCellStyle)}>{row[columns[i]]}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...teamCellStyle })}>{row[columns[i]]}</TableCell>);
+      } else if (columns[i] === 'rank') {
+        tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...rankCellStyle })}>{row[columns[i]]}</TableCell>);
       } else if (columns[i] === 'conf') {
-        tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, conferenceCellStyle)}>{row[columns[i]]}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...conferenceCellStyle })}>{row[columns[i]]}</TableCell>);
       } else if (columns[i] === 'committed') {
         tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] === 1 ? <CheckIcon fontSize='small' color = 'success' /> : '-'}</TableCell>);
       } else {
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[columns[i] + '_rank'] && row[columns[i]] !== null ? <RankSpan rank = {row[columns[i] + '_rank']} useOrdinal = {(rankView !== 'player')} max = {row_length_before_filter} />  : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {(rankView !== 'player')} max = {row_length_before_filter} /> : ''}</TableCell>);
       }
-    } 
+    }
 
     return (
       <React.Fragment>
         {tableCells}
       </React.Fragment>
     );
-  }
+  };
 
   let confHeightModifier = 0;
   if (confChips.length) {
@@ -590,8 +595,8 @@ const Ranking = ({ data, generated, rankView }) => {
 
 
   const tableStyle = {
-    'maxHeight': height - (tableFullscreen ? 100 : 280) - (width < 380 ? 30 : 0) - (tableFullscreen ? 0 : confHeightModifier) - 40,
-    'height': height - (tableFullscreen ? 100 : 280) - (width < 380 ? 30 : 0) - (tableFullscreen ? 0 : confHeightModifier) - 40,
+    maxHeight: height - (tableFullscreen ? 100 : 280) - (width < 380 ? 30 : 0) - (tableFullscreen ? 0 : confHeightModifier) - 40,
+    height: height - (tableFullscreen ? 100 : 280) - (width < 380 ? 30 : 0) - (tableFullscreen ? 0 : confHeightModifier) - 40,
   };
 
   if ((rows.length + 2) * 26 < tableStyle.height) {
@@ -630,36 +635,36 @@ const Ranking = ({ data, generated, rankView }) => {
     <div>
       <Legend open = {legendOpen} onClose={handleLegend} columns={getColumns()} rankView={rankView} />
       {
-        loading ? 
-        <div style = {{'display': 'flex', 'justifyContent': 'center'}}><CircularProgress /></div> :
+        loading ?
+        <div style = {{ display: 'flex', justifyContent: 'center' }}><CircularProgress /></div> :
         <div>
           <FloatingButtons />
           {
-          !tableFullscreen ? 
-            <div style = {{'padding': '5px 20px 0px 20px'}}>
-              <div style = {{'display': 'flex', 'justifyContent': 'right', 'flexWrap': 'wrap'}}>
+          !tableFullscreen ?
+            <div style = {{ padding: '5px 20px 0px 20px' }}>
+              <div style = {{ display: 'flex', justifyContent: 'right', flexWrap: 'wrap' }}>
                 <OptionPicker title = 'View' options = {rankViewOptions} selected = {rankView} actionHandler = {handleRankView} />
                 <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
               </div>
-              <Typography variant = {width < 500 ? 'h6' : 'h5'}>{'College basketball ' + rankView + ' rankings.'}</Typography>
+              <Typography variant = {width < 500 ? 'h6' : 'h5'}>{`College basketball ${rankView} rankings.`}</Typography>
               {
                 lastUpdated ?
-                <div style = {{'display': 'flex', 'alignItems': 'center', 'alignContent': 'center'}}>
-                  <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}>{'Last updated: ' + getLastUpdated()}</Typography>
-                  <HelpIcon style = {{'margin': '0px 5px'}} fontSize='small' color = 'info' />
-                  <Typography color="text.secondary" variant = 'body1' style = {{'fontStyle': 'italic'}}><Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {handleLegend}>{'Legend'}</Link></Typography>
-                </div> : 
-                ''
+                <div style = {{ display: 'flex', alignItems: 'center', alignContent: 'center' }}>
+                  <Typography color="text.secondary" variant = 'body1' style = {{ fontStyle: 'italic' }}>{`Last updated: ${getLastUpdated()}`}</Typography>
+                  <HelpIcon style = {{ margin: '0px 5px' }} fontSize='small' color = 'info' />
+                  <Typography color="text.secondary" variant = 'body1' style = {{ fontStyle: 'italic' }}><Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {handleLegend}>{'Legend'}</Link></Typography>
+                </div> :
+                  ''
               }
-              <div style = {{'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap'}}>
-                <Chip sx = {{'margin': '5px'}} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
-                {rankView !== 'coach' ? <Chip sx = {{'margin': '5px'}} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} /> : ''}
-                {rankView !== 'coach' ? <Chip sx = {{'margin': '5px'}} label='Defense' variant={view !== 'defense' ? 'outlined' : 'filled'} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} /> : ''}
-                <Chip sx = {{'margin': '5px'}} label='Custom' variant={view !== 'custom' ? 'outlined' : 'filled'} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => {setCustomColumnsOpen(true)}} />
+              <div style = {{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <Chip sx = {{ margin: '5px' }} label='Composite' variant={view !== 'composite' ? 'outlined' : 'filled'} color={view !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
+                {rankView !== 'coach' ? <Chip sx = {{ margin: '5px' }} label='Offense' variant={view !== 'offense' ? 'outlined' : 'filled'} color={view !== 'offense' ? 'primary' : 'success'} onClick={() => handleRankingView('offense')} /> : ''}
+                {rankView !== 'coach' ? <Chip sx = {{ margin: '5px' }} label='Defense' variant={view !== 'defense' ? 'outlined' : 'filled'} color={view !== 'defense' ? 'primary' : 'success'} onClick={() => handleRankingView('defense')} /> : ''}
+                <Chip sx = {{ margin: '5px' }} label='Custom' variant={view !== 'custom' ? 'outlined' : 'filled'} color={view !== 'custom' ? 'primary' : 'success'} onClick={() => { setCustomColumnsOpen(true); }} />
                 <ColumnPicker key = {rankView} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
               </div>
-              <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'baseline', 'marginTop': '10px'}}>
-                <div style={{'display': 'flex', 'alignItems': 'center',}}>
+              <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   {rankView === 'player' || rankView === 'transfer' ? <AdditionalOptions view = {rankView} /> : ''}
                   {rankView !== 'conference' ? <ConferencePicker /> : ''}
                   {rankView === 'player' || rankView === 'transfer' ? <PositionPicker selected = {positions} /> : ''}
@@ -669,10 +674,10 @@ const Ranking = ({ data, generated, rankView }) => {
               {confChips}
               {positionChips}
             </div>
-          : ''
+            : ''
           }
-          <div style = {{'padding': width < 600 ? (tableFullscreen ? '10px' : '0px') + ' 10px 0px 10px' : (tableFullscreen ? '10px' : '0px') + ' 20px 0px 20px'}}>
-            {rows.length ? <TableVirtuoso scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{'textAlign': 'center'}}>No results :(</Typography></div>}
+          <div style = {{ padding: width < 600 ? `${tableFullscreen ? '10px' : '0px'} 10px 0px 10px` : `${tableFullscreen ? '10px' : '0px'} 20px 0px 20px` }}>
+            {rows.length ? <TableVirtuoso scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>}
           </div>
         </div>
       }

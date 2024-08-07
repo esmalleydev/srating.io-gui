@@ -158,23 +158,6 @@ export interface PlaybyPlay {
   order: number;
 }
 
-export interface Ranking {
-  cbb_ranking_id: string;
-  season: number;
-  team_id: string;
-  composite_rank: number;
-  elo_rank: number;
-  kenpom_rank: number;
-  srs_rank: number;
-  ap_rank: number;
-  coaches_rank: number;
-  net_rank: number;
-  date_of_rank: string;
-  current: number;
-}
-
-export type Rankings = {[cbb_ranking_id: string]: Ranking};
-
 
 export interface RankingColumns {
   [key: string]: {
@@ -192,6 +175,13 @@ export interface StatisticRanking {
   cbb_statistic_ranking_id: string;
   season: number;
   team_id: string;
+  rank: number;
+  elo_rank: number;
+  kenpom_rank: number;
+  srs_rank: number;
+  ap_rank: number;
+  coaches_rank: number;
+  net_rank: number;
   total_games?: number;
   games?: number;
   wins?: number;

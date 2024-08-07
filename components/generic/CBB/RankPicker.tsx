@@ -22,37 +22,37 @@ import { setRank } from '@/redux/features/display-slice';
  */
 const RankPicker = (props) => {
   const dispatch = useAppDispatch();
-  
-  const selected = useAppSelector(state => state.displayReducer.rank);
+
+  const selected = useAppSelector((state) => state.displayReducer.rank);
 
   const rankDisplayOptions = [
     {
-      'value': 'composite_rank',
-      'label': 'Composite',
+      value: 'rank',
+      label: 'sRating',
     },
     {
-      'value': 'ap_rank',
-      'label': 'AP',
+      value: 'ap_rank',
+      label: 'AP',
     },
     {
-      'value': 'elo_rank',
-      'label': 'sRating',
+      value: 'elo_rank',
+      label: 'SR Elo',
     },
     {
-      'value': 'kenpom_rank',
-      'label': 'Kenpom',
+      value: 'kenpom_rank',
+      label: 'Kenpom',
     },
     {
-      'value': 'srs_rank',
-      'label': 'SRS',
+      value: 'srs_rank',
+      label: 'SRS',
     },
     {
-      'value': 'net_rank',
-      'label': 'NET',
+      value: 'net_rank',
+      label: 'NET',
     },
     {
-      'value': 'coaches_rank',
-      'label': 'Coaches Poll',
+      value: 'coaches_rank',
+      label: 'Coaches Poll',
     },
   ];
 
@@ -69,7 +69,7 @@ const RankPicker = (props) => {
       open={props.open}
       keepMounted
       onClose={handleClose}
-      aria-describedby="alert-dialog-slide-description"
+      aria-describedby="alert-dialog-rank-picker-description"
     >
       <DialogTitle>Pick ranking metric #</DialogTitle>
       <List>
@@ -87,6 +87,6 @@ const RankPicker = (props) => {
       </List>
     </Dialog>
   );
-}
+};
 
 export default RankPicker;

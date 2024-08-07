@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const rankLocalStorageKey = 'CBB.DISPLAY.RANK';
+const rankLocalStorageKey = 'CBB.DISPLAY.RANK.2';
 
 let rankLocalStorage: string | null = null;
 
@@ -21,9 +21,9 @@ type InitialState = {
 };
 
 const initialState = {
-  rank: rankLocalStorage || 'composite_rank',
+  rank: rankLocalStorage || 'rank',
   order: 'asc',
-  orderBy: 'composite_rank',
+  orderBy: 'rank',
   hideCommitted: false,
   hideUnderTwoMPG: false,
   filterCommittedConf: true,
@@ -56,7 +56,7 @@ const updateStateFromUrlParams = (state: InitialState) => {
   if (filterOriginalConf !== null) {
     state.filterOriginalConf = (+filterOriginalConf === 1);
   }
-  
+
   // if (view !== null) {
   //   state.view = view;
   // }
@@ -64,7 +64,7 @@ const updateStateFromUrlParams = (state: InitialState) => {
 
 export const ranking = createSlice({
   name: 'ranking',
-  initialState: initialState,
+  initialState,
   reducers: {
     setOrder: (state, action: PayloadAction<string>) => {
       state.order = action.payload;
@@ -93,10 +93,12 @@ export const ranking = createSlice({
     // setSeason: (state, action: PayloadAction<number>) => {
     //   state.value.season = action.payload;
     // },
-  }
+  },
 });
 
-export const { setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setFilterCommittedConf, setFilterOriginalConf, setTableScrollTop, setTableFullscreen } = ranking.actions;
+export const {
+  setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setFilterCommittedConf, setFilterOriginalConf, setTableScrollTop, setTableFullscreen,
+} = ranking.actions;
 export default ranking.reducer;
 
 updateStateFromUrlParams(initialState);

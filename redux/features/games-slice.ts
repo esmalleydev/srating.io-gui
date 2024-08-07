@@ -1,6 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-// import HelperCBB from '@/components/helpers/CBB';
-
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
   visibleGames: string[],
@@ -13,6 +11,8 @@ type InitialState = {
   refreshCountdown: number,
   refreshLoading: boolean,
   refreshEnabled: boolean,
+  gameStatsLoading: boolean,
+  gameStats: object,
 };
 
 const initialState = {
@@ -26,17 +26,25 @@ const initialState = {
   refreshCountdown: 15,
   refreshLoading: false,
   refreshEnabled: true,
+  gameStatsLoading: true,
+  gameStats: {},
 } as InitialState;
 
 export const games = createSlice({
   name: 'games',
-  initialState: initialState,
+  initialState,
   reducers: {
     setRefreshEnabled: (state, action: PayloadAction<boolean>) => {
       state.refreshEnabled = action.payload;
     },
     setRefreshLoading: (state, action: PayloadAction<boolean>) => {
       state.refreshLoading = action.payload;
+    },
+    setGameStatsLoading: (state, action: PayloadAction<boolean>) => {
+      state.gameStatsLoading = action.payload;
+    },
+    setGameStats: (state, action: PayloadAction<object>) => {
+      state.gameStats = action.payload;
     },
     setRefreshCountdown: (state, action: PayloadAction<number>) => {
       state.refreshCountdown = action.payload;
@@ -50,7 +58,7 @@ export const games = createSlice({
       if (nonVisibleIndex !== -1) {
         state.nonVisibleGames = [
           ...state.nonVisibleGames.slice(0, nonVisibleIndex),
-          ...state.nonVisibleGames.slice(nonVisibleIndex + 1)
+          ...state.nonVisibleGames.slice(nonVisibleIndex + 1),
         ];
       }
       if (index === -1) {
@@ -63,7 +71,7 @@ export const games = createSlice({
       if (visibleIndex !== -1) {
         state.visibleGames = [
           ...state.visibleGames.slice(0, visibleIndex),
-          ...state.visibleGames.slice(visibleIndex + 1)
+          ...state.visibleGames.slice(visibleIndex + 1),
         ];
       }
       if (index === -1) {
@@ -86,8 +94,21 @@ export const games = createSlice({
         state.dates_checked = {};
       }
     },
-  }
+  },
 });
 
-export const { updateVisibleGames, updateNonVisibleGames, updateDisplayedGames, updateScores, updateDateChecked, clearDatesChecked, setScrollTop, setRefreshCountdown, setRefreshLoading, setRefreshEnabled } = games.actions;
+export const {
+  updateVisibleGames,
+  updateNonVisibleGames,
+  updateDisplayedGames,
+  updateScores,
+  updateDateChecked,
+  clearDatesChecked,
+  setScrollTop,
+  setRefreshCountdown,
+  setRefreshLoading,
+  setRefreshEnabled,
+  setGameStatsLoading,
+  setGameStats,
+} = games.actions;
 export default games.reducer;

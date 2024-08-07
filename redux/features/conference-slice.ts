@@ -1,13 +1,12 @@
-import { TeamSeasonConferences, Rankings, StatisticRankings, Teams } from "@/types/cbb";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { TeamSeasonConferences, StatisticRankings, Teams } from '@/types/cbb';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
   view: string,
   scrollTop: number,
-  team_season_conferences: TeamSeasonConferences | {};
-  teams: Teams | {};
-  cbb_statistic_rankings: StatisticRankings | {};
-  cbb_rankings: Rankings | {};
+  team_season_conferences: TeamSeasonConferences | object;
+  teams: Teams | object;
+  cbb_statistic_rankings: StatisticRankings | object;
 };
 
 const initialState = {
@@ -16,7 +15,6 @@ const initialState = {
   team_season_conferences: {},
   teams: {},
   cbb_statistic_rankings: {},
-  cbb_rankings: {},
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -34,10 +32,10 @@ const updateStateFromUrlParams = (state: InitialState) => {
 
 export const conference = createSlice({
   name: 'conference',
-  initialState: initialState,
+  initialState,
   reducers: {
     clear: (state) => {
-      for (let key in initialState) {
+      for (const key in initialState) {
         state[key] = initialState[key];
       }
     },
@@ -50,22 +48,19 @@ export const conference = createSlice({
     setView: (state, action: PayloadAction<string>) => {
       state.view = action.payload;
     },
-    setTeamSeasonConferences: (state, action: PayloadAction<TeamSeasonConferences | {}>) => {
+    setTeamSeasonConferences: (state, action: PayloadAction<TeamSeasonConferences | object>) => {
       state.team_season_conferences = action.payload;
     },
-    setTeams: (state, action: PayloadAction<Teams | {}>) => {
+    setTeams: (state, action: PayloadAction<Teams | object>) => {
       state.teams = action.payload;
     },
-    setStatisticRankings: (state, action: PayloadAction<StatisticRankings | {}>) => {
+    setStatisticRankings: (state, action: PayloadAction<StatisticRankings | object>) => {
       state.cbb_statistic_rankings = action.payload;
     },
-    setRankings: (state, action: PayloadAction<Rankings | {}>) => {
-      state.cbb_rankings = action.payload;
-    },
-  }
+  },
 });
 
-export const { setView, setScrollTop, clear, reset, setTeamSeasonConferences, setTeams, setStatisticRankings, setRankings } = conference.actions;
+export const { setView, setScrollTop, clear, reset, setTeamSeasonConferences, setTeams, setStatisticRankings } = conference.actions;
 export default conference.reducer;
 
 updateStateFromUrlParams(initialState);

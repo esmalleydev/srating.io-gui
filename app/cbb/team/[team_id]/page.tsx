@@ -15,13 +15,17 @@ import SubNavBar from '@/components/generic/CBB/Team/SubNavbar';
 import ScheduleClientWrapper from '@/components/generic/CBB/Team/Schedule/ClientWrapper';
 import ScheduleServer from '@/components/generic/CBB/Team/Schedule/Server';
 import SchedulePredictionLoader from '@/components/generic/CBB/Team/Schedule/PredictionLoader';
-import ScheduleDifferentialLoader from '@/components/generic/CBB/Team/Schedule/DifferentialLoader';
 
 import StatsClientWrapper from '@/components/generic/CBB/Team/Stats/ClientWrapper';
 import StatsServer from '@/components/generic/CBB/Team/Stats/Server';
 
 import TrendsClientWrapper from '@/components/generic/CBB/Team/Trends/ClientWrapper';
 import TrendsServer from '@/components/generic/CBB/Team/Trends/Server';
+import { Suspense } from 'react';
+import { ClientSkeleton as HeaderClientSkeleton } from '@/components/generic/CBB/Team/Header/Client';
+import { ClientSkeleton as ScheduleClientSkeleton } from '@/components/generic/CBB/Team/Schedule/Client';
+import { ClientSkeleton as StatsClientSkeleton } from '@/components/generic/CBB/Team/Stats/Client';
+import { ClientSkeleton as TrendsClientSkeleton } from '@/components/generic/CBB/Team/Trends/Client';
 
 
 type Props = {
@@ -32,66 +36,68 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const team = await getData({params, searchParams});
+  const team = await getData({ params, searchParams });
 
-  const helperTeam = new HelperTeam({'team': team});
+  const helperTeam = new HelperTeam({ team });
 
   return {
-    title: 'sRating | ' + helperTeam.getName(),
+    title: `sRating | ${helperTeam.getName()}`,
     description: 'View predicted result, matchup, trends, odds',
     openGraph: {
       title: helperTeam.getName(),
-      description: helperTeam.getName() + ' schedule, trends, statistics, roster',
+      description: `${helperTeam.getName()} schedule, trends, statistics, roster`,
     },
     twitter: {
       card: 'summary',
       title: helperTeam.getName(),
-      description: helperTeam.getName() + ' schedule, trends, statistics, roster'
-    }
+      description: `${helperTeam.getName()} schedule, trends, statistics, roster`,
+    },
   };
-};
+}
 
 
-async function getData({params, searchParams}) {
+async function getData({ params, searchParams }) {
   unstable_noStore();
   const CBB = new HelperCBB();
-  
-  const team_id = params.team_id;
-  
+
+  const { team_id } = params;
+
   const season = searchParams?.season || CBB.getCurrentSeason();
-  
+
   type TeamWithConference = Team & {conference: string;}
-  
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const team: TeamWithConference | any = await useServerAPI({
-    'class': 'team',
-    'function': 'get',
-    'arguments': {
-      'team_id': team_id,
-    }
+    class: 'team',
+    function: 'get',
+    arguments: {
+      team_id,
+    },
   });
-  
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const team_season_conference: any = await useServerAPI({
-    'class': 'team_season_conference',
-    'function': 'get',
-    'arguments': {
-      'team_id': team_id,
-      'season': season,
-      'organization_id': 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
-    }
+    class: 'team_season_conference',
+    function: 'get',
+    arguments: {
+      team_id,
+      season,
+      organization_id: 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
+    },
   });
-  
+
   if (team && team_season_conference) {
     team.conference_id = team_season_conference.conference_id;
   }
 
   return team;
-};
+}
 
 
 export default async function Page({ params, searchParams }) {
-  const team_id = params.team_id;
+  const { team_id } = params;
 
   const CBB = new HelperCBB();
 
@@ -105,39 +111,46 @@ export default async function Page({ params, searchParams }) {
   return (
     <div>
       <HeaderClientWrapper>
-        <HeaderServer season = {season} team_id = {team_id} />
+        <Suspense fallback = {<HeaderClientSkeleton />}>
+          <HeaderServer season = {season} team_id = {team_id} />
+        </Suspense>
       </HeaderClientWrapper>
       <NavBar view = {selectedTab} tabOrder = {tabOrder} />
       <SubNavBar view = {selectedTab} />
       {
-        selectedTab == 'schedule' ?
+        selectedTab === 'schedule' ?
           <>
             <ScheduleClientWrapper>
-              <ScheduleServer team_id = {team_id} season = {season} />
+              <Suspense fallback = {<ScheduleClientSkeleton />}>
+                <ScheduleServer team_id = {team_id} season = {season} />
+              </Suspense>
             </ScheduleClientWrapper>
             <SchedulePredictionLoader team_id = {team_id} season = {season} />
-            <ScheduleDifferentialLoader team_id = {team_id} season = {season} />
           </> :
           ''
       }
       {
-        selectedTab == 'stats' ? 
+        selectedTab === 'stats' ?
           <>
             <StatsClientWrapper>
-              <StatsServer team_id = {team_id} season = {season} />
+              <Suspense fallback = {<StatsClientSkeleton />}>
+                <StatsServer team_id = {team_id} season = {season} />
+              </Suspense>
             </StatsClientWrapper>
           </> :
           ''
       }
       {
-        selectedTab == 'trends' ? 
+        selectedTab === 'trends' ?
           <>
             <TrendsClientWrapper>
-              <TrendsServer team_id = {team_id} season = {season} />
+              <Suspense fallback = {<TrendsClientSkeleton />}>
+                <TrendsServer team_id = {team_id} season = {season} />
+              </Suspense>
             </TrendsClientWrapper>
           </> :
           ''
       }
     </div>
   );
-};
+}

@@ -8,10 +8,10 @@ import { useState } from 'react';
 const PredictionLoader = ({ season, neutral_site }) => {
   const dispatch = useAppDispatch();
 
-  const home_team_id = useAppSelector(state => state.compareReducer.home_team_id);
-  const away_team_id = useAppSelector(state => state.compareReducer.away_team_id);
+  const home_team_id = useAppSelector((state) => state.compareReducer.home_team_id);
+  const away_team_id = useAppSelector((state) => state.compareReducer.away_team_id);
   // const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
-  
+
   const [loading, setLoading] = useState(false);
   const [lastSeason, setLastSeason] = useState(null);
   const [lastHomeTeamID, setLastHomeTeamID] = useState<string | null>(null);
@@ -33,15 +33,15 @@ const PredictionLoader = ({ season, neutral_site }) => {
     setLastNeutralSite(neutral_site);
     setLoading(true);
     dispatch(setPredictionsLoading(true));
-    
+
     useClientAPI({
-      'class': 'cbb',
-      'function': 'compareTeamsPrediction',
-      'arguments': {
-        'season': season,
-        'home_team_id': home_team_id,
-        'away_team_id': away_team_id,
-        'neutral_site': neutral_site,
+      class: 'cbb',
+      function: 'compareTeamsPrediction',
+      arguments: {
+        season,
+        home_team_id,
+        away_team_id,
+        neutral_site,
       },
     }).then((response) => {
       dispatch(setPredictions(response));
@@ -52,7 +52,7 @@ const PredictionLoader = ({ season, neutral_site }) => {
       setLoading(false);
     });
   };
-  
+
   if (
     lastSeason !== season ||
     lastHomeTeamID !== home_team_id ||

@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { Typography, Paper } from '@mui/material';
 
@@ -6,18 +7,51 @@ import HelperTeam from '@/components/helpers/Team';
 
 import PreviousMatchupTile from '@/components/generic/CBB/Game/PreviousMatchups/Tile';
 import { Game, Team, Games } from '@/types/cbb';
+import { LinearProgress } from '@mui/material';
+import { getHeaderHeight } from '../Header/ClientWrapper';
+import { getSubNavHeaderHeight } from '../SubNavBar';
+import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
+import { headerBarHeight } from '@/components/generic/Header';
+
+/**
+ * The main wrapper div for all the contents
+ */
+const Contents = ({ children }): React.JSX.Element => {
+  return (
+    <div style = {{ padding: '0px 10px' }}>
+      {children}
+    </div>
+  );
+};
 
 
+const ClientSkeleton = () => {
+  const paddingTop = getHeaderHeight() + getSubNavHeaderHeight();
 
-const Client = ({cbb_games, teams, home_team_id, away_team_id}: {cbb_games: Games, teams: Team[], home_team_id: string, away_team_id: string}) => {
+  const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
+  return (
+    <Contents>
+      <div style = {{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: `calc(100vh - ${heightToRemove}px)`,
+      }}>
+        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+      </div>
+    </Contents>
+  );
+};
 
-  let previousMatchupContainers: React.JSX.Element[] = [];
-  let summaryPRContainers: React.JSX.Element[] = [];
+const Client = ({ cbb_games, teams, home_team_id, away_team_id }: {cbb_games: Games, teams: Team[], home_team_id: string, away_team_id: string}) => {
+  const previousMatchupContainers: React.JSX.Element[] = [];
+  const summaryPRContainers: React.JSX.Element[] = [];
 
   if (cbb_games && !Object.keys(cbb_games).length) {
-    previousMatchupContainers.push(<Paper key = {1} elevation = {3} style = {{'padding': 10}}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
+    previousMatchupContainers.push(<Paper key = {1} elevation = {3} style = {{ padding: 10 }}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
   } else if (cbb_games) {
-    const sorted_matchups: Game[] = Object.values(cbb_games).sort(function(a, b) {
+    const sorted_matchups: Game[] = Object.values(cbb_games).sort((a, b) => {
       return a.start_date > b.start_date ? -1 : 1;
     });
 
@@ -40,57 +74,57 @@ const Client = ({cbb_games, teams, home_team_id, away_team_id}: {cbb_games: Game
     let lastTen_away_points = 0;
 
     for (let i = 0; i < sorted_matchups.length; i++) {
-      const game_ = sorted_matchups[i];
+      const sortedGame = sorted_matchups[i];
 
       const lastThree = sorted_matchups.length > 3 && i < 3;
       const lastTen = sorted_matchups.length > 10 && i < 10;
 
-      if (game_.away_score > game_.home_score) {
-        if (game_.away_team_id === away_team_id) {
+      if (sortedGame.away_score > sortedGame.home_score) {
+        if (sortedGame.away_team_id === away_team_id) {
           away_wins++;
-          away_points += game_.away_score - game_.home_score;
+          away_points += sortedGame.away_score - sortedGame.home_score;
           if (lastThree) {
             lastThree_away_wins++;
-            lastThree_away_points += game_.away_score - game_.home_score;
+            lastThree_away_points += sortedGame.away_score - sortedGame.home_score;
           }
           if (lastTen) {
             lastTen_away_wins++;
-            lastTen_away_points += game_.away_score - game_.home_score;
+            lastTen_away_points += sortedGame.away_score - sortedGame.home_score;
           }
-        } else if (game_.away_team_id === home_team_id) {
+        } else if (sortedGame.away_team_id === home_team_id) {
           home_wins++;
-          home_points += game_.away_score - game_.home_score;
+          home_points += sortedGame.away_score - sortedGame.home_score;
           if (lastThree) {
             lastThree_home_wins++;
-            lastThree_home_points += game_.away_score - game_.home_score;
+            lastThree_home_points += sortedGame.away_score - sortedGame.home_score;
           }
           if (lastTen) {
             lastTen_home_wins++;
-            lastTen_home_points += game_.away_score - game_.home_score;
+            lastTen_home_points += sortedGame.away_score - sortedGame.home_score;
           }
         }
-      } else if (game_.away_score < game_.home_score) {
-        if (game_.home_team_id === away_team_id) {
+      } else if (sortedGame.away_score < sortedGame.home_score) {
+        if (sortedGame.home_team_id === away_team_id) {
           away_wins++;
-          away_points += game_.home_score - game_.away_score;
+          away_points += sortedGame.home_score - sortedGame.away_score;
           if (lastThree) {
             lastThree_away_wins++;
-            lastThree_away_points += game_.home_score - game_.away_score;
+            lastThree_away_points += sortedGame.home_score - sortedGame.away_score;
           }
           if (lastTen) {
             lastTen_away_wins++;
-            lastTen_away_points += game_.home_score - game_.away_score;
+            lastTen_away_points += sortedGame.home_score - sortedGame.away_score;
           }
-        } else if (game_.home_team_id === home_team_id) {
+        } else if (sortedGame.home_team_id === home_team_id) {
           home_wins++;
-          home_points += game_.home_score - game_.away_score;
+          home_points += sortedGame.home_score - sortedGame.away_score;
           if (lastThree) {
             lastThree_home_wins++;
-            lastThree_home_points += game_.home_score - game_.away_score;
+            lastThree_home_points += sortedGame.home_score - sortedGame.away_score;
           }
           if (lastTen) {
             lastTen_home_wins++;
-            lastTen_home_points += game_.home_score - game_.away_score;
+            lastTen_home_points += sortedGame.home_score - sortedGame.away_score;
           }
         }
       }
@@ -99,40 +133,40 @@ const Client = ({cbb_games, teams, home_team_id, away_team_id}: {cbb_games: Game
 
     if (sorted_matchups.length > 5) {
       if (lastThree_home_wins >= lastThree_away_wins) {
-        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({'team': teams[home_team_id]}).getName()} has won {lastThree_home_wins} of last 3 by an average of {(lastThree_home_points / lastThree_home_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {lastThree_home_wins} of last 3 by an average of {(lastThree_home_points / lastThree_home_wins).toFixed(2)} pts.</Typography>);
       } else {
-        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({'team': teams[away_team_id]}).getName()} has won {lastThree_away_wins} of last 3 by an average of {(lastThree_away_points / lastThree_away_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {lastThree_away_wins} of last 3 by an average of {(lastThree_away_points / lastThree_away_wins).toFixed(2)} pts.</Typography>);
       }
     }
 
     if (sorted_matchups.length > 10) {
       if (lastTen_home_wins >= lastTen_away_wins) {
-        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({'team': teams[home_team_id]}).getName()} has won {lastTen_home_wins} of last 10 by an average of {(lastTen_home_points / lastTen_home_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {lastTen_home_wins} of last 10 by an average of {(lastTen_home_points / lastTen_home_wins).toFixed(2)} pts.</Typography>);
       } else {
-        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({'team': teams[away_team_id]}).getName()} has won {lastTen_away_wins} of last 10 by an average of {(lastTen_away_points / lastTen_away_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {lastTen_away_wins} of last 10 by an average of {(lastTen_away_points / lastTen_away_wins).toFixed(2)} pts.</Typography>);
       }
     }
 
     if (home_wins >= away_wins) {
-      summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({'team': teams[home_team_id]}).getName()} has won {home_wins} of last {sorted_matchups.length} by an average of {(home_points / home_wins).toFixed(2)} pts.</Typography>);
+      summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {home_wins} of last {sorted_matchups.length} by an average of {(home_points / home_wins).toFixed(2)} pts.</Typography>);
     } else {
-      summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({'team': teams[away_team_id]}).getName()} has won {away_wins} of last {sorted_matchups.length} by an average of {(away_points / away_wins).toFixed(2)} pts.</Typography>);
+      summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {away_wins} of last {sorted_matchups.length} by an average of {(away_points / away_wins).toFixed(2)} pts.</Typography>);
     }
   }
 
 
   return (
-    <div style = {{'padding': '0px 10px'}}>
+    <Contents>
       {summaryPRContainers}
       {
         cbb_games !== null ?
-        <div style = {{'display': 'flex', 'flexWrap': 'wrap', 'alignItems': 'center'}}>
+        <div style = {{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
           {previousMatchupContainers}
         </div>
-        : ''
+          : ''
       }
-    </div>
+    </Contents>
   );
-}
+};
 
-export default Client;
+export { Client, ClientSkeleton };

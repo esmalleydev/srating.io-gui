@@ -1,6 +1,9 @@
 'use client';
+
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label, ReferenceLine } from 'recharts';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label, ReferenceLine,
+} from 'recharts';
 import moment from 'moment';
 
 // import { useTheme } from '@mui/material/styles';
@@ -9,17 +12,52 @@ import Typography from '@mui/material/Typography';
 
 
 import { CoachElo, CoachElos, Games } from '@/types/cbb';
-import { useTheme } from '@mui/material';
+import { LinearProgress, useTheme } from '@mui/material';
+import { getNavHeaderHeight } from '../NavBar';
+import { getSubNavHeaderHeight } from '../SubNavBar';
+import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
+import { headerBarHeight } from '@/components/generic/Header';
 
 
 // todo compare to 2 or more coach elos on the same graph? might be cool to see them with the time comparison. ex: and old coach vs relativiely new
 // add these graphs to the compare tool as well!
 
-const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_games: Games}) => {
 
+/**
+ * The main wrapper div for all the contents
+ */
+const Contents = ({ children }): React.JSX.Element => {
+  return (
+    <div style={{ padding: '0px 10px' }}>
+      {children}
+    </div>
+  );
+};
+
+
+const ClientSkeleton = () => {
+  const paddingTop = getNavHeaderHeight() + getSubNavHeaderHeight();
+
+  const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
+  return (
+    <Contents>
+      <div style = {{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: `calc(100vh - ${heightToRemove}px)`,
+      }}>
+        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+      </div>
+    </Contents>
+  );
+};
+
+const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_games: Games}) => {
   const theme = useTheme();
 
-  const sorted_elo: CoachElo[] = Object.values(cbb_coach_elos).sort(function(a: any, b: any) {
+  const sorted_elo: CoachElo[] = Object.values(cbb_coach_elos).sort((a: CoachElo, b: CoachElo) => {
     if (!(a.cbb_game_id)) {
       return -1;
     }
@@ -73,14 +111,14 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
     }
 
     formattedData.push({
-      'name': sorted_elo[i].season,
-      'value': sorted_elo[i].elo,
-      'date': date,
+      name: sorted_elo[i].season,
+      value: sorted_elo[i].elo,
+      date,
     });
   }
 
-  minYaxis = minYaxis - 100;
-  maxYaxis = maxYaxis + 100;
+  minYaxis -= 100;
+  maxYaxis += 100;
 
   type TooltipProps = {
     active?: boolean;
@@ -91,13 +129,13 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
   const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
     if (active && payload && payload.length) {
       return (
-        <Paper elevation={3} style = {{'padding': '5px 10px'}}>
+        <Paper elevation={3} style = {{ padding: '5px 10px' }}>
           <div><Typography color = 'text.secondary' variant='subtitle2'>{payload[0].payload?.date ? moment(payload[0].payload?.date).format('MMM Do \'YY') : label}</Typography></div>
-          <div style = {{'display': 'inline-flex'}}><Typography variant='body1' color = 'text.secondary' >Rating:</Typography><Typography style = {{'marginLeft': 5}} variant='body1' color = 'info.main'>{payload[0].value}</Typography></div>
+          <div style = {{ display: 'inline-flex' }}><Typography variant='body1' color = 'text.secondary' >Rating:</Typography><Typography style = {{ marginLeft: 5 }} variant='body1' color = 'info.main'>{payload[0].value}</Typography></div>
         </Paper>
       );
     }
-  
+
     return null;
   };
 
@@ -109,10 +147,10 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
 
 
   return (
-    <div style={{'padding': '0px 10px'}}>
-      <div style = {{'textAlign': 'center'}}><Typography color = 'info.main' variant='subtitle2'>SR (elo)</Typography></div>
-      <div style = {{'display': 'flex', 'height': 300}}>
-        <div style = {{'alignContent': 'center', 'transform': 'rotate(-90deg)', 'maxWidth': '20px', 'width': '20px'}}><Typography color = 'info.main' variant='subtitle2'>Rating</Typography></div>
+    <Contents>
+      <div style = {{ textAlign: 'center' }}><Typography color = 'info.main' variant='subtitle2'>SR (elo)</Typography></div>
+      <div style = {{ display: 'flex', height: 300 }}>
+        <div style = {{ alignContent: 'center', transform: 'rotate(-90deg)', maxWidth: '20px', width: '20px' }}><Typography color = 'info.main' variant='subtitle2'>Rating</Typography></div>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={formattedData}
@@ -123,7 +161,7 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
             <CartesianGrid strokeDasharray = '3 3' />
             <XAxis dataKey = 'date' minTickGap={20} tickLine = {false} axisLine = {false} tickFormatter={formatXAxis} />
             <YAxis dataKey = 'value' scale = 'linear' domain = {[minYaxis, maxYaxis]} />
-            <Tooltip cursor = {{stroke: theme.palette.warning.main, strokeWidth: 2}} content={<CustomTooltip />} />
+            <Tooltip cursor = {{ stroke: theme.palette.warning.main, strokeWidth: 2 }} content={<CustomTooltip />} />
             <ReferenceLine y = {highestElo} stroke = {referenceLineStroke}>
               <Label value={highestElo} style={{ textAnchor: 'middle', fill: referenceLineStroke, fontSize: 18 }} dy={-10} />
             </ReferenceLine>
@@ -135,9 +173,9 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <div style = {{'textAlign': 'center', 'marginLeft': 20}}><Typography color = 'info.main' variant='subtitle2'>Year</Typography></div>
-    </div>
+      <div style = {{ textAlign: 'center', marginLeft: 20 }}><Typography color = 'info.main' variant='subtitle2'>Year</Typography></div>
+    </Contents>
   );
-}
+};
 
-export default Client;
+export { Client, ClientSkeleton };

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 const PredictionLoader = ({ season, team_id }) => {
   const dispatch = useAppDispatch();
-  
+
   const [loading, setLoading] = useState(false);
   const [lastSeason, setLastSeason] = useState(null);
 
@@ -19,13 +19,13 @@ const PredictionLoader = ({ season, team_id }) => {
     setLastSeason(season);
     setLoading(true);
     dispatch(setSchedulePredictionsLoading(true));
-    
+
     useClientAPI({
-      'class': 'team',
-      'function': 'getSchedulePredictions',
-      'arguments': {
-        'season': season,
-        'team_id': team_id,
+      class: 'team',
+      function: 'getSchedulePredictions',
+      arguments: {
+        season,
+        team_id,
       },
     }).then((response) => {
       dispatch(updateSchedulePredictions(response));
@@ -42,7 +42,7 @@ const PredictionLoader = ({ season, team_id }) => {
       getData();
     }
   }, [season, lastSeason]);
-  
+
   return null;
 };
 

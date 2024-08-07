@@ -1,5 +1,6 @@
 'use client';
-import React, { useState, useTransition } from 'react';
+
+import React, { useTransition } from 'react';
 
 
 import HelperCBB from '@/components/helpers/CBB';
@@ -29,8 +30,8 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
   const [isPending, startTransition] = useTransition();
 
   const dispatch = useAppDispatch();
-  const displayRank = useAppSelector(state => state.displayReducer.rank);
-  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
+  const displayRank = useAppSelector((state) => state.displayReducer.rank);
+  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   // const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
 
   const handleRemove = (team_id) => {
@@ -46,7 +47,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
         key = 'away';
       }
       const search = current.toString();
-      const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : '';
       router.replace(`${pathName}${query}`);
 
       if (key === 'home') {
@@ -65,7 +66,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
         current.set('home_team_id', away_team_id);
         current.set('away_team_id', home_team_id);
         const search = current.toString();
-        const query = search ? `?${search}` : "";
+        const query = search ? `?${search}` : '';
         router.replace(`${pathName}${query}`);
       }
       dispatch(setHomeTeamID(away_team_id));
@@ -76,13 +77,13 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
   const handleTeamClick = (team_id) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/team/' + team_id + '?season=' + season);
+      router.push(`/cbb/team/${team_id}?season=${season}`);
     });
   };
 
   const getTeam = (team_id) => {
     const team = teams[team_id];
-    const teamHelper = new HelperTeam({'team': team});
+    const teamHelper = new HelperTeam({ team });
     const rank = teamHelper.getRank(displayRank);
 
     let justifyContent = 'right';
@@ -97,8 +98,8 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
     }
 
     const supStyle: React.CSSProperties = {
-      'fontSize': 12,
-      'verticalAlign': 'super',
+      fontSize: 12,
+      verticalAlign: 'super',
     };
 
     if (rank) {
@@ -111,7 +112,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
           <Tooltip title = {'Remove team'}>
             <IconButton
               id = 'remove-button'
-              onClick = {() => {handleRemove(team_id)}}
+              onClick = {() => { handleRemove(team_id); }}
             >
               <HighlightOffIcon color = {'error'} />
             </IconButton>
@@ -121,20 +122,20 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
     };
 
     return (
-      <div style = {{'display': 'flex', 'alignItems': 'center'}}>
+      <div style = {{ display: 'flex', alignItems: 'center' }}>
         {team_id === home_team_id ? getRemoveButton() : ''}
         <div>
-          <div style = {{'fontSize': '14px', 'display': 'flex', 'justifyContent': justifyContent}}>
-            <Typography variant = 'overline' color = 'text.secondary' style = {{'lineHeight': 'initial'}}>{neutral_site ? 'Neutral' : (team_id === home_team_id ? 'Home' : 'Away')}</Typography>
+          <div style = {{ fontSize: '14px', display: 'flex', justifyContent }}>
+            <Typography variant = 'overline' color = 'text.secondary' style = {{ lineHeight: 'initial' }}>{neutral_site ? 'Neutral' : (team_id === home_team_id ? 'Home' : 'Away')}</Typography>
           </div>
-          <div style = {{'display': 'flex', 'flexWrap': 'nowrap', 'justifyContent': justifyContent}} onClick={() => {handleTeamClick(team_id)}}>
-            <Typography style = {{'whiteSpace': 'nowrap', 'textOverflow': 'ellipsis', 'overflow': 'hidden'}} variant = {'h6'}>
+          <div style = {{ display: 'flex', flexWrap: 'nowrap', justifyContent }} onClick={() => { handleTeamClick(team_id); }}>
+            <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {'h6'}>
               {rank ? <span style = {supStyle}>{rank} </span> : ''}
-              <Link style = {{'cursor': 'pointer'}} underline='hover'>{teamName}</Link>
+              <Link style = {{ cursor: 'pointer' }} underline='hover'>{teamName}</Link>
             </Typography>
           </div>
-          <div style = {{'fontSize': '14px', 'display': 'flex', 'justifyContent': justifyContent}}>
-            <Typography variant = 'overline' color = 'text.secondary' style = {{'lineHeight': 'initial'}}>{(width > breakPoint ? (team ? conferences[team.conference_id].code : '') + ' ' : '')}({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
+          <div style = {{ fontSize: '14px', display: 'flex', justifyContent }}>
+            <Typography variant = 'overline' color = 'text.secondary' style = {{ lineHeight: 'initial' }}>{(width > breakPoint ? `${team ? conferences[team.conference_id].code : ''} ` : '')}({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
           </div>
         </div>
         {team_id === away_team_id ? getRemoveButton() : ''}
@@ -143,18 +144,18 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
   };
 
   const nameStyle: React.CSSProperties = {
-    'maxWidth': width < breakPoint ? 175 : 'initial',
-    'minWidth': 100
+    maxWidth: width < breakPoint ? 175 : 'initial',
+    minWidth: 100,
   };
 
 
   return (
-    <div style = {{'display': 'flex', 'justifyContent': 'space-between', 'padding': '0px 5px', 'alignItems': 'center'}}>
+    <div style = {{ display: 'flex', justifyContent: 'space-between', padding: '0px 5px', alignItems: 'center' }}>
       <div style = {nameStyle}>
         {
         !away_team_id ?
           'Pick an away team' :
-          (away_team_id in teams ? <>{getTeam(away_team_id)}</> : <Skeleton style={{'height': 60, 'transform': 'initial'}} />)
+          (away_team_id in teams ? <>{getTeam(away_team_id)}</> : <Skeleton style={{ height: 60, transform: 'initial' }} />)
         }
       </div>
       <div>
@@ -175,11 +176,11 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
       {
         !home_team_id ?
           'Pick a home team' :
-          (home_team_id in teams ? <>{getTeam(home_team_id)}</> : <Skeleton style={{'height': 60, 'transform': 'initial'}} />)
+          (home_team_id in teams ? <>{getTeam(home_team_id)}</> : <Skeleton style={{ height: 60, transform: 'initial' }} />)
         }
       </div>
     </div>
   );
-}
+};
 
 export default Client;

@@ -1,4 +1,5 @@
 'use server';
+
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 
@@ -6,9 +7,10 @@ import HelperCBB from '@/components/helpers/CBB';
 import StatsClientWrapper from '@/components/generic/CBB/Picks/Stats/ClientWrapper';
 import StatsServer from '@/components/generic/CBB/Picks/Stats/Server';
 import StatsLoading from '@/components/generic/CBB/Picks/Stats/Loading';
-// import NavBar from '@/components/generic/CBB/Picks/NavBar';
 import SubNavBar from '@/components/generic/CBB/Picks/SubNavBar';
 import Picks from '@/components/generic/CBB/Picks/Picks';
+import { ClientSkeleton as StatsLoaderClientSkeleton } from '@/components/generic/CBB/Picks/StatsLoader/Client';
+import StatsLoaderServer from '@/components/generic/CBB/Picks/StatsLoader/Server';
 import Calculator from '@/components/generic/CBB/Picks/Calculator';
 import PicksLoader from '@/components/generic/CBB/Picks/PicksLoader';
 import ClientWrapper from '@/components/generic/CBB/Picks/ClientWrapper';
@@ -27,9 +29,9 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: 'summary',
       title: 'Best picks for each college basketball game',
-    }
+    },
   };
-};
+}
 
 
 export default async function Page({ searchParams }) {
@@ -41,13 +43,12 @@ export default async function Page({ searchParams }) {
 
   const date = searchParams?.date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
 
-  const cbb_games = await getGames({date});
+  const cbb_games = await getGames({ date });
 
   const view = searchParams?.view || 'picks';
 
   return (
     <>
-      {/* <NavBar dates = {dates} date = {date} /> */}
       <DateAppBar dates = {dates} date = {date} />
       <SubNavBar view = {view} />
       <PicksLoader date = {date} />
@@ -55,22 +56,25 @@ export default async function Page({ searchParams }) {
       <ClientWrapper>
         {
           view === 'picks' ?
-          <Picks cbb_games = {cbb_games} />
-          : ''
+            <Picks cbb_games = {cbb_games} />
+            : ''
         }
+        <Suspense key = {date} fallback = {<StatsLoaderClientSkeleton />}>
+          <StatsLoaderServer cbb_game_ids={Object.keys(cbb_games)} />
+        </Suspense>
 
-        {view === 'calculator' ?  <div><Calculator cbb_games = {cbb_games} date = {date} /></div> : ''}
+        {view === 'calculator' ? <div><Calculator cbb_games = {cbb_games} date = {date} /></div> : ''}
 
         {
-          view === 'stats' ? 
+          view === 'stats' ?
           <StatsClientWrapper>
-            <Suspense fallback = {<StatsLoading />}>
+            <Suspense key = {date} fallback = {<StatsLoading />}>
               <StatsServer date = {date} season = {season} />
             </Suspense>
           </StatsClientWrapper>
-          : ''
+            : ''
         }
       </ClientWrapper>
     </>
   );
-};
+}

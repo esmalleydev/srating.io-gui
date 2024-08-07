@@ -9,7 +9,6 @@ import MenuItem from '@mui/material/MenuItem';
 import RankPicker from '@/components/generic/CBB/RankPicker';
 
 const AdditionalOptions = () => {
-
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
   const [rankPickerOpen, setRankPickerOpen] = useState(false);
@@ -47,9 +46,9 @@ const AdditionalOptions = () => {
             Rank display
           </MenuItem>
         </Menu>
-        <RankPicker open = {rankPickerOpen} openHandler = {() => {setRankPickerOpen(true);}} closeHandler = {() => {setRankPickerOpen(false);}} />
+        <RankPicker open = {rankPickerOpen} openHandler = {() => { setRankPickerOpen(true); }} closeHandler = {() => { setRankPickerOpen(false); }} />
     </div>
   );
-}
+};
 
 export default AdditionalOptions;

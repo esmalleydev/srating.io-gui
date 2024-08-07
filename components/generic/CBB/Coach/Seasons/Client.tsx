@@ -1,15 +1,18 @@
 'use client';
+
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Box, SortDirection, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Paper, TableSortLabel, Tooltip, Typography, Chip } from '@mui/material';
+import {
+  Box, SortDirection, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Paper, TableSortLabel, Tooltip, Typography, Chip,
+} from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import RankSpan from '@/components/generic/CBB/RankSpan';
-import utilsSorter from  '@/components/utils/Sorter';
+import utilsSorter from '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
@@ -26,11 +29,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
   '&:hover': {
     cursor: 'pointer',
-  }
+  },
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  'backgroundColor':  theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
 }));
 
 const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
@@ -51,7 +54,7 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
 
   const team_id_x_season_x_cbb_statistic_ranking = {};
 
-  for (let cbb_statistic_ranking_id in cbb_statistic_rankings) {
+  for (const cbb_statistic_ranking_id in cbb_statistic_rankings) {
     const row = cbb_statistic_rankings[cbb_statistic_ranking_id];
 
     if (!(row.team_id in team_id_x_season_x_cbb_statistic_ranking)) {
@@ -61,12 +64,12 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
     team_id_x_season_x_cbb_statistic_ranking[row.team_id][row.season] = row;
   }
 
-  for (let coach_team_season_id in coach_team_seasons) {
+  for (const coach_team_season_id in coach_team_seasons) {
     const coach_team_season = coach_team_seasons[coach_team_season_id];
 
     const row: any = {
-      'season': coach_team_season.season,
-      'team_id': coach_team_season.team_id,
+      season: coach_team_season.season,
+      team_id: coach_team_season.team_id,
     };
 
     if (
@@ -75,8 +78,8 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
     ) {
       const stats = team_id_x_season_x_cbb_statistic_ranking[coach_team_season.team_id][coach_team_season.season];
 
-      row.record = (stats.wins || 0) + ' - ' + (stats.losses || 0);
-      row.conf_record = (stats.confwins === null || stats.conflosses === null) ? '-' : (stats.confwins || 0) + ' - ' + (stats.conflosses || 0);
+      row.record = `${stats.wins || 0} - ${stats.losses || 0}`;
+      row.conf_record = (stats.confwins === null || stats.conflosses === null) ? '-' : `${stats.confwins || 0} - ${stats.conflosses || 0}`;
 
       Object.assign(row, stats);
     }
@@ -93,67 +96,67 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
   const handleClick = (team_id, season) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/team/' + team_id + '?season=' + season);
+      router.push(`/cbb/team/${team_id}?season=${season}`);
     });
   };
 
 
   const headCells = {
-    'season': {
+    season: {
       id: 'season',
       numeric: true,
       label: 'Season',
       tooltip: 'Season',
       sticky: false,
     },
-    'team': {
+    team: {
       id: 'team',
       numeric: false,
       label: 'Team',
       tooltip: 'Team',
       sticky: false,
     },
-    'record': {
+    record: {
       id: 'record',
       numeric: false,
       label: 'W/L',
       tooltip: 'Record',
       sticky: false,
     },
-    'conf_record': {
+    conf_record: {
       id: 'conf_record',
       numeric: false,
       label: 'CR',
       tooltip: 'Conference record',
       sticky: false,
     },
-    'adjusted_efficiency_rating': {
+    adjusted_efficiency_rating: {
       id: 'adjusted_efficiency_rating',
       numeric: true,
       label: 'aEM',
       tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + aSOS',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'points': {
+    points: {
       id: 'points',
       numeric: true,
       label: 'PTS',
       tooltip: 'Average points per game',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'offensive_rating': {
+    offensive_rating: {
       id: 'offensive_rating',
       numeric: true,
       label: 'ORT',
       tooltip: 'Offensive rating ((PTS / Poss) * 100)',
-      'sort': 'higher',
+      sort: 'higher',
     },
-    'defensive_rating': {
+    defensive_rating: {
       id: 'defensive_rating',
       numeric: true,
       label: 'DRT',
       tooltip: 'Defensive rating ((Opp. PTS / Opp. Poss) * 100)',
-      'sort': 'lower',
+      sort: 'lower',
     },
   };
 
@@ -172,7 +175,7 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
     let b = 0;
 
     const row_containers = rows.sort(Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort))).slice().map((row) => {
-      let columns = getColumns();
+      const columns = getColumns();
 
       // const tdStyle = {
       //   'padding': '4px 5px',
@@ -182,36 +185,36 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
       b++;
 
       const tdStyle: React.CSSProperties = {
-        'padding': '4px 5px',
-        'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
+        padding: '4px 5px',
+        backgroundColor: theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
         border: 0,
-        'borderTop': 0,
-        'borderLeft': 0,
-        'borderBottom': 0,
+        borderTop: 0,
+        borderLeft: 0,
+        borderBottom: 0,
       };
-  
+
       if (width <= breakPoint) {
         tdStyle.fontSize = '12px';
       }
-  
+
 
       const tableCells: React.JSX.Element[] = [];
 
       for (let i = 0; i < columns.length; i++) {
         if (columns[i] === 'season') {
-          tableCells.push(<TableCell key = {i} sx = {Object.assign({}, tdStyle, {'maxWidth': seasonCellMaxWidth, 'minWidth': seasonCellMaxWidth, 'width': seasonCellMaxWidth})}>{row[columns[i]] || 0}</TableCell>);
+          tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, maxWidth: seasonCellMaxWidth, minWidth: seasonCellMaxWidth, width: seasonCellMaxWidth })}>{row[columns[i]] || 0}</TableCell>);
         } else if (columns[i] === 'team') {
-          const teamHelper = new HelperTeam({'team': teams[row.team_id]});
+          const teamHelper = new HelperTeam({ team: teams[row.team_id] });
           tableCells.push(<TableCell key = {i} sx = {tdStyle}>{teamHelper.getName()}</TableCell>);
         } else {
-          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[columns[i] + '_rank'] && row[columns[i]] !== null ? <RankSpan rank = {row[columns[i] + '_rank']} useOrdinal = {true} max = {CBB.getNumberOfD1Teams(row.season)} />  : ''}</TableCell>);
+          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {true} max = {CBB.getNumberOfD1Teams(row.season)} /> : ''}</TableCell>);
         }
-      } 
+      }
 
       return (
         <StyledTableRow
           key={row.season}
-          onClick={() => {handleClick(row.team_id, row.season)}}
+          onClick={() => { handleClick(row.team_id, row.season); }}
         >
           {tableCells}
         </StyledTableRow>
@@ -225,15 +228,15 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
               {getColumns().map((column) => {
                 const headCell = headCells[column];
                 const tdStyle: React.CSSProperties = {
-                  'padding': '4px 5px',
-                  'border': 0,
-                  'whiteSpace': 'nowrap',
+                  padding: '4px 5px',
+                  border: 0,
+                  whiteSpace: 'nowrap',
                 };
-      
+
                 if (width <= breakPoint) {
                   tdStyle.fontSize = '13px';
                 }
-      
+
                 if (column === 'season') {
                   tdStyle.maxWidth = seasonCellMaxWidth;
                   tdStyle.minWidth = seasonCellMaxWidth;
@@ -250,8 +253,8 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
                     >
                       <TableSortLabel
                         active={orderBy === headCell.id}
-                        direction={orderBy === headCell.id ?  (order as 'asc' | 'desc') : 'asc'}
-                        onClick={() => {handleSort(headCell.id)}}
+                        direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
+                        onClick={() => { handleSort(headCell.id); }}
                       >
                         {headCell.label}
                         {orderBy === headCell.id ? (
@@ -275,10 +278,10 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
   };
 
   return (
-    <div style = {{'padding': '0px 5px 20px 5px', 'textAlign': 'center'}}>
+    <div style = {{ padding: '0px 5px 20px 5px', textAlign: 'center' }}>
       {getTable()}
     </div>
   );
-}
+};
 
 export default Client;

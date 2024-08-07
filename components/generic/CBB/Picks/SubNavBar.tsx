@@ -1,7 +1,10 @@
 'use client';
+
 import React, { useState, useTransition } from 'react';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Tab, Tabs, useTheme } from '@mui/material';
+import {
+  Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Tab, Tabs, useTheme,
+} from '@mui/material';
 import { getBreakPoint } from '@/components/generic/DateAppBar';
 // import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 // import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
@@ -24,26 +27,26 @@ export { getHeaderHeight };
 
 const SubNavBar = ({ view }) => {
   const theme = useTheme();
-  const { width }= useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions() as Dimensions;
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
 
 
-  let tabOptions = {
-    'stats': 'Stats',
-    'calculator': 'Calculator',
-    'picks': 'Picks',
+  const tabOptions = {
+    stats: 'Stats',
+    calculator: 'Calculator',
+    picks: 'Picks',
   };
 
-  let tabOrder = ['picks', 'calculator', 'stats'];
+  const tabOrder = ['picks', 'calculator', 'stats'];
 
   const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view));
   const [showLockedDialog, setShowLockedDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const calcAccess = useAppSelector(state => state.userReducer.isValidSession);
+  const calcAccess = useAppSelector((state) => state.userReducer.isValidSession);
   // const picksData = useAppSelector(state => state.picksReducer.picks);
 
   // let calcAccess = false;
@@ -65,21 +68,21 @@ const SubNavBar = ({ view }) => {
 
 
   const subHeaderStyle: React.CSSProperties = {
-    'height': subHeaderHeight,
-    'position': 'fixed',
-    'backgroundColor': theme.palette.background.default,
-    'zIndex': 1100,
-    'display': 'flex',
-    'justifyContent': 'center',
-    'alignItems': 'center',
-    'top': subHeaderTop,
-    'left': 0,
-    'right': 0,
+    height: subHeaderHeight,
+    position: 'fixed',
+    backgroundColor: theme.palette.background.default,
+    zIndex: 1100,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: subHeaderTop,
+    left: 0,
+    right: 0,
   };
 
-  let tabs: React.JSX.Element[] = [];
+  const tabs: React.JSX.Element[] = [];
   for (let i = 0; i < tabOrder.length; i++) {
-    tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{'fontSize': '12px'}}>{tabOptions[tabOrder[i]]}</span>)} />);
+    tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{ fontSize: '12px' }}>{tabOptions[tabOrder[i]]}</span>)} />);
   }
 
   const handleSubscribe = () => {
@@ -107,28 +110,28 @@ const SubNavBar = ({ view }) => {
       setShowLockedDialog(true);
       return;
     }
-    
+
     setTabIndex(value);
-    
+
     view = tabOrder[value];
 
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     current.set('view', view);
     const search = current.toString();
-    const query = search ? `?${search}` : "";
-    
+    const query = search ? `?${search}` : '';
+
     dispatch(setLoading(true));
     startTransition(() => {
       router.replace(`${pathName}${query}`);
       dispatch(setScrollTop(0));
     });
-  }
+  };
 
 
   return (
     <div style = {subHeaderStyle}>
 
-      <Box display="flex" justifyContent="center" /*sx = {{'position': 'sticky', 'top': 100}}*/>
+      <Box display="flex" justifyContent="center" /* sx = {{'position': 'sticky', 'top': 100}} */>
         <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabClick} indicatorColor="secondary" textColor="inherit">
           {tabs}
         </Tabs>
@@ -152,7 +155,7 @@ const SubNavBar = ({ view }) => {
             Subscribe for just $5 per month to get access to the betting calculator!
           </DialogContentText>
           <DialogContentText id="alert-dialog-description">
-            <Link style = {{'cursor': 'pointer'}} underline="hover" onClick = {handleLiveWinRate}>View the live win rate</Link>
+            <Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {handleLiveWinRate}>View the live win rate</Link>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

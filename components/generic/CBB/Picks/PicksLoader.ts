@@ -5,9 +5,10 @@ import { setPicksLoading, updatePicks } from '@/redux/features/picks-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
+
 const PicksLoader = ({ date }) => {
   const dispatch = useAppDispatch();
-  
+
   const [loading, setLoading] = useState(false);
   const [lastDate, setLastDate] = useState(null);
 
@@ -19,12 +20,12 @@ const PicksLoader = ({ date }) => {
     setLoading(true);
     setLastDate(date);
     dispatch(setPicksLoading(true));
-    
+
     useClientAPI({
-      'class': 'cbb_game_odds',
-      'function': 'getPicksData',
-      'arguments': {
-        'start_date': date,
+      class: 'cbb_game',
+      function: 'getScores',
+      arguments: {
+        start_date: date,
       },
     }).then((response) => {
       dispatch(updatePicks(response));
@@ -35,7 +36,7 @@ const PicksLoader = ({ date }) => {
       setLoading(false);
     });
   };
-  
+
 
   useEffect(() => {
     if (lastDate !== date) {

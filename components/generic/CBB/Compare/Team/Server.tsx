@@ -1,66 +1,68 @@
 'use server';
+
 import React from 'react';
 
 import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
-import Client from './Client';
+import { Client } from './Client';
 
-const Server = async({ home_team_id, away_team_id, season, teams, subview}) => {
+const Server = async ({ home_team_id, away_team_id, season, teams, subview }) => {
   unstable_noStore();
   const revalidateSeconds = 3600; // 60 * 60; // 1 hour
 
   if (home_team_id && home_team_id in teams) {
+    // eslint-disable-next-line no-param-reassign
     teams[home_team_id].stats = await useServerAPI({
-      'class': 'team',
-      'function': 'getStats',
-      'arguments': {
-        'team_id': home_team_id,
-        'season': season
+      class: 'team',
+      function: 'getStats',
+      arguments: {
+        team_id: home_team_id,
+        season,
       },
-    }, {revalidate: revalidateSeconds});
+    }, { revalidate: revalidateSeconds });
 
-
+    // eslint-disable-next-line no-param-reassign
     teams[home_team_id].elo = await useServerAPI({
-      'class': 'cbb_elo',
-      'function': 'get',
-      'arguments': {
-        'team_id': home_team_id,
-        'season': season,
-        'current': '1',
+      class: 'cbb_elo',
+      function: 'get',
+      arguments: {
+        team_id: home_team_id,
+        season,
+        current: '1',
       },
-    }, {revalidate: revalidateSeconds});
+    }, { revalidate: revalidateSeconds });
   }
 
   if (away_team_id && away_team_id in teams) {
-
+    // eslint-disable-next-line no-param-reassign
     teams[away_team_id].stats = await useServerAPI({
-      'class': 'team',
-      'function': 'getStats',
-      'arguments': {
-        'team_id': away_team_id,
-        'season': season
+      class: 'team',
+      function: 'getStats',
+      arguments: {
+        team_id: away_team_id,
+        season,
       },
-    }, {revalidate: revalidateSeconds});
+    }, { revalidate: revalidateSeconds });
 
 
-
+    // eslint-disable-next-line no-param-reassign
     teams[away_team_id].elo = await useServerAPI({
-      'class': 'cbb_elo',
-      'function': 'get',
-      'arguments': {
-        'team_id': away_team_id,
-        'season': season,
-        'current': '1',
+      class: 'cbb_elo',
+      function: 'get',
+      arguments: {
+        team_id: away_team_id,
+        season,
+        current: '1',
       },
-    }, {revalidate: revalidateSeconds});
+    }, { revalidate: revalidateSeconds });
   }
- 
+
 
   return (
     <>
       <Client home_team_id={home_team_id} away_team_id={away_team_id} teams={teams} season={season} subview={subview} />
     </>
   );
-}
+};
 
 export default Server;

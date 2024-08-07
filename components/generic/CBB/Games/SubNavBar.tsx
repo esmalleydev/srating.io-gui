@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material';
@@ -18,7 +19,7 @@ export { getHeaderHeight };
 
 const SubNavBar = () => {
   const theme = useTheme();
-  const { width }= useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions() as Dimensions;
 
   const subHeaderHeight = getHeaderHeight();
   let subHeaderTop = 112;
@@ -31,27 +32,27 @@ const SubNavBar = () => {
 
 
   const subHeaderStyle: React.CSSProperties = {
-    'height': subHeaderHeight,
-    'position': 'fixed',
-    'backgroundColor': theme.palette.background.default,
-    'zIndex': 1100,
-    'display': 'flex',
-    'justifyContent': 'space-between',
-    'alignItems': 'center',
-    'top': subHeaderTop,
-    'left': 0,
-    'right': 0,
+    height: subHeaderHeight,
+    position: 'fixed',
+    backgroundColor: theme.palette.background.default,
+    zIndex: 1100,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    top: subHeaderTop,
+    left: 0,
+    right: 0,
   };
 
 
   return (
     <div style = {subHeaderStyle}>
-      <div style = {{'minWidth': minSubBarWidth, 'display': 'flex'}}>
+      <div style = {{ minWidth: minSubBarWidth, display: 'flex' }}>
         <ConferencePicker />
         <StatusPicker />
       </div>
 
-      <div style = {{'minWidth': minSubBarWidth, 'display': 'flex', 'alignItems': 'center'}}>
+      <div style = {{ minWidth: minSubBarWidth, display: 'flex', alignItems: 'center' }}>
         <RefreshCounter />
         <ViewPicker />
         <AdditionalOptions />

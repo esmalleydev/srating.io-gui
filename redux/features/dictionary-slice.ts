@@ -1,9 +1,11 @@
-import { Conference } from "@/types/cbb";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Conference, Division, Organization } from '@/types/cbb';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-
+// todo upate for new dictionary values
 type InitialState = {
   conference: Conference[],
+  organization: Organization[],
+  division: Division[],
 };
 
 const initialState = {
@@ -12,15 +14,15 @@ const initialState = {
 
 export const dictionary = createSlice({
   name: 'dictionary',
-  initialState: initialState,
+  initialState,
   reducers: {
-    load: (state, action: PayloadAction<Object>) => {
+    load: (state, action: PayloadAction<object>) => {
       const data = action.payload;
-      for (let table in data) {
+      for (const table in data) {
         state[table] = data[table];
       }
     },
-  }
+  },
 });
 
 export const { load } = dictionary.actions;

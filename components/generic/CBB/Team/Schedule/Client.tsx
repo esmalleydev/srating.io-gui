@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 
@@ -11,46 +12,69 @@ import { useAppSelector } from '@/redux/hooks';
 import Differentials from './Differentials';
 import { useScrollContext } from '@/contexts/scrollContext';
 import TableView from './TableView';
+import { Skeleton } from '@mui/material';
 
 
-const Client = ({cbb_games, team_id}: {cbb_games: object, team_id: string}) => {
+/**
+ * The main wrapper div for all the contents
+ */
+const Contents = ({ children }): React.JSX.Element => {
   const paddingTop = getNavHeaderHeight() + getSubNavHeaderHeight();
+  return (
+    <div style = {{ padding: `${paddingTop}px 5px 20px 5px` }}>
+      {children}
+    </div>
+  );
+};
 
-  const predictions = useAppSelector(state => state.teamReducer.schedulePredictions);
-  const scheduleView = useAppSelector(state => state.teamReducer.scheduleView);
-  const showScheduleDifferentials = useAppSelector(state => state.teamReducer.showScheduleDifferentials);
-  const visibleScheduleDifferentials = useAppSelector(state => state.teamReducer.visibleScheduleDifferentials);
-  const scrollTop = useAppSelector(state => state.teamReducer.scrollTop);
+const ClientSkeleton = () => {
+  const skeletons: React.JSX.Element[] = [];
+  for (let i = 0; i < 30; i++) {
+    skeletons.push(<Skeleton style = {{
+      width: '100%', height: 40, margin: '5px 0px', padding: 0, transform: 'initial',
+    }} />);
+  }
+  return (
+    <Contents>
+      {skeletons}
+    </Contents>
+  );
+};
 
-  const [firstRender, setFirstRender] = useState(true);
+const Client = ({ cbb_games, team_id }: {cbb_games: object, team_id: string}) => {
+  const predictions = useAppSelector((state) => state.teamReducer.schedulePredictions);
+  const scheduleView = useAppSelector((state) => state.teamReducer.scheduleView);
+  const showScheduleDifferentials = useAppSelector((state) => state.teamReducer.showScheduleDifferentials);
+  const visibleScheduleDifferentials = useAppSelector((state) => state.teamReducer.visibleScheduleDifferentials);
+  // const scrollTop = useAppSelector((state) => state.teamReducer.scrollTop);
 
-  const scrollRef  = useScrollContext();
-  
-  
-  useEffect(() => {
-    if (firstRender && scrollRef && scrollRef.current) {
-      // todo something in nextjs is setting scrolltop to zero right after this, so trick it by putting this at the end of the execution :)
-      // https://github.com/vercel/next.js/issues/20951
-      setTimeout(function() {
-        if (scrollRef && scrollRef.current) {
-          scrollRef.current.scrollTop = scrollTop;
-        }
-      }, 1);
-    }
-    setFirstRender(false);
-  });
+  // const [firstRender, setFirstRender] = useState(true);
 
-  for (let cbb_game_id in predictions) {
+  // const scrollRef = useScrollContext();
+
+
+  // useEffect(() => {
+  //   if (firstRender && scrollRef && scrollRef.current) {
+  //     // todo something in nextjs is setting scrolltop to zero right after this, so trick it by putting this at the end of the execution :)
+  //     // https://github.com/vercel/next.js/issues/20951
+  //     setTimeout(() => {
+  //       if (scrollRef && scrollRef.current) {
+  //         scrollRef.current.scrollTop = scrollTop;
+  //       }
+  //     }, 1);
+  //   }
+  //   setFirstRender(false);
+  // });
+
+  for (const cbb_game_id in predictions) {
     if (cbb_game_id in cbb_games) {
       Object.assign(cbb_games[cbb_game_id], predictions[cbb_game_id]);
     }
   }
 
-  let sorted_games = Object.values(cbb_games || {}).sort(function (a, b) {
-    return a.start_date < b.start_date ? -1 : 1;
-  });
+  const sorted_games = Object.values(cbb_games || {}).sort((a, b) => (a.start_date < b.start_date ? -1 : 1));
 
-  let gameContainers: React.JSX.Element[] = [];
+  const gameContainers: React.JSX.Element[] = [];
   let lastMonth: number | null = null;
   let lastYear: number | null = null;
   let nextUpcomingGame: boolean | null = null;
@@ -61,29 +85,29 @@ const Client = ({cbb_games, team_id}: {cbb_games: object, team_id: string}) => {
       if (!lastMonth || lastMonth < +moment(cbb_game.start_datetime).format('MM') || (lastYear && lastYear < +moment(cbb_game.start_datetime).format('YYYY'))) {
         lastMonth = +moment(cbb_game.start_datetime).format('MM');
         lastYear = +moment(cbb_game.start_datetime).format('YYYY');
-        gameContainers.push(<Typography key = {i} style = {{'marginBottom': '10px', 'padding': 5}} variant = 'body1'>{moment(cbb_game.start_datetime).format('MMMM')}</Typography>);
+        gameContainers.push(<Typography key = {i} style = {{ marginBottom: '10px', padding: 5 }} variant = 'body1'>{moment(cbb_game.start_datetime).format('MMMM')}</Typography>);
       }
-  
+
       if (!nextUpcomingGame && (cbb_game.status === 'pre' || cbb_game.status === 'live')) {
         nextUpcomingGame = true;
-        gameContainers.push(<Tile key = {cbb_game.cbb_game_id} /*scroll = {true}*/ cbb_game = {cbb_game} team = {cbb_game.teams[team_id]} />);
+        gameContainers.push(<Tile key = {cbb_game.cbb_game_id} cbb_game = {cbb_game} team = {cbb_game.teams[team_id]} />);
       } else {
         gameContainers.push(<Tile key = {cbb_game.cbb_game_id} cbb_game = {cbb_game} team = {cbb_game.teams[team_id]} />);
       }
-  
+
       if (showScheduleDifferentials || visibleScheduleDifferentials.indexOf(cbb_game.cbb_game_id) > -1) {
-        gameContainers.push(<Differentials key = {'differentials-' + cbb_game.cbb_game_id}  cbb_game = {cbb_game} team_id = {team_id} />)
+        gameContainers.push(<Differentials key = {`differentials-${cbb_game.cbb_game_id}`} cbb_game = {cbb_game} team_id = {team_id} />);
       }
     }
   } else if (scheduleView === 'table') {
-    gameContainers.push(<TableView sorted_games = {sorted_games} team_id = {team_id} />)
+    gameContainers.push(<TableView sorted_games = {sorted_games} team_id = {team_id} />);
   }
 
   return (
-    <div style = {{'padding': paddingTop + 'px 5px 20px 5px'}}>
+    <Contents>
       {gameContainers}
-    </div>
+    </Contents>
   );
-}
+};
 
-export default Client;
+export { Client, ClientSkeleton };

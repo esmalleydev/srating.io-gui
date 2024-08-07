@@ -55,10 +55,10 @@ const AdditionalOptions = () => {
             Sort order
           </MenuItem>
         </Menu>
-        <SortPicker open = {sortPickerOpen} openHandler = {() => {setSortPickerOpen(true);}} closeHandler = {() => {setSortPickerOpen(false);}} />
-        <RankPicker open = {rankPickerOpen} openHandler = {() => {setRankPickerOpen(true);}} closeHandler = {() => {setRankPickerOpen(false);}} />
+        <SortPicker open = {sortPickerOpen} openHandler = {() => { setSortPickerOpen(true); }} closeHandler = {() => { setSortPickerOpen(false); }} />
+        <RankPicker open = {rankPickerOpen} openHandler = {() => { setRankPickerOpen(true); }} closeHandler = {() => { setRankPickerOpen(false); }} />
     </div>
   );
-}
+};
 
 export default AdditionalOptions;

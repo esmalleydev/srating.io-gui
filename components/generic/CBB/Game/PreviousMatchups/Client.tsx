@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState } from 'react';
 import { Chip, Typography, Paper, Skeleton } from '@mui/material';
 
@@ -6,25 +7,59 @@ import HelperCBB from '@/components/helpers/CBB';
 
 import PreviousMatchupTile from '@/components/generic/CBB/Game/PreviousMatchups/Tile';
 import { Game, Games } from '@/types/cbb';
+import { getNavHeaderHeight } from '../NavBar';
+import { getSubNavHeaderHeight } from '../SubNavBar';
+import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
+import { headerBarHeight } from '@/components/generic/Header';
+import { LinearProgress } from '@mui/material';
+
+/**
+ * The main wrapper div for all the contents
+ */
+const Contents = ({ children }): React.JSX.Element => {
+  return (
+    <div style = {{ padding: '0px 10px' }}>
+      {children}
+    </div>
+  );
+};
 
 
+const ClientSkeleton = () => {
+  const paddingTop = getNavHeaderHeight() + getSubNavHeaderHeight();
 
-const Client = ({cbb_game, previousMatchups}: {cbb_game: Game, previousMatchups: Games}) => {
+  const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 160;
+  return (
+    <Contents>
+      <div style = {{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: `calc(100vh - ${heightToRemove}px)`,
+      }}>
+        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+      </div>
+    </Contents>
+  );
+};
 
+
+const Client = ({ cbb_game, previousMatchups }: {cbb_game: Game, previousMatchups: Games}) => {
   const [showAllPreviousMatchups, setShowAllPreviousMatchups] = useState(false);
 
   const CBB = new HelperCBB({
-    'cbb_game': cbb_game,
+    cbb_game,
   });
 
 
-  let previousMatchupContainers: React.JSX.Element[] = [];
-  let summaryPRContainers: React.JSX.Element[] = [];
+  const previousMatchupContainers: React.JSX.Element[] = [];
+  const summaryPRContainers: React.JSX.Element[] = [];
 
   if (previousMatchups && !Object.keys(previousMatchups).length) {
-    previousMatchupContainers.push(<Paper elevation = {3} style = {{'padding': 10}}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
+    previousMatchupContainers.push(<Paper elevation = {3} style = {{ padding: 10 }}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
   } else if (previousMatchups) {
-    const sorted_matchups: Game[] = Object.values(previousMatchups).sort(function(a, b) {
+    const sorted_matchups: Game[] = Object.values(previousMatchups).sort((a, b) => {
       return a.start_date > b.start_date ? -1 : 1;
     });
 
@@ -41,40 +76,40 @@ const Client = ({cbb_game, previousMatchups}: {cbb_game: Game, previousMatchups:
     let lastThree_away_points = 0;
 
     for (let i = 0; i < sorted_matchups.length; i++) {
-      const game_ = sorted_matchups[i];
+      const sortedGame = sorted_matchups[i];
 
       const lastThree = sorted_matchups.length > 3 && i < 3;
 
-      if (game_.away_score > game_.home_score) {
-        if (game_.away_team_id === cbb_game.away_team_id) {
+      if (sortedGame.away_score > sortedGame.home_score) {
+        if (sortedGame.away_team_id === cbb_game.away_team_id) {
           away_wins++;
-          away_points += game_.away_score - game_.home_score;
+          away_points += sortedGame.away_score - sortedGame.home_score;
           if (lastThree) {
             lastThree_away_wins++;
-            lastThree_away_points += game_.away_score - game_.home_score;
+            lastThree_away_points += sortedGame.away_score - sortedGame.home_score;
           }
-        } else if (game_.away_team_id === cbb_game.home_team_id) {
+        } else if (sortedGame.away_team_id === cbb_game.home_team_id) {
           home_wins++;
-          home_points += game_.away_score - game_.home_score;
+          home_points += sortedGame.away_score - sortedGame.home_score;
           if (lastThree) {
             lastThree_home_wins++;
-            lastThree_home_points += game_.away_score - game_.home_score;
+            lastThree_home_points += sortedGame.away_score - sortedGame.home_score;
           }
         }
-      } else if (game_.away_score < game_.home_score) {
-        if (game_.home_team_id === cbb_game.away_team_id) {
+      } else if (sortedGame.away_score < sortedGame.home_score) {
+        if (sortedGame.home_team_id === cbb_game.away_team_id) {
           away_wins++;
-          away_points += game_.home_score - game_.away_score;
+          away_points += sortedGame.home_score - sortedGame.away_score;
           if (lastThree) {
             lastThree_away_wins++;
-            lastThree_away_points += game_.home_score - game_.away_score;
+            lastThree_away_points += sortedGame.home_score - sortedGame.away_score;
           }
-        } else if (game_.home_team_id === cbb_game.home_team_id) {
+        } else if (sortedGame.home_team_id === cbb_game.home_team_id) {
           home_wins++;
-          home_points += game_.home_score - game_.away_score;
+          home_points += sortedGame.home_score - sortedGame.away_score;
           if (lastThree) {
             lastThree_home_wins++;
-            lastThree_home_points += game_.home_score - game_.away_score;
+            lastThree_home_points += sortedGame.home_score - sortedGame.away_score;
           }
         }
       }
@@ -86,10 +121,10 @@ const Client = ({cbb_game, previousMatchups}: {cbb_game: Game, previousMatchups:
     if (sorted_matchups.length > 3 && !showAllPreviousMatchups) {
       previousMatchupContainers.push(<Chip
         key = 'showAllPreviousMatchups'
-        sx = {{'margin': '5px 5px 10px 5px'}}
+        sx = {{ margin: '5px 5px 10px 5px' }}
         variant = 'outlined'
         color = 'primary'
-        onClick = {() => {setShowAllPreviousMatchups(true);}}
+        onClick = {() => { setShowAllPreviousMatchups(true); }}
         label = '+ Match-ups'
       />);
     }
@@ -111,31 +146,18 @@ const Client = ({cbb_game, previousMatchups}: {cbb_game: Game, previousMatchups:
 
 
   return (
-    <div style = {{'padding': '0px 10px'}}>
+    <Contents>
       <Typography variant = 'body1'>Previous match-ups</Typography>
-      {/* {
-        previousMatchups === null ?
-        <Paper elevation = {3} style = {{'padding': 10}}>
-          <div>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-            <Typography variant = 'h5'><Skeleton /></Typography>
-          </div>
-        </Paper>
-        : ''
-      } */}
       {summaryPRContainers}
       {
         previousMatchups !== null ?
-        <div style = {{'display': 'flex', 'flexWrap': 'wrap', 'alignItems': 'center'}}>
+        <div style = {{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
           {previousMatchupContainers}
         </div>
-        : ''
+          : ''
       }
-    </div>
+    </Contents>
   );
-}
+};
 
-export default Client;
+export { Client, ClientSkeleton };

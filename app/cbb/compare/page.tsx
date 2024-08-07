@@ -3,10 +3,8 @@
 import { Metadata, ResolvingMetadata } from 'next';
 
 import HelperCBB from '@/components/helpers/CBB';
-import HelperTeam from '@/components/helpers/Team';
 
 import { useServerAPI } from '@/components/serverAPI';
-import { Team } from '@/types/cbb';
 import { unstable_noStore } from 'next/cache';
 import SubNavBar from '@/components/generic/CBB/Compare/SubNavBar';
 
@@ -14,16 +12,20 @@ import HeaderClientWrapper from '@/components/generic/CBB/Compare/Header/ClientW
 import HeaderClient from '@/components/generic/CBB/Compare/Header/Client';
 
 import PlayerClientWrapper from '@/components/generic/CBB/Compare/Player/ClientWrapper';
+import { ClientSkeleton as PlayerClientSkeleton } from '@/components/generic/CBB/Compare/Player/Client';
 import PlayerServer from '@/components/generic/CBB/Compare/Player/Server';
 
 import TeamClientWrapper from '@/components/generic/CBB/Compare/Team/ClientWrapper';
+import { ClientSkeleton as TeamClientSkeleton } from '@/components/generic/CBB/Compare/Team/Client';
 import TeamServer from '@/components/generic/CBB/Compare/Team/Server';
 
 import TrendsClientWrapper from '@/components/generic/CBB/Compare/Trends/ClientWrapper';
+import { ClientSkeleton as TrendsClientSkeleton } from '@/components/generic/CBB/Compare/Trends/Client';
 import TrendsServer from '@/components/generic/CBB/Compare/Trends/Server';
 
 import PredictionLoader from '@/components/generic/CBB/Compare/Team/PredictionLoader';
 import Splash from '@/components/generic/CBB/Compare/Splash';
+import { Suspense } from 'react';
 
 type Props = {
   params: { team_ids: string };
@@ -33,11 +35,10 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
-
   return {
-    title: 'sRating | Compare tool' ,
+    title: 'sRating | Compare tool',
     description: 'Compare any college basketball team statistics',
     openGraph: {
       title: 'Compare tool',
@@ -47,12 +48,12 @@ export async function generateMetadata(
       card: 'summary',
       title: 'Compare tool',
       description: 'Compare any college basketball team statistics',
-    }
+    },
   };
-};
+}
 
 
-async function getData({ season, home_team_id, away_team_id}) {
+async function getData({ season, home_team_id, away_team_id }) {
   unstable_noStore();
   const revalidateSeconds = 60 * 60 * 2; // 2 hours
 
@@ -60,35 +61,35 @@ async function getData({ season, home_team_id, away_team_id}) {
 
   if (home_team_id) {
     const homeTeam = await useServerAPI({
-      'class': 'team',
-      'function': 'loadTeamMini',
-      'arguments': {
-        'team_id': home_team_id,
-        'season': season,
+      class: 'team',
+      function: 'loadTeam',
+      arguments: {
+        team_id: home_team_id,
+        season,
       },
-    }, {revalidate: revalidateSeconds});
+    }, { revalidate: revalidateSeconds });
 
     teams[home_team_id] = homeTeam;
   }
 
   if (away_team_id) {
     const awayTeam = await useServerAPI({
-      'class': 'team',
-      'function': 'loadTeamMini',
-      'arguments': {
-        'team_id': away_team_id,
-        'season': season,
+      class: 'team',
+      function: 'loadTeam',
+      arguments: {
+        team_id: away_team_id,
+        season,
       },
-    }, {revalidate: revalidateSeconds});
+    }, { revalidate: revalidateSeconds });
 
     teams[away_team_id] = awayTeam;
   }
 
   return teams;
-};
+}
 
 
-export default async function Page({ /*params,*/ searchParams }) {
+export default async function Page({ /* params, */ searchParams }) {
   const CBB = new HelperCBB();
 
   const home_team_id: string | null = searchParams?.home_team_id || null;
@@ -97,8 +98,8 @@ export default async function Page({ /*params,*/ searchParams }) {
   const view: string = searchParams?.view || 'team';
   const subview: string | null = searchParams?.subview || null;
   const neutral_site: boolean = (+searchParams?.neutral === 1);
-  
-  const teams = await getData({ season, home_team_id, away_team_id});
+
+  const teams = await getData({ season, home_team_id, away_team_id });
 
   // todo wrap the whole thing in a client component to set redux values?
 
@@ -115,27 +116,33 @@ export default async function Page({ /*params,*/ searchParams }) {
           {
             view === 'team' ?
               <TeamClientWrapper>
-                <TeamServer home_team_id = {home_team_id} away_team_id = {away_team_id} season = {season} teams = {teams} subview = {subview} />
+                <Suspense fallback = {<TeamClientSkeleton />}>
+                  <TeamServer home_team_id = {home_team_id} away_team_id = {away_team_id} season = {season} teams = {teams} subview = {subview} />
+                </Suspense>
               </TeamClientWrapper>
-            : ''
+              : ''
           }
           {
             view === 'player' ?
               <PlayerClientWrapper>
-                <PlayerServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
+                <Suspense fallback = {<PlayerClientSkeleton />}>
+                  <PlayerServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
+                </Suspense>
               </PlayerClientWrapper>
-            : ''
+              : ''
           }
           {
             view === 'trends' ?
               <TrendsClientWrapper>
-                <TrendsServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
+                <Suspense fallback = {<TrendsClientSkeleton />}>
+                  <TrendsServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
+                </Suspense>
               </TrendsClientWrapper>
-            : ''
+              : ''
           }
         </>
       }
       <PredictionLoader season = {season} neutral_site = {neutral_site} />
     </div>
   );
-};
+}

@@ -1,38 +1,50 @@
 'use server';
+
+import { cache, Suspense } from 'react';
 import { Metadata, ResolvingMetadata } from 'next';
 
+import { useServerAPI } from '@/components/serverAPI';
 import HelperCBB from '@/components/helpers/CBB';
-import HeaderClientWrapper from '@/components/generic/CBB/Game/Header/HeaderClientWrapper';
-import HeaderServer from '@/components/generic/CBB/Game/Header/HeaderServer';
+
+import HeaderClientWrapper from '@/components/generic/CBB/Game/Header/ClientWrapper';
+import HeaderServer from '@/components/generic/CBB/Game/Header/Server';
 
 import NavBar from '@/components/generic/CBB/Game/NavBar';
 import SubNavBar from '@/components/generic/CBB/Game/SubNavBar';
 
 import BoxscoreClientWrapper from '@/components/generic/CBB/Game/Boxscore/ClientWrapper';
+import { ClientSkeleton as BoxscoreClientSkeleton } from '@/components/generic/CBB/Game/Boxscore/Client';
 import BoxscoreServer from '@/components/generic/CBB/Game/Boxscore/Server';
 
 import ChartsClientWrapper from '@/components/generic/CBB/Game/Charts/ClientWrapper';
+import { ClientSkeleton as ChartsClientSkeleton } from '@/components/generic/CBB/Game/Charts/Client';
 import ChartsServer from '@/components/generic/CBB/Game/Charts/Server';
 
 import PlaybyplayClientWrapper from '@/components/generic/CBB/Game/Playbyplay/ClientWrapper';
+import { ClientSkeleton as PlaybyplayClientSkeleton } from '@/components/generic/CBB/Game/Playbyplay/Client';
 import PlaybyplayServer from '@/components/generic/CBB/Game/Playbyplay/Server';
 
 import MatchupClientWrapper from '@/components/generic/CBB/Game/Matchup/ClientWrapper';
 import MatchupServer from '@/components/generic/CBB/Game/Matchup/Server';
 
 import StatCompareClientWrapper from '@/components/generic/CBB/Game/StatCompare/ClientWrapper';
+import { ClientSkeleton as StatCompareClientSkeleton } from '@/components/generic/CBB/Game/StatCompare/Client';
 import StatCompareServer from '@/components/generic/CBB/Game/StatCompare/Server';
 
 import PreviousMatchupsClientWrapper from '@/components/generic/CBB/Game/PreviousMatchups/ClientWrapper';
+import { ClientSkeleton as PreviousMatchupsClientSkeleton } from '@/components/generic/CBB/Game/PreviousMatchups/Client';
 import PreviousMatchupsServer from '@/components/generic/CBB/Game/PreviousMatchups/Server';
 
 import OddsClientWrapper from '@/components/generic/CBB/Game/Odds/ClientWrapper';
+import { ClientSkeleton as OddsClientSkeleton } from '@/components/generic/CBB/Game/Odds/Client';
 import OddsServer from '@/components/generic/CBB/Game/Odds/Server';
 
 import MomentumClientWrapper from '@/components/generic/CBB/Game/Momentum/ClientWrapper';
+import { ClientSkeleton as MomentumClientSkeleton } from '@/components/generic/CBB/Game/Momentum/Client';
 import MomentumServer from '@/components/generic/CBB/Game/Momentum/Server';
-import { cache } from 'react';
-import { useServerAPI } from '@/components/serverAPI';
+
+import { ClientSkeleton as StatsLoaderSkeleton } from '@/components/generic/CBB/Game/StatsLoader/Client';
+import StatsLoaderServer from '@/components/generic/CBB/Game/StatsLoader/Server';
 
 
 type Props = {
@@ -43,51 +55,52 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const cbb_game = await getCachedData({params});
+  const cbb_game = await getCachedData({ params });
 
   const CBB = new HelperCBB({
-    'cbb_game': cbb_game,
+    cbb_game,
   });
 
   return {
-    title: 'sRating | ' + CBB.getTeamName('away') + ' vs ' + CBB.getTeamName('home'),
+    title: `sRating | ${CBB.getTeamName('away')} vs ${CBB.getTeamName('home')}`,
     description: 'View predicted result, matchup, trends, odds',
     openGraph: {
-      title: CBB.getTeamName('away') + ' vs ' + CBB.getTeamName('home'),
+      title: `${CBB.getTeamName('away')} vs ${CBB.getTeamName('home')}`,
       description: 'View predicted result, matchup, trends, odds',
     },
     twitter: {
       card: 'summary',
-      title: CBB.getTeamName('away') + ' vs ' + CBB.getTeamName('home'),
-      description: 'View predicted result, matchup, trends, odds'
-    }
+      title: `${CBB.getTeamName('away')} vs ${CBB.getTeamName('home')}`,
+      description: 'View predicted result, matchup, trends, odds',
+    },
   };
-};
+}
 
 // todo test this
 const getCachedData = cache(getData);
 
 async function getData({ params }) {
   const revalidateSeconds = 5 * 60;
-  const cbb_game_id = params.cbb_game_id;
+  const { cbb_game_id } = params;
   const cbb_games = await useServerAPI({
-    'class': 'cbb_game',
-    'function': 'getGames',
-    'arguments': {
-      'cbb_game_id': cbb_game_id,
-    }
-  }, {revalidate: revalidateSeconds});
+    class: 'cbb_game',
+    function: 'getGames',
+    arguments: {
+      cbb_game_id,
+    },
+  }, { revalidate: revalidateSeconds });
 
   return cbb_games[cbb_game_id] || {};
 }
 
 export default async function Page({ params, searchParams }) {
-  const cbb_game = await getCachedData({params});
+  const { cbb_game_id } = params;
+  const cbb_game = await getCachedData({ params });
 
   const CBB = new HelperCBB({
-    'cbb_game': cbb_game,
+    cbb_game,
   });
 
 
@@ -111,34 +124,80 @@ export default async function Page({ params, searchParams }) {
 
   const getContent = () => {
     if (view === 'game_details' && subview === 'boxscore') {
-      return (<BoxscoreClientWrapper><BoxscoreServer cbb_game = {cbb_game} /></BoxscoreClientWrapper>);
-    } else if (view === 'game_details' && subview === 'charts') {
-      return (<ChartsClientWrapper><ChartsServer cbb_game = {cbb_game} /></ChartsClientWrapper>);
-    } else if (view === 'game_details' && subview === 'pbp') {
-      return (<PlaybyplayClientWrapper><PlaybyplayServer cbb_game = {cbb_game} /></PlaybyplayClientWrapper>);
-    } else if (view === 'matchup') {
+      return (
+        <BoxscoreClientWrapper>
+          <Suspense fallback = {<BoxscoreClientSkeleton />}>
+            <BoxscoreServer cbb_game = {cbb_game} />
+          </Suspense>
+        </BoxscoreClientWrapper>);
+    } if (view === 'game_details' && subview === 'charts') {
+      return (
+        <ChartsClientWrapper>
+          <Suspense fallback = {<ChartsClientSkeleton />}>
+            <ChartsServer cbb_game = {cbb_game} />
+          </Suspense>
+        </ChartsClientWrapper>
+      );
+    } if (view === 'game_details' && subview === 'pbp') {
+      return (
+        <PlaybyplayClientWrapper>
+          <Suspense fallback = {<PlaybyplayClientSkeleton />}>
+            <PlaybyplayServer cbb_game = {cbb_game} />
+          </Suspense>
+        </PlaybyplayClientWrapper>
+      );
+    } if (view === 'matchup') {
       return (<MatchupClientWrapper><MatchupServer cbb_game = {cbb_game} /></MatchupClientWrapper>);
-    } else if (view === 'trends' && subview === 'stat_compare') {
-      return (<StatCompareClientWrapper><StatCompareServer cbb_game = {cbb_game} /></StatCompareClientWrapper>);
-    } else if (view === 'trends' && subview === 'previous_matchups') {
-      return (<PreviousMatchupsClientWrapper><PreviousMatchupsServer cbb_game = {cbb_game} /></PreviousMatchupsClientWrapper>);
-    } else if (view === 'trends' && subview === 'odds') {
-      return (<OddsClientWrapper><OddsServer cbb_game = {cbb_game} /></OddsClientWrapper>);
-    } else if (view === 'trends' && subview === 'momentum') {
-      return (<MomentumClientWrapper><MomentumServer cbb_game = {cbb_game} /></MomentumClientWrapper>);
+    } if (view === 'trends' && subview === 'stat_compare') {
+      return (
+        <StatCompareClientWrapper>
+          <Suspense fallback = {<StatCompareClientSkeleton />}>
+            <StatCompareServer cbb_game = {cbb_game} />
+          </Suspense>
+        </StatCompareClientWrapper>
+      );
+    } if (view === 'trends' && subview === 'previous_matchups') {
+      return (
+        <PreviousMatchupsClientWrapper>
+          <Suspense fallback = {<PreviousMatchupsClientSkeleton />}>
+            <PreviousMatchupsServer cbb_game = {cbb_game} />
+          </Suspense>
+        </PreviousMatchupsClientWrapper>
+      );
+    } if (view === 'trends' && subview === 'odds') {
+      return (
+        <OddsClientWrapper>
+          <Suspense fallback = {<OddsClientSkeleton />}>
+            <OddsServer cbb_game = {cbb_game} />
+          </Suspense>
+        </OddsClientWrapper>
+      );
+    } if (view === 'trends' && subview === 'momentum') {
+      return (
+        <MomentumClientWrapper>
+          <Suspense fallback = {<MomentumClientSkeleton />}>
+            <MomentumServer cbb_game = {cbb_game} />
+          </Suspense>
+        </MomentumClientWrapper>
+      );
     }
     return null;
   };
 
   return (
     <div>
+      <Suspense key = {cbb_game_id} fallback = {<StatsLoaderSkeleton />}>
+        <StatsLoaderServer cbb_game_ids = {[cbb_game_id]} />
+      </Suspense>
       <HeaderClientWrapper cbb_game = {cbb_game}>
-        <HeaderServer cbb_game_id = {cbb_game.cbb_game_id} />
+        <Suspense>
+          <HeaderServer cbb_game_id = {cbb_game_id} />
+        </Suspense>
       </HeaderClientWrapper>
       <NavBar view = {selectedViewTab} tabOrder = {tabOrder} />
       <SubNavBar subview = {selectSubViewTab} view = {selectedViewTab} tabOrder = {subTabOrder} />
       {getContent()}
     </div>
   );
-};
+}
 

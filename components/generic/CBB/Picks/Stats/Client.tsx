@@ -1,15 +1,18 @@
 'use client';
+
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
-import { Typography, Skeleton, Card, CardContent } from '@mui/material';
+import {
+  Typography, Skeleton, Card, CardContent,
+} from '@mui/material';
 
-import Color from  '@/components/utils/Color';
+import Color from '@/components/utils/Color';
 
 
 const getCardStyle = () => {
-  return {'width': 300, 'minWidth': 200, 'margin': '5px'};
+  return { width: 300, minWidth: 200, margin: '5px' };
 };
 
 const getOrderedBuckets = () => {
@@ -18,7 +21,7 @@ const getOrderedBuckets = () => {
 
 export { getCardStyle, getOrderedBuckets };
 
-  
+
 const Client = ({ date, stats }) => {
   const theme = useTheme();
 
@@ -63,9 +66,9 @@ const Client = ({ date, stats }) => {
         } else if (orderedBuckets[i] === 'yesterday') {
           label = yesterdayDate;
         } else if (orderedBuckets[i] === 'week') {
-          label = weekDate + ' - ' + todayDate;
+          label = `${weekDate} - ${todayDate}`;
         } else if (orderedBuckets[i] === 'month') {
-          label = monthDate + ' - ' + todayDate;
+          label = `${monthDate} - ${todayDate}`;
         } else if (orderedBuckets[i] === 'season') {
           label = 'Season';
         }
@@ -73,8 +76,8 @@ const Client = ({ date, stats }) => {
         const subBucketContainers: React.JSX.Element[] = [];
 
         for (let s = 0; s < subBuckets.length; s++) {
-          const subTotalGames = stats[orderedBuckets[i]][subBuckets[s] + '_total'];
-          const subCorrectGames = stats[orderedBuckets[i]][subBuckets[s] + '_correct'];
+          const subTotalGames = stats[orderedBuckets[i]][`${subBuckets[s]}_total`];
+          const subCorrectGames = stats[orderedBuckets[i]][`${subBuckets[s]}_correct`];
 
           totalGames += subTotalGames;
           totalCorrect += subCorrectGames;
@@ -88,16 +91,16 @@ const Client = ({ date, stats }) => {
           let subPercentCorrect: number = 0;
           if (subTotalGames) {
             subPercentCorrect = +((subCorrectGames / subTotalGames) * 100).toFixed(2);
-            let color = Color.lerpColor(worstColor, bestColor, (+subPercentCorrect / 100));
+            const color = Color.lerpColor(worstColor, bestColor, (+subPercentCorrect / 100));
             subColorStyle.color = color;
           }
 
           subBucketContainers.push(
-            <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
+            <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>{subBucketsLabels[subBuckets[s]]}</Typography>
-              <Typography sx={subColorStyle}>{subTotalGames ? subPercentCorrect + '%' : '-'}</Typography>
-              <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }}>({subCorrectGames + ' / ' + subTotalGames})</Typography>
-            </div>
+              <Typography sx={subColorStyle}>{subTotalGames ? `${subPercentCorrect}%` : '-'}</Typography>
+              <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }}>({`${subCorrectGames} / ${subTotalGames}`})</Typography>
+            </div>,
           );
         }
 
@@ -110,7 +113,7 @@ const Client = ({ date, stats }) => {
         let percentCorrect: number = 0;
         if (totalGames) {
           percentCorrect = +((totalCorrect / totalGames) * 100).toFixed(2);
-          let color = Color.lerpColor(worstColor, bestColor, (+percentCorrect / 100));
+          const color = Color.lerpColor(worstColor, bestColor, (+percentCorrect / 100));
           colorStyle.color = color;
         }
 
@@ -120,24 +123,24 @@ const Client = ({ date, stats }) => {
             <CardContent>
               <Typography sx={{ fontSize: 14, textAlign: 'center' }} color = 'info.dark' gutterBottom>{label}</Typography>
               {
-              totalGames === 0 ? <Typography sx = {Object.assign({'textAlign': 'center'}, colorStyle)} variant="h5" component="div">-</Typography> : 
+              totalGames === 0 ? <Typography sx = {({ textAlign: 'center', ...colorStyle })} variant="h5" component="div">-</Typography> :
               <>
-                <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
+                <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>Predicted win %</Typography>
                   <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'center' }} color="text.secondary" gutterBottom>Accuracy</Typography>
                   <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} color="text.secondary" gutterBottom># games</Typography>
                 </div>
                 {subBucketContainers}
-                <div style = {{'display': 'flex', 'justifyContent': 'space-between'}}>
+                <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>Total:</Typography>
-                  <Typography sx={colorStyle}>{percentCorrect + '%'}</Typography>
+                  <Typography sx={colorStyle}>{`${percentCorrect}%`}</Typography>
                   <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }}>({totalCorrect} / {totalGames})</Typography>
                 </div>
               </>
               }
             </CardContent>
-          </Card>
-        )
+          </Card>,
+        );
       }
     }
   }
@@ -145,13 +148,13 @@ const Client = ({ date, stats }) => {
 
   return (
     <>
-      <div style = {{'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'center'}}>
+      <div style = {{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
         {
           statContainers.length === 0 ? skeletonContainers : statContainers
         }
       </div>
     </>
   );
-}
+};
 
 export default Client;

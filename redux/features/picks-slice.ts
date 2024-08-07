@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // import HelperCBB from '@/components/helpers/CBB';
 
 
@@ -7,6 +7,13 @@ type InitialState = {
   picksLoading: boolean,
   picks: object,
   dates_checked: object,
+  gameStats: object,
+  gameStatsLoading: boolean,
+};
+
+type ActionPayload<K extends keyof InitialState> = {
+  key: K;
+  value: InitialState[K];
 };
 
 const initialState = {
@@ -14,12 +21,17 @@ const initialState = {
   picksLoading: false,
   picks: {},
   dates_checked: {},
+  gameStats: {},
+  gameStatsLoading: true,
 } as InitialState;
 
 export const picks = createSlice({
   name: 'picks',
-  initialState: initialState,
+  initialState,
   reducers: {
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      state[action.payload.key] = action.payload.value;
+    },
     setScrollTop: (state, action: PayloadAction<number>) => {
       state.scrollTop = action.payload;
     },
@@ -39,8 +51,8 @@ export const picks = createSlice({
         state.dates_checked = {};
       }
     },
-  }
+  },
 });
 
-export const { setScrollTop, setPicksLoading, updatePicks, updateDateChecked, clearDatesChecked } = picks.actions;
+export const { setScrollTop, setPicksLoading, updatePicks, updateDateChecked, clearDatesChecked, setDataKey } = picks.actions;
 export default picks.reducer;

@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
@@ -26,8 +27,8 @@ import CancelCircleIcon from '@mui/icons-material/Cancel';
 
 // import CompareStatistic from '../../CompareStatistic';
 import HelperCBB from '@/components/helpers/CBB';
-import utilsArrayifer from  '@/components/utils/Arrayifer';
-import utilsSorter from  '@/components/utils/Sorter';
+import utilsArrayifer from '@/components/utils/Arrayifer';
+import utilsSorter from '@/components/utils/Sorter';
 
 
 import { useAppSelector } from '@/redux/hooks';
@@ -47,20 +48,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  'backgroundColor': theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
 }));
 
 // todo this somestimes triggers a double load in PicksLoader.... something with having const picksLoading = useAppSelector(state => state.picksReducer.picksLoading);, makes it double render
-  
-const Calculator = ({ cbb_games, date}) => {
+
+const Calculator = ({ cbb_games, date }) => {
   const router = useRouter();
   const theme = useTheme();
   const { width } = useWindowDimensions() as Dimensions;
 
-  const picksData = useAppSelector(state => state.picksReducer.picks);
-  const picksLoading = useAppSelector(state => state.picksReducer.picksLoading);
-  const displayRank = useAppSelector(state => state.displayReducer.rank);
-  
+  const picksData = useAppSelector((state) => state.picksReducer.picks);
+  const picksLoading = useAppSelector((state) => state.picksReducer.picksLoading);
+  const displayRank = useAppSelector((state) => state.displayReducer.rank);
+
   const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('start_timestamp');
@@ -71,16 +72,16 @@ const Calculator = ({ cbb_games, date}) => {
   const [inputPercentage, setPercentage] = useState<string | number>(75);
 
   if (picksLoading) {
-    return (<div style={{'textAlign': 'center'}}><CircularProgress /></div>);
+    return (<div style={{ textAlign: 'center' }}><CircularProgress /></div>);
   }
 
-  for (let cbb_game_id in picksData) {
+  for (const cbb_game_id in picksData) {
     if (cbb_game_id in cbb_games) {
       cbb_games[cbb_game_id].home_team_rating = picksData[cbb_game_id].home_team_rating;
       cbb_games[cbb_game_id].away_team_rating = picksData[cbb_game_id].away_team_rating;
     }
   }
-  
+
 
   const bet = inputBet ? +inputBet : 0;
   const oddsMin = inputOddsMin ? +inputOddsMin : 0;
@@ -99,8 +100,8 @@ const Calculator = ({ cbb_games, date}) => {
 
 
   const handleGame = (cbb_game_id) => {
-    router.push('/cbb/games/' + cbb_game_id);
-  }
+    router.push(`/cbb/games/${cbb_game_id}`);
+  };
 
   const headCells = [
     {
@@ -141,7 +142,7 @@ const Calculator = ({ cbb_games, date}) => {
     },
   ];
 
-  let rows = [];
+  const rows = [];
 
   let correct = 0;
   let total_final = 0;
@@ -156,10 +157,10 @@ const Calculator = ({ cbb_games, date}) => {
   let future_winnings_100 = 0;
   let future_games_won_75 = 0;
   let future_winnings_75 = 0;
-  let future_winnings_75_array: number[] = [];
+  const future_winnings_75_array: number[] = [];
   let future_games_won_60 = 0;
   let future_winnings_60 = 0;
-  let future_winnings_60_array: number[] = [];
+  const future_winnings_60_array: number[] = [];
 
   type parlayOdds = {
     [cbb_game_id: string] : {
@@ -167,11 +168,11 @@ const Calculator = ({ cbb_games, date}) => {
       cbb_game_id: string;
     };
   }
-  let cbb_game_id_x_parlay_odds: parlayOdds = {};
-  let future_cbb_game_id_x_parlay_odds: parlayOdds = {};
-  let rows_picked: tableRow[] = [];
-  let rows_other: tableRow[] = [];
-  let rows_parlay: tableRow[] = [];
+  const cbb_game_id_x_parlay_odds: parlayOdds = {};
+  const future_cbb_game_id_x_parlay_odds: parlayOdds = {};
+  const rows_picked: tableRow[] = [];
+  const rows_other: tableRow[] = [];
+  const rows_parlay: tableRow[] = [];
 
 
   type tableRow = {
@@ -189,32 +190,32 @@ const Calculator = ({ cbb_games, date}) => {
 
   /**
    * Get a common, formatted row for our tables
-   * @param {Object} cbb_game 
+   * @param {Object} cbb_game
    * @return Object
    */
   const getFormattedGameRow = (cbb_game: Game) => {
     const CBB = new HelperCBB({
-      'cbb_game': cbb_game,
+      cbb_game,
     });
 
     const row: tableRow = {
-      'cbb_game_id': cbb_game.cbb_game_id,
-      'game': cbb_game,
-      'start_timestamp': cbb_game.start_timestamp,
-      'pick': cbb_game.home_team_rating >= cbb_game.away_team_rating ? 'home' : 'away',
-      'pick_ml': cbb_game.home_team_rating >= cbb_game.away_team_rating ? CBB.getPreML('home') : CBB.getPreML('away'),
-      'vs': cbb_game.home_team_rating >= cbb_game.away_team_rating ? 'away' : 'home', // the opposite of the pick :)
-      'vs_ml': cbb_game.home_team_rating >= cbb_game.away_team_rating ? CBB.getPreML('away') : CBB.getPreML('home'),
-      'chance': parseFloat(((cbb_game.home_team_rating >= cbb_game.away_team_rating ? cbb_game.home_team_rating : cbb_game.away_team_rating) * 100).toString()).toFixed(0),
-      'result': (cbb_game.home_team_rating >= cbb_game.away_team_rating && cbb_game.home_score > cbb_game.away_score) || (cbb_game.away_team_rating >= cbb_game.home_team_rating && cbb_game.home_score < cbb_game.away_score),
-      'status': cbb_game.status,
+      cbb_game_id: cbb_game.cbb_game_id,
+      game: cbb_game,
+      start_timestamp: cbb_game.start_timestamp,
+      pick: cbb_game.home_team_rating >= cbb_game.away_team_rating ? 'home' : 'away',
+      pick_ml: cbb_game.home_team_rating >= cbb_game.away_team_rating ? CBB.getPreML('home') : CBB.getPreML('away'),
+      vs: cbb_game.home_team_rating >= cbb_game.away_team_rating ? 'away' : 'home', // the opposite of the pick :)
+      vs_ml: cbb_game.home_team_rating >= cbb_game.away_team_rating ? CBB.getPreML('away') : CBB.getPreML('home'),
+      chance: parseFloat(((cbb_game.home_team_rating >= cbb_game.away_team_rating ? cbb_game.home_team_rating : cbb_game.away_team_rating) * 100).toString()).toFixed(0),
+      result: (cbb_game.home_team_rating >= cbb_game.away_team_rating && cbb_game.home_score > cbb_game.away_score) || (cbb_game.away_team_rating >= cbb_game.home_team_rating && cbb_game.home_score < cbb_game.away_score),
+      status: cbb_game.status,
     };
 
     return row;
   };
 
-  for (let cbb_game_id in cbb_games) {
-    let game = cbb_games[cbb_game_id];
+  for (const cbb_game_id in cbb_games) {
+    const game = cbb_games[cbb_game_id];
 
 
     const row = getFormattedGameRow(game);
@@ -243,21 +244,21 @@ const Calculator = ({ cbb_games, date}) => {
         game.odds.pre_game_money_line_away &&
         game.odds.pre_game_money_line_home
       ) {
-        let pick = game.home_team_rating >= game.away_team_rating ? 'home' : 'away';
-        let odds = game.odds['pre_game_money_line_' + pick];
+        const pick = game.home_team_rating >= game.away_team_rating ? 'home' : 'away';
+        const odds = game.odds[`pre_game_money_line_${pick}`];
 
         if (
           odds >= oddsMin &&
           odds <= oddsMax &&
-          (game[pick + '_team_rating'] * 100) >= winChance
+          (game[`${pick}_team_rating`] * 100) >= winChance
         ) {
           games_bet++;
           total_bet += bet;
 
 
           cbb_game_id_x_parlay_odds[cbb_game_id] = {
-            'odds': convertAmericanToDecimal(+odds),
-            'cbb_game_id': cbb_game_id,
+            odds: convertAmericanToDecimal(+odds),
+            cbb_game_id,
           };
 
           if (was_correct) {
@@ -273,13 +274,13 @@ const Calculator = ({ cbb_games, date}) => {
       game.odds.pre_game_money_line_away &&
       game.odds.pre_game_money_line_home
     ) {
-      let pick = game.home_team_rating >= game.away_team_rating ? 'home' : 'away';
-      let odds = game.odds['pre_game_money_line_' + pick];
+      const pick = game.home_team_rating >= game.away_team_rating ? 'home' : 'away';
+      const odds = game.odds[`pre_game_money_line_${pick}`];
 
       if (
         odds >= oddsMin &&
         odds <= oddsMax &&
-        (game[pick + '_team_rating'] * 100) >= winChance
+        (game[`${pick}_team_rating`] * 100) >= winChance
       ) {
         rows_picked.push(row);
         future_games_bet++;
@@ -287,8 +288,8 @@ const Calculator = ({ cbb_games, date}) => {
 
 
         future_cbb_game_id_x_parlay_odds[cbb_game_id] = {
-          'odds': convertAmericanToDecimal(+odds),
-          'cbb_game_id': cbb_game_id,
+          odds: convertAmericanToDecimal(+odds),
+          cbb_game_id,
         };
 
         future_winnings_100 += bet + ((100 / Math.abs(odds)) * bet);
@@ -306,7 +307,7 @@ const Calculator = ({ cbb_games, date}) => {
   // Fanduel seems to be the sportsbook with the highest round robin limit
 
   // todo in the future attempt to pick the best mix of 20 games, or splits into multiples of 20?
-  
+
 
   // let parlay_cbb_game_ids = Object.keys(cbb_game_id_x_parlay_odds);
   let parlay_cbb_game_ids: string[] = [];
@@ -314,8 +315,7 @@ const Calculator = ({ cbb_games, date}) => {
   if (Object.keys(cbb_game_id_x_parlay_odds).length <= 20) {
     parlay_cbb_game_ids = Object.keys(cbb_game_id_x_parlay_odds);
   } else {
-    let sorted_parlay = Object.values(cbb_game_id_x_parlay_odds).sort(function(a,b) {
-
+    const sorted_parlay = Object.values(cbb_game_id_x_parlay_odds).sort((a, b) => {
       if (a.odds < b.odds) {
         return -1;
       }
@@ -350,7 +350,7 @@ const Calculator = ({ cbb_games, date}) => {
       let parlay_won = true;
       let parlay_odds: number | null = null;
       for (let j = 0; j < combinations[i].length; j++) {
-        let game = cbb_games[combinations[i][j]];
+        const game = cbb_games[combinations[i][j]];
         if (
           (
             game.home_score < game.away_score &&
@@ -366,12 +366,12 @@ const Calculator = ({ cbb_games, date}) => {
           break;
         }
 
-        let odds = cbb_game_id_x_parlay_odds[combinations[i][j]].odds;
+        const { odds } = cbb_game_id_x_parlay_odds[combinations[i][j]];
 
         if (parlay_odds === null) {
           parlay_odds = odds;
         } else {
-          parlay_odds = parlay_odds * odds;
+          parlay_odds *= odds;
         }
       }
 
@@ -387,8 +387,7 @@ const Calculator = ({ cbb_games, date}) => {
   if (Object.keys(future_cbb_game_id_x_parlay_odds).length <= 20) {
     future_parlay_cbb_game_ids = Object.keys(future_cbb_game_id_x_parlay_odds);
   } else {
-    let sorted_parlay = Object.values(future_cbb_game_id_x_parlay_odds).sort(function(a,b) {
-
+    const sorted_parlay = Object.values(future_cbb_game_id_x_parlay_odds).sort((a, b) => {
       if (a.odds < b.odds) {
         return -1;
       }
@@ -408,9 +407,9 @@ const Calculator = ({ cbb_games, date}) => {
     }
   }
 
-  let randomized_60 = Arrayifer.shuffle(future_parlay_cbb_game_ids);
+  const randomized_60 = Arrayifer.shuffle(future_parlay_cbb_game_ids);
 
-  let future_cbb_game_id_x_loss_60 = {};
+  const future_cbb_game_id_x_loss_60 = {};
 
   for (let i = 0; i < randomized_60.length; i++) {
     if (
@@ -423,8 +422,8 @@ const Calculator = ({ cbb_games, date}) => {
     future_cbb_game_id_x_loss_60[randomized_60[i]] = true;
   }
 
-  let randomized_75 = Arrayifer.shuffle(future_parlay_cbb_game_ids);
-  let future_cbb_game_id_x_loss_75 = {};
+  const randomized_75 = Arrayifer.shuffle(future_parlay_cbb_game_ids);
+  const future_cbb_game_id_x_loss_75 = {};
 
   for (let i = 0; i < randomized_75.length; i++) {
     if (
@@ -456,7 +455,7 @@ const Calculator = ({ cbb_games, date}) => {
       let parlay_won_60 = true;
       let parlay_odds: number | null = null;
       for (let j = 0; j < combinations[i].length; j++) {
-        let game = cbb_games[combinations[i][j]];
+        const game = cbb_games[combinations[i][j]];
         if (game.cbb_game_id in future_cbb_game_id_x_loss_75) {
           // parlay lost, this team did not win
           parlay_won_75 = false;
@@ -467,12 +466,12 @@ const Calculator = ({ cbb_games, date}) => {
           parlay_won_60 = false;
         }
 
-        let odds = future_cbb_game_id_x_parlay_odds[combinations[i][j]].odds;
+        const { odds } = future_cbb_game_id_x_parlay_odds[combinations[i][j]];
 
         if (parlay_odds === null) {
           parlay_odds = odds;
         } else {
-          parlay_odds = parlay_odds * odds;
+          parlay_odds *= odds;
         }
       }
 
@@ -495,7 +494,7 @@ const Calculator = ({ cbb_games, date}) => {
 
 
   if (future_winnings_75_array.length) {
-    let randomized = Arrayifer.shuffle(future_winnings_75_array);
+    const randomized = Arrayifer.shuffle(future_winnings_75_array);
 
     for (let i = 0; i < randomized.length; i++) {
       if ((future_games_won_75 / future_games_bet) < 0.7) {
@@ -506,7 +505,7 @@ const Calculator = ({ cbb_games, date}) => {
   }
 
   if (future_winnings_60_array.length) {
-    let randomized = Arrayifer.shuffle(future_winnings_60_array);
+    const randomized = Arrayifer.shuffle(future_winnings_60_array);
 
     for (let i = 0; i < randomized.length; i++) {
       if ((future_games_won_60 / future_games_bet) < 0.6) {
@@ -524,12 +523,12 @@ const Calculator = ({ cbb_games, date}) => {
   };
 
 
-  let row_index = 0;
+  const row_index = 0;
 
   const getStyledTableRow = (row) => {
-    let teamCellStyle: React.CSSProperties = {
-      'cursor': 'pointer',
-      'whiteSpace': 'nowrap',
+    const teamCellStyle: React.CSSProperties = {
+      cursor: 'pointer',
+      whiteSpace: 'nowrap',
     };
 
     if (width < 800) {
@@ -539,7 +538,7 @@ const Calculator = ({ cbb_games, date}) => {
     }
 
     const CBB = new HelperCBB({
-      'cbb_game': row.game,
+      cbb_game: row.game,
     });
 
     const pickRank = CBB.getTeamRank(row.pick, displayRank);
@@ -552,15 +551,15 @@ const Calculator = ({ cbb_games, date}) => {
         key={row.cbb_game_id}
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       >
-        <TableCell sx = {teamCellStyle} onClick={() => {handleGame(row.cbb_game_id)}}><div>{pickRank ? <sup style = {{'marginRight': '5px'}}>{pickRank}</sup> : ''}{pickName}</div></TableCell>
+        <TableCell sx = {teamCellStyle} onClick={() => { handleGame(row.cbb_game_id); }}><div>{pickRank ? <sup style = {{ marginRight: '5px' }}>{pickRank}</sup> : ''}{pickName}</div></TableCell>
         <TableCell>{row.pick_ml}</TableCell>
         <TableCell>{CBB.getStartTime()}</TableCell>
-        <TableCell sx = {{'cursor': 'pointer', 'whiteSpace': 'nowrap'}} onClick={() => {handleGame(row.cbb_game_id)}}>
-          <div>{vsRank ? <sup style = {{'marginRight': '5px'}}>{vsRank}</sup> : ''}{vsName}</div>
+        <TableCell sx = {{ cursor: 'pointer', whiteSpace: 'nowrap' }} onClick={() => { handleGame(row.cbb_game_id); }}>
+          <div>{vsRank ? <sup style = {{ marginRight: '5px' }}>{vsRank}</sup> : ''}{vsName}</div>
         </TableCell>
         <TableCell>{row.vs_ml}</TableCell>
         <TableCell>{row.chance}</TableCell>
-        <TableCell>{row.status === 'final' ? (row.result ? <CheckCircleIcon color = 'success' /> : <CancelCircleIcon sx = {{'color': 'red'}} />) : '-'}</TableCell>
+        <TableCell>{row.status === 'final' ? (row.result ? <CheckCircleIcon color = 'success' /> : <CancelCircleIcon sx = {{ color: 'red' }} />) : '-'}</TableCell>
       </StyledTableRow>
     );
   };
@@ -572,7 +571,7 @@ const Calculator = ({ cbb_games, date}) => {
 
   if (date < now && games_bet > 2 && roundRobinLength) {
     for (let i = 0; i < parlay_cbb_game_ids.length; i++) {
-      let game = cbb_games[parlay_cbb_game_ids[i]];
+      const game = cbb_games[parlay_cbb_game_ids[i]];
 
       const row = getFormattedGameRow(game);
 
@@ -580,7 +579,7 @@ const Calculator = ({ cbb_games, date}) => {
     }
   } else if (date === now && future_games_bet > 2 && roundRobinLength) {
     for (let i = 0; i < future_parlay_cbb_game_ids.length; i++) {
-      let game = cbb_games[future_parlay_cbb_game_ids[i]];
+      const game = cbb_games[future_parlay_cbb_game_ids[i]];
 
       const row = getFormattedGameRow(game);
 
@@ -599,16 +598,16 @@ const Calculator = ({ cbb_games, date}) => {
             <TableRow>
               {headCells.map((headCell) => (
                 <StyledTableHeadCell
-                  sx = {headCell.id == 'pick' ? {'position': 'sticky', 'left': 0, 'z-index': 3} : {}}
+                  sx = {headCell.id == 'pick' ? { position: 'sticky', left: 0, 'z-index': 3 } : {}}
                   key={headCell.id}
                   align={'left'}
-                  style = {{'padding': headCell.padding}}
+                  style = {{ padding: headCell.padding }}
                   sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
                 >
                   <TableSortLabel
                     active={orderBy === headCell.id}
                     direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
-                    onClick={() => {handleSort(headCell.id)}}
+                    onClick={() => { handleSort(headCell.id); }}
                   >
                     {headCell.label}
                     {orderBy === headCell.id ? (
@@ -629,16 +628,16 @@ const Calculator = ({ cbb_games, date}) => {
     );
   };
 
-  
 
 
-  let betting_contents: React.JSX.Element[] = [];
 
-  const bettingInput = <TextField style = {{'margin': 10}} id="bet" label="Bet" variant="standard" value={inputBet} onChange = {(e) => {setBet(e.target.value)}} />;
-  const oddsMinInput = <TextField style = {{'margin': 10}} id="oddsMin" label="Odd Min" variant="standard" value={inputOddsMin} onChange = {(e) => {setOddsMin(e.target.value)}} />;
-  const oddsMaxInput = <TextField style = {{'margin': 10}} id="oddsmax" label="Odds Max" variant="standard" value={inputOddsMax} onChange = {(e) => {setOddsMax(e.target.value)}} />;
-  const percentageInput = <TextField style = {{'margin': 10}} id="precentage" label="Win chance %" variant="standard" value={inputPercentage} onChange = {(e) => {setPercentage(e.target.value)}} />;
-  const roundRobinInput = <TextField style = {{'margin': 10}} id="roundRobin" label="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(e) => {setRoundRobin(e.target.value)}} />;
+  const betting_contents: React.JSX.Element[] = [];
+
+  const bettingInput = <TextField style = {{ margin: 10 }} id="bet" label="Bet" variant="standard" value={inputBet} onChange = {(e) => { setBet(e.target.value); }} />;
+  const oddsMinInput = <TextField style = {{ margin: 10 }} id="oddsMin" label="Odd Min" variant="standard" value={inputOddsMin} onChange = {(e) => { setOddsMin(e.target.value); }} />;
+  const oddsMaxInput = <TextField style = {{ margin: 10 }} id="oddsmax" label="Odds Max" variant="standard" value={inputOddsMax} onChange = {(e) => { setOddsMax(e.target.value); }} />;
+  const percentageInput = <TextField style = {{ margin: 10 }} id="precentage" label="Win chance %" variant="standard" value={inputPercentage} onChange = {(e) => { setPercentage(e.target.value); }} />;
+  const roundRobinInput = <TextField style = {{ margin: 10 }} id="roundRobin" label="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(e) => { setRoundRobin(e.target.value); }} />;
 
   if (total_bet || date < now) {
     betting_contents.push(bettingInput);
@@ -669,13 +668,13 @@ const Calculator = ({ cbb_games, date}) => {
 
     if (future_total_bet) {
       betting_contents.push(<Typography variant = 'body1'>Total bet: ${future_total_bet} ({future_games_bet} games)</Typography>);
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{'marginTop': '10px'}}>100% win rate</Typography>);
+      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>100% win rate</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_winnings_100.toString()).toFixed(2)} ({future_games_bet} games) (100%)</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_winnings_100 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_100 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{'marginTop': '10px'}}>Random ~75% win rate</Typography>);
+      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>Random ~75% win rate</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_winnings_75.toString()).toFixed(2)} ({future_games_won_75} games) ({((future_games_won_75 / future_games_bet) * 100).toFixed(2)}%)</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_winnings_75 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_75 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{'marginTop': '10px'}}>Random ~60% win rate</Typography>);
+      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>Random ~60% win rate</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_winnings_60.toString()).toFixed(2)} ({future_games_won_60} games) ({((future_games_won_60 / future_games_bet) * 100).toFixed(2)}%)</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_winnings_60 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_60 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
@@ -684,23 +683,23 @@ const Calculator = ({ cbb_games, date}) => {
     betting_contents.push(roundRobinInput);
 
     if (future_games_bet > 2 && roundRobinLength) {
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{'marginTop': '10px'}}>100% win rate</Typography>);
+      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>100% win rate</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_100.toString()).toFixed(2)} ({future_roundRobinWins_100}  ({((future_roundRobinWins_100 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_100 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_100 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
 
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{'marginTop': '10px'}}>75% win rate</Typography>);
+      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>75% win rate</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_75.toString()).toFixed(2)} ({future_roundRobinWins_75}  ({((future_roundRobinWins_75 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_75 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_75 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
 
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{'marginTop': '10px'}}>60% win rate</Typography>);
+      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>60% win rate</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_60.toString()).toFixed(2)} ({future_roundRobinWins_60}  ({((future_roundRobinWins_60 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
       betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_60 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_60 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
   } else {
-    betting_contents.push(<Typography variant = 'subtitle1' style = {{'textAlign': 'center'}} color = 'text.secondary'>No betting info available yet... come back soon!</Typography>);
+    betting_contents.push(<Typography variant = 'subtitle1' style = {{ textAlign: 'center' }} color = 'text.secondary'>No betting info available yet... come back soon!</Typography>);
     // if (date > now) {
     //   betting_contents.push(<Typography variant = 'caption' style = {{'textAlign': 'center'}} color = 'text.secondary'>Picks for games greater than today may change</Typography>);
     // }
@@ -712,7 +711,7 @@ const Calculator = ({ cbb_games, date}) => {
     <>
       {
         picksLoading ?
-          <Paper elevation = {3} style = {{'padding': 10}}>
+          <Paper elevation = {3} style = {{ padding: 10 }}>
             <div>
               <Typography variant = 'h5'><Skeleton /></Typography>
               <Typography variant = 'h5'><Skeleton /></Typography>
@@ -721,24 +720,24 @@ const Calculator = ({ cbb_games, date}) => {
               <Typography variant = 'h5'><Skeleton /></Typography>
             </div>
           </Paper>
-        :
+          :
         <div>
           <Typography variant="h5">Betting calculator</Typography>
-          <Paper elevation={3} style = {{'padding': '10px', 'margin': '0px 0px 10px 0px'}}>
+          <Paper elevation={3} style = {{ padding: '10px', margin: '0px 0px 10px 0px' }}>
             {betting_contents}
           </Paper>
           {total_final ? <div>Total win rate: {Math.round((correct / total_final) * 100)}% {correct} / {total_final}</div> : ''}
-          {rows_parlay.length ? <Typography style = {{'margin': '10px 0px'}} variant="h5">Parley games</Typography> : ''}
+          {rows_parlay.length ? <Typography style = {{ margin: '10px 0px' }} variant="h5">Parley games</Typography> : ''}
           {rows_parlay.length ? getTable(parleyRowsConatiner) : ''}
-          {rows_picked.length ? <Typography style = {{'margin': '10px 0px'}} variant="h5">Games bet</Typography> : ''}
+          {rows_picked.length ? <Typography style = {{ margin: '10px 0px' }} variant="h5">Games bet</Typography> : ''}
           {rows_picked.length ? getTable(pickedRowsContainer) : ''}
-          {rows_other.length ? <Typography style = {{'margin': '10px 0px'}} variant="h5">Other games</Typography> : ''}
+          {rows_other.length ? <Typography style = {{ margin: '10px 0px' }} variant="h5">Other games</Typography> : ''}
           {rows_other.length ? getTable(otherRowsConatiner) : ''}
         </div>
       }
     </>
   );
-}
+};
 
 
 

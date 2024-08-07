@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useTransition } from 'react';
 
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
@@ -31,7 +32,7 @@ const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
         current.set('neutral', (+newValue).toString());
         const search = current.toString();
-        const query = search ? `?${search}` : "";
+        const query = search ? `?${search}` : '';
         router.replace(`${pathName}${query}`);
         dispatch(setNeutralSite(newValue));
       }
@@ -74,6 +75,6 @@ const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
         </Menu>
     </div>
   );
-}
+};
 
 export default TeamAdditionalOptions;

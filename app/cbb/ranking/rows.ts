@@ -1,10 +1,10 @@
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from '@/redux/hooks';
 import HelperCBB from '@/components/helpers/CBB';
 
 
 export interface rowDatatype {
   team_id: string;
-  composite_rank: number;
+  rank: number;
   ap_rank: number,
   name: string;
   wins: string;
@@ -155,18 +155,20 @@ export interface rowDatatype {
   committed_team_name?: string;
   committed_conference_id?: string;
   team_name?: string;
-};
+}
 
-export const getRowsData = ({ data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, season }) => {
-  let rows: rowDatatype[] = [];
+export const getRowsData = ({
+  data, rankView, selectedConferences, positions, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, season,
+}) => {
+  const rows: rowDatatype[] = [];
   let lastUpdated: string | null = null;
 
   const CBB = new HelperCBB();
 
-  const conferences = useAppSelector(state => state.dictionaryReducer.conference);
+  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
-  for (let id in data) {
-    let row = data[id];
+  for (const id in data) {
+    const row = data[id];
 
     if (
       rankView !== 'transfer' &&
@@ -206,13 +208,13 @@ export const getRowsData = ({ data, rankView, selectedConferences, positions, hi
 
     if (rankView === 'team') {
       if (
-        row.last_ranking &&
+        row.cbb_statistic_ranking &&
         (
           !lastUpdated ||
-          lastUpdated < row.last_ranking.date_of_rank
+          lastUpdated < row.cbb_statistic_ranking.date_of_rank
         )
       ) {
-        lastUpdated = row.last_ranking.date_of_rank;
+        lastUpdated = row.cbb_statistic_ranking.date_of_rank;
       }
 
       const wins = (row.cbb_statistic_ranking && row.cbb_statistic_ranking.wins) || 0;
@@ -221,153 +223,153 @@ export const getRowsData = ({ data, rankView, selectedConferences, positions, hi
       const conflosses = (row.cbb_statistic_ranking && row.cbb_statistic_ranking.conflosses) || 0;
 
       rows.push({
-        'team_id': row.team_id,
-        'composite_rank': (row.last_ranking && row.last_ranking.composite_rank) || null,
-        'ap_rank': (row.last_ranking && row.last_ranking.ap_rank) || null,
-        'name': row.alt_name,
-        'wins': wins + '-' + losses,
-        'conf_record': confwins + '-' + conflosses,
-        'confwins': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwins) || null,
-        'conflosses': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.conflosses) || null,
-        'neutralwins': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutralwins) || null,
-        'neutrallosses': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutrallosses) || null,
-        'homewins': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homewins) || null,
-        'homelosses': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homelosses) || null,
-        'roadwins': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadwins) || null,
-        'roadlosses': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadlosses) || null,
-        'streak': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.streak) || null,
-        'win_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.win_margin) || null,
-        'loss_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.loss_margin) || null,
-        'confwin_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwin_margin) || null,
-        'confloss_margin': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confloss_margin) || null,
-        'conference_id': row.conference_id,
-        'conference_code': (row.conference_id && row.conference_id in conferences) ? conferences[row.conference_id].code : 'Unknown',
-        'elo_rank': (row.last_ranking && row.last_ranking.elo_rank) || null,
-        'elo': row.elo,
+        team_id: row.team_id,
+        rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.rank) || null,
+        ap_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.ap_rank) || null,
+        name: row.alt_name,
+        wins: `${wins}-${losses}`,
+        conf_record: `${confwins}-${conflosses}`,
+        confwins: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwins) || null,
+        conflosses: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.conflosses) || null,
+        neutralwins: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutralwins) || null,
+        neutrallosses: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutrallosses) || null,
+        homewins: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homewins) || null,
+        homelosses: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homelosses) || null,
+        roadwins: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadwins) || null,
+        roadlosses: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadlosses) || null,
+        streak: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.streak) || null,
+        win_margin: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.win_margin) || null,
+        loss_margin: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.loss_margin) || null,
+        confwin_margin: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwin_margin) || null,
+        confloss_margin: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confloss_margin) || null,
+        conference_id: row.conference_id,
+        conference_code: (row.conference_id && row.conference_id in conferences) ? conferences[row.conference_id].code : 'Unknown',
+        elo_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_rank) || null,
+        elo: row.elo,
         // 'adj_elo': +(+row.elo - +(row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos)).toFixed(2),
-        'kenpom_rank': (row.last_ranking && row.last_ranking.kenpom_rank) || null,
-        'srs_rank': (row.last_ranking && row.last_ranking.srs_rank) || null,
-        'net_rank': (row.last_ranking && row.last_ranking.net_rank) || null,
-        'coaches_rank': (row.last_ranking && row.last_ranking.coaches_rank) || null,
-        'field_goal': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal) || null,
-        'field_goal_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_attempts) || null,
-        'field_goal_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_percentage) || null,
-        'two_point_field_goal': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal) || null,
-        'two_point_field_goal_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_attempts) || null,
-        'two_point_field_goal_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_percentage) || null,
-        'three_point_field_goal': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal) || null,
-        'three_point_field_goal_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_attempts) || null,
-        'three_point_field_goal_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_percentage) || null,
-        'free_throws': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throws) || null,
-        'free_throw_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throw_attempts) || null,
-        'free_throw_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throw_percentage) || null,
-        'offensive_rebounds': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.offensive_rebounds) || null,
-        'defensive_rebounds': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.defensive_rebounds) || null,
-        'total_rebounds': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.total_rebounds) || null,
-        'assists': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.assists) || null,
-        'steals': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.steals) || null,
-        'blocks': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.blocks) || null,
-        'turnovers': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.turnovers) || null,
-        'fouls': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.fouls) || null,
-        'points': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.points) || null,
-        'possessions': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.possessions) || null,
-        'pace': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.pace) || null,
-        'offensive_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.offensive_rating) || null,
-        'defensive_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.defensive_rating) || null,
-        'efficiency_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.efficiency_rating) || null,
-        'adjusted_efficiency_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.adjusted_efficiency_rating) || null,
-        'opponent_field_goal': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal) || null,
-        'opponent_field_goal_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_attempts) || null,
-        'opponent_field_goal_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_percentage) || null,
-        'opponent_two_point_field_goal': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal) || null,
-        'opponent_two_point_field_goal_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_attempts) || null,
-        'opponent_two_point_field_goal_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_percentage) || null,
-        'opponent_three_point_field_goal': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal) || null,
-        'opponent_three_point_field_goal_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_attempts) || null,
-        'opponent_three_point_field_goal_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_percentage) || null,
-        'opponent_free_throws': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throws) || null,
-        'opponent_free_throw_attempts': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throw_attempts) || null,
-        'opponent_free_throw_percentage': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throw_percentage) || null,
-        'opponent_offensive_rebounds': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rebounds) || null,
-        'opponent_defensive_rebounds': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rebounds) || null,
-        'opponent_total_rebounds': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_total_rebounds) || null,
-        'opponent_assists': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_assists) || null,
-        'opponent_steals': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_steals) || null,
-        'opponent_blocks': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_blocks) || null,
-        'opponent_turnovers': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_turnovers) || null,
-        'opponent_fouls': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_fouls) || null,
-        'opponent_points': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_points) || null,
-        'opponent_possessions': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_possessions) || null,
-        'opponent_offensive_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rating) || null,
-        'opponent_defensive_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rating) || null,
-        'opponent_efficiency_rating': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating) || null, // this is aSOS in the gui
-        'elo_sos': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos) || null, // this is eSoS
-        'confwins_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwins_rank) || null,
-        'conflosses_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.conflosses_rank) || null,
-        'neutralwins_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutralwins_rank) || null,
-        'neutrallosses_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutrallosses_rank) || null,
-        'homewins_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homewins_rank) || null,
-        'homelosses_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homelosses_rank) || null,
-        'roadwins_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadwins_rank) || null,
-        'roadlosses_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadlosses_rank) || null,
-        'streak_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.streak_rank) || null,
-        'win_margin_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.win_margin_rank) || null,
-        'loss_margin_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.loss_margin_rank) || null,
-        'confwin_margin_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwin_margin_rank) || null,
-        'confloss_margin_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confloss_margin_rank) || null,
-        'field_goal_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_rank) || null,
-        'field_goal_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_attempts_rank) || null,
-        'field_goal_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_percentage_rank) || null,
-        'two_point_field_goal_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_rank) || null,
-        'two_point_field_goal_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_attempts_rank) || null,
-        'two_point_field_goal_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_percentage_rank) || null,
-        'three_point_field_goal_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_rank) || null,
-        'three_point_field_goal_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_attempts_rank) || null,
-        'three_point_field_goal_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_percentage_rank) || null,
-        'free_throws_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throws_rank) || null,
-        'free_throw_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throw_attempts_rank) || null,
-        'free_throw_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throw_percentage_rank) || null,
-        'offensive_rebounds_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.offensive_rebounds_rank) || null,
-        'defensive_rebounds_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.defensive_rebounds_rank) || null,
-        'total_rebounds_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.total_rebounds_rank) || null,
-        'assists_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.assists_rank) || null,
-        'steals_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.steals_rank) || null,
-        'blocks_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.blocks_rank) || null,
-        'turnovers_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.turnovers_rank) || null,
-        'fouls_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.fouls_rank) || null,
-        'points_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.points_rank) || null,
-        'possessions_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.possessions_rank) || null,
-        'pace_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.pace_rank) || null,
-        'offensive_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.offensive_rating_rank) || null,
-        'defensive_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.defensive_rating_rank) || null,
-        'efficiency_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.efficiency_rating_rank) || null,
-        'adjusted_efficiency_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.adjusted_efficiency_rating_rank) || null,
-        'opponent_field_goal_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_rank) || null,
-        'opponent_field_goal_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_attempts_rank) || null,
-        'opponent_field_goal_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_percentage_rank) || null,
-        'opponent_two_point_field_goal_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_rank) || null,
-        'opponent_two_point_field_goal_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_attempts_rank) || null,
-        'opponent_two_point_field_goal_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_percentage_rank) || null,
-        'opponent_three_point_field_goal_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_rank) || null,
-        'opponent_three_point_field_goal_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_attempts_rank) || null,
-        'opponent_three_point_field_goal_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_percentage_rank) || null,
-        'opponent_free_throws_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throws_rank) || null,
-        'opponent_free_throw_attempts_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throw_attempts_rank) || null,
-        'opponent_free_throw_percentage_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throw_percentage_rank) || null,
-        'opponent_offensive_rebounds_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rebounds_rank) || null,
-        'opponent_defensive_rebounds_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rebounds_rank) || null,
-        'opponent_total_rebounds_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_total_rebounds_rank) || null,
-        'opponent_assists_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_assists_rank) || null,
-        'opponent_steals_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_steals_rank) || null,
-        'opponent_blocks_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_blocks_rank) || null,
-        'opponent_turnovers_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_turnovers_rank) || null,
-        'opponent_fouls_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_fouls_rank) || null,
-        'opponent_points_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_points_rank) || null,
-        'opponent_possessions_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_possessions_rank) || null,
-        'opponent_offensive_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rating_rank) || null,
-        'opponent_defensive_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rating_rank) || null,
-        'opponent_efficiency_rating_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating_rank) || null,
-        'elo_sos_rank': (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos_rank) || null,
+        kenpom_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.kenpom_rank) || null,
+        srs_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.srs_rank) || null,
+        net_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.net_rank) || null,
+        coaches_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.coaches_rank) || null,
+        field_goal: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal) || null,
+        field_goal_attempts: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_attempts) || null,
+        field_goal_percentage: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_percentage) || null,
+        two_point_field_goal: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal) || null,
+        two_point_field_goal_attempts: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_attempts) || null,
+        two_point_field_goal_percentage: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_percentage) || null,
+        three_point_field_goal: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal) || null,
+        three_point_field_goal_attempts: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_attempts) || null,
+        three_point_field_goal_percentage: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_percentage) || null,
+        free_throws: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throws) || null,
+        free_throw_attempts: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throw_attempts) || null,
+        free_throw_percentage: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throw_percentage) || null,
+        offensive_rebounds: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.offensive_rebounds) || null,
+        defensive_rebounds: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.defensive_rebounds) || null,
+        total_rebounds: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.total_rebounds) || null,
+        assists: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.assists) || null,
+        steals: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.steals) || null,
+        blocks: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.blocks) || null,
+        turnovers: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.turnovers) || null,
+        fouls: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.fouls) || null,
+        points: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.points) || null,
+        possessions: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.possessions) || null,
+        pace: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.pace) || null,
+        offensive_rating: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.offensive_rating) || null,
+        defensive_rating: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.defensive_rating) || null,
+        efficiency_rating: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.efficiency_rating) || null,
+        adjusted_efficiency_rating: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.adjusted_efficiency_rating) || null,
+        opponent_field_goal: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal) || null,
+        opponent_field_goal_attempts: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_attempts) || null,
+        opponent_field_goal_percentage: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_percentage) || null,
+        opponent_two_point_field_goal: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal) || null,
+        opponent_two_point_field_goal_attempts: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_attempts) || null,
+        opponent_two_point_field_goal_percentage: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_percentage) || null,
+        opponent_three_point_field_goal: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal) || null,
+        opponent_three_point_field_goal_attempts: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_attempts) || null,
+        opponent_three_point_field_goal_percentage: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_percentage) || null,
+        opponent_free_throws: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throws) || null,
+        opponent_free_throw_attempts: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throw_attempts) || null,
+        opponent_free_throw_percentage: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throw_percentage) || null,
+        opponent_offensive_rebounds: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rebounds) || null,
+        opponent_defensive_rebounds: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rebounds) || null,
+        opponent_total_rebounds: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_total_rebounds) || null,
+        opponent_assists: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_assists) || null,
+        opponent_steals: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_steals) || null,
+        opponent_blocks: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_blocks) || null,
+        opponent_turnovers: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_turnovers) || null,
+        opponent_fouls: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_fouls) || null,
+        opponent_points: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_points) || null,
+        opponent_possessions: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_possessions) || null,
+        opponent_offensive_rating: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rating) || null,
+        opponent_defensive_rating: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rating) || null,
+        opponent_efficiency_rating: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating) || null, // this is aSOS in the gui
+        elo_sos: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos) || null, // this is eSoS
+        confwins_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwins_rank) || null,
+        conflosses_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.conflosses_rank) || null,
+        neutralwins_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutralwins_rank) || null,
+        neutrallosses_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.neutrallosses_rank) || null,
+        homewins_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homewins_rank) || null,
+        homelosses_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.homelosses_rank) || null,
+        roadwins_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadwins_rank) || null,
+        roadlosses_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.roadlosses_rank) || null,
+        streak_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.streak_rank) || null,
+        win_margin_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.win_margin_rank) || null,
+        loss_margin_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.loss_margin_rank) || null,
+        confwin_margin_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confwin_margin_rank) || null,
+        confloss_margin_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.confloss_margin_rank) || null,
+        field_goal_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_rank) || null,
+        field_goal_attempts_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_attempts_rank) || null,
+        field_goal_percentage_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.field_goal_percentage_rank) || null,
+        two_point_field_goal_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_rank) || null,
+        two_point_field_goal_attempts_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_attempts_rank) || null,
+        two_point_field_goal_percentage_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.two_point_field_goal_percentage_rank) || null,
+        three_point_field_goal_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_rank) || null,
+        three_point_field_goal_attempts_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_attempts_rank) || null,
+        three_point_field_goal_percentage_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.three_point_field_goal_percentage_rank) || null,
+        free_throws_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throws_rank) || null,
+        free_throw_attempts_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throw_attempts_rank) || null,
+        free_throw_percentage_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.free_throw_percentage_rank) || null,
+        offensive_rebounds_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.offensive_rebounds_rank) || null,
+        defensive_rebounds_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.defensive_rebounds_rank) || null,
+        total_rebounds_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.total_rebounds_rank) || null,
+        assists_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.assists_rank) || null,
+        steals_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.steals_rank) || null,
+        blocks_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.blocks_rank) || null,
+        turnovers_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.turnovers_rank) || null,
+        fouls_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.fouls_rank) || null,
+        points_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.points_rank) || null,
+        possessions_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.possessions_rank) || null,
+        pace_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.pace_rank) || null,
+        offensive_rating_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.offensive_rating_rank) || null,
+        defensive_rating_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.defensive_rating_rank) || null,
+        efficiency_rating_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.efficiency_rating_rank) || null,
+        adjusted_efficiency_rating_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.adjusted_efficiency_rating_rank) || null,
+        opponent_field_goal_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_rank) || null,
+        opponent_field_goal_attempts_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_attempts_rank) || null,
+        opponent_field_goal_percentage_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_field_goal_percentage_rank) || null,
+        opponent_two_point_field_goal_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_rank) || null,
+        opponent_two_point_field_goal_attempts_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_attempts_rank) || null,
+        opponent_two_point_field_goal_percentage_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_two_point_field_goal_percentage_rank) || null,
+        opponent_three_point_field_goal_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_rank) || null,
+        opponent_three_point_field_goal_attempts_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_attempts_rank) || null,
+        opponent_three_point_field_goal_percentage_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_three_point_field_goal_percentage_rank) || null,
+        opponent_free_throws_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throws_rank) || null,
+        opponent_free_throw_attempts_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throw_attempts_rank) || null,
+        opponent_free_throw_percentage_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_free_throw_percentage_rank) || null,
+        opponent_offensive_rebounds_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rebounds_rank) || null,
+        opponent_defensive_rebounds_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rebounds_rank) || null,
+        opponent_total_rebounds_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_total_rebounds_rank) || null,
+        opponent_assists_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_assists_rank) || null,
+        opponent_steals_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_steals_rank) || null,
+        opponent_blocks_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_blocks_rank) || null,
+        opponent_turnovers_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_turnovers_rank) || null,
+        opponent_fouls_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_fouls_rank) || null,
+        opponent_points_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_points_rank) || null,
+        opponent_possessions_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_possessions_rank) || null,
+        opponent_offensive_rating_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_offensive_rating_rank) || null,
+        opponent_defensive_rating_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_defensive_rating_rank) || null,
+        opponent_efficiency_rating_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.opponent_efficiency_rating_rank) || null,
+        elo_sos_rank: (row.cbb_statistic_ranking && row.cbb_statistic_ranking.elo_sos_rank) || null,
       });
     } else if (rankView === 'player' || rankView === 'transfer') {
       if (
@@ -376,8 +378,8 @@ export const getRowsData = ({ data, rankView, selectedConferences, positions, hi
       ) {
         lastUpdated = row.date_of_rank;
       }
-        
-      row.name = row.player ? (row.player.first_name.charAt(0) + '. ' + row.player.last_name) : null;
+
+      row.name = row.player ? (`${row.player.first_name.charAt(0)}. ${row.player.last_name}`) : null;
       row.number = row.player ? row.player.number : null;
       row.position = row.player ? row.player.position : null;
       row.height = row.player ? row.player.height : null;
@@ -386,7 +388,7 @@ export const getRowsData = ({ data, rankView, selectedConferences, positions, hi
         row.conference_code = conferences[row.conference_id].code;
       }
 
-      row.composite_rank = row.efficiency_rating_rank;
+      row.rank = row.efficiency_rating_rank;
 
       if (
         positions.length &&
@@ -404,19 +406,18 @@ export const getRowsData = ({ data, rankView, selectedConferences, positions, hi
         lastUpdated = row.date_of_rank;
       }
       row.name = conferences[row.conference_id].code;
-      row.composite_rank = row.adjusted_efficiency_rating_rank;
+      row.rank = row.adjusted_efficiency_rating_rank;
 
       // row.adj_elo = +(+row.elo - +row.elo_sos).toFixed(2);
 
       rows.push(row);
-    }  else if (rankView === 'coach') {
+    } else if (rankView === 'coach') {
       if (
         !lastUpdated ||
         lastUpdated < row.date_of_rank
       ) {
         lastUpdated = row.date_of_rank;
       }
-      row.composite_rank = row.rank;
 
       rows.push(row);
     }
