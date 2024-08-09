@@ -4,7 +4,7 @@ module.exports = {
   apps: [
     {
       name: 'next',
-      script: 'npm',
+      script: './node_modules/.bin/next',
       args: 'start -p 3000',
       instances: 'max',
       exec_mode: 'cluster',
