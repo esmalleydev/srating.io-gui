@@ -45,6 +45,7 @@ import MomentumServer from '@/components/generic/CBB/Game/Momentum/Server';
 
 import { ClientSkeleton as StatsLoaderSkeleton } from '@/components/generic/CBB/Game/StatsLoader/Client';
 import StatsLoaderServer from '@/components/generic/CBB/Game/StatsLoader/Server';
+import PredictionLoader from '@/components/generic/CBB/Game/PreditionLoader';
 
 
 type Props = {
@@ -196,6 +197,7 @@ export default async function Page({ params, searchParams }) {
       </HeaderClientWrapper>
       <NavBar view = {selectedViewTab} tabOrder = {tabOrder} />
       <SubNavBar subview = {selectSubViewTab} view = {selectedViewTab} tabOrder = {subTabOrder} />
+      <PredictionLoader key = {cbb_game_id} cbb_game_id = {cbb_game_id} />
       {getContent()}
     </div>
   );

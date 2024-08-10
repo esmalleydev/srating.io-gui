@@ -4,6 +4,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 type InitialState = {
   gameStats: object,
   gameStatsLoading: boolean,
+  gamePrediction: object,
+  gamePredictionLoading: boolean,
 };
 
 type ActionPayload<K extends keyof InitialState> = {
@@ -14,6 +16,8 @@ type ActionPayload<K extends keyof InitialState> = {
 const initialState: InitialState = {
   gameStats: {},
   gameStatsLoading: true,
+  gamePrediction: {},
+  gamePredictionLoading: true,
 };
 
 

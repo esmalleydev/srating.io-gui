@@ -8,15 +8,15 @@ import { getSkeleton, maxWidth } from './Client';
 
 
 const PredictionLine = ({ cbb_game }) => {
-  const picksLoading = useAppSelector((state) => state.picksReducer.picksLoading);
-  const picksData = useAppSelector((state) => state.picksReducer.picks);
+  const gamePredictionLoading = useAppSelector((state) => state.gameReducer.gamePredictionLoading);
+  const gamePrediction = useAppSelector((state) => state.gameReducer.gamePrediction);
 
 
-  if (picksData && cbb_game.cbb_game_id in picksData) {
+  if (gamePrediction && cbb_game.cbb_game_id in gamePrediction) {
     // eslint-disable-next-line no-param-reassign
-    cbb_game.home_team_rating = picksData[cbb_game.cbb_game_id].home_team_rating;
+    cbb_game.home_team_rating = gamePrediction[cbb_game.cbb_game_id].home_team_rating;
     // eslint-disable-next-line no-param-reassign
-    cbb_game.away_team_rating = picksData[cbb_game.cbb_game_id].away_team_rating;
+    cbb_game.away_team_rating = gamePrediction[cbb_game.cbb_game_id].away_team_rating;
   }
 
 
@@ -38,8 +38,8 @@ const PredictionLine = ({ cbb_game }) => {
   return (
     <>
       {
-        picksLoading ?
-          getSkeleton(1) :
+        gamePredictionLoading ?
+          <div style = {{ textAlign: 'center', maxWidth: 600, margin: 'auto' }}>{getSkeleton(1)}</div> :
           <CompareStatistic key = {cbb_game.cbb_game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
       }
     </>
