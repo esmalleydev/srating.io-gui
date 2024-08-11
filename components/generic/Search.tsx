@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import useDebounce from '../hooks/useDebounce';
@@ -13,6 +14,7 @@ import { useClientAPI } from '../clientAPI';
 import { Coach, Player, Team } from '@/types/cbb';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
+import Text from '../utils/Text';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,6 +59,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
+// todo the clear button does nothing >.>
+// look at their garbage docs to figure out why
+
 
 const Search = ({ onRouter, focus }) => {
   const dispatch = useAppDispatch();
@@ -83,10 +88,10 @@ const Search = ({ onRouter, focus }) => {
 
   const debouncedRequest = useDebounce(() => {
     useClientAPI({
-      'class': 'cbb',
-      'function': 'search',
-      'arguments': {
-        'name': value,
+      class: 'cbb',
+      function: 'search',
+      arguments: {
+        name: value,
       },
     }).then((response) => {
       setTeams((response && response.teams) || []);
@@ -103,7 +108,7 @@ const Search = ({ onRouter, focus }) => {
 
 
   const onChange = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setValue(value || '');
 
     setLoading(true);
@@ -125,23 +130,41 @@ const Search = ({ onRouter, focus }) => {
       name: team.alt_name,
     };
   });
-  
+
+  if (value.length) {
+    teamOptions.sort((a, b) => {
+      return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
+    });
+  }
+
   const playerOptions: OptionsType[] = players.map((player) => {
     return {
       group: 'Players',
       player_id: player.player_id,
-      name: player.first_name + ' ' + player.last_name + ' (' + player.begin + '-' + player.end + ')',
+      name: `${player.first_name} ${player.last_name} (${player.begin}-${player.end})`,
     };
   });
-  
+
+  if (value.length) {
+    playerOptions.sort((a, b) => {
+      return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
+    });
+  }
+
   const coachOptions: OptionsType[] = coaches.map((coach) => {
     return {
       group: 'Coaches',
       coach_id: coach.coach_id,
-      name: coach.first_name + ' ' + coach.last_name + ' (' + coach.begin + '-' + coach.end + ')',
+      name: `${coach.first_name} ${coach.last_name} (${coach.begin}-${coach.end})`,
     };
   });
-  
+
+  if (value.length) {
+    coachOptions.sort((a, b) => {
+      return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
+    });
+  }
+
   const options: OptionsType[] = [
     ...teamOptions,
     ...playerOptions,
@@ -155,21 +178,21 @@ const Search = ({ onRouter, focus }) => {
     dispatch(setLoadingDisplay(true));
     if (option && option.coach_id) {
       startTransition(() => {
-        router.push('/cbb/coach/' + option.coach_id);
+        router.push(`/cbb/coach/${option.coach_id}`);
         if (onRouter) {
           onRouter();
         }
       });
     } else if (option && option.player_id) {
       startTransition(() => {
-        router.push('/cbb/player/' + option.player_id);
+        router.push(`/cbb/player/${option.player_id}`);
         if (onRouter) {
           onRouter();
         }
       });
     } else if (option && option.team_id) {
       startTransition(() => {
-        router.push('/cbb/team/' + option.team_id);
+        router.push(`/cbb/team/${option.team_id}`);
         if (onRouter) {
           onRouter();
         }
@@ -197,27 +220,27 @@ const Search = ({ onRouter, focus }) => {
         options = {options}
         autoHighlight = {true}
         groupBy = {(option) => option.group}
-        getOptionLabel = {(option) =>  {return option.name || 'Unknown';}}
+        getOptionLabel = {(option) => { return option.name || 'Unknown'; }}
         fullWidth = {true}
         renderInput={(params) => {
-          const {InputLabelProps,InputProps,...rest} = params;
+          const { InputLabelProps, InputProps, ...rest } = params;
           rest.inputProps.value = value;
           return (
-            <StyledInputBase 
+            <StyledInputBase
               {...params.InputProps}
               {...rest}
               value = {value}
               placeholder = {'Search'}
               autoFocus = {focus}
-              sx = {{'minWidth': '200px'}}
-              onChange = {onChange} 
+              sx = {{ minWidth: '200px' }}
+              onChange = {onChange}
             />
           );
         }}
       />
     </Container>
   );
-}
+};
 
 export default Search;
 

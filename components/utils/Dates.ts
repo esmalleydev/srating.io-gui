@@ -2,7 +2,7 @@
 
 class Dates {
   constructor() {
-  };
+  }
 
   /**
    * Find the closest date in an array of dates
@@ -38,17 +38,16 @@ class Dates {
   getToday = () => {
     const formatYmd = (date) => {
       const year = date.getFullYear();
-      const month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1).toString() : (date.getMonth() + 1);
-      const day = date.getDate() < 10 ? '0' + date.getDate().toString() : date.getDate();
-    
-      return year + '-' + month + '-' + day;
+      const month = date.getMonth() < 9 ? `0${(date.getMonth() + 1).toString()}` : (date.getMonth() + 1);
+      const day = date.getDate() < 10 ? `0${date.getDate().toString()}` : date.getDate();
+
+      return `${year}-${month}-${day}`;
     };
-    
-    const today = new Date(new Date().toLocaleString('en-US', {'timeZone': 'America/New_York'}));
-  
+
+    const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+
     return formatYmd(today);
   };
-
-};
+}
 
 export default Dates;

@@ -57,15 +57,6 @@ const NavBar = ({ view, tabOrder }) => {
         router.replace(`${pathName}${query}`);
       });
     }
-
-    // router.replace({
-    //   query: {...router.query, view: view},
-    // });
-
-    // todo scroll stuff?
-    // if (value > 0 && props.scrollRef && props.scrollRef.current) {
-    //   props.scrollRef.current.scrollTo(0, 0);
-    // }
   };
 
   return (
