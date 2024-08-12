@@ -13,10 +13,10 @@ const Record = ({ cbb_game, team_id }) => {
 
   const current = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].current[team_id]) || null;
   // const historical = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].historical[team_id]) || null;
-  const cbb_statistic_ranking = current;
+  const statistic_ranking = current;
 
-  const wins = (cbb_statistic_ranking && cbb_statistic_ranking.wins) || 0;
-  const losses = (cbb_statistic_ranking && cbb_statistic_ranking.losses) || 0;
+  const wins = (statistic_ranking && statistic_ranking.wins) || 0;
+  const losses = (statistic_ranking && statistic_ranking.losses) || 0;
 
   return (
     <Typography variant = 'overline' color = 'text.secondary'>

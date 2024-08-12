@@ -69,8 +69,7 @@ const Client = ({ cbb_coach_statistic_rankings, season }) => {
   const coach: Coach | any = useAppSelector((state) => state.coachReducer.coach);
   const coach_team_seasons = useAppSelector((state) => state.coachReducer.coach_team_seasons);
   const teams = useAppSelector((state) => state.coachReducer.teams);
-  const cbb_statistic_rankings = useAppSelector((state) => state.coachReducer.cbb_statistic_rankings);
-
+  const statistic_rankings = useAppSelector((state) => state.coachReducer.statistic_rankings);
 
   const season_x_team_id = {};
 
@@ -97,18 +96,18 @@ const Client = ({ cbb_coach_statistic_rankings, season }) => {
     season_x_cbb_coach_statistic_ranking_id[row.season] = cbb_coach_statistic_ranking_id;
   }
 
-  const season_x_cbb_statistic_ranking_id = {};
+  const season_x_statistic_ranking_id = {};
 
-  for (const cbb_statistic_ranking_id in cbb_statistic_rankings) {
-    const row = cbb_statistic_rankings[cbb_statistic_ranking_id];
+  for (const statistic_ranking_id in statistic_rankings) {
+    const row = statistic_rankings[statistic_ranking_id];
 
     if (row.team_id === season_x_team_id[lastSeason]) {
-      season_x_cbb_statistic_ranking_id[row.season] = cbb_statistic_ranking_id;
+      season_x_statistic_ranking_id[row.season] = statistic_ranking_id;
     }
   }
 
   const cbb_coach_statistic_ranking = cbb_coach_statistic_rankings[season_x_cbb_coach_statistic_ranking_id[lastSeason]];
-  const cbb_statistic_ranking = cbb_statistic_rankings[season_x_cbb_statistic_ranking_id[lastSeason]];
+  const statistic_ranking = statistic_rankings[season_x_statistic_ranking_id[lastSeason]];
 
   const team = teams[season_x_team_id[lastSeason]];
   const breakPoint = 475;
@@ -139,7 +138,7 @@ const Client = ({ cbb_coach_statistic_rankings, season }) => {
   };
 
   const coachRank = cbb_coach_statistic_ranking ? cbb_coach_statistic_ranking.rank : null;
-  const teamRank = cbb_statistic_ranking ? cbb_statistic_ranking.rank : null;
+  const teamRank = statistic_ranking ? statistic_ranking.rank : null;
 
   if (coachRank) {
     supStyle.color = Color.lerpColor(bestColor, worstColor, (+(coachRank / CBB.getNumberOfD1Teams(season))));

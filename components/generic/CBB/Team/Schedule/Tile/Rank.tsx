@@ -20,14 +20,14 @@ const Rank = ({ cbb_game, team_id }) => {
 
   const current = (scheduleStats[cbb_game.cbb_game_id] && scheduleStats[cbb_game.cbb_game_id].current[team_id]) || null;
   const historical = (scheduleStats[cbb_game.cbb_game_id] && scheduleStats[cbb_game.cbb_game_id].historical[team_id]) || null;
-  const cbb_statistic_ranking = showScheduleHistoricalRankRecord ? historical : current;
+  const statistic_ranking = showScheduleHistoricalRankRecord ? historical : current;
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
 
   let rank = null;
-  if (cbb_statistic_ranking) {
-    rank = displayRank in cbb_statistic_ranking ? cbb_statistic_ranking[displayRank] : cbb_statistic_ranking.rank;
+  if (statistic_ranking) {
+    rank = displayRank in statistic_ranking ? statistic_ranking[displayRank] : statistic_ranking.rank;
   }
 
   const supRankStyle: React.CSSProperties = {

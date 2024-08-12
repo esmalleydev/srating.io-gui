@@ -11,7 +11,7 @@ import ColumnPicker from '@/components/generic/CBB/ColumnPicker';
 // todo: pass the chart component a custom tool tip, with the RankSpan component, so on the graph, when I hover over each position, it shows the ranking out of everyone ex: 3P%: 49% - 25th
 
 const StatsGraph = ({
-  cbb_statistic_rankings, cbb_elos, cbb_games, cbb_conference_statistic_rankings, cbb_league_statistics,
+  statistic_rankings, cbb_elos, cbb_games, cbb_conference_statistic_rankings, cbb_league_statistics,
 }) => {
   const [selectedChip, setSelectedChip] = useState('adjusted_efficiency_rating');
   const [customColumn, setCustomColumn] = useState<string | null>(null);
@@ -81,7 +81,7 @@ const StatsGraph = ({
   };
 
 
-  // this will also include all the cbb_statistic_ranking columns
+  // this will also include all the statistic_ranking columns
   type Data = {
     team_id: string;
     elo: number;
@@ -91,8 +91,8 @@ const StatsGraph = ({
 
   const date_of_rank_x_data = {};
 
-  for (const cbb_statistic_ranking_id in cbb_statistic_rankings) {
-    const row = cbb_statistic_rankings[cbb_statistic_ranking_id];
+  for (const statistic_ranking_id in statistic_rankings) {
+    const row = statistic_rankings[statistic_ranking_id];
 
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {

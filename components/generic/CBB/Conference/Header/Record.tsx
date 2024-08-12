@@ -7,13 +7,13 @@ import { Skeleton, Typography } from '@mui/material';
 
 
 const Record = () => {
-  const cbb_statistic_rankings = useAppSelector((state) => state.conferenceReducer.cbb_statistic_rankings);
+  const statistic_rankings = useAppSelector((state) => state.conferenceReducer.statistic_rankings);
 
   let totalWins = 0;
   let totalLosses = 0;
 
-  for (const cbb_statistic_ranking_id in cbb_statistic_rankings) {
-    const row = cbb_statistic_rankings[cbb_statistic_ranking_id];
+  for (const statistic_ranking_id in statistic_rankings) {
+    const row = statistic_rankings[statistic_ranking_id];
 
     totalLosses += row.losses;
     totalWins += row.wins;

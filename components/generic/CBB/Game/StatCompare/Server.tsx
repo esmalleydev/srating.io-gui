@@ -21,7 +21,7 @@ const Server = async ({ cbb_game }) => {
 
   return (
     <>
-      <Client cbb_game = {cbb_game} cbb_statistic_rankings = {data.cbb_statistic_rankings} />
+      <Client cbb_game = {cbb_game} statistic_rankings = {data.statistic_rankings} />
     </>
   );
 };

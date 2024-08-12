@@ -67,7 +67,7 @@ async function getConference({ params, searchParams }): Promise<Partial<Conferen
 type Data = {
   team_season_conferences: CoachTeamSeasons | object;
   teams: Teams | object;
-  cbb_statistic_rankings: StatisticRankings | object;
+  statistic_rankings: StatisticRankings | object;
 }
 
 async function getData({ params, searchParams }): Promise<Data> {
@@ -76,6 +76,8 @@ async function getData({ params, searchParams }): Promise<Data> {
 
   const CBB = new HelperCBB();
 
+  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM Basketball
+  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
   const season = searchParams?.season || CBB.getCurrentSeason();
 
   const conference = await getConference({ params, searchParams });
@@ -98,10 +100,12 @@ async function getData({ params, searchParams }): Promise<Data> {
     },
   }, { revalidate: revalidateSeconds });
 
-  const cbb_statistic_rankings: StatisticRankings = await useServerAPI({
-    class: 'cbb_statistic_ranking',
-    function: 'read',
+  const statistic_rankings: StatisticRankings = await useServerAPI({
+    class: 'statistic_ranking',
+    function: 'readStats',
     arguments: {
+      organization_id,
+      division_id,
       team_id: Object.values(teams).map((row) => row.team_id),
       season,
       current: '1',
@@ -109,7 +113,7 @@ async function getData({ params, searchParams }): Promise<Data> {
   }, { revalidate: revalidateSeconds });
 
 
-  return { team_season_conferences, teams, cbb_statistic_rankings };
+  return { team_season_conferences, teams, statistic_rankings };
 }
 
 // todo this loading is all pretty quick... but when I start to add more data here, update this to split the loading and use suspense like the rest of the app
@@ -127,7 +131,7 @@ export default async function Page({ params, searchParams }) {
   const selectedTab = tabOrder[(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0)];
 
   return (
-    <ReduxWrapper team_season_conferences = {data.team_season_conferences} teams = {data.teams} cbb_statistic_rankings = {data.cbb_statistic_rankings}>
+    <ReduxWrapper team_season_conferences = {data.team_season_conferences} teams = {data.teams} statistic_rankings = {data.statistic_rankings}>
       <HeaderClientWrapper>
         <HeaderServer conference_id = {conference_id} season = {season} />
       </HeaderClientWrapper>

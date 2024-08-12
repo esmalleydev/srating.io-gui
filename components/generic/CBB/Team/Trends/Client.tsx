@@ -27,7 +27,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 export interface TrendsType {
   cbb_elos: Elos;
   cbb_games: Games;
-  cbb_statistic_rankings: StatisticRankings;
+  statistic_rankings: StatisticRankings;
   cbb_conference_statistic_rankings: ConferenceStatisticRankings;
   cbb_league_statistics: LeagueStatistics
 }
@@ -74,14 +74,14 @@ const Client = ({ data }: { data: TrendsType}) => {
 
   const cbb_elos = (data && data.cbb_elos) || {};
   const cbb_games = (data && data.cbb_games) || {};
-  const cbb_statistic_rankings = (data && data.cbb_statistic_rankings) || {};
+  const statistic_rankings = (data && data.statistic_rankings) || {};
   const cbb_conference_statistic_rankings = (data && data.cbb_conference_statistic_rankings) || {};
   const cbb_league_statistics = (data && data.cbb_league_statistics) || {};
 
   const [inactiveSeries, setInactiveSeries] = useState<Array<string>>([]);
 
 
-  const sorted_statistic_rankings = Object.values(cbb_statistic_rankings).sort((a, b) => {
+  const sorted_statistic_rankings = Object.values(statistic_rankings).sort((a, b) => {
     return a.date_of_rank > b.date_of_rank ? 1 : -1;
   });
 
@@ -227,7 +227,7 @@ const Client = ({ data }: { data: TrendsType}) => {
   return (
     <Contents>
       {subView === 'ranking' ? getRankingGraph() : ''}
-      {subView === 'stats' ? <StatsGraph cbb_statistic_rankings = {cbb_statistic_rankings} cbb_elos = {cbb_elos} cbb_games = {cbb_games} cbb_conference_statistic_rankings = {cbb_conference_statistic_rankings} cbb_league_statistics = {cbb_league_statistics} /> : ''}
+      {subView === 'stats' ? <StatsGraph statistic_rankings = {statistic_rankings} cbb_elos = {cbb_elos} cbb_games = {cbb_games} cbb_conference_statistic_rankings = {cbb_conference_statistic_rankings} cbb_league_statistics = {cbb_league_statistics} /> : ''}
     </Contents>
   );
 };

@@ -70,12 +70,15 @@ type Data = {
   coach: Coach | object;
   coach_team_seasons: CoachTeamSeasons | object;
   teams: Teams | object;
-  cbb_statistic_rankings: StatisticRankings | object;
+  statistic_rankings: StatisticRankings | object;
 }
 
 async function getData({ params, searchParams }): Promise<Data> {
   unstable_noStore();
   const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
+
+  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM Basketball
+  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
 
   // const CBB = new HelperCBB();
 
@@ -99,17 +102,19 @@ async function getData({ params, searchParams }): Promise<Data> {
     },
   }, { revalidate: revalidateSeconds });
 
-  const cbb_statistic_rankings: StatisticRankings = await useServerAPI({
-    class: 'cbb_statistic_ranking',
-    function: 'read',
+  const statistic_rankings: StatisticRankings = await useServerAPI({
+    class: 'statistic_ranking',
+    function: 'readStats',
     arguments: {
+      organization_id,
+      division_id,
       team_id: Object.values(teams).map((row) => row.team_id),
       season: Object.values(coach_team_seasons).map((row) => row.season),
       current: '1',
     },
   }, { revalidate: revalidateSeconds });
 
-  return { coach, coach_team_seasons, teams, cbb_statistic_rankings };
+  return { coach, coach_team_seasons, teams, statistic_rankings };
 }
 
 
@@ -127,7 +132,7 @@ export default async function Page({ params, searchParams }) {
   const selectedTab = tabOrder[(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0)];
 
   return (
-    <ReduxWrapper coach = {data.coach} coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} cbb_statistic_rankings = {data.cbb_statistic_rankings}>
+    <ReduxWrapper coach = {data.coach} coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} statistic_rankings = {data.statistic_rankings}>
       <HeaderClientWrapper>
         <Suspense fallback = {<HeaderClientSkeleon />}>
           <HeaderServer coach_id = {coach_id} season = {season} />
@@ -148,7 +153,7 @@ export default async function Page({ params, searchParams }) {
         {
           view === 'seasons' ?
             <SeasonsClientWrapper>
-              <SeasonsClient coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} cbb_statistic_rankings = {data.cbb_statistic_rankings} />
+              <SeasonsClient coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} statistic_rankings = {data.statistic_rankings} />
             </SeasonsClientWrapper>
             : ''
         }

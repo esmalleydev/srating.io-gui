@@ -7,7 +7,7 @@ type InitialState = {
   coach: Coach | object,
   coach_team_seasons: CoachTeamSeasons | object;
   teams: Teams | object;
-  cbb_statistic_rankings: StatisticRankings | object;
+  statistic_rankings: StatisticRankings | object;
 };
 
 const initialState = {
@@ -16,7 +16,7 @@ const initialState = {
   coach: {},
   coach_team_seasons: {},
   teams: {},
-  cbb_statistic_rankings: {},
+  statistic_rankings: {},
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -60,7 +60,7 @@ export const coach = createSlice({
       state.teams = action.payload;
     },
     setStatisticRankings: (state, action: PayloadAction<StatisticRankings | {}>) => {
-      state.cbb_statistic_rankings = action.payload;
+      state.statistic_rankings = action.payload;
     },
   },
 });

@@ -40,7 +40,7 @@ const Client = ({ conference_id, season }) => {
   const dispatch = useAppDispatch();
   const teams = useAppSelector((state) => state.conferenceReducer.teams);
   // const team_season_conferences = useAppSelector((state) => state.conferenceReducer.team_season_conferences);
-  const cbb_statistic_rankings = useAppSelector((state) => state.conferenceReducer.cbb_statistic_rankings);
+  const statistic_rankings = useAppSelector((state) => state.conferenceReducer.statistic_rankings);
 
   const theme = useTheme();
   const router = useRouter();
@@ -56,18 +56,18 @@ const Client = ({ conference_id, season }) => {
 
   const rows: any = [];
 
-  const team_id_x_cbb_statistic_ranking_id = {};
+  const team_id_x_statistic_ranking_id = {};
 
-  for (const cbb_statistic_ranking_id in cbb_statistic_rankings) {
-    const row = cbb_statistic_rankings[cbb_statistic_ranking_id];
-    team_id_x_cbb_statistic_ranking_id[row.team_id] = cbb_statistic_ranking_id;
+  for (const statistic_ranking_id in statistic_rankings) {
+    const row = statistic_rankings[statistic_ranking_id];
+    team_id_x_statistic_ranking_id[row.team_id] = statistic_ranking_id;
   }
 
 
   for (const team_id in teams) {
     const team = teams[team_id];
 
-    const stats = cbb_statistic_rankings[team_id_x_cbb_statistic_ranking_id[team.team_id]];
+    const stats = statistic_rankings[team_id_x_statistic_ranking_id[team.team_id]];
 
     const row = {
       record: `${stats.wins}-${stats.losses}`,

@@ -21,7 +21,7 @@ const Rank = ({ cbb_game, team_id }) => {
 
   // const current = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].current[team_id]) || null;
   const historical = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].historical[team_id]) || null;
-  const cbb_statistic_ranking = historical;
+  const statistic_ranking = historical;
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
@@ -29,8 +29,8 @@ const Rank = ({ cbb_game, team_id }) => {
   const { width } = useWindowDimensions() as Dimensions;
 
   let rank = null;
-  if (cbb_statistic_ranking) {
-    rank = displayRank in cbb_statistic_ranking ? cbb_statistic_ranking[displayRank] : cbb_statistic_ranking.rank;
+  if (statistic_ranking) {
+    rank = displayRank in statistic_ranking ? statistic_ranking[displayRank] : statistic_ranking.rank;
   }
 
   let supFontSize = 12;

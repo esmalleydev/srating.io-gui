@@ -36,7 +36,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
 }));
 
-const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
+const Client = ({ coach_team_seasons, teams, statistic_rankings }) => {
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -52,16 +52,16 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
 
   const rows: any = [];
 
-  const team_id_x_season_x_cbb_statistic_ranking = {};
+  const team_id_x_season_x_statistic_ranking = {};
 
-  for (const cbb_statistic_ranking_id in cbb_statistic_rankings) {
-    const row = cbb_statistic_rankings[cbb_statistic_ranking_id];
+  for (const statistic_ranking_id in statistic_rankings) {
+    const row = statistic_rankings[statistic_ranking_id];
 
-    if (!(row.team_id in team_id_x_season_x_cbb_statistic_ranking)) {
-      team_id_x_season_x_cbb_statistic_ranking[row.team_id] = {};
+    if (!(row.team_id in team_id_x_season_x_statistic_ranking)) {
+      team_id_x_season_x_statistic_ranking[row.team_id] = {};
     }
 
-    team_id_x_season_x_cbb_statistic_ranking[row.team_id][row.season] = row;
+    team_id_x_season_x_statistic_ranking[row.team_id][row.season] = row;
   }
 
   for (const coach_team_season_id in coach_team_seasons) {
@@ -73,10 +73,10 @@ const Client = ({ coach_team_seasons, teams, cbb_statistic_rankings }) => {
     };
 
     if (
-      coach_team_season.team_id in team_id_x_season_x_cbb_statistic_ranking &&
-      coach_team_season.season in team_id_x_season_x_cbb_statistic_ranking[coach_team_season.team_id]
+      coach_team_season.team_id in team_id_x_season_x_statistic_ranking &&
+      coach_team_season.season in team_id_x_season_x_statistic_ranking[coach_team_season.team_id]
     ) {
-      const stats = team_id_x_season_x_cbb_statistic_ranking[coach_team_season.team_id][coach_team_season.season];
+      const stats = team_id_x_season_x_statistic_ranking[coach_team_season.team_id][coach_team_season.season];
 
       row.record = `${stats.wins || 0} - ${stats.losses || 0}`;
       row.conf_record = (stats.confwins === null || stats.conflosses === null) ? '-' : `${stats.confwins || 0} - ${stats.conflosses || 0}`;

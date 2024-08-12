@@ -46,7 +46,7 @@ const ClientSkeleton = () => {
 };
 
 
-const Client = ({ cbb_game, cbb_statistic_rankings }) => {
+const Client = ({ cbb_game, statistic_rankings }) => {
   const [selectedChip, setSelectedChip] = useState('rank');
 
   const theme = useTheme();
@@ -108,8 +108,8 @@ const Client = ({ cbb_game, cbb_statistic_rankings }) => {
 
   const date_of_rank_x_data = {};
 
-  for (const cbb_statistic_ranking_id in cbb_statistic_rankings) {
-    const row = cbb_statistic_rankings[cbb_statistic_ranking_id];
+  for (const statistic_ranking_id in statistic_rankings) {
+    const row = statistic_rankings[statistic_ranking_id];
 
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {

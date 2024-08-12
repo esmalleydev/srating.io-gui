@@ -172,7 +172,10 @@ export interface RankingColumns {
 }
 
 export interface StatisticRanking {
-  cbb_statistic_ranking_id: string;
+  statistic_ranking_id: string;
+  organization_id: string;
+  division_id: string;
+  sport_statistic_id: string;
   season: number;
   team_id: string;
   rank: number;
@@ -336,7 +339,7 @@ export interface StatisticRanking {
   deleted: number;
 }
 
-export type StatisticRankings = {[cbb_statistic_ranking_id: string]: StatisticRanking};
+export type StatisticRankings = {[statistic_ranking_id: string]: StatisticRanking};
 
 export interface ConferenceStatisticRanking {
   cbb_conference_statistic_ranking_id: string;

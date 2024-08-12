@@ -6,7 +6,7 @@ type InitialState = {
   scrollTop: number,
   team_season_conferences: TeamSeasonConferences | object;
   teams: Teams | object;
-  cbb_statistic_rankings: StatisticRankings | object;
+  statistic_rankings: StatisticRankings | object;
 };
 
 const initialState = {
@@ -14,7 +14,7 @@ const initialState = {
   scrollTop: 0,
   team_season_conferences: {},
   teams: {},
-  cbb_statistic_rankings: {},
+  statistic_rankings: {},
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -55,7 +55,7 @@ export const conference = createSlice({
       state.teams = action.payload;
     },
     setStatisticRankings: (state, action: PayloadAction<StatisticRankings | object>) => {
-      state.cbb_statistic_rankings = action.payload;
+      state.statistic_rankings = action.payload;
     },
   },
 });
