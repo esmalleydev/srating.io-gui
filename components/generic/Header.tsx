@@ -130,7 +130,6 @@ const Header = () => {
     // sessionStorage.clear();
     dispatch(setValidSession(false));
     dispatch(setSession(null));
-    dispatch(setLoading(true));
     startTransition(() => {
       router.push('/');
     });

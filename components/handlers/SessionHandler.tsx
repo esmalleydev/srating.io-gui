@@ -1,17 +1,18 @@
 
 'use client';
-import { useState} from "react";
+
+import { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
-import { setSession, setValidSession } from "@/redux/features/user-slice";
-import { useClientAPI } from "@/components/clientAPI";
+import { setSession, setValidSession } from '@/redux/features/user-slice';
+import { useClientAPI } from '@/components/clientAPI';
 
 
 
 const SessionHandler = () => {
   const dispatch = useAppDispatch();
 
-  const session_id = useAppSelector(state => state.userReducer.session_id);
-  const validSession = useAppSelector(state => state.userReducer.isValidSession)
+  const session_id = useAppSelector((state) => state.userReducer.session_id);
+  const validSession = useAppSelector((state) => state.userReducer.isValidSession);
 
   const [requestedSession, setRequestedSession] = useState(false);
 
@@ -23,10 +24,10 @@ const SessionHandler = () => {
   if (!requestedSession && session_id) {
     setRequestedSession(true);
     useClientAPI({
-      'class': 'session',
-      'function': 'check',
-      'arguments': {
-        'session_id': session_id,
+      class: 'session',
+      function: 'check',
+      arguments: {
+        session_id,
       },
     }).then((valid) => {
       if (valid) {

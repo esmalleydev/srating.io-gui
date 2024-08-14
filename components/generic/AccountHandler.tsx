@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+
+import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Dialog from '@mui/material/Dialog';
@@ -13,7 +14,7 @@ import Button from '@mui/material/Button';
 
 
 import { useAppDispatch } from '@/redux/hooks';
-import { setValidSession } from '@/redux/features/user-slice';
+import { setSession, setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { clearDatesChecked } from '@/redux/features/games-slice';
 import { setLoading } from '@/redux/features/display-slice';
@@ -22,6 +23,7 @@ import { setLoading } from '@/redux/features/display-slice';
 const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [register, setRegister] = useState<boolean>(false);
   const [requestedLogin, setRequestedLogin] = useState<boolean>(false);
@@ -42,7 +44,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const [loginCodeError, setLoginCodeError] = useState<string | null>(null);
 
   const checkEmail = (text) => {
-    let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+    const regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
 
     return regex.test(text);
   };
@@ -51,41 +53,40 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
-    } else {
-      setEmailError(null);
     }
+    setEmailError(null);
+
 
     if (!password) {
       setPasswordError('Password required');
       return;
-    } else {
-      setPasswordError(null);
     }
+    setPasswordError(null);
+
 
     useClientAPI({
-      'class': 'user',
-      'function': 'login',
-      'arguments': {
-        'username': email,
-        'password': password,
+      class: 'user',
+      function: 'login',
+      arguments: {
+        username: email,
+        password,
       },
     }).then((session_id) => {
       if (!session_id) {
         setPasswordError('Incorrect password');
-        return;
       } else if (session_id && session_id.error) {
         setPasswordError('Something went wrong, try again later');
-        return;
       } else {
         localStorage.setItem('session_id', session_id);
         // sessionStorage.clear();
+        dispatch(setSession(session_id));
         dispatch(setValidSession(true));
         dispatch(clearDatesChecked(null));
         closeHandler();
         window.location.reload();
       }
     }).catch((e) => {
-        setPasswordError('Incorrect password');
+      setPasswordError('Incorrect password');
     });
   };
 
@@ -93,58 +94,63 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
-    } else {
-      setEmailError(null);
     }
+    setEmailError(null);
+
 
     if (!password) {
       setPasswordError('Password required');
       return;
-    } else {
-      setPasswordError(null);
     }
+    setPasswordError(null);
+
 
     if (!passwordConfirm) {
       setPasswordErrorConfirm('Password required');
       return;
-    } else {
-      setPasswordErrorConfirm(null);
     }
+    setPasswordErrorConfirm(null);
+
 
     if (password !== passwordConfirm) {
       setPasswordErrorConfirm('Password does not match');
       setPasswordError('Password does not match');
       return;
-    } else if (password.length < 7) {
+    } if (password.length < 7) {
       setPasswordError('Password must be at least 7 characters');
       setPasswordErrorConfirm('Password must be at least 7 characters');
       return;
-    } else {
-      setPasswordError(null);
-      setPasswordErrorConfirm(null);
     }
+    setPasswordError(null);
+    setPasswordErrorConfirm(null);
+
+    dispatch(setLoading(true));
 
     useClientAPI({
-      'class': 'user',
-      'function': 'register',
-      'arguments': {
-        'username': email,
-        'password': password,
-        'confirm_password': passwordConfirm,
+      class: 'user',
+      function: 'register',
+      arguments: {
+        username: email,
+        password,
+        confirm_password: passwordConfirm,
       },
     }).then((response) => {
       if (response && response.error) {
+        dispatch(setLoading(false));
         setEmailError(response.error);
-        return;
       } else if (response) {
         localStorage.setItem('session_id', response);
         // sessionStorage.clear();
+        dispatch(setSession(response));
         dispatch(setValidSession(true));
         closeHandler();
-        router.push('/account');
+        startTransition(() => {
+          router.push('/account');
+        });
       }
     }).catch((e) => {
-        setEmailError('Something went wrong, try again later');
+      dispatch(setLoading(false));
+      setEmailError('Something went wrong, try again later');
     });
   };
 
@@ -152,24 +158,29 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
-    } else {
-      setEmailError(null);
     }
+    setEmailError(null);
 
     dispatch(setLoading(true));
-    
+
     useClientAPI({
-      'class': 'user',
-      'function': 'forgotPassword',
-      'arguments': {
-        'email': email,
+      class: 'user',
+      function: 'forgotPassword',
+      arguments: {
+        email,
       },
     }).then((response) => {
       dispatch(setLoading(false));
-      setForgotPassword(false);
-      setTempLogin(true);
-    }).catch((e) => {
+      if (response === true) {
+        setForgotPassword(false);
+        setTempLogin(true);
+      } else if (response && response.error) {
+        setEmailError(response.error);
+      } else {
         setEmailError('Something went wrong, try again later');
+      }
+    }).catch((e) => {
+      setEmailError('Something went wrong, try again later');
     });
   };
 
@@ -177,53 +188,61 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
-    } else {
-      setEmailError(null);
     }
+    setEmailError(null);
 
     if (!loginCode) {
       setLoginCodeError('Code required');
       return;
-    } else {
-      setLoginCodeError(null);
     }
+    setLoginCodeError(null);
+
+    dispatch(setLoading(true));
 
     useClientAPI({
-      'class': 'user',
-      'function': 'useLoginCode',
-      'arguments': {
-        'email': email,
-        'code': loginCode,
+      class: 'user',
+      function: 'useLoginCode',
+      arguments: {
+        email,
+        code: loginCode,
       },
     }).then((response) => {
-      if (!response) {
+      if (response === false) {
+        dispatch(setLoading(false));
         setLoginCodeError('Code incorrect / expired');
+      } else if (response && response.error) {
+        dispatch(setLoading(false));
+        setLoginCodeError(response.error);
       } else {
         setForgotPassword(false);
         setTempLogin(false);
+        dispatch(setSession(response));
+        dispatch(setValidSession(true));
         localStorage.setItem('session_id', response);
         // sessionStorage.clear();
-        dispatch(setValidSession(true));
         closeHandler();
-        router.push('/account?view=settings');
+        startTransition(() => {
+          router.push('/account?view=settings');
+        });
       }
     }).catch((e) => {
-        setEmailError('Something went wrong, try again later');
+      dispatch(setLoading(false));
+      setLoginCodeError('Something went wrong, try again later');
     });
   };
 
   const handleEmail = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setEmail(value || '');
   };
 
   const handlePassword = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setPassword(value || '');
   };
 
   const handlePasswordConfirm = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setPasswordConfirm(value || '');
   };
 
@@ -242,21 +261,22 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   };
 
   const handleLoginCode = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setLoginCode(value || '');
   };
 
-  let boxContents: React.JSX.Element[] = [];
+  const boxContents: React.JSX.Element[] = [];
 
   if (tempLogin) {
     boxContents.push(
       <DialogContent key = {'temp_login_content'}>
-        <DialogContentText sx = {{'marginBottom': 2}}>Login with temporary code</DialogContentText>
+        <DialogContentText sx = {{ marginBottom: 2 }}>Login with temporary code</DialogContentText>
         <TextField
             required
             disabled
-            error = {emailError ? true : false}
-            helperText = {emailError ? emailError : null}
+            value = {email}
+            error = {!!emailError}
+            helperText = {emailError || null}
             onChange = {handleEmail}
             onKeyDown = {handleEnter}
             margin="dense"
@@ -269,8 +289,8 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
           <TextField
             autoFocus
             required
-            error = {loginCodeError ? true : false}
-            helperText = {loginCodeError ? loginCodeError : null}
+            error = {!!loginCodeError}
+            helperText = {loginCodeError || null}
             onChange = {handleLoginCode}
             onKeyDown = {handleEnter}
             margin="dense"
@@ -280,24 +300,24 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
             fullWidth
             variant="standard"
           />
-        </DialogContent>
+        </DialogContent>,
     );
 
     boxContents.push(
       <DialogActions key = {'temp_login_actions'}>
-        <Button onClick = {() => {setTempLogin(false); setForgotPassword(false);}}>Back</Button>
+        <Button onClick = {() => { setTempLogin(false); setForgotPassword(false); }}>Back</Button>
         <Button onClick = {useLoginCode}>Sign in</Button>
-      </DialogActions>
+      </DialogActions>,
     );
   } else if (forgotPassword) {
     boxContents.push(
-      <DialogContent key = {'forgot_password_content'} sx = {{'minWidth': 320}}>
-        <DialogContentText sx = {{'marginBottom': 2}}>Send a Forgot Password email</DialogContentText>
+      <DialogContent key = {'forgot_password_content'} sx = {{ minWidth: 320 }}>
+        <DialogContentText sx = {{ marginBottom: 2 }}>Send a Forgot Password email</DialogContentText>
         <TextField
             autoFocus
             required
-            error = {emailError ? true : false}
-            helperText = {emailError ? emailError : null}
+            error = {!!emailError}
+            helperText = {emailError || null}
             onChange = {handleEmail}
             onKeyDown = {handleEnter}
             margin="dense"
@@ -307,24 +327,24 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
             fullWidth
             variant="standard"
         />
-      </DialogContent>
+      </DialogContent>,
     );
 
     boxContents.push(
       <DialogActions key = {'forgot_password_actions'}>
-        <Button onClick = {() => {setTempLogin(false); setForgotPassword(false);}}>Back</Button>
+        <Button onClick = {() => { setTempLogin(false); setForgotPassword(false); }}>Back</Button>
         <Button onClick = {sendLoginCode}>Send temporary code</Button>
-      </DialogActions>
+      </DialogActions>,
     );
   } else if (register) {
     boxContents.push(
       <DialogContent key = {'register_content'}>
-          <DialogContentText sx = {{'marginBottom': 2}}>Create an account</DialogContentText>
+          <DialogContentText sx = {{ marginBottom: 2 }}>Create an account</DialogContentText>
           <TextField
             autoFocus
             required
-            error = {emailError ? true : false}
-            helperText = {emailError ? emailError : null}
+            error = {!!emailError}
+            helperText = {emailError || null}
             onChange = {handleEmail}
             onKeyDown = {handleEnter}
             margin="dense"
@@ -336,8 +356,8 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
           />
           <TextField
             required
-            error = {passwordError ? true : false}
-            helperText = {passwordError ? passwordError : null}
+            error = {!!passwordError}
+            helperText = {passwordError || null}
             onChange = {handlePassword}
             margin="dense"
             label="Password"
@@ -347,8 +367,8 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
           />
           <TextField
             required
-            error = {passwordErrorConfirm ? true : false}
-            helperText = {passwordErrorConfirm ? passwordErrorConfirm : null}
+            error = {!!passwordErrorConfirm}
+            helperText = {passwordErrorConfirm || null}
             onChange = {handlePasswordConfirm}
             onKeyDown = {handleEnter}
             margin="dense"
@@ -357,24 +377,24 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
             fullWidth
             variant="standard"
           />
-          <DialogContentText sx = {{'marginTop': 3}}>Have an account? <Link sx = {{'cursor': 'pointer'}} onClick = {() => {setRegister(false);}}>Sign in</Link></DialogContentText>
-        </DialogContent>
+          <DialogContentText sx = {{ marginTop: 3 }}>Have an account? <Link sx = {{ cursor: 'pointer' }} onClick = {() => { setRegister(false); }}>Sign in</Link></DialogContentText>
+        </DialogContent>,
     );
 
     boxContents.push(
       <DialogActions key = {'register_actions'}>
         <Button onClick = {handleRegister}>Create account</Button>
-      </DialogActions>
+      </DialogActions>,
     );
   } else {
     boxContents.push(
       <DialogContent key = {'login_content'}>
-        <DialogContentText sx = {{'marginBottom': 2}}>Sign in to your account</DialogContentText>
+        <DialogContentText sx = {{ marginBottom: 2 }}>Sign in to your account</DialogContentText>
         <TextField
             autoFocus
             required
-            error = {emailError ? true : false}
-            helperText = {emailError ? emailError : null}
+            error = {!!emailError}
+            helperText = {emailError || null}
             onChange = {handleEmail}
             margin="dense"
             id="name"
@@ -385,8 +405,8 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
           />
           <TextField
             required
-            error = {passwordError ? true : false}
-            helperText = {passwordError ? passwordError : null}
+            error = {!!passwordError}
+            helperText = {passwordError || null}
             onChange = {handlePassword}
             onKeyDown = {handleEnter}
             margin="dense"
@@ -396,15 +416,15 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
             fullWidth
             variant="standard"
           />
-          <DialogContentText sx = {{'marginTop': 3}}><Link sx = {{'cursor': 'pointer'}} onClick = {() => {setForgotPassword(true)}}>Forgot Password?</Link></DialogContentText>
-          <DialogContentText sx = {{'marginTop': 3}}>No account? <Link sx = {{'cursor': 'pointer'}} onClick = {() => {setRegister(true);}}>Create account</Link></DialogContentText>
-        </DialogContent>
+          <DialogContentText sx = {{ marginTop: 3 }}><Link sx = {{ cursor: 'pointer' }} onClick = {() => { setForgotPassword(true); }}>Forgot Password?</Link></DialogContentText>
+          <DialogContentText sx = {{ marginTop: 3 }}>No account? <Link sx = {{ cursor: 'pointer' }} onClick = {() => { setRegister(true); }}>Create account</Link></DialogContentText>
+        </DialogContent>,
     );
 
     boxContents.push(
       <DialogActions key = {'login_actions'}>
         <Button onClick = {handleLogin}>Sign in</Button>
-      </DialogActions>
+      </DialogActions>,
     );
   }
 
@@ -419,7 +439,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
       {boxContents}
     </Dialog>
   );
-}
+};
 
 export default AccountHandler;
 

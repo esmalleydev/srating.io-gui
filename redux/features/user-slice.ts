@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 type InitialState = {
@@ -17,7 +17,7 @@ const initialState = {
 
 export const user = createSlice({
   name: 'user',
-  initialState: initialState,
+  initialState,
   reducers: {
     setSession: (state, action: PayloadAction<string|null>) => {
       state.session_id = action.payload;
@@ -38,7 +38,7 @@ export const user = createSlice({
     setLoadingSecret: (state, action: PayloadAction<boolean>) => {
       state.loadingSecret = action.payload;
     },
-  }
+  },
 });
 
 export const { setSession, setValidSession, setSecret, setLoadingSecret } = user.actions;
