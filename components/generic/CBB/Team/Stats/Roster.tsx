@@ -26,6 +26,7 @@ import utilsSorter from '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
+import { PlayerStatisticRanking } from '@/types/cbb';
 
 
 const Sorter = new utilsSorter();
@@ -62,8 +63,7 @@ const Roster = ({ rosterStats }) => {
   const { width } = useWindowDimensions() as Dimensions;
   const breakPoint = 425;
 
-  const { players } = rosterStats;
-  const playerStatsData = rosterStats.player_statistic_rankings;
+  const { players, player_statistic_rankings } = rosterStats;
 
 
   useEffect(() => {
@@ -307,14 +307,22 @@ const Roster = ({ rosterStats }) => {
     },
   };
 
-  // todo make a cbb_player_statistic TS interface
-  const rows: any = Object.values(playerStatsData || {});
+
+  const rows: PlayerStatisticRanking[] = [];
+
+  for (const player_statistic_ranking_id in player_statistic_rankings) {
+    const row = player_statistic_rankings[player_statistic_ranking_id];
+
+    if (!(row.player_id in players)) {
+      continue;
+    }
+
+    rows.push(row);
+  }
 
   if (!rows.length && players && Object.keys(players).length) {
     for (const player_id in players) {
-      rows.push({
-        player_id,
-      });
+      rows.push(players[player_id]);
     }
   }
 
@@ -428,7 +436,7 @@ const Roster = ({ rosterStats }) => {
 
 
   const getDisplay = () => {
-    if (playerStatsData === null) {
+    if (player_statistic_rankings === null) {
       return (
         <Paper elevation = {3} style = {{ padding: 10 }}>
           <div>
@@ -449,7 +457,7 @@ const Roster = ({ rosterStats }) => {
       );
     }
 
-    if (playerStatsData !== null && Object.keys(players).length === 0) {
+    if (player_statistic_rankings !== null && Object.keys(players).length === 0) {
       return (
         <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'h5'>No player data yet :(</Typography>
       );
