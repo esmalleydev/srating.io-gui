@@ -378,8 +378,6 @@ const Roster = ({ rosterStats }) => {
   let b = 0;
   const playerCellWidth = (width <= breakPoint) ? 85 : 100;
 
-  console.log(rows)
-
   const comparator: (a: PlayerStatisticRanking, b: PlayerStatisticRanking) => number = Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort));
   const row_containers = rows.sort(comparator).slice().map((row) => {
     const columns = getColumns();
