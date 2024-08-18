@@ -64,12 +64,14 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ cbb_coach_statistic_rankings, season }) => {
+const Client = ({ coach_statistic_rankings, season }) => {
   // todo dont use any
   const coach: Coach | any = useAppSelector((state) => state.coachReducer.coach);
   const coach_team_seasons = useAppSelector((state) => state.coachReducer.coach_team_seasons);
   const teams = useAppSelector((state) => state.coachReducer.teams);
   const statistic_rankings = useAppSelector((state) => state.coachReducer.statistic_rankings);
+
+  console.log(coach_statistic_rankings)
 
   const season_x_team_id = {};
 
@@ -88,12 +90,12 @@ const Client = ({ cbb_coach_statistic_rankings, season }) => {
     maxSeason || Object.keys(teams)[0]
   ));
 
-  const season_x_cbb_coach_statistic_ranking_id = {};
+  const season_x_coach_statistic_ranking_id = {};
 
-  for (const cbb_coach_statistic_ranking_id in cbb_coach_statistic_rankings) {
-    const row = cbb_coach_statistic_rankings[cbb_coach_statistic_ranking_id];
+  for (const coach_statistic_ranking_id in coach_statistic_rankings) {
+    const row = coach_statistic_rankings[coach_statistic_ranking_id];
 
-    season_x_cbb_coach_statistic_ranking_id[row.season] = cbb_coach_statistic_ranking_id;
+    season_x_coach_statistic_ranking_id[row.season] = coach_statistic_ranking_id;
   }
 
   const season_x_statistic_ranking_id = {};
@@ -106,7 +108,7 @@ const Client = ({ cbb_coach_statistic_rankings, season }) => {
     }
   }
 
-  const cbb_coach_statistic_ranking = cbb_coach_statistic_rankings[season_x_cbb_coach_statistic_ranking_id[lastSeason]];
+  const coach_statistic_ranking = coach_statistic_rankings[season_x_coach_statistic_ranking_id[lastSeason]];
   const statistic_ranking = statistic_rankings[season_x_statistic_ranking_id[lastSeason]];
 
   const team = teams[season_x_team_id[lastSeason]];
@@ -137,7 +139,7 @@ const Client = ({ cbb_coach_statistic_rankings, season }) => {
     verticalAlign: 'super',
   };
 
-  const coachRank = cbb_coach_statistic_ranking ? cbb_coach_statistic_ranking.rank : null;
+  const coachRank = coach_statistic_ranking ? coach_statistic_ranking.rank : null;
   const teamRank = statistic_ranking ? statistic_ranking.rank : null;
 
   if (coachRank) {
@@ -166,7 +168,7 @@ const Client = ({ cbb_coach_statistic_rankings, season }) => {
           {coachRank ? <span style = {supStyle}>{coachRank} </span> : ''}
           {`${coach.first_name} ${coach.last_name}`}
           <span style = {{ fontSize: '16px', verticalAlign: 'middle' }}>
-            <Typography variant = 'overline' color = 'text.secondary'> ({cbb_coach_statistic_ranking?.wins || 0}-{cbb_coach_statistic_ranking?.losses || 0})</Typography>
+            <Typography variant = 'overline' color = 'text.secondary'> ({coach_statistic_ranking?.wins || 0}-{coach_statistic_ranking?.losses || 0})</Typography>
           </span>
         </Typography>
       </PrimaryLine>

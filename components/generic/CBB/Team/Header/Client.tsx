@@ -65,7 +65,7 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({
-  team, season, seasons, coach, cbb_coach_statistic_ranking, cbb_conference_statistic_ranking,
+  team, season, seasons, coach, coach_statistic_ranking, conference_statistic_ranking,
 }) => {
   const breakPoint = 475;
 
@@ -105,8 +105,8 @@ const Client = ({
   };
 
   const rank = teamHelper.getRank(displayRank);
-  const coachRank = cbb_coach_statistic_ranking ? cbb_coach_statistic_ranking.rank : null;
-  const conferenceRank = cbb_conference_statistic_ranking.adjusted_efficiency_rating_rank;
+  const coachRank = coach_statistic_ranking ? coach_statistic_ranking.rank : null;
+  const conferenceRank = conference_statistic_ranking.adjusted_efficiency_rating_rank;
 
   if (rank) {
     supStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(season))));

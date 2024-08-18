@@ -6,7 +6,7 @@ import { Client } from '@/components/generic/CBB/Team/Header/Client';
 import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 import {
-  Coach, CoachStatistic, CoachTeamSeason, TeamSeasonConferences,
+  Coach, CoachStatisticRanking, CoachTeamSeason, TeamSeasonConferences,
 } from '@/types/cbb';
 
 
@@ -14,6 +14,9 @@ import {
 const Server = async ({ season, team_id }) => {
   unstable_noStore();
   const revalidateSeconds = 60 * 60 * 2; // 2 hours
+
+  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM Basketball
+  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
 
   const team = await useServerAPI({
     class: 'team',
@@ -29,7 +32,7 @@ const Server = async ({ season, team_id }) => {
     function: 'read',
     arguments: {
       team_id,
-      organization_id: 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
+      organization_id,
     },
   });
 
@@ -39,12 +42,12 @@ const Server = async ({ season, team_id }) => {
     arguments: {
       team_id,
       season,
-      organization_id: 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
+      organization_id,
     },
   });
 
   let coach: Coach | null = null;
-  let cbb_coach_statistic_ranking: CoachStatistic | null = null;
+  let coach_statistic_ranking: CoachStatisticRanking | null = null;
 
   if (coach_team_season && coach_team_season.coach_id) {
     coach = await useServerAPI({
@@ -55,10 +58,12 @@ const Server = async ({ season, team_id }) => {
       },
     });
 
-    cbb_coach_statistic_ranking = await useServerAPI({
-      class: 'cbb_coach_statistic_ranking',
-      function: 'get',
+    coach_statistic_ranking = await useServerAPI({
+      class: 'coach_statistic_ranking',
+      function: 'getStats',
       arguments: {
+        organization_id,
+        division_id,
         coach_id: coach_team_season.coach_id,
         season: coach_team_season.season,
         current: '1',
@@ -66,10 +71,12 @@ const Server = async ({ season, team_id }) => {
     });
   }
 
-  const cbb_conference_statistic_ranking = await useServerAPI({
-    class: 'cbb_conference_statistic_ranking',
-    function: 'get',
+  const conference_statistic_ranking = await useServerAPI({
+    class: 'conference_statistic_ranking',
+    function: 'getStats',
     arguments: {
+      organization_id,
+      division_id,
       conference_id: team.conference_id,
       season,
       current: '1',
@@ -82,7 +89,7 @@ const Server = async ({ season, team_id }) => {
   // console.timeEnd('header')
   return (
     <>
-      <Client team = {team} season = {season} seasons = {seasons} coach = {coach} cbb_coach_statistic_ranking = {cbb_coach_statistic_ranking} cbb_conference_statistic_ranking = {cbb_conference_statistic_ranking} />
+      <Client team = {team} season = {season} seasons = {seasons} coach = {coach} coach_statistic_ranking = {coach_statistic_ranking} conference_statistic_ranking = {conference_statistic_ranking} />
     </>
   );
 };

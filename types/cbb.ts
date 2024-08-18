@@ -342,7 +342,10 @@ export interface StatisticRanking {
 export type StatisticRankings = {[statistic_ranking_id: string]: StatisticRanking};
 
 export interface ConferenceStatisticRanking {
-  cbb_conference_statistic_ranking_id: string;
+  conference_statistic_ranking_id: string;
+  organization_id: string;
+  division_id: string;
+  sport_conference_statistic_id: string;
   season: number;
   conference_id: string;
   elo: number;
@@ -493,10 +496,13 @@ export interface ConferenceStatisticRanking {
   deleted: number;
 }
 
-export type ConferenceStatisticRankings = {[cbb_conference_statistic_ranking_id: string]: ConferenceStatisticRanking};
+export type ConferenceStatisticRankings = {[conference_statistic_ranking_id: string]: ConferenceStatisticRanking};
 
-export interface LeagueStatistic {
-  cbb_league_statistic_id: string;
+export interface LeagueStatisticRanking {
+  league_statistic_ranking_id: string;
+  organization_id: string;
+  division_id: string;
+  sport_league_statistic_id: string;
   season: number;
   elo: number;
   games: number;
@@ -578,10 +584,13 @@ export interface LeagueStatistic {
   deleted: number;
 }
 
-export type LeagueStatistics = {[cbb_conference_statistic_ranking_id: string]: LeagueStatistic};
+export type LeagueStatisticRankings = {[league_statistic_ranking_id: string]: LeagueStatisticRanking};
 
-export interface LeaguePlayerStatistic {
-  cbb_league_player_statistic_id: string;
+export interface LeaguePlayerStatisticRanking {
+  league_player_statistic_id: string;
+  organization_id: string;
+  division_id: string;
+  sport_league_player_statistic_id: string;
   season: number;
   date_of_rank: string;
   minutes_played: number;
@@ -628,10 +637,13 @@ export interface LeaguePlayerStatistic {
   deleted: number;
 }
 
-export type LeaguePlayerStatistics = {[cbb_conference_statistic_ranking_id: string]: LeaguePlayerStatistic};
+export type LeaguePlayerStatisticRankings = {[league_player_statistic_id: string]: LeaguePlayerStatisticRanking};
 
-export interface CoachStatistic {
-  cbb_coach_statistic_ranking_id: string;
+export interface CoachStatisticRanking {
+  coach_statistic_ranking_id: string;
+  organization_id: string;
+  division_id: string;
+  coach_statistic_id: string;
   season: number;
   coach_id: string;
   rank: number;
@@ -682,7 +694,7 @@ export interface CoachStatistic {
   deleted: number;
 }
 
-export type CoachStatistics = {[cbb_coach_statistic_ranking_id: string]: CoachStatistic};
+export type CoachStatisticRankings = {[coach_statistic_ranking_id: string]: CoachStatisticRanking};
 
 export interface TeamSeasonConference {
   team_season_conference_id: string;

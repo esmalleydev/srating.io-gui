@@ -16,7 +16,7 @@ import moment from 'moment';
 
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import {
-  ConferenceStatisticRankings, Elos, Games, LeagueStatistics, StatisticRankings,
+  ConferenceStatisticRankings, Elos, Games, LeagueStatisticRankings, StatisticRankings,
 } from '@/types/cbb';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import StatsGraph from './StatsGraph';
@@ -28,8 +28,8 @@ export interface TrendsType {
   cbb_elos: Elos;
   cbb_games: Games;
   statistic_rankings: StatisticRankings;
-  cbb_conference_statistic_rankings: ConferenceStatisticRankings;
-  cbb_league_statistics: LeagueStatistics
+  conference_statistic_rankings: ConferenceStatisticRankings;
+  league_statistic_rankings: LeagueStatisticRankings
 }
 
 const padding = 5;
@@ -75,8 +75,8 @@ const Client = ({ data }: { data: TrendsType}) => {
   const cbb_elos = (data && data.cbb_elos) || {};
   const cbb_games = (data && data.cbb_games) || {};
   const statistic_rankings = (data && data.statistic_rankings) || {};
-  const cbb_conference_statistic_rankings = (data && data.cbb_conference_statistic_rankings) || {};
-  const cbb_league_statistics = (data && data.cbb_league_statistics) || {};
+  const conference_statistic_rankings = (data && data.conference_statistic_rankings) || {};
+  const league_statistic_rankings = (data && data.league_statistic_rankings) || {};
 
   const [inactiveSeries, setInactiveSeries] = useState<Array<string>>([]);
 
@@ -227,7 +227,7 @@ const Client = ({ data }: { data: TrendsType}) => {
   return (
     <Contents>
       {subView === 'ranking' ? getRankingGraph() : ''}
-      {subView === 'stats' ? <StatsGraph statistic_rankings = {statistic_rankings} cbb_elos = {cbb_elos} cbb_games = {cbb_games} cbb_conference_statistic_rankings = {cbb_conference_statistic_rankings} cbb_league_statistics = {cbb_league_statistics} /> : ''}
+      {subView === 'stats' ? <StatsGraph statistic_rankings = {statistic_rankings} cbb_elos = {cbb_elos} cbb_games = {cbb_games} conference_statistic_rankings = {conference_statistic_rankings} league_statistic_rankings = {league_statistic_rankings} /> : ''}
     </Contents>
   );
 };

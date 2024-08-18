@@ -66,9 +66,11 @@ const Stats = (props) => {
   if (!requestedStats) {
     setRequestedStats(true);
     useClientAPI({
-      'class': 'cbb_player_statistic_ranking',
-      'function': 'read',
+      'class': 'player_statistic_ranking',
+      'function': 'readStats',
       'arguments': {
+        'organization_id': 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
+        'division_id': 'bf602dc4-3b4a-11ef-94bc-2a93761010b8',
         'player_team_season_id': Object.keys(player_team_seasons),
         'current': '1',
       },

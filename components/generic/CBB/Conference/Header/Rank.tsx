@@ -9,15 +9,15 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import { getBreakPoint } from './ClientWrapper';
 
 
-const Rank = ({ cbb_conference_statistic_ranking }) => {
+const Rank = ({ conference_statistic_ranking }) => {
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
 
   const { width } = useWindowDimensions() as Dimensions;
 
   let rank = null;
-  if (cbb_conference_statistic_ranking) {
-    rank = cbb_conference_statistic_ranking.adjusted_efficiency_rating_rank;
+  if (conference_statistic_ranking) {
+    rank = conference_statistic_ranking.adjusted_efficiency_rating_rank;
   }
 
   let supFontSize = 16;

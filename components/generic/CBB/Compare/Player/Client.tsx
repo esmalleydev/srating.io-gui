@@ -121,9 +121,9 @@ const Client = ({ teams }) => {
       }
     }
 
-    if (team.playerStats && team.playerStats.cbb_player_statistic_ranking) {
-      for (const cbb_player_statistic_ranking_id in team.playerStats.cbb_player_statistic_ranking) {
-        const row = team.playerStats.cbb_player_statistic_ranking[cbb_player_statistic_ranking_id];
+    if (team.playerStats && team.playerStats.player_statistic_ranking) {
+      for (const player_statistic_ranking_id in team.playerStats.player_statistic_rankings) {
+        const row = team.playerStats.player_statistic_rankings[player_statistic_ranking_id];
 
         row.height = players[row.player_id].height;
         team_id_x_stats[team_id].push(row);

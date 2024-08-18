@@ -63,7 +63,7 @@ const Roster = ({ rosterStats }) => {
   const breakPoint = 425;
 
   const { players } = rosterStats;
-  const playerStatsData = rosterStats.cbb_player_statistic_ranking;
+  const playerStatsData = rosterStats.player_statistic_rankings;
 
 
   useEffect(() => {

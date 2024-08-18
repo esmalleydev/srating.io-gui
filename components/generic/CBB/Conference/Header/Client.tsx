@@ -15,7 +15,7 @@ import { getBreakPoint } from './ClientWrapper';
 import Record from './Record';
 
 
-const Client = ({ cbb_conference_statistic_ranking, season, conference_id, seasons }) => {
+const Client = ({ conference_statistic_ranking, season, conference_id, seasons }) => {
   const dispatch = useAppDispatch();
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
@@ -47,7 +47,7 @@ const Client = ({ cbb_conference_statistic_ranking, season, conference_id, seaso
     <div style = {{ overflow: 'hidden', paddingLeft: 5, paddingRight: 5 }}>
       <div style = {{ display: 'flex', flexWrap: 'nowrap' }}>
         <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {(width < getBreakPoint() ? 'h6' : 'h5')}>
-          <Rank cbb_conference_statistic_ranking={cbb_conference_statistic_ranking} />
+          <Rank conference_statistic_ranking={conference_statistic_ranking} />
           {conference.name}
         </Typography>
         <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
