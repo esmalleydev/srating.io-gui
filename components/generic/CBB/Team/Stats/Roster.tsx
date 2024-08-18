@@ -378,9 +378,11 @@ const Roster = ({ rosterStats }) => {
   let b = 0;
   const playerCellWidth = (width <= breakPoint) ? 85 : 100;
 
-  const row_containers = rows.sort(Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort))).slice().map((row) => {
-    const columns = getColumns();
+  console.log(rows)
 
+  const comparator: (a: PlayerStatisticRanking, b: PlayerStatisticRanking) => number = Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort));
+  const row_containers = rows.sort(comparator).slice().map((row) => {
+    const columns = getColumns();
 
     const tdStyle: React.CSSProperties = {
       padding: '4px 5px',
@@ -394,7 +396,6 @@ const Roster = ({ rosterStats }) => {
     if (width <= breakPoint) {
       tdStyle.fontSize = '12px';
     }
-
 
     const playerCellStyle: React.CSSProperties = {
       position: 'sticky',
@@ -425,7 +426,7 @@ const Roster = ({ rosterStats }) => {
 
     return (
       <StyledTableRow
-        key={`${row.name}-${b}`}
+        key={`${row.player_id}-${b}`}
         // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         onClick={() => { handleClick(row.player_id); }}
       >
