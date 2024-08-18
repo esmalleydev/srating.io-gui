@@ -71,8 +71,6 @@ const Client = ({ coach_statistic_rankings, season }) => {
   const teams = useAppSelector((state) => state.coachReducer.teams);
   const statistic_rankings = useAppSelector((state) => state.coachReducer.statistic_rankings);
 
-  console.log(coach_statistic_rankings)
-
   const season_x_team_id = {};
 
   let maxSeason = null;
