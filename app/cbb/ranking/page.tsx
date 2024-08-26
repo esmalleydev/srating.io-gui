@@ -8,13 +8,13 @@ import { Teams, TeamSeasonConferences, TransferPlayerSeasons } from '@/types/cbb
 
 
 type Props = {
-  params: { cbb_game_id: string };
+  // params: {};
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
 
 export async function generateMetadata(
-  { params, searchParams }: Props,
+  { searchParams }: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const view = searchParams?.view || 'team';

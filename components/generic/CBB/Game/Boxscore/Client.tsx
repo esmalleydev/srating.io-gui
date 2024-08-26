@@ -85,7 +85,7 @@ const ClientSkeleton = () => {
 };
 
 
-const Client = ({ cbb_game, cbb_boxscores, cbb_player_boxscores, players /* tag */ }) => {
+const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
@@ -96,12 +96,12 @@ const Client = ({ cbb_game, cbb_boxscores, cbb_player_boxscores, players /* tag 
   const awayBoxscores: PlayerBoxscore[] = [];
   const homeBoxscores: PlayerBoxscore[] = [];
 
-  for (const cbb_player_boxscore_id in cbb_player_boxscores) {
-    const row = cbb_player_boxscores[cbb_player_boxscore_id];
+  for (const player_boxscore_id in player_boxscores) {
+    const row = player_boxscores[player_boxscore_id];
 
-    if (row.team_id === cbb_game.away_team_id) {
+    if (row.team_id === game.away_team_id) {
       awayBoxscores.push(row);
-    } else if (row.team_id === cbb_game.home_team_id) {
+    } else if (row.team_id === game.home_team_id) {
       homeBoxscores.push(row);
     }
   }
@@ -109,12 +109,12 @@ const Client = ({ cbb_game, cbb_boxscores, cbb_player_boxscores, players /* tag 
   let awayTotalBoxscore: Boxscore = {} as Boxscore;
   let homeTotalBoxscore: Boxscore = {} as Boxscore;
 
-  for (const cbb_boxscore_id in cbb_boxscores) {
-    const row = cbb_boxscores[cbb_boxscore_id];
+  for (const boxscore_id in boxscores) {
+    const row = boxscores[boxscore_id];
 
-    if (row.team_id === cbb_game.away_team_id) {
+    if (row.team_id === game.away_team_id) {
       awayTotalBoxscore = row;
-    } else if (row.team_id === cbb_game.home_team_id) {
+    } else if (row.team_id === game.home_team_id) {
       homeTotalBoxscore = row;
     }
   }
@@ -140,7 +140,7 @@ const Client = ({ cbb_game, cbb_boxscores, cbb_player_boxscores, players /* tag 
   };
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   const headCells = [
@@ -567,9 +567,9 @@ const Client = ({ cbb_game, cbb_boxscores, cbb_player_boxscores, players /* tag 
                 };
 
                 if (!row.player_id) {
-                  return <TableRow key={row.cbb_player_boxscore_id}>{getCells()}</TableRow>;
+                  return <TableRow key={row.player_boxscore_id}>{getCells()}</TableRow>;
                 }
-                return <StyledTableRow key={row.cbb_player_boxscore_id} onClick={() => { handleClick(row.player_id); }}>{getCells()}</StyledTableRow>;
+                return <StyledTableRow key={row.player_boxscore_id} onClick={() => { handleClick(row.player_id); }}>{getCells()}</StyledTableRow>;
               })}
             </TableBody>
             <TableFooter>

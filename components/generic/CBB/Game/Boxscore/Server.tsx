@@ -4,26 +4,29 @@ import React from 'react';
 
 import { Client } from '@/components/generic/CBB/Game/Boxscore/Client';
 import { useServerAPI } from '@/components/serverAPI';
+import { Boxscores, PlayerBoxscores } from '@/types/cbb';
 
-const Server = async ({ cbb_game }) => {
-  const tag = `cbb.games.${cbb_game.cbb_game_id}`;
+const Server = async ({ game }) => {
+  const tag = `cbb.games.${game.game_id}`;
 
-  const { cbb_game_id } = cbb_game;
+  const { game_id } = game;
   const revalidateSeconds = 30;
+  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM Basketball
+  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
 
-  const cbb_boxscores: object = await useServerAPI({
-    class: 'cbb_boxscore',
-    function: 'read',
-    arguments: { cbb_game_id },
+  const boxscores: Boxscores = await useServerAPI({
+    class: 'boxscore',
+    function: 'readBoxscore',
+    arguments: { game_id, organization_id, division_id },
   }, { revalidate: revalidateSeconds });
 
-  const cbb_player_boxscores: object = await useServerAPI({
-    class: 'cbb_player_boxscore',
-    function: 'read',
-    arguments: { cbb_game_id },
+  const player_boxscores: PlayerBoxscores = await useServerAPI({
+    class: 'player_boxscore',
+    function: 'readPlayerBoxscore',
+    arguments: { game_id, organization_id, division_id },
   }, { revalidate: revalidateSeconds });
 
-  const players_ids = Object.values(cbb_player_boxscores).filter((cbb_player_boxscore) => (cbb_player_boxscore.player_id)).map((cbb_player_boxscore) => cbb_player_boxscore.player_id);
+  const players_ids = Object.values(player_boxscores).filter((player_boxscore) => (player_boxscore.player_id)).map((player_boxscore) => player_boxscore.player_id);
 
   let players = {};
 
@@ -37,7 +40,7 @@ const Server = async ({ cbb_game }) => {
 
   return (
     <>
-      <Client cbb_game = {cbb_game} cbb_boxscores = {cbb_boxscores} cbb_player_boxscores = {cbb_player_boxscores} players = {players} />
+      <Client game = {game} boxscores = {boxscores} player_boxscores = {player_boxscores} players = {players} />
     </>
   );
 };

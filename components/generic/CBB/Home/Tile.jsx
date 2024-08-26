@@ -22,10 +22,10 @@ const Tile = (props) => {
 
   const showDate = props.showDate || false;
 
-  const cbb_game = props.data;
+  const game = props.data;
 
   const CBB = new HelperCBB({
-    'cbb_game': cbb_game,
+    'game': game,
   });
 
 
@@ -38,7 +38,7 @@ const Tile = (props) => {
     }
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/games/' + cbb_game.cbb_game_id);
+      router.push('/cbb/games/' + game.game_id);
     });
   };
 

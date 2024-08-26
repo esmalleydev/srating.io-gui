@@ -25,15 +25,15 @@ export const getSkeleton = (numberOfSkeletons: number): React.JSX.Element[] => {
 
 export const maxWidth = 600;
 
-const Client = ({ cbb_game, elo }) => {
+const Client = ({ game, elo }) => {
   const gameStats = useAppSelector((state) => state.gameReducer.gameStats);
   const gameStatsLoading = useAppSelector((state) => state.gameReducer.gameStatsLoading);
 
-  const homeStats = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].historical[cbb_game.home_team_id]) || {};
-  const awayStats = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].historical[cbb_game.away_team_id]) || {};
+  const homeStats = (gameStats[game.game_id] && gameStats[game.game_id].historical[game.home_team_id]) || {};
+  const awayStats = (gameStats[game.game_id] && gameStats[game.game_id].historical[game.away_team_id]) || {};
 
-  const awayElo = (cbb_game.away_team_id in elo) ? elo[cbb_game.away_team_id] : null;
-  const homeElo = (cbb_game.home_team_id in elo) ? elo[cbb_game.home_team_id] : null;
+  const awayElo = (game.away_team_id in elo) ? elo[game.away_team_id] : null;
+  const homeElo = (game.home_team_id in elo) ? elo[game.home_team_id] : null;
 
 
   const overviewRows = [
@@ -730,55 +730,55 @@ const Client = ({ cbb_game, elo }) => {
 
   return (
     <div style = {{ padding: '0px 5px 20px 5px', marginTop: 58 }}>
-      <PredictionLine cbb_game={cbb_game} />
+      <PredictionLine game={game} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Record</Typography>
       {
         gameStatsLoading ?
           getSkeleton(overviewRows.length) :
-          <CompareStatistic season = {cbb_game.season} paper = {true} rows = {overviewRows} />
+          <CompareStatistic season = {game.season} paper = {true} rows = {overviewRows} />
       }
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Efficiency</Typography>
       {
         gameStatsLoading ?
           getSkeleton(efficiencyRows.length) :
-          <CompareStatistic season = {cbb_game.season} paper = {true} rows = {efficiencyRows} />
+          <CompareStatistic season = {game.season} paper = {true} rows = {efficiencyRows} />
       }
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Rank</Typography>
       {
         gameStatsLoading ?
           getSkeleton(rankRows.length) :
-          <CompareStatistic season = {cbb_game.season} paper = {true} rows = {rankRows} />
+          <CompareStatistic season = {game.season} paper = {true} rows = {rankRows} />
       }
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Win / Loss Margin</Typography>
       {
         gameStatsLoading ?
           getSkeleton(marginRows.length) :
-          <CompareStatistic season = {cbb_game.season} paper = {true} rows = {marginRows} />
+          <CompareStatistic season = {game.season} paper = {true} rows = {marginRows} />
       }
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Offense</Typography>
       {
         gameStatsLoading ?
           getSkeleton(offenseRows.length) :
-          <CompareStatistic season = {cbb_game.season} paper = {true} rows = {offenseRows} />
+          <CompareStatistic season = {game.season} paper = {true} rows = {offenseRows} />
       }
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Special</Typography>
       {
         gameStatsLoading ?
           getSkeleton(specialRows.length) :
-          <CompareStatistic season = {cbb_game.season} paper = {true} rows = {specialRows} />
+          <CompareStatistic season = {game.season} paper = {true} rows = {specialRows} />
       }
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Opponent stats against</Typography>
       {
         gameStatsLoading ?
           getSkeleton(opponentRows.length) :
-          <CompareStatistic season = {cbb_game.season} paper = {true} rows = {opponentRows} />
+          <CompareStatistic season = {game.season} paper = {true} rows = {opponentRows} />
       }
     </div>
   );

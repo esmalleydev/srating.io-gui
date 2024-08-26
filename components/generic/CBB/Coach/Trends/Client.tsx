@@ -54,27 +54,27 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_games: Games}) => {
+const Client = ({ coach_elos, games }: {coach_elos: CoachElos, games: Games}) => {
   const theme = useTheme();
 
-  const sorted_elo: CoachElo[] = Object.values(cbb_coach_elos).sort((a: CoachElo, b: CoachElo) => {
-    if (!(a.cbb_game_id)) {
+  const sorted_elo: CoachElo[] = Object.values(coach_elos).sort((a: CoachElo, b: CoachElo) => {
+    if (!(a.game_id)) {
       return -1;
     }
 
-    if (!(b.cbb_game_id)) {
+    if (!(b.game_id)) {
       return 1;
     }
 
-    if (!(a.cbb_game_id in cbb_games)) {
+    if (!(a.game_id in games)) {
       return 1;
     }
 
-    if (!(b.cbb_game_id in cbb_games)) {
+    if (!(b.game_id in games)) {
       return -1;
     }
 
-    return cbb_games[a.cbb_game_id].start_date < cbb_games[b.cbb_game_id].start_date ? -1 : 1;
+    return games[a.game_id].start_date < games[b.game_id].start_date ? -1 : 1;
   });
 
 
@@ -93,7 +93,7 @@ const Client = ({ cbb_coach_elos, cbb_games }: {cbb_coach_elos: CoachElos, cbb_g
   let highestEloDate: string = '';
 
   for (let i = 0; i < sorted_elo.length; i++) {
-    const date = sorted_elo[i].cbb_game_id && sorted_elo[i].cbb_game_id in cbb_games ? cbb_games[sorted_elo[i].cbb_game_id].start_date : null;
+    const date = sorted_elo[i].game_id && sorted_elo[i].game_id in games ? games[sorted_elo[i].game_id].start_date : null;
     if (sorted_elo[i].elo < minYaxis) {
       minYaxis = sorted_elo[i].elo;
     }

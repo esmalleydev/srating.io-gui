@@ -6,29 +6,29 @@ import { Client } from '@/components/generic/CBB/Game/Momentum/Client';
 import { useServerAPI } from '@/components/serverAPI';
 
 
-const Server = async ({ cbb_game }) => {
-  // const tag = 'cbb.games.'+ cbb_game_id;
+const Server = async ({ game }) => {
+  // const tag = 'cbb.games.'+ game_id;
 
-  const { cbb_game_id } = cbb_game;
+  const { game_id } = game;
   const revalidateSeconds = 3600; // 60 * 60; // 1 hour
 
   const momentumData = await useServerAPI({
-    class: 'cbb_game',
+    class: 'game',
     function: 'getMomentumData',
-    arguments: cbb_game_id,
+    arguments: game_id,
   }, { revalidate: revalidateSeconds });
 
   const stats = await useServerAPI({
-    class: 'cbb_game',
+    class: 'game',
     function: 'getStats',
     arguments: {
-      cbb_game_id,
+      game_id,
     },
   }, { revalidate: revalidateSeconds });
 
   return (
     <>
-      <Client cbb_game = {cbb_game} momentumData = {momentumData} stats = {stats} />
+      <Client game = {game} momentumData = {momentumData} stats = {stats} />
     </>
   );
 };

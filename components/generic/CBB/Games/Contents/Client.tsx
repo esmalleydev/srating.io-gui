@@ -43,12 +43,12 @@ const Contents = ({ children }) => {
   );
 };
 
-const ClientSkeleton = ({ cbb_games }) => {
+const ClientSkeleton = ({ games }) => {
   const tiles: React.JSX.Element[] = [];
 
   const divStyle = getTileBaseStyle();
 
-  for (const cbb_game_id in cbb_games) {
+  for (const game_id in games) {
     tiles.push(
       <Paper elevation={3} style = {divStyle}>
         <Skeleton style = {{ height: divStyle.height, transform: 'initial' }} />
@@ -63,11 +63,11 @@ const ClientSkeleton = ({ cbb_games }) => {
   );
 };
 
-const Client = ({ cbb_games, date }) => {
+const Client = ({ games, date }) => {
   const now = moment().format('YYYY-MM-DD');
 
-  const skip_sort_cbb_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_cbb_game_ids);
-  const favorite_cbb_game_ids = useAppSelector((state) => state.favoriteReducer.cbb_game_ids);
+  const skip_sort_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_game_ids);
+  const favorite_game_ids = useAppSelector((state) => state.favoriteReducer.game_ids);
   const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
   const statuses = useAppSelector((state) => state.displayReducer.statuses);
   const scores = useAppSelector((state) => state.gamesReducer.scores);
@@ -92,27 +92,27 @@ const Client = ({ cbb_games, date }) => {
     setFirstRender(false);
   });
 
-  for (const cbb_game_id in scores) {
-    if (cbb_game_id in cbb_games) {
-      Object.assign(cbb_games[cbb_game_id], scores[cbb_game_id]);
+  for (const game_id in scores) {
+    if (game_id in games) {
+      Object.assign(games[game_id], scores[game_id]);
     }
   }
 
   const gameContainers: React.JSX.Element[] = [];
 
-  const sorted_games: Game[] = Object.values(cbb_games);
+  const sorted_games: Game[] = Object.values(games);
 
   sorted_games.sort((a, b) => {
     const aIsPinned = (
-      skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
-      favorite_cbb_game_ids.length &&
-      favorite_cbb_game_ids.indexOf(a.cbb_game_id) > -1
+      skip_sort_game_ids.indexOf(a.game_id) === -1 &&
+      favorite_game_ids.length &&
+      favorite_game_ids.indexOf(a.game_id) > -1
     );
 
     const bIsPinned = (
-      skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
-      favorite_cbb_game_ids.length &&
-      favorite_cbb_game_ids.indexOf(b.cbb_game_id) > -1
+      skip_sort_game_ids.indexOf(b.game_id) === -1 &&
+      favorite_game_ids.length &&
+      favorite_game_ids.indexOf(b.game_id) > -1
     );
 
     if (aIsPinned && !bIsPinned) {
@@ -189,7 +189,7 @@ const Client = ({ cbb_games, date }) => {
     ) {
       continue;
     }
-    gameContainers.push(<Tile key={i} cbb_game={sortedGame} isLoadingWinPercentage = {!datesChecked[date]} />);
+    gameContainers.push(<Tile key={i} game={sortedGame} isLoadingWinPercentage = {!datesChecked[date]} />);
   }
 
 

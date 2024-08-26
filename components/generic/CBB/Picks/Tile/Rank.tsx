@@ -8,16 +8,16 @@ import { Skeleton } from '@mui/material';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 
 
-const Rank = ({ cbb_game, team_id }) => {
+const Rank = ({ game, team_id }) => {
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   const gameStats = useAppSelector((state) => state.picksReducer.gameStats);
   const gameStatsLoading = useAppSelector((state) => state.picksReducer.gameStatsLoading);
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
 
-  const historical = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].historical[team_id]) || null;
+  const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
   const statistic_ranking = historical;
 
   const bestColor = getBestColor();
@@ -34,7 +34,7 @@ const Rank = ({ cbb_game, team_id }) => {
   };
 
   if (rank) {
-    supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(cbb_game.season))));
+    supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(game.season))));
   }
 
 

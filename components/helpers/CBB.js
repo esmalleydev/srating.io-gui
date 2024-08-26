@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material';
 
 class CBB {
   constructor(args) {
-    this.cbb_game = (args && args.cbb_game) || null;
+    this.game = (args && args.game) || null;
     this.team = (args && args.team) || null;
   };
 
@@ -57,14 +57,14 @@ class CBB {
   getTeamRank(side, rankDisplay) {
     if (
       rankDisplay &&
-      this.cbb_game &&
-      this.cbb_game[side + '_team_id'] &&
-      this.cbb_game.teams &&
-      this.cbb_game[side + '_team_id'] in this.cbb_game.teams &&
-      this.cbb_game.teams[this.cbb_game[side + '_team_id']].ranking &&
-      this.cbb_game.teams[this.cbb_game[side + '_team_id']].ranking[rankDisplay]
+      this.game &&
+      this.game[side + '_team_id'] &&
+      this.game.teams &&
+      this.game[side + '_team_id'] in this.game.teams &&
+      this.game.teams[this.game[side + '_team_id']].ranking &&
+      this.game.teams[this.game[side + '_team_id']].ranking[rankDisplay]
     ) {
-      return this.cbb_game.teams[this.cbb_game[side + '_team_id']].ranking[rankDisplay];
+      return this.game.teams[this.game[side + '_team_id']].ranking[rankDisplay];
     }
     return null;
   };
@@ -77,12 +77,12 @@ class CBB {
   getTeamName(side) {
     let name = 'Unknown';
     if (
-      this.cbb_game &&
-      this.cbb_game[side + '_team_id'] &&
-      this.cbb_game.teams &&
-      this.cbb_game[side + '_team_id'] in this.cbb_game.teams
+      this.game &&
+      this.game[side + '_team_id'] &&
+      this.game.teams &&
+      this.game[side + '_team_id'] in this.game.teams
     ) {
-      const team = this.cbb_game.teams[this.cbb_game[side + '_team_id']];
+      const team = this.game.teams[this.game[side + '_team_id']];
       name = new Team({'team': team}).getName();
     }
 
@@ -97,12 +97,12 @@ class CBB {
   getTeamNameShort(side) {
     let name = 'UNK';
     if (
-      this.cbb_game &&
-      this.cbb_game[side + '_team_id'] &&
-      this.cbb_game.teams &&
-      this.cbb_game[side + '_team_id'] in this.cbb_game.teams
+      this.game &&
+      this.game[side + '_team_id'] &&
+      this.game.teams &&
+      this.game[side + '_team_id'] in this.game.teams
     ) {
-      const team = this.cbb_game.teams[this.cbb_game[side + '_team_id']];
+      const team = this.game.teams[this.game[side + '_team_id']];
       name = new Team({'team': team}).getNameShort();
     }
 
@@ -117,12 +117,12 @@ class CBB {
   getTeamConference(side) {
     let name = 'Unknown';
     if (
-      this.cbb_game &&
-      this.cbb_game[side + '_team_id'] &&
-      this.cbb_game.teams &&
-      this.cbb_game[side + '_team_id'] in this.cbb_game.teams
+      this.game &&
+      this.game[side + '_team_id'] &&
+      this.game.teams &&
+      this.game[side + '_team_id'] in this.game.teams
     ) {
-      const team = this.cbb_game.teams[this.cbb_game[side + '_team_id']];
+      const team = this.game.teams[this.game[side + '_team_id']];
       name = new Team({'team': team}).getConference();
     }
 
@@ -138,12 +138,12 @@ class CBB {
   // getTeamConferenceShort(side) {
   //   let name = 'UNK';
   //   if (
-  //     this.cbb_game &&
-  //     this.cbb_game[side + '_team_id'] &&
-  //     this.cbb_game.teams &&
-  //     this.cbb_game[side + '_team_id'] in this.cbb_game.teams
+  //     this.game &&
+  //     this.game[side + '_team_id'] &&
+  //     this.game.teams &&
+  //     this.game[side + '_team_id'] in this.game.teams
   //   ) {
-  //     const team = this.cbb_game.teams[this.cbb_game[side + '_team_id']];
+  //     const team = this.game.teams[this.game[side + '_team_id']];
   //     name = new Team({'team': team}).getConferenceShort();
   //   }
 
@@ -156,7 +156,7 @@ class CBB {
    * @return {boolean}
    */
   isInProgress() {
-    return (this.cbb_game.status !== 'pre' && this.cbb_game.status !== 'final' && this.cbb_game.status !== 'postponed' && this.cbb_game.status !== 'cancelled');
+    return (this.game.status !== 'pre' && this.game.status !== 'final' && this.game.status !== 'postponed' && this.game.status !== 'cancelled');
   }
 
   /**
@@ -164,7 +164,7 @@ class CBB {
    * @return {boolean}
    */
   isFinal() {
-    return (this.cbb_game.status === 'final');
+    return (this.game.status === 'final');
   }
 
   /**
@@ -172,7 +172,7 @@ class CBB {
    * @return {boolean}
    */
   isNeutralSite() {
-    return (+this.cbb_game.neutral_site === 1);
+    return (+this.game.neutral_site === 1);
   }
 
   /**
@@ -180,7 +180,7 @@ class CBB {
    * @return {string}
    */
   getStartDate(opt_format) {
-    return moment(this.cbb_game.start_datetime).format(opt_format || 'MMM Do');
+    return moment(this.game.start_datetime).format(opt_format || 'MMM Do');
   };
 
   /**
@@ -193,11 +193,11 @@ class CBB {
       startTime = 'Final';
     } else if (this.isInProgress()) {
       startTime = this.getGameTime();
-    } else if (this.cbb_game.status === 'pre') {
+    } else if (this.game.status === 'pre') {
       startTime = this.getStartTime();
-    } else if (this.cbb_game.status === 'postponed') {
+    } else if (this.game.status === 'postponed') {
       startTime = 'Postponed';
-    } else if (this.cbb_game.status === 'cancelled') {
+    } else if (this.game.status === 'cancelled') {
       startTime = 'Cancelled';
     }
 
@@ -209,7 +209,7 @@ class CBB {
    * @return {string}
    */
   getStartTime() {
-    let date = new Date(this.cbb_game.start_timestamp * 1000);
+    let date = new Date(this.game.start_timestamp * 1000);
     let startTime = ((date.getHours() % 12) || 12) + (date.getMinutes() ? ':' + (date.getMinutes().toString().length === 1 ? '0' : '') + date.getMinutes() : '') + ' ' + (date.getHours() < 12 ? 'am' : 'pm') + ' ';
     if (date.getHours() >= 2 && date.getHours() <= 6) {
       startTime = 'TBA';
@@ -223,10 +223,10 @@ class CBB {
    * @return {string}
    */
   getGameTime() {
-    if (this.isInProgress() && !this.cbb_game.current_period) {
+    if (this.isInProgress() && !this.game.current_period) {
       return 'Half';
     }
-    let formatted_period = this.cbb_game.current_period;
+    let formatted_period = this.game.current_period;
     if (formatted_period == '1ST HALF') {
       formatted_period = '1st';
     } else if (formatted_period == '2ND HALF') {
@@ -234,14 +234,14 @@ class CBB {
     }
 
     if (
-      this.cbb_game.clock === '00:00' &&
+      this.game.clock === '00:00' &&
       formatted_period === '2nd' &&
-      this.cbb_game.home_score !== this.cbb_game.away_score
+      this.game.home_score !== this.game.away_score
     ) {
       return 'Finalizing game...';
     }
 
-    return this.cbb_game.clock + ' ' + formatted_period;
+    return this.game.clock + ' ' + formatted_period;
   };
 
   /**
@@ -249,8 +249,8 @@ class CBB {
    * @return {string}
    */
   getNetwork() {
-    if (this.cbb_game.network) {
-      return this.cbb_game.network;
+    if (this.game.network) {
+      return this.game.network;
     }
     return null;
   };
@@ -263,10 +263,11 @@ class CBB {
    */
   getPreML(side) {
     if (
-      this.cbb_game.odds &&
-      this.cbb_game.odds['pre_game_money_line_' + side]
+      this.game.odds &&
+      this.game.odds.pre &&
+      this.game.odds.pre['money_line_' + side]
     ) {
-      return this.cbb_game.odds['pre_game_money_line_' + side];
+      return this.game.odds.pre['money_line_' + side];
     }
 
     return '-';
@@ -279,10 +280,11 @@ class CBB {
    */
   getPreSpread(side) {
     if (
-      this.cbb_game.odds &&
-      this.cbb_game.odds['pre_game_spread_' + side]
+      this.game.odds &&
+      this.game.odds.pre &&
+      this.game.odds.pre['spread_' + side]
     ) {
-      return this.cbb_game.odds['pre_game_spread_' + side];
+      return this.game.odds.pre['spread_' + side];
     }
 
     return '-';
@@ -294,10 +296,11 @@ class CBB {
    */
   getPreOver() {
     if (
-      this.cbb_game.odds &&
-      this.cbb_game.odds.pre_game_over
+      this.game.odds &&
+      this.game.odds.pre &&
+      this.game.odds.pre.over
     ) {
-      return this.cbb_game.odds.pre_game_over;
+      return this.game.odds.pre.over;
     }
 
     return '-';
@@ -309,10 +312,11 @@ class CBB {
    */
   getPreUnder() {
     if (
-      this.cbb_game.odds &&
-      this.cbb_game.odds.pre_game_under
+      this.game.odds &&
+      this.game.odds.pre &&
+      this.game.odds.pre.under
     ) {
-      return this.cbb_game.odds.pre_game_under;
+      return this.game.odds.pre.under;
     }
 
     return '-';
@@ -326,11 +330,12 @@ class CBB {
   getLiveML(side) {
     if (
       this.isInProgress() &&
-      this.cbb_game.odds &&
-      this.cbb_game.odds['live_game_money_line_' + side] &&
-      this.cbb_game.odds['live_game_money_line_' + side] > -9000
+      this.game.odds &&
+      this.game.odds.live &&
+      this.game.odds.live['money_line_' + side] &&
+      this.game.odds.live['money_line_' + side] > -9000
     ) {
-      return this.cbb_game.odds['live_game_money_line_' + side];
+      return this.game.odds.live['money_line_' + side];
     }
 
     return '-';
@@ -344,10 +349,11 @@ class CBB {
   getLiveSpread(side) {
     if (
       this.isInProgress() &&
-      this.cbb_game.odds &&
-      this.cbb_game.odds['live_game_spread_' + side]
+      this.game.odds &&
+      this.game.odds.live &&
+      this.game.odds.live['spread_' + side]
     ) {
-      return this.cbb_game.odds['live_game_spread_' + side];
+      return this.game.odds.live['spread_' + side];
     }
 
     return '-';
@@ -360,10 +366,11 @@ class CBB {
   getLiveOver() {
     if (
       this.isInProgress() &&
-      this.cbb_game.odds &&
-      this.cbb_game.odds.live_game_over
+      this.game.odds &&
+      this.game.odds.live &&
+      this.game.odds.live.over
     ) {
-      return this.cbb_game.odds.live_game_over;
+      return this.game.odds.live.over;
     }
 
     return '-';
@@ -373,13 +380,14 @@ class CBB {
    * Get the live under odds
    * @return {string}
    */
-  getLiveUnder(side) {
+  getLiveUnder() {
     if (
       this.isInProgress() &&
-      this.cbb_game.odds &&
-      this.cbb_game.odds.live_game_under
+      this.game.odds &&
+      this.game.odds.live &&
+      this.game.odds.live.under
     ) {
-      return this.cbb_game.odds.live_game_under;
+      return this.game.odds.live.under;
     }
 
     return '-';
@@ -389,7 +397,7 @@ class CBB {
     const otherSide = (side === 'away' ? 'home' : 'away');
     if (
       this.isFinal() &&
-      this.cbb_game[side + '_score'] > this.cbb_game[otherSide + '_score']
+      this.game[side + '_score'] > this.game[otherSide + '_score']
     ) {
       return true;
     }
@@ -402,7 +410,7 @@ class CBB {
     const spread = this.getPreSpread(side);
     if (
       this.isFinal() &&
-      (this.cbb_game[side + '_score'] - this.cbb_game[otherSide + '_score']) > (spread * -1)
+      (this.game[side + '_score'] - this.game[otherSide + '_score']) > (spread * -1)
     ) {
       return true;
     }
@@ -414,7 +422,7 @@ class CBB {
     const over = this.getPreOver();
     if (
       this.isFinal() &&
-      (this.cbb_game.home_score + this.cbb_game.away_score) > over
+      (this.game.home_score + this.game.away_score) > over
     ) {
       return true;
     }
@@ -426,7 +434,7 @@ class CBB {
     const under = this.getPreUnder();
     if (
       this.isFinal() &&
-      (this.cbb_game.home_score + this.cbb_game.away_score) < under
+      (this.game.home_score + this.game.away_score) < under
     ) {
       return true;
     }
@@ -443,12 +451,14 @@ class CBB {
     let pre = 0;
     let live = 0;
     if (
-      this.cbb_game.odds &&
-      (pre = +this.cbb_game.odds['pre_game_money_line_' + side]) &&
+      this.game.odds &&
+      this.game.odds.pre &&
+      (pre = +this.game.odds.pre['money_line_' + side]) &&
       this.isInProgress() &&
-      this.cbb_game.odds &&
-      (live = +this.cbb_game.odds['live_game_money_line_' + side]) &&
-      (pre < 0 && live > 0 && live > 100) 
+      this.game.odds &&
+      this.game.odds.live &&
+      (live = +this.game.odds.live['money_line_' + side]) &&
+      (pre < 0 && live > 0 && live > 100)
     ) {
       return true;
     }
@@ -463,10 +473,10 @@ class CBB {
   getGameColors() {
     const theme = useTheme();
 
-    const cbb_game = this.cbb_game;
+    const game = this.game;
 
-    let homeColor = cbb_game.teams[cbb_game.home_team_id].primary_color || theme.palette.info.main;
-    let awayColor = cbb_game.teams[cbb_game.away_team_id].primary_color === homeColor ? theme.palette.info.main : cbb_game.teams[cbb_game.away_team_id].primary_color;
+    let homeColor = game.teams[game.home_team_id].primary_color || theme.palette.info.main;
+    let awayColor = game.teams[game.away_team_id].primary_color === homeColor ? theme.palette.info.main : game.teams[game.away_team_id].primary_color;
 
     if (Color.areColorsSimilar(homeColor, awayColor)) {
       const analogousColors = Color.getAnalogousColors(awayColor);

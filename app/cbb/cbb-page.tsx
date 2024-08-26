@@ -29,8 +29,8 @@ const Home = () => {
       [favorite_id: string]: {
       }
     };
-    cbb_games: {
-      [cbb_game_id: string]: {}
+    games: {
+      [game_id: string]: {}
     };
   };
 
@@ -80,7 +80,7 @@ const Home = () => {
   });
 
   const Games = new HelperGames({
-    'cbb_games': (data && data.cbb_games) || {},
+    'games': (data && data.games) || {},
   });
 
   const topRankedGames = Games.getTopRankedGames();

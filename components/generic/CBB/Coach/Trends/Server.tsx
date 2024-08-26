@@ -13,25 +13,30 @@ const Server = async ({ coach_id }) => {
   unstable_noStore();
   const revalidateSeconds = 60 * 60 * 2; // 2 hours
 
-  const cbb_coach_elos: CoachElos = await useServerAPI({
-    class: 'cbb_coach_elo',
+  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM Basketball
+  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
+
+  const coach_elos: CoachElos = await useServerAPI({
+    class: 'coach_elo',
     function: 'read',
     arguments: {
+      organization_id,
+      division_id,
       coach_id,
     },
   }, { revalidate: revalidateSeconds });
 
-  const cbb_games: Games = await useServerAPI({
-    class: 'cbb_game',
+  const games: Games = await useServerAPI({
+    class: 'game',
     function: 'read',
     arguments: {
-      cbb_game_id: Object.values(cbb_coach_elos).map((row: CoachElo) => row.cbb_game_id),
+      game_id: Object.values(coach_elos).map((row: CoachElo) => row.game_id),
     },
   }, { revalidate: revalidateSeconds });
 
   return (
     <>
-      <Client cbb_coach_elos = {cbb_coach_elos} cbb_games = {cbb_games} />
+      <Client coach_elos = {coach_elos} games = {games} />
     </>
   );
 };

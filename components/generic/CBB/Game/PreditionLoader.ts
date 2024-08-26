@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
 
-const PredictionLoader = ({ cbb_game_id }) => {
+const PredictionLoader = ({ game_id }) => {
   const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -18,14 +18,14 @@ const PredictionLoader = ({ cbb_game_id }) => {
     }
 
     setLoading(true);
-    setLastID(cbb_game_id);
+    setLastID(game_id);
     dispatch(setDataKey({ key: 'gamePredictionLoading', value: true }));
 
     useClientAPI({
-      class: 'cbb_game',
+      class: 'game',
       function: 'getScores',
       arguments: {
-        cbb_game_id,
+        game_id,
       },
     }).then((response) => {
       dispatch(setDataKey({ key: 'gamePrediction', value: response }));
@@ -39,10 +39,10 @@ const PredictionLoader = ({ cbb_game_id }) => {
 
 
   useEffect(() => {
-    if (lastID !== cbb_game_id) {
+    if (lastID !== game_id) {
       getData();
     }
-  }, [cbb_game_id]);
+  }, [game_id]);
 
   return null;
 };

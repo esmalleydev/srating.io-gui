@@ -45,7 +45,7 @@ const getMarginTop = () => {
 
 export { getHeaderHeight, getMarginTop, getBreakPoint };
 
-const ClientWrapper = ({ cbb_game, children }) => {
+const ClientWrapper = ({ game, children }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const theme = useTheme();
@@ -55,13 +55,13 @@ const ClientWrapper = ({ cbb_game, children }) => {
 
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   const handleClick = (team_id) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/team/${team_id}?season=${cbb_game.season}`);
+      router.push(`/cbb/team/${team_id}?season=${game.season}`);
     });
   };
 
@@ -101,13 +101,13 @@ const ClientWrapper = ({ cbb_game, children }) => {
   }
 
   const getTeam = (team_id) => {
-    const team = cbb_game.teams[team_id];
+    const team = game.teams[team_id];
     const teamHelper = new HelperTeam({ team });
 
     let justifyContent = 'left';
     let teamName = teamHelper.getName();
 
-    if (team_id === cbb_game.home_team_id) {
+    if (team_id === game.home_team_id) {
       justifyContent = 'right';
     }
 
@@ -121,12 +121,12 @@ const ClientWrapper = ({ cbb_game, children }) => {
           display: 'flex', flexWrap: 'nowrap', cursor: 'pointer', justifyContent,
         }} onClick={() => { handleClick(team_id); }}>
           <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {teamNameVariant as 'h6' | 'body1'}>
-            <Rank cbb_game={cbb_game} team_id={team_id} />
+            <Rank game={game} team_id={team_id} />
             <Link style = {{ cursor: 'pointer' }} underline='hover'>{teamName}</Link>
           </Typography>
         </div>
         <div style = {{ fontSize: '16px', display: 'flex', justifyContent }}>
-          <Record cbb_game={cbb_game} team_id={team_id} />
+          <Record game={game} team_id={team_id} />
         </div>
       </div>
     );
@@ -144,15 +144,15 @@ const ClientWrapper = ({ cbb_game, children }) => {
           <div style = {{
             display: 'flex', justifyContent: 'end', position: 'relative', alignItems: 'baseline', width: sideWidth, minWidth: sideWidth,
           }}>
-            <Pin cbb_game_id = {cbb_game.cbb_game_id} />
+            <Pin game_id = {game.game_id} />
           </div>
         </div>
         <div style = {{
           display: 'flex', justifyContent: 'space-between', padding: '0px 5px', alignItems: 'center',
         }}>
-          <div style = {{ maxWidth: sideWidth, minWidth: sideWidth }}>{getTeam(cbb_game.away_team_id)}</div>
+          <div style = {{ maxWidth: sideWidth, minWidth: sideWidth }}>{getTeam(game.away_team_id)}</div>
           <div style = {{ width: '100%' }}>{children}</div>
-          <div style = {{ maxWidth: sideWidth, minWidth: sideWidth }}>{getTeam(cbb_game.home_team_id)}</div>
+          <div style = {{ maxWidth: sideWidth, minWidth: sideWidth }}>{getTeam(game.home_team_id)}</div>
         </div>
       </div>
     </>

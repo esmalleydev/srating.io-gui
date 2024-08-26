@@ -6,13 +6,13 @@ import { useAppSelector } from '@/redux/hooks';
 import { Skeleton, Typography } from '@mui/material';
 
 
-const Record = ({ cbb_game, team_id }) => {
+const Record = ({ game, team_id }) => {
   const gameStats = useAppSelector((state) => state.gamesReducer.gameStats);
   const gameStatsLoading = useAppSelector((state) => state.gamesReducer.gameStatsLoading);
   // const showScheduleHistoricalRankRecord = useAppSelector((state) => state.gamesReducer.showScheduleHistoricalRankRecord);
 
-  const current = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].current[team_id]) || null;
-  // const historical = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].historical[team_id]) || null;
+  const current = (gameStats[game.game_id] && gameStats[game.game_id].current[team_id]) || null;
+  // const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
   const statistic_ranking = current;
 
   const wins = (statistic_ranking && statistic_ranking.wins) || 0;

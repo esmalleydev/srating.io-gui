@@ -24,8 +24,8 @@ const Teams = (props) => {
 
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
 
-  const team_id_x_last_cbb_game = {};
-  const team_id_x_next_2_cbb_games = {};
+  const team_id_x_last_game = {};
+  const team_id_x_next_2_games = {};
 
   const now = moment().format('YYYY-MM-DD');
 
@@ -37,77 +37,77 @@ const Teams = (props) => {
   };
 
   if (schedule) {
-    for (let cbb_game_id in schedule) {
-      const cbb_game = schedule[cbb_game_id];
+    for (let game_id in schedule) {
+      const game = schedule[game_id];
 
       // game in the past
       if (
-        cbb_game.status === 'final' &&
-        moment(cbb_game.start_datetime).format('YYYY-MM-DD') <= now
+        game.status === 'final' &&
+        moment(game.start_datetime).format('YYYY-MM-DD') <= now
       ) {
         // handle the away team, add last game if it more recent
         if (
-          !(cbb_game.away_team_id in team_id_x_last_cbb_game) ||
+          !(game.away_team_id in team_id_x_last_game) ||
           (
-            cbb_game.away_team_id in team_id_x_last_cbb_game &&
-            team_id_x_last_cbb_game[cbb_game.away_team_id].start_date < cbb_game.start_date
+            game.away_team_id in team_id_x_last_game &&
+            team_id_x_last_game[game.away_team_id].start_date < game.start_date
           )
         ) {
-          team_id_x_last_cbb_game[cbb_game.away_team_id] = cbb_game;
+          team_id_x_last_game[game.away_team_id] = game;
         }
 
         // handle the home team now
         if (
-          !(cbb_game.home_team_id in team_id_x_last_cbb_game) ||
+          !(game.home_team_id in team_id_x_last_game) ||
           (
-            cbb_game.home_team_id in team_id_x_last_cbb_game &&
-            team_id_x_last_cbb_game[cbb_game.home_team_id].start_date < cbb_game.start_date
+            game.home_team_id in team_id_x_last_game &&
+            team_id_x_last_game[game.home_team_id].start_date < game.start_date
           )
         ) {
-          team_id_x_last_cbb_game[cbb_game.home_team_id] = cbb_game;
+          team_id_x_last_game[game.home_team_id] = game;
         }
       }
 
       // handle the 2 future games now
       if (
-        // cbb_game.status !== 'final' && // todo uncomment
-        moment(cbb_game.start_datetime).format('YYYY-MM-DD') >= now
+        // game.status !== 'final' && // todo uncomment
+        moment(game.start_datetime).format('YYYY-MM-DD') >= now
       ) {
 
         // handle the away team, initialize array if needed
-        if (!(cbb_game.away_team_id in team_id_x_next_2_cbb_games)) {
-          team_id_x_next_2_cbb_games[cbb_game.away_team_id] = {};
+        if (!(game.away_team_id in team_id_x_next_2_games)) {
+          team_id_x_next_2_games[game.away_team_id] = {};
         }
 
         // add all the future games, will sort and pop off later
-        team_id_x_next_2_cbb_games[cbb_game.away_team_id][cbb_game.start_timestamp] = cbb_game;
+        team_id_x_next_2_games[game.away_team_id][game.start_timestamp] = game;
 
         // handle the home team, initialize array if needed
-        if (!(cbb_game.home_team_id in team_id_x_next_2_cbb_games)) {
-          team_id_x_next_2_cbb_games[cbb_game.home_team_id] = {};
+        if (!(game.home_team_id in team_id_x_next_2_games)) {
+          team_id_x_next_2_games[game.home_team_id] = {};
         }
 
         // add all the future games, will sort and pop off later
-        team_id_x_next_2_cbb_games[cbb_game.home_team_id][cbb_game.start_timestamp] = cbb_game;
+        team_id_x_next_2_games[game.home_team_id][game.start_timestamp] = game;
       }
     }
   }
 
 
   // sort and pop off the extra future schedule games, only want the next 2
-  for (let team_id in team_id_x_next_2_cbb_games) {
-    let timestamps = Object.keys(team_id_x_next_2_cbb_games[team_id]).sort();
+  for (let team_id in team_id_x_next_2_games) {
+    let timestamps = Object.keys(team_id_x_next_2_games[team_id]).sort();
 
-    const temporary = team_id_x_next_2_cbb_games[team_id];
+    const temporary = team_id_x_next_2_games[team_id];
 
     // reset this variable
-    team_id_x_next_2_cbb_games[team_id] = [];
+    team_id_x_next_2_games[team_id] = [];
 
     for (let i = 0; i < timestamps.length; i++) {
-      const cbb_game = temporary[timestamps[i]];
+      const game = temporary[timestamps[i]];
 
       // fill in with the 2 future games
-      team_id_x_next_2_cbb_games[team_id].push(cbb_game);
+      team_id_x_next_2_games[team_id].push(game);
 
       // only want the first 2 games
       if (i === 1) {
@@ -137,11 +137,11 @@ const Teams = (props) => {
       let team_with_ranking = null;
       
       // decorate previous games + steal the last ranking for team title
-      if (team.team_id in team_id_x_last_cbb_game) {
-        const cbb_game = team_id_x_last_cbb_game[team.team_id];
-        // cbb_game.rankings = ranking;
-        team_with_ranking = cbb_game.teams[team.team_id];
-        tileContainers.push(<Tile data = {cbb_game} rankDisplay = {rankDisplay} />);
+      if (team.team_id in team_id_x_last_game) {
+        const game = team_id_x_last_game[team.team_id];
+        // game.rankings = ranking;
+        team_with_ranking = game.teams[team.team_id];
+        tileContainers.push(<Tile data = {game} rankDisplay = {rankDisplay} />);
       }
 
       const teamHelper = new HelperTeam({'team': team_with_ranking || team});
@@ -156,11 +156,11 @@ const Teams = (props) => {
       );
 
       // decorate future games
-      if (team.team_id in team_id_x_next_2_cbb_games) {
-        const cbb_games = team_id_x_next_2_cbb_games[team.team_id];
+      if (team.team_id in team_id_x_next_2_games) {
+        const games = team_id_x_next_2_games[team.team_id];
 
-        for (let i = 0; i < cbb_games.length; i++) {
-          tileContainers.push(<Tile data = {cbb_games[i]} rankDisplay = {rankDisplay} />);
+        for (let i = 0; i < games.length; i++) {
+          tileContainers.push(<Tile data = {games[i]} rankDisplay = {rankDisplay} />);
         }
       }
 

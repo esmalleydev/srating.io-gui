@@ -43,7 +43,7 @@ export default async function Page({ searchParams }) {
 
   const date = searchParams?.date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
 
-  const cbb_games = await getGames({ date });
+  const games = await getGames({ date });
 
   const view = searchParams?.view || 'picks';
 
@@ -56,14 +56,14 @@ export default async function Page({ searchParams }) {
       <ClientWrapper>
         {
           view === 'picks' ?
-            <Picks cbb_games = {cbb_games} />
+            <Picks games = {games} />
             : ''
         }
         <Suspense key = {date} fallback = {<StatsLoaderClientSkeleton />}>
-          <StatsLoaderServer cbb_game_ids={Object.keys(cbb_games)} />
+          <StatsLoaderServer game_ids={Object.keys(games)} />
         </Suspense>
 
-        {view === 'calculator' ? <div><Calculator cbb_games = {cbb_games} date = {date} /></div> : ''}
+        {view === 'calculator' ? <div><Calculator games = {games} date = {date} /></div> : ''}
 
         {
           view === 'stats' ?

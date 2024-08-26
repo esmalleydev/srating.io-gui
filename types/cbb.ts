@@ -13,14 +13,31 @@ export interface Team {
 
 export type Teams = {[team_id: string]: Team};
 
+export interface Prediction {
+  prediction_id: string;
+  game_id: string;
+  season: number;
+  home_percentage: number;
+  away_percentage: number;
+  home_score: number;
+  away_score: number;
+  live: number;
+  current: number;
+  date_of_entry: string;
+  guid: string;
+  deleted: number;
+}
+
+export type Predictions = {[prediction_id: string]: Prediction};
+
 export interface Game {
-  cbb_game_id: string;
+  game_id: string;
+  organization_id: string;
+  division_id: string;
   season: number;
   away_team_id: string;
   home_team_id: string;
   network: string;
-  home_team_rating: number;
-  away_team_rating: number;
   away_score: number;
   home_score: number;
   status: string;
@@ -36,16 +53,18 @@ export interface Game {
   guid: string;
   deleted: number;
   teams: Team;
+  prediction: Prediction;
 }
 
-export type Games = {
-  [cbb_game_id: string]: Game;
-};
+export type Games = {[game_id: string]: Game};
 
 export interface Boxscore {
-  cbb_boxscore_id: string;
-  cbb_game_id: string;
+  boxscore_id: string;
+  organization_id: string;
+  division_id: string;
+  game_id: string;
   team_id: string;
+  sport_boxscore_id: string;
   season: number;
   minutes_played: number;
   field_goal: number;
@@ -72,6 +91,8 @@ export interface Boxscore {
   final: number;
 }
 
+export type Boxscores = {[boxscore_id: string]: Boxscore};
+
 export interface Player {
   player_id: string;
   first_name: string;
@@ -88,10 +109,13 @@ export interface Player {
 export type Players = {[player_id: string]: Player};
 
 export interface PlayerBoxscore {
-  cbb_player_boxscore_id: string;
-  cbb_game_id: string;
+  player_boxscore_id: string;
+  organization_id: string;
+  division_id: string;
+  game_id: string;
   team_id: string;
   player_id: string;
+  sport_player_boxscore_id: string;
   season: number;
   first_name: string;
   last_name: string;
@@ -120,13 +144,24 @@ export interface PlayerBoxscore {
   points: number;
 }
 
-export interface ScoreIntervals {
-  cbb_game_score_interval_id: string;
-  cbb_game_id: string;
+export type PlayerBoxscores = {[player_boxscore_id: string]: PlayerBoxscore};
+
+export interface GamePulse {
+  game_pulse_id: string;
+  game_id: string;
+  odds_id: string;
   away_score: number;
   home_score: number;
   current_period: string;
   clock: string;
+  date_of_entry: string;
+}
+
+export type GamePulses = {[game_pulse_id: string]: GamePulse};
+
+export interface Odds {
+  odds_id: string;
+  game_id: string;
   money_line_away: number;
   money_line_home: number;
   spread_away: number;
@@ -134,11 +169,20 @@ export interface ScoreIntervals {
   over: number;
   under: number;
   date_of_entry: string;
+  live: number;
+  current: number;
+  guid: string;
+  deleted: number;
 }
 
+export type Oddsz = {[odds_id: string]: Odds};
+
 export interface PlaybyPlay {
-  cbb_game_pbp_id: string;
-  cbb_game_id: string;
+  play_by_play_id: string;
+  organization_id: string;
+  division_id: string;
+  game_id: string;
+  sport_play_by_play_id: string;
   team_id: string;
   current_period: string;
   clock: string;
@@ -157,6 +201,8 @@ export interface PlaybyPlay {
   date_of_entry: string;
   order: number;
 }
+
+export type PlaybyPlays = {[play_by_play_id: string]: PlaybyPlay};
 
 
 export interface RankingColumns {
@@ -886,9 +932,9 @@ export interface CoachTeamSeason {
 export type CoachTeamSeasons = {[coach_team_season_id: string]: CoachTeamSeason};
 
 export interface CoachElo {
-  cbb_coach_elo_id: string;
+  coach_elo_id: string;
   coach_id: string;
-  cbb_game_id: string;
+  game_id: string;
   season: number;
   elo: number;
   current: number;
@@ -898,12 +944,12 @@ export interface CoachElo {
   deleted: number;
 }
 
-export type CoachElos = {[cbb_coach_elo_id: string]: CoachElo};
+export type CoachElos = {[coach_elo_id: string]: CoachElo};
 
 export interface Elo {
-  cbb_elo_id: string;
+  elo_id: string;
   team_id: string;
-  cbb_game_id: string;
+  game_id: string;
   season: number;
   elo: number;
   current: number;
@@ -913,4 +959,4 @@ export interface Elo {
   deleted: number;
 }
 
-export type Elos = {[cbb_coach_elo_id: string]: Elo};
+export type Elos = {[elo_id: string]: Elo};

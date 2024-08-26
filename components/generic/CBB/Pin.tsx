@@ -7,7 +7,7 @@ import { IconButton } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
 import AccountHandler from '@/components/generic/AccountHandler';
-import { updateCbbGameIds, updateGameSort } from '@/redux/features/favorite-slice';
+import { updateGameIds, updateGameSort } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
 
 // const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -17,12 +17,10 @@ import { useClientAPI } from '@/components/clientAPI';
 //   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 // });
 
-const Pin = (props) => {
-  const cbb_game_id = props.cbb_game_id || null;
-
+const Pin = ({ game_id }) => {
   const dispatch = useAppDispatch();
-  const cbb_game_ids = useAppSelector(state => state.favoriteReducer.cbb_game_ids);
-  const isValidSession = useAppSelector(state => state.userReducer.isValidSession);
+  const game_ids = useAppSelector((state) => state.favoriteReducer.game_ids);
+  const isValidSession = useAppSelector((state) => state.userReducer.isValidSession);
 
   const theme = useTheme();
 
@@ -33,9 +31,9 @@ const Pin = (props) => {
   let selected = false;
 
   if (
-    cbb_game_id &&
-    cbb_game_ids.length &&
-    cbb_game_ids.indexOf(cbb_game_id) > -1
+    game_id &&
+    game_ids.length &&
+    game_ids.indexOf(game_id) > -1
   ) {
     selected = true;
   }
@@ -48,39 +46,39 @@ const Pin = (props) => {
 
   //   setAlertOpen(false);
   // };
-  
-  
+
+
   const handleAccountClose = () => {
     setAccountOpen(false);
   };
-  
+
   const handleFavorite = () => {
     if (!isValidSession) {
       setAccountOpen(true);
       return;
     }
-    
-    if (!cbb_game_id) {
-      console.warn('No cbb_game_id');
+
+    if (!game_id) {
+      console.warn('No game_id');
       return;
     }
 
     if (requested) {
       return;
     }
-    
-    dispatch(updateGameSort(cbb_game_id));
+
+    dispatch(updateGameSort(game_id));
     // update local copy first for responsiveness, then send the call off
-    dispatch(updateCbbGameIds(cbb_game_id));
+    dispatch(updateGameIds(game_id));
     // setAlertOpen(true);
     setRequested(true);
-    
+
     useClientAPI({
-      'class': 'favorite',
-      'function': 'updateFavorite',
-      'arguments': {
-        'cbb_game_id': cbb_game_id,
-      }
+      class: 'favorite',
+      function: 'updateFavorite',
+      arguments: {
+        game_id,
+      },
     }).then((favorite) => {
       // do nothing with it, assume the same logic is on the backend
       setRequested(false);
@@ -90,7 +88,7 @@ const Pin = (props) => {
   };
 
   const pinStyle: React.CSSProperties = {};
-  
+
   if (selected) {
     pinStyle.color = theme.palette.warning.light;
   }
@@ -108,6 +106,6 @@ const Pin = (props) => {
       </Snackbar> */}
     </>
   );
-}
+};
 
 export default Pin;

@@ -7,16 +7,16 @@ import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 
 
-const Server = async ({ cbb_game_ids }) => {
+const Server = async ({ game_ids }) => {
   unstable_noStore();
 
   const revalidateSeconds = 60 * 60 * 12; // 12 hours
 
   const gameStats: object = await useServerAPI({
-    class: 'cbb_game',
+    class: 'game',
     function: 'getAllStats',
     arguments: {
-      cbb_game_ids,
+      game_ids,
     },
   }, { revalidate: revalidateSeconds });
 

@@ -13,10 +13,10 @@ import { useEffect, useState } from 'react';
  * @param {object} args
  * @param {string} args.team_id
  * @param {number} args.season
- * @param {array} args.cbb_game_ids
+ * @param {array} args.game_ids
  * @return {void}
  */
-const StatsLoader = ({ team_id, season, cbb_game_ids }) => {
+const StatsLoader = ({ team_id, season, game_ids }) => {
   const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -34,10 +34,10 @@ const StatsLoader = ({ team_id, season, cbb_game_ids }) => {
     dispatch(setScheduleStatsLoading(true));
 
     useClientAPI({
-      class: 'cbb_game',
+      class: 'game',
       function: 'getAllStats',
       arguments: {
-        cbb_game_ids,
+        game_ids,
       },
     }).then((response) => {
       dispatch(setScheduleStats(response));

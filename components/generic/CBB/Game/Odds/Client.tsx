@@ -42,29 +42,29 @@ const ClientSkeleton = () => {
 };
 
 
-const Client = ({ cbb_game, oddsStats }) => {
+const Client = ({ game, oddsStats }) => {
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   let awayUnderdog = false;
   let homeUnderdog = false;
 
-  if (cbb_game.odds) {
-    awayUnderdog = cbb_game.odds.pre_game_money_line_away > 0;
-    homeUnderdog = cbb_game.odds.pre_game_money_line_home > 0;
+  if (game.odds && game.odds.pre) {
+    awayUnderdog = game.odds.pre.money_line_away > 0;
+    homeUnderdog = game.odds.pre.money_line_home > 0;
   }
 
 
   let awayOddsText: string | null = null;
-  if (oddsStats && oddsStats[cbb_game.away_team_id]) {
-    const awayOS = oddsStats[cbb_game.away_team_id];
+  if (oddsStats && oddsStats[game.away_team_id]) {
+    const awayOS = oddsStats[game.away_team_id];
     awayOddsText = `${CBB.getTeamName('away')} is ${awayUnderdog ? `${awayOS.underdog_wins}/${awayOS.underdog_games}, ${(((awayOS.underdog_wins / awayOS.underdog_games) || 0) * 100).toFixed(0)}% as the underdog this season.` : `${awayOS.favored_wins}/${awayOS.favored_games}, ${(((awayOS.favored_wins / awayOS.favored_games) || 0) * 100).toFixed(0)}% when favored this season.`}`;
   }
 
   let homeOddsText: string | null = null;
-  if (oddsStats && oddsStats[cbb_game.home_team_id]) {
-    const homeOS = oddsStats[cbb_game.home_team_id];
+  if (oddsStats && oddsStats[game.home_team_id]) {
+    const homeOS = oddsStats[game.home_team_id];
     homeOddsText = `${CBB.getTeamName('home')} is ${homeUnderdog ? `${homeOS.underdog_wins}/${homeOS.underdog_games}, ${(((homeOS.underdog_wins / homeOS.underdog_games) || 0) * 100).toFixed(0)}% as the underdog this season.` : `${homeOS.favored_wins}/${homeOS.favored_games}, ${(((homeOS.favored_wins / homeOS.favored_games) || 0) * 100).toFixed(0)}% when favored this season.`}`;
   }
 

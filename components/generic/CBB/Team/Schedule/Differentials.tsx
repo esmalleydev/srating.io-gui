@@ -10,27 +10,27 @@ import RankSpan from '@/components/generic/CBB/RankSpan';
 import moment from 'moment';
 
 
-const Differentials = ({ cbb_game, team_id }) => {
+const Differentials = ({ game, team_id }) => {
   const isLoading = useAppSelector((state) => state.teamReducer.scheduleStatsLoading);
   const scheduleStats = useAppSelector((state) => state.teamReducer.scheduleStats);
 
-  const other_team_id = (cbb_game.home_team_id === team_id ? cbb_game.away_team_id : cbb_game.home_team_id);
+  const other_team_id = (game.home_team_id === team_id ? game.away_team_id : game.home_team_id);
 
   const data = (
     other_team_id &&
     scheduleStats &&
-    cbb_game.cbb_game_id in scheduleStats &&
-    scheduleStats[cbb_game.cbb_game_id]
+    game.game_id in scheduleStats &&
+    scheduleStats[game.game_id]
   ) || null;
 
   const historical = data.historical[other_team_id] || {};
   const current = data.current[other_team_id] || {};
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
-  const otherTeamName = CBB.getTeamName((other_team_id === cbb_game.home_team_id ? 'home' : 'away'));
+  const otherTeamName = CBB.getTeamName((other_team_id === game.home_team_id ? 'home' : 'away'));
 
   if (!CBB.isFinal()) {
     return null;
@@ -53,8 +53,8 @@ const Differentials = ({ cbb_game, team_id }) => {
     return null;
   }
 
-  const historicalDate = moment(historical.date_of_rank || cbb_game.start_date).format('MMM Do');
-  const currentDate = moment(current.date_of_rank || cbb_game.start_date).format('MMM Do');
+  const historicalDate = moment(historical.date_of_rank || game.start_date).format('MMM Do');
+  const currentDate = moment(current.date_of_rank || game.start_date).format('MMM Do');
 
   const compares = [
     {
@@ -100,9 +100,9 @@ const Differentials = ({ cbb_game, team_id }) => {
     const currentRank = (compare.type === 'rank' ? current[compare.code] : current[`${compare.code}_rank`]);
 
 
-    const historicalDisplay: React.JSX.Element | string = historicalRank ? <RankSpan rank = {historicalRank} useOrdinal = {true} max = {CBB.getNumberOfD1Teams(cbb_game.season)} /> : '-';
+    const historicalDisplay: React.JSX.Element | string = historicalRank ? <RankSpan rank = {historicalRank} useOrdinal = {true} max = {CBB.getNumberOfD1Teams(game.season)} /> : '-';
 
-    const currentDisplay: React.JSX.Element | string = currentRank ? <RankSpan rank = {currentRank} useOrdinal = {true} max = {CBB.getNumberOfD1Teams(cbb_game.season)} /> : '-';
+    const currentDisplay: React.JSX.Element | string = currentRank ? <RankSpan rank = {currentRank} useOrdinal = {true} max = {CBB.getNumberOfD1Teams(game.season)} /> : '-';
 
     let arrowColor: 'info' | 'error' | 'success' = 'info';
     if (historicalRank < currentRank) {

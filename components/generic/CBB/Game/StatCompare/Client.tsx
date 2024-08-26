@@ -46,14 +46,14 @@ const ClientSkeleton = () => {
 };
 
 
-const Client = ({ cbb_game, statistic_rankings }) => {
+const Client = ({ game, statistic_rankings }) => {
   const [selectedChip, setSelectedChip] = useState('rank');
 
   const theme = useTheme();
   const backgroundColor = theme.palette.background.default;
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
 
@@ -118,7 +118,7 @@ const Client = ({ cbb_game, statistic_rankings }) => {
       };
     }
 
-    const which = cbb_game.home_team_id === row.team_id ? 'home' : 'away';
+    const which = game.home_team_id === row.team_id ? 'home' : 'away';
 
     date_of_rank_x_data[row.date_of_rank][`${which}_adjusted_efficiency_rating`] = row.adjusted_efficiency_rating;
     date_of_rank_x_data[row.date_of_rank][`${which}_points`] = row.points;

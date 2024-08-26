@@ -60,23 +60,23 @@ const TableView = ({ sorted_games, team_id }) => {
     },
   ];
 
-  const handleGameClick = (cbb_game_id) => {
+  const handleGameClick = (game_id) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/games/${cbb_game_id}`);
+      router.push(`/cbb/games/${game_id}`);
     });
   };
 
   const rowContainers: React.JSX.Element[] = [];
   for (let i = 0; i < sorted_games.length; i++) {
-    const cbb_game = sorted_games[i];
+    const game = sorted_games[i];
 
     const CBB = new HelperCBB({
-      cbb_game,
+      game,
     });
 
-    const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === team_id);
-    const otherSide = cbb_game.home_team_id === team_id ? 'away' : 'home';
+    const won = (game.home_score > game.away_score && game.home_team_id === team_id) || (game.home_score < game.away_score && game.away_team_id === team_id);
+    const otherSide = game.home_team_id === team_id ? 'away' : 'home';
 
     const tableCells: React.JSX.Element[] = [];
 
@@ -84,27 +84,27 @@ const TableView = ({ sorted_games, team_id }) => {
       const column = headCells[j];
 
       if (column.id === 'start_date') {
-        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(cbb_game.cbb_game_id); }}>{`${CBB.getStartDate()} - ${CBB.getStartTime()}`}</TableCell>);
+        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(game.game_id); }}>{`${CBB.getStartDate()} - ${CBB.getStartTime()}`}</TableCell>);
       } else if (column.id === 'team') {
-        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(cbb_game.cbb_game_id); }}>{cbb_game.home_team_id === team_id ? 'vs' : '@'} {CBB.getTeamName(otherSide)}</TableCell>);
+        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(game.game_id); }}>{game.home_team_id === team_id ? 'vs' : '@'} {CBB.getTeamName(otherSide)}</TableCell>);
       } else if (column.id === 'score') {
         let scoreText = '-';
         if (CBB.isFinal()) {
-          scoreText = `${(won ? 'W ' : 'L ') + cbb_game.home_score}-${cbb_game.away_score}`;
+          scoreText = `${(won ? 'W ' : 'L ') + game.home_score}-${game.away_score}`;
         } else if (CBB.isInProgress()) {
           scoreText = 'Live';
         }
-        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(cbb_game.cbb_game_id); }}>{scoreText}</TableCell>);
+        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(game.game_id); }}>{scoreText}</TableCell>);
       } else if (column.id === 'prediction') {
         const predictionContainer: React.JSX.Element[] = [];
-        const hasAccessToPercentages = !(cbb_game.away_team_rating === null && cbb_game.home_team_rating === null);
+        const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.home_percentage === null));
 
         if (isLoadingPredictions) {
           predictionContainer.push(<Skeleton style = {{ width: '100%', height: '100%', transform: 'initial' }} key = {1} />);
         } else if (!hasAccessToPercentages) {
           predictionContainer.push(<Locked iconFontSize={null} key = {1} />);
         } else {
-          const winPercentage = (cbb_game.home_team_id === team_id ? +(cbb_game.home_team_rating * 100).toFixed(0) : +(cbb_game.away_team_rating * 100).toFixed(0));
+          const winPercentage = (game.home_team_id === team_id ? +(game.prediction.home_percentage * 100).toFixed(0) : +(game.prediction.away_percentage * 100).toFixed(0));
           predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, winPercentage / 100) }}>{winPercentage}%</Typography>);
         }
         tableCells.push(<TableCell key = {j} style = {{ padding: '6px', width: 75 }}>{predictionContainer}</TableCell>);
@@ -113,7 +113,7 @@ const TableView = ({ sorted_games, team_id }) => {
 
     rowContainers.push(
       <StyledTableRow
-        key={cbb_game.cbb_game_id}
+        key={game.game_id}
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       >
         {tableCells}

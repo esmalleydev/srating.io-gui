@@ -21,10 +21,10 @@ const Tile = (props) => {
   const theme = useTheme();
   const [hover, setHover] = useState(false);
 
-  const cbb_game = props.data;
+  const game = props.data;
 
   const CBB = new HelperCBB({
-    'cbb_game': cbb_game,
+    'game': game,
   });
 
 
@@ -37,7 +37,7 @@ const Tile = (props) => {
     }
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/games/' + cbb_game.cbb_game_id);
+      router.push('/cbb/games/' + game.game_id);
     });
   };
 
@@ -54,7 +54,7 @@ const Tile = (props) => {
     let startTime = CBB.getTime();
 
     if (!CBB.isInProgress() && !CBB.isFinal()) {
-      startTime = moment(cbb_game.start_datetime).format('MMM Do') + ' - ' + startTime;
+      startTime = moment(game.start_datetime).format('MMM Do') + ' - ' + startTime;
     }
     
     const flexContainer = {

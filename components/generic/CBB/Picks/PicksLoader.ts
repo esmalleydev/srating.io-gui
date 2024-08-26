@@ -22,7 +22,7 @@ const PicksLoader = ({ date }) => {
     dispatch(setPicksLoading(true));
 
     useClientAPI({
-      class: 'cbb_game',
+      class: 'game',
       function: 'getScores',
       arguments: {
         start_date: date,

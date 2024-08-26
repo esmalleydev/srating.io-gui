@@ -9,31 +9,31 @@ import { ClientSkeleton } from '../StatsLoader/Client';
 import StatsLoaderServer from '../StatsLoader/Server';
 
 
-const Server = async ({ cbb_games, date }) => {
+const Server = async ({ games, date }) => {
   unstable_noStore();
   const revalidateScoresSeconds = 20; // cache scores for 20 seconds
 
   const scores = await useServerAPI({
-    class: 'cbb_game',
+    class: 'game',
     function: 'getScores',
     arguments: {
       start_date: date,
     },
   }, { revalidate: revalidateScoresSeconds });
 
-  for (const cbb_game_id in scores) {
-    if (cbb_game_id in cbb_games) {
-      delete scores[cbb_game_id].home_team_rating;
-      delete scores[cbb_game_id].away_team_rating;
-      Object.assign(cbb_games[cbb_game_id], scores[cbb_game_id]);
+  for (const game_id in scores) {
+    if (game_id in games) {
+      delete scores[game_id].prediction;
+      delete scores[game_id].prediction;
+      Object.assign(games[game_id], scores[game_id]);
     }
   }
 
   return (
     <>
-      <Client cbb_games = {cbb_games} date = {date} />
+      <Client games = {games} date = {date} />
       <Suspense fallback = {<ClientSkeleton />}>
-        <StatsLoaderServer cbb_game_ids = {Object.keys(cbb_games)} />
+        <StatsLoaderServer game_ids = {Object.keys(games)} />
       </Suspense>
     </>
   );

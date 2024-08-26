@@ -45,11 +45,11 @@ const ClientSkeleton = () => {
 };
 
 
-const Client = ({ cbb_game, previousMatchups }: {cbb_game: Game, previousMatchups: Games}) => {
+const Client = ({ game, previousMatchups }: {game: Game, previousMatchups: Games}) => {
   const [showAllPreviousMatchups, setShowAllPreviousMatchups] = useState(false);
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
 
@@ -81,14 +81,14 @@ const Client = ({ cbb_game, previousMatchups }: {cbb_game: Game, previousMatchup
       const lastThree = sorted_matchups.length > 3 && i < 3;
 
       if (sortedGame.away_score > sortedGame.home_score) {
-        if (sortedGame.away_team_id === cbb_game.away_team_id) {
+        if (sortedGame.away_team_id === game.away_team_id) {
           away_wins++;
           away_points += sortedGame.away_score - sortedGame.home_score;
           if (lastThree) {
             lastThree_away_wins++;
             lastThree_away_points += sortedGame.away_score - sortedGame.home_score;
           }
-        } else if (sortedGame.away_team_id === cbb_game.home_team_id) {
+        } else if (sortedGame.away_team_id === game.home_team_id) {
           home_wins++;
           home_points += sortedGame.away_score - sortedGame.home_score;
           if (lastThree) {
@@ -97,14 +97,14 @@ const Client = ({ cbb_game, previousMatchups }: {cbb_game: Game, previousMatchup
           }
         }
       } else if (sortedGame.away_score < sortedGame.home_score) {
-        if (sortedGame.home_team_id === cbb_game.away_team_id) {
+        if (sortedGame.home_team_id === game.away_team_id) {
           away_wins++;
           away_points += sortedGame.home_score - sortedGame.away_score;
           if (lastThree) {
             lastThree_away_wins++;
             lastThree_away_points += sortedGame.home_score - sortedGame.away_score;
           }
-        } else if (sortedGame.home_team_id === cbb_game.home_team_id) {
+        } else if (sortedGame.home_team_id === game.home_team_id) {
           home_wins++;
           home_points += sortedGame.home_score - sortedGame.away_score;
           if (lastThree) {
@@ -114,7 +114,7 @@ const Client = ({ cbb_game, previousMatchups }: {cbb_game: Game, previousMatchup
         }
       }
       if (i < 3 || showAllPreviousMatchups) {
-        previousMatchupContainers.push(<PreviousMatchupTile cbb_game = {sorted_matchups[i]} />);
+        previousMatchupContainers.push(<PreviousMatchupTile game = {sorted_matchups[i]} />);
       }
     }
 

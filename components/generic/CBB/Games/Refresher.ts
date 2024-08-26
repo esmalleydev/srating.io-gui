@@ -7,7 +7,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
-const Refresher = ({ date, cbb_games }) => {
+const Refresher = ({ date, games }) => {
   const refreshRate = useAppSelector((state) => state.gamesReducer.refreshRate);
   const dispatch = useAppDispatch();
 
@@ -16,10 +16,10 @@ const Refresher = ({ date, cbb_games }) => {
 
   let finalCount = 0;
   let total = 0;
-  for (const cbb_game_id in cbb_games) {
-    const cbb_game = cbb_games[cbb_game_id];
+  for (const game_id in games) {
+    const game = games[game_id];
 
-    if (cbb_game.status === 'final') {
+    if (game.status === 'final') {
       finalCount++;
     }
 
@@ -38,7 +38,7 @@ const Refresher = ({ date, cbb_games }) => {
     dispatch(setRefreshLoading(true));
 
     useClientAPI({
-      class: 'cbb_game',
+      class: 'game',
       function: 'getScores',
       arguments: {
         start_date: date,

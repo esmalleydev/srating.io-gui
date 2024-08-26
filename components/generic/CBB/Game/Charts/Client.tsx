@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { Game, ScoreIntervals } from '@/types/cbb';
+import { Game, GamePulse, GamePulses, Odds, Oddsz } from '@/types/cbb';
 import Chart from '@/components/generic/Chart';
 import { LineProps } from 'recharts';
 import { LinearProgress, useTheme } from '@mui/material';
@@ -48,14 +48,14 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ cbb_game, cbb_game_score_intervals }: {cbb_game: Game, cbb_game_score_intervals: ScoreIntervals}) => {
+const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulses, odds: Oddsz}) => {
   const [selectedIntervalChip, setSelectedIntervalChip] = useState('scoring');
 
   const theme = useTheme();
   const backgroundColor = theme.palette.background.default;
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
 
@@ -119,28 +119,7 @@ const Client = ({ cbb_game, cbb_game_score_intervals }: {cbb_game: Game, cbb_gam
     return 0;
   };
 
-  const sorted_intervals: ScoreIntervals[] = Object.values(cbb_game_score_intervals || {}).sort((a, b) => {
-    // const a_period = getPeriod(a);
-    // const b_period = getPeriod(b);
-
-    // if (a_period > b_period) {
-    //   return 1;
-    // }
-    // if (b_period > a_period) {
-    //   return -1;
-    // }
-
-    // const a_seconds = clockToSeconds(a.clock);
-    // const b_seconds = clockToSeconds(b.clock);
-
-    // if (a_seconds > b_seconds) {
-    //   return -1;
-    // }
-
-    // if (a_seconds < b_seconds) {
-    //   return 1;
-    // }
-
+  const sorted_game_pulses: GamePulse[] = Object.values(game_pulses || {}).sort((a, b) => {
     return a.date_of_entry < b.date_of_entry ? -1 : 1;
   });
 
@@ -161,28 +140,34 @@ const Client = ({ cbb_game, cbb_game_score_intervals }: {cbb_game: Game, cbb_gam
 
   const map = {};
 
-  for (let i = 0; i < sorted_intervals.length; i++) {
-    if (!map[sorted_intervals[i].clock + sorted_intervals[i].current_period]) {
-      map[sorted_intervals[i].clock + sorted_intervals[i].current_period] = true;
+  for (let i = 0; i < sorted_game_pulses.length; i++) {
+    if (!map[sorted_game_pulses[i].clock + sorted_game_pulses[i].current_period]) {
+      map[sorted_game_pulses[i].clock + sorted_game_pulses[i].current_period] = true;
 
-      let time = sorted_intervals[i].clock;
-      if (!sorted_intervals[i].current_period.length && sorted_intervals[i].clock === ':00' && !sorted_intervals[i].home_score && !sorted_intervals[i].away_score) {
+      let time = sorted_game_pulses[i].clock;
+      if (!sorted_game_pulses[i].current_period.length && sorted_game_pulses[i].clock === ':00' && !sorted_game_pulses[i].home_score && !sorted_game_pulses[i].away_score) {
         time = '1ST';
-      } else if (!sorted_intervals[i].current_period.length && sorted_intervals[i].clock === ':00') {
+      } else if (!sorted_game_pulses[i].current_period.length && sorted_game_pulses[i].clock === ':00') {
         time = '2ND';
       }
 
+      const game_pulse_odds: Odds | null = sorted_game_pulses[i].odds_id in odds ? odds[sorted_game_pulses[i].odds_id] : null;
 
-      formattedData.push({
+      const data: any = {
         time,
-        home_score: sorted_intervals[i].home_score,
-        away_score: sorted_intervals[i].away_score,
-        money_line_home: sorted_intervals[i].money_line_home < -10000 ? -10000 : sorted_intervals[i].money_line_home,
-        money_line_away: sorted_intervals[i].money_line_away < -10000 ? -10000 : sorted_intervals[i].money_line_away,
-        spread_home: sorted_intervals[i].spread_home < -10000 ? -10000 : sorted_intervals[i].spread_home,
-        spread_away: sorted_intervals[i].spread_away < -10000 ? -10000 : sorted_intervals[i].spread_away,
-        over: sorted_intervals[i].over < -10000 ? -10000 : sorted_intervals[i].over,
-      });
+        home_score: sorted_game_pulses[i].home_score,
+        away_score: sorted_game_pulses[i].away_score,
+      };
+
+      if (game_pulse_odds) {
+        data.money_line_home = game_pulse_odds.money_line_home < -10000 ? -10000 : game_pulse_odds.money_line_home;
+        data.money_line_away = game_pulse_odds.money_line_away < -10000 ? -10000 : game_pulse_odds.money_line_away;
+        data.spread_home = game_pulse_odds.spread_home < -10000 ? -10000 : game_pulse_odds.spread_home;
+        data.spread_away = game_pulse_odds.spread_away < -10000 ? -10000 : game_pulse_odds.spread_away;
+        data.over = game_pulse_odds.over < -10000 ? -10000 : game_pulse_odds.over;
+      }
+
+      formattedData.push(data);
     }
   }
 
@@ -277,8 +262,8 @@ const Client = ({ cbb_game, cbb_game_score_intervals }: {cbb_game: Game, cbb_gam
   return (
     <Contents>
       {intervalCompareChips}
-      {!sorted_intervals.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'h5'>Nothing here yet...</Typography> : ''}
-      {sorted_intervals.length ? intervalChart : ''}
+      {!sorted_game_pulses.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'h5'>Nothing here yet...</Typography> : ''}
+      {sorted_game_pulses.length ? intervalChart : ''}
     </Contents>
   );
 };

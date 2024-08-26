@@ -25,8 +25,8 @@ import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 
 export interface TrendsType {
-  cbb_elos: Elos;
-  cbb_games: Games;
+  elos: Elos;
+  games: Games;
   statistic_rankings: StatisticRankings;
   conference_statistic_rankings: ConferenceStatisticRankings;
   league_statistic_rankings: LeagueStatisticRankings
@@ -72,8 +72,8 @@ const Client = ({ data }: { data: TrendsType}) => {
   const searchParams = useSearchParams();
   const subView = searchParams?.get('subview') || 'stats';
 
-  const cbb_elos = (data && data.cbb_elos) || {};
-  const cbb_games = (data && data.cbb_games) || {};
+  const elos = (data && data.elos) || {};
+  const games = (data && data.games) || {};
   const statistic_rankings = (data && data.statistic_rankings) || {};
   const conference_statistic_rankings = (data && data.conference_statistic_rankings) || {};
   const league_statistic_rankings = (data && data.league_statistic_rankings) || {};
@@ -227,7 +227,7 @@ const Client = ({ data }: { data: TrendsType}) => {
   return (
     <Contents>
       {subView === 'ranking' ? getRankingGraph() : ''}
-      {subView === 'stats' ? <StatsGraph statistic_rankings = {statistic_rankings} cbb_elos = {cbb_elos} cbb_games = {cbb_games} conference_statistic_rankings = {conference_statistic_rankings} league_statistic_rankings = {league_statistic_rankings} /> : ''}
+      {subView === 'stats' ? <StatsGraph statistic_rankings = {statistic_rankings} elos = {elos} games = {games} conference_statistic_rankings = {conference_statistic_rankings} league_statistic_rankings = {league_statistic_rankings} /> : ''}
     </Contents>
   );
 };

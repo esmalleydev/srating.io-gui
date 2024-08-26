@@ -10,7 +10,7 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import Refresher from '../Refresher';
 
 
-const Client = ({ cbb_game, tag }) => {
+const Client = ({ game, tag }) => {
   const { width } = useWindowDimensions() as Dimensions;
 
   let scoreVariant: string = 'h4';
@@ -20,7 +20,7 @@ const Client = ({ cbb_game, tag }) => {
   }
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   const getScore = (score) => {
@@ -49,11 +49,11 @@ const Client = ({ cbb_game, tag }) => {
       <div style = {{
         display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', textAlign: 'center',
       }}>
-        {getScore(cbb_game.away_score)}
+        {getScore(game.away_score)}
         {getTime()}
-        {getScore(cbb_game.home_score)}
+        {getScore(game.home_score)}
       </div>
-      <Refresher cbb_game = {cbb_game} tag = {tag} />
+      <Refresher game = {game} tag = {tag} />
     </>
   );
 };

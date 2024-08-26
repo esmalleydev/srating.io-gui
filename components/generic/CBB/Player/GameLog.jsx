@@ -58,7 +58,7 @@ const GameLog = (props) => {
   if (!requestedLog) {
     setRequestedLog(true);
     useClientAPI({
-      'class': 'cbb_player_boxscore',
+      'class': 'player_boxscore',
       'function': 'getGameLogs',
       'arguments': {
         'player_id': player_team_season.player_id,
@@ -72,10 +72,10 @@ const GameLog = (props) => {
   }
 
 
-  const handleClick = (cbb_game_id) => {
+  const handleClick = (game_id) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/games/' + cbb_game_id);
+      router.push('/cbb/games/' + game_id);
     });
   };
 
@@ -158,7 +158,7 @@ const GameLog = (props) => {
   ];
 
   const rows = Object.values(data || {}).sort(function(a, b) {
-    return a.cbb_game.start_datetime > b.cbb_game.start_datetime ? -1 : 1;
+    return a.game.start_datetime > b.game.start_datetime ? -1 : 1;
   });
 
   let b = 0;
@@ -215,14 +215,14 @@ const GameLog = (props) => {
             <TableBody>
               {rows.map((row) => {
                 b++;
-                const won = (row.cbb_game.home_score > row.cbb_game.away_score && row.cbb_game.home_team_id === player_team_season.team_id) || (row.cbb_game.home_score < row.cbb_game.away_score && row.cbb_game.away_team_id === player_team_season.team_id);
+                const won = (row.game.home_score > row.game.away_score && row.game.home_team_id === player_team_season.team_id) || (row.game.home_score < row.game.away_score && row.game.away_team_id === player_team_season.team_id);
 
                 const CBB = new HelperCBB({
-                  'cbb_game': row.cbb_game,
+                  'game': row.game,
                 });
 
                 let opponent = null;
-                if (row.cbb_game.home_team_id !== player_team_season.team_id) {
+                if (row.game.home_team_id !== player_team_season.team_id) {
                   opponent = CBB.getTeamNameShort('home');
                 } else {
                   opponent = CBB.getTeamNameShort('away');
@@ -244,14 +244,14 @@ const GameLog = (props) => {
 
                 // todo add tool tips?
                 return (
-                  <StyledTableRow key={row.cbb_player_boxscore_id} onClick={() => {handleClick(row.cbb_game_id)}}>
+                  <StyledTableRow key={row.player_boxscore_id} onClick={() => {handleClick(row.game_id)}}>
                     <TableCell sx = {Object.assign({}, tdStyle, {'textAlign': 'left', 'position': 'sticky', 'left': 0, 'minWidth': 125, 'maxWidth': 125})}>
                       <div style = {{'display': 'flex', 'flexDirection': 'column'}}>
                         <div>
-                          {moment(row.cbb_game.start_date.split('T')[0] + ' 12:00:00').format('MMM Do')}
+                          {moment(row.game.start_date.split('T')[0] + ' 12:00:00').format('MMM Do')}
                         </div>
                         <div style = {{'color': theme.palette.grey[500]}}>
-                          {row.cbb_game.home_team_id !== player_team_season.team_id ? '@ ' : ''}{opponent} <span style = {spanStyle}>{CBB.isFinal() ? (won ? 'W' : 'L') : CBB.getTime()}</span> {row.cbb_game.home_score + '-' + row.cbb_game.away_score}
+                          {row.game.home_team_id !== player_team_season.team_id ? '@ ' : ''}{opponent} <span style = {spanStyle}>{CBB.isFinal() ? (won ? 'W' : 'L') : CBB.getTime()}</span> {row.game.home_score + '-' + row.game.away_score}
                         </div>
                       </div>
                     </TableCell>

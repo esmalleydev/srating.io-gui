@@ -47,7 +47,7 @@ export const getTileBaseStyle = (): React.CSSProperties => {
   };
 };
 
-const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
+const Tile = ({ game, isLoadingWinPercentage }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const theme = useTheme();
@@ -64,7 +64,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   const displayCardView = useAppSelector((state) => state.displayReducer.cardsView);
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   const isVisible = useOnScreen(ref);
@@ -82,10 +82,10 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     }
 
     dispatch(updateGameSort(null));
-    refresh(`cbb.games.${cbb_game.cbb_game_id}`);
+    refresh(`cbb.games.${game.game_id}`);
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/games/${cbb_game.cbb_game_id}`);
+      router.push(`/cbb/games/${game.game_id}`);
     });
   };
 
@@ -160,7 +160,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
             <div><Typography style={{ fontSize: '11px' }} variant = 'overline' color={'text.secondary'}>{oddsTexts.join(' | ')}</Typography></div>
             : ''
         }
-        <Pin cbb_game_id = {cbb_game.cbb_game_id} />
+        <Pin game_id = {game.game_id} />
       </div>
     );
   };
@@ -168,7 +168,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
   const awayWinPercentageContainer: React.JSX.Element[] = [];
   const homeWinPercentageContainer: React.JSX.Element[] = [];
 
-  const hasAccessToPercentages = !(cbb_game.away_team_rating === null && cbb_game.home_team_rating === null);
+  const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.away_percentage === null));
 
   if (isLoadingWinPercentage) {
     awayWinPercentageContainer.push(<Skeleton key = {1} />);
@@ -177,11 +177,11 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     awayWinPercentageContainer.push(<Locked iconFontSize={'20px'} key = {1} />);
     homeWinPercentageContainer.push(<Locked iconFontSize={'20px'} key = {2} />);
   } else {
-    const awayPercentage = +(cbb_game.away_team_rating * 100).toFixed(0);
-    const homePercentage = +(cbb_game.home_team_rating * 100).toFixed(0);
+    const awayPercentage = +(game.prediction.away_percentage * 100).toFixed(0);
+    const homePercentage = +(game.prediction.home_percentage * 100).toFixed(0);
 
-    awayWinPercentageContainer.push(<Typography key = {'away_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, cbb_game.away_team_rating) }}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
-    homeWinPercentageContainer.push(<Typography key = {'home_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, cbb_game.home_team_rating) }}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+    awayWinPercentageContainer.push(<Typography key = {'away_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.away_percentage) }}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+    homeWinPercentageContainer.push(<Typography key = {'home_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.home_percentage) }}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
   }
 
   const getOddsLine = () => {
@@ -293,11 +293,15 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     if (
       (
         side === 'home' &&
-        cbb_game.home_team_rating > cbb_game.away_team_rating
+        game.prediction &&
+        game.prediction.home_percentage !== null &&
+        game.prediction.home_percentage > game.prediction.away_percentage
       ) ||
       (
         side === 'away' &&
-        cbb_game.home_team_rating < cbb_game.away_team_rating
+        game.prediction &&
+        game.prediction.home_percentage !== null &&
+        game.prediction.home_percentage < game.prediction.away_percentage
       )
     ) {
       scoreStyle.border = `2px solid ${theme.palette.secondary.dark}`;
@@ -307,17 +311,17 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
     if (
       (
         side === 'home' &&
-        cbb_game.home_score > cbb_game.away_score
+        game.home_score > game.away_score
       ) ||
       (
         side === 'away' &&
-        cbb_game.home_score < cbb_game.away_score
+        game.home_score < game.away_score
       )
     ) {
       scoreStyle.backgroundColor = 'rgba(66, 245, 96, 0.5)';
     }
 
-    const team_id = cbb_game[`${side}_team_id`];
+    const team_id = game[`${side}_team_id`];
 
     // let spread: string | null = null;
     // let overUnder: string | null = null;
@@ -349,10 +353,10 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <div>
               <Typography variant = 'h6' sx = {{ fontSize: 14, display: 'inline-block' }}>
-                <Typography variant = 'overline' color = 'text.secondary' sx = {{ fontSize: 12 }}><Rank cbb_game={cbb_game} team_id={team_id} /></Typography>
+                <Typography variant = 'overline' color = 'text.secondary' sx = {{ fontSize: 12 }}><Rank game={game} team_id={team_id} /></Typography>
                 {CBB.getTeamName(side)}
               </Typography>
-              <Record cbb_game={cbb_game} team_id={team_id} />
+              <Record game={game} team_id={team_id} />
             </div>
             {
               displayCardView === 'compact' && !CBB.isFinal() ?
@@ -361,7 +365,7 @@ const Tile = ({ cbb_game, isLoadingWinPercentage }) => {
             }
           </div>
         </div>
-        <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? cbb_game[`${side}_score`] : '-'}</div>
+        <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? game[`${side}_score`] : '-'}</div>
       </div>
     );
   };

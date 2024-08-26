@@ -5,23 +5,23 @@ import React from 'react';
 import Client from '@/components/generic/CBB/Game/Matchup/Client';
 import { useServerAPI } from '@/components/serverAPI';
 
-const Server = async ({ cbb_game }) => {
-  // const tag = 'cbb.games.'+ cbb_game_id;
+const Server = async ({ game }) => {
+  // const tag = 'cbb.games.'+ game_id;
 
-  const { cbb_game_id } = cbb_game;
+  const { game_id } = game;
   const revalidateSeconds = 3600; // 60 * 60; // 1 hour
 
   const elo = await useServerAPI({
-    class: 'cbb_game',
+    class: 'game',
     function: 'getElos',
     arguments: {
-      cbb_game_id,
+      game_id,
     },
   }, { revalidate: revalidateSeconds });
 
   return (
     <>
-      <Client cbb_game = {cbb_game} elo = {elo} />
+      <Client game = {game} elo = {elo} />
     </>
   );
 };

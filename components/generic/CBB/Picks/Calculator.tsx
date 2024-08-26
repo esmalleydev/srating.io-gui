@@ -53,7 +53,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 
 // todo this somestimes triggers a double load in PicksLoader.... something with having const picksLoading = useAppSelector(state => state.picksReducer.picksLoading);, makes it double render
 
-const Calculator = ({ cbb_games, date }) => {
+const Calculator = ({ games, date }) => {
   const router = useRouter();
   const theme = useTheme();
   const { width } = useWindowDimensions() as Dimensions;
@@ -75,10 +75,9 @@ const Calculator = ({ cbb_games, date }) => {
     return (<div style={{ textAlign: 'center' }}><CircularProgress /></div>);
   }
 
-  for (const cbb_game_id in picksData) {
-    if (cbb_game_id in cbb_games) {
-      cbb_games[cbb_game_id].home_team_rating = picksData[cbb_game_id].home_team_rating;
-      cbb_games[cbb_game_id].away_team_rating = picksData[cbb_game_id].away_team_rating;
+  for (const game_id in picksData) {
+    if (game_id in games) {
+      Object.assign(games[game_id], picksData[game_id]);
     }
   }
 
@@ -99,8 +98,8 @@ const Calculator = ({ cbb_games, date }) => {
   };
 
 
-  const handleGame = (cbb_game_id) => {
-    router.push(`/cbb/games/${cbb_game_id}`);
+  const handleGame = (game_id) => {
+    router.push(`/cbb/games/${game_id}`);
   };
 
   const headCells = [
@@ -163,20 +162,20 @@ const Calculator = ({ cbb_games, date }) => {
   const future_winnings_60_array: number[] = [];
 
   type parlayOdds = {
-    [cbb_game_id: string] : {
+    [game_id: string] : {
       odds: number;
-      cbb_game_id: string;
+      game_id: string;
     };
   }
-  const cbb_game_id_x_parlay_odds: parlayOdds = {};
-  const future_cbb_game_id_x_parlay_odds: parlayOdds = {};
+  const game_id_x_parlay_odds: parlayOdds = {};
+  const future_game_id_x_parlay_odds: parlayOdds = {};
   const rows_picked: tableRow[] = [];
   const rows_other: tableRow[] = [];
   const rows_parlay: tableRow[] = [];
 
 
   type tableRow = {
-    cbb_game_id: string;
+    game_id: string;
     game: Game;
     start_timestamp: number;
     pick: string;
@@ -190,33 +189,38 @@ const Calculator = ({ cbb_games, date }) => {
 
   /**
    * Get a common, formatted row for our tables
-   * @param {Object} cbb_game
+   * @param {Object} game
    * @return Object
    */
-  const getFormattedGameRow = (cbb_game: Game) => {
+  const getFormattedGameRow = (game: Game) => {
     const CBB = new HelperCBB({
-      cbb_game,
+      game,
     });
 
+    const homePercentage = (game.prediction && game.prediction.home_percentage) || 0;
+    const awayPercentage = (game.prediction && game.prediction.away_percentage) || 0;
+
     const row: tableRow = {
-      cbb_game_id: cbb_game.cbb_game_id,
-      game: cbb_game,
-      start_timestamp: cbb_game.start_timestamp,
-      pick: cbb_game.home_team_rating >= cbb_game.away_team_rating ? 'home' : 'away',
-      pick_ml: cbb_game.home_team_rating >= cbb_game.away_team_rating ? CBB.getPreML('home') : CBB.getPreML('away'),
-      vs: cbb_game.home_team_rating >= cbb_game.away_team_rating ? 'away' : 'home', // the opposite of the pick :)
-      vs_ml: cbb_game.home_team_rating >= cbb_game.away_team_rating ? CBB.getPreML('away') : CBB.getPreML('home'),
-      chance: parseFloat(((cbb_game.home_team_rating >= cbb_game.away_team_rating ? cbb_game.home_team_rating : cbb_game.away_team_rating) * 100).toString()).toFixed(0),
-      result: (cbb_game.home_team_rating >= cbb_game.away_team_rating && cbb_game.home_score > cbb_game.away_score) || (cbb_game.away_team_rating >= cbb_game.home_team_rating && cbb_game.home_score < cbb_game.away_score),
-      status: cbb_game.status,
+      game_id: game.game_id,
+      game,
+      start_timestamp: game.start_timestamp,
+      pick: homePercentage >= awayPercentage ? 'home' : 'away',
+      pick_ml: homePercentage >= awayPercentage ? CBB.getPreML('home') : CBB.getPreML('away'),
+      vs: homePercentage >= awayPercentage ? 'away' : 'home', // the opposite of the pick :)
+      vs_ml: homePercentage >= awayPercentage ? CBB.getPreML('away') : CBB.getPreML('home'),
+      chance: parseFloat(((homePercentage >= awayPercentage ? homePercentage : awayPercentage) * 100).toString()).toFixed(0),
+      result: (homePercentage >= awayPercentage && game.home_score > game.away_score) || (awayPercentage >= homePercentage && game.home_score < game.away_score),
+      status: game.status,
     };
 
     return row;
   };
 
-  for (const cbb_game_id in cbb_games) {
-    const game = cbb_games[cbb_game_id];
+  for (const game_id in games) {
+    const game = games[game_id];
 
+    const homePercentage = (game.prediction && game.prediction.home_percentage) || 0;
+    const awayPercentage = (game.prediction && game.prediction.away_percentage) || 0;
 
     const row = getFormattedGameRow(game);
 
@@ -228,11 +232,11 @@ const Calculator = ({ cbb_games, date }) => {
       if (
         (
           game.home_score > game.away_score &&
-          game.home_team_rating > game.away_team_rating
+          homePercentage > awayPercentage
         ) ||
         (
           game.home_score < game.away_score &&
-          game.home_team_rating < game.away_team_rating
+          homePercentage < awayPercentage
         )
       ) {
         was_correct = true;
@@ -241,11 +245,12 @@ const Calculator = ({ cbb_games, date }) => {
 
       if (
         game.odds &&
-        game.odds.pre_game_money_line_away &&
-        game.odds.pre_game_money_line_home
+        game.odds.pre &&
+        game.odds.pre.money_line_away &&
+        game.odds.pre.money_line_home
       ) {
-        const pick = game.home_team_rating >= game.away_team_rating ? 'home' : 'away';
-        const odds = game.odds[`pre_game_money_line_${pick}`];
+        const pick = homePercentage >= awayPercentage ? 'home' : 'away';
+        const odds = game.odds.pre[`money_line_${pick}`];
 
         if (
           odds >= oddsMin &&
@@ -256,9 +261,9 @@ const Calculator = ({ cbb_games, date }) => {
           total_bet += bet;
 
 
-          cbb_game_id_x_parlay_odds[cbb_game_id] = {
+          game_id_x_parlay_odds[game_id] = {
             odds: convertAmericanToDecimal(+odds),
-            cbb_game_id,
+            game_id,
           };
 
           if (was_correct) {
@@ -271,11 +276,12 @@ const Calculator = ({ cbb_games, date }) => {
 
     if (
       game.odds &&
-      game.odds.pre_game_money_line_away &&
-      game.odds.pre_game_money_line_home
+      game.odds.pre &&
+      game.odds.pre.money_line_away &&
+      game.odds.pre.money_line_home
     ) {
-      const pick = game.home_team_rating >= game.away_team_rating ? 'home' : 'away';
-      const odds = game.odds[`pre_game_money_line_${pick}`];
+      const pick = homePercentage >= awayPercentage ? 'home' : 'away';
+      const odds = game.odds.pre[`money_line_${pick}`];
 
       if (
         odds >= oddsMin &&
@@ -287,9 +293,9 @@ const Calculator = ({ cbb_games, date }) => {
         future_total_bet += bet;
 
 
-        future_cbb_game_id_x_parlay_odds[cbb_game_id] = {
+        future_game_id_x_parlay_odds[game_id] = {
           odds: convertAmericanToDecimal(+odds),
-          cbb_game_id,
+          game_id,
         };
 
         future_winnings_100 += bet + ((100 / Math.abs(odds)) * bet);
@@ -309,13 +315,13 @@ const Calculator = ({ cbb_games, date }) => {
   // todo in the future attempt to pick the best mix of 20 games, or splits into multiples of 20?
 
 
-  // let parlay_cbb_game_ids = Object.keys(cbb_game_id_x_parlay_odds);
-  let parlay_cbb_game_ids: string[] = [];
+  // let parlay_game_ids = Object.keys(game_id_x_parlay_odds);
+  let parlay_game_ids: string[] = [];
 
-  if (Object.keys(cbb_game_id_x_parlay_odds).length <= 20) {
-    parlay_cbb_game_ids = Object.keys(cbb_game_id_x_parlay_odds);
+  if (Object.keys(game_id_x_parlay_odds).length <= 20) {
+    parlay_game_ids = Object.keys(game_id_x_parlay_odds);
   } else {
-    const sorted_parlay = Object.values(cbb_game_id_x_parlay_odds).sort((a, b) => {
+    const sorted_parlay = Object.values(game_id_x_parlay_odds).sort((a, b) => {
       if (a.odds < b.odds) {
         return -1;
       }
@@ -331,7 +337,7 @@ const Calculator = ({ cbb_games, date }) => {
       if (i > 19) {
         break;
       }
-      parlay_cbb_game_ids.push(sorted_parlay[i].cbb_game_id);
+      parlay_game_ids.push(sorted_parlay[i].game_id);
     }
   }
 
@@ -340,8 +346,8 @@ const Calculator = ({ cbb_games, date }) => {
   let roundRobinBetTotal = 0;
   let roundRobinBetCombos = 0;
   let roundRobinWins = 0;
-  if (parlay_cbb_game_ids.length > 2 && roundRobinLength) {
-    const combinations = Arrayifer.getCombinations(parlay_cbb_game_ids, parlay_cbb_game_ids.length, roundRobinLength);
+  if (parlay_game_ids.length > 2 && roundRobinLength) {
+    const combinations = Arrayifer.getCombinations(parlay_game_ids, parlay_game_ids.length, roundRobinLength);
 
     roundRobinBetCombos = combinations.length;
     roundRobinBetTotal = combinations.length * bet;
@@ -350,15 +356,17 @@ const Calculator = ({ cbb_games, date }) => {
       let parlay_won = true;
       let parlay_odds: number | null = null;
       for (let j = 0; j < combinations[i].length; j++) {
-        const game = cbb_games[combinations[i][j]];
+        const game = games[combinations[i][j]];
+        const homePercentage = (game.prediction && game.prediction.home_percentage) || 0;
+        const awayPercentage = (game.prediction && game.prediction.away_percentage) || 0;
         if (
           (
             game.home_score < game.away_score &&
-            game.home_team_rating > game.away_team_rating
+            homePercentage > awayPercentage
           ) ||
           (
             game.home_score > game.away_score &&
-            game.home_team_rating < game.away_team_rating
+            homePercentage < awayPercentage
           )
         ) {
           // parlay lost, this team did not win
@@ -366,7 +374,7 @@ const Calculator = ({ cbb_games, date }) => {
           break;
         }
 
-        const { odds } = cbb_game_id_x_parlay_odds[combinations[i][j]];
+        const { odds } = game_id_x_parlay_odds[combinations[i][j]];
 
         if (parlay_odds === null) {
           parlay_odds = odds;
@@ -382,12 +390,12 @@ const Calculator = ({ cbb_games, date }) => {
     }
   }
 
-  let future_parlay_cbb_game_ids: string[] = [];
+  let future_parlay_game_ids: string[] = [];
 
-  if (Object.keys(future_cbb_game_id_x_parlay_odds).length <= 20) {
-    future_parlay_cbb_game_ids = Object.keys(future_cbb_game_id_x_parlay_odds);
+  if (Object.keys(future_game_id_x_parlay_odds).length <= 20) {
+    future_parlay_game_ids = Object.keys(future_game_id_x_parlay_odds);
   } else {
-    const sorted_parlay = Object.values(future_cbb_game_id_x_parlay_odds).sort((a, b) => {
+    const sorted_parlay = Object.values(future_game_id_x_parlay_odds).sort((a, b) => {
       if (a.odds < b.odds) {
         return -1;
       }
@@ -403,37 +411,37 @@ const Calculator = ({ cbb_games, date }) => {
       if (i > 19) {
         break;
       }
-      future_parlay_cbb_game_ids.push(sorted_parlay[i].cbb_game_id);
+      future_parlay_game_ids.push(sorted_parlay[i].game_id);
     }
   }
 
-  const randomized_60 = Arrayifer.shuffle(future_parlay_cbb_game_ids);
+  const randomized_60 = Arrayifer.shuffle(future_parlay_game_ids);
 
-  const future_cbb_game_id_x_loss_60 = {};
+  const future_game_id_x_loss_60 = {};
 
   for (let i = 0; i < randomized_60.length; i++) {
     if (
-      Object.keys(future_cbb_game_id_x_loss_60).length &&
-      Object.keys(future_cbb_game_id_x_loss_60).length / randomized_60.length > 0.4
+      Object.keys(future_game_id_x_loss_60).length &&
+      Object.keys(future_game_id_x_loss_60).length / randomized_60.length > 0.4
     ) {
       break;
     }
 
-    future_cbb_game_id_x_loss_60[randomized_60[i]] = true;
+    future_game_id_x_loss_60[randomized_60[i]] = true;
   }
 
-  const randomized_75 = Arrayifer.shuffle(future_parlay_cbb_game_ids);
-  const future_cbb_game_id_x_loss_75 = {};
+  const randomized_75 = Arrayifer.shuffle(future_parlay_game_ids);
+  const future_game_id_x_loss_75 = {};
 
   for (let i = 0; i < randomized_75.length; i++) {
     if (
-      Object.keys(future_cbb_game_id_x_loss_75).length &&
-      Object.keys(future_cbb_game_id_x_loss_75).length / randomized_75.length > 0.25
+      Object.keys(future_game_id_x_loss_75).length &&
+      Object.keys(future_game_id_x_loss_75).length / randomized_75.length > 0.25
     ) {
       break;
     }
 
-    future_cbb_game_id_x_loss_75[randomized_75[i]] = true;
+    future_game_id_x_loss_75[randomized_75[i]] = true;
   }
 
   let future_roundRobinBetTotal = 0;
@@ -444,8 +452,8 @@ const Calculator = ({ cbb_games, date }) => {
   let future_roundRobinWins_100 = 0;
   let future_roundRobinWins_75 = 0;
   let future_roundRobinWins_60 = 0;
-  if (future_parlay_cbb_game_ids.length > 2 && roundRobinLength) {
-    const combinations = Arrayifer.getCombinations(future_parlay_cbb_game_ids, future_parlay_cbb_game_ids.length, roundRobinLength);
+  if (future_parlay_game_ids.length > 2 && roundRobinLength) {
+    const combinations = Arrayifer.getCombinations(future_parlay_game_ids, future_parlay_game_ids.length, roundRobinLength);
 
     future_roundRobinBetCombos = combinations.length;
     future_roundRobinBetTotal = combinations.length * bet;
@@ -455,18 +463,18 @@ const Calculator = ({ cbb_games, date }) => {
       let parlay_won_60 = true;
       let parlay_odds: number | null = null;
       for (let j = 0; j < combinations[i].length; j++) {
-        const game = cbb_games[combinations[i][j]];
-        if (game.cbb_game_id in future_cbb_game_id_x_loss_75) {
+        const game = games[combinations[i][j]];
+        if (game.game_id in future_game_id_x_loss_75) {
           // parlay lost, this team did not win
           parlay_won_75 = false;
         }
 
-        if (game.cbb_game_id in future_cbb_game_id_x_loss_60) {
+        if (game.game_id in future_game_id_x_loss_60) {
           // parlay lost, this team did not win
           parlay_won_60 = false;
         }
 
-        const { odds } = future_cbb_game_id_x_parlay_odds[combinations[i][j]];
+        const { odds } = future_game_id_x_parlay_odds[combinations[i][j]];
 
         if (parlay_odds === null) {
           parlay_odds = odds;
@@ -538,7 +546,7 @@ const Calculator = ({ cbb_games, date }) => {
     }
 
     const CBB = new HelperCBB({
-      cbb_game: row.game,
+      game: row.game,
     });
 
     const pickRank = CBB.getTeamRank(row.pick, displayRank);
@@ -548,13 +556,13 @@ const Calculator = ({ cbb_games, date }) => {
 
     return (
       <StyledTableRow
-        key={row.cbb_game_id}
+        key={row.game_id}
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       >
-        <TableCell sx = {teamCellStyle} onClick={() => { handleGame(row.cbb_game_id); }}><div>{pickRank ? <sup style = {{ marginRight: '5px' }}>{pickRank}</sup> : ''}{pickName}</div></TableCell>
+        <TableCell sx = {teamCellStyle} onClick={() => { handleGame(row.game_id); }}><div>{pickRank ? <sup style = {{ marginRight: '5px' }}>{pickRank}</sup> : ''}{pickName}</div></TableCell>
         <TableCell>{row.pick_ml}</TableCell>
         <TableCell>{CBB.getStartTime()}</TableCell>
-        <TableCell sx = {{ cursor: 'pointer', whiteSpace: 'nowrap' }} onClick={() => { handleGame(row.cbb_game_id); }}>
+        <TableCell sx = {{ cursor: 'pointer', whiteSpace: 'nowrap' }} onClick={() => { handleGame(row.game_id); }}>
           <div>{vsRank ? <sup style = {{ marginRight: '5px' }}>{vsRank}</sup> : ''}{vsName}</div>
         </TableCell>
         <TableCell>{row.vs_ml}</TableCell>
@@ -570,16 +578,16 @@ const Calculator = ({ cbb_games, date }) => {
 
 
   if (date < now && games_bet > 2 && roundRobinLength) {
-    for (let i = 0; i < parlay_cbb_game_ids.length; i++) {
-      const game = cbb_games[parlay_cbb_game_ids[i]];
+    for (let i = 0; i < parlay_game_ids.length; i++) {
+      const game = games[parlay_game_ids[i]];
 
       const row = getFormattedGameRow(game);
 
       rows_parlay.push(row);
     }
   } else if (date === now && future_games_bet > 2 && roundRobinLength) {
-    for (let i = 0; i < future_parlay_cbb_game_ids.length; i++) {
-      const game = cbb_games[future_parlay_cbb_game_ids[i]];
+    for (let i = 0; i < future_parlay_game_ids.length; i++) {
+      const game = games[future_parlay_game_ids[i]];
 
       const row = getFormattedGameRow(game);
 

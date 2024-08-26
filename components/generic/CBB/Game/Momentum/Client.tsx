@@ -53,23 +53,23 @@ const ClientSkeleton = () => {
 // TODO update to show differential from season averages, build it into stats compare component?
 
 
-const Client = ({ cbb_game, momentumData, stats }) => {
+const Client = ({ game, momentumData, stats }) => {
   const { width } = useWindowDimensions() as Dimensions;
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
 
-  const awayStats = (cbb_game.away_team_id in stats) ? stats[cbb_game.away_team_id] : {};
-  const homeStats = (cbb_game.home_team_id in stats) ? stats[cbb_game.home_team_id] : {};
+  const awayStats = (game.away_team_id in stats) ? stats[game.away_team_id] : {};
+  const homeStats = (game.home_team_id in stats) ? stats[game.home_team_id] : {};
 
 
-  const awayMomentumStats = (momentumData && momentumData[cbb_game.away_team_id] && momentumData[cbb_game.away_team_id].stats) || {};
-  const homeMomentumStats = (momentumData && momentumData[cbb_game.home_team_id] && momentumData[cbb_game.home_team_id].stats) || {};
+  const awayMomentumStats = (momentumData && momentumData[game.away_team_id] && momentumData[game.away_team_id].stats) || {};
+  const homeMomentumStats = (momentumData && momentumData[game.home_team_id] && momentumData[game.home_team_id].stats) || {};
 
-  const awayTeamGames: Games = (momentumData && momentumData[cbb_game.away_team_id] && momentumData[cbb_game.away_team_id].cbb_games) || {};
-  const homeTeamGames: Games = (momentumData && momentumData[cbb_game.home_team_id] && momentumData[cbb_game.home_team_id].cbb_games) || {};
+  const awayTeamGames: Games = (momentumData && momentumData[game.away_team_id] && momentumData[game.away_team_id].games) || {};
+  const homeTeamGames: Games = (momentumData && momentumData[game.home_team_id] && momentumData[game.home_team_id].games) || {};
 
 
   const overviewRows = [
@@ -532,7 +532,7 @@ const Client = ({ cbb_game, momentumData, stats }) => {
 
   if (momentumData) {
     for (const team_id in momentumData) {
-      const counter = Object.keys(momentumData[team_id].cbb_games).length;
+      const counter = Object.keys(momentumData[team_id].games).length;
       if (counter > 1) {
         moreThanOneGame = true;
       }
@@ -554,17 +554,17 @@ const Client = ({ cbb_game, momentumData, stats }) => {
                     <th colSpan = {3}><Typography variant = 'caption'>{CBB.getTeamName('away')}</Typography></th>
                   </tr>
                   {
-                    sortedAwayGames.map((cbb_game_) => {
+                    sortedAwayGames.map((game_) => {
                       const CBB_ = new HelperCBB({
-                        cbb_game: cbb_game_,
+                        game: game_,
                       });
 
-                      const won = (cbb_game_.home_score > cbb_game_.away_score && cbb_game_.home_team_id === cbb_game.away_team_id) || (cbb_game_.home_score < cbb_game_.away_score && cbb_game_.away_team_id === cbb_game.away_team_id);
+                      const won = (game_.home_score > game_.away_score && game_.home_team_id === game.away_team_id) || (game_.home_score < game_.away_score && game_.away_team_id === game.away_team_id);
 
                       return (<tr>
-                        <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{moment(cbb_game_.start_datetime).format('M/D')}</Typography></td>
-                        <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{cbb_game_.away_team_id === cbb_game.away_team_id ? `@ ${CBB_.getTeamName('home')}` : `vs ${CBB_.getTeamName('away')}`}</Typography></td>
-                        <td style = {{ padding: '0px 5px', textAlign: 'right' }}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game_.away_score} - {cbb_game_.home_score}</Typography></td>
+                        <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{moment(game_.start_datetime).format('M/D')}</Typography></td>
+                        <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{game_.away_team_id === game.away_team_id ? `@ ${CBB_.getTeamName('home')}` : `vs ${CBB_.getTeamName('away')}`}</Typography></td>
+                        <td style = {{ padding: '0px 5px', textAlign: 'right' }}><Typography variant = 'caption'>{won ? 'W' : 'L'} {game_.away_score} - {game_.home_score}</Typography></td>
                       </tr>);
                     })
                   }
@@ -577,17 +577,17 @@ const Client = ({ cbb_game, momentumData, stats }) => {
                     <th colSpan = {3}><Typography variant = 'caption'>{CBB.getTeamName('home')}</Typography></th>
                   </tr>
                   {
-                    sortedHomeGames.map((cbb_game_) => {
+                    sortedHomeGames.map((game_) => {
                       const CBB_ = new HelperCBB({
-                        cbb_game: cbb_game_,
+                        game: game_,
                       });
 
-                      const won = (cbb_game_.home_score > cbb_game_.away_score && cbb_game_.home_team_id === cbb_game.home_team_id) || (cbb_game_.home_score < cbb_game_.away_score && cbb_game_.away_team_id === cbb_game.home_team_id);
+                      const won = (game_.home_score > game_.away_score && game_.home_team_id === game.home_team_id) || (game_.home_score < game_.away_score && game_.away_team_id === game.home_team_id);
 
                       return (<tr>
-                        <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{moment(cbb_game_.start_datetime).format('M/D')}</Typography></td>
-                        <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{cbb_game_.home_team_id === cbb_game.home_team_id ? `@ ${CBB_.getTeamName('away')}` : `vs ${CBB_.getTeamName('home')}`}</Typography></td>
-                        <td style = {{ padding: '0px 5px', textAlign: 'right' }}><Typography variant = 'caption'>{won ? 'W' : 'L'} {cbb_game_.away_score} - {cbb_game_.home_score}</Typography></td>
+                        <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{moment(game_.start_datetime).format('M/D')}</Typography></td>
+                        <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{game_.home_team_id === game.home_team_id ? `@ ${CBB_.getTeamName('away')}` : `vs ${CBB_.getTeamName('home')}`}</Typography></td>
+                        <td style = {{ padding: '0px 5px', textAlign: 'right' }}><Typography variant = 'caption'>{won ? 'W' : 'L'} {game_.away_score} - {game_.home_score}</Typography></td>
                       </tr>);
                     })
                   }

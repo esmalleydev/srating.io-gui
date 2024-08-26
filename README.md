@@ -27,7 +27,7 @@ These calls run on the client. It will attach any required headers to the fetch 
 import { useClientAPI } from '@/components/clientAPI';
 
 useClientAPI({
-  'class': 'cbb_game',
+  'class': 'game',
   'function': 'getScores',
   'arguments': {
     'start_date': '2024-01-26',
@@ -50,7 +50,7 @@ import { useServerAPI } from '@/components/serverAPI';
 const revalidateScoresSeconds = 20; // cache scores for 20 seconds
   
 const scores = await useServerAPI({
-  'class': 'cbb_game',
+  'class': 'game',
   'function': 'getScores',
   'arguments': {
     'start_date': '2024-01-26',
@@ -72,7 +72,7 @@ console.log(scores);
 
 ### [Player](app/cbb/player/[player_id]/README.md)
 
-### [Game](app/cbb/games/[cbb_game_id]/README.md)
+### [Game](app/cbb/games/[game_id]/README.md)
 
 ### Tips
 May need to clear out .next and node_modules folder before rebuilding

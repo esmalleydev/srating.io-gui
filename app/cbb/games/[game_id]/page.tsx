@@ -49,7 +49,7 @@ import PredictionLoader from '@/components/generic/CBB/Game/PreditionLoader';
 
 
 type Props = {
-  params: { cbb_game_id: string };
+  params: { game_id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
@@ -58,10 +58,10 @@ export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const cbb_game = await getCachedData({ params });
+  const game = await getCachedData({ params });
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   return {
@@ -84,24 +84,24 @@ const getCachedData = cache(getData);
 
 async function getData({ params }) {
   const revalidateSeconds = 5 * 60;
-  const { cbb_game_id } = params;
-  const cbb_games = await useServerAPI({
-    class: 'cbb_game',
+  const { game_id } = params;
+  const games = await useServerAPI({
+    class: 'game',
     function: 'getGames',
     arguments: {
-      cbb_game_id,
+      game_id,
     },
   }, { revalidate: revalidateSeconds });
 
-  return cbb_games[cbb_game_id] || {};
+  return games[game_id] || {};
 }
 
 export default async function Page({ params, searchParams }) {
-  const { cbb_game_id } = params;
-  const cbb_game = await getCachedData({ params });
+  const { game_id } = params;
+  const game = await getCachedData({ params });
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
 
@@ -128,14 +128,14 @@ export default async function Page({ params, searchParams }) {
       return (
         <BoxscoreClientWrapper>
           <Suspense fallback = {<BoxscoreClientSkeleton />}>
-            <BoxscoreServer cbb_game = {cbb_game} />
+            <BoxscoreServer game = {game} />
           </Suspense>
         </BoxscoreClientWrapper>);
     } if (view === 'game_details' && subview === 'charts') {
       return (
         <ChartsClientWrapper>
           <Suspense fallback = {<ChartsClientSkeleton />}>
-            <ChartsServer cbb_game = {cbb_game} />
+            <ChartsServer game = {game} />
           </Suspense>
         </ChartsClientWrapper>
       );
@@ -143,17 +143,17 @@ export default async function Page({ params, searchParams }) {
       return (
         <PlaybyplayClientWrapper>
           <Suspense fallback = {<PlaybyplayClientSkeleton />}>
-            <PlaybyplayServer cbb_game = {cbb_game} />
+            <PlaybyplayServer game = {game} />
           </Suspense>
         </PlaybyplayClientWrapper>
       );
     } if (view === 'matchup') {
-      return (<MatchupClientWrapper><MatchupServer cbb_game = {cbb_game} /></MatchupClientWrapper>);
+      return (<MatchupClientWrapper><MatchupServer game = {game} /></MatchupClientWrapper>);
     } if (view === 'trends' && subview === 'stat_compare') {
       return (
         <StatCompareClientWrapper>
           <Suspense fallback = {<StatCompareClientSkeleton />}>
-            <StatCompareServer cbb_game = {cbb_game} />
+            <StatCompareServer game = {game} />
           </Suspense>
         </StatCompareClientWrapper>
       );
@@ -161,7 +161,7 @@ export default async function Page({ params, searchParams }) {
       return (
         <PreviousMatchupsClientWrapper>
           <Suspense fallback = {<PreviousMatchupsClientSkeleton />}>
-            <PreviousMatchupsServer cbb_game = {cbb_game} />
+            <PreviousMatchupsServer game = {game} />
           </Suspense>
         </PreviousMatchupsClientWrapper>
       );
@@ -169,7 +169,7 @@ export default async function Page({ params, searchParams }) {
       return (
         <OddsClientWrapper>
           <Suspense fallback = {<OddsClientSkeleton />}>
-            <OddsServer cbb_game = {cbb_game} />
+            <OddsServer game = {game} />
           </Suspense>
         </OddsClientWrapper>
       );
@@ -177,7 +177,7 @@ export default async function Page({ params, searchParams }) {
       return (
         <MomentumClientWrapper>
           <Suspense fallback = {<MomentumClientSkeleton />}>
-            <MomentumServer cbb_game = {cbb_game} />
+            <MomentumServer game = {game} />
           </Suspense>
         </MomentumClientWrapper>
       );
@@ -187,17 +187,17 @@ export default async function Page({ params, searchParams }) {
 
   return (
     <div>
-      <Suspense key = {cbb_game_id} fallback = {<StatsLoaderSkeleton />}>
-        <StatsLoaderServer cbb_game_ids = {[cbb_game_id]} />
+      <Suspense key = {game_id} fallback = {<StatsLoaderSkeleton />}>
+        <StatsLoaderServer game_ids = {[game_id]} />
       </Suspense>
-      <HeaderClientWrapper cbb_game = {cbb_game}>
+      <HeaderClientWrapper game = {game}>
         <Suspense>
-          <HeaderServer cbb_game_id = {cbb_game_id} />
+          <HeaderServer game_id = {game_id} />
         </Suspense>
       </HeaderClientWrapper>
       <NavBar view = {selectedViewTab} tabOrder = {tabOrder} />
       <SubNavBar subview = {selectSubViewTab} view = {selectedViewTab} tabOrder = {subTabOrder} />
-      <PredictionLoader key = {cbb_game_id} cbb_game_id = {cbb_game_id} />
+      <PredictionLoader key = {game_id} game_id = {game_id} />
       {getContent()}
     </div>
   );

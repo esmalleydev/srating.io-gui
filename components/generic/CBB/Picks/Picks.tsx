@@ -13,27 +13,27 @@ import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
 import { Games } from '@/types/cbb';
 
 
-const Picks = ({ cbb_games }: {cbb_games: Games | object}) => {
+const Picks = ({ games }: {games: Games}) => {
   const dispatch = useAppDispatch();
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
-  const skip_sort_cbb_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_cbb_game_ids);
-  const cbb_game_ids = useAppSelector((state) => state.favoriteReducer.cbb_game_ids);
+  const skip_sort_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_game_ids);
+  const game_ids = useAppSelector((state) => state.favoriteReducer.game_ids);
   const picksSort = useAppSelector((state) => state.displayReducer.picksSort);
   const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
 
-  const sorted_games = Object.values(cbb_games);
+  const sorted_games = Object.values(games);
 
   sorted_games.sort((a, b) => {
     const aIsPinned = (
-      skip_sort_cbb_game_ids.indexOf(a.cbb_game_id) === -1 &&
-      cbb_game_ids.length &&
-      cbb_game_ids.indexOf(a.cbb_game_id) > -1
+      skip_sort_game_ids.indexOf(a.game_id) === -1 &&
+      game_ids.length &&
+      game_ids.indexOf(a.game_id) > -1
     );
 
     const bIsPinned = (
-      skip_sort_cbb_game_ids.indexOf(b.cbb_game_id) === -1 &&
-      cbb_game_ids.length &&
-      cbb_game_ids.indexOf(b.cbb_game_id) > -1
+      skip_sort_game_ids.indexOf(b.game_id) === -1 &&
+      game_ids.length &&
+      game_ids.indexOf(b.game_id) > -1
     );
 
     if (aIsPinned && !bIsPinned) {
@@ -44,9 +44,13 @@ const Picks = ({ cbb_games }: {cbb_games: Games | object}) => {
       return 1;
     }
 
-    if (picksSort === 'win_percentage') {
-      const a_percentage = a.home_team_rating > a.away_team_rating ? a.home_team_rating : a.away_team_rating;
-      const b_percentage = b.home_team_rating > b.away_team_rating ? b.home_team_rating : b.away_team_rating;
+    if (
+      picksSort === 'win_percentage' &&
+      a.prediction &&
+      b.prediction
+    ) {
+      const a_percentage = a.prediction.home_percentage > a.prediction.away_percentage ? a.prediction.home_percentage : a.prediction.away_percentage;
+      const b_percentage = b.prediction.home_percentage > b.prediction.away_percentage ? b.prediction.home_percentage : b.prediction.away_percentage;
 
       if (a_percentage !== b_percentage) {
         return a_percentage > b_percentage ? -1 : 1;
@@ -59,17 +63,17 @@ const Picks = ({ cbb_games }: {cbb_games: Games | object}) => {
   const gameContainers: React.JSX.Element[] = [];
 
   for (let i = 0; i < sorted_games.length; i++) {
-    const cbb_game = sorted_games[i];
+    const game = sorted_games[i];
 
     if (
       selectedConferences.length &&
-      selectedConferences.indexOf(cbb_game.teams[cbb_game.away_team_id].conference_id) === -1 &&
-      selectedConferences.indexOf(cbb_game.teams[cbb_game.home_team_id].conference_id) === -1
+      selectedConferences.indexOf(game.teams[game.away_team_id].conference_id) === -1 &&
+      selectedConferences.indexOf(game.teams[game.home_team_id].conference_id) === -1
     ) {
       continue;
     }
 
-    gameContainers.push(<Tile key = {cbb_game.cbb_game_id} cbb_game = {cbb_game} />);
+    gameContainers.push(<Tile key = {game.game_id} game = {game} />);
   }
 
   const confChips: React.JSX.Element[] = [];

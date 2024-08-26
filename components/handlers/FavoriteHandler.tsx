@@ -1,16 +1,15 @@
 'use client';
-import { useState} from "react";
+
+import { useState } from 'react';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
-import { setCbbGameIds, setPlayerIds, setTeamIds } from "@/redux/features/favorite-slice";
+import { setGameIds, setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
-
-
 
 const FavoriteHandler = () => {
   const dispatch = useAppDispatch();
-  const validSession = useAppSelector(state => state.userReducer.isValidSession);
+  const validSession = useAppSelector((state) => state.userReducer.isValidSession);
 
   const [requested, setRequested] = useState(false);
 
@@ -18,9 +17,9 @@ const FavoriteHandler = () => {
   if (!requested && validSession) {
     setRequested(true);
     useClientAPI({
-      'class': 'favorite',
-      'function': 'getFavorite',
-      'arguments': {}
+      class: 'favorite',
+      function: 'getFavorite',
+      arguments: {},
     }).then((favorite) => {
       if (favorite && favorite.json_team_ids && favorite.json_team_ids.length) {
         dispatch(setTeamIds(favorite.json_team_ids));
@@ -28,8 +27,8 @@ const FavoriteHandler = () => {
       if (favorite && favorite.json_player_ids && favorite.json_player_ids.length) {
         dispatch(setPlayerIds(favorite.json_player_ids));
       }
-      if (favorite && favorite.json_cbb_game_ids && favorite.json_cbb_game_ids.length) {
-        dispatch(setCbbGameIds(favorite.json_cbb_game_ids));
+      if (favorite && favorite.json_game_ids && favorite.json_game_ids.length) {
+        dispatch(setGameIds(favorite.json_game_ids));
       }
     }).catch((err) => {
       // nothing for now

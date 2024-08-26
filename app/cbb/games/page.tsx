@@ -37,7 +37,7 @@ export async function getDates({ season }) {
   const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
 
   const dates: string[] | object = await useServerAPI({
-    class: 'cbb_game',
+    class: 'game',
     function: 'getSeasonDates',
     arguments: {
       season,
@@ -51,15 +51,15 @@ export async function getGames({ date }) {
   unstable_noStore();
   const revalidateSeconds = 1200; // 60 * 20; // cache games for 20 mins
 
-  const cbb_games = await useServerAPI({
-    class: 'cbb_game',
+  const games = await useServerAPI({
+    class: 'game',
     function: 'getGames',
     arguments: {
       start_date: date,
     },
   }, { revalidate: revalidateSeconds });
 
-  return cbb_games;
+  return games;
 }
 
 
@@ -72,19 +72,19 @@ export default async function Page({ searchParams }) {
 
   const date = searchParams?.date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
 
-  const cbb_games = await getGames({ date });
+  const games = await getGames({ date });
 
   return (
     <>
       <DateAppBar dates = {dates} date = {date} />
       <SubNavBar />
       <ContentsClientWrapper>
-        <Suspense key={date} fallback = {<ContentsClientSkeleton cbb_games = {cbb_games} />}>
-          <ContentsServer cbb_games = {cbb_games} date = {date} />
+        <Suspense key={date} fallback = {<ContentsClientSkeleton games = {games} />}>
+          <ContentsServer games = {games} date = {date} />
         </Suspense>
       </ContentsClientWrapper>
       <FloatingButtons />
-      <Refresher date = {date} cbb_games = {cbb_games} />
+      <Refresher date = {date} games = {games} />
     </>
   );
 }

@@ -50,8 +50,8 @@ const SubNavBar = ({ view }) => {
   // const picksData = useAppSelector(state => state.picksReducer.picks);
 
   // let calcAccess = false;
-  // for (let cbb_game_id in picksData) {
-  //   if (picksData[cbb_game_id].home_team_rating !== null && picksData[cbb_game_id].away_team_rating !== null) {
+  // for (let game_id in picksData) {
+  //   if (picksData[game_id].home_percentage !== null && picksData[game_id].away_percentage !== null) {
   //     calcAccess = true;
   //     break;
   //   }

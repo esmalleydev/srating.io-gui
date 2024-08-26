@@ -10,11 +10,11 @@ const Server = async ({ home_team_id, away_team_id, teams, season }) => {
   unstable_noStore();
   const revalidateSeconds = 60 * 60 * 2; // 2 hours
 
-  let cbb_games = {};
+  let games = {};
 
   if (home_team_id && away_team_id) {
-    cbb_games = await useServerAPI({
-      class: 'cbb_game',
+    games = await useServerAPI({
+      class: 'game',
       function: 'getPreviousMatchups',
       arguments: {
         home_team_id,
@@ -26,7 +26,7 @@ const Server = async ({ home_team_id, away_team_id, teams, season }) => {
 
   return (
     <>
-      <Client cbb_games = {cbb_games} teams={teams} home_team_id={home_team_id} away_team_id={away_team_id} />
+      <Client games = {games} teams={teams} home_team_id={home_team_id} away_team_id={away_team_id} />
     </>
   );
 };

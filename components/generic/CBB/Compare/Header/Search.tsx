@@ -13,6 +13,7 @@ import { Team } from '@/types/cbb';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setHomeTeamID, setAwayTeamID, setNextSearch } from '@/redux/features/compare-slice';
 import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
+import Text from '@/components/utils/Text';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -87,12 +88,16 @@ const Search = () => {
   }, 200);
 
 
-  const onChange = (e) => {
-    const { value } = e.target;
-    setValue(value || '');
-
-    setLoading(true);
-    debouncedRequest();
+  const onChange = (event, value, reason) => {
+    if (reason === 'clear') {
+      setValue('');
+      setTeams([]);
+      setLoading(false);
+    } else {
+      setValue(value || '');
+      setLoading(true);
+      debouncedRequest();
+    }
   };
 
   const options = teams.map((team) => {
@@ -101,6 +106,8 @@ const Search = () => {
       team_id: team.team_id,
       name: team.alt_name,
     };
+  }).sort((a, b) => {
+    return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
   });
 
   const handleClick = (event, option) => {
@@ -166,6 +173,7 @@ const Search = () => {
         freeSolo
         filterOptions={(x) => x}
         onChange = {handleClick}
+        onInputChange={onChange}
         loading = {loading}
         value = {null}
         options = {options}
@@ -184,7 +192,7 @@ const Search = () => {
               placeholder = {'Add a team'}
               autoFocus = {true}
               sx = {inputBaseStyle}
-              onChange = {onChange}
+              // onChange = {onChange}
             />
           );
         }}

@@ -4,12 +4,12 @@ import { useEffect } from 'react';
 import { refresh } from '../actions';
 
 
-const Refresher = ({ cbb_game, tag }) => {
+const Refresher = ({ game, tag }) => {
   const refreshRate = 30;
 
   useEffect(() => {
     let intervalRefresher: NodeJS.Timeout;
-    if (cbb_game.status !== 'final') {
+    if (game.status !== 'final') {
       intervalRefresher = setInterval(() => {
         refresh(tag);
       }, refreshRate * 1000);

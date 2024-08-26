@@ -39,7 +39,7 @@ export const getSkeleton = (numberOfSkeletons: number): React.JSX.Element[] => {
 
 export const maxWidth = 750;
 
-const Tile = ({ cbb_game }) => {
+const Tile = ({ game }) => {
   const router = useRouter();
 
   const scrollRef = useScrollContext();
@@ -47,9 +47,8 @@ const Tile = ({ cbb_game }) => {
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
 
-
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   const handleMatchup = (e) => {
@@ -62,7 +61,7 @@ const Tile = ({ cbb_game }) => {
     dispatch(updateGameSort(null));
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/games/${cbb_game.cbb_game_id}`);
+      router.push(`/cbb/games/${game.game_id}`);
     });
   };
 
@@ -80,7 +79,7 @@ const Tile = ({ cbb_game }) => {
     return (
       <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
         <div><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
-        <Pin cbb_game_id = {cbb_game.cbb_game_id} />
+        <Pin game_id = {game.game_id} />
       </div>
     );
   };
@@ -136,12 +135,12 @@ const Tile = ({ cbb_game }) => {
         <Typography variant = 'h6' style = {{
           textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize, maxWidth: maxWidthTypography,
         }}>
-          <Rank cbb_game={cbb_game} team_id={cbb_game.away_team_id} /> {awayName}
+          <Rank game={game} team_id={game.away_team_id} /> {awayName}
         </Typography>
         <Typography variant = 'h6' style = {{
           textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize, maxWidth: maxWidthTypography,
         }}>
-          <Rank cbb_game={cbb_game} team_id={cbb_game.home_team_id} /> {homeName}
+          <Rank game={game} team_id={game.home_team_id} /> {homeName}
         </Typography>
       </div>
     );
@@ -207,8 +206,8 @@ const Tile = ({ cbb_game }) => {
         {getTime()}
         {getHeader()}
         {getSecondaryHeader()}
-        <PredictionLine cbb_game = {cbb_game} />
-        <StatLine cbb_game = {cbb_game} />
+        <PredictionLine game = {game} />
+        <StatLine game = {game} />
         {getOdds()}
         <div style = {{ textAlign: 'right' }}>
           <Button onClick = {handleMatchup}>Full matchup</Button>

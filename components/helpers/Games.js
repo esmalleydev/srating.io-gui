@@ -2,7 +2,7 @@ import HelperCBB from './CBB';
 
 class Games {
   constructor(args) {
-    this.cbb_games = args.cbb_games || {};
+    this.games = args.games || {};
   };
 
   /**
@@ -11,15 +11,15 @@ class Games {
    */
   getLiveGames() {
     const live_games = {};
-    for (let cbb_game_id in this.cbb_games) {
-      const cbb_game = this.cbb_games[cbb_game_id];
+    for (let game_id in this.games) {
+      const game = this.games[game_id];
 
       const CBB = new HelperCBB({
-        'cbb_game': cbb_game
+        'game': game
       });
 
       if (CBB.isInProgress()) {
-        live_games[cbb_game_id] = cbb_game;
+        live_games[game_id] = game;
       }
     }
 
@@ -34,11 +34,11 @@ class Games {
   getTopRankedGames() {
     const top_games = {};
 
-    for (let cbb_game_id in this.cbb_games) {
-      const cbb_game = this.cbb_games[cbb_game_id];
+    for (let game_id in this.games) {
+      const game = this.games[game_id];
 
       const CBB = new HelperCBB({
-        'cbb_game': cbb_game
+        'game': game
       });
 
       if (CBB.isFinal()) {
@@ -52,7 +52,7 @@ class Games {
         (homeRank && homeRank <= 30) ||
         (awayRank && awayRank <= 30)
       ) {
-        top_games[cbb_game_id] = cbb_game;
+        top_games[game_id] = game;
       }
 
     }
@@ -68,11 +68,11 @@ class Games {
   getThrillerGames() {
     const thriller_games = {};
 
-    for (let cbb_game_id in this.cbb_games) {
-      const cbb_game = this.cbb_games[cbb_game_id];
+    for (let game_id in this.games) {
+      const game = this.games[game_id];
 
       const CBB = new HelperCBB({
-        'cbb_game': cbb_game
+        'game': game
       });
 
       if (CBB.isFinal()) {
@@ -91,7 +91,7 @@ class Games {
           awayRank <= 60
         )
       ) {
-        thriller_games[cbb_game_id] = cbb_game;
+        thriller_games[game_id] = game;
       }
 
     }
@@ -109,17 +109,17 @@ class Games {
 
     const closeGames = {};
 
-    for (let cbb_game_id in live_games) {
-      const cbb_game = live_games[cbb_game_id];
+    for (let game_id in live_games) {
+      const game = live_games[game_id];
 
-      const difference = Math.abs(cbb_game.home_score - cbb_game.away_score);
+      const difference = Math.abs(game.home_score - game.away_score);
 
       if (
         difference <= 6 &&
-        cbb_game.home_score > 14 &&
-        cbb_game.away_score > 14
+        game.home_score > 14 &&
+        game.away_score > 14
       ) {
-        closeGames[cbb_game_id] = cbb_game
+        closeGames[game_id] = game
       }
     }
 
@@ -136,8 +136,8 @@ class Games {
 
     const upsets = {};
 
-    for (let cbb_game_id in live_games) {
-      const cbb_game = live_games[cbb_game_id];
+    for (let game_id in live_games) {
+      const game = live_games[game_id];
 
       // todo define what an upset is
       // todo we could use the CBB.oddsReversal(), but that may not be an upset

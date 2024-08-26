@@ -69,7 +69,7 @@ const Home = () => {
       action: () => { handlePath('/cbb/games'); },
     },
     {
-      value: 'cbb_game',
+      value: 'game',
       heading: 'Game details',
       image: gameImage,
       contents: 'View a game\'s boxscore, match up, trends.',

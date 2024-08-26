@@ -23,7 +23,7 @@ import Rank from './Tile/Rank';
 import Record from './Tile/Record';
 
 
-const Tile = ({ cbb_game, team }) => {
+const Tile = ({ game, team }) => {
   const myRef: RefObject<HTMLDivElement> = useRef(null);
   const router = useRouter();
   const theme = useTheme();
@@ -34,7 +34,7 @@ const Tile = ({ cbb_game, team }) => {
   const isLoadingPredictions = useAppSelector((state) => state.teamReducer.schedulePredictionsLoading);
   const visibleScheduleDifferentials = useAppSelector((state) => state.teamReducer.visibleScheduleDifferentials);
 
-  const isScheduleDiffVisible = visibleScheduleDifferentials.indexOf(cbb_game.cbb_game_id) > -1;
+  const isScheduleDiffVisible = visibleScheduleDifferentials.indexOf(game.game_id) > -1;
 
 
   const scrollRef = useScrollContext();
@@ -42,14 +42,14 @@ const Tile = ({ cbb_game, team }) => {
   const { width } = useWindowDimensions() as Dimensions;
 
 
-  const won = (cbb_game.home_score > cbb_game.away_score && cbb_game.home_team_id === team.team_id) || (cbb_game.home_score < cbb_game.away_score && cbb_game.away_team_id === team.team_id);
-  const otherSide = cbb_game.home_team_id === team.team_id ? 'away' : 'home';
+  const won = (game.home_score > game.away_score && game.home_team_id === team.team_id) || (game.home_score < game.away_score && game.away_team_id === team.team_id);
+  const otherSide = game.home_team_id === team.team_id ? 'away' : 'home';
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
 
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
 
@@ -61,7 +61,7 @@ const Tile = ({ cbb_game, team }) => {
     // 'scrollMarginTop': '200px', // todo doesnt seem to work for games in Nov.
   };
 
-  const circleBackgroundColor = cbb_game.status === 'final' ? (won ? theme.palette.success.light : theme.palette.error.light) : (cbb_game.status !== 'pre' ? theme.palette.warning.light : theme.palette.info.light);
+  const circleBackgroundColor = game.status === 'final' ? (won ? theme.palette.success.light : theme.palette.error.light) : (game.status !== 'pre' ? theme.palette.warning.light : theme.palette.info.light);
 
 
   const dateStyle: React.CSSProperties = {
@@ -93,7 +93,7 @@ const Tile = ({ cbb_game, team }) => {
 
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/games/${cbb_game.cbb_game_id}`);
+      router.push(`/cbb/games/${game.game_id}`);
     });
   };
 
@@ -107,7 +107,7 @@ const Tile = ({ cbb_game, team }) => {
 
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/team/${team_id}?season=${cbb_game.season}`);
+      router.push(`/cbb/team/${team_id}?season=${game.season}`);
     });
   };
 
@@ -122,21 +122,21 @@ const Tile = ({ cbb_game, team }) => {
   let scoreLineText: string | ReactElement = CBB.getTime();
 
   if (CBB.isFinal()) {
-    scoreLineText = <div><span style = {{ color: circleBackgroundColor }}>{(won ? 'W ' : 'L ')}</span>{`${cbb_game.home_score}-${cbb_game.away_score}`}</div>;
+    scoreLineText = <div><span style = {{ color: circleBackgroundColor }}>{(won ? 'W ' : 'L ')}</span>{`${game.home_score}-${game.away_score}`}</div>;
   } else if (CBB.isInProgress()) {
     scoreLineText = <span style = {{ color: circleBackgroundColor }}>Live</span>;
   }
 
   const predictionContainer: React.JSX.Element[] = [];
 
-  const hasAccessToPercentages = !(cbb_game.away_team_rating === null && cbb_game.home_team_rating === null);
+  const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.away_percentage === null));
 
   if (isLoadingPredictions) {
     predictionContainer.push(<Skeleton style = {{ width: '100%', height: '100%', transform: 'initial' }} key = {1} />);
   } else if (!hasAccessToPercentages) {
     predictionContainer.push(<Locked key = {1} iconFontSize = {(width < 475 ? '18px' : '20px')} />);
   } else {
-    const winPercentage = (cbb_game.home_team_id === team.team_id ? +(cbb_game.home_team_rating * 100).toFixed(0) : +(cbb_game.away_team_rating * 100).toFixed(0));
+    const winPercentage = (game.home_team_id === team.team_id ? +(game.prediction.home_percentage * 100).toFixed(0) : +(game.prediction.away_percentage * 100).toFixed(0));
     predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, winPercentage / 100) }}>{winPercentage}%</Typography>);
   }
 
@@ -158,7 +158,7 @@ const Tile = ({ cbb_game, team }) => {
         <Card style = {{
           display: 'flex', width: (width <= 475 ? 40 : 75), marginRight: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center', cursor: 'pointer',
         }} onClick={handleGameClick}>
-          <Typography variant = 'caption' style = {{ color: circleBackgroundColor }}>{moment(`${cbb_game.start_date.split('T')[0]} 12:00:00`).format((width <= 475 ? 'Do' : 'ddd Do'))}</Typography>
+          <Typography variant = 'caption' style = {{ color: circleBackgroundColor }}>{moment(`${game.start_date.split('T')[0]} 12:00:00`).format((width <= 475 ? 'Do' : 'ddd Do'))}</Typography>
         </Card>
       </div>
       <Card style = {{ width: '100%' }}>
@@ -169,10 +169,10 @@ const Tile = ({ cbb_game, team }) => {
 
               {/* <div style = {dateStyle} onClick={handleGameClick}>
                 <div style = {{'flexBasis': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'flex-end'}}>
-                  <Typography variant = 'caption'>{moment(cbb_game.start_date.split('T')[0] + ' 12:00:00').format('ddd').toUpperCase()}</Typography>
+                  <Typography variant = 'caption'>{moment(game.start_date.split('T')[0] + ' 12:00:00').format('ddd').toUpperCase()}</Typography>
                 </div>
                 <div style = {{'flexBasis': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'flex-start'}}>
-                  <Typography variant = 'caption'>{moment(cbb_game.start_date.split('T')[0] + ' 12:00:00').format('Do')}</Typography>
+                  <Typography variant = 'caption'>{moment(game.start_date.split('T')[0] + ' 12:00:00').format('Do')}</Typography>
                 </div>
               </div> */}
 
@@ -181,14 +181,14 @@ const Tile = ({ cbb_game, team }) => {
                 marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'baseline', overflow: 'hidden' /* 'flexWrap': 'nowrap' */ }}>
                 <Typography color = 'text.secondary' variant = 'caption'>
                   {
-                    cbb_game.neutral_site ?
+                    game.neutral_site ?
                       <Tooltip enterTouchDelay={0} disableFocusListener placement = 'top' title = {'Neutral site'}><span style = {neutralStyle}>N</span></Tooltip>
-                      : (cbb_game.home_team_id === team.team_id ? 'vs' : '@')
+                      : (game.home_team_id === team.team_id ? 'vs' : '@')
                   }
                 </Typography>
-                <Typography style = {titleStyle} variant = {'body2'} onClick={() => { handleTeamClick(cbb_game[`${otherSide}_team_id`]); }}>
-                  <Rank cbb_game={cbb_game} team_id={cbb_game[`${otherSide}_team_id`]} /> <Link style = {{ cursor: 'pointer' }} underline='hover'>{CBB.getTeamName(otherSide)}</Link>
-                  {width > 375 ? <Record cbb_game={cbb_game} team_id={cbb_game[`${otherSide}_team_id`]} /> : ''}
+                <Typography style = {titleStyle} variant = {'body2'} onClick={() => { handleTeamClick(game[`${otherSide}_team_id`]); }}>
+                  <Rank game={game} team_id={game[`${otherSide}_team_id`]} /> <Link style = {{ cursor: 'pointer' }} underline='hover'>{CBB.getTeamName(otherSide)}</Link>
+                  {width > 375 ? <Record game={game} team_id={game[`${otherSide}_team_id`]} /> : ''}
                 </Typography>
               </div>
 
@@ -199,7 +199,7 @@ const Tile = ({ cbb_game, team }) => {
                 <Tooltip title = {'Toggle historical chart'} placement="top">
                   <IconButton
                     id = 'differential-button'
-                    onClick = {() => dispatch(updateVisibleScheduleDifferentials(cbb_game.cbb_game_id))}
+                    onClick = {() => dispatch(updateVisibleScheduleDifferentials(game.game_id))}
                   >
                     <LegendToggleIcon style = {{ fontSize: (width < 475 ? '22px' : '24px') }} color = {isScheduleDiffVisible ? 'success' : 'primary'} />
                   </IconButton>

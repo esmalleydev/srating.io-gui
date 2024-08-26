@@ -44,14 +44,14 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ cbb_games, teams, home_team_id, away_team_id }: {cbb_games: Games, teams: Team[], home_team_id: string, away_team_id: string}) => {
+const Client = ({ games, teams, home_team_id, away_team_id }: {games: Games, teams: Team[], home_team_id: string, away_team_id: string}) => {
   const previousMatchupContainers: React.JSX.Element[] = [];
   const summaryPRContainers: React.JSX.Element[] = [];
 
-  if (cbb_games && !Object.keys(cbb_games).length) {
+  if (games && !Object.keys(games).length) {
     previousMatchupContainers.push(<Paper key = {1} elevation = {3} style = {{ padding: 10 }}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
-  } else if (cbb_games) {
-    const sorted_matchups: Game[] = Object.values(cbb_games).sort((a, b) => {
+  } else if (games) {
+    const sorted_matchups: Game[] = Object.values(games).sort((a, b) => {
       return a.start_date > b.start_date ? -1 : 1;
     });
 
@@ -128,7 +128,7 @@ const Client = ({ cbb_games, teams, home_team_id, away_team_id }: {cbb_games: Ga
           }
         }
       }
-      previousMatchupContainers.push(<PreviousMatchupTile cbb_game = {sorted_matchups[i]} />);
+      previousMatchupContainers.push(<PreviousMatchupTile game = {sorted_matchups[i]} />);
     }
 
     if (sorted_matchups.length > 5) {
@@ -159,7 +159,7 @@ const Client = ({ cbb_games, teams, home_team_id, away_team_id }: {cbb_games: Ga
     <Contents>
       {summaryPRContainers}
       {
-        cbb_games !== null ?
+        games !== null ?
         <div style = {{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
           {previousMatchupContainers}
         </div>

@@ -59,9 +59,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-// todo the clear button does nothing >.>
-// look at their garbage docs to figure out why
-
 
 const Search = ({ onRouter, focus }) => {
   const dispatch = useAppDispatch();
@@ -107,12 +104,18 @@ const Search = ({ onRouter, focus }) => {
   }, 200);
 
 
-  const onChange = (e) => {
-    const { value } = e.target;
-    setValue(value || '');
-
-    setLoading(true);
-    debouncedRequest();
+  const onChange = (event, value, reason) => {
+    if (reason === 'clear') {
+      setValue('');
+      setTeams([]);
+      setPlayers([]);
+      setCoaches([]);
+      setLoading(false);
+    } else {
+      setValue(value || '');
+      setLoading(true);
+      debouncedRequest();
+    }
   };
 
   type OptionsType = {
@@ -171,6 +174,7 @@ const Search = ({ onRouter, focus }) => {
     ...coachOptions,
   ];
 
+
   const handleClick = (event, option) => {
     if (!option || (!option.player_id && !option.team_id && !option.coach_id)) {
       return;
@@ -213,6 +217,8 @@ const Search = ({ onRouter, focus }) => {
       <Autocomplete
         id="search-team-player-coach"
         freeSolo
+        // clearIcon = {<IconButton onClick={handleClear}><ClearIcon fontSize='small' /></IconButton>}
+        onInputChange={onChange}
         filterOptions={(x) => x}
         onChange = {handleClick}
         loading = {loading}
@@ -233,7 +239,7 @@ const Search = ({ onRouter, focus }) => {
               placeholder = {'Search'}
               autoFocus = {focus}
               sx = {{ minWidth: '200px' }}
-              onChange = {onChange}
+              // onChange = {onChange}
             />
           );
         }}

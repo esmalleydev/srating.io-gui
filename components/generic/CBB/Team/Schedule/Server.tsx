@@ -7,6 +7,7 @@ import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 import { ClientSkeleton } from './StatsLoader/Client';
 import StatsLoaderServer from './StatsLoader/Server';
+import { Games } from '@/types/cbb';
 
 
 
@@ -15,7 +16,7 @@ const Server = async ({ season, team_id }) => {
 
   const revalidateSeconds = 60;
 
-  const cbb_games: object = await useServerAPI({
+  const games: Games = await useServerAPI({
     class: 'team',
     function: 'getSchedule',
     arguments: {
@@ -26,9 +27,9 @@ const Server = async ({ season, team_id }) => {
 
   return (
     <>
-      <Client cbb_games = {cbb_games} team_id = {team_id} />
+      <Client games = {games} team_id = {team_id} />
       <Suspense fallback = {<ClientSkeleton />}>
-        <StatsLoaderServer cbb_game_ids = {Object.keys(cbb_games)} />
+        <StatsLoaderServer game_ids = {Object.keys(games)} />
       </Suspense>
     </>
   );

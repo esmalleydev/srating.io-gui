@@ -26,6 +26,11 @@ export async function useServerAPI(args, optional_fetch_args = {} as OptionalFet
     cache = cacheData.get(cachedLocation);
   }
 
+  // if dev set cacheSeconds to 0, to not be so annoying
+  if (process.env.SERVER_ENVIRONMENT === 'development') {
+    cacheSeconds = 0;
+  }
+
   if (cache !== null) {
     isCached = true;
   }

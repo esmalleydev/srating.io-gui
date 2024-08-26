@@ -1,4 +1,5 @@
 'use client';
+
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoadingSecret, setSecret } from '@/redux/features/user-slice';
 import { useIdleTimer } from 'react-idle-timer';
@@ -12,7 +13,7 @@ let intervalRefresher: NodeJS.Timeout;
 
 const Client = ({ secret, tag }) => {
   const dispatch = useAppDispatch();
-  const secret_id = useAppSelector(state => state.userReducer.secret_id);
+  const secret_id = useAppSelector((state) => state.userReducer.secret_id);
   const [idle, setIdle] = useState<boolean>(false);
 
   const refreshRate = 60 * 10; // 10 mins
@@ -33,11 +34,11 @@ const Client = ({ secret, tag }) => {
     onIdle,
     onActive,
     timeout: 1000 * 60 * 5, // 5 mins
-    throttle: 500
+    throttle: 500,
   });
 
   useEffect(() => {
-    intervalRefresher = setInterval(function() {
+    intervalRefresher = setInterval(() => {
       dispatch(setLoading(true));
       // dispatch(setLoadingSecret(true));
       refresh(tag).then(() => {
@@ -56,6 +57,6 @@ const Client = ({ secret, tag }) => {
   }
 
   return null;
-}
+};
 
 export default Client;

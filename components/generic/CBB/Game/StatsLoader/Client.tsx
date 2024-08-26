@@ -5,7 +5,7 @@ import { setDataKey } from '@/redux/features/game-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 // todo prevent flashing... checking gameStats might cause an infinite loop,
-// I think I need to store cbb_game_id, and not reload if set / the same. basically do not want the Client response, to trigger the Skeleton code
+// I think I need to store game_id, and not reload if set / the same. basically do not want the Client response, to trigger the Skeleton code
 
 const ClientSkeleton = () => {
   const dispatch = useAppDispatch();

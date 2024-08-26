@@ -13,6 +13,7 @@ import Differentials from './Differentials';
 import { useScrollContext } from '@/contexts/scrollContext';
 import TableView from './TableView';
 import { Skeleton } from '@mui/material';
+import { Games } from '@/types/cbb';
 
 
 /**
@@ -41,7 +42,7 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ cbb_games, team_id }: {cbb_games: object, team_id: string}) => {
+const Client = ({ games, team_id }: {games: Games, team_id: string}) => {
   const predictions = useAppSelector((state) => state.teamReducer.schedulePredictions);
   const scheduleView = useAppSelector((state) => state.teamReducer.scheduleView);
   const showScheduleDifferentials = useAppSelector((state) => state.teamReducer.showScheduleDifferentials);
@@ -66,13 +67,14 @@ const Client = ({ cbb_games, team_id }: {cbb_games: object, team_id: string}) =>
   //   setFirstRender(false);
   // });
 
-  for (const cbb_game_id in predictions) {
-    if (cbb_game_id in cbb_games) {
-      Object.assign(cbb_games[cbb_game_id], predictions[cbb_game_id]);
+  for (const prediction_id in predictions) {
+    const row = predictions[prediction_id];
+    if (row.game_id in games) {
+      games[row.game_id].prediction = row;
     }
   }
 
-  const sorted_games = Object.values(cbb_games || {}).sort((a, b) => (a.start_date < b.start_date ? -1 : 1));
+  const sorted_games = Object.values(games || {}).sort((a, b) => (a.start_date < b.start_date ? -1 : 1));
 
   const gameContainers: React.JSX.Element[] = [];
   let lastMonth: number | null = null;
@@ -81,22 +83,23 @@ const Client = ({ cbb_games, team_id }: {cbb_games: object, team_id: string}) =>
 
   if (scheduleView === 'default') {
     for (let i = 0; i < sorted_games.length; i++) {
-      const cbb_game = sorted_games[i];
-      if (!lastMonth || lastMonth < +moment(cbb_game.start_datetime).format('MM') || (lastYear && lastYear < +moment(cbb_game.start_datetime).format('YYYY'))) {
-        lastMonth = +moment(cbb_game.start_datetime).format('MM');
-        lastYear = +moment(cbb_game.start_datetime).format('YYYY');
-        gameContainers.push(<Typography key = {i} style = {{ marginBottom: '10px', padding: 5 }} variant = 'body1'>{moment(cbb_game.start_datetime).format('MMMM')}</Typography>);
+      const game = sorted_games[i];
+
+      if (!lastMonth || lastMonth < +moment(game.start_datetime).format('MM') || (lastYear && lastYear < +moment(game.start_datetime).format('YYYY'))) {
+        lastMonth = +moment(game.start_datetime).format('MM');
+        lastYear = +moment(game.start_datetime).format('YYYY');
+        gameContainers.push(<Typography key = {i} style = {{ marginBottom: '10px', padding: 5 }} variant = 'body1'>{moment(game.start_datetime).format('MMMM')}</Typography>);
       }
 
-      if (!nextUpcomingGame && (cbb_game.status === 'pre' || cbb_game.status === 'live')) {
+      if (!nextUpcomingGame && (game.status === 'pre' || game.status === 'live')) {
         nextUpcomingGame = true;
-        gameContainers.push(<Tile key = {cbb_game.cbb_game_id} cbb_game = {cbb_game} team = {cbb_game.teams[team_id]} />);
+        gameContainers.push(<Tile key = {game.game_id} game = {game} team = {game.teams[team_id]} />);
       } else {
-        gameContainers.push(<Tile key = {cbb_game.cbb_game_id} cbb_game = {cbb_game} team = {cbb_game.teams[team_id]} />);
+        gameContainers.push(<Tile key = {game.game_id} game = {game} team = {game.teams[team_id]} />);
       }
 
-      if (showScheduleDifferentials || visibleScheduleDifferentials.indexOf(cbb_game.cbb_game_id) > -1) {
-        gameContainers.push(<Differentials key = {`differentials-${cbb_game.cbb_game_id}`} cbb_game = {cbb_game} team_id = {team_id} />);
+      if (showScheduleDifferentials || visibleScheduleDifferentials.indexOf(game.game_id) > -1) {
+        gameContainers.push(<Differentials key = {`differentials-${game.game_id}`} game = {game} team_id = {team_id} />);
       }
     }
   } else if (scheduleView === 'table') {

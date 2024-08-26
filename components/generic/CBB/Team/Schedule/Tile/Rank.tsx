@@ -8,9 +8,9 @@ import { Skeleton } from '@mui/material';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 
 
-const Rank = ({ cbb_game, team_id }) => {
+const Rank = ({ game, team_id }) => {
   const CBB = new HelperCBB({
-    cbb_game,
+    game,
   });
 
   const scheduleStats = useAppSelector((state) => state.teamReducer.scheduleStats);
@@ -18,8 +18,8 @@ const Rank = ({ cbb_game, team_id }) => {
   const showScheduleHistoricalRankRecord = useAppSelector((state) => state.teamReducer.showScheduleHistoricalRankRecord);
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
 
-  const current = (scheduleStats[cbb_game.cbb_game_id] && scheduleStats[cbb_game.cbb_game_id].current[team_id]) || null;
-  const historical = (scheduleStats[cbb_game.cbb_game_id] && scheduleStats[cbb_game.cbb_game_id].historical[team_id]) || null;
+  const current = (scheduleStats[game.game_id] && scheduleStats[game.game_id].current[team_id]) || null;
+  const historical = (scheduleStats[game.game_id] && scheduleStats[game.game_id].historical[team_id]) || null;
   const statistic_ranking = showScheduleHistoricalRankRecord ? historical : current;
 
   const bestColor = getBestColor();
@@ -36,7 +36,7 @@ const Rank = ({ cbb_game, team_id }) => {
   };
 
   if (rank) {
-    supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(cbb_game.season))));
+    supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(game.season))));
   }
 
 

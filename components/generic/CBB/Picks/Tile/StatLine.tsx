@@ -7,12 +7,12 @@ import CompareStatistic from '@/components/generic/CompareStatistic';
 import { getSkeleton, maxWidth } from '../Tile';
 
 
-const StatLine = ({ cbb_game }) => {
+const StatLine = ({ game }) => {
   const gameStatsLoading = useAppSelector((state) => state.picksReducer.gameStatsLoading);
   const gameStats = useAppSelector((state) => state.picksReducer.gameStats);
 
-  const homeStats = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].historical[cbb_game.home_team_id]) || null;
-  const awayStats = (gameStats[cbb_game.cbb_game_id] && gameStats[cbb_game.cbb_game_id].historical[cbb_game.away_team_id]) || null;
+  const homeStats = (gameStats[game.game_id] && gameStats[game.game_id].historical[game.home_team_id]) || null;
+  const awayStats = (gameStats[game.game_id] && gameStats[game.game_id].historical[game.away_team_id]) || null;
 
 
   const compareRows = [
@@ -114,7 +114,7 @@ const StatLine = ({ cbb_game }) => {
       {
         gameStatsLoading ?
           getSkeleton(compareRows.length) :
-          <CompareStatistic key = {cbb_game.cbb_game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
+          <CompareStatistic key = {game.game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} />
       }
     </>
   );

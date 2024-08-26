@@ -12,7 +12,7 @@ const Server = async ({ date, season }) => {
   const revalidateSeconds = 60 * 5; // cache for 5 minss
 
   const stats = await useServerAPI({
-    class: 'cbb_game_odds',
+    class: 'odds',
     function: 'getStatsData',
     arguments: {
       date,

@@ -1,12 +1,12 @@
 'use client';
 
-import { setLoading } from "@/redux/features/display-slice";
-import { useAppDispatch } from "@/redux/hooks";
+import { setLoading } from '@/redux/features/display-slice';
+import { useAppDispatch } from '@/redux/hooks';
 
 
 const MutationHandler = () => {
   const dispatch = useAppDispatch();
-  let previousUrl = "";
+  let previousUrl = '';
 
   const observer = new MutationObserver(() => {
     if (window.location.href !== previousUrl) {

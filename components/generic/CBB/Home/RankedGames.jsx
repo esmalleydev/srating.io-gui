@@ -20,10 +20,10 @@ const RankedGames = (props) => {
   const [rankDisplay, setRankDisplay] = useState('composite_rank');
 
 
-  const handleClick = (cbb_game_id) => {
+  const handleClick = (game_id) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/games/' + cbb_game_id);
+      router.push('/cbb/games/' + game_id);
     });
   };
 
@@ -35,9 +35,9 @@ const RankedGames = (props) => {
   });
 
   for (let i = 0; i < sorted_games.length; i++) {
-    const cbb_game = sorted_games[i];
+    const game = sorted_games[i];
     gameContainers.push(
-      <Tile data = {cbb_game} rankDisplay = {rankDisplay} />
+      <Tile data = {game} rankDisplay = {rankDisplay} />
     );
   }
 
