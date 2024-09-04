@@ -24,10 +24,6 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
   const awayStats = awayTeam.stats ? awayTeam.stats : {};
   const homeStats = homeTeam.stats ? homeTeam.stats : {};
 
-  const awayRankings = awayTeam.rankings ? awayTeam.rankings : {};
-  const homeRankings = homeTeam.rankings ? homeTeam.rankings : {};
-
-
   const awayElo = awayTeam.elo && awayTeam.elo.elo ? awayTeam.elo.elo : null;
   const homeElo = homeTeam.elo && homeTeam.elo.elo ? homeTeam.elo.elo : null;
 
@@ -237,10 +233,10 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
     {
       name: 'Rank',
       title: 'Rank',
-      away: (awayRankings.composite_rank) || '-',
-      home: (homeRankings.composite_rank) || '-',
-      awayCompareValue: (awayRankings.composite_rank) || Infinity,
-      homeCompareValue: (homeRankings.composite_rank) || Infinity,
+      away: (awayStats.rank) || '-',
+      home: (homeStats.rank) || '-',
+      awayCompareValue: (awayStats.rank) || Infinity,
+      homeCompareValue: (homeStats.rank) || Infinity,
       favored: 'lower',
       showDifference: true,
       precision: 0,
@@ -252,8 +248,8 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
       home: homeElo,
       awayCompareValue: awayElo,
       homeCompareValue: homeElo,
-      awayRank: (awayRankings.elo_rank),
-      homeRank: (homeRankings.elo_rank),
+      awayRank: (awayStats.elo_rank),
+      homeRank: (homeStats.elo_rank),
       favored: 'higher',
       showDifference: true,
       precision: 0,
@@ -261,10 +257,10 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
     {
       name: 'NET',
       title: 'NET',
-      away: (awayRankings.net_rank) || '-',
-      home: (homeRankings.net_rank) || '-',
-      awayCompareValue: (awayRankings.net_rank) || Infinity,
-      homeCompareValue: (homeRankings.net_rank) || Infinity,
+      away: (awayStats.net_rank) || '-',
+      home: (homeStats.net_rank) || '-',
+      awayCompareValue: (awayStats.net_rank) || Infinity,
+      homeCompareValue: (homeStats.net_rank) || Infinity,
       favored: 'lower',
       showDifference: true,
       precision: 0,
@@ -272,10 +268,10 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
     {
       name: 'KP',
       title: 'Kenpom',
-      away: (awayRankings.kenpom_rank) || '-',
-      home: (homeRankings.kenpom_rank) || '-',
-      awayCompareValue: (awayRankings.kenpom_rank) || Infinity,
-      homeCompareValue: (homeRankings.kenpom_rank) || Infinity,
+      away: (awayStats.kenpom_rank) || '-',
+      home: (homeStats.kenpom_rank) || '-',
+      awayCompareValue: (awayStats.kenpom_rank) || Infinity,
+      homeCompareValue: (homeStats.kenpom_rank) || Infinity,
       favored: 'lower',
       showDifference: true,
       precision: 0,
@@ -283,10 +279,10 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
     {
       name: 'SRS',
       title: 'SRS',
-      away: (awayRankings.srs_rank) || '-',
-      home: (homeRankings.srs_rank) || '-',
-      awayCompareValue: (awayRankings.srs_rank) || Infinity,
-      homeCompareValue: (homeRankings.srs_rank) || Infinity,
+      away: (awayStats.srs_rank) || '-',
+      home: (homeStats.srs_rank) || '-',
+      awayCompareValue: (awayStats.srs_rank) || Infinity,
+      homeCompareValue: (homeStats.srs_rank) || Infinity,
       favored: 'lower',
       showDifference: true,
       precision: 0,
@@ -294,10 +290,10 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
     // {
     //   'name': 'AP',
     //   'title': 'AP',
-    //   'away': (awayRankings.ap_rank) || '-',
-    //   'home': (homeRankings.ap_rank) || '-',
-    //   'awayCompareValue': (awayRankings.ap_rank) || Infinity,
-    //   'homeCompareValue': (homeRankings.ap_rank) || Infinity,
+    //   'away': (awayStats.ap_rank) || '-',
+    //   'home': (homeStats.ap_rank) || '-',
+    //   'awayCompareValue': (awayStats.ap_rank) || Infinity,
+    //   'homeCompareValue': (homeStats.ap_rank) || Infinity,
     //   'favored': 'lower',
     //   'showDifference': true,
     //   'precision': 0,
@@ -305,10 +301,10 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
     // {
     //   'name': 'Coaches',
     //   'title': 'Coaches Poll',
-    //   'away': (awayRankings.coaches_rank) || '-',
-    //   'home': (homeRankings.coaches_rank) || '-',
-    //   'awayCompareValue': (awayRankings.coaches_rank) || Infinity,
-    //   'homeCompareValue': (homeRankings.coaches_rank) || Infinity,
+    //   'away': (awayStats.coaches_rank) || '-',
+    //   'home': (homeStats.coaches_rank) || '-',
+    //   'awayCompareValue': (awayStats.coaches_rank) || Infinity,
+    //   'homeCompareValue': (homeStats.coaches_rank) || Infinity,
     //   'favored': 'lower',
     //   'showDifference': true,
     //   'precision': 0,

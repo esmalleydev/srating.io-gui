@@ -36,10 +36,15 @@ export async function getDates({ season }) {
   unstable_noStore();
   const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
 
+  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM
+  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
+
   const dates: string[] | object = await useServerAPI({
     class: 'game',
     function: 'getSeasonDates',
     arguments: {
+      organization_id,
+      division_id,
       season,
     },
   }, { revalidate: revalidateSeconds });
@@ -51,10 +56,15 @@ export async function getGames({ date }) {
   unstable_noStore();
   const revalidateSeconds = 1200; // 60 * 20; // cache games for 20 mins
 
+  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM
+  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
+
   const games = await useServerAPI({
     class: 'game',
     function: 'getGames',
     arguments: {
+      organization_id,
+      division_id,
       start_date: date,
     },
   }, { revalidate: revalidateSeconds });
