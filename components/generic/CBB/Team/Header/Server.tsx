@@ -6,8 +6,9 @@ import { Client } from '@/components/generic/CBB/Team/Header/Client';
 import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 import {
-  Coach, CoachStatisticRanking, CoachTeamSeason, TeamSeasonConferences,
+  CoachStatisticRanking, TeamSeasonConferences,
 } from '@/types/cbb';
+import { Coach, CoachTeamSeason } from '@/types/general';
 
 
 

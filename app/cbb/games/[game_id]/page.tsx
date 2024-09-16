@@ -46,6 +46,8 @@ import MomentumServer from '@/components/generic/CBB/Game/Momentum/Server';
 import { ClientSkeleton as StatsLoaderSkeleton } from '@/components/generic/CBB/Game/StatsLoader/Client';
 import StatsLoaderServer from '@/components/generic/CBB/Game/StatsLoader/Server';
 import PredictionLoader from '@/components/generic/CBB/Game/PreditionLoader';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 
 
 type Props = {
@@ -99,6 +101,8 @@ async function getData({ params }) {
 export default async function Page({ params, searchParams }) {
   const { game_id } = params;
   const game = await getCachedData({ params });
+  const organization_id = Organization.getCBBID();
+  const division_id = searchParams?.division_id || Division.getD1();
 
   const CBB = new HelperCBB({
     game,
@@ -188,7 +192,7 @@ export default async function Page({ params, searchParams }) {
   return (
     <div>
       <Suspense key = {game_id} fallback = {<StatsLoaderSkeleton />}>
-        <StatsLoaderServer game_ids = {[game_id]} />
+        <StatsLoaderServer game_ids = {[game_id]} organization_id = {organization_id} division_id = {division_id} />
       </Suspense>
       <HeaderClientWrapper game = {game}>
         <Suspense>

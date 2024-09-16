@@ -1,12 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-// import HelperCBB from '@/components/helpers/CBB';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const rankLocalStorageKey = 'CBB.DISPLAY.RANK';
-const picksSortLocalStorageKey = 'CBB.DISPLAY.PICKS.SORT';
-const conferencesLocalStorageKey = 'CBB.DISPLAY.CONFERENCE_IDS';
-const positionsLocalStorageKey = 'CBB.DISPLAY.POSITIONS';
-const statusesLocalStorageKey = 'CBB.DISPLAY.STATUSES';
-const cardsViewLocalStorageKey = 'CBB.DISPLAY.GAMES.CARDSVIEW';
+const rankLocalStorageKey = 'DISPLAY.RANK';
+const picksSortLocalStorageKey = 'DISPLAY.PICKS.SORT';
+const conferencesLocalStorageKey = 'DISPLAY.CONFERENCE_IDS';
+const positionsLocalStorageKey = 'DISPLAY.POSITIONS';
+const statusesLocalStorageKey = 'DISPLAY.STATUSES';
+const cardsViewLocalStorageKey = 'DISPLAY.GAMES.CARDSVIEW';
 
 let rankLocalStorage: string | null = null;
 let picksSortLocalStorage: string | null = null;
@@ -36,7 +35,7 @@ type InitialState = {
 };
 
 const initialState = {
-  rank: rankLocalStorage || 'composite_rank',
+  rank: rankLocalStorage || 'rank',
   picksSort: picksSortLocalStorage || 'start_time',
   conferences: (conferencesLocalStorage && JSON.parse(conferencesLocalStorage)) || [],
   positions: (positionsLocalStorage && JSON.parse(positionsLocalStorage)) || [],
@@ -48,11 +47,21 @@ const initialState = {
 
 export const display = createSlice({
   name: 'display',
-  initialState: initialState,
+  initialState,
   reducers: {
-    // setSeason: (state, action: PayloadAction<number>) => {
-    //   state.season = action.payload;
-    // },
+    clearLocalStorage: (state) => {
+      localStorage.removeItem(rankLocalStorageKey);
+      localStorage.removeItem(conferencesLocalStorageKey);
+      localStorage.removeItem(positionsLocalStorageKey);
+      rankLocalStorage = null;
+      conferencesLocalStorage = null;
+      positionsLocalStorage = null;
+
+      ['rank', 'positions', 'conferences'].forEach((value) => {
+        state[value] = initialState[value];
+      });
+    },
+
     setRank: (state, action: PayloadAction<string>) => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(rankLocalStorageKey, action.payload);
@@ -71,7 +80,7 @@ export const display = createSlice({
         if (index !== -1) {
           state.conferences = [
             ...state.conferences.slice(0, index),
-            ...state.conferences.slice(index + 1)
+            ...state.conferences.slice(index + 1),
           ];
         } else {
           state.conferences = [...state.conferences, action.payload];
@@ -79,7 +88,7 @@ export const display = createSlice({
       } else {
         state.conferences = [];
       }
-      
+
       if (typeof window !== 'undefined') {
         localStorage.setItem(conferencesLocalStorageKey, JSON.stringify(state.conferences));
       }
@@ -89,12 +98,12 @@ export const display = createSlice({
       if (index !== -1) {
         state.positions = [
           ...state.positions.slice(0, index),
-          ...state.positions.slice(index + 1)
+          ...state.positions.slice(index + 1),
         ];
       } else {
         state.positions = [...state.positions, action.payload];
       }
-      
+
       if (typeof window !== 'undefined') {
         localStorage.setItem(positionsLocalStorageKey, JSON.stringify(state.positions));
       }
@@ -110,7 +119,7 @@ export const display = createSlice({
       if (index !== -1) {
         state.statuses = [
           ...state.statuses.slice(0, index),
-          ...state.statuses.slice(index + 1)
+          ...state.statuses.slice(index + 1),
         ];
       } else {
         state.statuses = [...state.statuses, action.payload];
@@ -129,8 +138,10 @@ export const display = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-  }
+  },
 });
 
-export const { /*setSeason,*/ setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView, setLoading } = display.actions;
+export const {
+  clearLocalStorage, setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView, setLoading,
+} = display.actions;
 export default display.reducer;

@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
-import RankPicker from '@/components/generic/CBB/RankPicker';
+import RankPicker from '@/components/generic/RankPicker';
 import SortPicker from '@/components/generic/CBB/SortPicker';
 
 const AdditionalOptions = () => {

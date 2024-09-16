@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { Game, GamePulse, GamePulses, Odds, Oddsz } from '@/types/cbb';
+import { Game, GamePulse, GamePulses, Odds, Oddsz } from '@/types/general';
 import Chart from '@/components/generic/Chart';
 import { LineProps } from 'recharts';
 import { LinearProgress, useTheme } from '@mui/material';

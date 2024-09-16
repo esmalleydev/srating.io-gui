@@ -5,7 +5,7 @@ import React from 'react';
 import { Client } from '@/components/generic/CBB/Coach/Trends/Client';
 import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
-import { CoachElo, CoachElos, Games } from '@/types/cbb';
+import { CoachElo, CoachElos, Games } from '@/types/general';
 
 
 

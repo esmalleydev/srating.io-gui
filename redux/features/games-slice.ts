@@ -34,6 +34,9 @@ export const games = createSlice({
   name: 'games',
   initialState,
   reducers: {
+    reset: () => {
+      return initialState;
+    },
     setRefreshEnabled: (state, action: PayloadAction<boolean>) => {
       state.refreshEnabled = action.payload;
     },
@@ -110,5 +113,6 @@ export const {
   setRefreshEnabled,
   setGameStatsLoading,
   setGameStats,
+  reset,
 } = games.actions;
 export default games.reducer;

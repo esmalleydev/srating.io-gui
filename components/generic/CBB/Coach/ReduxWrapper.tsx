@@ -3,7 +3,8 @@
 import React from 'react';
 import { setCoach, setCoachTeamSeasons, setStatisticRankings, setTeams } from '@/redux/features/coach-slice';
 import { useAppDispatch } from '@/redux/hooks';
-import { Coach, CoachTeamSeasons, StatisticRankings, Teams } from '@/types/cbb';
+import { StatisticRankings } from '@/types/cbb';
+import { Coach, CoachTeamSeasons, Teams } from '@/types/general';
 
 const ReduxWrapper = (
   { children, coach, coach_team_seasons, teams, statistic_rankings }:

@@ -12,7 +12,7 @@ import { visuallyHidden } from '@mui/utils';
 import HelperTeam from '@/components/helpers/Team';
 import HelperCBB from '@/components/helpers/CBB';
 import { teamColumns } from '@/components/generic/CBB/columns';
-import RankSpan from '@/components/generic/CBB/RankSpan';
+import RankSpan from '@/components/generic/RankSpan';
 import utilsSorter from '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 

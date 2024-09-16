@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Chip, Typography, Paper, Skeleton } from '@mui/material';
+import { Chip, Typography, Paper } from '@mui/material';
 
 import HelperCBB from '@/components/helpers/CBB';
 
 import PreviousMatchupTile from '@/components/generic/CBB/Game/PreviousMatchups/Tile';
-import { Game, Games } from '@/types/cbb';
+import { Game, Games } from '@/types/general';
 import { getNavHeaderHeight } from '../NavBar';
 import { getSubNavHeaderHeight } from '../SubNavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';

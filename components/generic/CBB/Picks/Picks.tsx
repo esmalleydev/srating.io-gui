@@ -9,8 +9,8 @@ import Tile from '@/components/generic/CBB/Picks/Tile';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateConferences } from '@/redux/features/display-slice';
 import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
-import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
-import { Games } from '@/types/cbb';
+import ConferencePicker from '@/components/generic/ConferencePicker';
+import { Games } from '@/types/general';
 
 
 const Picks = ({ games }: {games: Games}) => {

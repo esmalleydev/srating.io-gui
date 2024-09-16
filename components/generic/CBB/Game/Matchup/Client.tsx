@@ -40,8 +40,8 @@ const Client = ({ game, elo }) => {
     {
       name: 'Record',
       title: 'Record',
-      away: `${awayStats.wins}-${awayStats.losses}`,
-      home: `${homeStats.wins}-${homeStats.losses}`,
+      away: 'wins' in awayStats ? `${awayStats.wins}-${awayStats.losses}` : '0-0',
+      home: 'wins' in homeStats ? `${homeStats.wins}-${homeStats.losses}` : '0-0',
       awayCompareValue: awayStats.wins,
       homeCompareValue: homeStats.wins,
       favored: 'higher',
@@ -62,8 +62,8 @@ const Client = ({ game, elo }) => {
     {
       name: 'Streak',
       title: 'Streak',
-      away: (awayStats.streak < 0 ? 'L' : 'W') + Math.abs(awayStats.streak),
-      home: (homeStats.streak < 0 ? 'L' : 'W') + Math.abs(homeStats.streak),
+      away: 'streak' in awayStats ? ((awayStats.streak < 0 ? 'L' : 'W') + Math.abs(awayStats.streak)) : '0',
+      home: 'streak' in homeStats ? ((homeStats.streak < 0 ? 'L' : 'W') + Math.abs(homeStats.streak)) : '0',
       awayCompareValue: awayStats.streak,
       homeCompareValue: homeStats.streak,
       favored: 'higher',
@@ -733,6 +733,7 @@ const Client = ({ game, elo }) => {
       <PredictionLine game={game} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Record</Typography>
+
       {
         gameStatsLoading ?
           getSkeleton(overviewRows.length) :

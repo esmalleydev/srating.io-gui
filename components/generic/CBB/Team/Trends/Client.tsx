@@ -16,13 +16,14 @@ import moment from 'moment';
 
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import {
-  ConferenceStatisticRankings, Elos, Games, LeagueStatisticRankings, StatisticRankings,
+  ConferenceStatisticRankings, LeagueStatisticRankings, StatisticRankings,
 } from '@/types/cbb';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import StatsGraph from './StatsGraph';
 import { useSearchParams } from 'next/navigation';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
+import { Elos, Games } from '@/types/general';
 
 export interface TrendsType {
   elos: Elos;

@@ -11,7 +11,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
-import RankSpan from '@/components/generic/CBB/RankSpan';
+import RankSpan from '@/components/generic/RankSpan';
 import utilsSorter from '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';

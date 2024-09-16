@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
@@ -9,6 +9,11 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
+import { clearLocalStorage, setLoading } from '@/redux/features/display-slice';
+import { usePathname, useRouter } from 'next/navigation';
+import { reset as resetGames } from '@/redux/features/games-slice';
+import { reset as resetRanking } from '@/redux/features/ranking-slice';
+import Organization from '@/components/helpers/Organization';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +22,10 @@ const OrganizationPicker = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const pathName = usePathname();
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,17 +40,35 @@ const OrganizationPicker = () => {
   }
   const statusOptions: Options[] = [];
 
-  for (let organization_id in organizations) {
+  for (const organization_id in organizations) {
     statusOptions.push({
-      'value': organization_id,
-      'label': organizations[organization_id].code + ' (' + organizations[organization_id].name + ')',
+      value: organization_id,
+      label: `${organizations[organization_id].code} (${organizations[organization_id].name})`,
     });
   }
 
 
   const handleOrganization = (value) => {
     handleClose();
+    dispatch(setLoading(true));
+    dispatch(clearLocalStorage());
     dispatch(updateOrganizationID(value));
+    dispatch(resetGames());
+    dispatch(resetRanking());
+    startTransition(() => {
+      const splat = pathName.split('/');
+
+      const path = Organization.getPath({ organizations, organization_id: value });
+      const oldPath = Organization.getPath({ organizations, organization_id: selected });
+
+      let newPathName = `/${path}/ranking`;
+      if (splat.length === 3) {
+        newPathName = pathName.replace(`/${oldPath}/`, `/${path}/`);
+      } else if (splat.length > 3) {
+        newPathName = `/${path}/${splat[2]}`;
+      }
+      router.push(newPathName);
+    });
   };
 
   const title = organizations[selected].code;

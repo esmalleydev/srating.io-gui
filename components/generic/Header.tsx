@@ -176,9 +176,9 @@ const Header = () => {
                   <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} />
                   <><span style = {{ color: logoPrimaryColor }}>S</span><span style = {{ color: (theme.palette.mode === 'dark' ? logoSecondaryColor : '#fff') }}>RATING</span></>
                 </Box>
-                {/* <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }}>
+                <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }}>
                   <OrganizationPicker />
-                </Box> */}
+                </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>

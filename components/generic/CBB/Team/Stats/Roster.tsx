@@ -21,7 +21,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 
-import RankSpan from '@/components/generic/CBB/RankSpan';
+import RankSpan from '@/components/generic/RankSpan';
 import utilsSorter from '@/components/utils/Sorter';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch } from '@/redux/hooks';

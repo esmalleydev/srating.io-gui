@@ -3,7 +3,8 @@
 import React from 'react';
 import { setTeamSeasonConferences, setStatisticRankings, setTeams } from '@/redux/features/conference-slice';
 import { useAppDispatch } from '@/redux/hooks';
-import { TeamSeasonConferences, StatisticRankings, Teams } from '@/types/cbb';
+import { TeamSeasonConferences, StatisticRankings } from '@/types/cbb';
+import { Teams } from '@/types/general';
 
 const ReduxWrapper = (
   { children, team_season_conferences, teams, statistic_rankings }:

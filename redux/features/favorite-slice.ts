@@ -49,7 +49,7 @@ export const favorite = createSlice({
         state.skip_sort_game_ids = [];
       }
     },
-  }
+  },
 });
 
 export const { setTeamIds, setPlayerIds, setGameIds, updateGameIds, updateGameSort } = favorite.actions;

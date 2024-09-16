@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 
-import { CoachElo, CoachElos, Games } from '@/types/cbb';
+import { CoachElo, CoachElos, Games } from '@/types/general';
 import { LinearProgress, useTheme } from '@mui/material';
 import { getNavHeaderHeight } from '../NavBar';
 import { getSubNavHeaderHeight } from '../SubNavBar';

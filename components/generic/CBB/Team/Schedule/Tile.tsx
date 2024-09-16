@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useEffect, useTransition, ReactElement, RefObject,
+  useState, useRef, useTransition, ReactElement, RefObject,
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
@@ -10,7 +10,7 @@ import HelperCBB from '@/components/helpers/CBB';
 
 import { useTheme } from '@mui/material/styles';
 import {
-  Card, CardContent, Typography, Tooltip, Link, CardActionArea, Skeleton, IconButton,
+  Card, CardContent, Typography, Tooltip, Link, Skeleton, IconButton,
 } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';

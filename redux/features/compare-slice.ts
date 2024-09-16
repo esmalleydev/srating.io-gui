@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
   home_team_id: string | null,
@@ -59,10 +59,10 @@ const updateStateFromUrlParams = (state: InitialState) => {
 
 export const compare = createSlice({
   name: 'compare',
-  initialState: initialState,
+  initialState,
   reducers: {
     clear: (state) => {
-      for (let key in initialState) {
+      for (const key in initialState) {
         state[key] = initialState[key];
       }
     },
@@ -102,10 +102,12 @@ export const compare = createSlice({
     setAwayTeamID: (state, action: PayloadAction<string|null>) => {
       state.away_team_id = action.payload;
     },
-  }
+  },
 });
 
-export const { setHomeTeamID, setAwayTeamID, setNeutralSite, setView, setSubView, setScrollTop, setHideLowerBench, setTopPlayersOnly, setPredictions, setPredictionsLoading, setNextSearch, clear, reset } = compare.actions;
+export const {
+  setHomeTeamID, setAwayTeamID, setNeutralSite, setView, setSubView, setScrollTop, setHideLowerBench, setTopPlayersOnly, setPredictions, setPredictionsLoading, setNextSearch, clear, reset,
+} = compare.actions;
 export default compare.reducer;
 
 updateStateFromUrlParams(initialState);

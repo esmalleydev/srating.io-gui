@@ -1,4 +1,5 @@
-import { TeamSeasonConferences, StatisticRankings, Teams } from '@/types/cbb';
+import { StatisticRankings } from '@/types/cbb';
+import { Teams, TeamSeasonConferences } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
@@ -6,7 +7,7 @@ type InitialState = {
   scrollTop: number,
   team_season_conferences: TeamSeasonConferences | object;
   teams: Teams | object;
-  statistic_rankings: StatisticRankings | object;
+  statistic_rankings: StatisticRankings | object; // todo this needs to be dynamic
 };
 
 const initialState = {

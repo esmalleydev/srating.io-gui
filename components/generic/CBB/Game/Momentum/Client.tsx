@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 
 import HelperCBB from '@/components/helpers/CBB';
-import { Game, Games } from '@/types/cbb';
+import { Game, Games } from '@/types/general';
 import { getNavHeaderHeight } from '../NavBar';
 import { getSubNavHeaderHeight } from '../SubNavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';

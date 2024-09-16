@@ -17,6 +17,8 @@ import ClientWrapper from '@/components/generic/CBB/Picks/ClientWrapper';
 import Dates from '@/components/utils/Dates';
 import { getDates, getGames } from '@/app/cbb/games/page';
 import DateAppBar from '@/components/generic/DateAppBar';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -38,12 +40,14 @@ export default async function Page({ searchParams }) {
   const CBB = new HelperCBB();
   const datesHelper = new Dates();
   const season = searchParams?.season || CBB.getCurrentSeason();
+  const organization_id = Organization.getCBBID(); // NCAAM
+  const division_id = searchParams?.division_id || Division.getD1();
 
-  const dates = await getDates({ season });
+  const dates = await getDates({ season, organization_id, division_id });
 
   const date = searchParams?.date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
 
-  const games = await getGames({ date });
+  const games = await getGames({ date, organization_id, division_id });
 
   const view = searchParams?.view || 'picks';
 
@@ -60,7 +64,7 @@ export default async function Page({ searchParams }) {
             : ''
         }
         <Suspense key = {date} fallback = {<StatsLoaderClientSkeleton />}>
-          <StatsLoaderServer game_ids={Object.keys(games)} />
+          <StatsLoaderServer game_ids={Object.keys(games)} organization_id={organization_id} division_id={division_id} />
         </Suspense>
 
         {view === 'calculator' ? <div><Calculator games = {games} date = {date} /></div> : ''}

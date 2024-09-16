@@ -88,9 +88,9 @@ const DateAppBar = ({ dates, date }) => {
 
     let newDate: string | null = null;
 
-    if (opt_extact && value) {
+    if (opt_extact && value !== null) {
       newDate = value;
-    } else if (value) {
+    } else if (value !== null) {
       newDate = dates[value];
     }
 

@@ -8,7 +8,7 @@ import { Client } from './Client';
 
 
 
-const Server = async ({ game_ids }) => {
+const Server = async ({ game_ids, organization_id, division_id }) => {
   unstable_noStore();
 
   const revalidateSeconds = 60 * 60 * 12; // 12 hours
@@ -17,6 +17,8 @@ const Server = async ({ game_ids }) => {
     class: 'game',
     function: 'getAllStats',
     arguments: {
+      organization_id,
+      division_id,
       game_ids,
     },
   }, { revalidate: revalidateSeconds });

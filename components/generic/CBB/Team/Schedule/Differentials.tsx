@@ -6,7 +6,7 @@ import HelperCBB from '@/components/helpers/CBB';
 import { Paper, Skeleton, Typography } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-import RankSpan from '@/components/generic/CBB/RankSpan';
+import RankSpan from '@/components/generic/RankSpan';
 import moment from 'moment';
 
 

@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Tooltip, Typography } from '@mui/material';
 
-import RankSpan from '@/components/generic/CBB/RankSpan';
+import RankSpan from '@/components/generic/RankSpan';
 
 interface Stats {
   adjusted_efficiency_rating: number;

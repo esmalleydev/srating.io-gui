@@ -9,7 +9,7 @@ import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
-import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
+import SeasonPicker from '@/components/generic/SeasonPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Link, Skeleton } from '@mui/material';

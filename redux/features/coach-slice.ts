@@ -1,4 +1,5 @@
-import { Coach, CoachTeamSeasons, StatisticRankings, Teams } from '@/types/cbb';
+import { StatisticRankings } from '@/types/cbb';
+import { Coach, CoachTeamSeasons, Teams } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
@@ -50,16 +51,16 @@ export const coach = createSlice({
     setView: (state, action: PayloadAction<string>) => {
       state.view = action.payload;
     },
-    setCoach: (state, action: PayloadAction<Coach | {}>) => {
+    setCoach: (state, action: PayloadAction<Coach>) => {
       state.coach = action.payload;
     },
-    setCoachTeamSeasons: (state, action: PayloadAction<CoachTeamSeasons | {}>) => {
+    setCoachTeamSeasons: (state, action: PayloadAction<CoachTeamSeasons>) => {
       state.coach_team_seasons = action.payload;
     },
-    setTeams: (state, action: PayloadAction<Teams | {}>) => {
+    setTeams: (state, action: PayloadAction<Teams>) => {
       state.teams = action.payload;
     },
-    setStatisticRankings: (state, action: PayloadAction<StatisticRankings | {}>) => {
+    setStatisticRankings: (state, action: PayloadAction<StatisticRankings>) => {
       state.statistic_rankings = action.payload;
     },
   },

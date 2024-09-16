@@ -6,7 +6,7 @@ import { Chip, useTheme } from '@mui/material';
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import moment from 'moment';
-import ColumnPicker from '@/components/generic/CBB/ColumnPicker';
+import ColumnPicker from '@/components/generic/ColumnPicker';
 
 // todo: pass the chart component a custom tool tip, with the RankSpan component, so on the graph, when I hover over each position, it shows the ranking out of everyone ex: 3P%: 49% - 25th
 

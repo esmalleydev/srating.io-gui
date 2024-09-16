@@ -8,7 +8,7 @@ import HeaderClientWrapper from '@/components/generic/CBB/Team/Header/ClientWrap
 import HeaderServer from '@/components/generic/CBB/Team/Header/Server';
 import NavBar from '@/components/generic/CBB/Team/NavBar';
 import { useServerAPI } from '@/components/serverAPI';
-import { Team } from '@/types/cbb';
+import { Team } from '@/types/general';
 import { unstable_noStore } from 'next/cache';
 import SubNavBar from '@/components/generic/CBB/Team/SubNavbar';
 
@@ -26,6 +26,8 @@ import { ClientSkeleton as HeaderClientSkeleton } from '@/components/generic/CBB
 import { ClientSkeleton as ScheduleClientSkeleton } from '@/components/generic/CBB/Team/Schedule/Client';
 import { ClientSkeleton as StatsClientSkeleton } from '@/components/generic/CBB/Team/Stats/Client';
 import { ClientSkeleton as TrendsClientSkeleton } from '@/components/generic/CBB/Team/Trends/Client';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 
 
 type Props = {
@@ -101,6 +103,9 @@ export default async function Page({ params, searchParams }) {
 
   const CBB = new HelperCBB();
 
+  // todo pass this in searchParams
+  const organization_id = Organization.getCBBID(); // NCAAM
+  const division_id = searchParams?.division_id || Division.getD1();
   const season = searchParams?.season || CBB.getCurrentSeason();
   const view = searchParams?.view || 'schedule';
 
@@ -122,7 +127,7 @@ export default async function Page({ params, searchParams }) {
           <>
             <ScheduleClientWrapper>
               <Suspense fallback = {<ScheduleClientSkeleton />}>
-                <ScheduleServer team_id = {team_id} season = {season} />
+                <ScheduleServer team_id = {team_id} season = {season} organization_id = {organization_id} division_id = {division_id} />
               </Suspense>
             </ScheduleClientWrapper>
             <SchedulePredictionLoader team_id = {team_id} season = {season} />

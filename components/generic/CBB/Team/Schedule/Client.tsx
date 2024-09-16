@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Typography from '@mui/material/Typography';
 
 import moment from 'moment';
@@ -10,10 +10,10 @@ import { getNavHeaderHeight } from '../NavBar';
 import { getSubNavHeaderHeight } from '../SubNavbar';
 import { useAppSelector } from '@/redux/hooks';
 import Differentials from './Differentials';
-import { useScrollContext } from '@/contexts/scrollContext';
+// import { useScrollContext } from '@/contexts/scrollContext';
 import TableView from './TableView';
 import { Skeleton } from '@mui/material';
-import { Games } from '@/types/cbb';
+import { Games } from '@/types/general';
 
 
 /**

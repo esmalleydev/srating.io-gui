@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useTransition } from 'react';
 
 import Typography from '@mui/material/Typography';
 
@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useRouter } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { Coach, Team } from '@/types/cbb';
+import { Coach } from '@/types/general';
 import { Link, Skeleton } from '@mui/material';
 import { setLoading } from '@/redux/features/display-slice';
 

@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import SeasonPicker from '@/components/generic/CBB/SeasonPicker';
+import SeasonPicker from '@/components/generic/SeasonPicker';
 import { setLoading } from '@/redux/features/display-slice';
 import Rank from './Rank';
 import { getBreakPoint } from './ClientWrapper';

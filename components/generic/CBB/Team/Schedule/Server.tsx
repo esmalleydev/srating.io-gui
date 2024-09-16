@@ -7,11 +7,11 @@ import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 import { ClientSkeleton } from './StatsLoader/Client';
 import StatsLoaderServer from './StatsLoader/Server';
-import { Games } from '@/types/cbb';
+import { Games } from '@/types/general';
 
 
 
-const Server = async ({ season, team_id }) => {
+const Server = async ({ season, team_id, organization_id, division_id }) => {
   unstable_noStore();
 
   const revalidateSeconds = 60;
@@ -29,7 +29,7 @@ const Server = async ({ season, team_id }) => {
     <>
       <Client games = {games} team_id = {team_id} />
       <Suspense fallback = {<ClientSkeleton />}>
-        <StatsLoaderServer game_ids = {Object.keys(games)} />
+        <StatsLoaderServer game_ids = {Object.keys(games)} organization_id={organization_id} division_id={division_id} />
       </Suspense>
     </>
   );

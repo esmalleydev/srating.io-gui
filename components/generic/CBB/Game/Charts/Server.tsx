@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Client } from '@/components/generic/CBB/Game/Charts/Client';
 import { useServerAPI } from '@/components/serverAPI';
-import { GamePulses, Oddsz } from '@/types/cbb';
+import { GamePulses, Oddsz } from '@/types/general';
 
 const Server = async ({ game }) => {
   const tag = `cbb.games.${game.game_id}`;

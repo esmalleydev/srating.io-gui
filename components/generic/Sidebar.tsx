@@ -55,7 +55,7 @@ const Sidebar = () => {
 
   const handleScores = () => {
     dispatch(setLoading(true));
-    sessionStorage.removeItem('CBB.GAMES.DATA');
+    // sessionStorage.removeItem('CBB.GAMES.DATA');
     startTransition(() => {
       router.push('/cbb/games');
     });

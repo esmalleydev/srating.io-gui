@@ -27,6 +27,18 @@ class Text {
     // The final value is the Levenshtein distance
     return matrix[a.length][b.length];
   }
+
+  public static toSentenceCase(str: string): string {
+    if (!str) {
+      return '';
+    }
+
+    // Trim the string to remove extra whitespace
+    const trimmed = str.trim();
+
+    // Convert the first letter to uppercase and the rest to lowercase
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+  }
 }
 
 export default Text;

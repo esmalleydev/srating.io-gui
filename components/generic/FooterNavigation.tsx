@@ -14,39 +14,35 @@ import PicksIcon from '@mui/icons-material/Casino';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setScrollTop as setPicksScrollTop } from '@/redux/features/picks-slice';
 import { setScrollTop as setGamesScrollTop } from '@/redux/features/games-slice';
 import { setLoading } from '@/redux/features/display-slice';
+import Organization from '@/components/helpers/Organization';
 
 
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
-  'color': theme.palette.mode === 'light' ? '#fff' : theme.palette.text.primary,
+  color: theme.palette.mode === 'light' ? '#fff' : theme.palette.text.primary,
   '&.Mui-selected': {
-    'color': theme.palette.mode === 'light' ? theme.palette.warning.light : theme.palette.success.dark,
+    color: theme.palette.mode === 'light' ? theme.palette.warning.light : theme.palette.success.dark,
   },
 }));
 
 export const footerNavigationHeight = 56;
 
 const FooterNavigation = () => {
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
 
-  let viewingSport = 'CBB';
+  const viewingSport = Organization.getPath({ organizations, organization_id });
   let viewingPage: string | null = null;
   const pathName = usePathname();
 
   // todo the /team page highlights home button, because there is no sport / viewing page
-  // todo share this with header
-  const sports = [
-    'CBB',
-    'CFB ... coming soon',
-    'NBA ... coming soon',
-    'NFL ... coming soon',
-  ];
 
   const pages = [
     'home',
@@ -57,15 +53,6 @@ const FooterNavigation = () => {
 
   if (pathName) {
     const splat = pathName.split('/');
-
-    if (
-      splat &&
-      splat.length > 1 &&
-      sports.indexOf(splat[1].toUpperCase()) > -1
-    ) {
-      let selectedIndex = sports.indexOf(splat[1].toUpperCase());
-      viewingSport = sports[selectedIndex];
-    }
 
     if (
       splat &&
@@ -91,31 +78,30 @@ const FooterNavigation = () => {
       // router.push('/'+viewingSport.toLowerCase());
       router.push('/');
     });
-  }
+  };
 
   const handleRanking = () => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/'+viewingSport.toLowerCase()+'/ranking');
+      router.push(`/${viewingSport.toLowerCase()}/ranking`);
     });
-  }
+  };
 
   const handleScores = () => {
     dispatch(setGamesScrollTop(0));
     dispatch(setLoading(true));
-    sessionStorage.removeItem('CBB.GAMES.DATA');
     startTransition(() => {
-      router.push('/'+viewingSport.toLowerCase()+'/games');
+      router.push(`/${viewingSport.toLowerCase()}/games`);
     });
-  }
+  };
 
   const handlePicks = () => {
     dispatch(setPicksScrollTop(0));
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/'+viewingSport.toLowerCase()+'/picks');
+      router.push(`/${viewingSport.toLowerCase()}/picks`);
     });
-  }
+  };
 
   let hightlightValue = -1;
 
@@ -126,8 +112,8 @@ const FooterNavigation = () => {
   return (
     <div>
     {/* {viewingSport ?  */}
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4}}>
-        <BottomNavigation style = {{'backgroundColor': theme.palette.mode == 'dark' ? theme.palette.grey[900] : '#1976d2'}} showLabels value={hightlightValue}>
+      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4 }}>
+        <BottomNavigation style = {{ backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : '#1976d2' }} showLabels value={hightlightValue}>
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleHome} label="Home" icon={<HomeIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />
@@ -137,6 +123,6 @@ const FooterNavigation = () => {
       {/* : ''} */}
     </div>
   );
-}
+};
 
 export default FooterNavigation;
