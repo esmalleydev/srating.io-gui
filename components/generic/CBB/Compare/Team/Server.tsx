@@ -19,6 +19,8 @@ const Server = async ({ home_team_id, away_team_id, season, teams, subview }) =>
       class: 'team',
       function: 'getStats',
       arguments: {
+        organization_id,
+        division_id,
         team_id: home_team_id,
         season,
       },
@@ -44,6 +46,8 @@ const Server = async ({ home_team_id, away_team_id, season, teams, subview }) =>
       class: 'team',
       function: 'getStats',
       arguments: {
+        organization_id,
+        division_id,
         team_id: away_team_id,
         season,
       },

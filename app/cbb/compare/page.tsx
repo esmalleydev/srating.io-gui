@@ -58,6 +58,9 @@ async function getData({ season, home_team_id, away_team_id }) {
   unstable_noStore();
   const revalidateSeconds = 60 * 60 * 2; // 2 hours
 
+  const organization_id = Organization.getCBBID();
+  const division_id = Division.getD1();
+
   const teams = {};
 
   if (home_team_id) {
@@ -65,6 +68,8 @@ async function getData({ season, home_team_id, away_team_id }) {
       class: 'team',
       function: 'loadTeam',
       arguments: {
+        organization_id,
+        division_id,
         team_id: home_team_id,
         season,
       },
@@ -78,6 +83,8 @@ async function getData({ season, home_team_id, away_team_id }) {
       class: 'team',
       function: 'loadTeam',
       arguments: {
+        organization_id,
+        division_id,
         team_id: away_team_id,
         season,
       },

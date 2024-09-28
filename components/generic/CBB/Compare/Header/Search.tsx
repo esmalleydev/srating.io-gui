@@ -14,6 +14,8 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setHomeTeamID, setAwayTeamID, setNextSearch } from '@/redux/features/compare-slice';
 import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 import Text from '@/components/utils/Text';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -66,14 +68,19 @@ const Search = () => {
   const away_team_id = useAppSelector((state) => state.compareReducer.away_team_id); // || searchParams?.get('away_team_id') || null;
   const next_search = useAppSelector((state) => state.compareReducer.next_search);
 
+  const organization_id = Organization.getCBBID();
+  const division_id = Division.getD1();
+
   const [blur, setBlur] = useState<boolean>(false);
 
 
   const debouncedRequest = useDebounce(() => {
     useClientAPI({
-      class: 'cbb',
+      class: 'search',
       function: 'search',
       arguments: {
+        organization_id,
+        division_id,
         name: value,
         team: 1,
         player: 0,
