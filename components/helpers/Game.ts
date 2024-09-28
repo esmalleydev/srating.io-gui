@@ -433,8 +433,16 @@ class Game {
 
     const { game } = this;
 
-    const homeColor = game.teams[game.home_team_id].primary_color || theme.palette.info.main;
+    let homeColor = game.teams[game.home_team_id].primary_color || theme.palette.info.main;
     let awayColor = game.teams[game.away_team_id].primary_color === homeColor ? theme.palette.info.main : game.teams[game.away_team_id].primary_color;
+
+    if (!homeColor) {
+      homeColor = theme.palette.info.main;
+    }
+
+    if (!awayColor) {
+      awayColor = theme.palette.info.main;
+    }
 
     if (Color.areColorsSimilar(homeColor, awayColor)) {
       const analogousColors = Color.getAnalogousColors(awayColor);
