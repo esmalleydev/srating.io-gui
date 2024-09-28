@@ -29,15 +29,21 @@ import ArticleIcon from '@mui/icons-material/Article';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import { clear } from '@/redux/features/compare-slice';
 import { setLoading } from '@/redux/features/display-slice';
+import Organization from '../helpers/Organization';
 
 // todo spin does nothing here, I think I need to use redux for a global spin and decorate it in another place
 
 const Sidebar = () => {
-  const themeMode = useAppSelector(state => state.themeReducer.mode);
   const dispatch = useAppDispatch();
-
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  const themeMode = useAppSelector((state) => state.themeReducer.mode);
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const path = Organization.getPath({ organizations, organization_id });
+
+  const showCompareTool = Organization.getCBBID() === organization_id;
 
   // todo allow keyboard to click the option on enter keydown
   /*
@@ -45,34 +51,34 @@ const Sidebar = () => {
     console.log(e);
   }
   */
- 
+
   const handleRanking = () => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/ranking');
+      router.push(`/${path}/ranking`);
     });
   };
 
   const handleScores = () => {
     dispatch(setLoading(true));
-    sessionStorage.removeItem('CBB.GAMES.DATA');
+    // sessionStorage.removeItem('CBB.GAMES.DATA');
     startTransition(() => {
-      router.push('/cbb/games');
+      router.push(`/${path}/games`);
     });
   };
-  
+
   const handlePicks = () => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/cbb/picks');
+      router.push(`/${path}/picks`);
     });
   };
-  
+
   const handleCompareTool = () => {
     dispatch(setLoading(true));
     startTransition(() => {
       dispatch(clear());
-      router.push('/cbb/compare');
+      router.push(`/${path}/compare`);
     });
   };
 
@@ -80,13 +86,13 @@ const Sidebar = () => {
   return (
     <div>
       <Box
-        sx={{'width': 250}}
+        sx={{ width: 250 }}
         role="presentation"
         // onClick={handleClick}
         // onKeyDown={handleClick}
       >
         <List>
-          <ListItem key={'home'} disablePadding onClick = {() => {router.push('/')}}>
+          <ListItem key={'home'} disablePadding onClick = {() => { router.push('/'); }}>
             <ListItemButton>
               <ListItemIcon>
                 <HomeIcon />
@@ -123,17 +129,20 @@ const Sidebar = () => {
               <ListItemText primary={'Picks'} />
             </ListItemButton>
           </ListItem>
+          {
+            showCompareTool ?
+              <ListItem key={'compare-tool'} disablePadding onClick = {handleCompareTool}>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <QueryStatsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Compare tool'} />
+                </ListItemButton>
+              </ListItem>
+              : ''
+          }
 
-          <ListItem key={'compare-tool'} disablePadding onClick = {handleCompareTool}>
-            <ListItemButton>
-              <ListItemIcon>
-                <QueryStatsIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Compare tool'} />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem key={'pricing'} disablePadding onClick = {() => {router.push('/pricing')}}>
+          <ListItem key={'pricing'} disablePadding onClick = {() => { router.push('/pricing'); }}>
             <ListItemButton>
               <ListItemIcon>
                 <ShoppingCartIcon />
@@ -144,7 +153,7 @@ const Sidebar = () => {
 
           <Divider />
 
-          <ListItem key={'api'} disablePadding onClick = {() => {window.open('https://docs.srating.io', '_blank');}}>
+          <ListItem key={'api'} disablePadding onClick = {() => { window.open('https://docs.srating.io', '_blank'); }}>
             <ListItemButton>
               <ListItemIcon>
                 <ArticleIcon />
@@ -153,7 +162,7 @@ const Sidebar = () => {
             </ListItemButton>
           </ListItem>
 
-          <ListItem key={'github'} disablePadding onClick = {() => {window.open('https://github.com/esmalleydev/srating.io-gui', '_blank');}}>
+          <ListItem key={'github'} disablePadding onClick = {() => { window.open('https://github.com/esmalleydev/srating.io-gui', '_blank'); }}>
             <ListItemButton>
               <ListItemIcon>
                 <GitHubIcon />
@@ -162,7 +171,7 @@ const Sidebar = () => {
             </ListItemButton>
           </ListItem>
 
-          <ListItem key={'blog'} disablePadding onClick = {() => {router.push('/blog')}}>
+          <ListItem key={'blog'} disablePadding onClick = {() => { router.push('/blog'); }}>
             <ListItemButton>
               <ListItemIcon>
                 <RSSFeedIcon />
@@ -173,7 +182,7 @@ const Sidebar = () => {
 
           <Divider />
 
-          <ListItem key={'theme'} disablePadding onClick = {() => {dispatch(updateTheme(themeMode === 'dark' ? 'light': 'dark'))}}>
+          <ListItem key={'theme'} disablePadding onClick = {() => { dispatch(updateTheme(themeMode === 'dark' ? 'light' : 'dark')); }}>
             <ListItemButton>
               <ListItemIcon>
                 {themeMode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
@@ -195,6 +204,6 @@ const Sidebar = () => {
       </Box>
     </div>
   );
-}
+};
 
 export default Sidebar;

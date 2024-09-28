@@ -5,8 +5,8 @@ import { Typography, Paper } from '@mui/material';
 
 import HelperTeam from '@/components/helpers/Team';
 
-import PreviousMatchupTile from '@/components/generic/CBB/Game/PreviousMatchups/Tile';
-import { Game, Team, Games } from '@/types/cbb';
+import PreviousMatchupTile from '@/components/generic/Game/PreviousMatchups/Tile';
+import { Game, Team, Games } from '@/types/general';
 import { LinearProgress } from '@mui/material';
 import { getHeaderHeight } from '../Header/ClientWrapper';
 import { getSubNavHeaderHeight } from '../SubNavBar';

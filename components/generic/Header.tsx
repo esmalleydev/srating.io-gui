@@ -40,6 +40,7 @@ import { clear } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/display-slice';
 import OrganizationPicker from './OrganizationPicker';
+import Organization from '../helpers/Organization';
 
 
 const SignUpButton = styled(Button)(({ theme }) => ({
@@ -58,6 +59,7 @@ export const headerBarHeight = 64;
 const Header = () => {
   const dispatch = useAppDispatch();
   const validSession = useAppSelector((state) => state.userReducer.isValidSession);
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const theme = useTheme();
 
   const router = useRouter();
@@ -73,6 +75,9 @@ const Header = () => {
 
   const logoPrimaryColor = getLogoColorPrimary();
   const logoSecondaryColor = getLogoColorSecondary();
+
+  const showCompareTool = Organization.getCBBID() === organization_id;
+
 
   useEffect(() => {
     setIsLoading(false);
@@ -90,6 +95,7 @@ const Header = () => {
     dispatch(setLoading(true));
     dispatch(clear());
     startTransition(() => {
+      // todo if you change this path to be generic, fix the OrganizationPicker, find the "compare" if statement for redirects
       router.push('/cbb/compare');
     });
   };
@@ -146,6 +152,8 @@ const Header = () => {
     cursor: 'pointer',
   };
 
+  const shrinkName = width <= 425;
+
 
   return (
     <AppBar position="fixed">
@@ -174,14 +182,14 @@ const Header = () => {
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }} style = {logoStyle} onClick = {handleHome}>
                   <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} />
-                  <><span style = {{ color: logoPrimaryColor }}>S</span><span style = {{ color: (theme.palette.mode === 'dark' ? logoSecondaryColor : '#fff') }}>RATING</span></>
+                  <><span style = {{ color: (theme.palette.mode === 'dark' ? logoPrimaryColor : '#fff') }}>S</span><span style = {{ color: (theme.palette.mode === 'dark' ? logoSecondaryColor : '#31ff00') }}>R{shrinkName ? '' : 'ATING'}</span></>
                 </Box>
-                {/* <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }}>
+                <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }}>
                   <OrganizationPicker />
-                </Box> */}
+                </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
-                <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
+                {showCompareTool ? <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box> : ''}
                 <Box sx={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px') }}>
                   {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search onRouter={null} focus={false} />}
                 </Box>

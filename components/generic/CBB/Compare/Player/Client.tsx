@@ -11,8 +11,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import HelperTeam from '@/components/helpers/Team';
 import { playerColumns } from '@/components/generic/CBB/columns';
-import RankSpan from '@/components/generic/CBB/RankSpan';
-import utilsSorter from '@/components/utils/Sorter';
+import RankSpan from '@/components/generic/RankSpan';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
@@ -21,8 +20,7 @@ import { getHeaderHeight } from '../Header/ClientWrapper';
 import { getSubNavHeaderHeight } from '../SubNavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-
-const Sorter = new utilsSorter();
+import Sorter from '@/components/utils/Sorter';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border

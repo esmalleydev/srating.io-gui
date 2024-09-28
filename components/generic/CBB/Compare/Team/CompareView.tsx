@@ -4,6 +4,9 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 import { useAppSelector } from '@/redux/hooks';
+import CBB from '@/components/helpers/CBB';
+import Organization from '@/components/helpers/Organization';
+import CFB from '@/components/helpers/CFB';
 
 // todo put these rows in a common file for both Game matchup + this to use?
 
@@ -14,7 +17,7 @@ type predictionsType = {
   home?: number;
 }
 
-const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
+const CompareView = ({ organization_id, division_id, home_team_id, away_team_id, teams, season }) => {
   const predictions: predictionsType = useAppSelector((state) => state.compareReducer.predictions);
   const predictionsLoading = useAppSelector((state) => state.compareReducer.predictionsLoading);
 
@@ -26,6 +29,12 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
 
   const awayElo = awayTeam.elo && awayTeam.elo.elo ? awayTeam.elo.elo : null;
   const homeElo = homeTeam.elo && homeTeam.elo.elo ? homeTeam.elo.elo : null;
+
+  let numberOfTeams = CBB.getNumberOfD1Teams(season);
+
+  if (organization_id === Organization.getCFBID()) {
+    numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
+  }
 
 
   const predictionRows = [
@@ -743,28 +752,28 @@ const CompareView = ({ home_team_id, away_team_id, teams, season }) => {
 
   return (
     <div style = {{ padding: '0px 5px 20px 5px' }}>
-      <CompareStatistic season = {season} paper = {false} rows = {predictionRows} />
+      <CompareStatistic max = {numberOfTeams} season = {season} paper = {false} rows = {predictionRows} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Record</Typography>
-      <CompareStatistic season = {season} paper = {true} rows = {overviewRows} />
+      <CompareStatistic max = {numberOfTeams} season = {season} paper = {true} rows = {overviewRows} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Efficiency</Typography>
-      <CompareStatistic season = {season} paper = {true} rows = {efficiencyRows} />
+      <CompareStatistic max = {numberOfTeams} season = {season} paper = {true} rows = {efficiencyRows} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Rank</Typography>
-      <CompareStatistic season = {season} paper = {true} rows = {rankRows} />
+      <CompareStatistic max = {numberOfTeams} season = {season} paper = {true} rows = {rankRows} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Win / Loss Margin</Typography>
-      <CompareStatistic season = {season} paper = {true} rows = {marginRows} />
+      <CompareStatistic max = {numberOfTeams} season = {season} paper = {true} rows = {marginRows} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Offense</Typography>
-      <CompareStatistic season = {season} paper = {true} rows = {offenseRows} />
+      <CompareStatistic max = {numberOfTeams} season = {season} paper = {true} rows = {offenseRows} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Special</Typography>
-      <CompareStatistic season = {season} paper = {true} rows = {specialRows} />
+      <CompareStatistic max = {numberOfTeams} season = {season} paper = {true} rows = {specialRows} />
 
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>Opponent stats against</Typography>
-      <CompareStatistic season = {season} paper = {true} rows = {opponentRows} />
+      <CompareStatistic max = {numberOfTeams} season = {season} paper = {true} rows = {opponentRows} />
     </div>
   );
 };

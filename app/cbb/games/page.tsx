@@ -2,19 +2,18 @@
 
 import { Metadata } from 'next';
 
-import HelperCBB from '@/components/helpers/CBB';
-
-import ContentsClientWrapper from '@/components/generic/CBB/Games/Contents/ClientWrapper';
-import ContentsServer from '@/components/generic/CBB/Games/Contents/Server';
-import { ClientSkeleton as ContentsClientSkeleton } from '@/components/generic/CBB/Games/Contents/Client';
+import ContentsClientWrapper from '@/components/generic/Games/Contents/ClientWrapper';
+import ContentsServer, { getDates, getGames } from '@/components/generic/Games/Contents/Server';
+import { ClientSkeleton as ContentsClientSkeleton } from '@/components/generic/Games/Contents/Client';
 import DateAppBar from '@/components/generic/DateAppBar';
-import SubNavBar from '@/components/generic/CBB/Games/SubNavBar';
+import SubNavBar from '@/components/generic/Games/SubNavBar';
 import { Suspense } from 'react';
-import FloatingButtons from '@/components/generic/CBB/Games/FloatingButtons';
-import Refresher from '@/components/generic/CBB/Games/Refresher';
-import { useServerAPI } from '@/components/serverAPI';
-import { unstable_noStore } from 'next/cache';
+import FloatingButtons from '@/components/generic/Games/FloatingButtons';
+import Refresher from '@/components/generic/Games/Refresher';
 import Dates from '@/components/utils/Dates';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
+import CBB from '@/components/helpers/CBB';
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,57 +31,18 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export async function getDates({ season }) {
-  unstable_noStore();
-  const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
-
-  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM
-  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
-
-  const dates: string[] | object = await useServerAPI({
-    class: 'game',
-    function: 'getSeasonDates',
-    arguments: {
-      organization_id,
-      division_id,
-      season,
-    },
-  }, { revalidate: revalidateSeconds });
-
-  return dates;
-}
-
-export async function getGames({ date }) {
-  unstable_noStore();
-  const revalidateSeconds = 1200; // 60 * 20; // cache games for 20 mins
-
-  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM
-  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
-
-  const games = await useServerAPI({
-    class: 'game',
-    function: 'getGames',
-    arguments: {
-      organization_id,
-      division_id,
-      start_date: date,
-    },
-  }, { revalidate: revalidateSeconds });
-
-  return games;
-}
-
 
 export default async function Page({ searchParams }) {
-  const CBB = new HelperCBB();
   const datesHelper = new Dates();
   const season = searchParams?.season || CBB.getCurrentSeason();
+  const organization_id = Organization.getCBBID(); // NCAAM
+  const division_id = searchParams?.division_id || Division.getD1();
 
-  const dates = await getDates({ season });
+  const dates = await getDates({ season, organization_id, division_id });
 
   const date = searchParams?.date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
 
-  const games = await getGames({ date });
+  const games = await getGames({ date, organization_id, division_id });
 
   return (
     <>
@@ -90,7 +50,7 @@ export default async function Page({ searchParams }) {
       <SubNavBar />
       <ContentsClientWrapper>
         <Suspense key={date} fallback = {<ContentsClientSkeleton games = {games} />}>
-          <ContentsServer games = {games} date = {date} />
+          <ContentsServer games = {games} date = {date} organization_id = {organization_id} division_id = {division_id} />
         </Suspense>
       </ContentsClientWrapper>
       <FloatingButtons />

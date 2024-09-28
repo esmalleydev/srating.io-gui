@@ -1,12 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const scheduleViewLocalStorageKey = 'CBB.DISPLAY.TEAM.SCHEDULE';
-
-let scheduleViewLocalStorage: string | null = null;
-
-if (typeof window !== 'undefined') {
-  scheduleViewLocalStorage = localStorage.getItem(scheduleViewLocalStorageKey);
-}
 
 type InitialState = {
   schedulePredictions: object,
@@ -33,7 +26,7 @@ const initialState: InitialState = {
   showScheduleDifferentials: false,
   showScheduleHistoricalRankRecord: true,
   visibleScheduleDifferentials: [],
-  scheduleView: scheduleViewLocalStorage || 'default',
+  scheduleView: 'default',
   scrollTop: 0,
 };
 
@@ -79,9 +72,6 @@ export const team = createSlice({
       }
     },
     setScheduleView: (state, action: PayloadAction<string>) => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(scheduleViewLocalStorageKey, action.payload);
-      }
       state.scheduleView = action.payload;
     },
   },

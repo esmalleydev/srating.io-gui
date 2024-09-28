@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import { Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuList } from '@mui/material';
+import { Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, useTheme } from '@mui/material';
 // import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
+import { clearLocalStorage, setLoading } from '@/redux/features/display-slice';
+import { usePathname, useRouter } from 'next/navigation';
+import { reset as resetGames } from '@/redux/features/games-slice';
+import { reset as resetRanking } from '@/redux/features/ranking-slice';
+import Organization from '@/components/helpers/Organization';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +22,11 @@ const OrganizationPicker = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const pathName = usePathname();
+  const theme = useTheme();
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,17 +41,40 @@ const OrganizationPicker = () => {
   }
   const statusOptions: Options[] = [];
 
-  for (let organization_id in organizations) {
+  for (const organization_id in organizations) {
     statusOptions.push({
-      'value': organization_id,
-      'label': organizations[organization_id].code + ' (' + organizations[organization_id].name + ')',
+      value: organization_id,
+      label: `${organizations[organization_id].code} (${organizations[organization_id].name})`,
     });
   }
 
 
   const handleOrganization = (value) => {
     handleClose();
+    dispatch(setLoading(true));
+    dispatch(clearLocalStorage());
     dispatch(updateOrganizationID(value));
+    dispatch(resetGames());
+    dispatch(resetRanking());
+    startTransition(() => {
+      const splat = pathName.split('/');
+
+      const path = Organization.getPath({ organizations, organization_id: value });
+      const oldPath = Organization.getPath({ organizations, organization_id: selected });
+
+      let newPathName = `/${path}/ranking`;
+      if (splat.length === 3) {
+        if (splat[2] !== 'compare') {
+          newPathName = pathName.replace(`/${oldPath}/`, `/${path}/`);
+        }
+      }
+      // this will error out, first you would need the search params, then you do even know if it is valid, season doesnt exist or team is not in org, etc
+      // so just default back to the ranking page
+      // else if (splat.length > 3) {
+      //   newPathName = `/${path}/${splat[2]}`;
+      // }
+      router.push(newPathName);
+    });
   };
 
   const title = organizations[selected].code;
@@ -57,6 +90,7 @@ const OrganizationPicker = () => {
         disableElevation
         onClick={handleOpen}
         endIcon={<KeyboardArrowDownIcon />}
+        sx={{ color: (theme.palette.mode === 'light' ? '#fff' : theme.palette.primary.main) }}
       >
         {title}
       </Button>
@@ -66,19 +100,19 @@ const OrganizationPicker = () => {
         open={open}
         onClose={handleClose}
       >
-          <MenuList>
-            {statusOptions.map((statusOption, index) => {
-              const isSelected = selected.indexOf(statusOption.value) > -1;
-              return (
-                <MenuItem key = {index} onClick = {() => handleOrganization(statusOption.value)}>
-                  <ListItemIcon>
-                    {isSelected ? <CheckCircleIcon color = 'success' fontSize='small' /> : <RadioButtonUncheckedIcon color = 'primary' fontSize='small' />}
-                  </ListItemIcon>
-                  <ListItemText>{statusOption.label}</ListItemText>
-                </MenuItem>
-              );
-            })}
-          </MenuList>
+        <MenuList>
+          {statusOptions.map((statusOption, index) => {
+            const isSelected = selected.indexOf(statusOption.value) > -1;
+            return (
+              <MenuItem key = {index} onClick = {() => handleOrganization(statusOption.value)}>
+                <ListItemIcon>
+                  {isSelected ? <CheckCircleIcon color = 'success' fontSize='small' /> : <RadioButtonUncheckedIcon color = 'primary' fontSize='small' />}
+                </ListItemIcon>
+                <ListItemText>{statusOption.label}</ListItemText>
+              </MenuItem>
+            );
+          })}
+        </MenuList>
       </Menu>
     </div>
   );

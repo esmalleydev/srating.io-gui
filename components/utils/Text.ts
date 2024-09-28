@@ -3,6 +3,10 @@ class Text {
   public static levenshtein(a: string, b: string): number {
     const matrix: number[][] = [];
 
+    if (!a || !b) {
+      return 0;
+    }
+
     // Initialize the matrix with base case values
     for (let i = 0; i <= a.length; i++) {
       matrix[i] = [i];
@@ -26,6 +30,18 @@ class Text {
 
     // The final value is the Levenshtein distance
     return matrix[a.length][b.length];
+  }
+
+  public static toSentenceCase(str: string): string {
+    if (!str) {
+      return '';
+    }
+
+    // Trim the string to remove extra whitespace
+    const trimmed = str.trim();
+
+    // Convert the first letter to uppercase and the rest to lowercase
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
   }
 }
 

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const localStorageKey = 'theme';
 
@@ -30,15 +30,15 @@ const initialState = {
 
 export const theme = createSlice({
   name: 'theme',
-  initialState: initialState,
+  initialState,
   reducers: {
     updateTheme: (state, action: PayloadAction<string>) => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(localStorageKey, action.payload);
       }
       state.mode = action.payload;
-    }
-  }
+    },
+  },
 });
 
 export const { updateTheme } = theme.actions;

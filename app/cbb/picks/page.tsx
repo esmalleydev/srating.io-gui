@@ -3,20 +3,22 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 
-import HelperCBB from '@/components/helpers/CBB';
-import StatsClientWrapper from '@/components/generic/CBB/Picks/Stats/ClientWrapper';
-import StatsServer from '@/components/generic/CBB/Picks/Stats/Server';
-import StatsLoading from '@/components/generic/CBB/Picks/Stats/Loading';
-import SubNavBar from '@/components/generic/CBB/Picks/SubNavBar';
-import Picks from '@/components/generic/CBB/Picks/Picks';
-import { ClientSkeleton as StatsLoaderClientSkeleton } from '@/components/generic/CBB/Picks/StatsLoader/Client';
-import StatsLoaderServer from '@/components/generic/CBB/Picks/StatsLoader/Server';
-import Calculator from '@/components/generic/CBB/Picks/Calculator';
-import PicksLoader from '@/components/generic/CBB/Picks/PicksLoader';
-import ClientWrapper from '@/components/generic/CBB/Picks/ClientWrapper';
+import StatsClientWrapper from '@/components/generic/Picks/Stats/ClientWrapper';
+import StatsServer from '@/components/generic/Picks/Stats/Server';
+import StatsLoading from '@/components/generic/Picks/Stats/Loading';
+import SubNavBar from '@/components/generic/Picks/SubNavBar';
+import Picks from '@/components/generic/Picks/Picks';
+import { ClientSkeleton as StatsLoaderClientSkeleton } from '@/components/generic/Picks/StatsLoader/Client';
+import StatsLoaderServer from '@/components/generic/Picks/StatsLoader/Server';
+import Calculator from '@/components/generic/Picks/Calculator';
+import PicksLoader from '@/components/generic/Picks/PicksLoader';
+import ClientWrapper from '@/components/generic/Picks/ClientWrapper';
 import Dates from '@/components/utils/Dates';
-import { getDates, getGames } from '@/app/cbb/games/page';
 import DateAppBar from '@/components/generic/DateAppBar';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
+import CBB from '@/components/helpers/CBB';
+import { getDates, getGames } from '@/components/generic/Games/Contents/Server';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -35,15 +37,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 
 export default async function Page({ searchParams }) {
-  const CBB = new HelperCBB();
   const datesHelper = new Dates();
   const season = searchParams?.season || CBB.getCurrentSeason();
+  const organization_id = Organization.getCBBID(); // NCAAM
+  const division_id = searchParams?.division_id || Division.getD1();
 
-  const dates = await getDates({ season });
+  const dates = await getDates({ season, organization_id, division_id });
 
   const date = searchParams?.date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
 
-  const games = await getGames({ date });
+  const games = await getGames({ date, organization_id, division_id });
 
   const view = searchParams?.view || 'picks';
 
@@ -60,7 +63,7 @@ export default async function Page({ searchParams }) {
             : ''
         }
         <Suspense key = {date} fallback = {<StatsLoaderClientSkeleton />}>
-          <StatsLoaderServer game_ids={Object.keys(games)} />
+          <StatsLoaderServer game_ids={Object.keys(games)} organization_id={organization_id} division_id={division_id} />
         </Suspense>
 
         {view === 'calculator' ? <div><Calculator games = {games} date = {date} /></div> : ''}
@@ -69,7 +72,7 @@ export default async function Page({ searchParams }) {
           view === 'stats' ?
           <StatsClientWrapper>
             <Suspense key = {date} fallback = {<StatsLoading />}>
-              <StatsServer date = {date} season = {season} />
+              <StatsServer organization_id={organization_id} division_id={division_id} date = {date} season = {season} />
             </Suspense>
           </StatsClientWrapper>
             : ''

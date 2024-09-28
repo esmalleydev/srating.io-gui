@@ -20,10 +20,11 @@ import Chip from '@mui/material/Chip';
 
 
 import HelperTeam from '../../../helpers/Team';
-import RankSpan from '../RankSpan';
+
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
+import RankSpan from '../../RankSpan';
 
 
 

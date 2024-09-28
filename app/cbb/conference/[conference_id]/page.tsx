@@ -1,23 +1,24 @@
 import { useServerAPI } from '@/components/serverAPI';
-import { CoachTeamSeasons, Conference, StatisticRankings, Teams, TeamSeasonConferences } from '@/types/cbb';
+import { StatisticRankings } from '@/types/cbb';
+import { Conference, Teams, TeamSeasonConferences } from '@/types/general';
 import { Metadata, ResolvingMetadata } from 'next';
 import { unstable_noStore } from 'next/cache';
 
-import HelperCBB from '@/components/helpers/CBB';
+import HeaderServer from '@/components/generic/Conference/Header/Server';
+import HeaderClientWrapper from '@/components/generic/Conference/Header/ClientWrapper';
 
-import HeaderServer from '@/components/generic/CBB/Conference/Header/Server';
-import HeaderClientWrapper from '@/components/generic/CBB/Conference/Header/ClientWrapper';
+// import SeasonsClient from '@/components/generic/Conference/Seasons/Client';
+// import SeasonsClientWrapper from '@/components/generic/Conference/Seasons/ClientWrapper';
 
-// import SeasonsClient from '@/components/generic/CBB/Conference/Seasons/Client';
-// import SeasonsClientWrapper from '@/components/generic/CBB/Conference/Seasons/ClientWrapper';
+import TeamsClientWrapper from '@/components/generic/Conference/Teams/ClientWrapper';
+import TeamsClient from '@/components/generic/Conference/Teams/Client';
 
-import TeamsClientWrapper from '@/components/generic/CBB/Conference/Teams/ClientWrapper';
-import TeamsClient from '@/components/generic/CBB/Conference/Teams/Client';
-
-// import SubNavBar from '@/components/generic/CBB/Conference/SubNavBar';
-import ReduxWrapper from '@/components/generic/CBB/Conference/ReduxWrapper';
-import NavBar from '@/components/generic/CBB/Conference/NavBar';
-import { Suspense } from 'react';
+// import SubNavBar from '@/components/generic/Conference/SubNavBar';
+import ReduxWrapper from '@/components/generic/Conference/ReduxWrapper';
+import NavBar from '@/components/generic/Conference/NavBar';
+import CBB from '@/components/helpers/CBB';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 
 
 type Props = {
@@ -65,19 +66,17 @@ async function getConference({ params, searchParams }): Promise<Partial<Conferen
 }
 
 type Data = {
-  team_season_conferences: CoachTeamSeasons | object;
-  teams: Teams | object;
-  statistic_rankings: StatisticRankings | object;
+  team_season_conferences: TeamSeasonConferences;
+  teams: Teams;
+  statistic_rankings: StatisticRankings;
+  division_id: string | null;
 }
 
 async function getData({ params, searchParams }): Promise<Data> {
   unstable_noStore();
   const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
 
-  const CBB = new HelperCBB();
-
-  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM Basketball
-  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
+  const organization_id = Organization.getCBBID();
   const season = searchParams?.season || CBB.getCurrentSeason();
 
   const conference = await getConference({ params, searchParams });
@@ -88,9 +87,16 @@ async function getData({ params, searchParams }): Promise<Data> {
     arguments: {
       conference_id: conference.conference_id,
       season,
-      organization_id: 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
+      organization_id,
     },
   }, { revalidate: revalidateSeconds });
+
+  let division_id: string | null = null;
+  // these should all be the same
+  for (const team_season_conference_id in team_season_conferences) {
+    const row = team_season_conferences[team_season_conference_id];
+    division_id = row.division_id;
+  }
 
   const teams: Teams = await useServerAPI({
     class: 'team',
@@ -113,7 +119,7 @@ async function getData({ params, searchParams }): Promise<Data> {
   }, { revalidate: revalidateSeconds });
 
 
-  return { team_season_conferences, teams, statistic_rankings };
+  return { team_season_conferences, teams, statistic_rankings, division_id };
 }
 
 // todo this loading is all pretty quick... but when I start to add more data here, update this to split the loading and use suspense like the rest of the app
@@ -122,8 +128,8 @@ export default async function Page({ params, searchParams }) {
   const { conference_id } = params;
   const data = await getData({ params, searchParams });
 
-  const CBB = new HelperCBB();
-
+  const organization_id = Organization.getCBBID();
+  const { division_id } = data;
   const season = searchParams?.season || CBB.getCurrentSeason();
   const view: string = searchParams?.view || 'teams';
 
@@ -133,7 +139,7 @@ export default async function Page({ params, searchParams }) {
   return (
     <ReduxWrapper team_season_conferences = {data.team_season_conferences} teams = {data.teams} statistic_rankings = {data.statistic_rankings}>
       <HeaderClientWrapper>
-        <HeaderServer conference_id = {conference_id} season = {season} />
+        <HeaderServer organization_id={organization_id} division_id={division_id} conference_id = {conference_id} season = {season} />
       </HeaderClientWrapper>
       <NavBar view = {selectedTab} tabOrder = {tabOrder} />
       {/* <SubNavBar view = {view} /> */}
@@ -141,7 +147,7 @@ export default async function Page({ params, searchParams }) {
         {
           view === 'teams' ?
             <TeamsClientWrapper>
-              <TeamsClient conference_id = {conference_id} season = {season} />
+              <TeamsClient organization_id={organization_id} division_id={division_id} conference_id = {conference_id} season = {season} />
             </TeamsClientWrapper>
             : ''
         }

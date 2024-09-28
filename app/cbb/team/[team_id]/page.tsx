@@ -2,30 +2,32 @@
 
 import { Metadata, ResolvingMetadata } from 'next';
 
-import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
-import HeaderClientWrapper from '@/components/generic/CBB/Team/Header/ClientWrapper';
-import HeaderServer from '@/components/generic/CBB/Team/Header/Server';
-import NavBar from '@/components/generic/CBB/Team/NavBar';
+import HeaderClientWrapper from '@/components/generic/Team/Header/ClientWrapper';
+import HeaderServer from '@/components/generic/Team/Header/Server';
+import NavBar from '@/components/generic/Team/NavBar';
 import { useServerAPI } from '@/components/serverAPI';
-import { Team } from '@/types/cbb';
+import { Team, TeamSeasonConference } from '@/types/general';
 import { unstable_noStore } from 'next/cache';
-import SubNavBar from '@/components/generic/CBB/Team/SubNavbar';
+import SubNavBar from '@/components/generic/Team/SubNavbar';
 
-import ScheduleClientWrapper from '@/components/generic/CBB/Team/Schedule/ClientWrapper';
-import ScheduleServer from '@/components/generic/CBB/Team/Schedule/Server';
-import SchedulePredictionLoader from '@/components/generic/CBB/Team/Schedule/PredictionLoader';
+import ScheduleClientWrapper from '@/components/generic/Team/Schedule/ClientWrapper';
+import ScheduleServer from '@/components/generic/Team/Schedule/Server';
+import SchedulePredictionLoader from '@/components/generic/Team/Schedule/PredictionLoader';
 
-import StatsClientWrapper from '@/components/generic/CBB/Team/Stats/ClientWrapper';
-import StatsServer from '@/components/generic/CBB/Team/Stats/Server';
+import StatsClientWrapper from '@/components/generic/Team/Stats/ClientWrapper';
+import StatsServer from '@/components/generic/Team/Stats/Server';
 
-import TrendsClientWrapper from '@/components/generic/CBB/Team/Trends/ClientWrapper';
-import TrendsServer from '@/components/generic/CBB/Team/Trends/Server';
+import TrendsClientWrapper from '@/components/generic/Team/Trends/ClientWrapper';
+import TrendsServer from '@/components/generic/Team/Trends/Server';
 import { Suspense } from 'react';
-import { ClientSkeleton as HeaderClientSkeleton } from '@/components/generic/CBB/Team/Header/Client';
-import { ClientSkeleton as ScheduleClientSkeleton } from '@/components/generic/CBB/Team/Schedule/Client';
-import { ClientSkeleton as StatsClientSkeleton } from '@/components/generic/CBB/Team/Stats/Client';
-import { ClientSkeleton as TrendsClientSkeleton } from '@/components/generic/CBB/Team/Trends/Client';
+import { ClientSkeleton as HeaderClientSkeleton } from '@/components/generic/Team/Header/Client';
+import { ClientSkeleton as ScheduleClientSkeleton } from '@/components/generic/Team/Schedule/Client';
+import { ClientSkeleton as StatsClientSkeleton } from '@/components/generic/Team/Stats/Client';
+import { ClientSkeleton as TrendsClientSkeleton } from '@/components/generic/Team/Trends/Client';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
+import CBB from '@/components/helpers/CBB';
 
 
 type Props = {
@@ -46,12 +48,12 @@ export async function generateMetadata(
     title: `sRating | ${helperTeam.getName()}`,
     description: 'View predicted result, matchup, trends, odds',
     openGraph: {
-      title: helperTeam.getName(),
+      title: `${helperTeam.getName()} basketball`,
       description: `${helperTeam.getName()} schedule, trends, statistics, roster`,
     },
     twitter: {
       card: 'summary',
-      title: helperTeam.getName(),
+      title: `${helperTeam.getName()} basketball`,
       description: `${helperTeam.getName()} schedule, trends, statistics, roster`,
     },
   };
@@ -60,16 +62,17 @@ export async function generateMetadata(
 
 async function getData({ params, searchParams }) {
   unstable_noStore();
-  const CBB = new HelperCBB();
 
   const { team_id } = params;
 
+  const organization_id = Organization.getCBBID();
+  const division_id = searchParams?.division_id || Division.getD1();
   const season = searchParams?.season || CBB.getCurrentSeason();
 
   type TeamWithConference = Team & {conference: string;}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const team: TeamWithConference | any = await useServerAPI({
+  const team: TeamWithConference = await useServerAPI({
     class: 'team',
     function: 'get',
     arguments: {
@@ -78,13 +81,13 @@ async function getData({ params, searchParams }) {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const team_season_conference: any = await useServerAPI({
+  const team_season_conference: TeamSeasonConference = await useServerAPI({
     class: 'team_season_conference',
     function: 'get',
     arguments: {
+      organization_id,
       team_id,
       season,
-      organization_id: 'f1c37c98-3b4c-11ef-94bc-2a93761010b8',
     },
   });
 
@@ -99,9 +102,10 @@ async function getData({ params, searchParams }) {
 export default async function Page({ params, searchParams }) {
   const { team_id } = params;
 
-  const CBB = new HelperCBB();
-
-  const season = searchParams?.season || CBB.getCurrentSeason();
+  // todo pass this in searchParams
+  const organization_id = Organization.getCBBID();
+  const division_id = searchParams?.division_id || Division.getD1();
+  const season = +(searchParams?.season || CBB.getCurrentSeason());
   const view = searchParams?.view || 'schedule';
 
   // const tabOrder = ['schedule', 'stats', 'trends', 'seasons'];
@@ -112,7 +116,7 @@ export default async function Page({ params, searchParams }) {
     <div>
       <HeaderClientWrapper>
         <Suspense fallback = {<HeaderClientSkeleton />}>
-          <HeaderServer season = {season} team_id = {team_id} />
+          <HeaderServer organization_id={organization_id} division_id={division_id} season = {season} team_id = {team_id} />
         </Suspense>
       </HeaderClientWrapper>
       <NavBar view = {selectedTab} tabOrder = {tabOrder} />
@@ -122,10 +126,10 @@ export default async function Page({ params, searchParams }) {
           <>
             <ScheduleClientWrapper>
               <Suspense fallback = {<ScheduleClientSkeleton />}>
-                <ScheduleServer team_id = {team_id} season = {season} />
+                <ScheduleServer team_id = {team_id} season = {season} organization_id = {organization_id} division_id = {division_id} />
               </Suspense>
             </ScheduleClientWrapper>
-            <SchedulePredictionLoader team_id = {team_id} season = {season} />
+            <SchedulePredictionLoader organization_id={organization_id} division_id={division_id} team_id = {team_id} season = {season} />
           </> :
           ''
       }
@@ -134,7 +138,7 @@ export default async function Page({ params, searchParams }) {
           <>
             <StatsClientWrapper>
               <Suspense fallback = {<StatsClientSkeleton />}>
-                <StatsServer team_id = {team_id} season = {season} />
+                <StatsServer organization_id={organization_id} division_id={division_id} team_id = {team_id} season = {season} />
               </Suspense>
             </StatsClientWrapper>
           </> :
@@ -145,7 +149,7 @@ export default async function Page({ params, searchParams }) {
           <>
             <TrendsClientWrapper>
               <Suspense fallback = {<TrendsClientSkeleton />}>
-                <TrendsServer team_id = {team_id} season = {season} />
+                <TrendsServer organization_id={organization_id} division_id={division_id} team_id = {team_id} season = {season} />
               </Suspense>
             </TrendsClientWrapper>
           </> :

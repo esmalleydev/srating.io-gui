@@ -1,4 +1,6 @@
-import { TeamSeasonConferences, StatisticRankings, Teams } from '@/types/cbb';
+import { StatisticRankings as StatsCBB } from '@/types/cbb';
+import { StatisticRankings as StatsCFB } from '@/types/cfb';
+import { Teams, TeamSeasonConferences } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
@@ -6,7 +8,7 @@ type InitialState = {
   scrollTop: number,
   team_season_conferences: TeamSeasonConferences | object;
   teams: Teams | object;
-  statistic_rankings: StatisticRankings | object;
+  statistic_rankings: StatsCBB | StatsCFB;
 };
 
 const initialState = {
@@ -54,7 +56,7 @@ export const conference = createSlice({
     setTeams: (state, action: PayloadAction<Teams | object>) => {
       state.teams = action.payload;
     },
-    setStatisticRankings: (state, action: PayloadAction<StatisticRankings | object>) => {
+    setStatisticRankings: (state, action: PayloadAction<StatsCBB | StatsCFB>) => {
       state.statistic_rankings = action.payload;
     },
   },

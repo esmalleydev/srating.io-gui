@@ -1,11 +1,11 @@
-import { Conference, Division, Organization } from '@/types/cbb';
+import { Conferences, Divisions, Organizations } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// todo upate for new dictionary values
+
 type InitialState = {
-  conference: Conference[],
-  organization: Organization[],
-  division: Division[],
+  conference: Conferences,
+  organization: Organizations,
+  division: Divisions,
 };
 
 const initialState = {

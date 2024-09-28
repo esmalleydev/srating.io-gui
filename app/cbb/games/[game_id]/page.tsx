@@ -4,48 +4,50 @@ import { cache, Suspense } from 'react';
 import { Metadata, ResolvingMetadata } from 'next';
 
 import { useServerAPI } from '@/components/serverAPI';
-import HelperCBB from '@/components/helpers/CBB';
+import HelperGame from '@/components/helpers/Game';
 
-import HeaderClientWrapper from '@/components/generic/CBB/Game/Header/ClientWrapper';
-import HeaderServer from '@/components/generic/CBB/Game/Header/Server';
+import HeaderClientWrapper from '@/components/generic/Game/Header/ClientWrapper';
+import HeaderServer from '@/components/generic/Game/Header/Server';
 
-import NavBar from '@/components/generic/CBB/Game/NavBar';
-import SubNavBar from '@/components/generic/CBB/Game/SubNavBar';
+import NavBar from '@/components/generic/Game/NavBar';
+import SubNavBar from '@/components/generic/Game/SubNavBar';
 
-import BoxscoreClientWrapper from '@/components/generic/CBB/Game/Boxscore/ClientWrapper';
-import { ClientSkeleton as BoxscoreClientSkeleton } from '@/components/generic/CBB/Game/Boxscore/Client';
-import BoxscoreServer from '@/components/generic/CBB/Game/Boxscore/Server';
+import BoxscoreClientWrapper from '@/components/generic/Game/Boxscore/ClientWrapper';
+import { ClientSkeleton as BoxscoreClientSkeleton } from '@/components/generic/Game/Boxscore/Client';
+import BoxscoreServer from '@/components/generic/Game/Boxscore/Server';
 
-import ChartsClientWrapper from '@/components/generic/CBB/Game/Charts/ClientWrapper';
-import { ClientSkeleton as ChartsClientSkeleton } from '@/components/generic/CBB/Game/Charts/Client';
-import ChartsServer from '@/components/generic/CBB/Game/Charts/Server';
+import ChartsClientWrapper from '@/components/generic/Game/Charts/ClientWrapper';
+import { ClientSkeleton as ChartsClientSkeleton } from '@/components/generic/Game/Charts/Client';
+import ChartsServer from '@/components/generic/Game/Charts/Server';
 
-import PlaybyplayClientWrapper from '@/components/generic/CBB/Game/Playbyplay/ClientWrapper';
-import { ClientSkeleton as PlaybyplayClientSkeleton } from '@/components/generic/CBB/Game/Playbyplay/Client';
-import PlaybyplayServer from '@/components/generic/CBB/Game/Playbyplay/Server';
+import PlaybyplayClientWrapper from '@/components/generic/Game/Playbyplay/ClientWrapper';
+import { ClientSkeleton as PlaybyplayClientSkeleton } from '@/components/generic/Game/Playbyplay/Client';
+import PlaybyplayServer from '@/components/generic/Game/Playbyplay/Server';
 
-import MatchupClientWrapper from '@/components/generic/CBB/Game/Matchup/ClientWrapper';
-import MatchupServer from '@/components/generic/CBB/Game/Matchup/Server';
+import MatchupClientWrapper from '@/components/generic/Game/Matchup/ClientWrapper';
+import MatchupServer from '@/components/generic/Game/Matchup/Server';
 
-import StatCompareClientWrapper from '@/components/generic/CBB/Game/StatCompare/ClientWrapper';
-import { ClientSkeleton as StatCompareClientSkeleton } from '@/components/generic/CBB/Game/StatCompare/Client';
-import StatCompareServer from '@/components/generic/CBB/Game/StatCompare/Server';
+import StatCompareClientWrapper from '@/components/generic/Game/StatCompare/ClientWrapper';
+import { ClientSkeleton as StatCompareClientSkeleton } from '@/components/generic/Game/StatCompare/Client';
+import StatCompareServer from '@/components/generic/Game/StatCompare/Server';
 
-import PreviousMatchupsClientWrapper from '@/components/generic/CBB/Game/PreviousMatchups/ClientWrapper';
-import { ClientSkeleton as PreviousMatchupsClientSkeleton } from '@/components/generic/CBB/Game/PreviousMatchups/Client';
-import PreviousMatchupsServer from '@/components/generic/CBB/Game/PreviousMatchups/Server';
+import PreviousMatchupsClientWrapper from '@/components/generic/Game/PreviousMatchups/ClientWrapper';
+import { ClientSkeleton as PreviousMatchupsClientSkeleton } from '@/components/generic/Game/PreviousMatchups/Client';
+import PreviousMatchupsServer from '@/components/generic/Game/PreviousMatchups/Server';
 
-import OddsClientWrapper from '@/components/generic/CBB/Game/Odds/ClientWrapper';
-import { ClientSkeleton as OddsClientSkeleton } from '@/components/generic/CBB/Game/Odds/Client';
-import OddsServer from '@/components/generic/CBB/Game/Odds/Server';
+import OddsClientWrapper from '@/components/generic/Game/Odds/ClientWrapper';
+import { ClientSkeleton as OddsClientSkeleton } from '@/components/generic/Game/Odds/Client';
+import OddsServer from '@/components/generic/Game/Odds/Server';
 
-import MomentumClientWrapper from '@/components/generic/CBB/Game/Momentum/ClientWrapper';
-import { ClientSkeleton as MomentumClientSkeleton } from '@/components/generic/CBB/Game/Momentum/Client';
-import MomentumServer from '@/components/generic/CBB/Game/Momentum/Server';
+import MomentumClientWrapper from '@/components/generic/Game/Momentum/ClientWrapper';
+import { ClientSkeleton as MomentumClientSkeleton } from '@/components/generic/Game/Momentum/Client';
+import MomentumServer from '@/components/generic/Game/Momentum/Server';
 
-import { ClientSkeleton as StatsLoaderSkeleton } from '@/components/generic/CBB/Game/StatsLoader/Client';
-import StatsLoaderServer from '@/components/generic/CBB/Game/StatsLoader/Server';
-import PredictionLoader from '@/components/generic/CBB/Game/PreditionLoader';
+import { ClientSkeleton as StatsLoaderSkeleton } from '@/components/generic/Game/StatsLoader/Client';
+import StatsLoaderServer from '@/components/generic/Game/StatsLoader/Server';
+import PredictionLoader from '@/components/generic/Game/PreditionLoader';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 
 
 type Props = {
@@ -60,20 +62,20 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const game = await getCachedData({ params });
 
-  const CBB = new HelperCBB({
+  const Game = new HelperGame({
     game,
   });
 
   return {
-    title: `sRating | ${CBB.getTeamName('away')} vs ${CBB.getTeamName('home')}`,
+    title: `sRating | ${Game.getTeamName('away')} vs ${Game.getTeamName('home')}`,
     description: 'View predicted result, matchup, trends, odds',
     openGraph: {
-      title: `${CBB.getTeamName('away')} vs ${CBB.getTeamName('home')}`,
+      title: `${Game.getTeamName('away')} vs ${Game.getTeamName('home')}`,
       description: 'View predicted result, matchup, trends, odds',
     },
     twitter: {
       card: 'summary',
-      title: `${CBB.getTeamName('away')} vs ${CBB.getTeamName('home')}`,
+      title: `${Game.getTeamName('away')} vs ${Game.getTeamName('home')}`,
       description: 'View predicted result, matchup, trends, odds',
     },
   };
@@ -99,17 +101,19 @@ async function getData({ params }) {
 export default async function Page({ params, searchParams }) {
   const { game_id } = params;
   const game = await getCachedData({ params });
+  const organization_id = Organization.getCBBID();
+  const division_id = searchParams?.division_id || Division.getD1();
 
-  const CBB = new HelperCBB({
+  const Game = new HelperGame({
     game,
   });
 
 
-  const view = searchParams?.view || (CBB.isInProgress() || CBB.isFinal() ? 'game_details' : 'matchup');
+  const view = searchParams?.view || (Game.isInProgress() || Game.isFinal() ? 'game_details' : 'matchup');
   const subview = searchParams?.subview || (view === 'game_details' ? 'boxscore' : null) || (view === 'trends' ? 'stat_compare' : null);
 
   let tabOrder = ['matchup', 'trends'];
-  if (CBB.isInProgress() || CBB.isFinal()) {
+  if (Game.isInProgress() || Game.isFinal()) {
     tabOrder = ['game_details', 'matchup', 'trends'];
   }
   const selectedViewTab = tabOrder[(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0)];
@@ -187,17 +191,17 @@ export default async function Page({ params, searchParams }) {
 
   return (
     <div>
-      <Suspense key = {game_id} fallback = {<StatsLoaderSkeleton />}>
-        <StatsLoaderServer game_ids = {[game_id]} />
+      <Suspense key = {`${game_id}_statsloader`} fallback = {<StatsLoaderSkeleton />}>
+        <StatsLoaderServer game_ids = {[game_id]} organization_id = {organization_id} division_id = {division_id} />
       </Suspense>
       <HeaderClientWrapper game = {game}>
-        <Suspense>
+        <Suspense key = {`${game_id}_headerloader`}>
           <HeaderServer game_id = {game_id} />
         </Suspense>
       </HeaderClientWrapper>
       <NavBar view = {selectedViewTab} tabOrder = {tabOrder} />
       <SubNavBar subview = {selectSubViewTab} view = {selectedViewTab} tabOrder = {subTabOrder} />
-      <PredictionLoader key = {game_id} game_id = {game_id} />
+      <PredictionLoader key = {`${game_id}_predictionloader`} game_id = {game_id} />
       {getContent()}
     </div>
   );

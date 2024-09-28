@@ -11,10 +11,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 
 import { useClientAPI } from '../clientAPI';
-import { Coach, Player, Team } from '@/types/cbb';
-import { useAppDispatch } from '@/redux/hooks';
+import { Coach, Player, Team } from '@/types/general';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 import Text from '../utils/Text';
+import Organization from '../helpers/Organization';
+import Alert from './Alert';
+import Division from '../helpers/Division';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -64,6 +67,11 @@ const Search = ({ onRouter, focus }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const path = Organization.getPath({ organizations, organization_id });
+
+  const division_id = Organization.getCBBID() === organization_id ? Division.getD1() : Division.getFBS();
 
   type searchPlayer = Player & {
     begin: string;
@@ -81,13 +89,16 @@ const Search = ({ onRouter, focus }) => {
   const [players, setPlayers] = useState<searchPlayer[]>([]);
   const [coaches, setCoaches] = useState<searchCoach[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
 
   const debouncedRequest = useDebounce(() => {
     useClientAPI({
-      class: 'cbb',
+      class: 'search',
       function: 'search',
       arguments: {
+        organization_id,
+        division_id,
         name: value,
       },
     }).then((response) => {
@@ -174,29 +185,38 @@ const Search = ({ onRouter, focus }) => {
     ...coachOptions,
   ];
 
-
   const handleClick = (event, option) => {
     if (!option || (!option.player_id && !option.team_id && !option.coach_id)) {
       return;
     }
-    dispatch(setLoadingDisplay(true));
     if (option && option.coach_id) {
+      dispatch(setLoadingDisplay(true));
       startTransition(() => {
-        router.push(`/cbb/coach/${option.coach_id}`);
+        router.push(`/${path}/coach/${option.coach_id}`);
         if (onRouter) {
           onRouter();
         }
       });
     } else if (option && option.player_id) {
+      if (Organization.getCFBID() === organization_id) {
+        setShowAlert(true);
+        setValue('');
+        setTeams([]);
+        setPlayers([]);
+        setCoaches([]);
+        return;
+      }
+      dispatch(setLoadingDisplay(true));
       startTransition(() => {
-        router.push(`/cbb/player/${option.player_id}`);
+        router.push(`/${path}/player/${option.player_id}`);
         if (onRouter) {
           onRouter();
         }
       });
     } else if (option && option.team_id) {
+      dispatch(setLoadingDisplay(true));
       startTransition(() => {
-        router.push(`/cbb/team/${option.team_id}`);
+        router.push(`/${path}/team/${option.team_id}`);
         if (onRouter) {
           onRouter();
         }
@@ -211,6 +231,7 @@ const Search = ({ onRouter, focus }) => {
 
   return (
     <Container>
+      <Alert open = {showAlert} title = 'Coming soon' message = 'Player page still under development, come back soon!' confirm = {() => setShowAlert(false)} />
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>

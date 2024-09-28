@@ -10,13 +10,13 @@ import { styled, useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
 import HelperTeam from '@/components/helpers/Team';
-import HelperCBB from '@/components/helpers/CBB';
 import { teamColumns } from '@/components/generic/CBB/columns';
-import RankSpan from '@/components/generic/CBB/RankSpan';
-import utilsSorter from '@/components/utils/Sorter';
+import RankSpan from '@/components/generic/RankSpan';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-
-const Sorter = new utilsSorter();
+import Sorter from '@/components/utils/Sorter';
+import CBB from '@/components/helpers/CBB';
+import Organization from '@/components/helpers/Organization';
+import CFB from '@/components/helpers/CFB';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // '&:hover td': {
@@ -31,7 +31,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
 }));
 
-const TableView = ({ teams, season }) => {
+const TableView = ({ organization_id, division_id, teams, season }) => {
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -39,7 +39,11 @@ const TableView = ({ teams, season }) => {
   const { width } = useWindowDimensions() as Dimensions;
   const breakPoint = 425;
 
-  const CBB = new HelperCBB();
+  let numberOfTeams = CBB.getNumberOfD1Teams(season);
+
+  if (organization_id === Organization.getCFBID()) {
+    numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
+  }
 
   const [view, setView] = useState<string | null>('overview');
   const [order, setOrder] = useState<string>('asc');
@@ -181,7 +185,7 @@ const TableView = ({ teams, season }) => {
         } else if (columns[i] === 'composite_rank') {
           tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...rankCellStyle })}>{row[columns[i]]}</TableCell>);
         } else {
-          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {true} max = {CBB.getNumberOfD1Teams(season)} /> : ''}</TableCell>);
+          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {true} max = {numberOfTeams} /> : ''}</TableCell>);
         }
       }
 

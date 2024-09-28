@@ -1,15 +1,9 @@
+import { CBBRankingTable } from '@/types/cbb';
+import { CFBRankingTable } from '@/types/cfb';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const rankLocalStorageKey = 'CBB.DISPLAY.RANK.2';
-
-let rankLocalStorage: string | null = null;
-
-if (typeof window !== 'undefined') {
-  rankLocalStorage = localStorage.getItem(rankLocalStorageKey);
-}
 
 type InitialState = {
-  rank: string,
   order: string,
   orderBy: string,
   hideCommitted: boolean,
@@ -18,10 +12,19 @@ type InitialState = {
   filterOriginalConf: boolean,
   tableScrollTop: number,
   tableFullscreen: boolean,
+  lastUpdated: string | null,
+  columnView: string,
+  customColumns: Array<string>,
+  data: object | null,
+  filteredRows: CBBRankingTable[] | CFBRankingTable[] | null | boolean,
+};
+
+type ActionPayload<K extends keyof InitialState> = {
+  key: K;
+  value: InitialState[K];
 };
 
 const initialState = {
-  rank: rankLocalStorage || 'rank',
   order: 'asc',
   orderBy: 'rank',
   hideCommitted: false,
@@ -30,6 +33,11 @@ const initialState = {
   filterOriginalConf: true,
   tableScrollTop: 0,
   tableFullscreen: false,
+  lastUpdated: null,
+  columnView: 'composite',
+  customColumns: ['rank', 'name'],
+  data: null,
+  filteredRows: null,
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -62,10 +70,18 @@ const updateStateFromUrlParams = (state: InitialState) => {
   // }
 };
 
+// todo deprecate all but setDataKey
+
 export const ranking = createSlice({
   name: 'ranking',
   initialState,
   reducers: {
+    reset: () => {
+      return initialState;
+    },
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      state[action.payload.key] = action.payload.value;
+    },
     setOrder: (state, action: PayloadAction<string>) => {
       state.order = action.payload;
     },
@@ -97,6 +113,8 @@ export const ranking = createSlice({
 });
 
 export const {
+  reset,
+  setDataKey,
   setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setFilterCommittedConf, setFilterOriginalConf, setTableScrollTop, setTableFullscreen,
 } = ranking.actions;
 export default ranking.reducer;

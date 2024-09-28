@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoadingSecret, setSecret } from '@/redux/features/user-slice';
 import { useIdleTimer } from 'react-idle-timer';
 import { useEffect, useState } from 'react';
-import { refresh } from '@/components/generic/CBB/actions';
+import { refresh } from '@/components/generic/actions';
 import { setLoading } from '@/redux/features/display-slice';
 
 let intervalRefresher: NodeJS.Timeout;
