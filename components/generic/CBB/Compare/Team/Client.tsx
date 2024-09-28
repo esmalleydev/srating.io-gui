@@ -40,10 +40,10 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ home_team_id, away_team_id, teams, season, subview }) => {
+const Client = ({ organization_id, division_id, home_team_id, away_team_id, teams, season, subview }) => {
   return (
     <Contents>
-    {subview === 'table' ? <TableView teams = {teams} season = {season} /> : <CompareView home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />}
+    {subview === 'table' ? <TableView organization_id={organization_id} division_id={division_id} teams = {teams} season = {season} /> : <CompareView organization_id={organization_id} division_id={division_id} home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />}
     </Contents>
   );
 };

@@ -6,17 +6,15 @@ import { Skeleton, Paper, Typography, Tooltip } from '@mui/material';
 
 import Locked from './Billing/Locked';
 import RankSpan from './RankSpan';
-import HelperCBB from '@/components/helpers/CBB';
 
 
-const CompareStatistic = ({ rows, season, paper, maxWidth = 600 }) => {
+const CompareStatistic = ({ rows, season, max, paper, maxWidth = 600 }) => {
   const { width } = useWindowDimensions() as Dimensions;
   const theme = useTheme();
 
 
   const fixedLength = width > 500 ? 2 : 1;
 
-  const CBB = new HelperCBB();
 
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
@@ -265,7 +263,7 @@ const CompareStatistic = ({ rows, season, paper, maxWidth = 600 }) => {
           }
 
           return (
-            <RankSpan rank = {rank} key = {key} max = {CBB.getNumberOfD1Teams(season || CBB.getCurrentSeason())} useOrdinal = {true} />
+            <RankSpan rank = {rank} key = {key} max = {max} useOrdinal = {true} />
           );
         };
 

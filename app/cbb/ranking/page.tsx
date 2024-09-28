@@ -2,7 +2,6 @@
 
 import { Metadata, ResolvingMetadata } from 'next';
 
-import HelperCBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
 import Division from '@/components/helpers/Division';
 
@@ -11,6 +10,7 @@ import ContentsServer from '@/components/generic/Ranking/Contents/Server';
 import { ClientSkeleton as ContentsClientSkeleton } from '@/components/generic/Ranking/Contents/Client';
 import { Suspense } from 'react';
 import Base from '@/components/generic/Ranking/Base';
+import CBB from '@/components/helpers/CBB';
 
 
 type Props = {
@@ -58,7 +58,6 @@ export async function generateMetadata(
 
 
 export default async function Page({ searchParams }) {
-  const CBB = new HelperCBB();
   const organization_id = Organization.getCBBID();
   const division_id = searchParams?.division_id || Division.getD1();
   const season = searchParams?.season || CBB.getCurrentSeason();

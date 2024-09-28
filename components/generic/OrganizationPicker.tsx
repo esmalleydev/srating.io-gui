@@ -2,7 +2,7 @@ import React, { useState, useTransition } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import { Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuList } from '@mui/material';
+import { Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, useTheme } from '@mui/material';
 // import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -26,6 +26,7 @@ const OrganizationPicker = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathName = usePathname();
+  const theme = useTheme();
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -63,10 +64,15 @@ const OrganizationPicker = () => {
 
       let newPathName = `/${path}/ranking`;
       if (splat.length === 3) {
-        newPathName = pathName.replace(`/${oldPath}/`, `/${path}/`);
-      } else if (splat.length > 3) {
-        newPathName = `/${path}/${splat[2]}`;
+        if (splat[2] !== 'compare') {
+          newPathName = pathName.replace(`/${oldPath}/`, `/${path}/`);
+        }
       }
+      // this will error out, first you would need the search params, then you do even know if it is valid, season doesnt exist or team is not in org, etc
+      // so just default back to the ranking page
+      // else if (splat.length > 3) {
+      //   newPathName = `/${path}/${splat[2]}`;
+      // }
       router.push(newPathName);
     });
   };
@@ -84,6 +90,7 @@ const OrganizationPicker = () => {
         disableElevation
         onClick={handleOpen}
         endIcon={<KeyboardArrowDownIcon />}
+        sx={{ color: (theme.palette.mode === 'light' ? '#fff' : theme.palette.primary.main) }}
       >
         {title}
       </Button>
@@ -93,19 +100,19 @@ const OrganizationPicker = () => {
         open={open}
         onClose={handleClose}
       >
-          <MenuList>
-            {statusOptions.map((statusOption, index) => {
-              const isSelected = selected.indexOf(statusOption.value) > -1;
-              return (
-                <MenuItem key = {index} onClick = {() => handleOrganization(statusOption.value)}>
-                  <ListItemIcon>
-                    {isSelected ? <CheckCircleIcon color = 'success' fontSize='small' /> : <RadioButtonUncheckedIcon color = 'primary' fontSize='small' />}
-                  </ListItemIcon>
-                  <ListItemText>{statusOption.label}</ListItemText>
-                </MenuItem>
-              );
-            })}
-          </MenuList>
+        <MenuList>
+          {statusOptions.map((statusOption, index) => {
+            const isSelected = selected.indexOf(statusOption.value) > -1;
+            return (
+              <MenuItem key = {index} onClick = {() => handleOrganization(statusOption.value)}>
+                <ListItemIcon>
+                  {isSelected ? <CheckCircleIcon color = 'success' fontSize='small' /> : <RadioButtonUncheckedIcon color = 'primary' fontSize='small' />}
+                </ListItemIcon>
+                <ListItemText>{statusOption.label}</ListItemText>
+              </MenuItem>
+            );
+          })}
+        </MenuList>
       </Menu>
     </div>
   );

@@ -46,13 +46,18 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
 
   const rankViewOptions = [
     { value: 'team', label: 'Team rankings' },
-    { value: 'player', label: 'Player rankings' },
     { value: 'conference', label: 'Conference rankings' },
     { value: 'coach', label: 'Coach rankings' },
   ];
 
   if (Organization.getCBBID() === organization_id) {
+    rankViewOptions.push({ value: 'player', label: 'Player rankings' });
     rankViewOptions.push({ value: 'transfer', label: 'Transfer rankings' });
+  }
+
+  let sport = 'basketball';
+  if (Organization.getCFBID() === organization_id) {
+    sport = 'football';
   }
 
 
@@ -114,7 +119,7 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
                 <OptionPicker title = 'View' options = {rankViewOptions} selected = {view} actionHandler = {handleRankView} />
                 <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
               </div>
-              <Typography variant = {width < 500 ? 'h6' : 'h5'}>{`College basketball ${view} rankings.`}</Typography>
+              <Typography variant = {width < 500 ? 'h6' : 'h5'}>{`College ${sport} ${view} rankings.`}</Typography>
               <LastUpdated view = {view} handleLegend={handleLegend} />
               <ColumnChipPicker view = {view} organization_id={organization_id} />
               <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '10px' }}>

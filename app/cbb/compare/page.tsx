@@ -2,8 +2,6 @@
 
 import { Metadata, ResolvingMetadata } from 'next';
 
-import HelperCBB from '@/components/helpers/CBB';
-
 import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 import SubNavBar from '@/components/generic/CBB/Compare/SubNavBar';
@@ -26,6 +24,9 @@ import TrendsServer from '@/components/generic/CBB/Compare/Trends/Server';
 import PredictionLoader from '@/components/generic/CBB/Compare/Team/PredictionLoader';
 import Splash from '@/components/generic/CBB/Compare/Splash';
 import { Suspense } from 'react';
+import CBB from '@/components/helpers/CBB';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 
 type Props = {
   params: { team_ids: string };
@@ -90,10 +91,10 @@ async function getData({ season, home_team_id, away_team_id }) {
 
 
 export default async function Page({ /* params, */ searchParams }) {
-  const CBB = new HelperCBB();
-
   const home_team_id: string | null = searchParams?.home_team_id || null;
   const away_team_id: string | null = searchParams?.away_team_id || null;
+  const organization_id = Organization.getCBBID();
+  const division_id = Division.getD1();
   const season: number = searchParams?.season || CBB.getCurrentSeason();
   const view: string = searchParams?.view || 'team';
   const subview: string | null = searchParams?.subview || null;
@@ -135,7 +136,7 @@ export default async function Page({ /* params, */ searchParams }) {
             view === 'trends' ?
               <TrendsClientWrapper>
                 <Suspense fallback = {<TrendsClientSkeleton />}>
-                  <TrendsServer home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
+                  <TrendsServer organization_id={organization_id} division_id={division_id} home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />
                 </Suspense>
               </TrendsClientWrapper>
               : ''

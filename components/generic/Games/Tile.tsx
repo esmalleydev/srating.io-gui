@@ -4,7 +4,7 @@ import React, { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import HelperCBB from '@/components/helpers/CBB';
+import HelperGame from '@/components/helpers/Game';
 
 import { useTheme } from '@mui/material/styles';
 
@@ -13,12 +13,12 @@ import Typography from '@mui/material/Typography';
 
 import Locked from '@/components/generic/Billing/Locked';
 import { Button, Skeleton } from '@mui/material';
-import Indicator from '@/components/generic/CBB/Indicator';
-import Pin from '@/components/generic/CBB/Pin';
+import Indicator from '@/components/generic/Indicator';
+import Pin from '@/components/generic/Pin';
 
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { refresh } from '@/components/generic/CBB/actions';
+import { refresh } from '@/components/generic/actions';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { setScrollTop } from '@/redux/features/games-slice';
@@ -26,6 +26,7 @@ import useOnScreen from '@/components/hooks/useOnScreen';
 import { setLoading } from '@/redux/features/display-slice';
 import Record from './Tile/Record';
 import Rank from './Tile/Rank';
+import Organization from '@/components/helpers/Organization';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {
@@ -57,21 +58,23 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const path = Organization.getPath({ organizations, organization_id: game.organization_id });
 
   const scrollRef = useScrollContext();
 
   const dispatch = useAppDispatch();
   const displayCardView = useAppSelector((state) => state.displayReducer.cardsView);
 
-  const CBB = new HelperCBB({
+  const Game = new HelperGame({
     game,
   });
 
   const isVisible = useOnScreen(ref);
 
-  const spreadToUseHome = (CBB.isInProgress() ? CBB.getLiveSpread('home') : CBB.getPreSpread('home'));
-  const spreadToUseAway = (CBB.isInProgress() ? CBB.getLiveSpread('away') : CBB.getPreSpread('away'));
-  const overUnderToUse = (CBB.isInProgress() ? CBB.getLiveOver() : CBB.getPreOver());
+  const spreadToUseHome = (Game.isInProgress() ? Game.getLiveSpread('home') : Game.getPreSpread('home'));
+  const spreadToUseAway = (Game.isInProgress() ? Game.getLiveSpread('away') : Game.getPreSpread('away'));
+  const overUnderToUse = (Game.isInProgress() ? Game.getLiveOver() : Game.getPreOver());
 
   const handleClick = (e) => {
     if (
@@ -82,10 +85,10 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     }
 
     dispatch(updateGameSort(null));
-    refresh(`cbb.games.${game.game_id}`);
+    refresh(`${path}.games.${game.game_id}`);
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/games/${game.game_id}`);
+      router.push(`/${path}/games/${game.game_id}`);
     });
   };
 
@@ -106,7 +109,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
     const indicators: React.JSX.Element[] = [];
 
-    if (CBB.isNeutralSite()) {
+    if (Game.isNeutralSite()) {
       indicators.push(
         <Indicator key = {'N'} title = {'Neutral site'} code = {'N'} color = {'#ffa726'} />,
       );
@@ -137,8 +140,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
     const network: React.JSX.Element[] = [];
 
-    if (!CBB.isFinal() && CBB.getNetwork()) {
-      network.push(<Typography key = {CBB.getNetwork()} sx = {{ marginLeft: '5px' }} color = 'text.secondary' variant = 'overline'>{CBB.getNetwork()}</Typography>);
+    if (!Game.isFinal() && Game.getNetwork()) {
+      network.push(<Typography key = {Game.getNetwork()} sx = {{ marginLeft: '5px' }} color = 'text.secondary' variant = 'overline'>{Game.getNetwork()}</Typography>);
     }
 
     const oddsTexts: string[] = [];
@@ -146,7 +149,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       spreadToUseAway !== '-' &&
       spreadToUseHome !== '-'
     ) {
-      oddsTexts.push(spreadToUseHome < spreadToUseAway ? `${CBB.getTeamNameShort('home')} ${spreadToUseHome}` : `${CBB.getTeamNameShort('away')} ${spreadToUseAway}`);
+      oddsTexts.push(spreadToUseHome < spreadToUseAway ? `${Game.getTeamNameShort('home')} ${spreadToUseHome}` : `${Game.getTeamNameShort('away')} ${spreadToUseAway}`);
     }
     if (overUnderToUse !== '-') {
       oddsTexts.push(`O${overUnderToUse}`);
@@ -154,9 +157,9 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
     return (
       <div style = {flexContainer} >
-        <div style = {timeStyle}><Typography color = {CBB.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{CBB.getTime()}</Typography>{network}</div>
+        <div style = {timeStyle}><Typography color = {Game.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{Game.getTime()}</Typography>{network}</div>
         {
-          displayCardView === 'compact' && !CBB.isFinal() && oddsTexts.length ?
+          displayCardView === 'compact' && !Game.isFinal() && oddsTexts.length ?
             <div><Typography style={{ fontSize: '11px' }} variant = 'overline' color={'text.secondary'}>{oddsTexts.join(' | ')}</Typography></div>
             : ''
         }
@@ -199,32 +202,32 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     let tdOverTitle = 'Pre-game over';
     let tdUnderTitle = 'Pre-game under';
 
-    if (CBB.isFinal()) {
-      if (CBB.coveredSpread('away')) {
+    if (Game.isFinal()) {
+      if (Game.coveredSpread('away')) {
         awaySpreadCoverStyle.color = theme.palette.success.main;
         tdAwaySpreadTitle = 'Covered pre spread';
       }
-      if (CBB.coveredSpread('home')) {
+      if (Game.coveredSpread('home')) {
         homeSpreadCoverStyle.color = theme.palette.success.main;
         tdHomeSpreadTitle = 'Covered pre spread';
       }
-      if (CBB.won('away')) {
+      if (Game.won('away')) {
         awayMLStyle.color = theme.palette.success.main;
         tdAwayMLTitle = 'Covered money line';
       }
-      if (CBB.won('home')) {
+      if (Game.won('home')) {
         homeMLStyle.color = theme.palette.success.main;
         tdHomeMLTitle = 'Covered money line';
       }
-      if (CBB.coveredOver()) {
+      if (Game.coveredOver()) {
         overStyle.color = theme.palette.success.main;
         tdOverTitle = 'Covered over';
       }
-      if (CBB.coveredUnder()) {
+      if (Game.coveredUnder()) {
         underStyle.color = theme.palette.success.main;
         tdUnderTitle = 'Covered under';
       }
-    } else if (CBB.isInProgress()) {
+    } else if (Game.isInProgress()) {
       tdAwaySpreadTitle = 'Pre / Live spread';
       tdAwayMLTitle = 'Pre / Live money line';
       tdOverTitle = 'Pre / Live over';
@@ -246,17 +249,17 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
         </thead>
         <tbody>
           <tr>
-            <td style = {{ textAlign: 'left' }}><Typography variant = 'caption'>{CBB.getTeamNameShort('away')}</Typography></td>
-            <td title = {tdAwaySpreadTitle}><Typography variant = 'caption' style = {awaySpreadCoverStyle}>{CBB.getPreSpread('away')}{CBB.isInProgress() ? ` / ${CBB.getLiveSpread('away')}` : ''}</Typography></td>
-            <td title = {tdAwayMLTitle} style = {({ color: CBB.oddsReversal('away') ? theme.palette.warning.main : theme.palette.text.primary, ...awayMLStyle })}><Typography variant = 'caption'>{CBB.getPreML('away')}{CBB.isInProgress() ? ` / ${CBB.getLiveML('away')}` : ''}</Typography></td>
-            <td title = {tdOverTitle}><Typography variant = 'caption' style = {overStyle}>{CBB.getPreOver() !== '-' ? `O ${CBB.getPreOver()}` : '-'}{CBB.isInProgress() ? ` / ${CBB.getLiveOver()}` : ''}</Typography></td>
+            <td style = {{ textAlign: 'left' }}><Typography variant = 'caption'>{Game.getTeamNameShort('away')}</Typography></td>
+            <td title = {tdAwaySpreadTitle}><Typography variant = 'caption' style = {awaySpreadCoverStyle}>{Game.getPreSpread('away')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('away')}` : ''}</Typography></td>
+            <td title = {tdAwayMLTitle} style = {({ color: Game.oddsReversal('away') ? theme.palette.warning.main : theme.palette.text.primary, ...awayMLStyle })}><Typography variant = 'caption'>{Game.getPreML('away')}{Game.isInProgress() ? ` / ${Game.getLiveML('away')}` : ''}</Typography></td>
+            <td title = {tdOverTitle}><Typography variant = 'caption' style = {overStyle}>{Game.getPreOver() !== '-' ? `O ${Game.getPreOver()}` : '-'}{Game.isInProgress() ? ` / ${Game.getLiveOver()}` : ''}</Typography></td>
             <td style = {{ textAlign: 'right' }}>{awayWinPercentageContainer}</td>
           </tr>
           <tr>
-            <td style = {{ textAlign: 'left' }}><Typography variant = 'caption'>{CBB.getTeamNameShort('home')}</Typography></td>
-            <td title = {tdHomeSpreadTitle}><Typography variant = 'caption' style = {homeSpreadCoverStyle}>{CBB.getPreSpread('home')}{CBB.isInProgress() ? ` / ${CBB.getLiveSpread('home')}` : ''}</Typography></td>
-            <td title = {tdHomeMLTitle} style = {({ color: CBB.oddsReversal('home') ? theme.palette.warning.main : theme.palette.text.primary, ...homeMLStyle })}><Typography variant = 'caption'>{CBB.getPreML('home')}{CBB.isInProgress() ? ` / ${CBB.getLiveML('home')}` : ''}</Typography></td>
-            <td title = {tdUnderTitle}><Typography variant = 'caption' style = {underStyle}>{CBB.getPreUnder() !== '-' ? `U ${CBB.getPreUnder()}` : '-'}{CBB.isInProgress() ? ` / ${CBB.getLiveUnder()}` : ''}</Typography></td>
+            <td style = {{ textAlign: 'left' }}><Typography variant = 'caption'>{Game.getTeamNameShort('home')}</Typography></td>
+            <td title = {tdHomeSpreadTitle}><Typography variant = 'caption' style = {homeSpreadCoverStyle}>{Game.getPreSpread('home')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('home')}` : ''}</Typography></td>
+            <td title = {tdHomeMLTitle} style = {({ color: Game.oddsReversal('home') ? theme.palette.warning.main : theme.palette.text.primary, ...homeMLStyle })}><Typography variant = 'caption'>{Game.getPreML('home')}{Game.isInProgress() ? ` / ${Game.getLiveML('home')}` : ''}</Typography></td>
+            <td title = {tdUnderTitle}><Typography variant = 'caption' style = {underStyle}>{Game.getPreUnder() !== '-' ? `U ${Game.getPreUnder()}` : '-'}{Game.isInProgress() ? ` / ${Game.getLiveUnder()}` : ''}</Typography></td>
             <td style = {{ textAlign: 'right' }}>{homeWinPercentageContainer}</td>
           </tr>
         </tbody>
@@ -326,7 +329,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     // let spread: string | null = null;
     // let overUnder: string | null = null;
 
-    const moneyLineToUse = (CBB.isInProgress() ? CBB.getLiveML(side) : CBB.getPreML(side));
+    const moneyLineToUse = (Game.isInProgress() ? Game.getLiveML(side) : Game.getPreML(side));
 
     // if (
     //   side === 'home' &&
@@ -354,18 +357,18 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
             <div>
               <Typography variant = 'h6' sx = {{ fontSize: 14, display: 'inline-block' }}>
                 <Typography variant = 'overline' color = 'text.secondary' sx = {{ fontSize: 12 }}><Rank game={game} team_id={team_id} /></Typography>
-                {CBB.getTeamName(side)}
+                {Game.getTeamName(side)}
               </Typography>
               <Record game={game} team_id={team_id} />
             </div>
             {
-              displayCardView === 'compact' && !CBB.isFinal() ?
-                <div><Typography style={{ fontSize: '11px' }} variant = 'overline' color={(CBB.oddsReversal(side) ? theme.palette.warning.main : 'text.secondary')}>{/* overUnder ? overUnder + ' | ' : '' */}{/* spread ? spread + ' | ' : '' */}{moneyLineToUse}</Typography></div>
+              displayCardView === 'compact' && !Game.isFinal() ?
+                <div><Typography style={{ fontSize: '11px' }} variant = 'overline' color={(Game.oddsReversal(side) ? theme.palette.warning.main : 'text.secondary')}>{/* overUnder ? overUnder + ' | ' : '' */}{/* spread ? spread + ' | ' : '' */}{moneyLineToUse}</Typography></div>
                 : ''
             }
           </div>
         </div>
-        <div style = {scoreStyle}>{CBB.isInProgress() || CBB.isFinal() ? game[`${side}_score`] : '-'}</div>
+        <div style = {scoreStyle}>{Game.isInProgress() || Game.isFinal() ? game[`${side}_score`] : '-'}</div>
       </div>
     );
   };
@@ -405,7 +408,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
   const divStyle = getTileBaseStyle();
 
-  if (CBB.isNeutralSite()) {
+  if (Game.isNeutralSite()) {
     divStyle.height = +(divStyle.height || 0) + 21;
   }
 
@@ -420,7 +423,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   }
 
   if (displayCardView === 'large') {
-    divStyle.height = 282 + (!hasAccessToPercentages ? 25 : 0) + (CBB.isNeutralSite() ? 21 : 0);
+    divStyle.height = 282 + (!hasAccessToPercentages ? 25 : 0) + (Game.isNeutralSite() ? 21 : 0);
   }
 
   return (

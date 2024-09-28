@@ -2,7 +2,7 @@
  * Table sorting helper utility
  */
 class Sorter {
-  descendingComparator(a, b, orderBy, direction_?: string): number {
+  public static descendingComparator(a, b, orderBy, direction_?: string): number {
     if ((orderBy in a) && b[orderBy] === null) {
       return 1;
     }
@@ -24,7 +24,7 @@ class Sorter {
     return 0;
   }
 
-  getComparator(order: string, orderBy: string, direction?: string): (a: unknown, b: unknown) => number {
+  public static getComparator(order: string, orderBy: string, direction?: string): (a: unknown, b: unknown) => number {
     return order === 'desc'
       ? (a, b) => this.descendingComparator(a, b, orderBy, direction)
       : (a, b) => -this.descendingComparator(a, b, orderBy, direction);

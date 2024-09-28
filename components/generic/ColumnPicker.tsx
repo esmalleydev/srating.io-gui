@@ -15,7 +15,7 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
-import { RankingColumns } from '@/types/cbb';
+import { RankingColumns } from '@/types/general';
 
 
 const ColumnPicker = (

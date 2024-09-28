@@ -1,25 +1,29 @@
 import { useServerAPI } from '@/components/serverAPI';
-import { Coach, CoachTeamSeasons, StatisticRankings, Teams } from '@/types/cbb';
+import { StatisticRankings as StatsCBB } from '@/types/cbb';
+import { StatisticRankings as StatsCFB } from '@/types/cfb';
+import { Coach, CoachTeamSeasons, Teams } from '@/types/general';
 import { Metadata, ResolvingMetadata } from 'next';
 import { unstable_noStore } from 'next/cache';
 
-import HelperCBB from '@/components/helpers/CBB';
 
-import HeaderServer from '@/components/generic/CBB/Coach/Header/Server';
-import HeaderClientWrapper from '@/components/generic/CBB/Coach/Header/ClientWrapper';
-import { ClientSkeleton as HeaderClientSkeleon } from '@/components/generic/CBB/Coach/Header/Client';
+import HeaderServer from '@/components/generic/Coach/Header/Server';
+import HeaderClientWrapper from '@/components/generic/Coach/Header/ClientWrapper';
+import { ClientSkeleton as HeaderClientSkeleon } from '@/components/generic/Coach/Header/Client';
 
-import SeasonsClient from '@/components/generic/CBB/Coach/Seasons/Client';
-import SeasonsClientWrapper from '@/components/generic/CBB/Coach/Seasons/ClientWrapper';
+import SeasonsClient from '@/components/generic/Coach/Seasons/Client';
+import SeasonsClientWrapper from '@/components/generic/Coach/Seasons/ClientWrapper';
 
-import TrendsServer from '@/components/generic/CBB/Coach/Trends/Server';
-import TrendsClientWrapper from '@/components/generic/CBB/Coach/Trends/ClientWrapper';
-import { ClientSkeleton as TrendsClientSkeleon } from '@/components/generic/CBB/Coach/Trends/Client';
+import TrendsServer from '@/components/generic/Coach/Trends/Server';
+import TrendsClientWrapper from '@/components/generic/Coach/Trends/ClientWrapper';
+import { ClientSkeleton as TrendsClientSkeleon } from '@/components/generic/Coach/Trends/Client';
 
-import SubNavBar from '@/components/generic/CBB/Coach/SubNavBar';
-import ReduxWrapper from '@/components/generic/CBB/Coach/ReduxWrapper';
-import NavBar from '@/components/generic/CBB/Coach/NavBar';
+// import SubNavBar from '@/components/generic/Coach/SubNavBar';
+import ReduxWrapper from '@/components/generic/Coach/ReduxWrapper';
+import NavBar from '@/components/generic/Coach/NavBar';
 import { Suspense } from 'react';
+import CBB from '@/components/helpers/CBB';
+import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 
 
 type Props = {
@@ -52,10 +56,10 @@ export async function generateMetadata(
 }
 
 
-async function getCoach({ params, searchParams }): Promise<Partial<Coach>> {
+async function getCoach({ params, searchParams }) {
   const { coach_id } = params;
 
-  const coach = await useServerAPI({
+  const coach: Coach = await useServerAPI({
     class: 'coach',
     function: 'get',
     arguments: {
@@ -67,20 +71,18 @@ async function getCoach({ params, searchParams }): Promise<Partial<Coach>> {
 }
 
 type Data = {
-  coach: Coach | object;
-  coach_team_seasons: CoachTeamSeasons | object;
-  teams: Teams | object;
-  statistic_rankings: StatisticRankings | object;
+  coach: Coach;
+  coach_team_seasons: CoachTeamSeasons;
+  teams: Teams;
+  statistic_rankings: StatsCBB | StatsCFB;
 }
 
 async function getData({ params, searchParams }): Promise<Data> {
   unstable_noStore();
   const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
 
-  const organization_id = 'f1c37c98-3b4c-11ef-94bc-2a93761010b8'; // NCAAM Basketball
-  const division_id = 'bf602dc4-3b4a-11ef-94bc-2a93761010b8'; // D1
-
-  // const CBB = new HelperCBB();
+  const organization_id = Organization.getCBBID();
+  const division_id = Division.getD1();
 
   // const season = searchParams?.season || CBB.getCurrentSeason();
 
@@ -102,7 +104,7 @@ async function getData({ params, searchParams }): Promise<Data> {
     },
   }, { revalidate: revalidateSeconds });
 
-  const statistic_rankings: StatisticRankings = await useServerAPI({
+  const statistic_rankings: StatsCBB | StatsCFB = await useServerAPI({
     class: 'statistic_ranking',
     function: 'readStats',
     arguments: {
@@ -123,8 +125,8 @@ export default async function Page({ params, searchParams }) {
   const { coach_id } = params;
   const data = await getData({ params, searchParams });
 
-  const CBB = new HelperCBB();
-
+  const organization_id = Organization.getCBBID();
+  const division_id = Division.getD1();
   const season = searchParams?.season || CBB.getCurrentSeason();
   const view: string = searchParams?.view || 'trends';
 
@@ -135,7 +137,7 @@ export default async function Page({ params, searchParams }) {
     <ReduxWrapper coach = {data.coach} coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} statistic_rankings = {data.statistic_rankings}>
       <HeaderClientWrapper>
         <Suspense fallback = {<HeaderClientSkeleon />}>
-          <HeaderServer coach_id = {coach_id} season = {season} />
+          <HeaderServer organization_id={organization_id} division_id={division_id} coach_id = {coach_id} season = {season} />
         </Suspense>
       </HeaderClientWrapper>
       <NavBar view = {selectedTab} tabOrder = {tabOrder} />
@@ -145,7 +147,7 @@ export default async function Page({ params, searchParams }) {
           view === 'trends' ?
             <TrendsClientWrapper>
               <Suspense fallback = {<TrendsClientSkeleon />}>
-                <TrendsServer coach_id = {coach_id} />
+                <TrendsServer organization_id={organization_id} division_id={division_id} coach_id = {coach_id} />
               </Suspense>
             </TrendsClientWrapper>
             : ''
@@ -153,7 +155,7 @@ export default async function Page({ params, searchParams }) {
         {
           view === 'seasons' ?
             <SeasonsClientWrapper>
-              <SeasonsClient coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} statistic_rankings = {data.statistic_rankings} />
+              <SeasonsClient organization_id={organization_id} division_id={division_id} coach_team_seasons = {data.coach_team_seasons} teams = {data.teams} statistic_rankings = {data.statistic_rankings} />
             </SeasonsClientWrapper>
             : ''
         }

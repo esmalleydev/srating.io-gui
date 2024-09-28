@@ -67,7 +67,7 @@ const Server = async ({ home_team_id, away_team_id, season, teams, subview }) =>
 
   return (
     <>
-      <Client home_team_id={home_team_id} away_team_id={away_team_id} teams={teams} season={season} subview={subview} />
+      <Client organization_id = {organization_id} division_id = {division_id} home_team_id={home_team_id} away_team_id={away_team_id} teams={teams} season={season} subview={subview} />
     </>
   );
 };

@@ -3,7 +3,6 @@
 import React, { useTransition } from 'react';
 
 
-import HelperCBB from '@/components/helpers/CBB';
 import HelperTeam from '@/components/helpers/Team';
 import { getBreakPoint } from '@/components/generic/CBB/Compare/Header/ClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
@@ -15,11 +14,10 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { setHomeTeamID, setAwayTeamID } from '@/redux/features/compare-slice';
 import { setLoading } from '@/redux/features/display-slice';
+import CBB from '@/components/helpers/CBB';
 
 
 const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => {
-  const CBB = new HelperCBB();
-
   const breakPoint = getBreakPoint();
   const bestColor = getBestColor();
   const worstColor = getWorstColor();

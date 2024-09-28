@@ -39,6 +39,7 @@ export interface Team {
   alt_name: string;
   primary_color: string;
   secondary_color: string;
+  conference_id?: string;
   guid: string;
   deleted: number;
 }
@@ -99,6 +100,7 @@ export interface Game {
   deleted: number;
   teams: Team;
   prediction: Prediction;
+  odds: Odds;
 }
 
 export type Games = {[game_id: string]: Game};

@@ -6,7 +6,7 @@ import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 import { Client } from './Client';
 
-const Server = async ({ home_team_id, away_team_id, teams, season }) => {
+const Server = async ({ organization_id, division_id, home_team_id, away_team_id, teams, season }) => {
   unstable_noStore();
   const revalidateSeconds = 60 * 60 * 2; // 2 hours
 
@@ -17,6 +17,8 @@ const Server = async ({ home_team_id, away_team_id, teams, season }) => {
       class: 'game',
       function: 'getPreviousMatchups',
       arguments: {
+        organization_id,
+        division_id,
         home_team_id,
         away_team_id,
         season,

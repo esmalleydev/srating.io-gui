@@ -1,5 +1,5 @@
 import { useAppSelector } from '@/redux/hooks';
-import { Organizations } from '@/types/cbb';
+import { Organizations } from '@/types/general';
 
 // todo hook bugs, the useAppSelector cna only be called top level of a function, not inside another function etc >.>
 

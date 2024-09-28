@@ -10,8 +10,6 @@ export const getConferenceChips = () => {
   const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
-  console.log(selectedConferences);
-
   const confChips: React.JSX.Element[] = [];
   for (let i = 0; i < selectedConferences.length; i++) {
     const conference = conferences[selectedConferences[i]];

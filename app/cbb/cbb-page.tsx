@@ -4,7 +4,6 @@ import { useSearchParams } from 'next/navigation';
 
 import moment from 'moment';
 
-import HelperCBB from '../../components/helpers/CBB';
 import HelperGames from '../../components/helpers/Games';
 
 import Teams from '../../components/generic/CBB/Favorites/Teams';
@@ -16,6 +15,7 @@ import CloseGames from '../../components/generic/CBB/Home/CloseGames.jsx';
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
+import CBB from '@/components/helpers/CBB';
 
 let intervalRefresher: NodeJS.Timeout;
 
@@ -40,7 +40,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<favoriteDataType | null>(null);
 
-  const season = searchParams?.get('season') || new HelperCBB().getCurrentSeason();
+  const season = searchParams?.get('season') || CBB.getCurrentSeason();
 
   const favoriteData = (data && data.favorites) || {};
 
