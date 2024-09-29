@@ -73,7 +73,6 @@ const FooterNavigation = () => {
 
 
   const handleHome = () => {
-    dispatch(setLoading(true));
     startTransition(() => {
       // router.push('/'+viewingSport.toLowerCase());
       router.push('/');
@@ -81,26 +80,38 @@ const FooterNavigation = () => {
   };
 
   const handleRanking = () => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${viewingSport.toLowerCase()}/ranking`);
-    });
+    const newPathName = `/${viewingSport.toLowerCase()}/ranking`;
+
+    if (newPathName !== pathName) {
+      dispatch(setLoading(true));
+      startTransition(() => {
+        router.push(newPathName);
+      });
+    }
   };
 
   const handleScores = () => {
-    dispatch(setGamesScrollTop(0));
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${viewingSport.toLowerCase()}/games`);
-    });
+    const newPathName = `/${viewingSport.toLowerCase()}/games`;
+
+    if (newPathName !== pathName) {
+      dispatch(setGamesScrollTop(0));
+      dispatch(setLoading(true));
+      startTransition(() => {
+        router.push(newPathName);
+      });
+    }
   };
 
   const handlePicks = () => {
-    dispatch(setPicksScrollTop(0));
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${viewingSport.toLowerCase()}/picks`);
-    });
+    const newPathName = `/${viewingSport.toLowerCase()}/picks`;
+
+    if (newPathName !== pathName) {
+      dispatch(setPicksScrollTop(0));
+      dispatch(setLoading(true));
+      startTransition(() => {
+        router.push(newPathName);
+      });
+    }
   };
 
   let hightlightValue = -1;

@@ -67,39 +67,43 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
   }
 
   const handleRankView = (newRankView) => {
-    localStorage.removeItem(`${organization_id}.RANKING.COLUMNS.${view}`);
-    dispatch(setDataKey({ key: 'data', value: null }));
-    dispatch(setDataKey({ key: 'customColumns', value: ['rank', 'name'] }));
-    dispatch(clearPositions());
-    dispatch(setDataKey({ key: 'order', value: 'asc' }));
-    dispatch(setDataKey({ key: 'orderBy', value: 'rank' }));
-    dispatch(setDataKey({ key: 'tableScrollTop', value: 0 }));
-    dispatch(setDataKey({ key: 'columnView', value: 'composite' }));
+    if (newRankView !== view) {
+      localStorage.removeItem(`${organization_id}.RANKING.COLUMNS.${view}`);
+      dispatch(setDataKey({ key: 'data', value: null }));
+      dispatch(setDataKey({ key: 'customColumns', value: ['rank', 'name'] }));
+      dispatch(clearPositions());
+      dispatch(setDataKey({ key: 'order', value: 'asc' }));
+      dispatch(setDataKey({ key: 'orderBy', value: 'rank' }));
+      dispatch(setDataKey({ key: 'tableScrollTop', value: 0 }));
+      dispatch(setDataKey({ key: 'columnView', value: 'composite' }));
 
-    if (searchParams) {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      current.set('view', newRankView);
-      current.delete('hideCommitted');
-      current.delete('hideUnderTwoMPG');
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-      dispatch(setLoadingDisplay(true));
-      startTransition(() => {
-        router.push(`${pathName}${query}`);
-      });
+      if (searchParams) {
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
+        current.set('view', newRankView);
+        current.delete('hideCommitted');
+        current.delete('hideUnderTwoMPG');
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+        dispatch(setLoadingDisplay(true));
+        startTransition(() => {
+          router.push(`${pathName}${query}`);
+        });
+      }
     }
   };
 
   const handleSeason = (newSeason) => {
-    if (searchParams) {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      current.set('season', newSeason);
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-      dispatch(setLoadingDisplay(true));
-      startTransition(() => {
-        router.push(`${pathName}${query}`);
-      });
+    if (newSeason !== season) {
+      if (searchParams) {
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
+        current.set('season', newSeason);
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+        dispatch(setLoadingDisplay(true));
+        startTransition(() => {
+          router.push(`${pathName}${query}`);
+        });
+      }
     }
   };
 
