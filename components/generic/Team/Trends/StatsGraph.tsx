@@ -178,42 +178,61 @@ const StatsGraph = ({
     }
   }
 
-  let lastElo = null;
-  // connect the nulls
-  for (const date_of_rank in date_of_rank_x_data) {
-    if (date_of_rank_x_data[date_of_rank].elo) {
-      lastElo = date_of_rank_x_data[date_of_rank].elo;
-    }
-
-    if (lastElo && !('elo' in date_of_rank_x_data[date_of_rank])) {
-      date_of_rank_x_data[date_of_rank].elo = lastElo;
-    }
-  }
-
   // const rows: Data[] = Object.values(date_of_rank_x_data);
   let minYaxis: number | null = null;
   let maxYaxis: number | null = null;
   const rows: Data[] = [];
   for (const dor in date_of_rank_x_data) {
     const data = date_of_rank_x_data[dor];
+    const value = data[selectedChip];
+    const leagueValue = data[`league_${selectedChip}`];
+    const confValue = data[`conf_${selectedChip}`];
 
-    if (selectedChip in data) {
+    let compareMaxValue = value;
+    if (!compareMaxValue || leagueValue > compareMaxValue) {
+      compareMaxValue = leagueValue;
+    }
+    if (!compareMaxValue || confValue > compareMaxValue) {
+      compareMaxValue = confValue;
+    }
+
+    let compareMixValue = value;
+    if (!compareMixValue || leagueValue < compareMixValue) {
+      compareMixValue = leagueValue;
+    }
+    if (!compareMixValue || confValue < compareMixValue) {
+      compareMixValue = confValue;
+    }
+
+    if (compareMixValue !== null || compareMixValue !== undefined) {
       if (
         minYaxis === null ||
-        data[selectedChip] < minYaxis
+        compareMixValue < minYaxis
       ) {
-        minYaxis = data[selectedChip];
+        minYaxis = compareMixValue;
       }
+    }
 
+    if (compareMaxValue !== null || compareMaxValue !== undefined) {
       if (
         maxYaxis === null ||
-        data[selectedChip] > maxYaxis
+        compareMaxValue > maxYaxis
       ) {
-        maxYaxis = data[selectedChip];
+        maxYaxis = compareMaxValue;
       }
     }
 
     rows.push(data);
+  }
+
+
+  // give the min and max some buffer
+  const buffer = Math.ceil(((minYaxis || 0) + (maxYaxis || 0)) * 0.1);
+  if (minYaxis !== null) {
+    minYaxis = +(minYaxis - buffer).toFixed(0);
+  }
+  if (maxYaxis !== null) {
+    maxYaxis = +(maxYaxis + buffer).toFixed(0);
   }
 
   if (selectedChip === 'elo') {
@@ -222,6 +241,18 @@ const StatsGraph = ({
   }
 
   const formattedData: Data[] = rows.sort((a: Data, b: Data) => (a.date_of_rank > b.date_of_rank ? 1 : -1));
+
+  // connect the nulls
+  let lastElo: number | null = null;
+  for (let i = 0; i < formattedData.length; i++) {
+    if (formattedData[i].elo) {
+      lastElo = formattedData[i].elo;
+    }
+
+    if (lastElo && !('elo' in formattedData[i])) {
+      formattedData[i].elo = lastElo;
+    }
+  }
 
   let chart: React.JSX.Element | null = null;
 
