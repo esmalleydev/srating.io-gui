@@ -44,6 +44,7 @@ const Sidebar = () => {
   const path = Organization.getPath({ organizations, organization_id });
 
   const showCompareTool = Organization.getCBBID() === organization_id;
+  const pathName = usePathname();
 
   // todo allow keyboard to click the option on enter keydown
   /*
@@ -53,33 +54,49 @@ const Sidebar = () => {
   */
 
   const handleRanking = () => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/ranking`);
-    });
+    const newPathName = `/${path}/ranking`;
+
+    if (newPathName !== pathName) {
+      dispatch(setLoading(true));
+      startTransition(() => {
+        router.push(newPathName);
+      });
+    }
   };
 
   const handleScores = () => {
-    dispatch(setLoading(true));
-    // sessionStorage.removeItem('CBB.GAMES.DATA');
-    startTransition(() => {
-      router.push(`/${path}/games`);
-    });
+    const newPathName = `/${path}/games`;
+
+    if (newPathName !== pathName) {
+      dispatch(setLoading(true));
+      // sessionStorage.removeItem('CBB.GAMES.DATA');
+      startTransition(() => {
+        router.push(newPathName);
+      });
+    }
   };
 
   const handlePicks = () => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/picks`);
-    });
+    const newPathName = `/${path}/picks`;
+
+    if (newPathName !== pathName) {
+      dispatch(setLoading(true));
+      startTransition(() => {
+        router.push(newPathName);
+      });
+    }
   };
 
   const handleCompareTool = () => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      dispatch(clear());
-      router.push(`/${path}/compare`);
-    });
+    const newPathName = `/${path}/compare`;
+
+    if (newPathName !== pathName) {
+      dispatch(setLoading(true));
+      startTransition(() => {
+        dispatch(clear());
+        router.push(newPathName);
+      });
+    }
   };
 
 
