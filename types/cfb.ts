@@ -581,7 +581,7 @@ export interface CFBRankingTable {
   opponent_quarterback_hurries: number;
   opponent_fumbles: number;
   opponent_fumbles_lost: number;
-  wins_rank: number;
+  // wins_rank: number;
   losses_rank: number;
   confwins_rank: number;
   conflosses_rank: number;

@@ -503,7 +503,7 @@ const formatCFBData = (args) => {
         opponent_quarterback_hurries: (row.statistic_ranking && row.statistic_ranking.opponent_quarterback_hurries) || null,
         opponent_fumbles: (row.statistic_ranking && row.statistic_ranking.opponent_fumbles) || null,
         opponent_fumbles_lost: (row.statistic_ranking && row.statistic_ranking.opponent_fumbles_lost) || null,
-        wins_rank: (row.statistic_ranking && row.statistic_ranking.wins_rank) || null,
+        // wins_rank: (row.statistic_ranking && row.statistic_ranking.wins_rank) || null,
         losses_rank: (row.statistic_ranking && row.statistic_ranking.losses_rank) || null,
         confwins_rank: (row.statistic_ranking && row.statistic_ranking.confwins_rank) || null,
         conflosses_rank: (row.statistic_ranking && row.statistic_ranking.conflosses_rank) || null,

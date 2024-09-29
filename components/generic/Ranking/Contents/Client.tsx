@@ -28,7 +28,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { getHeaderColumns, getViewableColumns } from '../columns';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { useRouter } from 'next/navigation';
-import { setLoading as setLoadingDisplay, updateConferences } from '@/redux/features/display-slice';
+import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 import { getConferenceChips } from '../ConferenceChips';
 import RankSpan from '../../RankSpan';
 import { getRows } from '../DataHandler';
