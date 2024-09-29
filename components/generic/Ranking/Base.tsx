@@ -39,7 +39,7 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
   const columns = getViewableColumns({ organization_id, view, columnView, customColumns });
 
   // todo grab this on page load
-  const seasons = Organization.getCBBID() === organization_id ? [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011] : [2024];
+  const seasons = Organization.getCBBID() === organization_id ? [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011] : [2024, 2025];
 
   const { width } = useWindowDimensions() as Dimensions;
   // const breakPoint = 425;
@@ -111,6 +111,7 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
     setLegendOpen(!legendOpen);
   };
 
+  const title = `College ${sport} ${view} rankings.`;
 
   return (
     <div>
@@ -123,7 +124,8 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
                 <OptionPicker title = 'View' options = {rankViewOptions} selected = {view} actionHandler = {handleRankView} />
                 <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
               </div>
-              <Typography variant = {width < 500 ? 'h6' : 'h5'}>{`College ${sport} ${view} rankings.`}</Typography>
+              <Typography variant = {width < 500 ? 'h6' : 'h5'}>{title}</Typography>
+              {Organization.getCFBID() === organization_id && view === 'coach' ? <Typography color="text.secondary" variant = 'body1' style = {{ fontStyle: 'italic' }}>Games since Aug '23</Typography> : ''}
               <LastUpdated view = {view} handleLegend={handleLegend} />
               <ColumnChipPicker view = {view} organization_id={organization_id} />
               <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '10px' }}>
