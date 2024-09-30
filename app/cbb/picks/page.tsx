@@ -54,7 +54,7 @@ export default async function Page({ searchParams }) {
     <>
       <DateAppBar dates = {dates} date = {date} />
       <SubNavBar view = {view} />
-      <PicksLoader date = {date} />
+      <PicksLoader organization_id={organization_id} division_id={division_id} date = {date} />
 
       <ClientWrapper>
         {

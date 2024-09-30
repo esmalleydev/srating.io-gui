@@ -46,7 +46,6 @@ class CFB {
     }
 
     if (Division.getFCS() === division_id) {
-      // todo 2025 is 13? ivy not in fcs?
       if (+season === 2024 || +season === 2025) {
         return 14;
       }

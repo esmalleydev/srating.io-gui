@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
 
-const PicksLoader = ({ date }) => {
+const PicksLoader = ({ organization_id, division_id, date }) => {
   const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -25,6 +25,8 @@ const PicksLoader = ({ date }) => {
       class: 'game',
       function: 'getScores',
       arguments: {
+        organization_id,
+        division_id,
         start_date: date,
       },
     }).then((response) => {
