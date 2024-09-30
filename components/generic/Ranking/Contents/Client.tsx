@@ -1,6 +1,6 @@
 'use client';
 
-import React, { MutableRefObject, useEffect, useRef, useState, useTransition } from 'react';
+import React, { ForwardRefExoticComponent, MutableRefObject, RefAttributes, useEffect, useRef, useState, useTransition } from 'react';
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -90,13 +90,24 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ generated, organization_id, division_id, season, view }) => {
+  interface ItemType {
+    player_id?: number;
+    team_id?: number;
+    conference_id?: number;
+    coach_id?: number;
+  }
+
   interface TableComponentsType {
-    Scroller: React.ComponentType<any>;
-    Table: React.ComponentType<any>;
-    TableHead: React.ComponentType<any>;
-    TableRow: React.ComponentType<any>;
-    TableBody: React.ComponentType<any>;
+    Scroller: ForwardRefExoticComponent<React.HTMLAttributes<HTMLDivElement> & RefAttributes<HTMLDivElement>>;
+    Table: React.ComponentType<React.TableHTMLAttributes<HTMLTableElement>>;
+    TableHead: React.ComponentType<React.HTMLAttributes<HTMLTableSectionElement>>;
+    TableRow: ForwardRefExoticComponent<React.HTMLAttributes<HTMLTableRowElement> & { item: ItemType } & RefAttributes<HTMLTableRowElement>>;
+    TableBody: ForwardRefExoticComponent<React.HTMLAttributes<HTMLTableSectionElement> & RefAttributes<HTMLTableSectionElement>>;
     FillerRow: React.ComponentType<{ height: number }>;
+  }
+
+  interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+    item: ItemType;
   }
 
   const router = useRouter();
@@ -253,17 +264,18 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     }),
     Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
     TableHead,
-    TableRow: React.forwardRef<HTMLTableRowElement>((props, ref) => {
+    TableRow: React.forwardRef<HTMLTableRowElement, TableRowProps>((props, ref) => {
       return (
         <StyledTableRow {...props} ref={ref} onClick={() => {
-          if ((view === 'player' || view === 'transfer') && (props as any).item.player_id) {
-            handlePlayer((props as any).item.player_id);
-          } else if (view === 'team' && (props as any).item.team_id) {
-            handleTeam((props as any).item.team_id);
-          } else if (view === 'conference' && (props as any).item.conference_id) {
-            handleConference((props as any).item.conference_id);
-          } else if (view === 'coach' && (props as any).item.coach_id) {
-            handleCoach((props as any).item.coach_id);
+          const { item } = props;
+          if ((view === 'player' || view === 'transfer') && item.player_id) {
+            handlePlayer(item.player_id);
+          } else if (view === 'team' && item.team_id) {
+            handleTeam(item.team_id);
+          } else if (view === 'conference' && item.conference_id) {
+            handleConference(item.conference_id);
+          } else if (view === 'coach' && item.coach_id) {
+            handleCoach(item.coach_id);
           }
         }} />
       );
@@ -300,7 +312,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   };
 
   if ((rows.length + 2) * 26 < tableStyle.height) {
-    tableStyle.height = (rows.length + 2) * 26;
+    tableStyle.height = (rows.length + 2) * 27;
   }
 
   if (height < 450) {
