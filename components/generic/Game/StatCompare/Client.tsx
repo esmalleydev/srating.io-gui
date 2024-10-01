@@ -169,6 +169,11 @@ const Client = ({ game, statistic_rankings, elos }) => {
   for (const elo_id in elos) {
     const row = elos[elo_id];
 
+    // pre season
+    if (!row.game_date) {
+      continue;
+    }
+
     if (row.elo < minYaxisElo) {
       minYaxisElo = row.elo;
     }
