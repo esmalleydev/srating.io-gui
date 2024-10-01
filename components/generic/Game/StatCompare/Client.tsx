@@ -22,7 +22,7 @@ import { RankingColumns } from '@/types/general';
  */
 const Contents = ({ children }): React.JSX.Element => {
   return (
-    <div style = {{ padding: 20 }}>
+    <div style = {{ padding: 5 }}>
       {children}
     </div>
   );
@@ -221,6 +221,15 @@ const Client = ({ game, statistic_rankings, elos }) => {
     }
 
     rows.push(data);
+  }
+
+  // give the min and max some buffer
+  const buffer = Math.ceil(((minYaxis || 0) + (maxYaxis || 0)) * 0.1);
+  if (minYaxis !== null) {
+    minYaxis = +(minYaxis - buffer).toFixed(0);
+  }
+  if (maxYaxis !== null) {
+    maxYaxis = +(maxYaxis + buffer).toFixed(0);
   }
 
   if (selectedChip === 'elo') {
