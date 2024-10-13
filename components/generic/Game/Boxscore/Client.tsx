@@ -270,7 +270,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
           precision: 0,
         },
         {
-          name: 'Pass yards',
+          name: 'Pass yds',
           title: 'Passing yards',
           away: awayTotalBoxscore.passing_yards,
           home: homeTotalBoxscore.passing_yards,
@@ -291,7 +291,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
           showDifference: true,
         },
         {
-          name: 'Pass yards per att.',
+          name: 'Pass yds att.',
           title: 'Passing yard per attempt',
           away: awayTotalBoxscore.passing_yards_per_attempt,
           home: homeTotalBoxscore.passing_yards_per_attempt,
@@ -302,7 +302,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
           precision: 0,
         },
         {
-          name: 'Pass yards per comp.',
+          name: 'Pass yds comp.',
           title: 'Passing yards per completion',
           away: awayTotalBoxscore.passing_yards_per_completion,
           home: homeTotalBoxscore.passing_yards_per_completion,
@@ -356,7 +356,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
           showDifference: true,
         },
         {
-          name: 'Rush yards',
+          name: 'Rush yds',
           title: 'Rushing yards',
           away: awayTotalBoxscore.rushing_yards,
           home: homeTotalBoxscore.rushing_yards,
@@ -366,7 +366,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
           showDifference: true,
         },
         {
-          name: 'Rush yards per att.',
+          name: 'Rush yds att.',
           title: 'Rushing yards per attempt',
           away: awayTotalBoxscore.rushing_yards_per_attempt,
           home: homeTotalBoxscore.rushing_yards_per_attempt,
@@ -406,7 +406,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
           showDifference: true,
         },
         {
-          name: 'Rec. yards',
+          name: 'Rec. yds',
           title: 'Recieving yards',
           away: awayTotalBoxscore.receiving_yards,
           home: homeTotalBoxscore.receiving_yards,
@@ -416,7 +416,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
           showDifference: true,
         },
         {
-          name: 'Rec. yards per recep.',
+          name: 'Rec. yds per catch',
           title: 'Receiving yards per reception',
           away: awayTotalBoxscore.receiving_yards_per_reception,
           home: homeTotalBoxscore.receiving_yards_per_reception,
@@ -685,7 +685,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
         showDifference: true,
         precision: 0,
       },
-    ]
+    ];
   };
 
   const compareRows = getBoxscoreRows();

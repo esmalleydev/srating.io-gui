@@ -222,8 +222,8 @@ const Client = ({ game, elo }) => {
           name: 'Passing',
           rows: [
             {
-              name: 'Pass att.',
-              title: 'Passing attempts',
+              name: 'Att.',
+              title: 'Attempts',
               away: awayStats.passing_attempts,
               home: homeStats.passing_attempts,
               awayCompareValue: awayStats.passing_attempts,
@@ -234,8 +234,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Pass comp.',
-              title: 'Passing completions',
+              name: 'Comp.',
+              title: 'Completions',
               away: awayStats.passing_completions,
               home: homeStats.passing_completions,
               awayCompareValue: awayStats.passing_completions,
@@ -246,8 +246,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Pass yards',
-              title: 'Passing yards',
+              name: 'Yards',
+              title: 'Yards',
               away: awayStats.passing_yards,
               home: homeStats.passing_yards,
               awayCompareValue: awayStats.passing_yards,
@@ -258,8 +258,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Pass comp. %',
-              title: 'Passing completions percentage',
+              name: 'Comp. %',
+              title: 'Completion %',
               away: awayStats.passing_completion_percentage,
               home: homeStats.passing_completion_percentage,
               awayCompareValue: awayStats.passing_completion_percentage,
@@ -270,8 +270,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Pass yards per att.',
-              title: 'Passing yard per attempt',
+              name: 'Yds per att.',
+              title: 'Yards per attempt',
               away: awayStats.passing_yards_per_attempt,
               home: homeStats.passing_yards_per_attempt,
               awayCompareValue: awayStats.passing_yards_per_attempt,
@@ -282,8 +282,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Pass yards per comp.',
-              title: 'Passing yards per completion',
+              name: 'Yds per comp.',
+              title: 'Yards per completion',
               away: awayStats.passing_yards_per_completion,
               home: homeStats.passing_yards_per_completion,
               awayCompareValue: awayStats.passing_yards_per_completion,
@@ -294,8 +294,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Pass TD',
-              title: 'Passing touchdowns',
+              name: 'TDs',
+              title: 'Touchdowns',
               away: awayStats.passing_touchdowns,
               home: homeStats.passing_touchdowns,
               awayCompareValue: awayStats.passing_touchdowns,
@@ -306,8 +306,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Pass int.',
-              title: 'Passing interceptions',
+              name: 'Int.',
+              title: 'Interceptions',
               away: awayStats.passing_interceptions,
               home: homeStats.passing_interceptions,
               awayCompareValue: awayStats.passing_interceptions,
@@ -318,8 +318,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Pass long',
-              title: 'Passing long',
+              name: 'Long',
+              title: 'Long',
               away: awayStats.passing_long,
               home: homeStats.passing_long,
               awayCompareValue: awayStats.passing_long,
@@ -335,8 +335,8 @@ const Client = ({ game, elo }) => {
           name: 'Rushing',
           rows: [
             {
-              name: 'Rush att.',
-              title: 'Rushing attempts',
+              name: 'Att.',
+              title: 'Attempts',
               away: awayStats.rushing_attempts,
               home: homeStats.rushing_attempts,
               awayCompareValue: awayStats.rushing_attempts,
@@ -347,8 +347,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Rush yards',
-              title: 'Rushing yards',
+              name: 'Yds',
+              title: 'Yards',
               away: awayStats.rushing_yards,
               home: homeStats.rushing_yards,
               awayCompareValue: awayStats.rushing_yards,
@@ -359,8 +359,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Rush yards per att.',
-              title: 'Rushing yards per attempt',
+              name: 'Yds per att.',
+              title: 'Yards per attempt',
               away: awayStats.rushing_yards_per_attempt,
               home: homeStats.rushing_yards_per_attempt,
               awayCompareValue: awayStats.rushing_yards_per_attempt,
@@ -371,8 +371,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Rush TD',
-              title: 'Rushing touchdowns',
+              name: 'TDs',
+              title: 'Touchdowns',
               away: awayStats.rushing_touchdowns,
               home: homeStats.rushing_touchdowns,
               awayCompareValue: awayStats.rushing_touchdowns,
@@ -383,8 +383,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Rush long',
-              title: 'Rushing long',
+              name: 'Long',
+              title: 'Long',
               away: awayStats.rushing_long,
               home: homeStats.rushing_long,
               awayCompareValue: awayStats.rushing_long,
@@ -400,7 +400,7 @@ const Client = ({ game, elo }) => {
           name: 'Recieving',
           rows: [
             {
-              name: 'Rec.',
+              name: 'Recep.',
               title: 'Receptions',
               away: awayStats.receptions,
               home: homeStats.receptions,
@@ -412,8 +412,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Rec. yards',
-              title: 'Recieving yards',
+              name: 'Yds',
+              title: 'Yards',
               away: awayStats.receiving_yards,
               home: homeStats.receiving_yards,
               awayCompareValue: awayStats.receiving_yards,
@@ -424,8 +424,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Rec. yards per recep.',
-              title: 'Receiving yards per reception',
+              name: 'Yds per recep.',
+              title: 'Yards per reception',
               away: awayStats.receiving_yards_per_reception,
               home: homeStats.receiving_yards_per_reception,
               awayCompareValue: awayStats.receiving_yards_per_reception,
@@ -436,8 +436,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Rec. TD',
-              title: 'Receiving touchdowns',
+              name: 'TDs',
+              title: 'Touchdowns',
               away: awayStats.receiving_touchdowns,
               home: homeStats.receiving_touchdowns,
               awayCompareValue: awayStats.receiving_touchdowns,
@@ -448,8 +448,8 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Rec. long',
-              title: 'Receiving long',
+              name: 'Long',
+              title: 'Long',
               away: awayStats.receiving_long,
               home: homeStats.receiving_long,
               awayCompareValue: awayStats.receiving_long,
@@ -529,7 +529,7 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Opp. Pass yards',
+              name: 'Opp. Pass yds',
               title: 'Opponent Passing yards',
               away: awayStats.opponent_passing_yards,
               home: homeStats.opponent_passing_yards,
@@ -553,7 +553,7 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Opp. Pass yards per att.',
+              name: 'Opp. Pass yds per att.',
               title: 'Opponent Passing yard per attempt',
               away: awayStats.opponent_passing_yards_per_attempt,
               home: homeStats.opponent_passing_yards_per_attempt,
@@ -565,7 +565,7 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Opp. Pass yards per comp.',
+              name: 'Opp. Pass yds per comp.',
               title: 'Opponent Passing yards per completion',
               away: awayStats.opponent_passing_yards_per_completion,
               home: homeStats.opponent_passing_yards_per_completion,
@@ -625,7 +625,7 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Opp. Rush yards',
+              name: 'Opp. Rush yds',
               title: 'Opponent Rushing yards',
               away: awayStats.opponent_rushing_yards,
               home: homeStats.opponent_rushing_yards,
@@ -637,7 +637,7 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Opp. Rush yards per att.',
+              name: 'Opp. Rush yds per att.',
               title: 'Opponent Rushing yards per attempt',
               away: awayStats.opponent_rushing_yards_per_attempt,
               home: homeStats.opponent_rushing_yards_per_attempt,
@@ -673,7 +673,7 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Opp. Receptions',
+              name: 'Opp. Recep.',
               title: 'Opponent # of receptions',
               away: awayStats.opponent_receptions,
               home: homeStats.opponent_receptions,
@@ -685,7 +685,7 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Opp. Rec. yards',
+              name: 'Opp. Rec. yds',
               title: 'Opponent Recieving yards',
               away: awayStats.opponent_receiving_yards,
               home: homeStats.opponent_receiving_yards,
@@ -697,7 +697,7 @@ const Client = ({ game, elo }) => {
               showDifference: true,
             },
             {
-              name: 'Opp. Rec. yards per recep.',
+              name: 'Opp. Rec. yds per recep.',
               title: 'Opponent Receiving yards per reception',
               away: awayStats.opponent_receiving_yards_per_reception,
               home: homeStats.opponent_receiving_yards_per_reception,
