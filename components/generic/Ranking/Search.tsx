@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 
 import InputBase from '@mui/material/InputBase';
@@ -49,6 +49,12 @@ const Search = ({ view }: {view: string}) => {
   const handleSearch = (filteredRows) => {
     dispatch(setDataKey({ key: 'filteredRows', value: filteredRows }));
   };
+
+  useEffect(() => {
+    return () => {
+      handleSearch(false);
+    };
+  }, []);
 
   const [value, setValue] = useState<string>('');
 
