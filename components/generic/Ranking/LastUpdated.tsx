@@ -27,7 +27,7 @@ const LastUpdated = ({ view, handleLegend }) => {
         lastUpdated ?
         <div style = {{ display: 'flex', alignItems: 'center', alignContent: 'center' }}>
           <Typography color="text.secondary" variant = 'body1' style = {{ fontStyle: 'italic' }}>{`Last updated: ${formatLastUpdated()}`}</Typography>
-          <HelpIcon style = {{ margin: '0px 5px' }} fontSize='small' color = 'info' />
+          <HelpIcon style = {{ margin: '0px 5px', cursor: 'pointer' }} onClick = {handleLegend} fontSize='small' color = 'info' />
           <Typography color="text.secondary" variant = 'body1' style = {{ fontStyle: 'italic' }}><Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {handleLegend}>{'Legend'}</Link></Typography>
         </div> :
           ''
