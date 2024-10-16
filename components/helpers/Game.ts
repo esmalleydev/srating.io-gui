@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material';
 import moment from 'moment';
 import Color from '@/components/utils/Color';
 import Team from './Team';
+import Organization from './Organization';
 
 
 /**
@@ -84,9 +85,9 @@ class Game {
    * Get the time remaining in game
    */
   getGameTime(): string {
-    if (this.isInProgress() && !this.getGame().current_period) {
-      return 'Half';
-    }
+    // if (this.isInProgress() && !this.getGame().current_period) {
+    //   return 'Half';
+    // }
     let formatted_period = this.getGame().current_period;
     if (formatted_period === '1ST HALF') {
       formatted_period = '1st';
@@ -96,13 +97,30 @@ class Game {
 
     if (
       this.getGame().clock === '00:00' &&
-      formatted_period === '2nd' &&
+      (
+        (Organization.getCBBID() === this.getGame().organization_id && formatted_period === '2nd') ||
+        (Organization.getCFBID() === this.getGame().organization_id && formatted_period === '4th')
+      ) &&
       this.getGame().home_score !== this.getGame().away_score
     ) {
       return 'Finalizing game...';
     }
 
-    return `${this.getGame().clock} ${formatted_period}`;
+    let text = '';
+
+    if (this.getGame().clock) {
+      text += this.getGame().clock;
+    }
+
+    if (formatted_period) {
+      text += (text.length ? ' ' : '') + formatted_period;
+    }
+
+    if (!text) {
+      return 'Live';
+    }
+
+    return text;
   }
 
   /**
