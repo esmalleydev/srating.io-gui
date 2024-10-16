@@ -141,13 +141,18 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
   const map = {};
 
   for (let i = 0; i < sorted_game_pulses.length; i++) {
-    if (!map[sorted_game_pulses[i].clock + sorted_game_pulses[i].current_period]) {
-      map[sorted_game_pulses[i].clock + sorted_game_pulses[i].current_period] = true;
+    const { clock, current_period } = sorted_game_pulses[i];
+    if (
+      clock &&
+      current_period &&
+      !map[clock + current_period]
+    ) {
+      map[clock + current_period] = true;
 
-      let time = sorted_game_pulses[i].clock;
-      if (!sorted_game_pulses[i].current_period.length && sorted_game_pulses[i].clock === ':00' && !sorted_game_pulses[i].home_score && !sorted_game_pulses[i].away_score) {
+      let time = clock;
+      if (!current_period.length && clock === ':00' && !sorted_game_pulses[i].home_score && !sorted_game_pulses[i].away_score) {
         time = '1ST';
-      } else if (!sorted_game_pulses[i].current_period.length && sorted_game_pulses[i].clock === ':00') {
+      } else if (!current_period.length && clock === ':00') {
         time = '2ND';
       }
 
