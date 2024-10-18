@@ -98,8 +98,8 @@ class Game {
     if (
       this.getGame().clock === '00:00' &&
       (
-        (Organization.getCBBID() === this.getGame().organization_id && formatted_period === '2nd') ||
-        (Organization.getCFBID() === this.getGame().organization_id && formatted_period === '4th')
+        (Organization.getCBBID() === this.getGame().organization_id && formatted_period.toUpperCase() === '2ND') ||
+        (Organization.getCFBID() === this.getGame().organization_id && formatted_period.toUpperCase() === '4TH')
       ) &&
       this.getGame().home_score !== this.getGame().away_score
     ) {

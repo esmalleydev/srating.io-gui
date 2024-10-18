@@ -12,8 +12,9 @@ const Record = ({ game, team_id }) => {
   // const showScheduleHistoricalRankRecord = useAppSelector((state) => state.gamesReducer.showScheduleHistoricalRankRecord);
 
   const current = (gameStats[game.game_id] && gameStats[game.game_id].current[team_id]) || null;
-  // const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
-  const statistic_ranking = current;
+  const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
+
+  const statistic_ranking = game.status === 'final' ? historical : current;
 
   const wins = (statistic_ranking && statistic_ranking.wins) || 0;
   const losses = (statistic_ranking && statistic_ranking.losses) || 0;

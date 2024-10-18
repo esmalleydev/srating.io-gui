@@ -248,6 +248,17 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
           precision: 0,
         },
         {
+          name: 'QBR(c)',
+          title: 'QBR(c)',
+          away: awayTotalBoxscore.passing_rating_college,
+          home: homeTotalBoxscore.passing_rating_college,
+          awayCompareValue: awayTotalBoxscore.passing_rating_college,
+          homeCompareValue: homeTotalBoxscore.passing_rating_college,
+          favored: 'higher',
+          showDifference: true,
+          precision: 0,
+        },
+        {
           name: 'Pass att.',
           title: 'Passing attempts',
           away: awayTotalBoxscore.passing_attempts,

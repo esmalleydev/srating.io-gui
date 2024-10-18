@@ -22,8 +22,9 @@ const Rank = ({ game, team_id }) => {
   }
 
   const current = (gameStats[game.game_id] && gameStats[game.game_id].current[team_id]) || null;
-  // const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
-  const statistic_ranking = current;
+  const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
+
+  const statistic_ranking = game.status === 'final' ? historical : current;
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();

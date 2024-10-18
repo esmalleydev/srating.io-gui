@@ -93,37 +93,9 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
     );
   }
 
-
-  // todo fix underlying data
-  const getPeriod = (row) => {
-    if (row.current_period === '1ST HALF' || (!row.current_period.length && row.clock === ':00' && !row.home_score && !row.away_score)) {
-      return 1;
-    } if (row.current_period === '2ND HALF' || (!row.current_period.length && row.clock === ':00')) {
-      return 2;
-    }
-
-    return 0;
-  };
-
-  const clockToSeconds = (clock) => {
-    // Split the time into minutes and seconds
-    const parts = clock.split(':').map(Number);
-
-    // Handle case where time is in the format ":SS"
-    if (parts.length === 2) {
-      const [minutes, seconds] = parts;
-      return (isNaN(minutes) ? 0 : minutes) * 60 + (isNaN(seconds) ? 0 : seconds);
-    }
-
-    console.warn('Invalid time format');
-    return 0;
-  };
-
   const sorted_game_pulses: GamePulse[] = Object.values(game_pulses || {}).sort((a, b) => {
     return a.date_of_entry < b.date_of_entry ? -1 : 1;
   });
-
-
 
   type Data = {
     time: string;
@@ -144,22 +116,20 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
     const { clock, current_period } = sorted_game_pulses[i];
     if (
       clock &&
-      current_period &&
-      !map[clock + current_period]
+      current_period
     ) {
-      map[clock + current_period] = true;
+      let showPeriod = false;
 
-      let time = clock;
-      if (!current_period.length && clock === ':00' && !sorted_game_pulses[i].home_score && !sorted_game_pulses[i].away_score) {
-        time = '1ST';
-      } else if (!current_period.length && clock === ':00') {
-        time = '2ND';
+      if (!(current_period in map)) {
+        // todo put a reference line for current period
+        // showPeriod = true;
+        map[current_period] = true;
       }
 
       const game_pulse_odds: Odds | null = sorted_game_pulses[i].odds_id in odds ? odds[sorted_game_pulses[i].odds_id] : null;
 
       const data: Data = {
-        time,
+        time: clock + (showPeriod ? ` ${current_period}` : ''),
         home_score: sorted_game_pulses[i].home_score,
         away_score: sorted_game_pulses[i].away_score,
       };
@@ -177,7 +147,6 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
   }
 
   let intervalChart: React.JSX.Element | null = null;
-
 
 
   const colors = Game.getColors();
@@ -212,7 +181,7 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
         dataKey: 'money_line_home',
         stroke: Color.getTextColor(colors.homeColor, backgroundColor),
         strokeWidth: 2,
-        dot: true,
+        dot: false,
         connectNulls: true,
       },
       {
@@ -221,7 +190,7 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
         dataKey: 'money_line_away',
         stroke: Color.getTextColor(colors.awayColor, backgroundColor),
         strokeWidth: 2,
-        dot: true,
+        dot: false,
         connectNulls: true,
       },
     ];
@@ -234,7 +203,7 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
         dataKey: 'spread_home',
         stroke: Color.getTextColor(colors.homeColor, backgroundColor),
         strokeWidth: 2,
-        dot: true,
+        dot: false,
         connectNulls: true,
       },
       {
@@ -243,7 +212,7 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
         dataKey: 'spread_away',
         stroke: Color.getTextColor(colors.awayColor, backgroundColor),
         strokeWidth: 2,
-        dot: true,
+        dot: false,
         connectNulls: true,
       },
     ];
@@ -256,7 +225,7 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
         dataKey: 'over',
         stroke: Color.getTextColor(colors.homeColor, backgroundColor),
         strokeWidth: 2,
-        dot: true,
+        dot: false,
         connectNulls: true,
       },
     ];
