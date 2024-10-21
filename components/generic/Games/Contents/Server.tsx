@@ -12,7 +12,7 @@ export const getDates = async ({ season, organization_id, division_id }) => {
   unstable_noStore();
   const revalidateSeconds = 43200; // 60 * 60 * 12; // cache for 12 hours
 
-  const dates: string[] | object = await useServerAPI({
+  const dates: string[] = await useServerAPI({
     class: 'game',
     function: 'getSeasonDates',
     arguments: {
@@ -23,7 +23,7 @@ export const getDates = async ({ season, organization_id, division_id }) => {
   }, { revalidate: revalidateSeconds });
 
   return dates;
-}
+};
 
 export const getGames = async ({ date, organization_id, division_id }) => {
   unstable_noStore();
@@ -40,7 +40,7 @@ export const getGames = async ({ date, organization_id, division_id }) => {
   }, { revalidate: revalidateSeconds });
 
   return games;
-}
+};
 
 
 const Server = async ({ games, date, organization_id, division_id }) => {

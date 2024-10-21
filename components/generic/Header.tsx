@@ -4,7 +4,6 @@ import React, { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 // import { Link } from 'next/link';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-// import useMediaQuery from '../hooks/useMediaQuery';
 
 import { styled, useTheme } from '@mui/material/styles';
 

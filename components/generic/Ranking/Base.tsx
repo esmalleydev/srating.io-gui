@@ -39,7 +39,11 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
   const columns = getViewableColumns({ organization_id, view, columnView, customColumns });
 
   // todo grab this on page load
-  const seasons = Organization.getCBBID() === organization_id ? [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011] : [2024, 2025];
+  let seasons = Organization.getCBBID() === organization_id ? [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011] : [2024, 2025];
+
+  if (view === 'transfer') {
+    seasons = [2024];
+  }
 
   const { width } = useWindowDimensions() as Dimensions;
   // const breakPoint = 425;

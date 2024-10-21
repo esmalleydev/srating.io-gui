@@ -46,7 +46,7 @@ export default async function Page({ searchParams }) {
 
   const date = searchParams?.date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
 
-  const games = await getGames({ date, organization_id, division_id });
+  const games = dates.length ? await getGames({ date, organization_id, division_id }) : {};
 
   const view = searchParams?.view || 'picks';
 

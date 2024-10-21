@@ -1,4 +1,3 @@
-import { useAppSelector } from '@/redux/hooks';
 
 
 class CBB {
@@ -7,7 +6,7 @@ class CBB {
    * @return {number}
    */
   public static getCurrentSeason() {
-    return 2024;
+    return 2025;
   }
 
   /**
@@ -19,6 +18,9 @@ class CBB {
    * @return {number}
    */
   public static getNumberOfD1Teams(season: number): number {
+    if (+season === 2025) {
+      return 364;
+    }
     if (+season === 2024) {
       return 362;
     }

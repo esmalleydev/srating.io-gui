@@ -14,20 +14,20 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'College basketball API / Picks',
-  }
+  },
 };
 
 const Page = () => {
   return (
     <div>
       <main>
-        <div style = {{'padding': '0px 20px'}}>
+        <div style = {{ padding: '10px' }}>
           <Pricing />
         </div>
       </main>
-      <div style = {{'padding': '20px 0px 0px 0px'}}><Footer /></div>
+      <div style = {{ padding: '20px 0px 0px 0px' }}><Footer /></div>
     </div>
   );
-}
+};
 
 export default Page;

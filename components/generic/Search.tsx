@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import useDebounce from '../hooks/useDebounce';
+import useDebounce from '@/components/hooks/useDebounce';
 
 import { styled, alpha } from '@mui/material/styles';
 
