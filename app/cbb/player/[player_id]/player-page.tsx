@@ -17,7 +17,6 @@ import FavoritePicker from '@/components/generic/FavoritePicker';
 
 
 const Player = (props) => {
-  console.log(props)
   const self = this;
 
   const theme = useTheme();
