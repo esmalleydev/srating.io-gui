@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
@@ -6,40 +6,39 @@ import TextField from '@mui/material/TextField';
 import {
   PaymentElement,
   useStripe,
-  useElements
-} from "@stripe/react-stripe-js";
+  useElements,
+} from '@stripe/react-stripe-js';
 import { Button } from '@mui/material';
 
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
+import { StripePaymentElementOptions } from '@stripe/stripe-js';
 
 
-const CheckoutForm = (props) => {
+const CheckoutForm = ({ pricing }) => {
   const stripe = useStripe();
   const elements = useElements();
-
-  const pricing = props.pricing;
 
   const dispatch = useAppDispatch();
   const [spin, setSpin] = useState(false);
   const [request, setRequest] = useState(false);
   const [email, setEmail] = useState(null);
-  const [emailError, setEmailError] = useState(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const [errorMessage, setErrorMessage] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
 
-  let session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;
+  const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;
 
   if (session_id && !request) {
     setSpin(true);
     setRequest(true);
     useClientAPI({
-      'class': 'user',
-      'function': 'loadUser',
-      'arguments': {},
+      class: 'user',
+      function: 'loadUser',
+      arguments: {},
     }).then((user) => {
       if (user && user.username) {
         setEmail(user.username);
@@ -54,10 +53,10 @@ const CheckoutForm = (props) => {
     setIsLoading(false);
     dispatch(setLoading(false));
     setErrorMessage(error.message);
-  }
+  };
 
   const handleEmail = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setEmail(value || '');
   };
 
@@ -79,7 +78,7 @@ const CheckoutForm = (props) => {
     setIsLoading(true);
 
     // Trigger form validation and wallet collection
-    const {error: submitError} = await elements.submit();
+    const { error: submitError } = await elements.submit();
     if (submitError) {
       handleError(submitError);
       return;
@@ -88,11 +87,11 @@ const CheckoutForm = (props) => {
     dispatch(setLoading(true));
 
     const subscription = await useClientAPI({
-      'class': 'billing',
-      'function': 'createSubscription',
-      'arguments': {
-        'email': email,
-        'priceId': pricing.priceId,
+      class: 'billing',
+      function: 'createSubscription',
+      arguments: {
+        email,
+        priceId: pricing.priceId,
       },
     });
 
@@ -100,28 +99,28 @@ const CheckoutForm = (props) => {
       localStorage.setItem('session_id', subscription.session_id);
     }
 
-    const clientSecret = subscription.clientSecret;
+    const { clientSecret } = subscription;
 
-    const confirmIntent = subscription.type === "setup" ? stripe.confirmSetup : stripe.confirmPayment;
+    const confirmIntent = subscription.type === 'setup' ? stripe.confirmSetup : stripe.confirmPayment;
 
     // Confirm the Intent using the details collected by the Payment Element
-    const {error} = await confirmIntent({
+    const { error } = await confirmIntent({
       elements,
       clientSecret,
       confirmParams: {
         payment_method_data: {
           billing_details: {
-            name: null,
-            email: email,
-            phone: null,
+            name: undefined,
+            email,
+            phone: undefined,
             address: {
-              city: null,
-              country: null,
-              line1: null,
-              line2: null,
-              postal_code: null,
-              state: null,
-            }
+              city: undefined,
+              country: undefined,
+              line1: undefined,
+              line2: undefined,
+              postal_code: undefined,
+              state: undefined,
+            },
           },
         },
         // return_url: 'http://localhost:3000/billing',
@@ -142,7 +141,7 @@ const CheckoutForm = (props) => {
     }
   };
 
-  const paymentElementOptions = {
+  const paymentElementOptions: StripePaymentElementOptions = {
     layout: 'tabs',
     fields: {
       billingDetails: 'never',
@@ -150,18 +149,18 @@ const CheckoutForm = (props) => {
   };
 
   if (spin) {
-    return <div style = {{'textAlign': 'center'}}><CircularProgress /></div>;
+    return <div style = {{ textAlign: 'center' }}><CircularProgress /></div>;
   }
 
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <TextField
-        style = {{'marginBottom': 20}}
+        style = {{ marginBottom: 20 }}
         required
         value = {email || ''}
-        error = {emailError ? true : false}
-        helperText = {emailError ? emailError : null}
+        error = {!!emailError}
+        helperText = {emailError || null}
         onChange = {handleEmail}
         margin="dense"
         id="name"
@@ -170,12 +169,12 @@ const CheckoutForm = (props) => {
         fullWidth
         variant="standard"
       />
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <Button type = 'submit' style = {{'width': '100%', 'marginTop': '20px', 'textAlign': 'center'}} variant = "contained" disabled={isLoading || !stripe || !elements} >Pay ${pricing.price}</Button>
+      <PaymentElement id="payment-element" options = {paymentElementOptions} />
+      <Button type = 'submit' style = {{ width: '100%', marginTop: '20px', textAlign: 'center' }} variant = "contained" disabled={isLoading || !stripe || !elements} >Pay ${pricing.price}</Button>
       {errorMessage && <div id="payment-message">{errorMessage}</div>}
     </form>
   );
-}
+};
 
 
 export default CheckoutForm;
