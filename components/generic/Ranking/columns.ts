@@ -199,13 +199,6 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
     }
     if (view === 'team') {
       Object.assign(headCells, {
-        // 'adj_elo': {
-        //   id: 'adj_elo',
-        //   numeric: true,
-        //   label: 'adj sRating',
-        //   tooltip: 'srating.io aELO rating',
-        //   'sort': 'higher',
-        // },
         conference_code: {
           id: 'conference_code',
           numeric: false,
@@ -754,13 +747,6 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
       });
     } else if (view === 'conference') {
       Object.assign(headCells, {
-        // 'adj_elo': {
-        //   id: 'adj_elo',
-        //   numeric: true,
-        //   label: 'adj sRating',
-        //   tooltip: 'srating.io aELO rating',
-        //   'sort': 'higher',
-        // },
         elo: {
           id: 'elo',
           numeric: true,

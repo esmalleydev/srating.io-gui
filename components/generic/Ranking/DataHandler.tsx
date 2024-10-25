@@ -281,7 +281,6 @@ const formatCBBData = (args) => {
         lastUpdated = row.date_of_rank;
       }
       row.name = conferences[row.conference_id].code;
-      row.rank = row.adjusted_efficiency_rating_rank;
 
       // row.adj_elo = +(+row.elo - +row.elo_sos).toFixed(2);
 
