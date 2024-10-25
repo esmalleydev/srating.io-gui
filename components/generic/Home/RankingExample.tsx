@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ForwardRefExoticComponent, MutableRefObject, RefAttributes, useRef, useState, useTransition } from 'react';
+import React, { ForwardRefExoticComponent, RefAttributes, useState, useTransition } from 'react';
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
