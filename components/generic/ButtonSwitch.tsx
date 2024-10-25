@@ -8,8 +8,6 @@ const ButtonSwitch = (
 ) => {
   const theme = useTheme();
 
-  // const unSelectedColor = theme.palette.info.light;
-  console.log(theme)
   const unSelectedColor = theme.palette.mode === 'light' ? theme.palette.grey['300'] : theme.palette.grey['900'];
   const selectedColor = theme.palette.info.dark;
 
