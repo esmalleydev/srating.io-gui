@@ -4,10 +4,10 @@ import React, { ForwardRefExoticComponent, MutableRefObject, RefAttributes, useR
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import { TableVirtuoso } from 'react-virtuoso';
 
-
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import { styled } from '@mui/material/styles';
 
@@ -24,7 +24,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 import CheckIcon from '@mui/icons-material/Check';
-import { getHeaderColumns, getViewableColumns } from '@/components/generic/Ranking/columns';
+import { getHeaderColumns } from '@/components/generic/Ranking/columns';
 import { useRouter } from 'next/navigation';
 import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 import RankSpan from '@/components/generic/RankSpan';
@@ -121,6 +121,14 @@ const RankingExample = () => {
     dispatch(setLoadingDisplay(true));
     startTransition(() => {
       router.push(`/${currentPath}/team/${team_id}?season=${season}`);
+    });
+  };
+
+  const handlePath = (e, path) => {
+    e.preventDefault();
+    dispatch(setLoadingDisplay(true));
+    startTransition(() => {
+      router.push(path);
     });
   };
 
@@ -359,6 +367,7 @@ const RankingExample = () => {
 
   return (
     <Contents>
+      <div style = {{ textAlign: 'center' }}><Button onClick={(e) => { handlePath(e, '/cbb/ranking'); } } endIcon = {<ArrowForwardIcon />}>View Full Live Rankings</Button></div>
       <div>
         <TableVirtuoso style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} />
       </div>
