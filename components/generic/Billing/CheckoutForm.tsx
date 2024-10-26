@@ -110,16 +110,16 @@ const CheckoutForm = ({ pricing }) => {
       confirmParams: {
         payment_method_data: {
           billing_details: {
-            name: null, // if you change these nulls, the payments fail, the ts error is wrong, it must be a string or null, not undefined
+            name: '', // if you change these to undefined, the payments fail, it must be a string, not undefined
             email,
-            phone: null,
+            phone: '',
             address: {
-              city: null,
-              country: null,
-              line1: null,
-              line2: null,
-              postal_code: null,
-              state: null,
+              city: '',
+              country: '',
+              line1: '',
+              line2: '',
+              postal_code: '',
+              state: '',
             },
           },
         },
