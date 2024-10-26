@@ -110,16 +110,24 @@ const CheckoutForm = ({ pricing }) => {
       confirmParams: {
         payment_method_data: {
           billing_details: {
-            name: '', // if you change these to undefined, the payments fail, it must be a string, not undefined
+            // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+            name: null,
             email,
-            phone: '',
+            // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+            phone: null,
             address: {
-              city: '',
-              country: '',
-              line1: '',
-              line2: '',
-              postal_code: '',
-              state: '',
+              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              city: null,
+              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              country: null,
+              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              line1: null,
+              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              line2: null,
+              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              postal_code: null,
+              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              state: null,
             },
           },
         },
