@@ -87,7 +87,14 @@ const Home = () => {
     );
   };
 
-  const cardWidth = 300;
+  let cardWidth = 300;
+  const breakPoint = 425;
+
+  const hitBreakPoint = (width <= breakPoint);
+
+  if (hitBreakPoint) {
+    cardWidth = 105;
+  }
 
   return (
     <div>
@@ -109,20 +116,38 @@ const Home = () => {
               {<><span style = {{ color: getLogoColorPrimary() }}>s</span><span style = {{ color: getLogoColorSecondary() }}>Rating</span></>}
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Analysis tools, rankings, score, picks, <br /> no ads, <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</Link>
+              Analysis tools, picks for 🏀 & 🏈, <br /> no ads, <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</Link>
             </Typography>
           </Container>
         </Box>
         <div style = {{ padding: '0px 5px  5px 5px', display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
           {cards.map((card) => {
+            const cardStyle: React.CSSProperties = {
+              maxWidth: cardWidth,
+              minWidth: cardWidth,
+              margin: '5px',
+              border: `2px solid ${card.id === selectedHero ? theme.palette.info.dark : 'transparent'}`
+            };
+
+            const cardContentStyle: React.CSSProperties = {
+
+            };
+
+            if (hitBreakPoint) {
+              cardContentStyle.padding = 8;
+            }
+
             return (
-              <Card sx={{ maxWidth: cardWidth, minWidth: cardWidth, margin: '5px', border: `2px solid ${card.id === selectedHero ? theme.palette.info.dark : 'transparent'}` }}>
+              <Card sx={cardStyle}>
                 <CardActionArea style={{ height: '100%' }} onClick={() => setSelectedHero(card.id)}>
-                  <CardContent>
-                    <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography variant='h6' style = {{ display: 'inline-block' }}>{card.name}</Typography>{card.icon}</div>
+                  <CardContent style = {cardContentStyle}>
+                    <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography variant={(hitBreakPoint ? 'body1' : 'h6')} style = {{ display: 'inline-block' }}>{card.name}</Typography>{card.icon}</div>
+                    {
+                    hitBreakPoint ? '' :
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                       {card.description}
                     </Typography>
+                    }
                   </CardContent>
                 </CardActionArea>
               </Card>
