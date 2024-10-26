@@ -18,10 +18,8 @@ import FreeTrialForm from './Billing/FreeTrialForm';
 // recreating the Stripe object on every render.
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
-const Billing = (props) => {
+const Billing = ({ pricing, open, closeHandler }) => {
   const theme = useTheme();
-
-  const pricing = props.pricing || {};
 
   const appearance: Appearance = {
     theme: (theme.palette.mode === 'dark' ? 'night' : 'stripe'),
@@ -53,8 +51,8 @@ const Billing = (props) => {
 
   return (
     <Dialog
-      open={props.open}
-      onClose={props.closeHandler}
+      open={open}
+      onClose={closeHandler}
     >
       <DialogTitle id="alert-dialog-title">{pricing.name || 'Loading...'} {pricing.type === 'picks' ? 'picks access' : 'API access'}</DialogTitle>
       <DialogContent>

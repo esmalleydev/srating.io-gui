@@ -110,21 +110,20 @@ const CheckoutForm = ({ pricing }) => {
       confirmParams: {
         payment_method_data: {
           billing_details: {
-            name: undefined,
+            name: null, // if you change these nulls, the payments fail, the ts error is wrong, it must be a string or null, not undefined
             email,
-            phone: undefined,
+            phone: null,
             address: {
-              city: undefined,
-              country: undefined,
-              line1: undefined,
-              line2: undefined,
-              postal_code: undefined,
-              state: undefined,
+              city: null,
+              country: null,
+              line1: null,
+              line2: null,
+              postal_code: null,
+              state: null,
             },
           },
         },
-        // return_url: 'http://localhost:3000/billing',
-        return_url: 'https://srating.io/billing',
+        return_url: (process.env.NEXT_PUBLIC_ENV === 'dev' ? 'http://localhost:3000/billing' : 'https://srating.io/billing'),
       },
       // redirect: 'if_required',
     });

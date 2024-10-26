@@ -17,7 +17,7 @@ import ButtonSwitch from './ButtonSwitch';
 const Pricing = () => {
   const router = useRouter();
   const [billingOpen, setBillingOpen] = useState(false);
-  const [selectedPricing, setSelectedPricing] = useState(null);
+  const [selectedPricing, setSelectedPricing] = useState({});
   const [selectedView, setSelectedView] = useState('picks');
 
   const handleBilling = (priceOption) => {
@@ -48,8 +48,7 @@ const Pricing = () => {
       price_description: 'USD per month',
       features: ['Access to picks'],
       missing_features: ['API access'],
-      // 'priceId': 'price_1NcziSDIZlrOiqc2TY4NEiXc', // dev price_id
-      priceId: 'price_1NczWWDIZlrOiqc2QdE6mTdf', // live price_id
+      priceId: process.env.NEXT_PUBLIC_ENV === 'dev' ? 'price_1NcziSDIZlrOiqc2TY4NEiXc' : 'price_1NczWWDIZlrOiqc2QdE6mTdf',
     },
     {
       code: 'picks_yearly',
@@ -60,8 +59,7 @@ const Pricing = () => {
       price_description: 'USD per year',
       features: ['Access to picks'],
       missing_features: ['API access'],
-      // 'priceId': 'price_1NcziSDIZlrOiqc2A9maKQwi', // dev price_id
-      priceId: 'price_1NczWWDIZlrOiqc2pKPXv8aj', // live price_id
+      priceId: process.env.NEXT_PUBLIC_ENV === 'dev' ? 'price_1NcziSDIZlrOiqc2A9maKQwi' : 'price_1NczWWDIZlrOiqc2pKPXv8aj',
     },
   ];
 
@@ -93,8 +91,7 @@ const Pricing = () => {
       ],
       disabled: false,
       missing_features: [],
-      // 'priceId': 'price_1NehA8DIZlrOiqc2XVZLRjzc', // dev price_id,
-      priceId: 'price_1NczfoDIZlrOiqc27QjIZfmt', // live price_id,
+      priceId: process.env.NEXT_PUBLIC_ENV === 'dev' ? 'price_1NehA8DIZlrOiqc2XVZLRjzc' : 'price_1NczfoDIZlrOiqc27QjIZfmt',
     },
     {
       code: 'api_pro',
@@ -112,8 +109,7 @@ const Pricing = () => {
       ],
       disabled: false,
       missing_features: [],
-      // 'priceId': 'price_1NehA8DIZlrOiqc2zPZ8Ikaa', // dev price_id,
-      priceId: 'price_1NczfoDIZlrOiqc2eH6dGdGK', // live price_id,
+      priceId: process.env.NEXT_PUBLIC_ENV === 'dev' ? 'price_1NehA8DIZlrOiqc2zPZ8Ikaa' : 'price_1NczfoDIZlrOiqc2eH6dGdGK',
     },
     {
       code: 'api_elite',
@@ -131,8 +127,7 @@ const Pricing = () => {
       ],
       disabled: true,
       missing_features: [],
-      // 'priceId': 'price_1NqdsnDIZlrOiqc2Jr2BQJ9N', // dev price_id,
-      priceId: 'price_1NqdqfDIZlrOiqc2w0H1MYrv', // live price_id,
+      priceId: process.env.NEXT_PUBLIC_ENV === 'dev' ? 'price_1NqdsnDIZlrOiqc2Jr2BQJ9N' : 'price_1NqdqfDIZlrOiqc2w0H1MYrv',
     },
   ];
 
