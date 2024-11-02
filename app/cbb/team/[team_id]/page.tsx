@@ -115,7 +115,7 @@ export default async function Page({ params, searchParams }) {
   return (
     <div>
       <HeaderClientWrapper>
-        <Suspense fallback = {<HeaderClientSkeleton />}>
+        <Suspense key = {`${organization_id}-${season}`} fallback = {<HeaderClientSkeleton />}>
           <HeaderServer organization_id={organization_id} division_id={division_id} season = {season} team_id = {team_id} />
         </Suspense>
       </HeaderClientWrapper>
@@ -125,7 +125,7 @@ export default async function Page({ params, searchParams }) {
         selectedTab === 'schedule' ?
           <>
             <ScheduleClientWrapper>
-              <Suspense fallback = {<ScheduleClientSkeleton />}>
+              <Suspense key = {`${organization_id}-${season}`} fallback = {<ScheduleClientSkeleton />}>
                 <ScheduleServer team_id = {team_id} season = {season} organization_id = {organization_id} division_id = {division_id} />
               </Suspense>
             </ScheduleClientWrapper>
