@@ -6,15 +6,10 @@ import {
   Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Tab, Tabs, useTheme,
 } from '@mui/material';
 import { getBreakPoint } from '@/components/generic/DateAppBar';
-// import ConferencePicker from '@/components/generic/CBB/ConferencePicker';
-// import AdditionalOptions from '@/components/generic/CBB/Picks/AdditionalOptions';
-// import StatusPicker from '@/components/generic/CBB/StatusPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setScrollTop } from '@/redux/features/picks-slice';
 import { setLoading } from '@/redux/features/display-slice';
-// import ViewPicker from './ViewPicker';
-// import RefreshCounter from './RefreshCounter';
 
 const getHeaderHeight = () => {
   return 48;
@@ -92,12 +87,11 @@ const SubNavBar = ({ view }) => {
     });
   };
 
+
   const handleLiveWinRate = () => {
     dispatch(setLoading(true));
     setShowLockedDialog(false);
-    startTransition(() => {
-      router.push('/cbb/picks?view=stats');
-    });
+    handleTabClick(null, 2);
   };
 
   const handleCloseLockedDialog = () => {
@@ -113,10 +107,10 @@ const SubNavBar = ({ view }) => {
 
     setTabIndex(value);
 
-    view = tabOrder[value];
+    const newView = tabOrder[value];
 
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.set('view', view);
+    current.set('view', newView);
     const search = current.toString();
     const query = search ? `?${search}` : '';
 

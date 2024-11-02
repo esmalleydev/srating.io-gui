@@ -17,7 +17,7 @@ import TableRow from '@mui/material/TableRow';
 
 import moment from 'moment';
 
-import HelperCBB from '../../../helpers/CBB';
+import HelperGame from '../../../helpers/Game';
 
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
@@ -217,15 +217,15 @@ const GameLog = (props) => {
                 b++;
                 const won = (row.game.home_score > row.game.away_score && row.game.home_team_id === player_team_season.team_id) || (row.game.home_score < row.game.away_score && row.game.away_team_id === player_team_season.team_id);
 
-                const CBB = new HelperCBB({
+                const Game = new HelperGame({
                   'game': row.game,
                 });
 
                 let opponent = null;
                 if (row.game.home_team_id !== player_team_season.team_id) {
-                  opponent = CBB.getTeamNameShort('home');
+                  opponent = Game.getTeamNameShort('home');
                 } else {
-                  opponent = CBB.getTeamNameShort('away');
+                  opponent = Game.getTeamNameShort('away');
                 }
 
                 const spanStyle = {
@@ -251,7 +251,7 @@ const GameLog = (props) => {
                           {moment(row.game.start_date.split('T')[0] + ' 12:00:00').format('MMM Do')}
                         </div>
                         <div style = {{'color': theme.palette.grey[500]}}>
-                          {row.game.home_team_id !== player_team_season.team_id ? '@ ' : ''}{opponent} <span style = {spanStyle}>{CBB.isFinal() ? (won ? 'W' : 'L') : CBB.getTime()}</span> {row.game.home_score + '-' + row.game.away_score}
+                          {row.game.home_team_id !== player_team_season.team_id ? '@ ' : ''}{opponent} <span style = {spanStyle}>{Game.isFinal() ? (won ? 'W' : 'L') : Game.getTime()}</span> {row.game.home_score + '-' + row.game.away_score}
                         </div>
                       </div>
                     </TableCell>

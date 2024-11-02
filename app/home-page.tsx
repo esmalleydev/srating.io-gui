@@ -126,7 +126,7 @@ const Home = () => {
               maxWidth: cardWidth,
               minWidth: cardWidth,
               margin: '5px',
-              border: `2px solid ${card.id === selectedHero ? theme.palette.info.dark : 'transparent'}`
+              border: `2px solid ${card.id === selectedHero ? theme.palette.info.dark : 'transparent'}`,
             };
 
             const cardContentStyle: React.CSSProperties = {
@@ -158,7 +158,7 @@ const Home = () => {
           {getHero()}
         </div>
         <div ref = {ref} style = {{ padding: '10px 10px' }}>
-          <Pricing />
+          <Pricing view = {null} />
         </div>
       </main>
       <div style = {{ padding: '20px 0px 0px 0px' }}><Footer /></div>

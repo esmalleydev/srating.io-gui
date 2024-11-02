@@ -74,6 +74,11 @@ const Search = ({ view }: {view: string}) => {
           'team_name' in row && row.team_name !== undefined ? row.team_name : ''
         ))));
       }
+      if (view === 'player') {
+        filteredRows = filteredRows.concat(rows.filter((row) => regex.test((
+          'team_name' in row && row.team_name !== undefined ? row.team_name : ''
+        ))));
+      }
       handleSearch(filteredRows);
     } else {
       handleSearch(false);

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import Legend from './Legend';
 import FloatingButtons from './FloatingButtons';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -21,6 +21,7 @@ import ConferenceChips from './ConferenceChips';
 import LastUpdated from './LastUpdated';
 import Organization from '@/components/helpers/Organization';
 import ColumnChipPicker from './ColumnChipPicker';
+import DownloadOption from './DownloadOption';
 
 
 const Base = ({ organization_id, division_id, season, view, children }) => {
@@ -133,12 +134,15 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
               <LastUpdated view = {view} handleLegend={handleLegend} />
               <ColumnChipPicker view = {view} organization_id={organization_id} />
               <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline' }}>
                   {view === 'player' || view === 'transfer' ? <AdditionalOptions view = {view} /> : ''}
                   {view !== 'conference' ? <ConferencePicker /> : ''}
                   {view === 'player' || view === 'transfer' ? <PositionPicker selected = {positions} /> : ''}
                 </div>
-                <Search view = {view} />
+                <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                  <Search view = {view} />
+                  {width >= 425 ? <DownloadOption view={view} organization_id={organization_id} division_id={division_id} season={season} /> : ''}
+                </div>
               </div>
               <ConferenceChips />
               {positionChips}

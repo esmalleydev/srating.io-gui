@@ -17,12 +17,13 @@ export const metadata: Metadata = {
   },
 };
 
-const Page = () => {
+const Page = ({ searchParams }) => {
+  const view: string = searchParams?.view || 'picks';
   return (
     <div>
       <main>
         <div style = {{ padding: '10px' }}>
-          <Pricing />
+          <Pricing view = {view} />
         </div>
       </main>
       <div style = {{ padding: '20px 0px 0px 0px' }}><Footer /></div>

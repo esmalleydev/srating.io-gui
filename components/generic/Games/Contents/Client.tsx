@@ -50,7 +50,7 @@ const ClientSkeleton = ({ games }) => {
 
   for (const game_id in games) {
     tiles.push(
-      <Paper elevation={3} style = {divStyle}>
+      <Paper elevation={3} style = {divStyle} key = {`paper_${game_id}`}>
         <Skeleton style = {{ height: divStyle.height, transform: 'initial' }} />
       </Paper>,
     );

@@ -14,11 +14,12 @@ import Billing from './Billing';
 import ButtonSwitch from './ButtonSwitch';
 
 
-const Pricing = () => {
+const Pricing = ({ view }) => {
   const router = useRouter();
   const [billingOpen, setBillingOpen] = useState(false);
   const [selectedPricing, setSelectedPricing] = useState({});
-  const [selectedView, setSelectedView] = useState('picks');
+
+  const [selectedView, setSelectedView] = useState(view || 'picks');
 
   const handleBilling = (priceOption) => {
     setSelectedPricing(priceOption);
@@ -85,6 +86,7 @@ const Pricing = () => {
       requests: '20,000',
       features: [
         'Access to picks',
+        'CSV downloads',
         'Games / Teams / Players / Stats',
         'Live scores',
         'Live odds',
@@ -103,6 +105,7 @@ const Pricing = () => {
       requests: '100,000',
       features: [
         'Access to picks',
+        'CSV downloads',
         'Games / Teams / Players / Stats',
         'Live scores',
         'Live odds',
@@ -121,6 +124,7 @@ const Pricing = () => {
       requests: '4 Million',
       features: [
         'Access to picks',
+        'CSV downloads',
         'Games / Teams / Players / Stats',
         'Live scores',
         'Live odds',
