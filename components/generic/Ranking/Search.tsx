@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useAppDispatch } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { getRows } from './DataHandler';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -15,7 +16,6 @@ const Container = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? alpha(theme.palette.common.white, 0.25) : alpha(theme.palette.common.black, 0.20),
   },
   marginLeft: 0,
-  width: '150px',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -45,6 +45,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Search = ({ view }: {view: string}) => {
   const dispatch = useAppDispatch();
   const rows = getRows({ view });
+  const { width } = useWindowDimensions() as Dimensions;
 
   const handleSearch = (filteredRows) => {
     dispatch(setDataKey({ key: 'filteredRows', value: filteredRows }));
@@ -85,15 +86,17 @@ const Search = ({ view }: {view: string}) => {
     }
   };
 
+  const inputWidth = width > 425 ? '150px' : '125px';
+
   return (
-    <Container style = {{ marginBottom: '5px' }}>
+    <Container style = {{ marginBottom: '5px', width: inputWidth }}>
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
         value = {value}
         placeholder = {'Search'}
-        sx = {{ minWidth: '150px', maxWidth: '150px', maxHeight: '39px' }}
+        sx = {{ minWidth: inputWidth, maxWidth: inputWidth, maxHeight: '39px' }}
         onChange = {onChange}
       />
     </Container>
