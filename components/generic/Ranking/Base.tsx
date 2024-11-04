@@ -141,7 +141,7 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'baseline' }}>
                   <Search view = {view} />
-                  {width >= 425 ? <DownloadOption view={view} organization_id={organization_id} division_id={division_id} season={season} /> : ''}
+                  {width >= 400 ? <DownloadOption view={view} organization_id={organization_id} division_id={division_id} season={season} /> : ''}
                 </div>
               </div>
               <ConferenceChips />

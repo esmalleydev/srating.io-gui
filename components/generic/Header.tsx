@@ -42,15 +42,6 @@ import OrganizationPicker from './OrganizationPicker';
 import Organization from '../helpers/Organization';
 
 
-const SignUpButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main,
-  border: `1px solid ${theme.palette.mode === 'light' ? '#fff' : theme.palette.success.main}`,
-  '&:hover': {
-    border: `1px solid ${theme.palette.mode === 'light' ? '#fff' : theme.palette.success.light}`,
-    // backgroundColor: (theme.palette.mode === 'light' ? '#fff' : theme.palette.success.dark),
-  },
-}));
-
 // todo hook up settings with router
 
 export const headerBarHeight = 64;
@@ -276,7 +267,7 @@ const Header = () => {
                     :
                     <div>
                       {/* {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''} */}
-                      <Button color = {theme.palette.mode === 'light' ? 'secondary' : 'success'} variant = 'contained' disableElevation onClick={handleAccount}>{width > 425 ? 'Signup / Login' : 'Login'}</Button>
+                      <Button color = {theme.palette.mode === 'light' ? 'secondary' : 'success'} variant = 'contained' disableElevation onClick={handleAccount}>{width > 550 ? 'Signup / Login' : 'Login'}</Button>
                     </div>
                   }
                 </Box>
