@@ -93,13 +93,13 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     });
   };
 
-  // const handleMouseEnter = (e) => {
-  //   setHover(true);
-  // };
+  const handleMouseEnter = (e) => {
+    setHover(true);
+  };
 
-  // const handleMouseLeave = (e) => {
-  //   setHover(false);
-  // };
+  const handleMouseLeave = (e) => {
+    setHover(false);
+  };
 
   const getIndicators = () => {
     const flexContainer = {
@@ -385,12 +385,11 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
     const teamStyle = {
       flex: 1,
-      cursor: 'pointer',
     };
 
     return (
       <div style = {flexContainer}>
-        <div style = {teamStyle} onClick={handleClick}>
+        <div style = {teamStyle}>
           {getTeamLine('away')}
           {getTeamLine('home')}
         </div>
@@ -416,51 +415,49 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     divStyle.height = +(divStyle.height || 0) + 21;
   }
 
-
   const teamLineStyle: React.CSSProperties = {
-    // 'cursor': 'pointer',
+    cursor: 'pointer',
     padding: '10px',
   };
 
   if (hover) {
-    teamLineStyle.backgroundColor = theme.palette.action.hover;
+    divStyle.backgroundColor = theme.palette.action.hover;
   }
 
   if (displayCardView === 'large') {
-    divStyle.height = 282 + (!hasAccessToPercentages ? 25 : 0) + (Game.isNeutralSite() ? 21 : 0);
+    divStyle.height = 255 + (!hasAccessToPercentages ? 25 : 0) + (Game.isNeutralSite() ? 21 : 0);
   }
 
   return (
-    <Paper elevation={3} style = {divStyle} ref = {ref}>
-      {
-        isVisible ?
-        <>
-          {getIndicators()}
-          <div style = {teamLineStyle}>
-            {getHeader()}
-            {getTeamLines()}
-          </div>
-          {
-            displayCardView === 'large' ?
-              <div style = {{ padding: '0px 10px 10px 10px' }}>
-                <hr style ={{ marginTop: 0 }} />
-                {hideOdds !== 1 ? getOddsLine() : ''}
-              </div>
-              : ''
-          }
-          {
-            displayCardView === 'large' ?
-            <div style = {{ textAlign: 'right' }}>
-              <Button onClick = {handleClick}>Full Matchup</Button>
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+    >
+      <Paper elevation={3} style = {divStyle} ref = {ref}>
+        {
+          isVisible ?
+          <>
+            {getIndicators()}
+            <div style = {teamLineStyle}>
+              {getHeader()}
+              {getTeamLines()}
             </div>
-              : ''
-          }
-          </>
-          : <>
-            <Skeleton style = {{ height: divStyle.height, transform: 'initial' }} />
-          </>
-      }
-    </Paper>
+            {
+              displayCardView === 'large' ?
+                <div style = {{ padding: '0px 10px 0px 10px' }}>
+                  <hr style ={{ marginTop: 0 }} />
+                  {hideOdds !== 1 ? getOddsLine() : ''}
+                </div>
+                : ''
+            }
+            </>
+            : <>
+              <Skeleton style = {{ height: divStyle.height, transform: 'initial' }} />
+            </>
+        }
+      </Paper>
+    </div>
   );
 };
 

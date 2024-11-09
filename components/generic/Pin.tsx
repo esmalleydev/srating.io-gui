@@ -52,7 +52,9 @@ const Pin = ({ game_id }) => {
     setAccountOpen(false);
   };
 
-  const handleFavorite = () => {
+  const handleFavorite = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!isValidSession) {
       setAccountOpen(true);
       return;
