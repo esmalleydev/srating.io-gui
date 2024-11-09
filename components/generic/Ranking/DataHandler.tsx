@@ -263,7 +263,7 @@ const formatCBBData = (args) => {
         row.conference_code = conferences[row.conference_id].code;
       }
 
-      row.rank = row.efficiency_rating_rank;
+      row.rank = row.rank || row.efficiency_rating_rank;
 
       if (
         positions.length &&

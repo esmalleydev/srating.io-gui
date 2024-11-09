@@ -3,7 +3,7 @@
 import React from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import HelperGame from '@/components/helpers/Game';
-import { Paper, Skeleton, Typography } from '@mui/material';
+import { Paper, Skeleton, Typography, useTheme } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import RankSpan from '@/components/generic/RankSpan';
@@ -14,6 +14,7 @@ import CFB from '@/components/helpers/CFB';
 
 
 const Differentials = ({ game, team_id }) => {
+  const theme = useTheme();
   const isLoading = useAppSelector((state) => state.teamReducer.scheduleStatsLoading);
   const scheduleStats = useAppSelector((state) => state.teamReducer.scheduleStats);
 
@@ -25,7 +26,7 @@ const Differentials = ({ game, team_id }) => {
   }[] = [];
 
   if (game.organization_id === Organization.getCBBID()) {
-    CBB.getNumberOfD1Teams(game.season);
+    numberOfTeams = CBB.getNumberOfD1Teams(game.season);
     compares = [
       {
         label: 'Rank',
@@ -157,7 +158,7 @@ const Differentials = ({ game, team_id }) => {
 
     rows.push(
       <tr key = {i} style = {{ textAlign: 'left' }}>
-        <td style = {{ textAlign: 'left' }}><Typography variant='caption' color = {'text.secondary'}>{compare.label}</Typography></td>
+        <td style = {{ textAlign: 'left' }}><Typography variant='caption' style = {{ color: theme.palette.info.main }}>{compare.label}:</Typography></td>
         <td style = {{ paddingLeft: '10px' }}><Typography variant='caption' color = {'text.secondary'}>{historicalDisplay}{compare.type !== 'rank' && historicalValue ? ` (${historicalValue})` : ''}</Typography></td>
         <td style = {{ padding: '0px 10px' }}><ArrowForwardIcon style = {{ fontSize: '14px' }} color = {arrowColor} /></td>
         <td><Typography variant='caption' color = {'text.secondary'}>{currentDisplay}{compare.type !== 'rank' && currentValue ? ` (${currentValue})` : ''}</Typography></td>

@@ -368,7 +368,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
             }
           </div>
         </div>
-        <div style = {scoreStyle}>{Game.isInProgress() || Game.isFinal() ? game[`${side}_score`] : '-'}</div>
+        <div style = {scoreStyle}>{Game.isInProgress() || Game.isFinal() ? game[`${side}_score`] || 0 : '-'}</div>
       </div>
     );
   };

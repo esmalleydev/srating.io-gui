@@ -29,6 +29,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
 import CFB from '@/components/helpers/CFB';
+import ButtonSwitch from '../../ButtonSwitch';
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -500,8 +501,8 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
         name: 'FG%',
         title: 'FG%',
         tooltip: 'Field goal percentage',
-        away: `${awayTotalBoxscore.field_goal_percentage}%`,
-        home: `${homeTotalBoxscore.field_goal_percentage}%`,
+        away: awayTotalBoxscore.field_goal_percentage !== null ? `${awayTotalBoxscore.field_goal_percentage}%` : '',
+        home: homeTotalBoxscore.field_goal_percentage !== null ? `${homeTotalBoxscore.field_goal_percentage}%` : '',
         awayCompareValue: awayTotalBoxscore.field_goal_percentage,
         homeCompareValue: homeTotalBoxscore.field_goal_percentage,
         favored: 'higher',
@@ -535,8 +536,8 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
         name: '2P%',
         title: '2P%',
         tooltip: '2 point field goal percentage',
-        away: `${awayTotalBoxscore.two_point_field_goal_percentage}%`,
-        home: `${homeTotalBoxscore.two_point_field_goal_percentage}%`,
+        away: awayTotalBoxscore.two_point_field_goal_percentage !== null ? `${awayTotalBoxscore.two_point_field_goal_percentage}%` : '',
+        home: homeTotalBoxscore.two_point_field_goal_percentage !== null ? `${homeTotalBoxscore.two_point_field_goal_percentage}%` : '',
         awayCompareValue: awayTotalBoxscore.two_point_field_goal_percentage,
         homeCompareValue: homeTotalBoxscore.two_point_field_goal_percentage,
         favored: 'higher',
@@ -570,8 +571,8 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
         name: '3P%',
         title: '3P%',
         tooltip: '3 point field goal percentage',
-        away: `${awayTotalBoxscore.three_point_field_goal_percentage}%`,
-        home: `${homeTotalBoxscore.three_point_field_goal_percentage}%`,
+        away: awayTotalBoxscore.three_point_field_goal_percentage !== null ? `${awayTotalBoxscore.three_point_field_goal_percentage}%` : '',
+        home: homeTotalBoxscore.three_point_field_goal_percentage !== null ? `${homeTotalBoxscore.three_point_field_goal_percentage}%` : '',
         awayCompareValue: awayTotalBoxscore.three_point_field_goal_percentage,
         homeCompareValue: homeTotalBoxscore.three_point_field_goal_percentage,
         favored: 'higher',
@@ -605,8 +606,8 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
         name: 'FT%',
         title: 'FT%',
         tooltip: 'Free throw percentage',
-        away: `${awayTotalBoxscore.free_throw_percentage}%`,
-        home: `${homeTotalBoxscore.free_throw_percentage}%`,
+        away: awayTotalBoxscore.free_throw_percentage !== null ? `${awayTotalBoxscore.free_throw_percentage}%` : '',
+        home: homeTotalBoxscore.free_throw_percentage !== null ? `${homeTotalBoxscore.free_throw_percentage}%` : '',
         awayCompareValue: awayTotalBoxscore.free_throw_percentage,
         homeCompareValue: homeTotalBoxscore.free_throw_percentage,
         favored: 'higher',
@@ -712,9 +713,11 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
       {
         game.organization_id === Organization.getCBBID() ?
         <div style = {{ padding: '0px 5px' }}>
-          <Typography style = {{ margin: '10px 0px' }} variant = 'body1'>Player boxscore</Typography>
-          <Chip sx = {{ margin: '0px 10px 10px 10px' }} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => { setBoxscoreSide('away'); }} label = {Game.getTeamName('away')} />
-          <Chip sx = {{ margin: '0px 10px 10px 10px' }} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => { setBoxscoreSide('home'); }} label = {Game.getTeamName('home')} />
+          {/* <ButtonSwitch leftTitle={Game.getTeamName('away')} rightTitle={Game.getTeamName('home')} selected = {boxscoreSide === 'away' ? 'left' : 'right'} handleClick={() => { setBoxscoreSide(boxscoreSide === 'away' ? 'home' : 'away'); }} /> */}
+          <div style = {{ textAlign: 'center' }}>
+            <Chip sx = {{ margin: '0px 10px 10px 10px' }} variant = {boxscoreSide === 'away' ? 'filled' : 'outlined'} color = {boxscoreSide === 'away' ? 'success' : 'primary'} onClick= {() => { setBoxscoreSide('away'); }} label = {Game.getTeamName('away')} />
+            <Chip sx = {{ margin: '0px 10px 10px 10px' }} variant = {boxscoreSide === 'home' ? 'filled' : 'outlined'} color = {boxscoreSide === 'home' ? 'success' : 'primary'} onClick= {() => { setBoxscoreSide('home'); }} label = {Game.getTeamName('home')} />
+          </div>
           <TableContainer component={Paper}>
             <Table size="small" aria-label="team boxscore table">
               <TableHead>
@@ -735,11 +738,6 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
                     return null;
                   }
 
-                  if (
-                    !row.minutes_played
-                  ) {
-                    return null;
-                  }
 
                   let player_name = (row.first_name ? `${row.first_name.charAt(0)}. ` : '') + row.last_name;
 
@@ -753,12 +751,12 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
                       <>
                         <TableCell>{player_name}</TableCell>
                         <TableCell>{row.minutes_played}</TableCell>
-                        <TableCell>{row.points}</TableCell>
+                        <TableCell>{row.points || 0}</TableCell>
 
                         <TableCell>
                           <div style = {{ display: 'flex', flexDirection: 'column' }}>
                             <div>
-                              {row.field_goal}-{row.field_goal_attempts}
+                              {row.field_goal || 0}-{row.field_goal_attempts || 0}
                             </div>
                             <div style = {{ color: theme.palette.grey[500] }}>
                               {row.field_goal_percentage}%
@@ -769,7 +767,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
                         <TableCell>
                           <div style = {{ display: 'flex', flexDirection: 'column' }}>
                             <div>
-                              {row.two_point_field_goal}-{row.two_point_field_goal_attempts}
+                              {row.two_point_field_goal || 0}-{row.two_point_field_goal_attempts || 0}
                             </div>
                             <div style = {{ color: theme.palette.grey[500] }}>
                               {row.two_point_field_goal_percentage}%
@@ -780,7 +778,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
                         <TableCell>
                           <div style = {{ display: 'flex', flexDirection: 'column' }}>
                             <div>
-                              {row.three_point_field_goal}-{row.three_point_field_goal_attempts}
+                              {row.three_point_field_goal || 0}-{row.three_point_field_goal_attempts || 0}
                             </div>
                             <div style = {{ color: theme.palette.grey[500] }}>
                               {row.three_point_field_goal_percentage}%
@@ -791,7 +789,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
                         <TableCell>
                           <div style = {{ display: 'flex', flexDirection: 'column' }}>
                             <div>
-                              {row.free_throws}-{row.free_throw_attempts}
+                              {row.free_throws || 0}-{row.free_throw_attempts || 0}
                             </div>
                             <div style = {{ color: theme.palette.grey[500] }}>
                               {row.free_throw_percentage}%
@@ -799,13 +797,13 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
                           </div>
                         </TableCell>
 
-                        <TableCell>{row.offensive_rebounds}</TableCell>
-                        <TableCell>{row.defensive_rebounds}</TableCell>
-                        <TableCell>{row.assists}</TableCell>
-                        <TableCell>{row.steals}</TableCell>
-                        <TableCell>{row.blocks}</TableCell>
-                        <TableCell>{row.turnovers}</TableCell>
-                        <TableCell>{row.fouls}</TableCell>
+                        <TableCell>{row.offensive_rebounds || 0}</TableCell>
+                        <TableCell>{row.defensive_rebounds || 0}</TableCell>
+                        <TableCell>{row.assists || 0}</TableCell>
+                        <TableCell>{row.steals || 0}</TableCell>
+                        <TableCell>{row.blocks || 0}</TableCell>
+                        <TableCell>{row.turnovers || 0}</TableCell>
+                        <TableCell>{row.fouls || 0}</TableCell>
                       </>
                     );
                   };
@@ -820,18 +818,18 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
                 <TableRow>
                   <TableCell>Total</TableCell>
                   <TableCell>-</TableCell>
-                  <TableCell>{boxscoreTotal.points}</TableCell>
-                  <TableCell>{boxscoreTotal.field_goal}-{boxscoreTotal.field_goal_attempts} {boxscoreTotal.field_goal_percentage}%</TableCell>
-                  <TableCell>{boxscoreTotal.two_point_field_goal}-{boxscoreTotal.two_point_field_goal_attempts} {boxscoreTotal.two_point_field_goal_percentage}%</TableCell>
-                  <TableCell>{boxscoreTotal.three_point_field_goal}-{boxscoreTotal.three_point_field_goal_attempts} {boxscoreTotal.three_point_field_goal_percentage}%</TableCell>
-                  <TableCell>{boxscoreTotal.free_throws}-{boxscoreTotal.free_throw_attempts} {boxscoreTotal.free_throw_percentage}%</TableCell>
-                  <TableCell>{boxscoreTotal.offensive_rebounds}</TableCell>
-                  <TableCell>{boxscoreTotal.defensive_rebounds}</TableCell>
-                  <TableCell>{boxscoreTotal.assists}</TableCell>
-                  <TableCell>{boxscoreTotal.steals}</TableCell>
-                  <TableCell>{boxscoreTotal.blocks}</TableCell>
-                  <TableCell>{boxscoreTotal.turnovers}</TableCell>
-                  <TableCell>{boxscoreTotal.fouls}</TableCell>
+                  <TableCell>{boxscoreTotal.points || 0}</TableCell>
+                  <TableCell>{boxscoreTotal.field_goal || 0}-{boxscoreTotal.field_goal_attempts || 0} {boxscoreTotal.field_goal_percentage}%</TableCell>
+                  <TableCell>{boxscoreTotal.two_point_field_goal || 0}-{boxscoreTotal.two_point_field_goal_attempts || 0} {boxscoreTotal.two_point_field_goal_percentage}%</TableCell>
+                  <TableCell>{boxscoreTotal.three_point_field_goal || 0}-{boxscoreTotal.three_point_field_goal_attempts || 0} {boxscoreTotal.three_point_field_goal_percentage}%</TableCell>
+                  <TableCell>{boxscoreTotal.free_throws || 0}-{boxscoreTotal.free_throw_attempts || 0} {boxscoreTotal.free_throw_percentage}%</TableCell>
+                  <TableCell>{boxscoreTotal.offensive_rebounds || 0}</TableCell>
+                  <TableCell>{boxscoreTotal.defensive_rebounds || 0}</TableCell>
+                  <TableCell>{boxscoreTotal.assists || 0}</TableCell>
+                  <TableCell>{boxscoreTotal.steals || 0}</TableCell>
+                  <TableCell>{boxscoreTotal.blocks || 0}</TableCell>
+                  <TableCell>{boxscoreTotal.turnovers || 0}</TableCell>
+                  <TableCell>{boxscoreTotal.fouls || 0}</TableCell>
                 </TableRow>
               </TableFooter>
             </Table>
