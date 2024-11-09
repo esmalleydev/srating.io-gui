@@ -34,9 +34,7 @@ const StatusPicker = () => {
 
   const statusOptions = [{ value: 'pre', label: 'Upcoming' }, { value: 'live', label: 'Live' }, { value: 'final', label: 'Final' }];
 
-
-  const handleStatuses = (value) => {
-    handleClose();
+  const handleStatuses = (value: string) => {
     dispatch(updateStatuses(value));
   };
 
