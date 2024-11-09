@@ -430,11 +430,12 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
   return (
     <div
+      style = {divStyle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
     >
-      <Paper elevation={3} style = {divStyle} ref = {ref}>
+      <Paper elevation={3} ref = {ref}>
         {
           isVisible ?
           <>
