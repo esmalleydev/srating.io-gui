@@ -85,26 +85,29 @@ class Game {
    * Get the time remaining in game
    */
   getGameTime(): string {
-    // if (this.isInProgress() && !this.getGame().current_period) {
-    //   return 'Half';
-    // }
-    let formatted_period = this.getGame().current_period;
-    if (formatted_period === '1ST HALF') {
-      formatted_period = '1st';
-    } else if (formatted_period === '2ND HALF') {
-      formatted_period = '2nd';
-    }
-
+    const period = this.getGame().current_period;
     if (
-      this.getGame().clock === '00:00' &&
-      formatted_period &&
+      (this.getGame().clock === '00:00' || this.getGame().clock === '00:00.00') &&
+      period &&
       (
-        (Organization.getCBBID() === this.getGame().organization_id && formatted_period.toUpperCase() === '2ND') ||
-        (Organization.getCFBID() === this.getGame().organization_id && formatted_period.toUpperCase() === '4TH')
+        (Organization.getCBBID() === this.getGame().organization_id && period.toUpperCase() === '2ND') ||
+        (Organization.getCFBID() === this.getGame().organization_id && period.toUpperCase() === '4TH')
       ) &&
       this.getGame().home_score !== this.getGame().away_score
     ) {
       return 'Finalizing game...';
+    }
+
+    if (
+      (this.getGame().clock === '00:00' || this.getGame().clock === '00:00.00') &&
+      period &&
+      (
+        (Organization.getCBBID() === this.getGame().organization_id && period.toUpperCase() === '1ST')
+      ) &&
+      +this.getGame().home_score !== 0 &&
+      +this.getGame().away_score !== 0
+    ) {
+      return 'Half';
     }
 
     let text = '';
@@ -113,8 +116,8 @@ class Game {
       text += this.getGame().clock;
     }
 
-    if (formatted_period) {
-      text += (text.length ? ' ' : '') + formatted_period;
+    if (period) {
+      text += (text.length ? ' ' : '') + period;
     }
 
     if (!text) {
