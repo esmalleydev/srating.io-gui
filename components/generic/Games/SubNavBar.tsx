@@ -44,6 +44,7 @@ const SubNavBar = () => {
     right: 0,
   };
 
+  // todo make conf picker like status picker?
 
   return (
     <div style = {subHeaderStyle}>

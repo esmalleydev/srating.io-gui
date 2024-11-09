@@ -59,6 +59,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const hideOdds = useAppSelector((state) => state.displayReducer.hideOdds);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
 
   const scrollRef = useScrollContext();
@@ -159,7 +160,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       <div style = {flexContainer} >
         <div style = {timeStyle}><Typography color = {Game.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{Game.getTime()}</Typography>{network}</div>
         {
-          displayCardView === 'compact' && !Game.isFinal() && oddsTexts.length ?
+          displayCardView === 'compact' && !Game.isFinal() && oddsTexts.length && hideOdds !== 1 ?
             <div><Typography style={{ fontSize: '11px' }} variant = 'overline' color={'text.secondary'}>{oddsTexts.join(' | ')}</Typography></div>
             : ''
         }
@@ -268,7 +269,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   };
 
 
-  const getTeamLine = (side) => {
+  const getTeamLine = (side: string) => {
     const flexContainer: React.CSSProperties = {
       display: 'flex',
       margin: '5px 0px',
@@ -294,17 +295,20 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
     // is picked
     if (
+      hideOdds !== 1 &&
       (
-        side === 'home' &&
-        game.prediction &&
-        game.prediction.home_percentage !== null &&
-        game.prediction.home_percentage > game.prediction.away_percentage
-      ) ||
-      (
-        side === 'away' &&
-        game.prediction &&
-        game.prediction.home_percentage !== null &&
-        game.prediction.home_percentage < game.prediction.away_percentage
+        (
+          side === 'home' &&
+          game.prediction &&
+          game.prediction.home_percentage !== null &&
+          game.prediction.home_percentage > game.prediction.away_percentage
+        ) ||
+        (
+          side === 'away' &&
+          game.prediction &&
+          game.prediction.home_percentage !== null &&
+          game.prediction.home_percentage < game.prediction.away_percentage
+        )
       )
     ) {
       scoreStyle.border = `2px solid ${theme.palette.secondary.dark}`;
@@ -362,7 +366,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
               <Record game={game} team_id={team_id} />
             </div>
             {
-              displayCardView === 'compact' && !Game.isFinal() ?
+              displayCardView === 'compact' && !Game.isFinal() && hideOdds !== 1 ?
                 <div><Typography style={{ fontSize: '11px' }} variant = 'overline' color={(Game.oddsReversal(side) ? theme.palette.warning.main : 'text.secondary')}>{/* overUnder ? overUnder + ' | ' : '' */}{/* spread ? spread + ' | ' : '' */}{moneyLineToUse}</Typography></div>
                 : ''
             }
@@ -391,7 +395,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
           {getTeamLine('home')}
         </div>
         {
-          displayCardView === 'compact' ?
+          displayCardView === 'compact' && hideOdds !== 1 ?
           <div style = {{ display: 'flex', flexFlow: 'column', padding: `0px ${hasAccessToPercentages || isLoadingWinPercentage ? 5 : 0}px` }}>
             <div style={{
               minHeight: 40, minWidth: 24, textAlign: 'center', lineHeight: '40px',
@@ -440,7 +444,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
             displayCardView === 'large' ?
               <div style = {{ padding: '0px 10px 10px 10px' }}>
                 <hr style ={{ marginTop: 0 }} />
-                {getOddsLine()}
+                {hideOdds !== 1 ? getOddsLine() : ''}
               </div>
               : ''
           }

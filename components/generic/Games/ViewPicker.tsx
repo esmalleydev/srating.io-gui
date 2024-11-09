@@ -3,14 +3,11 @@
 import React from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 
-import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setCardView } from '@/redux/features/display-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { setScrollTop } from '@/redux/features/games-slice';
-
-// todo when changing view, do not scroll to the top
 
 const ViewPicker = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +17,8 @@ const ViewPicker = () => {
 
   const handleView = (nextView: string) => {
     dispatch(setCardView(nextView));
+
+    // todo this seems to still scroll to the top
     if (
       scrollRef &&
       scrollRef.current
@@ -31,18 +30,10 @@ const ViewPicker = () => {
 
   return (
     <>
-      <Tooltip title = {'View compact mode'}>
+      <Tooltip title = {cardsView === 'large' ? 'View compact mode' : 'View card mode'}>
         <IconButton
-          id = 'compact-button'
-          onClick = {() => handleView('compact')}
-        >
-          <ViewListIcon color = {cardsView === 'compact' ? 'success' : 'primary'} />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title = {'View card mode'}>
-        <IconButton
-          id = 'large-card-button'
-          onClick = {() => handleView('large')}
+          id = 'view-card-mode-button'
+          onClick = {() => handleView(cardsView === 'large' ? 'compact' : 'large')}
         >
           <ViewModuleIcon color = {cardsView === 'large' ? 'success' : 'primary'} />
         </IconButton>

@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 
-import TripleDotsIcon from '@mui/icons-material/MoreVert';
+import SettingsIcon from '@mui/icons-material/Settings';
+import CheckIcon from '@mui/icons-material/Check';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
 import RankPicker from '@/components/generic/RankPicker';
-import { Tooltip } from '@mui/material';
+import { Divider, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setOdds } from '@/redux/features/display-slice';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
   const [rankPickerOpen, setRankPickerOpen] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const hideOdds = useAppSelector((state) => state.displayReducer.hideOdds);
 
 
   const handleOpen = (event) => {
@@ -21,6 +28,34 @@ const AdditionalOptions = () => {
 
   const handleClose = () => {
     setAnchor(null);
+  };
+
+  const getMenuItems = () => {
+    const menuItems: React.JSX.Element[] = [];
+
+    menuItems.push(
+      <MenuItem key='rank-display' onClick={() => {
+        setRankPickerOpen(true);
+        handleClose();
+      }}>
+        <ListItemText>Rank display</ListItemText>
+      </MenuItem>,
+    );
+
+    menuItems.push(<Divider key = {'menu-divider'} />);
+
+    menuItems.push(
+      <MenuItem key='odds-display' onClick={() => {
+        dispatch(setOdds(hideOdds === 1 ? 0 : 1));
+      }}>
+         <ListItemIcon>
+           {hideOdds ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
+         </ListItemIcon>
+        <ListItemText>Hide odds</ListItemText>
+      </MenuItem>,
+    );
+
+    return menuItems;
   };
 
 
@@ -34,23 +69,18 @@ const AdditionalOptions = () => {
             aria-haspopup="true"
             onClick={handleOpen}
           >
-            <TripleDotsIcon />
+            <SettingsIcon />
         </IconButton>
-        </Tooltip>
-        <Menu
-          id="long-menu"
-          anchorEl={anchor}
-          open={open}
-          onClose={handleClose}
-        >
-          <MenuItem key='rank-display' onClick={() => {
-            setRankPickerOpen(true);
-            handleClose();
-          }}>
-            Rank display
-          </MenuItem>
-        </Menu>
-        <RankPicker open = {rankPickerOpen} openHandler = {() => { setRankPickerOpen(true); }} closeHandler = {() => { setRankPickerOpen(false); }} />
+      </Tooltip>
+      <Menu
+        id="long-menu"
+        anchorEl={anchor}
+        open={open}
+        onClose={handleClose}
+      >
+        {getMenuItems()}
+      </Menu>
+      <RankPicker open = {rankPickerOpen} openHandler = {() => { setRankPickerOpen(true); }} closeHandler = {() => { setRankPickerOpen(false); }} />
     </div>
   );
 };

@@ -6,6 +6,7 @@ const conferencesLocalStorageKey = 'DISPLAY.CONFERENCE_IDS';
 const positionsLocalStorageKey = 'DISPLAY.POSITIONS';
 const statusesLocalStorageKey = 'DISPLAY.STATUSES';
 const cardsViewLocalStorageKey = 'DISPLAY.GAMES.CARDSVIEW';
+const oddsLocalStorageKey = 'DISPLAY.ODDS';
 
 let rankLocalStorage: string | null = null;
 let picksSortLocalStorage: string | null = null;
@@ -13,6 +14,7 @@ let conferencesLocalStorage: string | null = null;
 let positionsLocalStorage: string | null = null;
 let statusesLocalStorage: string | null = null;
 let cardsViewLocalStorage: string | null = null;
+let oddsLocalStorage: string | null = null;
 
 if (typeof window !== 'undefined') {
   rankLocalStorage = localStorage.getItem(rankLocalStorageKey);
@@ -21,6 +23,7 @@ if (typeof window !== 'undefined') {
   positionsLocalStorage = localStorage.getItem(positionsLocalStorageKey);
   statusesLocalStorage = localStorage.getItem(statusesLocalStorageKey);
   cardsViewLocalStorage = localStorage.getItem(cardsViewLocalStorageKey);
+  oddsLocalStorage = localStorage.getItem(oddsLocalStorageKey);
 }
 
 type InitialState = {
@@ -30,6 +33,7 @@ type InitialState = {
   positions: string[],
   statuses: string[],
   cardsView: string,
+  hideOdds: number, // 0 or 1
   loading: boolean,
   // season: number,
 };
@@ -41,6 +45,7 @@ const initialState = {
   positions: (positionsLocalStorage && JSON.parse(positionsLocalStorage)) || [],
   statuses: (statusesLocalStorage && JSON.parse(statusesLocalStorage)) || ['pre', 'live', 'final'],
   cardsView: cardsViewLocalStorage || 'compact',
+  hideOdds: +(oddsLocalStorage || 0),
   loading: false,
   // season: new HelperCBB().getCurrentSeason(),
 } as InitialState;
@@ -135,6 +140,12 @@ export const display = createSlice({
       }
       state.cardsView = action.payload;
     },
+    setOdds: (state, action: PayloadAction<number>) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(oddsLocalStorageKey, action.payload.toString());
+      }
+      state.hideOdds = action.payload;
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -142,6 +153,6 @@ export const display = createSlice({
 });
 
 export const {
-  clearLocalStorage, setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView, setLoading,
+  clearLocalStorage, setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView, setLoading, setOdds,
 } = display.actions;
 export default display.reducer;
