@@ -232,8 +232,6 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
     intervalChart = <Chart XAxisDataKey={'time'} YAxisLabel={'Over / Under'} rows={formattedData} lines={lines} YAxisProps={{ scale: 'auto' }} />;
   }
 
-  console.log(formattedData)
-
   return (
     <Contents>
       {intervalCompareChips}
