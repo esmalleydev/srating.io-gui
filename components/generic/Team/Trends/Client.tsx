@@ -189,16 +189,16 @@ const Client = ({ organization_id, division_id, data }: { organization_id: strin
 
     const getLines = () => {
       const lines = [
-        <Line type = 'monotone' hide={inactiveSeries.includes('rank')} name = 'Rank' dataKey = 'rank' stroke = {purple[500]} strokeWidth={2} dot = {false} />,
-        <Line type = 'monotone' hide={inactiveSeries.includes('elo_rank')} name = 'SR (elo)' dataKey = 'elo_rank' stroke = {green[500]} strokeWidth={2} dot = {false} />,
+        <Line type = 'monotone' hide={inactiveSeries.includes('rank')} name = 'Rank' dataKey = 'rank' stroke = {purple[500]} strokeWidth={2} dot = {false} connectNulls = {true} />,
+        <Line type = 'monotone' hide={inactiveSeries.includes('elo_rank')} name = 'SR (elo)' dataKey = 'elo_rank' stroke = {green[500]} strokeWidth={2} dot = {false} connectNulls = {true} />,
       ];
 
       if (Organization.getCBBID() === organization_id) {
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('kenpom_rank')} name = 'Kenpom' dataKey = 'kenpom_rank' stroke = {blue[500]} strokeWidth={2} dot = {false} />);
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('net_rank')} name = 'NET' dataKey = 'net_rank' stroke = {teal[500]} strokeWidth={2} dot = {false} />);
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('srs_rank')} name = 'SRS' dataKey = 'srs_rank' stroke = {lime[300]} strokeWidth={2} dot = {false} />);
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('ap_rank')} name = 'AP' dataKey = 'ap_rank' stroke = {indigo[500]} strokeWidth={2} dot = {false} />);
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('coaches_rank')} name = 'Coach Poll' dataKey = 'coaches_rank' stroke = {yellow[700]} strokeWidth={2} dot = {false} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('kenpom_rank')} name = 'Kenpom' dataKey = 'kenpom_rank' stroke = {blue[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('net_rank')} name = 'NET' dataKey = 'net_rank' stroke = {teal[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('srs_rank')} name = 'SRS' dataKey = 'srs_rank' stroke = {lime[300]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('ap_rank')} name = 'AP' dataKey = 'ap_rank' stroke = {indigo[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('coaches_rank')} name = 'Coach Poll' dataKey = 'coaches_rank' stroke = {yellow[700]} strokeWidth={2} dot = {false} connectNulls = {true} />);
       }
 
       return lines;

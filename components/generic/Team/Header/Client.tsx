@@ -91,7 +91,7 @@ const Client = ({
   const teamHelper = new HelperTeam({ team });
 
   const conferenceName = teamHelper.getConference();
-  const conferenceNumber = (organization_id === Organization.getCFBID() ? CFB.getNumberOfConferences({ division_id, season}) : 35);
+  const conferenceNumber = (organization_id === Organization.getCFBID() ? CFB.getNumberOfConferences({ division_id, season }) : 35);
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
