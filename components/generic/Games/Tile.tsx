@@ -12,7 +12,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 import Locked from '@/components/generic/Billing/Locked';
-import { Button, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import Indicator from '@/components/generic/Indicator';
 import Pin from '@/components/generic/Pin';
 
@@ -411,6 +411,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
   const divStyle = getTileBaseStyle();
 
+  const paperStyle: React.CSSProperties = {};
+
   if (Game.isNeutralSite()) {
     divStyle.height = +(divStyle.height || 0) + 21;
   }
@@ -421,7 +423,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   };
 
   if (hover) {
-    divStyle.backgroundColor = theme.palette.action.hover;
+    paperStyle.backgroundColor = theme.palette.action.hover;
   }
 
   if (displayCardView === 'large') {
@@ -435,7 +437,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
     >
-      <Paper elevation={3} ref = {ref}>
+      <Paper elevation={3} ref = {ref} style = {paperStyle}>
         {
           isVisible ?
           <>
