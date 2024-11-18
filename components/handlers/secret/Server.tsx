@@ -22,7 +22,7 @@ const Server = async () => {
   if (secret && secret.secret_id) {
     expires = new Date(secret.expires).getTime();
 
-    // todo remove
+    // if you want to test locally, need to alter the time by the utc offset
     // expires -= (5 * 60 * 60 * 1000);
   } else {
     error = true;
