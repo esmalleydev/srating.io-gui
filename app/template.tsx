@@ -1,19 +1,20 @@
 'use client';
-import React, { useState, useEffect} from "react";
+
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppSelector } from '@/redux/hooks';
 
-import Header from "@/components/generic/Header";
-import FooterNavigation from "@/components/generic/FooterNavigation";
-import { ScrollContainer, ScrollProvider } from "@/contexts/scrollContext";
-import Spinner from "@/components/generic/Spinner";
+import Header from '@/components/generic/Header';
+import FooterNavigation from '@/components/generic/FooterNavigation';
+import { ScrollContainer, ScrollProvider } from '@/contexts/scrollContext';
+import Spinner from '@/components/generic/Spinner';
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
-  const themeMode = useAppSelector(state => state.themeReducer.mode);
+  const themeMode = useAppSelector((state) => state.themeReducer.mode);
 
   const windowDimensions = useWindowDimensions() as Dimensions;
   const { width } = windowDimensions || {};
@@ -29,16 +30,16 @@ const Template = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const darkTheme = createTheme({
-    'palette': {
-      'mode': 'dark',
+    palette: {
+      mode: 'dark',
     },
   });
-  
+
   const lightTheme = createTheme({
-    'palette': {
-      'mode': 'light',
-      'background': {
-        'default': "#efefef"
+    palette: {
+      mode: 'light',
+      background: {
+        default: '#efefef',
       },
     },
   });
@@ -60,14 +61,14 @@ const Template = ({ children }: { children: React.ReactNode }) => {
           <div>
             <Spinner />
             <Header />
-              <div style = {{'padding': paddingTop + ' 0px 56px 0px'}}>
+              <div style = {{ padding: `${paddingTop} 0px 56px 0px` }}>
                 {children}
               </div>
             <FooterNavigation />
           </div>
         </ScrollContainer>
       </ScrollProvider>
-      : ''
+        : ''
       }
     </ThemeProvider>
   );

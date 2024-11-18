@@ -1,7 +1,7 @@
 'use client';
 
 import { Container, Typography, Box } from '@mui/material';
- 
+
 export default function NotFound() {
   return (
     <Container component="main" maxWidth="sm" style={{ textAlign: 'center', marginTop: '20vh' }}>
@@ -14,5 +14,5 @@ export default function NotFound() {
         </Typography>
       </Box>
     </Container>
-  )
-};
+  );
+}

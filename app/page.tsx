@@ -1,5 +1,5 @@
 import HomePage from './home-page';
-import { Metadata } from 'next'
+import { Metadata } from 'next';
 
 /**
  * https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields
@@ -14,9 +14,9 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'View stats, ranking, live scores, live odds, picks for college basketball',
-  }
+  },
 };
 
 export default async function Page() {
   return <HomePage />;
-};
+}

@@ -1,9 +1,10 @@
 'use server';
+
 import '../styles/global.css';
 import 'typeface-roboto';
 
 import React from 'react';
-import Script from 'next/script'
+import Script from 'next/script';
 
 import StoreProvider from './StoreProvider';
 import SessionHandler from '@/components/handlers/SessionHandler';
@@ -14,16 +15,18 @@ import DictionaryWrapper from '@/components/handlers/dictionary/ClientWrapper';
 import DictionaryHandler from '@/components/handlers/dictionary/Server';
 import LayoutWrapper from './LayoutWrapper';
 import MutationHandler from '@/components/handlers/MutationHandler';
+// import SecretHandler from '@/components/handlers/SecretHandler';
 
 
 
-export default async function RootLayout({children}: {children: React.ReactNode}) {
+export default async function RootLayout({ children }: {children: React.ReactNode}) {
   return (
     <html lang="en">
       <StoreProvider>
         <LayoutWrapper>
           <MutationHandler />
           <SecretWrapper><SecretHandler /></SecretWrapper>
+          {/* <SecretHandler /> */}
           <SessionHandler />
           <FavoriteHandler />
           <DictionaryWrapper><DictionaryHandler /></DictionaryWrapper>
@@ -42,5 +45,5 @@ export default async function RootLayout({children}: {children: React.ReactNode}
       </StoreProvider>
     </html>
   );
-};
+}
 

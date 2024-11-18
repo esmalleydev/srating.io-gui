@@ -13,20 +13,20 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'College basketball API / Picks',
-  }
+  },
 };
 
 const Terms = () => {
   return (
     <div>
       <main>
-        <div style = {{'padding': 20}}>
+        <div style = {{ padding: 20 }}>
           <Typography variant='h3'>SRATING API Terms and Conditions</Typography>
           <Typography variant='body1'>By purchasing any of our products, you agree to these terms and conditions.</Typography>
           <br />
           <Typography variant='body1'>These Terms and Conditions ("Agreement") govern your access to and use of the API and Picks provided by SRATING LLC ("Company," "we," "us," or "our"). By accessing or using the API or Picks, you agree to comply with these terms. If you do not agree with these terms, you may not access or use the API or Picks.</Typography>
           <br />
-          
+
           <Typography variant='h5'>1. Definitions</Typography>
           <br />
           <Typography variant='body1'>1.1. "API" refers to the application programming interface provided by SRATING LLC, including any related documentation, tools, and materials.</Typography>
@@ -79,6 +79,6 @@ const Terms = () => {
       </main>
     </div>
   );
-}
+};
 
 export default Terms;

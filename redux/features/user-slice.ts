@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 type InitialState = {
   session_id: string | null,
   secret_id: string | null,
+  innerTag: string | null,
   isValidSession: boolean,
   loadingSecret: boolean,
 };
@@ -11,6 +12,7 @@ type InitialState = {
 const initialState = {
   session_id: (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null,
   secret_id: null,
+  innerTag: null,
   isValidSession: false,
   loadingSecret: false,
 } as InitialState;
@@ -21,6 +23,9 @@ export const user = createSlice({
   reducers: {
     setSession: (state, action: PayloadAction<string|null>) => {
       state.session_id = action.payload;
+    },
+    setInnerTag: (state, action: PayloadAction<string|null>) => {
+      state.innerTag = action.payload;
     },
     setValidSession: (state, action: PayloadAction<boolean>) => {
       state.isValidSession = action.payload;
@@ -41,5 +46,5 @@ export const user = createSlice({
   },
 });
 
-export const { setSession, setValidSession, setSecret, setLoadingSecret } = user.actions;
+export const { setSession, setValidSession, setSecret, setLoadingSecret, setInnerTag } = user.actions;
 export default user.reducer;

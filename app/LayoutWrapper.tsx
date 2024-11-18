@@ -1,4 +1,5 @@
 'use client';
+
 import { Box, CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
@@ -22,7 +23,7 @@ const LayoutWrapper = ({ children }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100vh'
+            height: '100vh',
           }}
         >
           <CircularProgress />
@@ -30,7 +31,7 @@ const LayoutWrapper = ({ children }) => {
       </body>
     );
   }
-  
+
   return (
     <body>
       {children}

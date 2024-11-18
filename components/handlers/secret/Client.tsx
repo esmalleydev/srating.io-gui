@@ -9,23 +9,42 @@ import { setLoading } from '@/redux/features/display-slice';
 
 let intervalRefresher: NodeJS.Timeout;
 
-// todo handle, getting a secret that expires in 1 minute, this will not refresh until 9 mins? breaking all calls since it is invalid
 
-const Client = ({ secret, tag }) => {
+const Client = ({ secret, tag, expires, error }) => {
   const dispatch = useAppDispatch();
+  const loading = useAppSelector((state) => state.displayReducer.loading);
   const secret_id = useAppSelector((state) => state.userReducer.secret_id);
   const [idle, setIdle] = useState<boolean>(false);
 
   const refreshRate = 60 * 10; // 10 mins
   // const refreshRate = 5;
+  console.log('client')
+  // console.log(secret)
+  console.log(new Date(expires))
+  console.log(new Date())
+
+
+
+  const checkExpired = () => {
+    return (expires < new Date().getTime());
+  };
+
+  const triggerRefresh = () => {
+    console.log('do it')
+    dispatch(setLoading(true));
+    refresh(tag);
+  };
+
+  console.log(checkExpired())
 
   const onIdle = () => {
+    console.log('idle')
     setIdle(true);
   };
 
-  const onActive = () => {
+  const onActive = async () => {
     if (idle) {
-      refresh(tag);
+      console.log('active')
       setIdle(false);
     }
   };
@@ -33,28 +52,37 @@ const Client = ({ secret, tag }) => {
   useIdleTimer({
     onIdle,
     onActive,
-    timeout: 1000 * 60 * 5, // 5 mins
+    // timeout: 1000 * 60 * 5, // 5 mins
+    timeout: 1000 * 5, // 5 mins
     throttle: 500,
   });
 
   useEffect(() => {
-    intervalRefresher = setInterval(() => {
-      dispatch(setLoading(true));
-      // dispatch(setLoadingSecret(true));
-      refresh(tag).then(() => {
-        dispatch(setLoading(false));
-        // dispatch(setLoadingSecret(false));
-      });
+    console.log('use effect')
+    intervalRefresher = setInterval(async () => {
+      console.log('interval')
+      if (checkExpired() && !loading && !error) {
+        triggerRefresh();
+      }
     }, refreshRate * 1000);
     return function clean_up() {
       clearInterval(intervalRefresher);
     };
   });
 
+  useEffect(() => {
+    console.log('secondary use effect')
+    if (checkExpired() && !loading && !error) {
+      triggerRefresh();
+    }
 
-  if (secret_id !== secret) {
-    dispatch(setSecret(secret));
-  }
+    if (secret_id !== secret) {
+      console.log('set the secret')
+      dispatch(setSecret(secret));
+      dispatch(setLoading(false));
+    }
+  }, [secret, error, expires, idle]);
+
 
   return null;
 };

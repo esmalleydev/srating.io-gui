@@ -5,7 +5,7 @@ import React from 'react';
 
 const ClientWrapper = ({ children }) => {
   // const loadingSecret = useAppSelector(state => state.userReducer.loadingSecret);
-
+  console.log('client wrapper')
   return (
     <>
       {/* <BackdropLoader open = {loadingSecret} /> */}

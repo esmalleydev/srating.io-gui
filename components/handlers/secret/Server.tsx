@@ -1,13 +1,11 @@
 'use server';
 
-import React from 'react';
-
 import { useServerAPI } from '@/components/serverAPI';
 import Client from './Client';
 import { unstable_noStore } from 'next/cache';
 
 
-const Server = async ({}) => {
+const Server = async () => {
   unstable_noStore();
 
   const tag = 'refresher.secret';
@@ -18,9 +16,22 @@ const Server = async ({}) => {
     arguments: {},
   }, { tags: [tag], revalidate: 60 });
 
+  let error = false;
+  let expires = Infinity;
+
+  if (secret && secret.secret_id) {
+    expires = new Date(secret.expires).getTime();
+
+    // todo remove
+    // expires -= (5 * 60 * 60 * 1000);
+  } else {
+    error = true;
+  }
+
+
   return (
     <>
-      <Client secret={secret} tag = {tag} />
+      <Client secret={secret.secret_id} tag = {tag} expires = {expires} error = {error} />
     </>
   );
 };

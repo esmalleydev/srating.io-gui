@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
 import { Container, Typography, Button, Box } from '@mui/material';
- 
+
 export default function GlobalError({
   error,
   reset,
@@ -9,11 +9,10 @@ export default function GlobalError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-
   const handleReload = () => {
     window.location.reload();
   };
-  
+
   return (
     <html>
       <body>
