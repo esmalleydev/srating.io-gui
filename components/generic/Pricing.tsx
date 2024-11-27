@@ -19,7 +19,15 @@ const Pricing = ({ view }) => {
   const [billingOpen, setBillingOpen] = useState(false);
   const [selectedPricing, setSelectedPricing] = useState({});
 
-  const [selectedView, setSelectedView] = useState(view || 'picks');
+  const leftSwitch = 'Picks';
+  const rightSwitch = 'API';
+
+  let s = leftSwitch;
+  if (view === 'api') {
+    s = rightSwitch;
+  }
+
+  const [selectedView, setSelectedView] = useState(s);
 
   const handleBilling = (priceOption) => {
     setSelectedPricing(priceOption);
@@ -28,15 +36,6 @@ const Pricing = ({ view }) => {
 
   const handleBillingClose = () => {
     setBillingOpen(false);
-  };
-
-  const handleSelectedView = (value) => {
-    if (value === 'left') {
-      setSelectedView('picks');
-    }
-    if (value === 'right') {
-      setSelectedView('api');
-    }
   };
 
   const picksOptions = [
@@ -174,9 +173,9 @@ const Pricing = ({ view }) => {
   return (
    <div>
     <Billing open = {billingOpen} closeHandler = {handleBillingClose} pricing = {selectedPricing} />
-    <ButtonSwitch leftTitle='Picks' rightTitle='API' selected = {selectedView === 'picks' ? 'left' : 'right'} handleClick={handleSelectedView} />
+    <ButtonSwitch leftTitle={leftSwitch} rightTitle={rightSwitch} selected = {selectedView} handleClick={(e) => setSelectedView(e)} />
     {
-    selectedView === 'picks' ?
+    selectedView === leftSwitch ?
     <>
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='h5'>Picks access</Typography>
       <div style = {{ textAlign: 'center', margin: '10px 0px' }}><Button startIcon = {<PicksIcon />} variant='outlined' onClick={() => { router.push('/cbb/picks'); }}>View Picks</Button></div>
@@ -191,8 +190,7 @@ const Pricing = ({ view }) => {
     <>
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='h5'>API access <sup style = {{ fontSize: '14px' }}>beta</sup></Typography>
       <div style = {{ textAlign: 'center', margin: '10px 0px' }}><Button endIcon = {<LaunchIcon />} variant='outlined' onClick={() => { window.open('https://docs.srating.io/', '_blank'); }}>API Documentation</Button></div>
-      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='body1'>Our <Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {() => { router.push('/cbb/picks'); }}>GUI</Link> uses this same API!</Typography>
-      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='body1'>Set up takes less than 5 mins</Typography>
+      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='body1'>Set up takes less than 5 mins!</Typography>
       <Grid container spacing={4} style = {{ justifyContent: 'center' }}>
         {apiOptions.map((option) => {
           return getPriceCard(option);

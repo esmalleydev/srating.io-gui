@@ -3,16 +3,16 @@
 import { Typography, useTheme } from '@mui/material';
 
 const ButtonSwitch = (
-  { leftTitle, rightTitle, selected, handleClick }:
-  { leftTitle: string, rightTitle: string, selected: string, handleClick: (value: string) => void },
+  { leftTitle, rightTitle, selected, handleClick, fontSize = '0.85rem', style = {} }:
+  { leftTitle: string, rightTitle: string, selected: string, handleClick: (value: string) => void, fontSize?: string, style?: React.CSSProperties },
 ) => {
   const theme = useTheme();
 
   const unSelectedColor = theme.palette.mode === 'light' ? theme.palette.grey['300'] : theme.palette.grey['900'];
   const selectedColor = theme.palette.info.dark;
 
-  const leftBackgroundColor = selected === 'left' ? selectedColor : unSelectedColor;
-  const rightBackgroundColor = selected === 'right' ? selectedColor : unSelectedColor;
+  const leftBackgroundColor = (selected === leftTitle ? selectedColor : unSelectedColor);
+  const rightBackgroundColor = (selected === rightTitle ? selectedColor : unSelectedColor);
 
   const containerStyle: React.CSSProperties = {
     width: '100%',
@@ -35,13 +35,13 @@ const ButtonSwitch = (
   };
 
   return (
-    <div style = {{ width: '100%', maxWidth: 300, margin: 'auto' }}>
+    <div style = {({ width: '100%', maxWidth: 300, margin: 'auto', ...style })}>
       <div style = {containerStyle}>
-        <div style = {({ backgroundColor: leftBackgroundColor, ...buttonStyle })} onClick={() => { handleClick('left'); }}>
-          <Typography style = {{ color: theme.palette.getContrastText(leftBackgroundColor) }} variant = 'button'>{leftTitle}</Typography>
+        <div style = {({ backgroundColor: leftBackgroundColor, ...buttonStyle })} onClick={() => { handleClick(leftTitle); }}>
+          <Typography style = {{ color: theme.palette.getContrastText(leftBackgroundColor), fontSize }} variant = 'button'>{leftTitle}</Typography>
         </div>
-        <div style = {({ backgroundColor: rightBackgroundColor, ...buttonStyle })} onClick={() => { handleClick('right'); }}>
-          <Typography style = {({ color: theme.palette.getContrastText(rightBackgroundColor) })} variant = 'button'>{rightTitle}</Typography>
+        <div style = {({ backgroundColor: rightBackgroundColor, ...buttonStyle })} onClick={() => { handleClick(rightTitle); }}>
+          <Typography style = {({ color: theme.palette.getContrastText(rightBackgroundColor), fontSize })} variant = 'button'>{rightTitle}</Typography>
         </div>
       </div>
     </div>

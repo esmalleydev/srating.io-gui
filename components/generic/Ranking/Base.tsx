@@ -126,7 +126,7 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
         !tableFullscreen ?
             <div style = {{ padding: '5px 20px 0px 20px' }}>
               <div style = {{ display: 'flex', justifyContent: 'right', flexWrap: 'wrap' }}>
-                <OptionPicker title = 'View' options = {rankViewOptions} selected = {view} actionHandler = {handleRankView} />
+                <OptionPicker buttonName = {`${view} rankings`} options = {rankViewOptions} selected = {view} actionHandler = {handleRankView} isRadio = {true} />
                 <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
               </div>
               <Typography variant = {width < 500 ? 'h6' : 'h5'}>{title}</Typography>

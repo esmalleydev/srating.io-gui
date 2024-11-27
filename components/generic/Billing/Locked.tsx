@@ -11,7 +11,7 @@ import { setLoading } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
 
 
-const Locked = ({ iconFontSize }) => {
+const Locked = ({ iconFontSize, iconPadding = 8 }) => {
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const router = useRouter();
@@ -22,6 +22,12 @@ const Locked = ({ iconFontSize }) => {
 
   const path = Organization.getPath({ organizations, organization_id });
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+    setOpenDialog(true);
+  };
 
   const handleSubscribe = () => {
     dispatch(setLoading(true));
@@ -39,13 +45,15 @@ const Locked = ({ iconFontSize }) => {
     });
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setOpenDialog(false);
   };
 
   return (
     <>
-      <IconButton onClick={() => { setOpenDialog(true); }}><LockIcon style={{ fontSize: iconFontSize || '24px' }} color='error' /></IconButton>
+      <IconButton style = {{ padding: iconPadding }} onClick={handleClick}><LockIcon style={{ fontSize: iconFontSize || '24px' }} color='error' /></IconButton>
       <Dialog
         open={openDialog}
         onClose={handleClose}

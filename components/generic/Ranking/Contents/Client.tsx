@@ -229,13 +229,31 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     }
 
     let a_value = a[orderBy];
+    let a_secondary: number | null = null;
     let b_value = b[orderBy];
+    let b_secondary: number | null = null;
     if ((view !== 'coach' && orderBy === 'wins') || orderBy === 'conf_record') {
       a_value = +a[orderBy].split('-')[0];
+      a_secondary = +a[orderBy].split('-')[1];
       b_value = +b[orderBy].split('-')[0];
+      b_secondary = +b[orderBy].split('-')[1];
     }
 
     const direction = (headCells[orderBy] && headCells[orderBy].sort) || 'lower';
+
+    if (
+      a_secondary !== null &&
+      b_secondary !== null &&
+      a_value === b_value
+    ) {
+      // these ones are reversed because we want the lower one (losses to be ranked higher)
+      if (b_secondary < a_secondary) {
+        return direction === 'higher' ? -1 : 1;
+      }
+      if (b_secondary > a_secondary) {
+        return direction === 'higher' ? 1 : -1;
+      }
+    }
 
     if (b_value < a_value) {
       return direction === 'higher' ? 1 : -1;

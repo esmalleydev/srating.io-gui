@@ -1,24 +1,26 @@
 import { useServerAPI } from '@/components/serverAPI';
 import { StatisticRankings } from '@/types/cbb';
-import { Conference, Teams, TeamSeasonConferences } from '@/types/general';
+import { Conference, Elos, Teams, TeamSeasonConferences } from '@/types/general';
 import { Metadata, ResolvingMetadata } from 'next';
 import { unstable_noStore } from 'next/cache';
 
 import HeaderServer from '@/components/generic/Conference/Header/Server';
 import HeaderClientWrapper from '@/components/generic/Conference/Header/ClientWrapper';
 
-// import SeasonsClient from '@/components/generic/Conference/Seasons/Client';
-// import SeasonsClientWrapper from '@/components/generic/Conference/Seasons/ClientWrapper';
+import StandingsClientWrapper from '@/components/generic/Conference/Standings/ClientWrapper';
+import StandingsClient from '@/components/generic/Conference/Standings/Client';
 
-import TeamsClientWrapper from '@/components/generic/Conference/Teams/ClientWrapper';
-import TeamsClient from '@/components/generic/Conference/Teams/Client';
+import TrendsClientWrapper from '@/components/generic/Conference/Trends/ClientWrapper';
+import TrendsServer from '@/components/generic/Conference/Trends/Server';
+import { ClientSkeleton as TrendsClientSkeleton } from '@/components/generic/Conference/Trends/Client';
 
 // import SubNavBar from '@/components/generic/Conference/SubNavBar';
 import ReduxWrapper from '@/components/generic/Conference/ReduxWrapper';
 import NavBar from '@/components/generic/Conference/NavBar';
 import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import Division from '@/components/helpers/Division';
+import PredictionLoader from '@/components/generic/Conference/Standings/PredictionLoader';
+import { Suspense } from 'react';
 
 
 type Props = {
@@ -69,6 +71,7 @@ type Data = {
   team_season_conferences: TeamSeasonConferences;
   teams: Teams;
   statistic_rankings: StatisticRankings;
+  elos: Elos;
   division_id: string | null;
 }
 
@@ -119,7 +122,20 @@ async function getData({ params, searchParams }): Promise<Data> {
   }, { revalidate: revalidateSeconds });
 
 
-  return { team_season_conferences, teams, statistic_rankings, division_id };
+  const elos: Elos = await useServerAPI({
+    class: 'elo',
+    function: 'read',
+    arguments: {
+      organization_id,
+      division_id,
+      team_id: Object.values(teams).map((row) => row.team_id),
+      season,
+      current: '1',
+    },
+  }, { revalidate: revalidateSeconds });
+
+
+  return { team_season_conferences, teams, statistic_rankings, elos, division_id };
 }
 
 // todo this loading is all pretty quick... but when I start to add more data here, update this to split the loading and use suspense like the rest of the app
@@ -131,13 +147,15 @@ export default async function Page({ params, searchParams }) {
   const organization_id = Organization.getCBBID();
   const { division_id } = data;
   const season = searchParams?.season || CBB.getCurrentSeason();
-  const view: string = searchParams?.view || 'teams';
+  const view: string = searchParams?.view || 'standings';
+  const subView: string | null = searchParams?.subview || null;
 
-  const tabOrder = ['teams'];
+  const tabOrder = ['standings', 'trends'];
   const selectedTab = tabOrder[(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0)];
 
   return (
-    <ReduxWrapper team_season_conferences = {data.team_season_conferences} teams = {data.teams} statistic_rankings = {data.statistic_rankings}>
+    <ReduxWrapper team_season_conferences = {data.team_season_conferences} teams = {data.teams} statistic_rankings = {data.statistic_rankings} elos = {data.elos}>
+      <PredictionLoader organization_id={organization_id} conference_id={conference_id} season={season} />
       <HeaderClientWrapper>
         <HeaderServer organization_id={organization_id} division_id={division_id} conference_id = {conference_id} season = {season} />
       </HeaderClientWrapper>
@@ -145,10 +163,19 @@ export default async function Page({ params, searchParams }) {
       {/* <SubNavBar view = {view} /> */}
       <>
         {
-          view === 'teams' ?
-            <TeamsClientWrapper>
-              <TeamsClient organization_id={organization_id} division_id={division_id} conference_id = {conference_id} season = {season} />
-            </TeamsClientWrapper>
+          view === 'standings' ?
+            <StandingsClientWrapper>
+              <StandingsClient organization_id={organization_id} division_id={division_id} conference_id = {conference_id} season = {season} subView = {subView} />
+            </StandingsClientWrapper>
+            : ''
+        }
+        {
+          view === 'trends' ?
+            <TrendsClientWrapper>
+              <Suspense fallback = {<TrendsClientSkeleton />}>
+                <TrendsServer organization_id={organization_id} conference_id={conference_id} season = {season} />
+              </Suspense>
+            </TrendsClientWrapper>
             : ''
         }
       </>

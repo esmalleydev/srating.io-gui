@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
-import { getHeaderHeight } from '../Header/ClientWrapper';
+import { getMarginTop } from '../Header/ClientWrapper';
 
 const ClientWrapper = ({ children }) => {
-  const top = getHeaderHeight();
+  const top = getMarginTop();
   return (
     <div style = {{ marginTop: top }}>
       {children}

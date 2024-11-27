@@ -1,19 +1,11 @@
-import React, { useState } from 'react';
+'use client';
 
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import CloseIcon from '@mui/icons-material/Close';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItem from '@mui/material/ListItem';
-import List from '@mui/material/List';
+import { useState } from 'react';
 
-import Typography from '@mui/material/Typography';
-
+import { Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuList } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
-import IconButton from '@mui/material/IconButton';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 type optionType = {
@@ -21,47 +13,55 @@ type optionType = {
   label: string;
 };
 
-
 const OptionPicker = (
-  { 
-    selected, 
-    title,
+  {
+    selected,
     options,
-    selectedLabel,
-    actionHandler
-  }: 
-  { 
-    selected: string, 
-    title: string, 
+    buttonName,
+    actionHandler,
+    autoClose = true,
+    isRadio = false,
+  }:
+  {
+    selected: string,
     options: Array<optionType>,
-    selectedLabel?: string,
-    actionHandler?: Function
-  }
+    buttonName: string,
+    actionHandler?: (value: string) => void,
+    autoClose?: boolean,
+    isRadio?: boolean,
+  },
 ) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-  for (let i = 0; i < options.length; i++) {
-    if (selected === options[i].value) {
-      selectedLabel = options[i].label;
-      break;
-    }
-  }
-
-  const [open, setOpen] = useState(false);
-
-
-  const handleOpen = () => {
-    setOpen(true);
+  const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
-    setOpen(false);
+    setAnchorEl(null);
   };
+
+  const handleAction = (value: string) => {
+    if (actionHandler) {
+      actionHandler(value);
+    }
+
+    if (autoClose) {
+      handleClose();
+    }
+  };
+
+  const uncheckedIcon = (
+    isRadio ?
+    <RadioButtonUncheckedIcon color = 'primary' fontSize='small' /> :
+    <CheckBoxOutlineBlankIcon color = 'primary' fontSize='small' />
+  );
 
   return (
     <div>
       <Button
-        id="conf-picker-button"
-        aria-controls={open ? 'conf-picker-menu' : undefined}
+        id="option-picker-button"
+        aria-controls={open ? 'option-picker-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         variant="text"
@@ -69,49 +69,34 @@ const OptionPicker = (
         onClick={handleOpen}
         endIcon={<KeyboardArrowDownIcon />}
       >
-        {selectedLabel}
+        {buttonName}
       </Button>
-      <Dialog
-        fullScreen
+      <Menu
+        id="option-menu"
+        anchorEl={anchorEl}
         open={open}
-        // TransitionComponent={Transition}
-        keepMounted
         onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
       >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {title}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <List>
-          {options.map((option) => (
-            <ListItem key={option.value} button onClick={() => {
-              if (actionHandler) {
-                actionHandler(option.value);
-              }
-              handleClose();
-            }}>
-              <ListItemIcon>
-                {selected === option.value ? <CheckIcon /> : ''}
-              </ListItemIcon>
-              <ListItemText primary={option.label} />
-            </ListItem>
-          ))}
-        </List>
-      </Dialog>
+          <MenuList>
+            {options.map((option, index) => {
+              const isSelected = selected.indexOf(option.value) > -1;
+              return (
+                <MenuItem key = {index} onClick = {() => handleAction(option.value)}>
+                  <ListItemIcon>
+                    {
+                      isSelected ?
+                      <CheckIcon color = 'success' fontSize='small' /> :
+                        uncheckedIcon
+                    }
+                  </ListItemIcon>
+                  <ListItemText>{option.label}</ListItemText>
+                </MenuItem>
+              );
+            })}
+          </MenuList>
+      </Menu>
     </div>
   );
-}
+};
 
 export default OptionPicker;

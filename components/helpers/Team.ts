@@ -121,6 +121,17 @@ class Team {
     }
     return null;
   }
+
+  getPrimaryColor() {
+    if (
+      this.getTeam().primary_color
+    ) {
+      return this.getTeam().primary_color;
+    }
+
+    console.warn('team missing primary color');
+    return '#9c27b0';
+  }
 }
 
 export default Team;

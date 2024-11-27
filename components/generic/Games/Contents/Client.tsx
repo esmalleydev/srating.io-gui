@@ -180,15 +180,16 @@ const Client = ({ games, date }) => {
     }
 
     // remove games that are today but still TBA
-    let sortedGametimestamp;
-    if (
-      sortedGame.status === 'pre' &&
-      sortedGame.start_date.split('T')[0] === now &&
-      (sortedGametimestamp = new Date(sortedGame.start_timestamp * 1000)) &&
-      sortedGametimestamp.getHours() >= 0 && sortedGametimestamp.getHours() <= 6
-    ) {
-      continue;
-    }
+    // todo remove...this is bugged, hides games after 12 am
+    // let sortedGametimestamp;
+    // if (
+    //   sortedGame.status === 'pre' &&
+    //   sortedGame.start_date.split('T')[0] === now &&
+    //   (sortedGametimestamp = new Date(sortedGame.start_timestamp * 1000)) &&
+    //   sortedGametimestamp.getHours() >= 0 && sortedGametimestamp.getHours() <= 6
+    // ) {
+    //   continue;
+    // }
     gameContainers.push(<Tile key={i} game={sortedGame} isLoadingWinPercentage = {!datesChecked[date]} />);
   }
 

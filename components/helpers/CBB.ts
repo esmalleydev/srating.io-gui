@@ -5,7 +5,7 @@ class CBB {
    * Return the current default season
    * @return {number}
    */
-  public static getCurrentSeason() {
+  public static getCurrentSeason(): number {
     return 2025;
   }
 

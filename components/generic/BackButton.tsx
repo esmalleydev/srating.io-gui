@@ -1,5 +1,6 @@
 'use client';
-import React, {useTransition} from 'react';
+
+import { useTransition } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { IconButton } from '@mui/material';
 import { useRouter } from 'next/navigation';
@@ -22,10 +23,10 @@ const BackButton = () => {
   return (
     <>
       <IconButton color='primary' onClick = {handleClick}>
-        <ArrowBackIcon  fontSize = 'small' />
+        <ArrowBackIcon fontSize = 'small' />
       </IconButton>
     </>
   );
-}
+};
 
 export default BackButton;

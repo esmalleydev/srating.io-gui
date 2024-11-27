@@ -15,7 +15,6 @@ const getNavHeaderHeight = () => {
 export { getNavHeaderHeight };
 
 const NavBar = ({ view, tabOrder }) => {
-  // const CBB = new HelperCBB();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
@@ -23,7 +22,8 @@ const NavBar = ({ view, tabOrder }) => {
   const dispatch = useAppDispatch();
 
   const tabOptions = {
-    teams: 'Teams',
+    standings: 'Standings',
+    trends: 'Trends',
   };
 
 
