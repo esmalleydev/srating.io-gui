@@ -6,9 +6,6 @@ import {
   YAxisProps,
 } from 'recharts';
 import {
-  purple, blue, teal, lime, green, indigo, yellow,
-} from '@mui/material/colors';
-import {
   useTheme, Typography, Paper, LinearProgress,
   Chip,
 } from '@mui/material';
@@ -20,7 +17,6 @@ import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import { StatisticRankings as CBBStatisticRankings } from '@/types/cbb';
 import { StatisticRankings as CFBStatisticRanking } from '@/types/cfb';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import StatsGraph from './StatsGraph';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { Elos, Games, RankingColumns, TeamSeasonConferences } from '@/types/general';
