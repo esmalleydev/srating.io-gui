@@ -29,7 +29,9 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
     setOpenDialog(true);
   };
 
-  const handleSubscribe = () => {
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(setLoading(true));
     setOpenDialog(false);
     startTransition(() => {
@@ -37,7 +39,9 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
     });
   };
 
-  const handleLiveWinRate = () => {
+  const handleLiveWinRate = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(setLoading(true));
     setOpenDialog(false);
     startTransition(() => {
