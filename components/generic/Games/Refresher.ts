@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
 const Refresher = ({ date, games }) => {
+  const refreshEnabled = useAppSelector((state) => state.gamesReducer.refreshEnabled);
   const refreshRate = useAppSelector((state) => state.gamesReducer.refreshRate);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const division_id = useAppSelector((state) => state.organizationReducer.division_id);
@@ -68,7 +69,7 @@ const Refresher = ({ date, games }) => {
     let intervalRefresher: NodeJS.Timeout;
     let intervalCountdown: NodeJS.Timeout;
 
-    if (!isFinal) {
+    if (!isFinal && refreshEnabled) {
       intervalRefresher = setInterval(() => {
         getData();
       }, refreshRate * 1000);

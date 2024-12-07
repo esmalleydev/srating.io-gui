@@ -48,7 +48,7 @@ const RefreshCounter = () => {
                   color="text.secondary"
                   style = {{ fontSize: 11 }}
                 >{Math.round(refreshCountdown)}</Typography>
-              </Box>
+            </Box>
           </>
         }
       </div>

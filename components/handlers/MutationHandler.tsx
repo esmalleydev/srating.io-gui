@@ -4,6 +4,7 @@ import { setLoading } from '@/redux/features/display-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import Organization from '../helpers/Organization';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
+import { setRefreshEnabled } from '@/redux/features/games-slice';
 
 
 const MutationHandler = () => {
@@ -30,6 +31,7 @@ const MutationHandler = () => {
       }
 
       dispatch(setLoading(false));
+      dispatch(setRefreshEnabled(true));
       dispatch(updateOrganizationID(organization_id));
     }
   });

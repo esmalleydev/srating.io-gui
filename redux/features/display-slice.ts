@@ -6,6 +6,7 @@ const conferencesLocalStorageKey = 'DISPLAY.CONFERENCE_IDS';
 const positionsLocalStorageKey = 'DISPLAY.POSITIONS';
 const statusesLocalStorageKey = 'DISPLAY.STATUSES';
 const cardsViewLocalStorageKey = 'DISPLAY.GAMES.CARDSVIEW';
+const gamesFilterLocalStorageKey = 'DISPLAY.GAMES.FILTER';
 const oddsLocalStorageKey = 'DISPLAY.ODDS';
 
 let rankLocalStorage: string | null = null;
@@ -14,6 +15,7 @@ let conferencesLocalStorage: string | null = null;
 let positionsLocalStorage: string | null = null;
 let statusesLocalStorage: string | null = null;
 let cardsViewLocalStorage: string | null = null;
+let gamesFilterLocalStorage: string | null = null;
 let oddsLocalStorage: string | null = null;
 
 if (typeof window !== 'undefined') {
@@ -23,6 +25,7 @@ if (typeof window !== 'undefined') {
   positionsLocalStorage = localStorage.getItem(positionsLocalStorageKey);
   statusesLocalStorage = localStorage.getItem(statusesLocalStorageKey);
   cardsViewLocalStorage = localStorage.getItem(cardsViewLocalStorageKey);
+  gamesFilterLocalStorage = localStorage.getItem(gamesFilterLocalStorageKey);
   oddsLocalStorage = localStorage.getItem(oddsLocalStorageKey);
 }
 
@@ -33,6 +36,7 @@ type InitialState = {
   positions: string[],
   statuses: string[],
   cardsView: string,
+  gamesFilter: string,
   hideOdds: number, // 0 or 1
   loading: boolean,
   // season: number,
@@ -45,6 +49,7 @@ const initialState = {
   positions: (positionsLocalStorage && JSON.parse(positionsLocalStorage)) || [],
   statuses: (statusesLocalStorage && JSON.parse(statusesLocalStorage)) || ['pre', 'live', 'final'],
   cardsView: cardsViewLocalStorage || 'compact',
+  gamesFilter: gamesFilterLocalStorage || 'all',
   hideOdds: +(oddsLocalStorage || 0),
   loading: false,
   // season: new HelperCBB().getCurrentSeason(),
@@ -66,7 +71,6 @@ export const display = createSlice({
         state[value] = initialState[value];
       });
     },
-
     setRank: (state, action: PayloadAction<string>) => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(rankLocalStorageKey, action.payload);
@@ -93,7 +97,6 @@ export const display = createSlice({
       } else {
         state.conferences = [];
       }
-
       if (typeof window !== 'undefined') {
         localStorage.setItem(conferencesLocalStorageKey, JSON.stringify(state.conferences));
       }
@@ -108,7 +111,6 @@ export const display = createSlice({
       } else {
         state.positions = [...state.positions, action.payload];
       }
-
       if (typeof window !== 'undefined') {
         localStorage.setItem(positionsLocalStorageKey, JSON.stringify(state.positions));
       }
@@ -129,7 +131,6 @@ export const display = createSlice({
       } else {
         state.statuses = [...state.statuses, action.payload];
       }
-
       if (typeof window !== 'undefined') {
         localStorage.setItem(statusesLocalStorageKey, JSON.stringify(state.statuses));
       }
@@ -140,6 +141,12 @@ export const display = createSlice({
       }
       state.cardsView = action.payload;
     },
+    setGamesFilter: (state, action: PayloadAction<string>) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(gamesFilterLocalStorageKey, action.payload);
+      }
+      state.gamesFilter = action.payload;
+    },
     setOdds: (state, action: PayloadAction<number>) => {
       if (typeof window !== 'undefined') {
         localStorage.setItem(oddsLocalStorageKey, action.payload.toString());
@@ -147,12 +154,13 @@ export const display = createSlice({
       state.hideOdds = action.payload;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
+      // if you are wondering what sets this to false, check the handlers/MutationHandler
       state.loading = action.payload;
     },
   },
 });
 
 export const {
-  clearLocalStorage, setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView, setLoading, setOdds,
+  clearLocalStorage, setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView, setGamesFilter, setLoading, setOdds,
 } = display.actions;
 export default display.reducer;
