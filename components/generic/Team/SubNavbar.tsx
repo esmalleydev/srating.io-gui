@@ -1,18 +1,18 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import { useTransition } from 'react';
 import {
   IconButton, Tab, Tabs, Tooltip, useTheme,
 } from '@mui/material';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
-import ViewPicker from './ViewPicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
 import HistoryIcon from '@mui/icons-material/History';
 import { setShowScheduleDifferentials, setShowScheduleHistoricalRankRecord } from '@/redux/features/team-slice';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { setLoading } from '@/redux/features/display-slice';
+import AdditionalOptions from './Schedule/AdditionalOptions';
 
 const getSubNavHeaderHeight = () => 48;
 
@@ -98,7 +98,8 @@ const SubNavBar = ({ view }) => {
         </Tooltip>,
       );
     }
-    rightButtons.push(<ViewPicker key = {'view-picker'} />);
+
+    rightButtons.push(<AdditionalOptions key = {'additional-options'} />);
   } else if (tabOrder.length) {
     const tabs: React.JSX.Element[] = [];
 
@@ -141,7 +142,7 @@ const SubNavBar = ({ view }) => {
         {middleButtons}
       </div>
 
-      <div style = {{ minWidth: minSubBarWidth, display: 'flex' }}>
+      <div style = {{ minWidth: minSubBarWidth, display: 'flex', justifyContent: 'end' }}>
         {rightButtons}
       </div>
     </div>

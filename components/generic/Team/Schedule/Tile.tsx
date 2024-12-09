@@ -1,5 +1,7 @@
-import React, {
-  useState, useRef, useTransition, ReactElement, RefObject,
+'use client';
+
+import {
+  useRef, useTransition, ReactElement, RefObject,
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
@@ -10,7 +12,7 @@ import HelperGame from '@/components/helpers/Game';
 
 import { useTheme } from '@mui/material/styles';
 import {
-  Card, CardContent, Typography, Tooltip, Link, Skeleton, IconButton,
+  Card, Typography, Tooltip, Link, Skeleton, IconButton,
 } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
@@ -29,7 +31,7 @@ const Tile = ({ game, team }) => {
   const router = useRouter();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-  const [scrolled, setScrolled] = useState(false);
+  // const [scrolled, setScrolled] = useState(false);
 
   const dispatch = useAppDispatch();
   const isLoadingPredictions = useAppSelector((state) => state.teamReducer.schedulePredictionsLoading);
@@ -56,28 +58,20 @@ const Tile = ({ game, team }) => {
   });
 
 
-
   const containerStyle = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    height: 40,
     // 'scrollMarginTop': '200px', // todo doesnt seem to work for games in Nov.
   };
 
-  const circleBackgroundColor = game.status === 'final' ? (won ? theme.palette.success.light : theme.palette.error.light) : (game.status !== 'pre' ? theme.palette.warning.light : theme.palette.info.light);
-
-
-  const dateStyle: React.CSSProperties = {
-    width: '55px',
-    minWidth: '55px',
-    height: '55px',
-    borderRadius: '50%',
-    border: `2px solid ${circleBackgroundColor}`,
-    margin: '5px 0px',
-    display: 'flex',
-    flexWrap: 'wrap',
-    cursor: 'pointer',
-  };
+  let textBackgroundColor = theme.palette.info.light;
+  if (game.status === 'final') {
+    textBackgroundColor = (won ? theme.palette.success.light : theme.palette.error.light);
+  } else if (game.status !== 'pre') {
+    textBackgroundColor = theme.palette.warning.light;
+  }
 
   const titleStyle = {
     margin: '0px 10px',
@@ -125,9 +119,9 @@ const Tile = ({ game, team }) => {
   let scoreLineText: string | ReactElement = Game.getTime();
 
   if (Game.isFinal()) {
-    scoreLineText = <div><span style = {{ color: circleBackgroundColor }}>{(won ? 'W ' : 'L ')}</span>{`${game.home_score}-${game.away_score}`}</div>;
+    scoreLineText = <div><span style = {{ color: textBackgroundColor }}>{(won ? 'W ' : 'L ')}</span>{`${game.home_score}-${game.away_score}`}</div>;
   } else if (Game.isInProgress()) {
-    scoreLineText = <span style = {{ color: circleBackgroundColor }}>Live</span>;
+    scoreLineText = <span style = {{ color: textBackgroundColor }}>Live</span>;
   }
 
   const predictionContainer: React.JSX.Element[] = [];
@@ -143,8 +137,6 @@ const Tile = ({ game, team }) => {
     predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, winPercentage / 100) }}>{winPercentage}%</Typography>);
   }
 
-
-
   const neutralStyle: React.CSSProperties = {
     fontSize: '10px',
     padding: '3px',
@@ -155,63 +147,48 @@ const Tile = ({ game, team }) => {
     color: theme.palette.getContrastText('#ffa726'),
   };
 
+  let gameLocationText: string | React.JSX.Element = (game.home_team_id === team.team_id ? 'vs' : '@');
+  if (game.neutral_site) {
+    gameLocationText = <Tooltip enterTouchDelay={0} disableFocusListener placement = 'top' title = {'Neutral site'}><span style = {neutralStyle}>N</span></Tooltip>;
+  }
+
   return (
     <div style = {{ display: 'flex', margin: '5px 0px', justifyContent: 'space-between' }}>
       <div style = {{ display: 'flex' }}>
         <Card style = {{
           display: 'flex', width: (width <= 475 ? 40 : 75), marginRight: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center', cursor: 'pointer',
         }} onClick={handleGameClick}>
-          <Typography variant = 'caption' style = {{ color: circleBackgroundColor }}>{moment(`${game.start_date.split('T')[0]} 12:00:00`).format((width <= 475 ? 'Do' : 'ddd Do'))}</Typography>
+          <Typography variant = 'caption' style = {{ color: textBackgroundColor }}>{moment(`${game.start_date.split('T')[0]} 12:00:00`).format((width <= 475 ? 'Do' : 'ddd Do'))}</Typography>
         </Card>
       </div>
       <Card style = {{ width: '100%' }}>
-        <CardContent style = {{ padding: `${Game.isFinal() ? '0px' : '7px'} 0px` }}>
-          <div ref = {myRef} style = {containerStyle}>
-            <div style = {{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-
-
-              {/* <div style = {dateStyle} onClick={handleGameClick}>
-                <div style = {{'flexBasis': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'flex-end'}}>
-                  <Typography variant = 'caption'>{moment(game.start_date.split('T')[0] + ' 12:00:00').format('ddd').toUpperCase()}</Typography>
-                </div>
-                <div style = {{'flexBasis': '100%', 'display': 'flex', 'justifyContent': 'center', 'alignItems': 'flex-start'}}>
-                  <Typography variant = 'caption'>{moment(game.start_date.split('T')[0] + ' 12:00:00').format('Do')}</Typography>
-                </div>
-              </div> */}
-
-
-              <div style = {{
-                marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'baseline', overflow: 'hidden' /* 'flexWrap': 'nowrap' */ }}>
-                <Typography color = 'text.secondary' variant = 'caption'>
-                  {
-                    game.neutral_site ?
-                      <Tooltip enterTouchDelay={0} disableFocusListener placement = 'top' title = {'Neutral site'}><span style = {neutralStyle}>N</span></Tooltip>
-                      : (game.home_team_id === team.team_id ? 'vs' : '@')
-                  }
-                </Typography>
-                <Typography style = {titleStyle} variant = {'body2'} onClick={() => { handleTeamClick(game[`${otherSide}_team_id`]); }}>
-                  <Rank game={game} team_id={game[`${otherSide}_team_id`]} /> <Link style = {{ cursor: 'pointer' }} underline='hover'>{Game.getTeamName(otherSide)}</Link>
-                  {width > 375 ? <Record game={game} team_id={game[`${otherSide}_team_id`]} /> : ''}
-                </Typography>
-              </div>
-
+        <div ref = {myRef} style = {containerStyle}>
+          <div style = {{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+            <div style = {{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'baseline', overflow: 'hidden' /* 'flexWrap': 'nowrap' */ }}>
+              <Typography color = 'text.secondary' variant = 'caption'>
+                {gameLocationText}
+              </Typography>
+              <Typography style = {titleStyle} variant = {'body2'} onClick={() => { handleTeamClick(game[`${otherSide}_team_id`]); }}>
+                <Rank game={game} team_id={game[`${otherSide}_team_id`]} /> <Link style = {{ cursor: 'pointer' }} underline='hover'>{Game.getTeamName(otherSide)}</Link>
+                {width > 375 ? <Record game={game} team_id={game[`${otherSide}_team_id`]} /> : ''}
+              </Typography>
             </div>
-            {
-              Game.isFinal() ?
-              <div>
-                <Tooltip title = {'Toggle historical chart'} placement="top">
-                  <IconButton
-                    id = 'differential-button'
-                    onClick = {() => dispatch(updateVisibleScheduleDifferentials(game.game_id))}
-                  >
-                    <LegendToggleIcon style = {{ fontSize: (width < 475 ? '22px' : '24px') }} color = {isScheduleDiffVisible ? 'success' : 'primary'} />
-                  </IconButton>
-                </Tooltip>
-              </div>
-                : ''
-            }
           </div>
-        </CardContent>
+          {
+            Game.isFinal() ?
+            <div>
+              <Tooltip title = {'Toggle historical chart'} placement="top">
+                <IconButton
+                  id = 'differential-button'
+                  onClick = {() => dispatch(updateVisibleScheduleDifferentials(game.game_id))}
+                >
+                  <LegendToggleIcon style = {{ fontSize: (width < 475 ? '22px' : '24px') }} color = {isScheduleDiffVisible ? 'success' : 'primary'} />
+                </IconButton>
+              </Tooltip>
+            </div>
+              : ''
+          }
+        </div>
       </Card>
       <div style = {{ display: 'flex' }}>
         <Card style = {{

@@ -25,6 +25,7 @@ import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { setLoading } from '@/redux/features/display-slice';
+import { setRefreshEnabled } from '@/redux/features/games-slice';
 
 
 
@@ -100,6 +101,7 @@ const DateAppBar = ({ dates, date }) => {
       const search = current.toString();
       const query = search ? `?${search}` : '';
 
+      dispatch(setRefreshEnabled(false));
       dispatch(setLoading(true));
       startTransition(() => {
         router.replace(`${pathName}${query}`);
