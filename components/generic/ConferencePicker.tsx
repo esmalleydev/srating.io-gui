@@ -45,11 +45,9 @@ const ConferencePicker = () => {
     const row = conferences[conference_id];
     if (row.inactive === 0) {
       let label = row.code;
-
       if (row.code.toLowerCase() === row.name.toLowerCase()) {
         label = row.name;
       }
-
       conferenceOptions.push({
         value: row.conference_id,
         label,

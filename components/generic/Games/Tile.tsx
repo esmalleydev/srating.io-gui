@@ -448,7 +448,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
             </div>
             {
               displayCardView === 'large' ?
-                <div style = {{ padding: '0px 10px 0px 10px' }}>
+                <div style = {{ padding: '0px 10px 10px 10px' }}>
                   <hr style ={{ marginTop: 0 }} />
                   {hideOdds !== 1 ? getOddsLine() : ''}
                 </div>

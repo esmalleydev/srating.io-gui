@@ -7,8 +7,8 @@ import { getBreakPoint } from '@/components/generic/DateAppBar';
 import ConferencePicker from '@/components/generic/ConferencePicker';
 import AdditionalOptions from '@/components/generic/Games/AdditionalOptions';
 import StatusPicker from '@/components/generic/StatusPicker';
-import ViewPicker from './ViewPicker';
 import RefreshCounter from './RefreshCounter';
+import GamesFilterPicker from './GamesFilterPicker';
 
 const getHeaderHeight = () => {
   return 48;
@@ -44,18 +44,18 @@ const SubNavBar = () => {
     right: 0,
   };
 
-  // todo make conf picker like status picker?
+  // todo make conf picker like status picker? I think on mobile the full screen might be better?
 
   return (
     <div style = {subHeaderStyle}>
       <div style = {{ minWidth: minSubBarWidth, display: 'flex' }}>
         <ConferencePicker />
         <StatusPicker />
+        <GamesFilterPicker />
       </div>
 
       <div style = {{ minWidth: minSubBarWidth, display: 'flex', alignItems: 'center' }}>
-        <RefreshCounter />
-        <ViewPicker />
+        <div style = {{ width: 36 }}><RefreshCounter /></div>
         <AdditionalOptions />
       </div>
     </div>

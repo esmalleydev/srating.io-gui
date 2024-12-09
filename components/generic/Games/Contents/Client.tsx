@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import moment from 'moment';
 import {
-  Chip, Paper, Skeleton, Typography,
+  Chip, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
@@ -12,7 +11,9 @@ import { updateConferences } from '@/redux/features/display-slice';
 import Tile, { getTileBaseStyle } from '@/components/generic/Games/Tile';
 import { useScrollContext } from '@/contexts/scrollContext';
 
-const Contents = ({ children }) => {
+// todo move the StatsLoader into the page, just make it slower so I dont need to do the ClientSkeletonUnknown if top 25
+
+const Contents = ({ children, childStyle = {} }) => {
   const dispatch = useAppDispatch();
   const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
@@ -27,6 +28,7 @@ const Contents = ({ children }) => {
     flexWrap: 'wrap',
     justifyContent: 'center',
     paddingBottom: 60,
+    ...childStyle,
   };
 
   return (
@@ -63,12 +65,33 @@ const ClientSkeleton = ({ games }) => {
   );
 };
 
-const Client = ({ games, date }) => {
-  const now = moment().format('YYYY-MM-DD');
+const ClientSkeletonUnknown = () => {
+  const heightToRemove = 400;
+  return (
+    <Contents childStyle={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: `calc(100vh - ${heightToRemove}px)`,
+    }}>
+      <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+    </Contents>
+  );
+};
 
+const Client = ({ games, date }) => {
   const skip_sort_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_game_ids);
   const favorite_game_ids = useAppSelector((state) => state.favoriteReducer.game_ids);
   const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
+
+  // todo think of a better way to do this top 25 filter stuff, so I dont need to re-render so much
+  // putting it in the page load will slow it down quite a bit (maybe)
+  const gamesFilter = useAppSelector((state) => state.displayReducer.gamesFilter);
+  const gameStats = useAppSelector((state) => state.gamesReducer.gameStats);
+  const gameStatsLoading = useAppSelector((state) => state.gamesReducer.gameStatsLoading);
+  const displayRank = useAppSelector((state) => state.displayReducer.rank);
+
   const statuses = useAppSelector((state) => state.displayReducer.statuses);
   const scores = useAppSelector((state) => state.gamesReducer.scores);
   const datesChecked = useAppSelector((state) => state.gamesReducer.dates_checked);
@@ -77,7 +100,6 @@ const Client = ({ games, date }) => {
   const [firstRender, setFirstRender] = useState(true);
 
   const scrollRef = useScrollContext();
-
 
   useEffect(() => {
     if (firstRender && scrollRef && scrollRef.current) {
@@ -179,6 +201,39 @@ const Client = ({ games, date }) => {
       continue;
     }
 
+    const awayCurrent = (gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].current[sortedGame.away_team_id]) || null;
+    const awayHistorical = (gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].historical[sortedGame.away_team_id]) || null;
+    const homeCurrent = (gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].current[sortedGame.home_team_id]) || null;
+    const homeHistorical = (gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].historical[sortedGame.home_team_id]) || null;
+
+    const awayStats = sortedGame.status === 'final' ? awayHistorical : awayCurrent;
+    const homeStats = sortedGame.status === 'final' ? homeHistorical : homeCurrent;
+
+    let awayRank = Infinity;
+    let homeRank = Infinity;
+    if (
+      awayStats &&
+      displayRank in awayStats &&
+      awayStats[displayRank] !== null
+    ) {
+      awayRank = awayStats[displayRank];
+    }
+    if (
+      homeStats &&
+      displayRank in homeStats &&
+      homeStats[displayRank] !== null
+    ) {
+      homeRank = homeStats[displayRank];
+    }
+
+    if (
+      gamesFilter === 'top_25' &&
+      awayRank > 25 &&
+      homeRank > 25
+    ) {
+      continue;
+    }
+
     // remove games that are today but still TBA
     // todo remove...this is bugged, hides games after 12 am
     // let sortedGametimestamp;
@@ -191,6 +246,12 @@ const Client = ({ games, date }) => {
     //   continue;
     // }
     gameContainers.push(<Tile key={i} game={sortedGame} isLoadingWinPercentage = {!datesChecked[date]} />);
+  }
+
+  if (gamesFilter === 'top_25' && gameStatsLoading) {
+    return (
+      <ClientSkeletonUnknown />
+    );
   }
 
 

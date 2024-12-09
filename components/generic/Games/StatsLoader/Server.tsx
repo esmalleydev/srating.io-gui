@@ -11,7 +11,7 @@ import { Client } from './Client';
 const Server = async ({ game_ids, organization_id, division_id }) => {
   unstable_noStore();
 
-  const revalidateSeconds = 60 * 60 * 12; // 12 hours
+  const revalidateSeconds = 60 * 60 * 6; // 6 hours
 
   const gameStats: object = await useServerAPI({
     class: 'game',

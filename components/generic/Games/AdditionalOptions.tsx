@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
@@ -11,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import RankPicker from '@/components/generic/RankPicker';
 import { Divider, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setOdds } from '@/redux/features/display-slice';
+import { setCardView, setOdds } from '@/redux/features/display-slice';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -20,6 +21,7 @@ const AdditionalOptions = () => {
 
   const dispatch = useAppDispatch();
   const hideOdds = useAppSelector((state) => state.displayReducer.hideOdds);
+  const cardsView = useAppSelector((state) => state.displayReducer.cardsView);
 
 
   const handleOpen = (event) => {
@@ -52,6 +54,17 @@ const AdditionalOptions = () => {
            {hideOdds ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
          </ListItemIcon>
         <ListItemText>Hide odds</ListItemText>
+      </MenuItem>,
+    );
+
+    menuItems.push(
+      <MenuItem key='card-display' onClick={() => {
+        dispatch(setCardView(cardsView === 'large' ? 'compact' : 'large'));
+      }}>
+         <ListItemIcon>
+           {cardsView === 'large' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />}
+         </ListItemIcon>
+        <ListItemText>View card mode</ListItemText>
       </MenuItem>,
     );
 
