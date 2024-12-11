@@ -119,7 +119,9 @@ const Tile = ({ game, team }) => {
   let scoreLineText: string | ReactElement = Game.getTime();
 
   if (Game.isFinal()) {
-    scoreLineText = <div><span style = {{ color: textBackgroundColor }}>{(won ? 'W ' : 'L ')}</span>{`${game.home_score}-${game.away_score}`}</div>;
+    const leftScore = game.home_score > game.away_score ? game.home_score : game.away_score;
+    const rightScore = game.home_score > game.away_score ? game.away_score : game.home_score;
+    scoreLineText = <div><span style = {{ color: textBackgroundColor }}>{(won ? 'W ' : 'L ')}</span>{`${leftScore}-${rightScore}`}</div>;
   } else if (Game.isInProgress()) {
     scoreLineText = <span style = {{ color: textBackgroundColor }}>Live</span>;
   }
