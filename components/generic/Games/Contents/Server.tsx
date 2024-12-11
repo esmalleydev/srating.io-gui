@@ -1,6 +1,6 @@
 'use server';
 
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 
 import { Client } from '@/components/generic/Games/Contents/Client';
 import { useServerAPI } from '@/components/serverAPI';

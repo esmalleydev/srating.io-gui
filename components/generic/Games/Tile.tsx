@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -8,6 +8,7 @@ import HelperGame from '@/components/helpers/Game';
 
 import { useTheme } from '@mui/material/styles';
 
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
@@ -58,6 +59,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
+  const favorite_team_ids = useAppSelector((state) => state.favoriteReducer.team_ids);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const hideOdds = useAppSelector((state) => state.displayReducer.hideOdds);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
@@ -362,6 +364,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
               <Typography variant = 'h6' sx = {{ fontSize: 14, display: 'inline-block' }}>
                 <Typography variant = 'overline' color = 'text.secondary' sx = {{ fontSize: 12 }}><Rank game={game} team_id={team_id} /></Typography>
                 {Game.getTeamName(side)}
+                {favorite_team_ids.indexOf(team_id) > -1 ? <FavoriteIcon style = {{ color: theme.palette.warning.light, fontSize: 12, marginLeft: 5 }} /> : ''}
               </Typography>
               <Record game={game} team_id={team_id} />
             </div>

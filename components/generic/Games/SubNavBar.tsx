@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material';
 import { getBreakPoint } from '@/components/generic/DateAppBar';

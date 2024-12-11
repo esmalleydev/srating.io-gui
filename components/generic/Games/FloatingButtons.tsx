@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';

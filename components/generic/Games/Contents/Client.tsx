@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Chip, LinearProgress, Paper, Skeleton, Typography,
 } from '@mui/material';
@@ -82,6 +82,7 @@ const ClientSkeletonUnknown = () => {
 
 const Client = ({ games, date }) => {
   const skip_sort_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_game_ids);
+  const favorite_team_ids = useAppSelector((state) => state.favoriteReducer.team_ids);
   const favorite_game_ids = useAppSelector((state) => state.favoriteReducer.game_ids);
   const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
 
@@ -136,6 +137,34 @@ const Client = ({ games, date }) => {
       favorite_game_ids.length &&
       favorite_game_ids.indexOf(b.game_id) > -1
     );
+
+    if (
+      favorite_team_ids.length &&
+      (
+        favorite_team_ids.indexOf(a.home_team_id) > -1 ||
+        favorite_team_ids.indexOf(a.away_team_id) > -1
+      ) &&
+      (
+        favorite_team_ids.indexOf(b.home_team_id) === -1 &&
+        favorite_team_ids.indexOf(b.away_team_id) === -1
+      )
+    ) {
+      return -1;
+    }
+
+    if (
+      favorite_team_ids.length &&
+      (
+        favorite_team_ids.indexOf(b.home_team_id) > -1 ||
+        favorite_team_ids.indexOf(b.away_team_id) > -1
+      ) &&
+      (
+        favorite_team_ids.indexOf(a.home_team_id) === -1 &&
+        favorite_team_ids.indexOf(a.away_team_id) === -1
+      )
+    ) {
+      return 1;
+    }
 
     if (aIsPinned && !bIsPinned) {
       return -1;
