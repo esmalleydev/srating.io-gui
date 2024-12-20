@@ -17,7 +17,9 @@ const Client = ({ secret, tag, expires, error }) => {
   const [idle, setIdle] = useState<boolean>(false);
 
   const refreshRate = 60 * 10; // 10 mins
+  const idleTimeoutMS = 1000 * 60 * 5; // 5 mins
   // const refreshRate = 5;
+  // const idleTimeoutMS = 1000;
 
 
   const checkExpired = () => {
@@ -33,7 +35,7 @@ const Client = ({ secret, tag, expires, error }) => {
     setIdle(true);
   };
 
-  const onActive = async () => {
+  const onActive = () => {
     if (idle) {
       setIdle(false);
     }
@@ -42,7 +44,7 @@ const Client = ({ secret, tag, expires, error }) => {
   useIdleTimer({
     onIdle,
     onActive,
-    timeout: 1000 * 60 * 5, // 5 mins
+    timeout: idleTimeoutMS,
     throttle: 500,
   });
 

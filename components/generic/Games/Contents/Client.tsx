@@ -121,6 +121,29 @@ const Client = ({ games, date }) => {
     }
   }
 
+  const isTeamFavorite = (id: string) => {
+    if (
+      favorite_team_ids.length &&
+      favorite_team_ids.indexOf(id) > -1
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const isGamePinned = (id: string) => {
+    if (
+      skip_sort_game_ids.indexOf(id) === -1 &&
+      favorite_game_ids.length &&
+      favorite_game_ids.indexOf(id) > -1
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   const gameContainers: React.JSX.Element[] = [];
 
   const sorted_games: Game[] = Object.values(games);
@@ -255,25 +278,20 @@ const Client = ({ games, date }) => {
       homeRank = homeStats[displayRank];
     }
 
+    // if both teams are greater than 25, skip them, unless one of the teams is a favorite or pinned game
     if (
       gamesFilter === 'top_25' &&
       awayRank > 25 &&
-      homeRank > 25
+      homeRank > 25 &&
+      (
+        !favorite_team_ids.length ||
+        (!isTeamFavorite(sortedGame.away_team_id) && !isTeamFavorite(sortedGame.home_team_id))
+      ) &&
+      (!isGamePinned(sortedGame.game_id))
     ) {
       continue;
     }
 
-    // remove games that are today but still TBA
-    // todo remove...this is bugged, hides games after 12 am
-    // let sortedGametimestamp;
-    // if (
-    //   sortedGame.status === 'pre' &&
-    //   sortedGame.start_date.split('T')[0] === now &&
-    //   (sortedGametimestamp = new Date(sortedGame.start_timestamp * 1000)) &&
-    //   sortedGametimestamp.getHours() >= 0 && sortedGametimestamp.getHours() <= 6
-    // ) {
-    //   continue;
-    // }
     gameContainers.push(<Tile key={i} game={sortedGame} isLoadingWinPercentage = {!datesChecked[date]} />);
   }
 

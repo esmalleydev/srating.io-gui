@@ -49,7 +49,9 @@ const Refresher = ({ date, games }) => {
         start_date: date,
       },
     }).then((response) => {
-      dispatch(updateDateChecked(date));
+      if (response && !response.error) {
+        dispatch(updateDateChecked(date));
+      }
       dispatch(updateScores(response));
       dispatch(setRefreshLoading(false));
       dispatch(setRefreshEnabled(!isFinal));
