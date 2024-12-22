@@ -51,8 +51,8 @@ const Refresher = ({ date, games }) => {
     }).then((response) => {
       if (response && !response.error) {
         dispatch(updateDateChecked(date));
+        dispatch(updateScores(response));
       }
-      dispatch(updateScores(response));
       dispatch(setRefreshLoading(false));
       dispatch(setRefreshEnabled(!isFinal));
       setLoading(false);
