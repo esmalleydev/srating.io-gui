@@ -31,8 +31,14 @@ const Refresher = ({ date, games }) => {
 
   const isFinal = (total === finalCount);
 
+  let failures = 0;
+
   const getData = () => {
     if (loading) {
+      return;
+    }
+
+    if (failures > 10) {
       return;
     }
 
@@ -50,12 +56,19 @@ const Refresher = ({ date, games }) => {
       },
     }).then((response) => {
       if (response && !response.error) {
+        failures = 0;
         dispatch(updateDateChecked(date));
         dispatch(updateScores(response));
       }
       dispatch(setRefreshLoading(false));
       dispatch(setRefreshEnabled(!isFinal));
       setLoading(false);
+
+      // so if the response failed, because secret is still refreshing, try this again in 1 second
+      if (response && response.error && response.error.code && response.error.code === 103) {
+        failures++;
+        setTimeout(getData, 1000);
+      }
     }).catch((e) => {
       dispatch(setRefreshLoading(false));
       setLoading(false);
