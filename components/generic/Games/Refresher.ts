@@ -65,7 +65,7 @@ const Refresher = ({ date, games }) => {
       setLoading(false);
 
       // so if the response failed, because secret is still refreshing, try this again in 1 second
-      if (response && response.error && response.error.code && response.error.code === 103) {
+      if (response && response.error && response.code && response.code === 103) {
         failures++;
         setTimeout(getData, 1000);
       }
