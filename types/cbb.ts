@@ -708,7 +708,9 @@ export interface CBBRankingTable {
   rank: number;
   ap_rank: number,
   name: string;
-  wins: string;
+  wins: number;
+  losses: number;
+  record: string;
   conf_record: string;
   confwins: number;
   conflosses: number;
@@ -786,6 +788,8 @@ export interface CBBRankingTable {
   opponent_offensive_rating: number;
   opponent_defensive_rating: number;
   opponent_efficiency_rating: number;
+  wins_rank: number;
+  losses_rank: number;
   confwins_rank: number;
   conflosses_rank: number;
   neutralwins_rank: number;

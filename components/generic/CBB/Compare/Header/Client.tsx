@@ -32,7 +32,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   // const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
 
-  const handleRemove = (team_id) => {
+  const handleRemove = (team_id: string) => {
     dispatch(setLoading(true));
     startTransition(() => {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -72,14 +72,14 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
     });
   };
 
-  const handleTeamClick = (team_id) => {
+  const handleTeamClick = (team_id: string) => {
     dispatch(setLoading(true));
     startTransition(() => {
       router.push(`/cbb/team/${team_id}?season=${season}`);
     });
   };
 
-  const getTeam = (team_id) => {
+  const getTeam = (team_id: string) => {
     const team = teams[team_id];
     const teamHelper = new HelperTeam({ team });
     const rank = teamHelper.getRank(displayRank);
@@ -133,7 +133,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
             </Typography>
           </div>
           <div style = {{ fontSize: '14px', display: 'flex', justifyContent }}>
-            <Typography variant = 'overline' color = 'text.secondary' style = {{ lineHeight: 'initial' }}>{(width > breakPoint ? `${team ? conferences[team.conference_id].code : ''} ` : '')}({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
+            <Typography variant = 'overline' color = 'text.secondary' style = {{ lineHeight: 'initial' }}>{(width > breakPoint ? `${team && team.conference_id && team.conference_id in conferences ? conferences[team.conference_id].code : ''} ` : '')}({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
           </div>
         </div>
         {team_id === away_team_id ? getRemoveButton() : ''}

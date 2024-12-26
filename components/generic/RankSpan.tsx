@@ -1,13 +1,12 @@
 'use client';
 
-import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
 
 import Color from '@/components/utils/Color';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-const RankSpan = ({ rank, max, useOrdinal}) => {
+const RankSpan = ({ rank, max, useOrdinal }) => {
   const { width } = useWindowDimensions() as Dimensions;
 
   const theme = useTheme();

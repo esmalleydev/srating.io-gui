@@ -212,8 +212,8 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
           tooltip: 'Associated Press rank',
           sort: 'lower',
         },
-        wins: {
-          id: 'wins',
+        record: {
+          id: 'record',
           numeric: false,
           label: 'W/L',
           tooltip: 'Win/Loss',
@@ -225,6 +225,20 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
           label: 'CR',
           tooltip: 'Conference Record Win/Loss',
           sort: 'higher',
+        },
+        wins: {
+          id: 'wins',
+          numeric: true,
+          label: 'Wins',
+          tooltip: 'Wins',
+          sort: 'higher',
+        },
+        losses: {
+          id: 'losses',
+          numeric: true,
+          label: 'Losses',
+          tooltip: 'Losses',
+          sort: 'lower',
         },
         neutralwins: {
           id: 'neutralwins',
@@ -568,9 +582,10 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
         },
         games: {
           id: 'games',
-          numeric: false,
+          numeric: true,
           label: 'G',
           tooltip: 'Games played',
+          sort: 'higher',
         },
         position: {
           id: 'position',
@@ -586,8 +601,8 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
         },
         height: {
           id: 'height',
-          numeric: false,
-          label: 'Height',
+          numeric: true,
+          label: 'Ht.',
           tooltip: 'Player height',
         },
         minutes_played: {
@@ -2455,7 +2470,7 @@ export const getViewableColumns = ({ organization_id, view, columnView, customCo
   if (organization_id === Organization.getCBBID()) {
     if (columnView === 'composite') {
       if (view === 'team') {
-        return ['rank', 'name', 'wins', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'elo_sos', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'streak', 'conference_code'];
+        return ['rank', 'name', 'record', 'conf_record', 'elo', 'adjusted_efficiency_rating', 'elo_sos', 'offensive_rating', 'defensive_rating', 'opponent_efficiency_rating', 'streak', 'conference_code'];
       }
       if (view === 'player') {
         return ['rank', 'name', 'team_name', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
@@ -2508,13 +2523,13 @@ export const getViewableColumns = ({ organization_id, view, columnView, customCo
   if (organization_id === Organization.getCFBID()) {
     if (columnView === 'composite') {
       if (view === 'team') {
-        return ['rank', 'name', 'wins', 'conf_record', 'elo', 'passing_rating_college', 'points', 'yards_per_play', 'points_per_play', 'elo_sos', 'conference_code'];
+        return ['rank', 'name', 'record', 'conf_record', 'elo', 'passing_rating_college', 'points', 'yards_per_play', 'points_per_play', 'elo_sos', 'conference_code'];
       }
       if (view === 'player') {
         return ['rank', 'name', 'team_name', 'passing_rating_college'];
       }
       if (view === 'conference') {
-        return ['rank', 'name', 'elo', 'wins', 'passing_rating_college', 'points', 'yards_per_play', 'points_per_play'];
+        return ['rank', 'name', 'elo', 'record', 'passing_rating_college', 'points', 'yards_per_play', 'points_per_play'];
       }
       if (view === 'coach') {
         return [

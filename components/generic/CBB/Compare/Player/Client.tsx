@@ -4,15 +4,8 @@ import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import {
-  Box, SortDirection, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Paper, TableSortLabel, Tooltip, Typography, Chip,
+  Typography, Chip,
 } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
-import { visuallyHidden } from '@mui/utils';
-
-import HelperTeam from '@/components/helpers/Team';
-import { playerColumns } from '@/components/generic/CBB/columns';
-import RankSpan from '@/components/generic/RankSpan';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
 import { LinearProgress } from '@mui/material';
@@ -20,24 +13,12 @@ import { getHeaderHeight } from '../Header/ClientWrapper';
 import { getSubNavHeaderHeight } from '../SubNavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import Sorter from '@/components/utils/Sorter';
+import RankTable from '@/components/generic/RankTable';
+import HelperTeam from '@/components/helpers/Team';
+import { getHeaderColumns } from '@/components/generic/Ranking/columns';
+import Organization from '@/components/helpers/Organization';
+import { PlayerStatisticRanking } from '@/types/cbb';
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  // hide last border
-  // '&:last-child td, &:last-child th': {
-  //   border: 0,
-  // },
-  '&:hover td': {
-    backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
-  },
-  '&:hover': {
-    cursor: 'pointer',
-  },
-}));
-
-const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
-}));
 
 /**
  * The main wrapper div for all the contents
@@ -71,16 +52,11 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ teams }) => {
-  const theme = useTheme();
+  const sessionStorageKey = 'CBB.COMPARE.PLAYER';
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const { width } = useWindowDimensions() as Dimensions;
-  const breakPoint = 425;
-
   const [view, setView] = useState<string | null>('overview');
-  const [order, setOrder] = useState<string>('asc');
-  const [orderBy, setOrderBy] = useState<string>('minutes_per_game');
 
   const dispatch = useAppDispatch();
   const hideLowerBench = useAppSelector((state) => state.compareReducer.hideLowerBench);
@@ -152,11 +128,11 @@ const Client = ({ teams }) => {
 
   const getColumns = () => {
     if (view === 'overview') {
-      return ['player', 'team', 'height', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
+      return ['name', 'team_name', 'height', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
     } if (view === 'offensive') {
-      return ['player', 'team', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
+      return ['name', 'team_name', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
     } if (view === 'defensive') {
-      return ['player', 'team', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
+      return ['name', 'team_name', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
     }
     return [];
   };
@@ -169,8 +145,9 @@ const Client = ({ teams }) => {
   };
 
 
-  const headCells = playerColumns;
+  const headCells = getHeaderColumns({ organization_id: Organization.getCBBID(), view: 'player' });
 
+  headCells.team_name.sticky = true;
 
   const statDisplay = [
     {
@@ -190,7 +167,7 @@ const Client = ({ teams }) => {
   const statDisplayChips: React.JSX.Element[] = [];
 
   const handleView = (value) => {
-    sessionStorage.setItem('CBB.COMPARE.PLAYER.VIEW', value);
+    sessionStorage.setItem(`${sessionStorageKey}.VIEW`, value);
     setView(value);
   };
 
@@ -207,22 +184,8 @@ const Client = ({ teams }) => {
     );
   }
 
-
-  const handleSort = (id) => {
-    const isAsc = orderBy === id && order === 'asc';
-    sessionStorage.setItem('CBB.COMPARE.PLAYER.ORDER', (isAsc ? 'desc' : 'asc'));
-    sessionStorage.setItem('CBB.COMPARE.PLAYER.ORDERBY', id);
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(id);
-  };
-
-
-
   const getTable = (player_ids) => {
-    let b = 0;
-
-    // todo TS
-    const rows: any = [];
+    const rows: PlayerStatisticRanking[] = [];
 
     for (let i = 0; i < player_ids.length; i++) {
       if (player_ids[i] in player_id_x_stats) {
@@ -232,152 +195,34 @@ const Client = ({ teams }) => {
           continue;
         }
 
+        const player = (player_ids[i] in players && players[player_ids[i]]) || null;
+
+        if (!player) {
+          continue;
+        }
+
+        stats.name = `${player.first_name.charAt(0)}. ${player.last_name}`;
+
+        const teamHelper = new HelperTeam({ team: teams[stats.team_id] });
+        stats.team_name = teamHelper.getNameShort();
+
         rows.push(stats);
       }
     }
 
-    const playerCellWidth = (width <= breakPoint) ? 85 : 100;
-    const teamCellWidth = 50;
-
-    const row_containers = rows.sort(Sorter.getComparator(order, orderBy, (headCells[orderBy] && headCells[orderBy].sort))).slice().map((row) => {
-      const columns = getColumns();
-
-      // const tdStyle = {
-      //   'padding': '4px 5px',
-      //   'backgroundColor': theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
-      // };
-
-      b++;
-
-      const tdStyle: React.CSSProperties = {
-        padding: '4px 5px',
-        backgroundColor: theme.palette.mode === 'light' ? (b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300]) : (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]),
-        border: 0,
-        borderTop: 0,
-        borderLeft: 0,
-        borderBottom: 0,
-      };
-
-      if (width <= breakPoint) {
-        tdStyle.fontSize = '12px';
-      }
-
-
-      const playerCellStyle: React.CSSProperties = {
-        position: 'sticky',
-        left: 0,
-        overflow: 'hidden',
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
-        minWidth: playerCellWidth,
-        maxWidth: playerCellWidth,
-      };
-
-
-
-      const teamCellStyle: React.CSSProperties = {
-        position: 'sticky',
-        minWidth: teamCellWidth,
-        maxWidth: teamCellWidth,
-        left: playerCellWidth,
-        overflow: 'hidden',
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
-        borderRight: `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`,
-      };
-
-      const tableCells: React.JSX.Element[] = [];
-
-      for (let i = 0; i < columns.length; i++) {
-        if (columns[i] === 'player') {
-          const player = (row.player_id in players && players[row.player_id]) || null;
-          if (player) {
-            tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...playerCellStyle })}>{player ? `${player.first_name.charAt(0)}. ${player.last_name}` : 'Unknown'}</TableCell>);
-          }
-        } else if (columns[i] === 'team') {
-          const teamHelper = new HelperTeam({ team: teams[row.team_id] });
-          tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...teamCellStyle })}>{teamHelper.getNameShort()}</TableCell>);
-        } else {
-          // There are usually about 5300 players each season, so instead of doing a custom call to grab the bounds, just estimate the color, wont matter much
-          tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] || 0}{row[`${columns[i]}_rank`] ? <RankSpan key = {i} rank = {row[`${columns[i]}_rank`]} max = {5300} useOrdinal = {true} /> : ''}</TableCell>);
-        }
-      }
-
-      return (
-        <StyledTableRow
-          key={row.player_id}
-          // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          onClick={() => { handleClick(row.player_id); }}
-        >
-          {tableCells}
-        </StyledTableRow>
-      );
-    });
     return (
-      <TableContainer component={Paper}>
-        <Table size="small" aria-label="player stats table" style={{ borderCollapse: 'separate' }}>
-          <TableHead>
-            <TableRow>
-              {getColumns().map((column) => {
-                const headCell = headCells[column];
-                const tdStyle: React.CSSProperties = {
-                  padding: '4px 5px',
-                  border: 0,
-                };
-
-                if (width <= breakPoint) {
-                  tdStyle.fontSize = '13px';
-                }
-
-                if (headCell.sticky) {
-                  tdStyle.position = 'sticky';
-                  tdStyle.zIndex = 3;
-                } else {
-                  tdStyle.whiteSpace = 'nowrap';
-                }
-
-                if (headCell.id === 'player') {
-                  tdStyle.left = 0;
-                }
-
-                if (headCell.id === 'team') {
-                  tdStyle.borderRight = `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`;
-                  tdStyle.minWidth = teamCellWidth;
-                  tdStyle.maxWidth = teamCellWidth;
-                  tdStyle.left = playerCellWidth;
-                }
-
-                return (
-                  <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
-                    <StyledTableHeadCell
-                      sx = {tdStyle}
-                      key={headCell.id}
-                      align={'left'}
-                      sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
-                    >
-                      <TableSortLabel
-                        active={orderBy === headCell.id}
-                        direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
-                        onClick={() => { handleSort(headCell.id); }}
-                      >
-                        {headCell.label}
-                        {orderBy === headCell.id ? (
-                          <Box component="span" sx={visuallyHidden}>
-                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                          </Box>
-                        ) : null}
-                      </TableSortLabel>
-                    </StyledTableHeadCell>
-                  </Tooltip>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {row_containers}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <RankTable
+        rows={rows}
+        columns={headCells}
+        displayColumns={getColumns()}
+        rowKey = 'player_id'
+        defaultSortOrder = 'asc'
+        defaultSortOrderBy = 'minutes_per_game'
+        sessionStorageKey = {sessionStorageKey}
+        numberOfStickyColumns = {2}
+        getRankSpanMax = {() => 5300} // todo update when implementing CFB compare tool
+        handleRowClick={handleClick}
+      />
     );
   };
 
