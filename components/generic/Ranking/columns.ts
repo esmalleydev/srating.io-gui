@@ -1416,8 +1416,8 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
           label: 'Conf.',
           tooltip: 'Conference',
         },
-        wins: {
-          id: 'wins',
+        record: {
+          id: 'record',
           numeric: false,
           label: 'W/L',
           tooltip: 'Win/Loss',
@@ -1429,6 +1429,20 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
           label: 'CR',
           tooltip: 'Conference Record Win/Loss',
           sort: 'higher',
+        },
+        wins: {
+          id: 'wins',
+          numeric: true,
+          label: 'Wins',
+          tooltip: 'Wins',
+          sort: 'higher',
+        },
+        losses: {
+          id: 'losses',
+          numeric: true,
+          label: 'Losses',
+          tooltip: 'Losses',
+          sort: 'lower',
         },
         neutralwins: {
           id: 'neutralwins',
