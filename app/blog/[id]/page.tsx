@@ -13,14 +13,14 @@ type Props = {
 
 export async function generateMetadata(
   { params }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const blogData = await getData(params);
   const data = blogData.post;
-  const metadata = data.metadata;
-  
+  const { metadata } = data;
+
   return {
-    title: 'sRating | Blog | ' + metadata.title,
+    title: `sRating | Blog | ${metadata.title}`,
     description: metadata.excerpt,
     openGraph: {
       title: metadata.title,
@@ -29,20 +29,20 @@ export async function generateMetadata(
     twitter: {
       card: 'summary',
       title: metadata.title,
-    }
+    },
   };
-};
+}
 
-const Blog = async({ params }) => {
+const Blog = async ({ params }) => {
   const blogData = await getData(params);
 
   const data = blogData.post;
 
-  const sidebarPosts = blogData.sidebar
+  const sidebarPosts = blogData.sidebar;
 
   return (
     <div>
-      <div style = {{'display': 'flex', 'padding': 20}}>
+      <div style = {{ display: 'flex', padding: 20 }}>
         <Post post = {data} posts = {sidebarPosts} />
       </div>
     </div>
@@ -53,18 +53,18 @@ export async function generateStaticParams() {
   const paths = getAllPostIds();
   return [{
     paths,
-    fallback: false
+    fallback: false,
   }];
-};
+}
 
 async function getData(params) {
   const postData = getPostData(params.id);
   const sidebarPosts = getSidebarPosts();
   return {
-    'post': postData,
-    'sidebar': sidebarPosts
+    post: postData,
+    sidebar: sidebarPosts,
   };
-};
+}
 
 
 export default Blog;

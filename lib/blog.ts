@@ -6,59 +6,65 @@ const postsDirectory = path.join(process.cwd(), 'blog');
 
 export function getSortedPostsData() {
   // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory)
-  const allPostsData = fileNames.map(fileName => {
+  const fileNames = fs.readdirSync(postsDirectory);
+
+  const allPostsData = fileNames.map((fileName) => {
     // Remove ".md" from file name to get id
-    const id = fileName.replace(/\.md$/, '')
+    const id = fileName.replace(/\.md$/, '');
 
     // Read markdown file as string
-    const fullPath = path.join(postsDirectory, fileName)
-    const fileContents = fs.readFileSync(fullPath, 'utf8')
+    const fullPath = path.join(postsDirectory, fileName);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
 
     // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents)
+    const matterResult = matter(fileContents);
 
     // Combine the data with the id
     return {
       id,
-      ...matterResult.data
-    }
-  })
+      ...matterResult.data,
+    };
+  });
   // Sort posts by date
   return allPostsData.sort((a, b) => {
     if (a.date < b.date) {
-      return 1
-    } else {
-      return -1
+      return 1;
     }
-  })
+    return -1;
+  });
 }
 
 export function getAllPostIds() {
-  const fileNames = fs.readdirSync(postsDirectory)
-  return fileNames.map(fileName => {
+  const fileNames = fs.readdirSync(postsDirectory);
+  return fileNames.map((fileName) => {
     return {
       params: {
-        id: fileName.replace(/\.md$/, '')
-      }
-    }
-  })
+        id: fileName.replace(/\.md$/, ''),
+      },
+    };
+  });
 }
 
 export function getPostData(id) {
   const fullPath = path.join(postsDirectory, `${id}.md`);
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  if (fs.existsSync(fullPath)) {
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
 
-  // Use gray-matter to parse the post metadata section
-  const matterResult = matter(fileContents);
+    // Use gray-matter to parse the post metadata section
+    const matterResult = matter(fileContents);
 
-  const data = {
-    'id': id,
-    'metadata': matterResult.data,
-    'content': matterResult.content,
+    return {
+      id,
+      metadata: matterResult.data,
+      content: matterResult.content,
+    };
+  }
+
+  return {
+    id,
+    metadata: { title: 'Unknown' },
+    content: '404',
   };
-
-  return data;
 }
 
 
@@ -92,12 +98,12 @@ export function getLastPost() {
   }
 
   return lastPost;
-};
+}
 
 export function getSidebarPosts() {
   const posts = getAllPostIds();
 
-  let lastTenPosts = [];
+  const lastTenPosts = [];
 
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
@@ -112,10 +118,10 @@ export function getSidebarPosts() {
     lastTenPosts.push(postData);
   }
 
-  const sortedPosts = lastTenPosts.sort(function(a, b) {
+  const sortedPosts = lastTenPosts.sort((a, b) => {
     return a.metadata.date > b.metadata.date ? -1 : 1;
   });
 
   return sortedPosts.splice(0, 10);
-};
+}
 
