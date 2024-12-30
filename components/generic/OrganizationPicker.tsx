@@ -1,4 +1,6 @@
-import React, { useState, useTransition } from 'react';
+'use client';
+
+import { useState, useTransition } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
@@ -73,7 +75,12 @@ const OrganizationPicker = () => {
       // else if (splat.length > 3) {
       //   newPathName = `/${path}/${splat[2]}`;
       // }
-      router.push(newPathName);
+
+      if (pathName !== newPathName) {
+        router.push(newPathName);
+      } else {
+        dispatch(setLoading(false));
+      }
     });
   };
 
