@@ -45,7 +45,17 @@ export function getAllPostIds() {
   });
 }
 
-export function getPostData(id) {
+type PostData = {
+  id: string;
+  metadata: {
+    title: string;
+    excerpt: string;
+    date: string;
+  };
+  content?: string;
+}
+
+export function getPostData(id: string): any {
   const fullPath = path.join(postsDirectory, `${id}.md`);
   if (fs.existsSync(fullPath)) {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
@@ -75,11 +85,11 @@ export function getPostData(id) {
 export function getLastPost() {
   const posts = getAllPostIds();
 
-  let lastPost = null;
+  let lastPost: null | PostData = null;
 
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
-    const postData = getPostData(post.params.id);
+    const postData = getPostData(post.params.id) as PostData;
 
     if (!postData || !postData.metadata || !postData.metadata.date) {
       continue;
@@ -103,11 +113,11 @@ export function getLastPost() {
 export function getSidebarPosts() {
   const posts = getAllPostIds();
 
-  const lastTenPosts = [];
+  const lastTenPosts: PostData[] = [];
 
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
-    const postData = getPostData(post.params.id);
+    const postData = getPostData(post.params.id) as PostData;
 
     if (!postData || !postData.metadata || !postData.metadata.date) {
       continue;
