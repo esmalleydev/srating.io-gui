@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useTransition } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useTransition } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 // import { Link } from 'next/link';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -53,6 +53,7 @@ const Header = () => {
   const theme = useTheme();
 
   const router = useRouter();
+  const pathName = usePathname();
   const { width } = useWindowDimensions() as Dimensions;
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -99,10 +100,13 @@ const Header = () => {
   const handleAccount = () => {
     handleClose();
     if (validSession) {
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.push('/account');
-      });
+      if (pathName !== '/account') {
+        dispatch(setLoading(true));
+        startTransition(() => {
+          router.push('/account');
+        });
+      }
+
       return;
     }
     setAccountOpen(true);
@@ -181,7 +185,7 @@ const Header = () => {
                 </Box>
                 {showCompareTool ? <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box> : ''}
                 <Box sx={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px') }}>
-                  {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search onRouter={null} focus={false} />}
+                  {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search focus={false} />}
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
                   {
