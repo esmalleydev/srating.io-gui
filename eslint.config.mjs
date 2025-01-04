@@ -1,9 +1,37 @@
-// @ts-check
+// todo enable ts-check here?
+/* @ts-check */
 
+import globals from 'globals';
+import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
-  // eslint.configs.recommended,
+// these plugins are buggy and have a ton of false positives
+// import pluginReact from 'eslint-plugin-react';
+// import pluginReactHooks from 'eslint-plugin-react-hooks';
+
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  {
+    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+    },
+    settings: {
+      react: {
+        version: 'detect', // Automatically detect the React version
+      },
+    },
+    // plugins: {
+    //   react: pluginReact,
+    //   'react-hooks': pluginReactHooks,
+    // },
+    // rules: {
+    //   ...pluginReact.configs.flat.recommended.rules,
+    //   ...pluginReactHooks.configs.recommended.rules,
+    // },
+  },
+  pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
     rules: {
@@ -1200,7 +1228,7 @@ export default tseslint.config(
         ExportDeclaration: { minProperties: 8, multiline: true, consistent: true },
       }],
 
-      // enforce "same line" or "multiple line" on object properties.
+      // enforce 'same line' or 'multiple line' on object properties.
       // https://eslint.org/docs/rules/object-property-newline
       'object-property-newline': ['error', {
         allowAllPropertiesOnSameLine: true,
@@ -1330,4 +1358,4 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['warn'],
     },
   },
-);
+];

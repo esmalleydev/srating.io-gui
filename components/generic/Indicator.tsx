@@ -1,9 +1,12 @@
-import React from 'react';
+'use client';
+
 import { useTheme } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
 
-
-const Indicator = ({ title, code, color }) => {
+const Indicator = (
+  { title, code, color }:
+  { title: string; code: string; color?: string; },
+) => {
   const theme = useTheme();
 
   const backgroundColor = color || '#0288d1';

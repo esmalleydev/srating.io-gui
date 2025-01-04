@@ -51,7 +51,7 @@ const OrganizationPicker = () => {
   }
 
 
-  const handleOrganization = (value) => {
+  const handleOrganization = (value: string) => {
     handleClose();
     dispatch(setLoading(true));
     dispatch(clearLocalStorage());

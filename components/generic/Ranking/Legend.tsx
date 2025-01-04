@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+
 import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -21,7 +22,7 @@ const Legend = ({ open, onClose, columns, view, organization_id }) => {
         </DialogTitle>
         <DialogContent>
           {
-            columns.map((column) => {
+            columns.map((column: string) => {
               return (
                 <div key = {column} style = {{ display: 'flex', margin: '5px 0px' }}>
                   <Typography color = 'info.main' variant = 'subtitle2'>{headers[column].label}:</Typography>

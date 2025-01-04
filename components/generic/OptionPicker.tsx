@@ -23,7 +23,7 @@ const OptionPicker = (
     isRadio = false,
   }:
   {
-    selected: string,
+    selected: string[],
     options: Array<optionType>,
     buttonName: string,
     actionHandler?: (value: string) => void,

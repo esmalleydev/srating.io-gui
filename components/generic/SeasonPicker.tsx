@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client';
+
+import { useState } from 'react';
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,7 +19,10 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 
-const SeasonPicker = ({ selected, actionHandler, seasons }) => {
+const SeasonPicker = (
+  { selected, actionHandler, seasons }:
+  { selected: string; actionHandler: (season: number) => void; seasons: number[] },
+) => {
   const [open, setOpen] = useState(false);
 
   type option = {

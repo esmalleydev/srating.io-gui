@@ -1,4 +1,4 @@
-import React from 'react';
+'use client';
 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -21,7 +21,10 @@ import Organization from '@/components/helpers/Organization';
  * @param  {Function} props.openHandler
  * @return {<Dialog>}
  */
-const RankPicker = (props) => {
+const RankPicker = (
+  { open, closeHandler, openHandler } :
+  { open: boolean; closeHandler: () => void; openHandler: () => void },
+) => {
   const dispatch = useAppDispatch();
 
   const selected = useAppSelector((state) => state.displayReducer.rank);
@@ -67,16 +70,16 @@ const RankPicker = (props) => {
   ]);
 
   const handleOpen = () => {
-    props.openHandler();
+    openHandler();
   };
 
   const handleClose = () => {
-    props.closeHandler();
+    closeHandler();
   };
 
   return (
     <Dialog
-      open={props.open}
+      open={open}
       keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-rank-picker-description"

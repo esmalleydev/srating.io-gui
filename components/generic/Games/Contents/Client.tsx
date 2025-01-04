@@ -10,6 +10,7 @@ import { getHeaderHeight } from '@/components/generic/Games/SubNavBar';
 import { updateConferences } from '@/redux/features/display-slice';
 import Tile, { getTileBaseStyle } from '@/components/generic/Games/Tile';
 import { useScrollContext } from '@/contexts/scrollContext';
+import { getDateBarHeight } from '../../DateBar';
 
 // todo move the StatsLoader into the page, just make it slower so I dont need to do the ClientSkeletonUnknown if top 25
 
@@ -32,7 +33,7 @@ const Contents = ({ children, childStyle = {} }) => {
   };
 
   return (
-    <div style = {{ padding: '46px 2.5px 0px 2.5px', marginTop: getHeaderHeight() }}>
+    <div style = {{ padding: '0px 2.5px', marginTop: getHeaderHeight() + getDateBarHeight() }}>
       <div style = {{
         display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px', flexWrap: 'wrap',
       }}>

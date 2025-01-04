@@ -26,7 +26,7 @@ const GamesFilterPicker = () => {
 
   return (
     <>
-      <OptionPicker buttonName = {buttonName} options = {Object.values(filterOptions)} selected = {selectedFilter} actionHandler = {handleFilter} isRadio = {true} />
+      <OptionPicker buttonName = {buttonName} options = {Object.values(filterOptions)} selected = {[selectedFilter]} actionHandler = {handleFilter} isRadio = {true} />
     </>
   );
 };

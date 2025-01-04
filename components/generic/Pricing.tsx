@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Typography from '@mui/material/Typography';
@@ -13,8 +13,21 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import Billing from './Billing';
 import ButtonSwitch from './ButtonSwitch';
 
+type priceOption = {
+  code: string;
+  name: string;
+  description: string;
+  price: number;
+  type: string;
+  price_description: string;
+  features: string[];
+  requests?: string;
+  missing_features: string[];
+  priceId?: string;
+  disabled?: boolean;
+}
 
-const Pricing = ({ view }) => {
+const Pricing = ({ view }: { view: string | null; }) => {
   const router = useRouter();
   const [billingOpen, setBillingOpen] = useState(false);
   const [selectedPricing, setSelectedPricing] = useState({});
@@ -29,7 +42,7 @@ const Pricing = ({ view }) => {
 
   const [selectedView, setSelectedView] = useState(s);
 
-  const handleBilling = (priceOption) => {
+  const handleBilling = (priceOption: priceOption) => {
     setSelectedPricing(priceOption);
     setBillingOpen(true);
   };
@@ -38,7 +51,7 @@ const Pricing = ({ view }) => {
     setBillingOpen(false);
   };
 
-  const picksOptions = [
+  const picksOptions: priceOption[] = [
     {
       code: 'picks_monthly',
       name: 'Monthly',
@@ -63,7 +76,7 @@ const Pricing = ({ view }) => {
     },
   ];
 
-  const apiOptions = [
+  const apiOptions: priceOption[] = [
     {
       code: 'api_trial',
       name: 'Trial',
@@ -134,7 +147,7 @@ const Pricing = ({ view }) => {
     },
   ];
 
-  const getPriceCard = (option) => {
+  const getPriceCard = (option: priceOption) => {
     const trial = (option.code === 'api_trial');
     return (
       <Grid item key={option.code} xs={12} sm={5} md={3}>

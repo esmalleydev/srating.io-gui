@@ -40,8 +40,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "./eslint.config.mjs"
     ]
   },
   "browserslist": {
@@ -57,11 +56,14 @@
     ]
   },
   "devDependencies": {
-    "@eslint/js": "^9.6.0",
+    "@eslint/js": "^9.17.0",
     "@types/eslint__js": "^8.42.3",
     "@types/lodash": "^4.17.10",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
     "typescript": "^5.5.3",
-    "typescript-eslint": "^7.16.0"
+    "typescript-eslint": "^7.18.0"
   }
 }

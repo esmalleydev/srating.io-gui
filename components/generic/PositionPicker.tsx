@@ -6,7 +6,7 @@ import { clearPositions, updatePositions } from '@/redux/features/display-slice'
 import OptionPicker from './OptionPicker';
 
 
-const PositionPicker = ({ selected }) => {
+const PositionPicker = ({ selected }: { selected: string[]; }) => {
   const dispatch = useAppDispatch();
   const { width } = useWindowDimensions() as Dimensions;
 

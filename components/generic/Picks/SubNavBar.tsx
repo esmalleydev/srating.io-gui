@@ -5,7 +5,7 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import {
   Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Tab, Tabs, useTheme,
 } from '@mui/material';
-import { getBreakPoint } from '@/components/generic/DateAppBar';
+import { getBreakPoint, getMarginTop, getDateBarHeight } from '@/components/generic/DateBar';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setScrollTop } from '@/redux/features/picks-slice';
@@ -53,12 +53,11 @@ const SubNavBar = ({ view }) => {
   // }
 
   const subHeaderHeight = getHeaderHeight();
-  let subHeaderTop = 112;
+  const subHeaderTop = getMarginTop() + getDateBarHeight();
   let minSubBarWidth = 75;
 
   if (width < getBreakPoint()) {
     minSubBarWidth = 0;
-    subHeaderTop = 104;
   }
 
 

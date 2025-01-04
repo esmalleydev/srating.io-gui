@@ -48,6 +48,9 @@ export default bundleAnalyzer({
       fullUrl: true,
     },
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   webpack: (config /* options */) => {
     config.module.rules.push({
       test: /\.md$/,

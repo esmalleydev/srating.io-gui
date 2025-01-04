@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import AppBar from '@mui/material/AppBar';

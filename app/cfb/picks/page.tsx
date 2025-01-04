@@ -14,7 +14,7 @@ import Calculator from '@/components/generic/Picks/Calculator';
 import PicksLoader from '@/components/generic/Picks/PicksLoader';
 import ClientWrapper from '@/components/generic/Picks/ClientWrapper';
 import Dates from '@/components/utils/Dates';
-import DateAppBar from '@/components/generic/DateAppBar';
+import DateBar from '@/components/generic/DateBar';
 import Organization from '@/components/helpers/Organization';
 import Division from '@/components/helpers/Division';
 import CFB from '@/components/helpers/CFB';
@@ -52,7 +52,7 @@ export default async function Page({ searchParams }) {
 
   return (
     <>
-      <DateAppBar dates = {dates} date = {date} />
+      <DateBar dates = {dates} date = {date} />
       <SubNavBar view = {view} />
       <PicksLoader organization_id={organization_id} division_id={division_id} date = {date} />
 

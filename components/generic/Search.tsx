@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import useDebounce from '@/components/hooks/useDebounce';
 
@@ -63,7 +63,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 
-const Search = ({ onRouter, focus }) => {
+const Search = (
+  { onRouter, focus }:
+  { onRouter?: () => void; focus: boolean },
+) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -84,7 +87,7 @@ const Search = ({ onRouter, focus }) => {
   };
 
   const [value, setValue] = useState('');
-  const [autoCompleteValue, setAutoCompleteValue] = useState(null);
+  // const [autoCompleteValue, setAutoCompleteValue] = useState(null);
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<searchPlayer[]>([]);
   const [coaches, setCoaches] = useState<searchCoach[]>([]);

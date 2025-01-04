@@ -1,11 +1,8 @@
-import React from 'react';
-
+'use client';
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
-
-
 
 const Footer = () => {
   const hash = process.env.COMMIT_HASH;
@@ -66,6 +63,6 @@ const Footer = () => {
       </div>
     </Box>
   );
-}
+};
 
 export default Footer;

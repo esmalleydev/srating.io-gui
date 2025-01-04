@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import PinIcon from '@mui/icons-material/PushPin';
 import { IconButton } from '@mui/material';
@@ -17,7 +17,7 @@ import { useClientAPI } from '@/components/clientAPI';
 //   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 // });
 
-const Pin = ({ game_id }) => {
+const Pin = ({ game_id }: { game_id: string; }) => {
   const dispatch = useAppDispatch();
   const game_ids = useAppSelector((state) => state.favoriteReducer.game_ids);
   const isValidSession = useAppSelector((state) => state.userReducer.isValidSession);
@@ -52,7 +52,7 @@ const Pin = ({ game_id }) => {
     setAccountOpen(false);
   };
 
-  const handleFavorite = (e) => {
+  const handleFavorite = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
     if (!isValidSession) {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Typography from '@mui/material/Typography';
@@ -159,10 +159,10 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
 
   footerRow.two_fg = `${footerRow.two_point_field_goal || 0}-${footerRow.two_point_field_goal_attempts || 0}`;
   footerRow.two_fg_secondary = footerRow.two_point_field_goal_attempts !== undefined && footerRow.two_point_field_goal_attempts > 0 ? `${(((footerRow.two_point_field_goal || 0) / footerRow.two_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
-  
+
   footerRow.three_fg = `${footerRow.three_point_field_goal || 0}-${footerRow.three_point_field_goal_attempts || 0}`;
   footerRow.three_fg_secondary = footerRow.three_point_field_goal_attempts !== undefined && footerRow.three_point_field_goal_attempts > 0 ? `${(((footerRow.three_point_field_goal || 0) / footerRow.three_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
-  
+
   footerRow.ft = `${footerRow.free_throws || 0}-${footerRow.free_throw_attempts || 0}`;
   footerRow.ft_secondary = footerRow.free_throw_attempts !== undefined && footerRow.free_throw_attempts > 0 ? `${(((footerRow.free_throws || 0) / footerRow.free_throw_attempts) * 100).toFixed(2)}%` : '0%';
 

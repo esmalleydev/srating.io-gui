@@ -6,7 +6,10 @@ import { Tooltip } from '@mui/material';
 import Color from '@/components/utils/Color';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-const RankSpan = ({ rank, max, useOrdinal }) => {
+const RankSpan = (
+  { rank, max, useOrdinal }:
+  { rank: number; max: number; useOrdinal: boolean },
+) => {
   const { width } = useWindowDimensions() as Dimensions;
 
   const theme = useTheme();
@@ -37,7 +40,7 @@ const RankSpan = ({ rank, max, useOrdinal }) => {
   }
 
 
-  const getNumberWithOrdinal = (number) => {
+  const getNumberWithOrdinal = (number: number) => {
     const s = ['th', 'st', 'nd', 'rd'];
     const v = number % 100;
     return number + (s[(v - 20) % 10] || s[v] || s[0]);

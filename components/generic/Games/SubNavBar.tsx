@@ -2,7 +2,7 @@
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material';
-import { getBreakPoint } from '@/components/generic/DateAppBar';
+import { getBreakPoint, getDateBarHeight, getMarginTop } from '@/components/generic/DateBar';
 import ConferencePicker from '@/components/generic/ConferencePicker';
 import AdditionalOptions from '@/components/generic/Games/AdditionalOptions';
 import StatusPicker from '@/components/generic/StatusPicker';
@@ -21,12 +21,11 @@ const SubNavBar = () => {
   const { width } = useWindowDimensions() as Dimensions;
 
   const subHeaderHeight = getHeaderHeight();
-  let subHeaderTop = 112;
+  const subHeaderTop = getMarginTop() + getDateBarHeight();
   let minSubBarWidth = 75;
 
   if (width < getBreakPoint()) {
     minSubBarWidth = 0;
-    subHeaderTop = 104;
   }
 
 

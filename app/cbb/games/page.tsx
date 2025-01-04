@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import ContentsClientWrapper from '@/components/generic/Games/Contents/ClientWrapper';
 import ContentsServer, { getDates, getGames } from '@/components/generic/Games/Contents/Server';
 import { ClientSkeleton as ContentsClientSkeleton } from '@/components/generic/Games/Contents/Client';
-import DateAppBar from '@/components/generic/DateAppBar';
+import DateBar from '@/components/generic/DateBar';
 import SubNavBar from '@/components/generic/Games/SubNavBar';
 import { Suspense } from 'react';
 import FloatingButtons from '@/components/generic/Games/FloatingButtons';
@@ -46,7 +46,7 @@ export default async function Page({ searchParams }) {
 
   return (
     <>
-      <DateAppBar dates = {dates} date = {date} />
+      <DateBar dates = {dates} date = {date} />
       <SubNavBar />
       <ContentsClientWrapper>
         <Suspense key={date} fallback = {<ContentsClientSkeleton games = {games} />}>
