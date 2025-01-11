@@ -52,7 +52,7 @@ const ColumnChipPicker = ({ organization_id, view }) => {
   const getCFBChips = () => {
     const chips: React.JSX.Element[] = [];
 
-    const availableChips = ['passing', 'rushing', 'Receiving'];
+    const availableChips = ['passing', 'rushing', 'receiving'];
 
     if (view !== 'coach') {
       availableChips.forEach((value) => {

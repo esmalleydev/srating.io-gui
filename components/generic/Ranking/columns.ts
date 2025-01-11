@@ -2569,7 +2569,7 @@ export const getViewableColumns = ({ organization_id, view, columnView, customCo
       if (view === 'team' || view === 'player' || view === 'conference') {
         return ['rank', 'name', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_long'];
       }
-    } else if (columnView === 'Receiving') {
+    } else if (columnView === 'receiving') {
       if (view === 'team' || view === 'player' || view === 'conference') {
         return ['rank', 'name', 'receptions', 'receiving_yards', 'receiving_yards_per_reception', 'receiving_touchdowns', 'receiving_long'];
       }
