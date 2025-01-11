@@ -1220,7 +1220,7 @@ const Client = ({ game, momentumData, stats }) => {
                         game: game_,
                       });
 
-                      const won = (game_.home_score > game_.away_score && game_.home_team_id === game.away_team_id) || (game_.home_score < game_.away_score && game_.away_team_id === game.away_team_id);
+                      const won = ((game_.home_score || 0) > (game_.away_score || 0) && game_.home_team_id === game.away_team_id) || ((game_.home_score || 0) < (game_.away_score || 0) && game_.away_team_id === game.away_team_id);
 
                       return (<tr>
                         <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{moment(game_.start_datetime).format('M/D')}</Typography></td>
@@ -1243,7 +1243,7 @@ const Client = ({ game, momentumData, stats }) => {
                         game: game_,
                       });
 
-                      const won = (game_.home_score > game_.away_score && game_.home_team_id === game.home_team_id) || (game_.home_score < game_.away_score && game_.away_team_id === game.home_team_id);
+                      const won = ((game_.home_score || 0) > (game_.away_score || 0) && game_.home_team_id === game.home_team_id) || ((game_.home_score || 0) < (game_.away_score || 0) && game_.away_team_id === game.home_team_id);
 
                       return (<tr>
                         <td style = {{ padding: '0px 5px' }}><Typography variant = 'caption'>{moment(game_.start_datetime).format('M/D')}</Typography></td>

@@ -6,6 +6,9 @@ import {
 } from '@/redux/features/games-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
+import { refresh } from '../actions';
+import { getTagLabel } from '@/components/handlers/secret/shared';
+
 
 const Refresher = ({ date, games }) => {
   const refreshEnabled = useAppSelector((state) => state.gamesReducer.refreshEnabled);
@@ -67,6 +70,7 @@ const Refresher = ({ date, games }) => {
       // so if the response failed, because secret is still refreshing, try this again in 1 second
       if (response && response.error && response.code && response.code === 103) {
         failures++;
+        refresh(getTagLabel());
         setTimeout(getData, 1000);
       }
     }).catch((e) => {

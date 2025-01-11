@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useTransition } from 'react';
+import { useTransition } from 'react';
 
 import Typography from '@mui/material/Typography';
 
@@ -81,6 +81,7 @@ const Client = ({
 
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   const path = Organization.getPath({ organizations, organization_id });
   let numberOfTeams = CBB.getNumberOfD1Teams(season);
 
@@ -90,7 +91,7 @@ const Client = ({
 
   const teamHelper = new HelperTeam({ team });
 
-  const conferenceName = teamHelper.getConference();
+  const conferenceName = teamHelper.getConference(conferences);
   const conferenceNumber = (organization_id === Organization.getCFBID() ? CFB.getNumberOfConferences({ division_id, season }) : 35);
 
   const bestColor = getBestColor();

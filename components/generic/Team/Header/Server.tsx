@@ -36,6 +36,8 @@ const Server = async ({ organization_id, division_id, season, team_id }) => {
     },
   });
 
+  // todo this needs to get the active one, do a read and find the one without an end date
+
   const coach_team_season: CoachTeamSeason = await useServerAPI({
     class: 'coach_team_season',
     function: 'get',

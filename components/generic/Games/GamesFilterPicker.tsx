@@ -13,6 +13,7 @@ const GamesFilterPicker = () => {
   const filterOptions = {
     all: { value: 'all', label: 'All' },
     top_25: { value: 'top_25', label: 'Top 25' },
+    top_50: { value: 'top_50', label: 'Top 50' },
   };
 
   const selectedFilter = gamesFilter;

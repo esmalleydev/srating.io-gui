@@ -208,7 +208,7 @@ const Calculator = ({ games, date }) => {
       vs: homePercentage >= awayPercentage ? 'away' : 'home', // the opposite of the pick :)
       vs_ml: homePercentage >= awayPercentage ? Game.getPreML('away') : Game.getPreML('home'),
       chance: parseFloat(((homePercentage >= awayPercentage ? homePercentage : awayPercentage) * 100).toString()).toFixed(0),
-      result: (homePercentage >= awayPercentage && game.home_score > game.away_score) || (awayPercentage >= homePercentage && game.home_score < game.away_score),
+      result: (homePercentage >= awayPercentage && ((game.home_score || 0) > (game.away_score || 0))) || (awayPercentage >= homePercentage && ((game.home_score || 0) < (game.away_score || 0))),
       status: game.status,
     };
 

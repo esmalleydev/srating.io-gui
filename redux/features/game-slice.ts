@@ -3,9 +3,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
   gameStats: object,
+  coachStats: object,
+  conferenceStats: object,
   gameStatsLoading: boolean,
   gamePrediction: object,
   gamePredictionLoading: boolean,
+  refreshRate: number,
+  refreshCountdown: number,
+  refreshLoading: boolean,
+  refreshEnabled: boolean,
 };
 
 type ActionPayload<K extends keyof InitialState> = {
@@ -15,9 +21,15 @@ type ActionPayload<K extends keyof InitialState> = {
 
 const initialState: InitialState = {
   gameStats: {},
+  coachStats: {},
+  conferenceStats: {},
   gameStatsLoading: true,
   gamePrediction: {},
   gamePredictionLoading: true,
+  refreshRate: 15,
+  refreshCountdown: 15,
+  refreshLoading: false,
+  refreshEnabled: true,
 };
 
 

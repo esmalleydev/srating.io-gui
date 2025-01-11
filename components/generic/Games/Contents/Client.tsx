@@ -293,6 +293,20 @@ const Client = ({ games, date }) => {
       continue;
     }
 
+    // if both teams are greater than 50, skip them, unless one of the teams is a favorite or pinned game
+    if (
+      gamesFilter === 'top_50' &&
+      awayRank > 50 &&
+      homeRank > 50 &&
+      (
+        !favorite_team_ids.length ||
+        (!isTeamFavorite(sortedGame.away_team_id) && !isTeamFavorite(sortedGame.home_team_id))
+      ) &&
+      (!isGamePinned(sortedGame.game_id))
+    ) {
+      continue;
+    }
+
     gameContainers.push(<Tile key={i} game={sortedGame} isLoadingWinPercentage = {!datesChecked[date]} />);
   }
 

@@ -200,7 +200,7 @@ class Game {
    * Get the teams conference name
    * @param {string} side
    */
-  getTeamConference(side: string): string {
+  getTeamConference(side: string, conferences): string {
     let name = 'Unknown';
     if (
       this.getGame() &&
@@ -209,7 +209,7 @@ class Game {
       this.getGame()[`${side}_team_id`] in this.getGame().teams
     ) {
       const team = this.getGame().teams[this.getGame()[`${side}_team_id`]];
-      name = new Team({ team }).getConference();
+      name = new Team({ team }).getConference(conferences);
     }
 
     return name;

@@ -84,8 +84,8 @@ export interface Game {
   away_team_id: string;
   home_team_id: string;
   network: string;
-  away_score: number;
-  home_score: number;
+  away_score: number | null;
+  home_score: number | null;
   status: string;
   current_period: string;
   clock: string;
@@ -120,7 +120,7 @@ export interface CoachTeamSeason {
   team_id: string;
   season: number;
   start_date: string;
-  end_date: string;
+  end_date: string | null;
   guid: string;
   deleted: number
 }

@@ -79,52 +79,55 @@ const Client = ({ games, teams, home_team_id, away_team_id }: {games: Games, tea
       const lastThree = sorted_matchups.length > 3 && i < 3;
       const lastTen = sorted_matchups.length > 10 && i < 10;
 
-      if (sortedGame.away_score > sortedGame.home_score) {
+      const awayScore = sortedGame.away_score || 0;
+      const homeScore = sortedGame.home_score || 0;
+
+      if (awayScore > homeScore) {
         if (sortedGame.away_team_id === away_team_id) {
           away_wins++;
-          away_points += sortedGame.away_score - sortedGame.home_score;
+          away_points += awayScore - homeScore;
           if (lastThree) {
             lastThree_away_wins++;
-            lastThree_away_points += sortedGame.away_score - sortedGame.home_score;
+            lastThree_away_points += awayScore - homeScore;
           }
           if (lastTen) {
             lastTen_away_wins++;
-            lastTen_away_points += sortedGame.away_score - sortedGame.home_score;
+            lastTen_away_points += awayScore - homeScore;
           }
         } else if (sortedGame.away_team_id === home_team_id) {
           home_wins++;
-          home_points += sortedGame.away_score - sortedGame.home_score;
+          home_points += awayScore - homeScore;
           if (lastThree) {
             lastThree_home_wins++;
-            lastThree_home_points += sortedGame.away_score - sortedGame.home_score;
+            lastThree_home_points += awayScore - homeScore;
           }
           if (lastTen) {
             lastTen_home_wins++;
-            lastTen_home_points += sortedGame.away_score - sortedGame.home_score;
+            lastTen_home_points += awayScore - homeScore;
           }
         }
-      } else if (sortedGame.away_score < sortedGame.home_score) {
+      } else if (awayScore < homeScore) {
         if (sortedGame.home_team_id === away_team_id) {
           away_wins++;
-          away_points += sortedGame.home_score - sortedGame.away_score;
+          away_points += homeScore - awayScore;
           if (lastThree) {
             lastThree_away_wins++;
-            lastThree_away_points += sortedGame.home_score - sortedGame.away_score;
+            lastThree_away_points += homeScore - awayScore;
           }
           if (lastTen) {
             lastTen_away_wins++;
-            lastTen_away_points += sortedGame.home_score - sortedGame.away_score;
+            lastTen_away_points += homeScore - awayScore;
           }
         } else if (sortedGame.home_team_id === home_team_id) {
           home_wins++;
-          home_points += sortedGame.home_score - sortedGame.away_score;
+          home_points += homeScore - awayScore;
           if (lastThree) {
             lastThree_home_wins++;
-            lastThree_home_points += sortedGame.home_score - sortedGame.away_score;
+            lastThree_home_points += homeScore - awayScore;
           }
           if (lastTen) {
             lastTen_home_wins++;
-            lastTen_home_points += sortedGame.home_score - sortedGame.away_score;
+            lastTen_home_points += homeScore - awayScore;
           }
         }
       }

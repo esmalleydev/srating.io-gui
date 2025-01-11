@@ -1,11 +1,12 @@
 'use server';
 
-import React from 'react';
-
 import Client from '@/components/generic/Game/Header/Client';
 import { useServerAPI } from '@/components/serverAPI';
 
-const Server = async ({ game_id }) => {
+const Server = async (
+  { game_id }:
+  { game_id: string; },
+) => {
   const game = await useServerAPI({
     class: 'game',
     function: 'get',

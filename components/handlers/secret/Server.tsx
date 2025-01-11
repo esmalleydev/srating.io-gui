@@ -3,12 +3,13 @@
 import { useServerAPI } from '@/components/serverAPI';
 import Client from './Client';
 import { unstable_noStore } from 'next/cache';
+import { getTagLabel } from './shared';
 
 
 const Server = async () => {
   unstable_noStore();
 
-  const tag = 'refresher.secret';
+  const tag = getTagLabel();
 
   const secret = await useServerAPI({
     class: 'secret',
@@ -31,7 +32,7 @@ const Server = async () => {
 
   return (
     <>
-      <Client secret={secret.secret_id} tag = {tag} expires = {expires} error = {error} />
+      <Client secret={secret.secret_id} expires = {expires} error = {error} />
     </>
   );
 };

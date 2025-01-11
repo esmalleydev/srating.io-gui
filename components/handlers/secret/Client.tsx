@@ -6,11 +6,11 @@ import { useIdleTimer } from 'react-idle-timer';
 import { useEffect, useState } from 'react';
 import { refresh } from '@/components/generic/actions';
 import { setLoading } from '@/redux/features/display-slice';
+import { getTagLabel } from './shared';
 
 let intervalRefresher: NodeJS.Timeout;
 
-
-const Client = ({ secret, tag, expires, error }) => {
+const Client = ({ secret, expires, error }) => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.displayReducer.loading);
   const secret_id = useAppSelector((state) => state.userReducer.secret_id);
@@ -28,7 +28,7 @@ const Client = ({ secret, tag, expires, error }) => {
 
   const triggerRefresh = () => {
     dispatch(setLoading(true));
-    refresh(tag);
+    refresh(getTagLabel());
   };
 
   const onIdle = () => {
@@ -75,3 +75,5 @@ const Client = ({ secret, tag, expires, error }) => {
 };
 
 export default Client;
+
+

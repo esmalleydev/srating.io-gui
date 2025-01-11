@@ -148,6 +148,11 @@ const Client = ({ game, statistic_rankings, elos }) => {
   for (const statistic_ranking_id in statistic_rankings) {
     const row = statistic_rankings[statistic_ranking_id];
 
+    // remove preseason rows, so it doesnt start at 0... I think is is fine, unless I make preseason predictions for stats
+    if (!row.games) {
+      continue;
+    }
+
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,

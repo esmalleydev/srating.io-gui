@@ -1,16 +1,17 @@
 'use client';
 
-import React from 'react';
-
 import Typography from '@mui/material/Typography';
-
 import HelperGame from '@/components/helpers/Game';
 import { getBreakPoint } from '@/components/generic/Game/Header/ClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Refresher from '../Refresher';
+import { Game } from '@/types/general';
 
 
-const Client = ({ game, tag }) => {
+const Client = (
+  { game, tag }:
+  { game: Game; tag: string; },
+) => {
   const { width } = useWindowDimensions() as Dimensions;
 
   let scoreVariant: string = 'h4';
@@ -23,14 +24,14 @@ const Client = ({ game, tag }) => {
     game,
   });
 
-  const getScore = (score) => {
+  const getScore = (score: number | null) => {
     if (!Game.isInProgress() && !Game.isFinal()) {
       return null;
     }
 
     return (
       <div>
-        <Typography variant = {scoreVariant as 'h4' | 'h5'}>{score}</Typography>
+        <Typography variant = {scoreVariant as 'h4' | 'h5'}>{score || 0}</Typography>
       </div>
     );
   };

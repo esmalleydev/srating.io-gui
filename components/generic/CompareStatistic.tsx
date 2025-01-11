@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+
 import { useTheme } from '@mui/material/styles';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -8,7 +9,10 @@ import Locked from './Billing/Locked';
 import RankSpan from './RankSpan';
 
 
-const CompareStatistic = ({ rows, season, max, paper, maxWidth = 600 }) => {
+const CompareStatistic = (
+  { rows, season, max, paper, maxWidth = 600 }:
+  { rows: any[]; season: number; max: number; paper: boolean; maxWidth?: number; },
+) => {
   const { width } = useWindowDimensions() as Dimensions;
   const theme = useTheme();
 

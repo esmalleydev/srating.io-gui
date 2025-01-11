@@ -9,11 +9,11 @@ import CFB from '@/components/helpers/CFB';
 import { Game } from '@/types/general';
 
 
-const Rank = (
-  { game, team_id }:
-  { game: Game; team_id: string; },
+const ConferenceRank = (
+  { game, conference_id }:
+  { game: Game; conference_id: string; },
 ) => {
-  const gameStats = useAppSelector((state) => state.gameReducer.gameStats);
+  const conferenceStats = useAppSelector((state) => state.gameReducer.conferenceStats);
   const gameStatsLoading = useAppSelector((state) => state.gameReducer.gameStatsLoading);
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
 
@@ -23,8 +23,8 @@ const Rank = (
     numberOfTeams = CFB.getNumberOfTeams({ division_id: game.division_id, season: game.season });
   }
 
-  // const current = (gameStats[game.game_id] && gameStats[game.game_id].current[team_id]) || null;
-  const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
+  // const current = (conferenceStats[game.game_id] && conferenceStats[game.game_id].current[conference_id]) || null;
+  const historical = (conferenceStats[game.game_id] && conferenceStats[game.game_id].historical[conference_id]) || null;
   const statistic_ranking = historical;
 
   const bestColor = getBestColor();
@@ -58,4 +58,4 @@ const Rank = (
   );
 };
 
-export default Rank;
+export default ConferenceRank;

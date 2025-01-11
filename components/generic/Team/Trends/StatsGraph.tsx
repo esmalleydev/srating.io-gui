@@ -106,6 +106,11 @@ const StatsGraph = ({
   for (const statistic_ranking_id in statistic_rankings) {
     const row = statistic_rankings[statistic_ranking_id];
 
+    // remove preseason rows, so it doesnt start at 0... I think is is fine, unless I make preseason predictions for stats
+    if (!row.games) {
+      continue;
+    }
+
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
@@ -120,6 +125,12 @@ const StatsGraph = ({
 
   for (const conference_statistic_ranking_id in conference_statistic_rankings) {
     const row = conference_statistic_rankings[conference_statistic_ranking_id];
+
+
+    // remove preseason rows, so it doesnt start at 0... I think is is fine, unless I make preseason predictions for stats
+    if (!row.wins && !row.losses) {
+      continue;
+    }
 
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
@@ -136,6 +147,11 @@ const StatsGraph = ({
 
   for (const league_statistic_ranking_id in league_statistic_rankings) {
     const row = league_statistic_rankings[league_statistic_ranking_id];
+
+    // remove preseason rows, so it doesnt start at 0... I think is is fine, unless I make preseason predictions for stats
+    if (!row.wins && !row.losses) {
+      continue;
+    }
 
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {

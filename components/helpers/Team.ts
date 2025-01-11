@@ -57,11 +57,10 @@ class Team {
   }
 
   /**
-   * todo app selector can cause bugs, need to name this like a "hook" useConference or something
+   * Get the conference name
    */
-  getConference(): string {
+  getConference(conferences): string {
     let name = 'Unknown';
-    const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
     if (this.getTeam().conference_id) {
       name = conferences[this.getTeam().conference_id].code;

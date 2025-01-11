@@ -49,6 +49,7 @@ const Tile = ({ game }) => {
   const dispatch = useAppDispatch();
 
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
 
@@ -167,10 +168,10 @@ const Tile = ({ game }) => {
       <div style={containerStyle}>
         <Typography variant = 'overline' color = 'text.secondary' style = {{
           textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: (width < 525 ? 100 : 200),
-        }}>{Game.getTeamConference('away')}</Typography>
+        }}>{Game.getTeamConference('away', conferences)}</Typography>
         <Typography variant = 'overline' color = 'text.secondary' style = {{
           textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: (width < 525 ? 100 : 200),
-        }}>{Game.getTeamConference('home')}</Typography>
+        }}>{Game.getTeamConference('home', conferences)}</Typography>
       </div>
     );
   };

@@ -1,6 +1,6 @@
 'use server';
 
-import { cache, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Metadata, ResolvingMetadata } from 'next';
 
 import { useServerAPI } from '@/components/serverAPI';
@@ -47,7 +47,7 @@ import { ClientSkeleton as StatsLoaderSkeleton } from '@/components/generic/Game
 import StatsLoaderServer from '@/components/generic/Game/StatsLoader/Server';
 import PredictionLoader from '@/components/generic/Game/PreditionLoader';
 import Organization from '@/components/helpers/Organization';
-import Division from '@/components/helpers/Division';
+import { Coaches, CoachTeamSeasons, Game, Games } from '@/types/general';
 
 
 type Props = {
@@ -60,7 +60,7 @@ export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const game = await getCachedData({ params });
+  const { game } = await getData({ params });
 
   const Game = new HelperGame({
     game,
@@ -81,14 +81,10 @@ export async function generateMetadata(
   };
 }
 
-// todo test this
-const getCachedData = cache(getData);
-
 async function getData({ params }) {
   const revalidateSeconds = 5 * 60;
   const { game_id } = params;
-
-  const games = await useServerAPI({
+  const games: Games = await useServerAPI({
     class: 'game',
     function: 'getGames',
     arguments: {
@@ -96,12 +92,32 @@ async function getData({ params }) {
     },
   }, { revalidate: revalidateSeconds });
 
-  return games[game_id] || {};
+  const game: Game = games[game_id];
+
+  const coach_team_seasons: CoachTeamSeasons = await useServerAPI({
+    class: 'coach_team_season',
+    function: 'read',
+    arguments: {
+      organization_id: Organization.getCFBID(),
+      team_id: [game.away_team_id, game.home_team_id],
+      season: game.season,
+    },
+  }, { revalidate: 60 * 60 * 12 });
+
+  const coaches: Coaches = await useServerAPI({
+    class: 'coach',
+    function: 'read',
+    arguments: {
+      coach_id: Object.values(coach_team_seasons).map((r) => r.coach_id),
+    },
+  }, { revalidate: 60 * 60 * 12 });
+
+  return { game, coach_team_seasons, coaches };
 }
 
 export default async function Page({ params, searchParams }) {
   const { game_id } = params;
-  const game = await getCachedData({ params });
+  const { game, coach_team_seasons, coaches } = await getData({ params });
   const { organization_id, division_id } = game;
 
   const Game = new HelperGame({
@@ -192,9 +208,9 @@ export default async function Page({ params, searchParams }) {
   return (
     <div>
       <Suspense key = {`${game_id}_statsloader`} fallback = {<StatsLoaderSkeleton />}>
-        <StatsLoaderServer game_ids = {[game_id]} organization_id = {organization_id} division_id = {division_id} />
+        <StatsLoaderServer game_ids = {[game_id]} coach_ids = {Object.keys(coaches)} organization_id = {organization_id} division_id = {division_id} />
       </Suspense>
-      <HeaderClientWrapper game = {game}>
+      <HeaderClientWrapper game = {game} coaches = {coaches} coach_team_seasons = {coach_team_seasons}>
         <Suspense key = {`${game_id}_headerloader`}>
           <HeaderServer game_id = {game_id} />
         </Suspense>

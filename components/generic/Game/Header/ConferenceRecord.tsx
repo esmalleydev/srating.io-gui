@@ -4,7 +4,7 @@ import { useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
 import { Skeleton, Typography } from '@mui/material';
 
-const Record = (
+const ConferenceRecord = (
   { game, team_id }:
   { game: Game; team_id: string; },
 ) => {
@@ -15,8 +15,8 @@ const Record = (
   const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
   const statistic_ranking = historical;
 
-  const wins = (statistic_ranking && statistic_ranking.wins) || 0;
-  const losses = (statistic_ranking && statistic_ranking.losses) || 0;
+  const wins = (statistic_ranking && statistic_ranking.confwins) || 0;
+  const losses = (statistic_ranking && statistic_ranking.conflosses) || 0;
 
   return (
     <Typography variant = 'overline' color = 'text.secondary' style = {{ fontSize: 11, lineHeight: 'initial' }}>
@@ -32,4 +32,4 @@ const Record = (
   );
 };
 
-export default Record;
+export default ConferenceRecord;
