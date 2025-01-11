@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import BillingPage from './billing-page';
 import { Metadata } from 'next';
 
@@ -15,7 +16,20 @@ export const metadata: Metadata = {
   }
 };
 
+
 export default async function Page() {
-  return <BillingPage />;
+  return (
+    <>
+    <Script id="google-analytics" strategy="afterInteractive">
+      {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+
+        gtag('event', 'conversion', {'send_to': 'AW-11331182972/mmDvCKu5sIMaEPzCkJsq'});
+      `}
+    </Script>
+    <BillingPage />
+    </>
+  );
 };
 
