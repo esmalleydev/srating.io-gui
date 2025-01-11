@@ -24,7 +24,7 @@ const Roster = ({ organization_id, rosterStats }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // todo for CFB, split this into position ( 3 sections QB / Passing, Rushing, Recieving, Maybe defense? (opp_ stats?))
+  // todo for CFB, split this into position ( 3 sections QB / Passing, Rushing, Receiving, Maybe defense? (opp_ stats?))
 
   const [view, setView] = useState<string | null>('overview');
   const [showAlert, setShowAlert] = useState(false);

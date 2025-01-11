@@ -397,7 +397,7 @@ const Client = ({ game, elo }) => {
           ],
         },
         {
-          name: 'Recieving',
+          name: 'Receiving',
           rows: [
             {
               name: 'Recep.',
@@ -686,7 +686,7 @@ const Client = ({ game, elo }) => {
             },
             {
               name: 'Opp. Rec. yds',
-              title: 'Opponent Recieving yards',
+              title: 'Opponent Receiving yards',
               away: awayStats.opponent_receiving_yards,
               home: homeStats.opponent_receiving_yards,
               awayCompareValue: awayStats.opponent_receiving_yards,

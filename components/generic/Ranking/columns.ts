@@ -1151,7 +1151,7 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
           id: 'receiving_yards',
           numeric: true,
           label: 'Rec. yards',
-          tooltip: 'Recieving yards',
+          tooltip: 'Receiving yards',
           sort: 'higher',
         },
         receiving_yards_per_reception: {
@@ -1833,7 +1833,7 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
           id: 'opponent_receiving_yards',
           numeric: true,
           label: 'Opp. Rec. yards',
-          tooltip: 'Opponent Recieving yards',
+          tooltip: 'Opponent Receiving yards',
           sort: 'higher',
         },
         opponent_receiving_yards_per_reception: {
@@ -2210,7 +2210,7 @@ export const getHeaderColumns = ({ organization_id, view }: {view: string, organ
           id: 'receiving_yards_per_game',
           numeric: true,
           label: 'Rec. yards per game',
-          tooltip: 'Recieving yards per game',
+          tooltip: 'Receiving yards per game',
           sort: 'higher',
         },
         receiving_touchdowns_per_game: {
@@ -2569,7 +2569,7 @@ export const getViewableColumns = ({ organization_id, view, columnView, customCo
       if (view === 'team' || view === 'player' || view === 'conference') {
         return ['rank', 'name', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_long'];
       }
-    } else if (columnView === 'recieving') {
+    } else if (columnView === 'Receiving') {
       if (view === 'team' || view === 'player' || view === 'conference') {
         return ['rank', 'name', 'receptions', 'receiving_yards', 'receiving_yards_per_reception', 'receiving_touchdowns', 'receiving_long'];
       }

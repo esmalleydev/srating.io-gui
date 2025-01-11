@@ -371,7 +371,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
         },
         {
           name: 'Rec. yds',
-          title: 'Recieving yards',
+          title: 'Receiving yards',
           away: away_boxscore.receiving_yards,
           home: home_boxscore.receiving_yards,
           awayCompareValue: away_boxscore.receiving_yards,

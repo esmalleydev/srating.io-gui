@@ -272,7 +272,7 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
           ],
         },
         {
-          name: 'Recieving',
+          name: 'Receiving',
           rows: [
             {
               name: 'Receptions',
@@ -282,7 +282,7 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
             },
             {
               name: 'Rec. yards',
-              title: 'Recieving yards',
+              title: 'Receiving yards',
               value: teamStats.receiving_yards,
               rank: teamStats.receiving_yards_rank,
             },
@@ -439,7 +439,7 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
             },
             {
               name: 'Opp. Rec. yards',
-              title: 'Opponent Recieving yards',
+              title: 'Opponent Receiving yards',
               value: teamStats.opponent_receiving_yards,
               rank: teamStats.opponent_receiving_yards_rank,
             },

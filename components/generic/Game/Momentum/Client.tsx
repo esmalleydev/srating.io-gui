@@ -463,7 +463,7 @@ const Client = ({ game, momentumData, stats }) => {
           ],
         },
         {
-          name: 'Recieving',
+          name: 'Receiving',
           rows: [
             {
               name: 'Receptions',
@@ -477,7 +477,7 @@ const Client = ({ game, momentumData, stats }) => {
             },
             {
               name: 'Rec. yards',
-              title: 'Recieving yards',
+              title: 'Receiving yards',
               away: awayMomentumStats.receiving_yards,
               home: homeMomentumStats.receiving_yards,
               awayCompareValue: awayMomentumStats.receiving_yards,
@@ -710,7 +710,7 @@ const Client = ({ game, momentumData, stats }) => {
             },
             {
               name: 'Opp. Rec. yards',
-              title: 'Opponent Recieving yards',
+              title: 'Opponent Receiving yards',
               away: awayMomentumStats.opponent_receiving_yards,
               home: homeMomentumStats.opponent_receiving_yards,
               awayCompareValue: awayMomentumStats.opponent_receiving_yards,

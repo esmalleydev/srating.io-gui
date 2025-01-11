@@ -904,7 +904,7 @@ const getAllColumns = ({ organization_id }): RankingColumns => {
         id: 'receiving_yards',
         numeric: true,
         label: 'Rec. yards',
-        tooltip: 'Recieving yards',
+        tooltip: 'Receiving yards',
         sort: 'higher',
       },
       receiving_yards_per_reception: {
@@ -1562,7 +1562,7 @@ const getAllColumns = ({ organization_id }): RankingColumns => {
         id: 'opponent_receiving_yards',
         numeric: true,
         label: 'Opp. Rec. yards',
-        tooltip: 'Opponent Recieving yards',
+        tooltip: 'Opponent Receiving yards',
         sort: 'higher',
       },
       opponent_receiving_yards_per_reception: {
