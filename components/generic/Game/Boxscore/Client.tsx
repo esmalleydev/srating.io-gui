@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Typography from '@mui/material/Typography';
@@ -8,7 +8,7 @@ import Chip from '@mui/material/Chip';
 
 import HelperGame from '@/components/helpers/Game';
 import CompareStatistic from '@/components/generic/CompareStatistic';
-import { Boxscore as BoxscoreCBB, PlayerBoxscore } from '@/types/cbb';
+import { Boxscore as BoxscoreCBB, PlayerBoxscore, PlayerBoxscores } from '@/types/cbb';
 import { Boxscore as BoxscoreCFB } from '@/types/cfb';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
@@ -22,6 +22,7 @@ import Organization from '@/components/helpers/Organization';
 import CFB from '@/components/helpers/CFB';
 // import ButtonSwitch from '../../ButtonSwitch';
 import RankTable from '../../RankTable';
+import { Game, Players } from '@/types/general';
 
 
 
@@ -58,7 +59,10 @@ const ClientSkeleton = () => {
 };
 
 
-const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
+const Client = (
+  { game, boxscores, player_boxscores, players /* tag */ }:
+  { game: Game; boxscores: BoxscoreCBB[] | BoxscoreCFB[]; player_boxscores: PlayerBoxscores; players: Players /* tag */ },
+) => {
   const dispatch = useAppDispatch();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -127,7 +131,7 @@ const Client = ({ game, boxscores, player_boxscores, players /* tag */ }) => {
       player_name = (player.first_name ? `${player.first_name.charAt(0)}. ` : '') + player.last_name;
     }
 
-    const formattedRow = { ...row };
+    const formattedRow = { ...row } as FooterRow;
 
     formattedRow.name = player_name;
 

@@ -1,16 +1,19 @@
 'use server';
 
-import React from 'react';
-
 import { Client } from '@/components/generic/Game/Boxscore/Client';
 import { useServerAPI } from '@/components/serverAPI';
-import { Boxscores, PlayerBoxscores } from '@/types/cbb';
+import { Boxscore as BoxscoreCBB, PlayerBoxscores } from '@/types/cbb';
+import { Boxscore as BoxscoreCFB } from '@/types/cfb';
+import { Game } from '@/types/general';
 
-const Server = async ({ game }) => {
+const Server = async (
+  { game }:
+  { game: Game },
+) => {
   const { game_id, organization_id, division_id } = game;
   const revalidateSeconds = 30;
 
-  const boxscores: Boxscores = await useServerAPI({
+  const boxscores: BoxscoreCBB[] | BoxscoreCFB[] = await useServerAPI({
     class: 'boxscore',
     function: 'readBoxscore',
     arguments: { game_id, organization_id, division_id },

@@ -10,6 +10,8 @@ import { getTagLabel } from './shared';
 
 let intervalRefresher: NodeJS.Timeout;
 
+// todo have a secret verify afterwards? if fails try again?
+
 const Client = ({ secret, expires, error }) => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.displayReducer.loading);

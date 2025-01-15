@@ -1,32 +1,34 @@
-import React, { useState } from 'react';
+'use client';
+
+import { useState } from 'react';
 
 import { Button, Paper, TextField, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useClientAPI } from '@/components/clientAPI';
+import { User } from '@/types/general';
 
 
 
-const Settings = (props) => {
-  const self = this;
+const Settings = (
+  { user }:
+  { user: User },
+) => {
+  const [password, setPassword] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const user = props.user;
-
-  const [password, setPassword] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
-
-  const [passwordConfirm, setPasswordConfirm] = useState(null);
-  const [passwordErrorConfirm, setPasswordErrorConfirm] = useState(null);
+  const [passwordConfirm, setPasswordConfirm] = useState<string | null>(null);
+  const [passwordErrorConfirm, setPasswordErrorConfirm] = useState<string | null>(null);
   const [isReseting, setIsReseting] = useState(false);
   const [reset, setReset] = useState(false);
 
 
   const handlePassword = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setPassword(value || '');
   };
 
   const handlePasswordConfirm = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setPasswordConfirm(value || '');
   };
 
@@ -40,44 +42,43 @@ const Settings = (props) => {
     if (!password) {
       setPasswordError('Password required');
       return;
-    } else {
-      setPasswordError(null);
     }
+    setPasswordError(null);
+
 
     if (!passwordConfirm) {
       setPasswordErrorConfirm('Password required');
       return;
-    } else {
-      setPasswordErrorConfirm(null);
     }
+    setPasswordErrorConfirm(null);
+
 
     if (password !== passwordConfirm) {
       setPasswordErrorConfirm('Password does not match');
       setPasswordError('Password does not match');
       return;
-    } else if (password.length < 7) {
+    } if (password.length < 7) {
       setPasswordError('Password must be at least 7 characters');
       setPasswordErrorConfirm('Password must be at least 7 characters');
       return;
-    } else {
-      setPasswordError(null);
-      setPasswordErrorConfirm(null);
     }
+    setPasswordError(null);
+    setPasswordErrorConfirm(null);
+
 
     setIsReseting(true);
 
     useClientAPI({
-      'class': 'user',
-      'function': 'resetPassword',
-      'arguments': {
-        'password': password,
-        'confirm_password': passwordConfirm,
+      class: 'user',
+      function: 'resetPassword',
+      arguments: {
+        password,
+        confirm_password: passwordConfirm,
       },
     }).then((response) => {
       setIsReseting(false);
       if (!response) {
         setPasswordError('Something went wrong, try again later');
-        return;
       } else if (response) {
         setReset(true);
         setPassword('');
@@ -88,9 +89,9 @@ const Settings = (props) => {
     });
   };
 
-  let passwordInputs = (
-    <div style = {{'display': 'flex', 'justifyContent': 'center'}}>
-      <Paper elevation={3} style={{'padding': 20, 'minWidth': 300}}>
+  const passwordInputs = (
+    <div style = {{ display: 'flex', justifyContent: 'center' }}>
+      <Paper elevation={3} style={{ padding: 20, minWidth: 300 }}>
         <Typography variant='h5'>Update your password</Typography>
         <TextField
           disabled
@@ -104,8 +105,8 @@ const Settings = (props) => {
         />
         <TextField
           required
-          error = {passwordError ? true : false}
-          helperText = {passwordError ? passwordError : null}
+          error = {!!passwordError}
+          helperText = {passwordError || null}
           onChange = {handlePassword}
           value = {password}
           margin="dense"
@@ -117,8 +118,8 @@ const Settings = (props) => {
         <TextField
           required
           value = {passwordConfirm}
-          error = {passwordErrorConfirm ? true : false}
-          helperText = {passwordErrorConfirm ? passwordErrorConfirm : null}
+          error = {!!passwordErrorConfirm}
+          helperText = {passwordErrorConfirm || null}
           onChange = {handlePasswordConfirm}
           onKeyDown = {handleEnter}
           margin="dense"
@@ -127,10 +128,10 @@ const Settings = (props) => {
           fullWidth
           variant="standard"
         />
-        <div style = {{'textAlign': 'right', 'marginTop': 10}}>{
+        <div style = {{ textAlign: 'right', marginTop: 10 }}>{
           reset ?
-          <div style = {{'display': 'flex', 'justifyContent': 'end', 'alignItems': 'center'}}><CheckCircleIcon color='success' /><Typography color = 'success.main' variant='body1' style={{'display': 'inline-block', 'marginLeft': 10}}>Password reset!</Typography></div>
-          :
+          <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon color='success' /><Typography color = 'success.main' variant='body1' style={{ display: 'inline-block', marginLeft: 10 }}>Password reset!</Typography></div>
+            :
           <Button disabled = {isReseting} onClick={handleResetPassword}>Change password</Button>
         }</div>
       </Paper>
@@ -144,6 +145,6 @@ const Settings = (props) => {
       {passwordInputs}
     </div>
   );
-}
+};
 
 export default Settings;

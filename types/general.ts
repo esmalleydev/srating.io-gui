@@ -20,6 +20,66 @@ export interface Division {
 
 export type Divisions = {[division_id: string]: Division};
 
+export interface Subscription {
+  subscription_id: string;
+  user_id: string;
+  pricing_id: string;
+  stripe_subscription: string;
+  date_of_entry: string;
+  updated_at: string;
+  expires: string;
+  renewed: string;
+  guid: string;
+  deleted: number;
+}
+
+export type Subscriptions = {[subscription_id: string]: Subscription};
+
+export interface Pricing {
+  pricing_id: string;
+  stripe_pricing_id: string;
+  test_stripe_pricing_id: string;
+  code: string;
+  name: string;
+  description: string;
+  type: 'api' | 'picks' | 'trial';
+  requests: number;
+  read: number;
+  guid: string;
+  deleted: number;
+}
+
+export type Pricings = {[pricing_id: string]: Pricing};
+
+export interface ApiKey {
+  api_key_id: string;
+  key: string;
+  user_id: string;
+  subscription_id: string;
+  requests: number;
+  request_limit: number;
+  read: number;
+  write: number;
+  expires: number;
+  last_reset: number;
+  guid: string;
+  deleted: number;
+}
+
+export type ApiKeys = {[api_key_id: string]: ApiKey};
+
+export interface User {
+  user_id: string;
+  username: string;
+  stripe_customer: string;
+  date_of_entry: string;
+  updated_at: string;
+  guid: string;
+  deleted: number;
+}
+
+export type Users = {[user_id: string]: User};
+
 export interface Conference {
   conference_id: string;
   code: string;
