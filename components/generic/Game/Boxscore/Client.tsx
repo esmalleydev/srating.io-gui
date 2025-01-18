@@ -87,11 +87,11 @@ const Client = (
     const row = boxscores[boxscore_id];
 
     if (row.team_id === game.away_team_id) {
-      away_boxscore = row;
+      // away_boxscore = row;
     }
 
     if (row.team_id === game.home_team_id) {
-      home_boxscore = row;
+      // home_boxscore = row;
     }
   }
 
@@ -188,6 +188,10 @@ const Client = (
   });
 
   const getBoxscoreRows = () => {
+    if (!hasBoxscoreData) {
+      return [];
+    }
+
     if (game.organization_id === Organization.getCFBID()) {
       away_boxscore = away_boxscore as BoxscoreCFB;
       home_boxscore = home_boxscore as BoxscoreCFB;
@@ -659,8 +663,6 @@ const Client = (
     ];
   };
 
-  const compareRows = getBoxscoreRows();
-
   const playerBoxscoreHeaderColumns = {
     name: {
       id: 'name',
@@ -767,7 +769,7 @@ const Client = (
     <Contents>
       <div>
         <div style = {{ padding: '10px 5px' }}>
-          {hasBoxscoreData ? <CompareStatistic season = {game.season} max = {numberOfTeams} paper = {true} rows = {compareRows} /> : <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'h5'>No boxscore data yet...</Typography>}
+          {hasBoxscoreData ? <CompareStatistic season = {game.season} max = {numberOfTeams} paper = {true} rows = {getBoxscoreRows()} /> : <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'h5'>No boxscore data yet...</Typography>}
         </div>
       </div>
       {
