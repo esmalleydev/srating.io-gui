@@ -87,11 +87,11 @@ const Client = (
     const row = boxscores[boxscore_id];
 
     if (row.team_id === game.away_team_id) {
-      // away_boxscore = row;
+      away_boxscore = row;
     }
 
     if (row.team_id === game.home_team_id) {
-      // home_boxscore = row;
+      home_boxscore = row;
     }
   }
 
