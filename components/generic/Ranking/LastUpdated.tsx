@@ -19,7 +19,7 @@ const LastUpdated = ({ view, handleLegend }) => {
       return date.format('MMMM Do YYYY');
     }
 
-    return moment(lastUpdated.split('T')[0]).format('MMMM Do YYYY');
+    return moment(lastUpdated).format('MMMM Do YYYY HH:mm a');
   };
   return (
     <>

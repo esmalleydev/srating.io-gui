@@ -86,10 +86,10 @@ const formatCBBData = (args) => {
         row.statistic_ranking &&
         (
           !lastUpdated ||
-          lastUpdated < row.statistic_ranking.date_of_rank
+          lastUpdated < row.statistic_ranking.updated_at
         )
       ) {
-        lastUpdated = row.statistic_ranking.date_of_rank;
+        lastUpdated = row.statistic_ranking.updated_at;
       }
 
       const wins = (row.statistic_ranking && row.statistic_ranking.wins) || 0;
@@ -253,9 +253,9 @@ const formatCBBData = (args) => {
     } else if (view === 'player' || view === 'transfer') {
       if (
         !lastUpdated ||
-        lastUpdated < row.date_of_rank
+        lastUpdated < row.updated_at
       ) {
-        lastUpdated = row.date_of_rank;
+        lastUpdated = row.updated_at;
       }
 
       row.name = row.player ? (`${row.player.first_name.charAt(0)}. ${row.player.last_name}`) : null;
@@ -280,9 +280,9 @@ const formatCBBData = (args) => {
     } else if (view === 'conference') {
       if (
         !lastUpdated ||
-        lastUpdated < row.date_of_rank
+        lastUpdated < row.updated_at
       ) {
-        lastUpdated = row.date_of_rank;
+        lastUpdated = row.updated_at;
       }
       row.name = conferences[row.conference_id].code;
 
@@ -292,9 +292,9 @@ const formatCBBData = (args) => {
     } else if (view === 'coach') {
       if (
         !lastUpdated ||
-        lastUpdated < row.date_of_rank
+        lastUpdated < row.updated_at
       ) {
-        lastUpdated = row.date_of_rank;
+        lastUpdated = row.updated_at;
       }
 
       rows.push(row);
@@ -331,10 +331,10 @@ const formatCFBData = (args) => {
         row.statistic_ranking &&
         (
           !lastUpdated ||
-          lastUpdated < row.statistic_ranking.date_of_rank
+          lastUpdated < row.statistic_ranking.updated_at
         )
       ) {
-        lastUpdated = row.statistic_ranking.date_of_rank;
+        lastUpdated = row.statistic_ranking.updated_at;
       }
 
       const wins = (row.statistic_ranking && row.statistic_ranking.wins) || 0;
@@ -669,9 +669,9 @@ const formatCFBData = (args) => {
     } else if (view === 'player') {
       if (
         !lastUpdated ||
-        lastUpdated < row.date_of_rank
+        lastUpdated < row.updated_at
       ) {
-        lastUpdated = row.date_of_rank;
+        lastUpdated = row.updated_at;
       }
 
       row.name = row.player ? (`${row.player.first_name.charAt(0)}. ${row.player.last_name}`) : null;
@@ -696,9 +696,9 @@ const formatCFBData = (args) => {
     } else if (view === 'conference') {
       if (
         !lastUpdated ||
-        lastUpdated < row.date_of_rank
+        lastUpdated < row.updated_at
       ) {
-        lastUpdated = row.date_of_rank;
+        lastUpdated = row.updated_at;
       }
       row.name = conferences[row.conference_id].code;
 
@@ -706,9 +706,9 @@ const formatCFBData = (args) => {
     } else if (view === 'coach') {
       if (
         !lastUpdated ||
-        lastUpdated < row.date_of_rank
+        lastUpdated < row.updated_at
       ) {
-        lastUpdated = row.date_of_rank;
+        lastUpdated = row.updated_at;
       }
 
       rows.push(row);

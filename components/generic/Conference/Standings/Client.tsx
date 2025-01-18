@@ -20,6 +20,7 @@ import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
 import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import RankTable from '../../RankTable';
 import { getHeaderColumns } from '../../Ranking/columns';
+import Objector from '@/components/utils/Objector';
 
 
 
@@ -121,7 +122,7 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
         confRecordContainer = <Locked iconPadding={0} iconFontSize={'20px'} key = {2} />;
       }
     } else {
-      row = { ...stats } as StatsRows;
+      row = Objector.deepClone(stats) as StatsRows;
 
       if (team.team_id in team_id_x_elo_id) {
         row.elo = elos[team_id_x_elo_id[team.team_id]].elo;
@@ -133,6 +134,7 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
       confRecordContainer = <>{`${stats.confwins}-${stats.conflosses}`}</>;
     }
 
+    row.team_id = team_id;
     row.rank = stats.rank;
     row.wins = stats.wins;
     row.losses = stats.losses;
