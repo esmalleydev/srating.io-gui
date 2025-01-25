@@ -12,7 +12,7 @@ const hostname = process.env.SERVER_HOST;
 const port = process.env.SERVER_PORT;
 const secret = process.env.SERVER_SECRET;
 
-export function getCachedLocation(args) {
+export async function getCachedLocation(args) {
   const request = JSON.stringify(args);
 
   return `API.REQUESTS.${request}`;
