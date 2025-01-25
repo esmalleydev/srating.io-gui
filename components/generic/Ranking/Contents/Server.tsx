@@ -1,9 +1,9 @@
 'use server';
 
-import React from 'react';
+import cacheData from 'memory-cache';
 
 import { Client } from '@/components/generic/Ranking/Contents/Client';
-import { useServerAPI } from '@/components/serverAPI';
+import { getCachedLocation, useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 import DataHandler from '../DataHandler';
 import Organization from '@/components/helpers/Organization';
@@ -24,7 +24,7 @@ const Server = async ({ organization_id, division_id, season, view }) => {
     fxn = 'getCoachRanking';
   }
 
-  let data = await useServerAPI({
+  const dataArgs = {
     class: 'ranking',
     function: fxn,
     arguments: {
@@ -32,7 +32,32 @@ const Server = async ({ organization_id, division_id, season, view }) => {
       division_id,
       season,
     },
-  }, { revalidate: seconds });
+  };
+
+  if (fxn === 'getTeamRanking') {
+    const cache = await useServerAPI({
+      class: 'cache',
+      function: 'get',
+      arguments: {
+        key: 'getTeamRanking',
+        refresh: 1,
+      },
+    });
+
+    if (cache && cache.cache_id) {
+      cacheData.del(getCachedLocation(dataArgs));
+      await useServerAPI({
+        class: 'cache',
+        function: 'update',
+        arguments: {
+          cache_id: cache.cache_id,
+          refresh: 0,
+        },
+      });
+    }
+  }
+
+  let data = await useServerAPI(dataArgs, { revalidate: seconds });
 
   if (Organization.getCBBID() === organization_id && view === 'transfer') {
     data = { ...data };

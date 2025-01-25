@@ -12,10 +12,16 @@ const hostname = process.env.SERVER_HOST;
 const port = process.env.SERVER_PORT;
 const secret = process.env.SERVER_SECRET;
 
+export function getCachedLocation(args) {
+  const request = JSON.stringify(args);
+
+  return `API.REQUESTS.${request}`;
+}
+
 export async function useServerAPI(args, optional_fetch_args = {} as OptionalFetchArgs) {
   const request = JSON.stringify(args);
 
-  const cachedLocation = `API.REQUESTS.${request}`;
+  const cachedLocation = getCachedLocation(args);
 
   let isCached = false;
   let cacheSeconds = 0;
