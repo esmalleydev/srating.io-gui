@@ -3,7 +3,7 @@
 import cacheData from 'memory-cache';
 
 import { Client } from '@/components/generic/Ranking/Contents/Client';
-import { getCachedLocation, useServerAPI } from '@/components/serverAPI';
+import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';
 import DataHandler from '../DataHandler';
 import Organization from '@/components/helpers/Organization';
@@ -45,7 +45,8 @@ const Server = async ({ organization_id, division_id, season, view }) => {
     });
 
     if (cache && cache.cache_id) {
-      cacheData.del(getCachedLocation(dataArgs));
+      const request = JSON.stringify(dataArgs);
+      cacheData.del(`API.REQUESTS.${request}`);
       await useServerAPI({
         class: 'cache',
         function: 'update',
