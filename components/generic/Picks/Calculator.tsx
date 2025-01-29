@@ -34,6 +34,7 @@ import { useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
 import { CircularProgress } from '@mui/material';
 import Sorter from '@/components/utils/Sorter';
+import Organization from '@/components/helpers/Organization';
 const Arrayifer = new utilsArrayifer();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -60,6 +61,7 @@ const Calculator = ({ games, date }) => {
   const picksData = useAppSelector((state) => state.picksReducer.picks);
   const picksLoading = useAppSelector((state) => state.picksReducer.picksLoading);
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
 
   const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
   const [order, setOrder] = useState('asc');
@@ -97,8 +99,9 @@ const Calculator = ({ games, date }) => {
   };
 
 
-  const handleGame = (game_id) => {
-    router.push(`/cbb/games/${game_id}`);
+  const handleGame = (g: Game) => {
+    const path = Organization.getPath({ organizations, organization_id: g.organization_id });
+    router.push(`/${path}/games/${g.game_id}`);
   };
 
   const headCells = [
@@ -139,8 +142,6 @@ const Calculator = ({ games, date }) => {
       label: 'Result',
     },
   ];
-
-  const rows = [];
 
   let correct = 0;
   let total_final = 0;
@@ -254,7 +255,8 @@ const Calculator = ({ games, date }) => {
         if (
           odds >= oddsMin &&
           odds <= oddsMax &&
-          (game[`${pick}_team_rating`] * 100) >= winChance
+          game.prediction &&
+          (game.prediction[`${pick}_percentage`] * 100) >= winChance
         ) {
           games_bet++;
           total_bet += bet;
@@ -285,7 +287,8 @@ const Calculator = ({ games, date }) => {
       if (
         odds >= oddsMin &&
         odds <= oddsMax &&
-        (game[`${pick}_team_rating`] * 100) >= winChance
+        game.prediction &&
+        (game.prediction[`${pick}_percentage`] * 100) >= winChance
       ) {
         rows_picked.push(row);
         future_games_bet++;
@@ -529,8 +532,6 @@ const Calculator = ({ games, date }) => {
     setOrderBy(id);
   };
 
-
-  const row_index = 0;
 
   const getStyledTableRow = (row) => {
     const teamCellStyle: React.CSSProperties = {
