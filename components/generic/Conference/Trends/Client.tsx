@@ -159,6 +159,11 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
   for (const statistic_ranking_id in statistic_rankings) {
     const row = statistic_rankings[statistic_ranking_id];
 
+    // remove preseason rows, so it doesnt start at 0... I think is is fine, unless I make preseason predictions for stats
+    if (!row.games) {
+      continue;
+    }
+
     if (!(row.date_of_rank in date_of_rank_x_team_id_x_data)) {
       date_of_rank_x_team_id_x_data[row.date_of_rank] = {};
     }
@@ -399,7 +404,7 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
               <CartesianGrid strokeDasharray = '3 3' />
               <XAxis dataKey = {'date_friendly'} minTickGap={20} tickLine = {false} axisLine = {false} type='category' />
               <YAxis {...YAxisProps}>
-                <Label offset={10} value={'Rank'} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fill: theme.palette.info.main, fontSize: 18 }} />
+                <Label offset={10} value={(selectedChip in allColumns ? allColumns[selectedChip].label : 'Rank')} angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fill: theme.palette.info.main, fontSize: 18 }} />
               </YAxis>
               {
                 width > breakPoint ?
