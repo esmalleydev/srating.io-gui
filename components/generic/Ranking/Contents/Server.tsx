@@ -34,31 +34,30 @@ const Server = async ({ organization_id, division_id, season, view }) => {
     },
   };
 
-  if (fxn === 'getTeamRanking') {
-    const cache = await useServerAPI({
-      class: 'cache',
-      function: 'get',
-      arguments: {
-        key: 'getTeamRanking',
-        refresh: 1,
-      },
-    });
+  const cacheArgs = {
+    class: 'cache',
+    function: 'get',
+    arguments: {
+      class: dataArgs.class,
+      function: dataArgs.function,
+      arguments: JSON.stringify(dataArgs.arguments),
+    },
+  };
 
-    if (cache && cache.cache_id) {
-      const request = JSON.stringify(dataArgs);
-      cacheData.del(`API.REQUESTS.${request}`);
-      await useServerAPI({
-        class: 'cache',
-        function: 'update',
-        arguments: {
-          cache_id: cache.cache_id,
-          refresh: 0,
-        },
-      });
-    }
+
+  let cache = await useServerAPI(cacheArgs, { revalidate: seconds });
+  if (!cache || !cache.cache_id) {
+    cacheData.del(`API.REQUESTS.${JSON.stringify(cacheArgs)}`);
+    cache = await useServerAPI({
+      class: 'cache',
+      function: 'handle',
+      arguments: dataArgs,
+    });
   }
 
-  let data = await useServerAPI(dataArgs, { revalidate: seconds });
+  let data = cache.json_data;
+
+  // let data = await useServerAPI(dataArgs, { revalidate: seconds });
 
   if (Organization.getCBBID() === organization_id && view === 'transfer') {
     data = { ...data };
