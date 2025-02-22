@@ -30,7 +30,7 @@ const Server = async ({ organization_id, division_id, season, view }) => {
     arguments: {
       organization_id,
       division_id,
-      season,
+      season: season.toString(),
     },
   };
 
