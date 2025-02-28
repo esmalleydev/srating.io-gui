@@ -99,13 +99,24 @@ class Game {
     }
 
     if (
-      (this.getGame().clock === '00:00' || this.getGame().clock === '00:00.00') &&
-      period &&
       (
-        (Organization.getCBBID() === this.getGame().organization_id && period.toUpperCase() === '1ST')
-      ) &&
-      +this.getGame().home_score !== 0 &&
-      +this.getGame().away_score !== 0
+        (this.getGame().clock === '00:00' || this.getGame().clock === '00:00.00') &&
+        period &&
+        (
+          (Organization.getCBBID() === this.getGame().organization_id && period.toUpperCase() === '1ST')
+        ) &&
+        +this.getGame().home_score !== 0 &&
+        +this.getGame().away_score !== 0
+      ) ||
+      (
+        this.getGame().clock === '20:00' &&
+        period &&
+        (
+          (Organization.getCBBID() === this.getGame().organization_id && period.toUpperCase() === '2ND')
+        ) &&
+        +this.getGame().home_score !== 0 &&
+        +this.getGame().away_score !== 0
+      )
     ) {
       return 'Half';
     }
