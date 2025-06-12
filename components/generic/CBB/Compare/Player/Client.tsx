@@ -3,9 +3,6 @@
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import {
-  Typography, Chip,
-} from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
 import { LinearProgress } from '@mui/material';
@@ -15,9 +12,11 @@ import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import RankTable from '@/components/generic/RankTable';
 import HelperTeam from '@/components/helpers/Team';
-import { getHeaderColumns } from '@/components/generic/Ranking/columns';
 import Organization from '@/components/helpers/Organization';
 import { PlayerStatisticRanking } from '@/types/cbb';
+import Typography from '@/components/ux/text/Typography';
+import Chip from '@/components/ux/container/Chip';
+import TableColumns from '@/components/helpers/TableColumns';
 
 
 /**
@@ -145,7 +144,7 @@ const Client = ({ teams }) => {
   };
 
 
-  const headCells = getHeaderColumns({ organization_id: Organization.getCBBID(), view: 'player' });
+  const headCells = TableColumns.getColumns({ organization_id: Organization.getCBBID(), view: 'player' });
 
   headCells.team_name.sticky = true;
 
@@ -175,11 +174,11 @@ const Client = ({ teams }) => {
     statDisplayChips.push(
       <Chip
         key = {statDisplay[i].value}
-        sx = {{ margin: '5px 5px 10px 5px' }}
-        variant = {view === statDisplay[i].value ? 'filled' : 'outlined'}
-        color = {view === statDisplay[i].value ? 'success' : 'primary'}
+        style = {{ margin: '5px 5px 10px 5px' }}
+        filled = {view === statDisplay[i].value}
+        value = {statDisplay[i].value }
         onClick = {() => { handleView(statDisplay[i].value); }}
-        label = {statDisplay[i].label}
+        title = {statDisplay[i].label}
       />,
     );
   }
@@ -234,14 +233,14 @@ const Client = ({ teams }) => {
       {
         topPlayersOnly ?
           <>
-            <Typography variant='h6'>Each team top 6 MPG</Typography>
+            <Typography type='h6'>Each team top 6 MPG</Typography>
             {getTable(topPlayers)}
           </> :
           <>
             {
             guards.length ?
               <>
-              <Typography variant='h6'>Guards</Typography>
+              <Typography type='h6'>Guards</Typography>
               {getTable(guards)}
               </>
               : ''
@@ -249,7 +248,7 @@ const Client = ({ teams }) => {
             {
             forwards.length ?
               <>
-              <Typography variant='h6'>Forwards</Typography>
+              <Typography type='h6'>Forwards</Typography>
               {getTable(forwards)}
               </>
               : ''
@@ -257,7 +256,7 @@ const Client = ({ teams }) => {
             {
             centers.length ?
               <>
-              <Typography variant='h6'>Centers</Typography>
+              <Typography type='h6'>Centers</Typography>
               {getTable(centers)}
               </>
               : ''

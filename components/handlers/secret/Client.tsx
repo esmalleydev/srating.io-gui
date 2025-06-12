@@ -28,8 +28,17 @@ const Client = ({ secret, expires, error }) => {
     return (expires < new Date().getTime());
   };
 
+  // todo this goes in an infinite loop sometimes
+  // console.log(secret)
+  // console.log(expires)
+  // console.log(loading)
+  // console.log(error)
+  // console.log(checkExpired())
+
   const triggerRefresh = () => {
     dispatch(setLoading(true));
+    // console.log('send')
+    // console.log(getTagLabel())
     refresh(getTagLabel());
   };
 
@@ -64,6 +73,7 @@ const Client = ({ secret, expires, error }) => {
   useEffect(() => {
     if (checkExpired() && !loading && !error) {
       triggerRefresh();
+      return;
     }
 
     if (secret_id !== secret) {

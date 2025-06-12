@@ -1,35 +1,43 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import Legend from './Legend';
 import FloatingButtons from './FloatingButtons';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Chip, Typography } from '@mui/material';
 // import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
-import SeasonPicker from '../SeasonPicker';
 import { setLoading as setLoadingDisplay, clearPositions, updatePositions } from '@/redux/features/display-slice';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import ConferencePicker from '../ConferencePicker';
 import AdditionalOptions from './AdditionalOptions';
 import PositionPicker from '../PositionPicker';
 import Search from './Search';
 import { getViewableColumns } from './columns';
-import ConferenceChips from './ConferenceChips';
 import LastUpdated from './LastUpdated';
 import Organization from '@/components/helpers/Organization';
 import ColumnChipPicker from './ColumnChipPicker';
 import DownloadOption from './DownloadOption';
+import ConferenceChips from '../ConferenceChips';
+import ConferencePicker from '../ConferencePicker';
+import Chip from '@/components/ux/container/Chip';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
-const Base = ({ organization_id, division_id, season, view, children }) => {
+const Base = (
+  { organization_id, division_id, season, view, children }:
+  { organization_id: string, division_id: string, season: number, view: string, children: React.JSX.Element | React.JSX.Element[] },
+) => {
+  // console.time('Base')
+  // console.time('Base.logic')
+  const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
+
   const positions = useAppSelector((state) => state.displayReducer.positions);
   const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
   const columnView = useAppSelector((state) => state.rankingReducer.columnView);
@@ -47,6 +55,10 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
   }
 
   const { width } = useWindowDimensions() as Dimensions;
+
+  // useEffect(() => {
+  //   console.timeEnd('Base')
+  // })
   // const breakPoint = 425;
 
   const rankViewOptions = [
@@ -68,7 +80,7 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
 
   const positionChips: React.JSX.Element[] = [];
   for (let i = 0; i < positions.length; i++) {
-    positionChips.push(<Chip key = {positions[i]} sx = {{ margin: '5px' }} label={positions[i]} onDelete={() => { dispatch(updatePositions(positions[i])); }} />);
+    positionChips.push(<Chip key = {positions[i]} value = {positions[i]} style = {{ margin: '5px' }} title={positions[i]} onDelete={() => { dispatch(updatePositions(positions[i])); }} />);
   }
 
   const handleRankView = (newRankView) => {
@@ -89,7 +101,6 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
         current.delete('hideUnderTwoMPG');
         const search = current.toString();
         const query = search ? `?${search}` : '';
-        dispatch(setLoadingDisplay(true));
         startTransition(() => {
           router.push(`${pathName}${query}`);
         });
@@ -116,8 +127,15 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
     setLegendOpen(!legendOpen);
   };
 
+  const seasonOptions = seasons.map((value) => {
+    return {
+      value: value.toString(),
+      label: `${value - 1} - ${value}`,
+    };
+  });
   const title = `College ${sport} ${view} rankings.`;
 
+  // console.timeEnd('Base.logic')
   return (
     <div>
       <Legend open = {legendOpen} onClose={handleLegend} columns={columns} view={view} organization_id = {organization_id} />
@@ -126,11 +144,11 @@ const Base = ({ organization_id, division_id, season, view, children }) => {
         !tableFullscreen ?
             <div style = {{ padding: '5px 20px 0px 20px' }}>
               <div style = {{ display: 'flex', justifyContent: 'right', flexWrap: 'wrap' }}>
-                <OptionPicker buttonName = {`${view} rankings`} options = {rankViewOptions} selected = {view} actionHandler = {handleRankView} isRadio = {true} />
-                <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
+                <OptionPicker buttonName = {`${view} rankings`} options = {rankViewOptions} selected = {[view]} actionHandler = {handleRankView} isRadio = {true} />
+                <OptionPicker buttonName = {season.toString()} options = {seasonOptions} selected = {[season.toString()]} actionHandler = {handleSeason} isRadio = {true} />
               </div>
-              <Typography variant = {width < 500 ? 'h6' : 'h5'}>{title}</Typography>
-              {Organization.getCFBID() === organization_id && view === 'coach' ? <Typography color="text.secondary" variant = 'body1' style = {{ fontStyle: 'italic' }}>Games since Aug '23</Typography> : ''}
+              <Typography type = {width < 500 ? 'h6' : 'h5'}>{title}</Typography>
+              {Organization.getCFBID() === organization_id && view === 'coach' ? <Typography type = 'body1' style = {{ fontStyle: 'italic', color: theme.text.secondary }}>Games since Aug '23</Typography> : ''}
               <LastUpdated view = {view} handleLegend={handleLegend} />
               <ColumnChipPicker view = {view} organization_id={organization_id} />
               <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '10px' }}>

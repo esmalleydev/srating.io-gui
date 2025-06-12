@@ -14,6 +14,7 @@ import coachReducer from './features/coach-slice';
 import conferenceReducer from './features/conference-slice';
 import organizationReducer from './features/organization-slice';
 import gameReducer from './features/game-slice';
+import playerReducer from './features/player-slice';
 
 
 export const makeStore = () => configureStore({
@@ -32,6 +33,7 @@ export const makeStore = () => configureStore({
     conferenceReducer,
     organizationReducer,
     gameReducer,
+    playerReducer,
   },
 });
 

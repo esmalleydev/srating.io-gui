@@ -1,4 +1,4 @@
-'use server';
+// 'use server';
 
 import { Metadata, ResolvingMetadata } from 'next';
 
@@ -29,8 +29,8 @@ import Organization from '@/components/helpers/Organization';
 import Division from '@/components/helpers/Division';
 
 type Props = {
-  params: { team_ids: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ team_ids: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 
@@ -73,7 +73,8 @@ async function getData({ season, home_team_id, away_team_id }) {
         team_id: home_team_id,
         season,
       },
-    }, { revalidate: revalidateSeconds });
+      cache: revalidateSeconds,
+    });
 
     teams[home_team_id] = homeTeam;
   }
@@ -88,7 +89,8 @@ async function getData({ season, home_team_id, away_team_id }) {
         team_id: away_team_id,
         season,
       },
-    }, { revalidate: revalidateSeconds });
+      cache: revalidateSeconds,
+    });
 
     teams[away_team_id] = awayTeam;
   }
@@ -97,15 +99,16 @@ async function getData({ season, home_team_id, away_team_id }) {
 }
 
 
-export default async function Page({ /* params, */ searchParams }) {
-  const home_team_id: string | null = searchParams?.home_team_id || null;
-  const away_team_id: string | null = searchParams?.away_team_id || null;
+export default async function Page({ /* params, */ searchParams }: Props) {
+  const searchParameters = await searchParams;
+  const home_team_id: string | null = typeof searchParameters?.home_team_id === 'string' ? searchParameters?.home_team_id : null;
+  const away_team_id: string | null = typeof searchParameters?.away_team_id === 'string' ? searchParameters?.away_team_id : null;
   const organization_id = Organization.getCBBID();
   const division_id = Division.getD1();
-  const season: number = searchParams?.season || CBB.getCurrentSeason();
-  const view: string = searchParams?.view || 'team';
-  const subview: string | null = searchParams?.subview || null;
-  const neutral_site: boolean = (+searchParams?.neutral === 1);
+  const season: number = typeof searchParameters?.season === 'string' ? parseInt(searchParameters?.season, 10) : CBB.getCurrentSeason();
+  const view: string = typeof searchParameters?.view === 'string' ? searchParameters?.view : 'team';
+  const subview: string | null = typeof searchParameters?.subview === 'string' ? searchParameters?.subview : null;
+  const neutral_site: boolean = typeof searchParameters?.neutral === 'string' ? (parseInt(searchParameters?.neutral, 10) === 1) : true;
 
   const teams = await getData({ season, home_team_id, away_team_id });
 

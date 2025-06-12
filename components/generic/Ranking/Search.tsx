@@ -1,5 +1,6 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { styled, alpha } from '@mui/material/styles';
 
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -7,42 +8,15 @@ import { useAppDispatch } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { getRows } from './DataHandler';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-
-const Container = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.mode === 'dark' ? alpha(theme.palette.common.white, 0.15) : alpha(theme.palette.common.black, 0.10),
-  '&:hover': {
-    backgroundColor: theme.palette.mode === 'dark' ? alpha(theme.palette.common.white, 0.25) : alpha(theme.palette.common.black, 0.20),
-  },
-  marginLeft: 0,
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  // padding: theme.spacing(0, 2),
-  paddingLeft: '10px',
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    // padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    paddingLeft: '40px',
-    transition: theme.transitions.create('width'),
-    width: '100%',
-  },
-}));
+import Style from '@/components/utils/Style';
+import { useTheme } from '@/components/hooks/useTheme';
+import Color from '@/components/utils/Color';
 
 
 const Search = ({ view }: {view: string}) => {
+  // console.time('Search')
+  // console.time('Search.logic')
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const rows = getRows({ view });
   const { width } = useWindowDimensions() as Dimensions;
@@ -57,6 +31,9 @@ const Search = ({ view }: {view: string}) => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   console.timeEnd('Seach')
+  // })
   const [value, setValue] = useState<string>('');
 
   const onChange = (e) => {
@@ -88,18 +65,53 @@ const Search = ({ view }: {view: string}) => {
 
   const inputWidth = width > 425 ? '150px' : '125px';
 
+  const containerStyle = {
+    marginBottom: '5px',
+    width: inputWidth,
+    position: 'relative',
+    borderRadius: '4px',
+    backgroundColor: theme.mode === 'dark' ? Color.alphaColor('#fff', 0.15) : Color.alphaColor('#000', 0.10),
+    '&:hover': {
+      backgroundColor: theme.mode === 'dark' ? Color.alphaColor('#fff', 0.25) : Color.alphaColor('#000', 0.20),
+    },
+    marginLeft: 0,
+  };
+
+  const iconContainerStyle = {
+    paddingLeft: '10px',
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const inputStyle = {
+    minWidth: inputWidth,
+    maxWidth: inputWidth,
+    maxHeight: '39px',
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+      paddingLeft: '40px',
+      transition: 'width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms', // todo I dont think this does anything
+      width: '100%',
+    },
+  };
+
+  // console.timeEnd('Search.logic')
   return (
-    <Container style = {{ marginBottom: '5px', width: inputWidth }}>
-      <SearchIconWrapper>
+    <div className={Style.getStyleClassName(containerStyle)}>
+      <div className={Style.getStyleClassName(iconContainerStyle)}>
         <SearchIcon />
-      </SearchIconWrapper>
-      <StyledInputBase
+      </div>
+      <InputBase
+        className={Style.getStyleClassName(inputStyle)}
         value = {value}
         placeholder = {'Search'}
-        sx = {{ minWidth: inputWidth, maxWidth: inputWidth, maxHeight: '39px' }}
         onChange = {onChange}
       />
-    </Container>
+    </div>
   );
 };
 

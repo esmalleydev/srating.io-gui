@@ -1,19 +1,17 @@
 'use client';
 
-import React, { useState, useRef, RefObject } from 'react';
+import { useState, useRef, RefObject } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 
 import Footer from '../components/generic/Footer';
 
 import Pricing from '@/components/generic/Pricing';
 import { getLogoColorPrimary, getLogoColorSecondary } from '@/components/utils/Color';
-import { CardActionArea, Paper, useTheme } from '@mui/material';
+import { CardActionArea, Paper } from '@mui/material';
 
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -22,6 +20,8 @@ import TrendsExample from '@/components/generic/Home/TrendsExample';
 import RankingExample from '@/components/generic/Home/RankingExample';
 import ToolsExample from '@/components/generic/Home/ToolsExample';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
 
 const Home = () => {
   const [selectedHero, setSelectedHero] = useState('trends');
@@ -30,25 +30,25 @@ const Home = () => {
 
   const { width } = useWindowDimensions() as Dimensions;
 
-  const ref: RefObject<HTMLDivElement> = useRef(null);
+  const ref: RefObject<HTMLDivElement | null> = useRef(null);
 
   const cards = [
     {
       id: 'trends',
       name: 'Trends',
-      icon: <TrendingUpIcon fontSize = 'medium' style = {{ display: 'inline-block', color: theme.palette.success.dark }} />,
+      icon: <TrendingUpIcon fontSize = 'medium' style = {{ display: 'inline-block', color: theme.success.dark }} />,
       description: 'View trends of any statistic. See data at any point in time and how it compares to league and conference averages.',
     },
     {
       id: 'rankings',
       name: 'Rankings',
-      icon: <EmojiEventsIcon fontSize = 'medium' style = {{ display: 'inline-block', color: theme.palette.warning.dark }} />,
+      icon: <EmojiEventsIcon fontSize = 'medium' style = {{ display: 'inline-block', color: theme.warning.dark }} />,
       description: 'Rank every team, coach, player, conference. Also view ranks of each individual metric.',
     },
     {
       id: 'tools',
       name: 'Tools',
-      icon: <BuildIcon fontSize = 'medium' style = {{ display: 'inline-block', color: theme.palette.secondary.dark }} />,
+      icon: <BuildIcon fontSize = 'medium' style = {{ display: 'inline-block', color: theme.secondary.dark }} />,
       description: 'Powerful comparison and prediction tools to scout any match up. Compare stats, roster, trends.',
     },
   ];
@@ -106,17 +106,13 @@ const Home = () => {
         >
           <Container maxWidth="sm">
             <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              style = {{ fontWeight: 600, fontStyle: 'italic' }}
-              gutterBottom
+              type="h2"
+              style = {{ textAlign: 'center', color: theme.text.primary, fontWeight: 600, fontStyle: 'italic', marginBottom: 16 }}
             >
               {<><span style = {{ color: getLogoColorPrimary() }}>s</span><span style = {{ color: getLogoColorSecondary() }}>Rating</span></>}
             </Typography>
-            <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Analysis tools, picks for 🏀 & 🏈, <br /> no ads, <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</Link>
+            <Typography type="h5" style = {{ textAlign: 'center', color: theme.text.secondary, marginBottom: 16 }}>
+              Analysis tools, picks for 🏀 & 🏈, <br /> no ads, <a style = {{ color: theme.link.primary }} href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</a>
             </Typography>
           </Container>
         </Box>
@@ -126,7 +122,7 @@ const Home = () => {
               maxWidth: cardWidth,
               minWidth: cardWidth,
               margin: '5px',
-              border: `2px solid ${card.id === selectedHero ? theme.palette.info.dark : 'transparent'}`,
+              border: `2px solid ${card.id === selectedHero ? theme.info.dark : 'transparent'}`,
             };
 
             const cardContentStyle: React.CSSProperties = {
@@ -141,10 +137,10 @@ const Home = () => {
               <Card sx={cardStyle}>
                 <CardActionArea style={{ height: '100%' }} onClick={() => setSelectedHero(card.id)}>
                   <CardContent style = {cardContentStyle}>
-                    <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography variant={(hitBreakPoint ? 'body1' : 'h6')} style = {{ display: 'inline-block' }}>{card.name}</Typography>{card.icon}</div>
+                    <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography type={(hitBreakPoint ? 'body1' : 'h6')} style = {{ display: 'inline-block' }}>{card.name}</Typography>{card.icon}</div>
                     {
                     hitBreakPoint ? '' :
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography type="body2" style={{ color: theme.text.secondary }}>
                       {card.description}
                     </Typography>
                     }

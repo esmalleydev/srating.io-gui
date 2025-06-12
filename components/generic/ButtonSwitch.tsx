@@ -1,6 +1,8 @@
 'use client';
 
-import { Typography, useTheme } from '@mui/material';
+import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
+import Color from '@/components/utils/Color';
 
 const ButtonSwitch = (
   { leftTitle, rightTitle, selected, handleClick, fontSize = '0.85rem', style = {} }:
@@ -8,8 +10,8 @@ const ButtonSwitch = (
 ) => {
   const theme = useTheme();
 
-  const unSelectedColor = theme.palette.mode === 'light' ? theme.palette.grey['300'] : theme.palette.grey['900'];
-  const selectedColor = theme.palette.info.dark;
+  const unSelectedColor = theme.mode === 'light' ? theme.grey['300'] : theme.grey['900'];
+  const selectedColor = theme.info.dark;
 
   const leftBackgroundColor = (selected === leftTitle ? selectedColor : unSelectedColor);
   const rightBackgroundColor = (selected === rightTitle ? selectedColor : unSelectedColor);
@@ -38,10 +40,10 @@ const ButtonSwitch = (
     <div style = {({ width: '100%', maxWidth: 300, margin: 'auto', ...style })}>
       <div style = {containerStyle}>
         <div style = {({ backgroundColor: leftBackgroundColor, ...buttonStyle })} onClick={() => { handleClick(leftTitle); }}>
-          <Typography style = {{ color: theme.palette.getContrastText(leftBackgroundColor), fontSize }} variant = 'button'>{leftTitle}</Typography>
+          <Typography style = {{ color: Color.getTextColor(theme.text.primary, leftBackgroundColor), fontSize }} type = 'button'>{leftTitle}</Typography>
         </div>
         <div style = {({ backgroundColor: rightBackgroundColor, ...buttonStyle })} onClick={() => { handleClick(rightTitle); }}>
-          <Typography style = {({ color: theme.palette.getContrastText(rightBackgroundColor), fontSize })} variant = 'button'>{rightTitle}</Typography>
+          <Typography style = {({ color: Color.getTextColor(theme.text.primary, rightBackgroundColor), fontSize })} type = 'button'>{rightTitle}</Typography>
         </div>
       </div>
     </div>

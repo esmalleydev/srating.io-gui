@@ -76,19 +76,23 @@ const Header = () => {
 
 
   const handleHome = () => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push('/');
-    });
+    if (pathName !== '/') {
+      dispatch(setLoading(true));
+      startTransition(() => {
+        router.push('/');
+      });
+    }
   };
 
   const handleCompare = () => {
-    dispatch(setLoading(true));
-    dispatch(clear());
-    startTransition(() => {
-      // todo if you change this path to be generic, fix the OrganizationPicker, find the "compare" if statement for redirects
-      router.push('/cbb/compare');
-    });
+    if (pathName !== '/cbb/compare') {
+      dispatch(setLoading(true));
+      dispatch(clear());
+      startTransition(() => {
+        // todo if you change this path to be generic, fix the OrganizationPicker, find the "compare" if statement for redirects
+        router.push('/cbb/compare');
+      });
+    }
   };
 
 

@@ -2,20 +2,22 @@
 
 import { useTransition } from 'react';
 
-import Typography from '@mui/material/Typography';
-
 import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperTeam from '@/components/helpers/Team';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
-import SeasonPicker from '@/components/generic/SeasonPicker';
+import OptionPicker from '@/components/generic/OptionPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { Link, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import { setLoading } from '@/redux/features/display-slice';
 import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
 import CFB from '@/components/helpers/CFB';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
+import { Coach, CoachStatisticRanking, Team } from '@/types/general';
+import { ConferenceStatisticRanking } from '@/types/cbb';
 
 
 /**
@@ -66,15 +68,17 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({
-  team, season, organization_id, division_id, seasons, coach, coach_statistic_ranking, conference_statistic_ranking,
-}) => {
+const Client = (
+  { team, season, organization_id, division_id, seasons, coach, coach_statistic_ranking, conference_statistic_ranking }:
+  { team: Team, season: number, organization_id: string, division_id: string, seasons: number[], coach: Coach | null, coach_statistic_ranking: CoachStatisticRanking | null, conference_statistic_ranking: ConferenceStatisticRanking },
+) => {
   const breakPoint = 475;
 
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
+  const theme = useTheme();
 
   const { width } = useWindowDimensions() as Dimensions;
   const [isPending, startTransition] = useTransition();
@@ -142,35 +146,52 @@ const Client = ({
     }
   };
 
-  const handleCoach = () => {
+  const seasonOptions = seasons.sort((a, b) => b - a).map((value) => {
+    return {
+      value: value.toString(),
+      label: `${value - 1} - ${value}`,
+    };
+  });
+
+  const getCoachHref = () => {
+    return `/${path}/coach/${coach?.coach_id}`/* +'?season='+season */;
+  };
+
+  const handleCoach = (e) => {
+    e.preventDefault();
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/${path}/coach/${coach.coach_id}`/* +'?season='+season */);
+      router.push(getCoachHref());
     });
   };
 
-  const handleConference = () => {
+  const getConferenceHref = () => {
+    return `/${path}/conference/${team.conference_id}?season=${season}`;
+  };
+
+  const handleConference = (e) => {
+    e.preventDefault();
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/${path}/conference/${team.conference_id}?season=${season}`);
+      router.push(getConferenceHref());
     });
   };
 
   return (
     <Contents>
       <PrimaryLine>
-        <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {(width < breakPoint ? 'h6' : 'h5')}>
+        <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {(width < breakPoint ? 'h6' : 'h5')}>
           {rank ? <span style = {supStyle}>{rank} </span> : ''}
           {teamHelper.getName()}
-          <span style = {{ fontSize: '16px', verticalAlign: 'middle' }}>
-            <Typography variant = 'overline' color = 'text.secondary'> ({team?.stats.wins || 0}-{team?.stats.losses || 0})</Typography>
+          <span style = {{ fontSize: '16px', verticalAlign: 'middle', display: 'inline-block', marginLeft: 5 }}>
+            <Typography type = 'overline' style = {{ color: theme.text.secondary }}> ({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
           </span>
         </Typography>
         <FavoritePicker team_id = {team?.team_id} />
-        <SeasonPicker selected = {season} actionHandler = {handleSeason} seasons = {seasons} />
+        <OptionPicker buttonName = {season.toString()} options = {seasonOptions} selected = {[season.toString()]} actionHandler = {handleSeason} isRadio = {true} />
       </PrimaryLine>
       <SecondaryLine>
-        <Typography variant = 'overline' color = 'text.secondary'>{conferenceRank ? <span style = {conferenceSupStyle}>{conferenceRank} </span> : ''}<Link onClick = {handleConference} underline='hover' style={{ cursor: 'pointer' }}>{conferenceName}</Link> | {coachRank ? <span style = {coachSupStyle}>{coachRank} </span> : ''}{coach ? <Link onClick = {handleCoach} underline='hover' style={{ cursor: 'pointer' }}>{`${coach.first_name.charAt(0)}. ${coach.last_name}`}</Link> : 'UNKNOWN'}</Typography>
+        <Typography type = 'overline' style = {{ color: theme.text.secondary }}>{conferenceRank ? <span style = {conferenceSupStyle}>{conferenceRank} </span> : ''}<a onClick = {handleConference} href = {getConferenceHref()} style={{ cursor: 'pointer', color: theme.link.primary }}>{conferenceName}</a> | {coachRank ? <span style = {coachSupStyle}>{coachRank} </span> : ''}{coach ? <a onClick = {handleCoach} href = {getCoachHref()} style={{ cursor: 'pointer', color: theme.link.primary }}>{`${coach.first_name.charAt(0)}. ${coach.last_name}`}</a> : 'UNKNOWN'}</Typography>
       </SecondaryLine>
     </Contents>
   );

@@ -8,16 +8,19 @@ import { getBreakPoint } from '@/components/generic/CBB/Compare/Header/ClientWra
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
-import { IconButton, Link, Skeleton, Tooltip, Typography } from '@mui/material';
+import { IconButton, Skeleton, Tooltip } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { setHomeTeamID, setAwayTeamID } from '@/redux/features/compare-slice';
 import { setLoading } from '@/redux/features/display-slice';
 import CBB from '@/components/helpers/CBB';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => {
+  const theme = useTheme();
   const breakPoint = getBreakPoint();
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
@@ -72,10 +75,15 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
     });
   };
 
-  const handleTeamClick = (team_id: string) => {
+  const getTeamHref = (team_id) => {
+    return `/cbb/team/${team_id}?season=${season}`;
+  };
+
+  const handleTeamClick = (e, team_id: string) => {
+    e.preventDefault();
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/team/${team_id}?season=${season}`);
+      router.push(getTeamHref(team_id));
     });
   };
 
@@ -123,17 +131,17 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
       <div style = {{ display: 'flex', alignItems: 'center' }}>
         {team_id === home_team_id ? getRemoveButton() : ''}
         <div>
-          <div style = {{ fontSize: '14px', display: 'flex', justifyContent }}>
-            <Typography variant = 'overline' color = 'text.secondary' style = {{ lineHeight: 'initial' }}>{neutral_site ? 'Neutral' : (team_id === home_team_id ? 'Home' : 'Away')}</Typography>
+          <div style = {{ display: 'flex', justifyContent }}>
+            <Typography type = 'overline' style = {{ lineHeight: 'initial', color: theme.text.secondary }}>{neutral_site ? 'Neutral' : (team_id === home_team_id ? 'Home' : 'Away')}</Typography>
           </div>
-          <div style = {{ display: 'flex', flexWrap: 'nowrap', justifyContent }} onClick={() => { handleTeamClick(team_id); }}>
-            <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {'h6'}>
+          <div style = {{ display: 'flex', flexWrap: 'nowrap', justifyContent }}>
+            <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {'h6'}>
               {rank ? <span style = {supStyle}>{rank} </span> : ''}
-              <Link style = {{ cursor: 'pointer' }} underline='hover'>{teamName}</Link>
+              <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick={(e) => { handleTeamClick(e, team_id); }} href = {getTeamHref(team_id)}>{teamName}</a>
             </Typography>
           </div>
-          <div style = {{ fontSize: '14px', display: 'flex', justifyContent }}>
-            <Typography variant = 'overline' color = 'text.secondary' style = {{ lineHeight: 'initial' }}>{(width > breakPoint ? `${team && team.conference_id && team.conference_id in conferences ? conferences[team.conference_id].code : ''} ` : '')}({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
+          <div style = {{ display: 'flex', justifyContent }}>
+            <Typography type = 'overline' style = {{ lineHeight: 'initial', color: theme.text.secondary }}>{(width > breakPoint ? `${team && team.conference_id && team.conference_id in conferences ? conferences[team.conference_id].code : ''} ` : '')}({team?.stats?.wins || 0}-{team?.stats?.losses || 0})</Typography>
           </div>
         </div>
         {team_id === away_team_id ? getRemoveButton() : ''}

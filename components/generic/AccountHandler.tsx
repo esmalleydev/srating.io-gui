@@ -9,7 +9,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 
 
@@ -18,9 +17,11 @@ import { setSession, setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { clearDatesChecked } from '@/redux/features/games-slice';
 import { setLoading } from '@/redux/features/display-slice';
+import { useTheme } from '../hooks/useTheme';
 
 
 const AccountHandler = ({ open, closeHandler, loginCallback }) => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -44,12 +45,13 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const [loginCodeError, setLoginCodeError] = useState<string | null>(null);
 
   const checkEmail = (text) => {
-    const regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
-
+    const regex = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
     return regex.test(text);
   };
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -90,7 +92,9 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     });
   };
 
-  const handleRegister = () => {
+  const handleRegister = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -154,7 +158,9 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     });
   };
 
-  const sendLoginCode = () => {
+  const sendLoginCode = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -184,7 +190,9 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     });
   };
 
-  const useLoginCode = () => {
+  const useLoginCode = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -249,13 +257,13 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const handleEnter = (e) => {
     if (e.keyCode === 13) {
       if (register) {
-        handleRegister();
+        handleRegister(e);
       } else if (forgotPassword) {
-        handleLogin();
+        handleLogin(e);
       } else if (tempLogin) {
-        useLoginCode();
+        useLoginCode(e);
       } else {
-        handleLogin();
+        handleLogin(e);
       }
     }
   };
@@ -305,7 +313,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
 
     boxContents.push(
       <DialogActions key = {'temp_login_actions'}>
-        <Button onClick = {() => { setTempLogin(false); setForgotPassword(false); }}>Back</Button>
+        <Button onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setTempLogin(false); setForgotPassword(false); }}>Back</Button>
         <Button onClick = {useLoginCode}>Sign in</Button>
       </DialogActions>,
     );
@@ -332,7 +340,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
 
     boxContents.push(
       <DialogActions key = {'forgot_password_actions'}>
-        <Button onClick = {() => { setTempLogin(false); setForgotPassword(false); }}>Back</Button>
+        <Button onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setTempLogin(false); setForgotPassword(false); }}>Back</Button>
         <Button onClick = {sendLoginCode}>Send temporary code</Button>
       </DialogActions>,
     );
@@ -377,7 +385,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
             fullWidth
             variant="standard"
           />
-          <DialogContentText sx = {{ marginTop: 3 }}>Have an account? <Link sx = {{ cursor: 'pointer' }} onClick = {() => { setRegister(false); }}>Sign in</Link></DialogContentText>
+          <DialogContentText sx = {{ marginTop: 3 }}>Have an account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setRegister(false); }}>Sign in</a></DialogContentText>
         </DialogContent>,
     );
 
@@ -416,8 +424,8 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
             fullWidth
             variant="standard"
           />
-          <DialogContentText sx = {{ marginTop: 3 }}><Link sx = {{ cursor: 'pointer' }} onClick = {() => { setForgotPassword(true); }}>Forgot Password?</Link></DialogContentText>
-          <DialogContentText sx = {{ marginTop: 3 }}>No account? <Link sx = {{ cursor: 'pointer' }} onClick = {() => { setRegister(true); }}>Create account</Link></DialogContentText>
+          <DialogContentText sx = {{ marginTop: 3 }}><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setForgotPassword(true); }}>Forgot Password?</a></DialogContentText>
+          <DialogContentText sx = {{ marginTop: 3 }}>No account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setRegister(true); }}>Create account</a></DialogContentText>
         </DialogContent>,
     );
 
@@ -427,8 +435,6 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
       </DialogActions>,
     );
   }
-
-
 
   return (
     <Dialog

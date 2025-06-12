@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuList } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
@@ -8,8 +8,8 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-type optionType = {
-  value: string;
+export type optionType = {
+  value: string | null;
   label: string;
 };
 
@@ -23,16 +23,21 @@ const OptionPicker = (
     isRadio = false,
   }:
   {
-    selected: string[],
+    selected: (string | null)[],
     options: Array<optionType>,
     buttonName: string,
-    actionHandler?: (value: string) => void,
+    actionHandler?: (value: string | null) => void,
     autoClose?: boolean,
     isRadio?: boolean,
   },
 ) => {
+  // console.time('OptionPicker')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  // useEffect(() => {
+  //   console.timeEnd('OptionPicker')
+  // })
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -41,14 +46,16 @@ const OptionPicker = (
     setAnchorEl(null);
   };
 
-  const handleAction = (value: string) => {
+  const handleAction = (value: string | null) => {
+    // console.time('OptionPicker.handleAction')
     if (actionHandler) {
       actionHandler(value);
     }
-
+    
     if (autoClose) {
       handleClose();
     }
+    // console.timeEnd('OptionPicker.handleAction')
   };
 
   const uncheckedIcon = (
@@ -79,7 +86,7 @@ const OptionPicker = (
       >
           <MenuList>
             {options.map((option, index) => {
-              const isSelected = selected.indexOf(option.value) > -1;
+              const isSelected = selected.includes(option.value);
               return (
                 <MenuItem key = {index} onClick = {() => handleAction(option.value)}>
                   <ListItemIcon>

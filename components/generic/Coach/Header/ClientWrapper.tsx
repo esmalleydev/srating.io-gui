@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@mui/material/styles';
 // import AdditionalOptions from '@/components/generic/CBB/Team/AdditionalOptions';

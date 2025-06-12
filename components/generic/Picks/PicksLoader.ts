@@ -44,7 +44,7 @@ const PicksLoader = ({ organization_id, division_id, date }) => {
     if (lastDate !== date) {
       getData();
     }
-  }, [date]);
+  }, [organization_id, division_id, date]);
 
   return null;
 };

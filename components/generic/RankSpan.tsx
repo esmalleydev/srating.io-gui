@@ -1,10 +1,10 @@
 'use client';
 
-import { useTheme } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
 
 import Color from '@/components/utils/Color';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+import { useTheme } from '@/components/hooks/useTheme';
 
 const RankSpan = (
   { rank, max, useOrdinal }:
@@ -14,8 +14,8 @@ const RankSpan = (
 
   const theme = useTheme();
 
-  const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
-  const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
+  const bestColor = theme.mode === 'light' ? theme.success.main : theme.success.dark;
+  const worstColor = theme.mode === 'light' ? theme.error.main : theme.error.dark;
 
   const spanStyle: React.CSSProperties = {
     fontSize: '10px',
@@ -36,7 +36,9 @@ const RankSpan = (
     backgroundColor !== '#'
   ) {
     spanStyle.backgroundColor = backgroundColor;
-    spanStyle.color = theme.palette.getContrastText(backgroundColor);
+    // it is too inconsistent... switches from black to white, so just go with white, even tho black might looks a tiny bit better on a few colors. White is pretty readable
+    // spanStyle.color = Color.getTextColor(theme.text.primary, backgroundColor);
+    spanStyle.color = '#fff';
   }
 
 

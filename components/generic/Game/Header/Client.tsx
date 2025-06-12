@@ -1,11 +1,12 @@
 'use client';
 
-import Typography from '@mui/material/Typography';
 import HelperGame from '@/components/helpers/Game';
 import { getBreakPoint } from '@/components/generic/Game/Header/ClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Refresher from '../Refresher';
 import { Game } from '@/types/general';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 const Client = (
@@ -13,6 +14,7 @@ const Client = (
   { game: Game; tag: string; },
 ) => {
   const { width } = useWindowDimensions() as Dimensions;
+  const theme = useTheme();
 
   let scoreVariant: string = 'h4';
 
@@ -31,7 +33,7 @@ const Client = (
 
     return (
       <div>
-        <Typography variant = {scoreVariant as 'h4' | 'h5'}>{score || 0}</Typography>
+        <Typography type = {scoreVariant as 'h4' | 'h5'}>{score || 0}</Typography>
       </div>
     );
   };
@@ -39,8 +41,8 @@ const Client = (
   const getTime = () => {
     return (
       <div>
-        {!Game.isInProgress() ? <div><Typography color = {'text.secondary'} variant = 'overline'>{Game.getStartDate(null)}</Typography></div> : ''}
-        <div><Typography color = {'info.dark'} variant = 'overline'>{Game.getTime()}</Typography></div>
+        {!Game.isInProgress() ? <div><Typography type = 'overline' style = {{ color: theme.text.secondary }}>{Game.getStartDate(null)}</Typography></div> : ''}
+        <div><Typography type = 'overline' style = {{ color: theme.info.dark }}>{Game.getTime()}</Typography></div>
       </div>
     );
   };
@@ -54,7 +56,7 @@ const Client = (
         {getTime()}
         {getScore(game.home_score)}
       </div>
-      <Refresher game = {game} tag = {tag} />
+      <Refresher key = {game.game_id} game = {game} tag = {tag} />
     </>
   );
 };

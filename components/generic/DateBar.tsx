@@ -47,7 +47,7 @@ export { getMarginTop, getBreakPoint, getDateBarHeight };
 
 const DateBar = (
   { dates, date }:
-  { dates: string[]; date: string; },
+  { dates: string[]; date: string | null; },
 ) => {
   const theme = useTheme();
 
@@ -55,8 +55,8 @@ const DateBar = (
   const pathName = usePathname();
   const searchParams = useSearchParams();
 
-  const scrollRefDateBar: RefObject<HTMLDivElement> = useRef(null);
-  const scrollRefDate: RefObject<HTMLDivElement> = useRef(null);
+  const scrollRefDateBar = useRef<HTMLDivElement>(null);
+  const scrollRefDate = useRef<HTMLDivElement>(null);
 
   const [isPending, startTransition] = useTransition();
 
@@ -135,7 +135,7 @@ const DateBar = (
 
     let dateBarRef: RefObject<HTMLDivElement> | null = null;
     if (dates[i] === date) {
-      dateBarRef = scrollRefDate;
+      dateBarRef = scrollRefDate as RefObject<HTMLDivElement>;
       dateStyle.borderBottom = `2px ${selectedColor} solid`;
     }
 
@@ -217,7 +217,7 @@ const DateBar = (
               openTo="day"
               minDate = {moment(dates[0])}
               maxDate = {moment(dates[dates.length - 1])}
-              value={date}
+              value={moment(date)}
               shouldDisableDate = {(momentObj: moment.Moment) => {
                 if (!(momentObj.format('YYYY-MM-DD') in tabDatesObject)) {
                   return true;
@@ -231,7 +231,6 @@ const DateBar = (
                 updateDate(momentObj.format('YYYY-MM-DD'), true);
                 toggleCalendar(null);
               }}
-              renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
         </Popover>

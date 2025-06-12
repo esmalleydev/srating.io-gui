@@ -1,7 +1,12 @@
+import { Team, TeamSeasonConference } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 type InitialState = {
+  view: string,
+  subview: string | null,
+  team: Team | object,
+  team_season_conference: TeamSeasonConference | object,
   schedulePredictions: object,
   schedulePredictionsLoading: boolean,
   scheduleStats: object,
@@ -11,6 +16,8 @@ type InitialState = {
   visibleScheduleDifferentials: string[],
   scheduleView: string,
   scrollTop: number,
+  loadingView: boolean,
+  trendsBoxscoreLine: boolean,
 };
 
 type ActionPayload<K extends keyof InitialState> = {
@@ -19,6 +26,10 @@ type ActionPayload<K extends keyof InitialState> = {
 };
 
 const initialState: InitialState = {
+  view: 'schedule',
+  subview: null,
+  team: {},
+  team_season_conference: {},
   schedulePredictions: {},
   schedulePredictionsLoading: true,
   scheduleStats: {},
@@ -28,9 +39,31 @@ const initialState: InitialState = {
   visibleScheduleDifferentials: [],
   scheduleView: 'default',
   scrollTop: 0,
+  loadingView: true,
+  trendsBoxscoreLine: false,
 };
 
-// todo move all these setFoo functions to use setDataKey
+const updateStateFromUrlParams = (state: InitialState) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const urlParams = new URLSearchParams(window.location.search);
+  const view = urlParams.get('view');
+  const subview = urlParams.get('subview');
+
+  // we only want to run this if on first load, if the pathname is relevant
+  if (!window.location.pathname.includes('team')) {
+    return;
+  }
+
+  // Update state if URL parameters are present
+  if (view !== null) {
+    state.view = view;
+  }
+  if (subview !== null) {
+    state.subview = subview;
+  }
+};
 
 export const team = createSlice({
   name: 'team',
@@ -39,26 +72,15 @@ export const team = createSlice({
     setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       state[action.payload.key] = action.payload.value;
     },
-    setScrollTop: (state, action: PayloadAction<number>) => {
-      state.scrollTop = action.payload;
-    },
-    setScheduleStats: (state, action: PayloadAction<object>) => {
-      state.scheduleStats = action.payload;
-    },
-    setScheduleStatsLoading: (state, action: PayloadAction<boolean>) => {
-      state.scheduleStatsLoading = action.payload;
-    },
-    setSchedulePredictionsLoading: (state, action: PayloadAction<boolean>) => {
-      state.schedulePredictionsLoading = action.payload;
-    },
-    updateSchedulePredictions: (state, action: PayloadAction<object>) => {
-      state.schedulePredictions = action.payload || {};
-    },
-    setShowScheduleDifferentials: (state, action: PayloadAction<boolean>) => {
-      state.showScheduleDifferentials = action.payload;
-    },
-    setShowScheduleHistoricalRankRecord: (state, action: PayloadAction<boolean>) => {
-      state.showScheduleHistoricalRankRecord = action.payload;
+    reset: (state) => {
+      for (const key in initialState) {
+        // we do not have to reset this one, it is controlled by the contents changing
+        if (key !== 'loadingView') {
+          state[key] = initialState[key];
+        }
+      }
+
+      updateStateFromUrlParams(state);
     },
     updateVisibleScheduleDifferentials: (state, action: PayloadAction<string>) => {
       const index = state.visibleScheduleDifferentials.indexOf(action.payload);
@@ -71,22 +93,14 @@ export const team = createSlice({
         state.visibleScheduleDifferentials = [...state.visibleScheduleDifferentials, action.payload];
       }
     },
-    setScheduleView: (state, action: PayloadAction<string>) => {
-      state.scheduleView = action.payload;
-    },
   },
 });
 
 export const {
   setDataKey,
-  updateSchedulePredictions,
-  setScrollTop,
-  setScheduleStats,
-  setScheduleStatsLoading,
-  setScheduleView,
-  setSchedulePredictionsLoading,
-  setShowScheduleDifferentials,
-  setShowScheduleHistoricalRankRecord,
+  reset,
   updateVisibleScheduleDifferentials,
 } = team.actions;
 export default team.reducer;
+
+updateStateFromUrlParams(initialState);

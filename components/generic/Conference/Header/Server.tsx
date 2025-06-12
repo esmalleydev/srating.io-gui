@@ -22,16 +22,17 @@ const Server = async ({ organization_id, division_id, season, conference_id }) =
       conference_id,
       current: '1',
     },
-  }, { revalidate: revalidateSeconds });
+    cache: revalidateSeconds,
+  });
 
   const team_season_conferences: TeamSeasonConferences = await useServerAPI({
     class: 'team_season_conference',
     function: 'read',
     arguments: {
-      season,
       conference_id,
       organization_id,
     },
+    cache: revalidateSeconds,
   });
 
 

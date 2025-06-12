@@ -29,6 +29,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
     setIsMounted(true);
   }, []);
 
+  // todo deprecate once mui is completely removed
   const darkTheme = createTheme({
     palette: {
       mode: 'dark',

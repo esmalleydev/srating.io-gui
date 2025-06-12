@@ -1,12 +1,14 @@
 'use client';
 
-import { useTheme } from '@mui/material/styles';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import { Skeleton, Paper, Typography, Tooltip } from '@mui/material';
+import { Skeleton, Tooltip } from '@mui/material';
 
 import Locked from './Billing/Locked';
 import RankSpan from './RankSpan';
+import Typography from '../ux/text/Typography';
+import { useTheme } from '../hooks/useTheme';
+import Paper from '../ux/container/Paper';
 
 
 const CompareStatistic = (
@@ -23,23 +25,23 @@ const CompareStatistic = (
   const getColor = (row, base) => {
     if (row.favored === 'lower') {
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'away' ? theme.palette.success.light : theme.palette.error.light;
+        return base === 'away' ? theme.success.light : theme.error.light;
       }
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'home' ? theme.palette.success.light : theme.palette.error.light;
+        return base === 'home' ? theme.success.light : theme.error.light;
       }
     }
 
     if (row.favored === 'higher') {
       if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? theme.palette.success.light : theme.palette.error.light;
+        return base === 'away' ? theme.success.light : theme.error.light;
       }
       if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? theme.palette.success.light : theme.palette.error.light;
+        return base === 'home' ? theme.success.light : theme.error.light;
       }
     }
 
-    return theme.palette.secondary.light;
+    return theme.secondary.light;
   };
 
   const getPercentage = (row, base) => {
@@ -255,6 +257,7 @@ const CompareStatistic = (
 
   const titleStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
+    color: theme.info.light,
   };
 
   if (width < 500) {
@@ -296,16 +299,16 @@ const CompareStatistic = (
               <div style = {{ margin: '0px 20px 0px 5px', minWidth: '100px', textAlign: 'left', overflow: 'hidden' }}>
                 {
                 row.locked ? <Locked iconFontSize={'18px'} />
-                  : <Typography variant = 'body2'>{row.away}{getRankSpan(row.awayRank)}<Typography style = {{ margin: `0px ${row.awayRank ? '5px' : '8px'}` }} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
+                  : <Typography type = 'body2'>{row.away}{getRankSpan(row.awayRank)}<Typography style = {{ margin: `0px ${row.awayRank ? '5px' : '8px'}`, display: 'inline-block', color: theme.text.secondary }} type = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
                 }
               </div>
               <div style = {{ textAlign: 'center', whiteSpace: 'nowrap' }}>
-                <Tooltip enterTouchDelay={0} key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography sx = {titleStyle} color = {'info.light'} variant = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
+                <Tooltip enterTouchDelay={0} key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography style = {titleStyle} type = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
               </div>
               <div style = {{ margin: '0px 5px 0px 20px', minWidth: '100px', textAlign: 'right', overflow: 'hidden' }}>
                 {
                 row.locked ? <Locked iconFontSize={'18px'} />
-                  : <Typography variant = 'body2'><Typography style = {{ margin: `0px ${row.homeRank ? '5px' : '8px'}` }} color = {'text.secondary'} variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{getRankSpan(row.homeRank)}{row.home}</Typography>
+                  : <Typography type = 'body2'><Typography style = {{ margin: `0px ${row.homeRank ? '5px' : '8px'}`, display: 'inline-block', color: theme.text.secondary }} type = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{getRankSpan(row.homeRank)}{row.home}</Typography>
                 }
               </div>
             </div>

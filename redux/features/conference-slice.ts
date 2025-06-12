@@ -5,6 +5,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
   view: string,
+  subview: string | null,
   scrollTop: number,
   // conference_id: string | null,
   team_season_conferences: TeamSeasonConferences | object;
@@ -13,10 +14,17 @@ type InitialState = {
   elos: Elos | object;
   predictions: object,
   predictionsLoading: boolean,
+  loadingView: boolean,
+};
+
+type ActionPayload<K extends keyof InitialState> = {
+  key: K;
+  value: InitialState[K];
 };
 
 const initialState = {
-  view: 'trends',
+  view: 'standings',
+  subview: null,
   scrollTop: 0,
   // conference_id: null,
   team_season_conferences: {},
@@ -25,6 +33,7 @@ const initialState = {
   elos: {},
   predictions: {},
   predictionsLoading: true,
+  loadingView: false,
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -33,10 +42,19 @@ const updateStateFromUrlParams = (state: InitialState) => {
   }
   const urlParams = new URLSearchParams(window.location.search);
   const view = urlParams.get('view');
+  const subview = urlParams.get('subview');
+
+  // we only want to run this if on first load, if the pathname is relevant
+  if (!window.location.pathname.includes('conference')) {
+    return;
+  }
 
   // Update state if URL parameters are present
   if (view !== null) {
     state.view = view;
+  }
+  if (subview !== null) {
+    state.subview = subview;
   }
 };
 
@@ -44,46 +62,31 @@ export const conference = createSlice({
   name: 'conference',
   initialState,
   reducers: {
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      state[action.payload.key] = action.payload.value;
+    },
     clear: (state) => {
       for (const key in initialState) {
         state[key] = initialState[key];
       }
     },
     reset: (state) => {
+      for (const key in initialState) {
+        // we do not have to reset this one, it is controlled by the contents changing
+        if (key !== 'loadingView') {
+          state[key] = initialState[key];
+        }
+      }
+
       updateStateFromUrlParams(state);
-    },
-    setScrollTop: (state, action: PayloadAction<number>) => {
-      state.scrollTop = action.payload;
-    },
-    setView: (state, action: PayloadAction<string>) => {
-      state.view = action.payload;
-    },
-    // setConferenceID: (state, action: PayloadAction<string>) => {
-    //   state.conference_id = action.payload;
-    // },
-    setTeamSeasonConferences: (state, action: PayloadAction<TeamSeasonConferences | object>) => {
-      state.team_season_conferences = action.payload;
-    },
-    setTeams: (state, action: PayloadAction<Teams | object>) => {
-      state.teams = action.payload;
-    },
-    setStatisticRankings: (state, action: PayloadAction<StatsCBB | StatsCFB>) => {
-      state.statistic_rankings = action.payload;
-    },
-    setElos: (state, action: PayloadAction<Elos>) => {
-      state.elos = action.payload;
-    },
-    setPredictions: (state, action: PayloadAction<object>) => {
-      state.predictions = action.payload;
-    },
-    setPredictionsLoading: (state, action: PayloadAction<boolean>) => {
-      state.predictionsLoading = action.payload;
     },
   },
 });
 
 export const {
-  setView, setScrollTop, clear, reset, setTeamSeasonConferences, setTeams, setStatisticRankings, setElos, setPredictions, setPredictionsLoading,
+  setDataKey,
+  clear,
+  reset,
 } = conference.actions;
 export default conference.reducer;
 

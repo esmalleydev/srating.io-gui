@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Chip } from '@mui/material';
-import { getHeaderColumns } from './columns';
+import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import ColumnPicker from '../ColumnPicker';
 import Organization from '@/components/helpers/Organization';
 import Text from '@/components/utils/Text';
+import Chip from '@/components/ux/container/Chip';
+import TableColumns from '@/components/helpers/TableColumns';
 
 
 const ColumnChipPicker = ({ organization_id, view }) => {
@@ -16,7 +16,7 @@ const ColumnChipPicker = ({ organization_id, view }) => {
   const customColumns = useAppSelector((state) => state.rankingReducer.customColumns);
   const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
 
-  const headCells = getHeaderColumns({ organization_id, view });
+  const headCells = TableColumns.getColumns({ organization_id, view });
 
   const handlCustomColumnsSave = (columns) => {
     setCustomColumnsOpen(false);
@@ -41,7 +41,7 @@ const ColumnChipPicker = ({ organization_id, view }) => {
     if (view !== 'coach') {
       availableChips.forEach((value) => {
         chips.push(
-          <Chip key = {value} sx = {{ margin: '5px' }} label={Text.toSentenceCase(value)} variant={columnView !== value ? 'outlined' : 'filled'} color={columnView !== value ? 'primary' : 'success'} onClick={() => handleRankingView(value)} />,
+          <Chip key = {value} style = {{ margin: '5px' }} title={Text.toSentenceCase(value)} filled={(columnView === value)} value = {value} onClick={() => handleRankingView(value)} />,
         );
       });
     }
@@ -57,7 +57,7 @@ const ColumnChipPicker = ({ organization_id, view }) => {
     if (view !== 'coach') {
       availableChips.forEach((value) => {
         chips.push(
-          <Chip key = {value} sx = {{ margin: '5px' }} label={Text.toSentenceCase(value)} variant={columnView !== value ? 'outlined' : 'filled'} color={columnView !== value ? 'primary' : 'success'} onClick={() => handleRankingView(value)} />,
+          <Chip key = {value} style = {{ margin: '5px' }} title={Text.toSentenceCase(value)} filled={(columnView === value)} value = {value} onClick={() => handleRankingView(value)} />,
         );
       });
     }
@@ -67,10 +67,10 @@ const ColumnChipPicker = ({ organization_id, view }) => {
 
   return (
     <div style = {{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-      <Chip sx = {{ margin: '5px' }} label='Composite' variant={columnView !== 'composite' ? 'outlined' : 'filled'} color={columnView !== 'composite' ? 'primary' : 'success'} onClick={() => handleRankingView('composite')} />
+      <Chip key = {'composite'} style = {{ margin: '5px' }} title={Text.toSentenceCase('composite')} filled={(columnView === 'composite')} value = {'composite'} onClick={() => handleRankingView('composite')} />
       {Organization.getCBBID() === organization_id ? getCBBChips() : ''}
       {Organization.getCFBID() === organization_id ? getCFBChips() : ''}
-      <Chip sx = {{ margin: '5px' }} label='Custom' variant={columnView !== 'custom' ? 'outlined' : 'filled'} color={columnView !== 'custom' ? 'primary' : 'success'} onClick={() => { setCustomColumnsOpen(true); }} />
+      <Chip key = {'custom'} style = {{ margin: '5px' }} title={Text.toSentenceCase('custom')} filled={(columnView === 'custom')} value = {'custom'} onClick={() => setCustomColumnsOpen(true)} />
       <ColumnPicker key = {view} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
     </div>
   );

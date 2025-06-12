@@ -2,20 +2,18 @@
 
 import { useServerAPI } from '@/components/serverAPI';
 import Client from './Client';
-import { unstable_noStore } from 'next/cache';
 import { getTagLabel } from './shared';
 
 
 const Server = async () => {
-  unstable_noStore();
-
   const tag = getTagLabel();
 
   const secret = await useServerAPI({
     class: 'secret',
     function: 'find',
     arguments: {},
-  }, { tags: [tag], revalidate: 60 });
+    cache: 60,
+  }, { tags: [tag] });
 
   let error = false;
   let expires = Infinity;
@@ -24,7 +22,9 @@ const Server = async () => {
     expires = new Date(secret.expires).getTime();
 
     // if you want to test locally, need to alter the time by the utc offset
-    // expires -= (5 * 60 * 60 * 1000);
+    if (process.env.NEXT_PUBLIC_ENV === 'dev') {
+      // expires -= (5 * 60 * 60 * 1000);
+    }
   } else {
     error = true;
   }
@@ -32,7 +32,7 @@ const Server = async () => {
 
   return (
     <>
-      <Client secret={secret.secret_id} expires = {expires} error = {error} />
+      <Client secret={secret?.secret_id} expires = {expires} error = {error} />
     </>
   );
 };

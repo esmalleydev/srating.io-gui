@@ -9,7 +9,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { setScrollTop, setView } from '@/redux/features/coach-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { setLoading } from '@/redux/features/display-slice';
 
@@ -64,8 +63,8 @@ const SubNavBar = ({ view }) => {
         const query = search ? `?${search}` : '';
         router.replace(`${pathName}${query}`);
       }
-      dispatch(setView(newView));
-      dispatch(setScrollTop(0));
+      // dispatch(setView(newView));
+      // dispatch(setScrollTop(0));
 
       if (scrollRef && scrollRef.current) {
         scrollRef.current.scrollTop = 0;

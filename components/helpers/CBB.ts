@@ -33,6 +33,19 @@ class CBB {
 
     return 363;
   }
+
+  /**
+   * todo do no hardcode this
+   * @param season
+   * @returns {number}
+   */
+  public static getNumberOfD1Players(season: number): number {
+    if (+season === 2025) {
+      return 5919;
+    }
+
+    return 6000;
+  }
 }
 
 export default CBB;

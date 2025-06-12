@@ -38,5 +38,12 @@ Allow: /
 User-agent: Yeti
 Allow: /
 
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: archive.org_bot
+Allow: /
+
+
 User-agent: *
 Disallow: /

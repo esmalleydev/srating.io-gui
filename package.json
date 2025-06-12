@@ -1,42 +1,44 @@
 {
   "name": "srating.io-gui",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "private": true,
   "type": "module",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.15.1",
-    "@mui/material": "^5.15.1",
-    "@mui/x-date-pickers": "^5.0.15",
-    "@next/bundle-analyzer": "^14.2.3",
+    "@mui/icons-material": "^6.4.7",
+    "@mui/material": "^6.4.7",
+    "@mui/x-date-pickers": "^7.27.3",
+    "@next/bundle-analyzer": "^15.2.2",
     "@reduxjs/toolkit": "^2.0.1",
-    "@stripe/react-stripe-js": "^2.4.0",
-    "@stripe/stripe-js": "^2.2.2",
+    "@stripe/react-stripe-js": "^3.4.0",
+    "@stripe/stripe-js": "^6.0.0",
     "@testing-library/jest-dom": "^6.1.5",
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.5.1",
     "gray-matter": "^4.0.3",
-    "html-loader": "^4.2.0",
+    "html-loader": "^5.1.0",
     "lodash": "^4.17.21",
     "markdown-loader": "^8.0.0",
     "markdown-to-jsx": "^7.3.2",
     "memory-cache": "^0.2.0",
     "moment": "^2.29.4",
-    "next": "^14.2.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "next": "^15.2.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-idle-timer": "^5.7.2",
     "react-redux": "^9.0.4",
     "react-virtuoso": "^4.6.2",
     "recharts": "^2.12.7",
     "typeface-roboto": "^1.1.13",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 3000 --turbopack",
     "build": "next build",
-    "start": "next start -p 3000"
+    "start": "next start -p 3000",
+    "standalone": "node ./starter.js",
+    "build-live": "node ./builder.js"
   },
   "eslintConfig": {
     "extends": [
@@ -57,13 +59,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
-    "@types/eslint__js": "^8.42.3",
     "@types/lodash": "^4.17.10",
-    "eslint": "^8.57.1",
+    "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^5.1.0",
-    "globals": "^15.14.0",
+    "globals": "^16.0.0",
     "typescript": "^5.5.3",
-    "typescript-eslint": "^7.18.0"
+    "typescript-eslint": "^8.26.1"
   }
 }

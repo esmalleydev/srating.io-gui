@@ -1,15 +1,15 @@
-import React from 'react';
+'use client';
 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setPicksSort } from '@/redux/features/display-slice';
+import { ListItemButton } from '@mui/material';
 
 
 /**
@@ -20,18 +20,18 @@ import { setPicksSort } from '@/redux/features/display-slice';
  * @param  {Function} props.openHandler
  * @return {<Dialog>}
  */
-const SortPicker = (props) => {
+const SortPicker = ({ open, openHandler, closeHandler }) => {
   const dispatch = useAppDispatch();
-  const selected = useAppSelector(state => state.displayReducer.picksSort)
+  const selected = useAppSelector((state) => state.displayReducer.picksSort);
 
   const options = [
     {
-      'value': 'start_time',
-      'label': 'Start time',
+      value: 'start_time',
+      label: 'Start time',
     },
     {
-      'value': 'win_percentage',
-      'label': 'Highest win percentage',
+      value: 'win_percentage',
+      label: 'Highest win percentage',
     },
     // {
     //   'value': 'best_value',
@@ -40,16 +40,16 @@ const SortPicker = (props) => {
   ];
 
   const handleOpen = () => {
-    props.openHandler();
+    openHandler();
   };
 
   const handleClose = () => {
-    props.closeHandler();
+    closeHandler();
   };
 
   return (
     <Dialog
-      open={props.open}
+      open={open}
       keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
@@ -57,7 +57,7 @@ const SortPicker = (props) => {
       <DialogTitle>Sort order</DialogTitle>
       <List>
         {options.map((option) => (
-          <ListItem key={option.value} button onClick={() => {
+          <ListItemButton key={option.value} onClick={() => {
             dispatch(setPicksSort(option.value));
             handleClose();
           }}>
@@ -65,11 +65,11 @@ const SortPicker = (props) => {
               {option.value === selected ? <CheckIcon /> : ''}
             </ListItemIcon>
             <ListItemText primary={option.label} />
-          </ListItem>
+          </ListItemButton>
         ))}
       </List>
     </Dialog>
   );
-}
+};
 
 export default SortPicker;

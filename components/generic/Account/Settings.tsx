@@ -2,10 +2,13 @@
 
 import { useState } from 'react';
 
-import { Button, Paper, TextField, Typography } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useClientAPI } from '@/components/clientAPI';
 import { User } from '@/types/general';
+import Paper from '@/components/ux/container/Paper';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 
@@ -13,6 +16,7 @@ const Settings = (
   { user }:
   { user: User },
 ) => {
+  const theme = useTheme();
   const [password, setPassword] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
@@ -92,7 +96,7 @@ const Settings = (
   const passwordInputs = (
     <div style = {{ display: 'flex', justifyContent: 'center' }}>
       <Paper elevation={3} style={{ padding: 20, minWidth: 300 }}>
-        <Typography variant='h5'>Update your password</Typography>
+        <Typography style = {{ textAlign: 'center' }} type='h5'>Update your password</Typography>
         <TextField
           disabled
           value = {user.username}
@@ -130,7 +134,7 @@ const Settings = (
         />
         <div style = {{ textAlign: 'right', marginTop: 10 }}>{
           reset ?
-          <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon color='success' /><Typography color = 'success.main' variant='body1' style={{ display: 'inline-block', marginLeft: 10 }}>Password reset!</Typography></div>
+          <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon color='success' /><Typography type='body1' style={{ display: 'inline-block', marginLeft: 10, color: theme.success.main }}>Password reset!</Typography></div>
             :
           <Button disabled = {isReseting} onClick={handleResetPassword}>Change password</Button>
         }</div>

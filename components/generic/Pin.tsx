@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import PinIcon from '@mui/icons-material/PushPin';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 // import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
@@ -48,13 +48,16 @@ const Pin = ({ game_id }: { game_id: string; }) => {
   // };
 
 
-  const handleAccountClose = () => {
+  const handleAccountClose = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setAccountOpen(false);
   };
 
   const handleFavorite = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     if (!isValidSession) {
       setAccountOpen(true);
       return;
@@ -97,9 +100,11 @@ const Pin = ({ game_id }: { game_id: string; }) => {
 
   return (
     <>
-      <IconButton color='primary' onClick = {handleFavorite}>
-        <PinIcon sx = {pinStyle} fontSize = 'small' />
-      </IconButton>
+      <Tooltip title = {'Pin game'}>
+        <IconButton color='primary' onClick = {handleFavorite}>
+          <PinIcon sx = {pinStyle} fontSize = 'small' />
+        </IconButton>
+      </Tooltip>
       <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {() => {}} />
       {/* <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
         <Alert onClose={handleAlertClose} severity = {selected ? 'success' : 'info'} sx={{ width: '100%' }}>

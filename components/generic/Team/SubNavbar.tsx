@@ -2,20 +2,22 @@
 
 import { useTransition } from 'react';
 import {
-  IconButton, Tab, Tabs, Tooltip, useTheme,
+  IconButton, Tooltip,
 } from '@mui/material';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
 import HistoryIcon from '@mui/icons-material/History';
-import { setShowScheduleDifferentials, setShowScheduleHistoricalRankRecord } from '@/redux/features/team-slice';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { setLoading } from '@/redux/features/display-slice';
-import AdditionalOptions from './Schedule/AdditionalOptions';
+import { setDataKey } from '@/redux/features/team-slice';
+import AdditionalOptions from './Contents/Schedule/AdditionalOptions';
+import { useTheme } from '@/components/hooks/useTheme';
+import Style from '@/components/utils/Style';
+import Tab from '@/components/ux/buttons/Tab';
 
-const getSubNavHeaderHeight = () => 48;
-
+const getSubNavHeaderHeight = () => 42;
 
 export { getSubNavHeaderHeight };
 
@@ -23,7 +25,6 @@ const SubNavBar = ({ view }) => {
   const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
 
@@ -31,8 +32,8 @@ const SubNavBar = ({ view }) => {
   const scheduleView = useAppSelector((state) => state.teamReducer.scheduleView);
   const showScheduleDifferentials = useAppSelector((state) => state.teamReducer.showScheduleDifferentials);
   const showScheduleHistoricalRankRecord = useAppSelector((state) => state.teamReducer.showScheduleHistoricalRankRecord);
+  const subview = useAppSelector((state) => state.teamReducer.subview) || (view === 'stats' ? 'team' : 'stats');
 
-  let subView = searchParams?.get('subview') || (view === 'stats' ? 'team' : 'stats');
 
   let tabOrder: string[] = [];
   let tabOptions = {};
@@ -59,8 +60,8 @@ const SubNavBar = ({ view }) => {
   const subHeaderStyle: React.CSSProperties = {
     height: subHeaderHeight,
     position: 'fixed',
-    backgroundColor: theme.palette.background.default,
-    zIndex: 1100,
+    backgroundColor: theme.background.main,
+    zIndex: Style.getStyle().zIndex.appBar,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -80,7 +81,7 @@ const SubNavBar = ({ view }) => {
         <Tooltip key = {'toggle-all-historical-charts-tooltip'} title = {'Toggle all historical charts'}>
           <IconButton
             id = 'differential-button'
-            onClick = {() => dispatch(setShowScheduleDifferentials(!showScheduleDifferentials))}
+            onClick = {() => dispatch(setDataKey({ key: 'showScheduleDifferentials', value: !showScheduleDifferentials }))}
           >
             <LegendToggleIcon color = {showScheduleDifferentials ? 'success' : 'primary'} />
           </IconButton>
@@ -91,7 +92,7 @@ const SubNavBar = ({ view }) => {
         <Tooltip key = {'toggle-all-historical-ranking-tooltip'} title = {showScheduleHistoricalRankRecord ? 'Show current record / rank' : 'Show historical record / rank at time of game'}>
           <IconButton
             id = 'historical-button'
-            onClick = {() => dispatch(setShowScheduleHistoricalRankRecord(!showScheduleHistoricalRankRecord))}
+            onClick = {() => dispatch(setDataKey({ key: 'showScheduleHistoricalRankRecord', value: !showScheduleHistoricalRankRecord }))}
           >
             <HistoryIcon color = {showScheduleHistoricalRankRecord ? 'success' : 'primary'} />
           </IconButton>
@@ -103,32 +104,50 @@ const SubNavBar = ({ view }) => {
   } else if (tabOrder.length) {
     const tabs: React.JSX.Element[] = [];
 
-    const handleTabClick = (value) => {
-      subView = tabOrder[value];
+    const handleTabClick = (e, value) => {
+      const newSubview = value;
 
-      if (searchParams) {
-        const current = new URLSearchParams(Array.from(searchParams.entries()));
-        current.set('subview', subView);
+      if (newSubview !== subview) {
+        dispatch(setDataKey({ key: 'subview', value: newSubview }));
+        dispatch(setDataKey({ key: 'loadingView', value: true }));
+
+        const current = new URLSearchParams(window.location.search);
+        current.set('subview', newSubview);
+
+        window.history.replaceState(null, '', `?${current.toString()}`);
+
+        // use pushState if we want to add to back button history
+        // window.history.pushState(null, '', `?${current.toString()}`);
+
         const search = current.toString();
         const query = search ? `?${search}` : '';
 
-        dispatch(setLoading(true));
         startTransition(() => {
           router.replace(`${pathName}${query}`);
         });
+        // const current = new URLSearchParams(Array.from(searchParams.entries()));
+        // current.set('subview', subView);
+        // const search = current.toString();
+        // const query = search ? `?${search}` : '';
+
+        // dispatch(setLoading(true));
+        // startTransition(() => {
+        //   router.replace(`${pathName}${query}`);
+        // });
       }
     };
 
 
     for (let i = 0; i < tabOrder.length; i++) {
-      tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{ fontSize: '12px' }}>{tabOptions[tabOrder[i]]}</span>)} />);
+      const selected = tabOrder[i] === subview;
+      tabs.push(<Tab key = {tabOrder[i]} title = {tabOptions[tabOrder[i]]} value = {tabOrder[i]} selected = {selected} handleClick={handleTabClick}/>);
     }
 
 
     middleButtons.push(
-      <Tabs key = {'tabs'} variant="scrollable" scrollButtons="auto" value={tabOrder.indexOf(subView)} onChange={(e, value) => { handleTabClick(value); }} indicatorColor="secondary" textColor="inherit">
+      <div style = {{ width: '100%', display: 'flex', justifyContent: 'center', overflowX: 'scroll', overflowY: 'hidden', scrollbarWidth: 'none' }}>
         {tabs}
-      </Tabs>,
+      </div>,
     );
   }
 

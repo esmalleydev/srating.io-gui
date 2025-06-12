@@ -1,8 +1,6 @@
 'use client';
 
-import React, { useTransition } from 'react';
-
-import Typography from '@mui/material/Typography';
+import { useTransition } from 'react';
 
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperTeam from '@/components/helpers/Team';
@@ -11,11 +9,13 @@ import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useRouter } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Coach } from '@/types/general';
-import { Link, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import { setLoading } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
 import CBB from '@/components/helpers/CBB';
 import CFB from '@/components/helpers/CFB';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 /**
@@ -67,6 +67,7 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ organization_id, division_id, coach_statistic_rankings, season }) => {
+  const theme = useTheme();
   const coach: Coach = useAppSelector((state) => state.coachReducer.coach);
   const coach_team_seasons = useAppSelector((state) => state.coachReducer.coach_team_seasons);
   const teams = useAppSelector((state) => state.coachReducer.teams);
@@ -155,13 +156,22 @@ const Client = ({ organization_id, division_id, coach_statistic_rankings, season
     teamSupStyle.color = Color.lerpColor(bestColor, worstColor, (+(teamRank / numberOfTeams)));
   }
 
-  const handleTeamClick = () => {
+  const getTeamHref = () => {
+    if (!team || !team.team_id) {
+      return '/';
+    }
+
+    return `/${path}/team/${team.team_id}?season=${season}`;
+  };
+
+  const handleTeamClick = (e) => {
+    e.preventDefault();
     if (!team || !team.team_id) {
       return;
     }
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/${path}/team/${team.team_id}?season=${season}`);
+      router.push(getTeamHref());
     });
   };
 
@@ -169,18 +179,18 @@ const Client = ({ organization_id, division_id, coach_statistic_rankings, season
   return (
     <Contents>
       <PrimaryLine>
-        <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {(width < breakPoint ? 'h6' : 'h5')}>
+        <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {(width < breakPoint ? 'h6' : 'h5')}>
           {coachRank ? <span style = {supStyle}>{coachRank} </span> : ''}
           {`${coach.first_name} ${coach.last_name}`}
-          <span style = {{ fontSize: '16px', verticalAlign: 'middle' }}>
-            <Typography variant = 'overline' color = 'text.secondary'> ({coach_statistic_ranking?.wins || 0}-{coach_statistic_ranking?.losses || 0}){Organization.getCFBID() === organization_id ? '* since \'23' : ''}</Typography>
+          <span style = {{ fontSize: '16px', verticalAlign: 'middle', display: 'inline-block', marginLeft: 5 }}>
+            <Typography type = 'overline' style = {{ color: theme.text.secondary }}> ({coach_statistic_ranking?.wins || 0}-{coach_statistic_ranking?.losses || 0}){Organization.getCFBID() === organization_id ? '* since \'23' : ''}</Typography>
           </span>
         </Typography>
       </PrimaryLine>
       <SecondaryLine>
-        <Typography variant = 'overline' color = 'text.secondary'>
+        <Typography type = 'overline' style = {{ color: theme.text.secondary }}>
           {teamRank ? <span style = {teamSupStyle}>{teamRank} </span> : ''}
-          <Link style = {{ cursor: 'pointer' }} underline='hover' onClick={handleTeamClick}>{teamHelper.getName()}</Link>
+          <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick={handleTeamClick} href = {getTeamHref()}>{teamHelper.getName()}</a>
         </Typography>
       </SecondaryLine>
     </Contents>

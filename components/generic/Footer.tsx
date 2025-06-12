@@ -1,10 +1,11 @@
 'use client';
 
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 const Footer = () => {
+  const theme = useTheme();
   const hash = process.env.COMMIT_HASH;
   const commitDate = process.env.COMMIT_DATE;
 
@@ -13,52 +14,42 @@ const Footer = () => {
     <Box component="footer">
       <div>
         <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
+          type="subtitle1"
+          style = {{ textAlign: 'center', color: theme.text.secondary }}
         >
           🚂Boiler up!🚂
         </Typography>
       </div>
       {/* <div>
         <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
+          type="subtitle1"
+          style = {{ textAlign: 'center', color: theme.text.secondary }}
         >
-          Data from <Link underline="hover" href = "https://stats.ncaa.org" target = "_blank">stats.ncaa.org</Link>
+          Data from <a underline="hover" href = "https://stats.ncaa.org" target = "_blank">stats.ncaa.org</a>
         </Typography>
       </div> */}
       <div>
         <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
+          type="subtitle1"
+          style = {{ textAlign: 'center', color: theme.text.secondary }}
         >
           SRATING LLC
         </Typography>
       </div>
       <div>
         <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
+          type="subtitle1"
+          style = {{ textAlign: 'center', color: theme.link.primary }}
         >
-          <Link underline="hover" href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">{commitDate} - {hash}</Link>
+          <a href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">{commitDate} - {hash}</a>
         </Typography>
       </div>
       <div>
         <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
+          type="subtitle1"
+          style = {{ textAlign: 'center', color: theme.link.primary }}
         >
-          <Link underline="hover" href = "mailto:contact@srating.io">contact@srating.io</Link>
+          <a href = "mailto:contact@srating.io">contact@srating.io</a>
         </Typography>
       </div>
     </Box>

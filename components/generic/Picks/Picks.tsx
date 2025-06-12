@@ -1,21 +1,16 @@
 'use client';
 
-import React from 'react';
-
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
 
 import Tile from '@/components/generic/Picks/Tile';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateConferences } from '@/redux/features/display-slice';
+import { useAppSelector } from '@/redux/hooks';
 import AdditionalOptions from '@/components/generic/Picks/AdditionalOptions';
 import ConferencePicker from '@/components/generic/ConferencePicker';
 import { Games } from '@/types/general';
+import ConferenceChips from '../ConferenceChips';
+import Typography from '@/components/ux/text/Typography';
 
 
 const Picks = ({ games }: {games: Games}) => {
-  const dispatch = useAppDispatch();
-  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   const skip_sort_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_game_ids);
   const game_ids = useAppSelector((state) => state.favoriteReducer.game_ids);
   const picksSort = useAppSelector((state) => state.displayReducer.picksSort);
@@ -76,11 +71,6 @@ const Picks = ({ games }: {games: Games}) => {
     gameContainers.push(<Tile key = {game.game_id} game = {game} />);
   }
 
-  const confChips: React.JSX.Element[] = [];
-  for (let i = 0; i < selectedConferences.length; i++) {
-    confChips.push(<Chip key = {selectedConferences[i]} sx = {{ margin: '5px' }} label={conferences[selectedConferences[i]].code} onDelete={() => { dispatch(updateConferences(selectedConferences[i])); }} />);
-  }
-
   return (
     <>
       <div style = {{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -88,11 +78,11 @@ const Picks = ({ games }: {games: Games}) => {
         <AdditionalOptions />
       </div>
       <div style = {{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {confChips}
+        <ConferenceChips />
       </div>
       <div style = {{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {
-          gameContainers.length ? gameContainers : <Typography variant = 'h5'>No games found :( please adjust filter. </Typography>
+          gameContainers.length ? gameContainers : <Typography type = 'h5'>No games found :( please adjust filter. </Typography>
         }
       </div>
     </>

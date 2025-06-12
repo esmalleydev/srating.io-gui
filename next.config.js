@@ -51,6 +51,9 @@ export default bundleAnalyzer({
   eslint: {
     ignoreDuringBuilds: true,
   },
+  devIndicators: false,
+  // output: 'standalone',
+  reactStrictMode: true,
   webpack: (config /* options */) => {
     config.module.rules.push({
       test: /\.md$/,

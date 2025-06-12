@@ -14,6 +14,7 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
+import { setSession } from '@/redux/features/user-slice';
 
 
 const CheckoutForm = ({ pricing }) => {
@@ -97,6 +98,7 @@ const CheckoutForm = ({ pricing }) => {
 
     if (subscription.session_id) {
       localStorage.setItem('session_id', subscription.session_id);
+      dispatch(setSession(subscription.session_id));
     }
 
     const { clientSecret } = subscription;
@@ -110,23 +112,23 @@ const CheckoutForm = ({ pricing }) => {
       confirmParams: {
         payment_method_data: {
           billing_details: {
-            // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
-            name: null,
+            // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+            name: email,
             email,
-            // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+            // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
             phone: null,
             address: {
-              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
               city: null,
-              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
               country: null,
-              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
               line1: null,
-              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
               line2: null,
-              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
               postal_code: null,
-              // @ts-expect-error // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
+              // if you change these to undefined or an empty string, the payments fails, im not collecting them... null works
               state: null,
             },
           },

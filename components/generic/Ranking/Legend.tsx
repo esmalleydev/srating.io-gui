@@ -1,12 +1,15 @@
 'use client';
 
-import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
-import { getHeaderColumns } from './columns';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
+import TableColumns from '@/components/helpers/TableColumns';
 
 const Legend = ({ open, onClose, columns, view, organization_id }) => {
-  const headers = getHeaderColumns({ organization_id, view });
+  const headers = TableColumns.getColumns({ organization_id, view });
+  const theme = useTheme();
 
   return (
     <>
@@ -25,8 +28,8 @@ const Legend = ({ open, onClose, columns, view, organization_id }) => {
             columns.map((column: string) => {
               return (
                 <div key = {column} style = {{ display: 'flex', margin: '5px 0px' }}>
-                  <Typography color = 'info.main' variant = 'subtitle2'>{headers[column].label}:</Typography>
-                  <Typography style = {{ marginLeft: 10 }} variant = 'body2'>{headers[column].tooltip}</Typography>
+                  <Typography type = 'subtitle2' style = {{ color: theme.info.main }}>{headers[column].label}:</Typography>
+                  <Typography style = {{ marginLeft: 10 }} type = 'body2'>{headers[column].tooltip}</Typography>
                 </div>
               );
             })

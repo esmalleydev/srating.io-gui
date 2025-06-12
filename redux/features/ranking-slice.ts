@@ -51,6 +51,11 @@ const updateStateFromUrlParams = (state: InitialState) => {
   const filterOriginalConf = urlParams.get('filterOriginalConf');
   // const view = urlParams.get('view');
 
+  // we only want to run this if on first load, if the pathname is relevant
+  if (!window.location.pathname.includes('ranking')) {
+    return;
+  }
+
   // Update state if URL parameters are present
   if (hideCommitted !== null) {
     state.hideCommitted = (+hideCommitted === 1);
@@ -70,52 +75,29 @@ const updateStateFromUrlParams = (state: InitialState) => {
   // }
 };
 
-// todo deprecate all but setDataKey
-
 export const ranking = createSlice({
   name: 'ranking',
   initialState,
   reducers: {
-    reset: () => {
-      return initialState;
+    reset: (state) => {
+      for (const key in initialState) {
+        // we do not have to reset this one, it is controlled by the contents changing
+        if (key !== 'loadingView') {
+          state[key] = initialState[key];
+        }
+      }
+
+      updateStateFromUrlParams(state);
     },
     setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       state[action.payload.key] = action.payload.value;
     },
-    setOrder: (state, action: PayloadAction<string>) => {
-      state.order = action.payload;
-    },
-    setOrderBy: (state, action: PayloadAction<string>) => {
-      state.orderBy = action.payload;
-    },
-    setHideCommitted: (state, action: PayloadAction<boolean>) => {
-      state.hideCommitted = action.payload;
-    },
-    setHideUnderTwoMPG: (state, action: PayloadAction<boolean>) => {
-      state.hideUnderTwoMPG = action.payload;
-    },
-    setFilterCommittedConf: (state, action: PayloadAction<boolean>) => {
-      state.filterCommittedConf = action.payload;
-    },
-    setFilterOriginalConf: (state, action: PayloadAction<boolean>) => {
-      state.filterOriginalConf = action.payload;
-    },
-    setTableScrollTop: (state, action: PayloadAction<number>) => {
-      state.tableScrollTop = action.payload;
-    },
-    setTableFullscreen: (state, action: PayloadAction<boolean>) => {
-      state.tableFullscreen = action.payload;
-    },
-    // setSeason: (state, action: PayloadAction<number>) => {
-    //   state.value.season = action.payload;
-    // },
   },
 });
 
 export const {
   reset,
   setDataKey,
-  setOrder, setOrderBy, setHideCommitted, setHideUnderTwoMPG, setFilterCommittedConf, setFilterOriginalConf, setTableScrollTop, setTableFullscreen,
 } = ranking.actions;
 export default ranking.reducer;
 

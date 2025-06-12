@@ -20,7 +20,8 @@ const Server = async ({ organization_id, division_id, date, season }) => {
       date,
       season,
     },
-  }, { revalidate: revalidateSeconds });
+    cache: revalidateSeconds,
+  });
 
   return (
     <>

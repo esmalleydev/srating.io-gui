@@ -39,6 +39,11 @@ const updateStateFromUrlParams = (state: InitialState) => {
   const view = urlParams.get('view');
   const subview = urlParams.get('subview');
 
+  // we only want to run this if on first load, if the pathname is relevant
+  if (!window.location.pathname.includes('compare')) {
+    return;
+  }
+
   // Update state if URL parameters are present
   if (home_team_id !== null) {
     state.home_team_id = home_team_id;

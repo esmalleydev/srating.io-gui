@@ -23,7 +23,7 @@ interface Data {
  */
 const Contents = ({ children }): React.JSX.Element => {
   return (
-    <div style = {{ textAlign: 'center' }}>
+    <div>
       {children}
     </div>
   );

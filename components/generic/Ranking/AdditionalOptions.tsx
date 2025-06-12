@@ -11,14 +11,11 @@ import MenuItem from '@mui/material/MenuItem';
 
 import { Divider, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setHideCommitted, setHideUnderTwoMPG } from '@/redux/features/ranking-slice';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { setDataKey } from '@/redux/features/ranking-slice';
+import { useSearchParams } from 'next/navigation';
 import ConferenceFilterOptions from './ConferenceFilterOptions';
-import { setLoading } from '@/redux/features/display-slice';
 
 const AdditionalOptions = ({ view }: {view: string}) => {
-  const router = useRouter();
-  const pathName = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [anchor, setAnchor] = useState(null);
@@ -41,15 +38,22 @@ const AdditionalOptions = ({ view }: {view: string}) => {
   const handleCommitted = () => {
     const newValue: boolean = !hideCommitted;
     handleClose();
-    dispatch(setLoading(true));
     startTransition(() => {
       if (newValue !== hideCommitted) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
         current.set('hideCommitted', (+newValue).toString());
-        const search = current.toString();
-        const query = search ? `?${search}` : '';
-        router.replace(`${pathName}${query}`);
-        dispatch(setHideCommitted(newValue));
+
+        // we dont need the router replace here, it will trigger a server re-render, but nothing is changing from the server, these are gui filters
+        // const search = current.toString();
+        // const query = search ? `?${search}` : '';
+        // router.replace(`${pathName}${query}`);
+
+        window.history.replaceState(null, '', `?${current.toString()}`);
+
+        // use pushState if we want to add to back button history
+        // window.history.pushState(null, '', `?${current.toString()}`);
+
+        dispatch(setDataKey({ key: 'hideCommitted', value: newValue }));
       }
     });
   };
@@ -57,15 +61,23 @@ const AdditionalOptions = ({ view }: {view: string}) => {
   const handleUnderTwo = () => {
     const newValue: boolean = !hideUnderTwoMPG;
     handleClose();
-    dispatch(setLoading(true));
+    // dispatch(setLoading(true));
     startTransition(() => {
       if (newValue !== hideUnderTwoMPG) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
         current.set('hideUnderTwoMPG', (+newValue).toString());
-        const search = current.toString();
-        const query = search ? `?${search}` : '';
-        router.replace(`${pathName}${query}`);
-        dispatch(setHideUnderTwoMPG(newValue));
+
+        // we dont need the router replace here, it will trigger a server re-render, but nothing is changing from the server, these are gui filters
+        // const search = current.toString();
+        // const query = search ? `?${search}` : '';
+        // router.replace(`${pathName}${query}`);
+
+        window.history.replaceState(null, '', `?${current.toString()}`);
+
+        // use pushState if we want to add to back button history
+        // window.history.pushState(null, '', `?${current.toString()}`);
+
+        dispatch(setDataKey({ key: 'hideUnderTwoMPG', value: newValue }));
       }
     });
   };

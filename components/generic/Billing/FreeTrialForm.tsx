@@ -8,10 +8,13 @@ import TextField from '@mui/material/TextField';
 
 import { Button } from '@mui/material';
 import { useClientAPI } from '@/components/clientAPI';
+import { useAppDispatch } from '@/redux/hooks';
+import { setSession } from '@/redux/features/user-slice';
 
 const FreeTrialForm = () => {
   const router = useRouter();
 
+  const dispatch = useAppDispatch();
   const [spin, setSpin] = useState(false);
   const [request, setRequest] = useState(false);
   const [email, setEmail] = useState(null);
@@ -79,6 +82,7 @@ const FreeTrialForm = () => {
 
     if (session.session_id) {
       localStorage.setItem('session_id', session.session_id);
+      dispatch(setSession(session.session_id));
     }
 
     router.push('/account');

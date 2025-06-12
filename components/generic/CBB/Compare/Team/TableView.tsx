@@ -2,18 +2,16 @@
 
 import { useState } from 'react';
 
-import {
-  Chip,
-} from '@mui/material';
 import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
 import CFB from '@/components/helpers/CFB';
-import { getHeaderColumns } from '@/components/generic/Ranking/columns';
 import RankTable from '@/components/generic/RankTable';
 import HelperTeam from '@/components/helpers/Team';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { CBBRankingTable } from '@/types/cbb';
 import { CFBRankingTable } from '@/types/cfb';
+import Chip from '@/components/ux/container/Chip';
+import TableColumns from '@/components/helpers/TableColumns';
 
 
 
@@ -41,7 +39,7 @@ const TableView = ({ organization_id, division_id, teams, season }) => {
   };
 
 
-  const headCells = getHeaderColumns({ organization_id: Organization.getCBBID(), view: 'team' });
+  const headCells = TableColumns.getColumns({ organization_id: Organization.getCBBID(), view: 'team' });
 
   const statDisplay = [
     {
@@ -69,11 +67,11 @@ const TableView = ({ organization_id, division_id, teams, season }) => {
     statDisplayChips.push(
       <Chip
         key = {statDisplay[i].value}
-        sx = {{ margin: '5px 5px 10px 5px' }}
-        variant = {view === statDisplay[i].value ? 'filled' : 'outlined'}
-        color = {view === statDisplay[i].value ? 'success' : 'primary'}
+        style = {{ margin: '5px 5px 10px 5px' }}
+        filled = {view === statDisplay[i].value}
+        value = {statDisplay[i].value}
         onClick = {() => { handleView(statDisplay[i].value); }}
-        label = {statDisplay[i].label}
+        title = {statDisplay[i].label}
       />,
     );
   }

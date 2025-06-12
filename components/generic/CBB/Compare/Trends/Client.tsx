@@ -1,17 +1,16 @@
 'use client';
 
-import React from 'react';
-import { Typography, Paper } from '@mui/material';
-
 import HelperTeam from '@/components/helpers/Team';
 
-import PreviousMatchupTile from '@/components/generic/Game/PreviousMatchups/Tile';
+import PreviousMatchupTile from '@/components/generic/Game/Contents/PreviousMatchups/Tile';
 import { Game, Team, Games } from '@/types/general';
 import { LinearProgress } from '@mui/material';
 import { getHeaderHeight } from '../Header/ClientWrapper';
 import { getSubNavHeaderHeight } from '../SubNavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
+import Paper from '@/components/ux/container/Paper';
+import Typography from '@/components/ux/text/Typography';
 
 /**
  * The main wrapper div for all the contents
@@ -49,7 +48,7 @@ const Client = ({ games, teams, home_team_id, away_team_id }: {games: Games, tea
   const summaryPRContainers: React.JSX.Element[] = [];
 
   if (games && !Object.keys(games).length) {
-    previousMatchupContainers.push(<Paper key = {1} elevation = {3} style = {{ padding: 10 }}><Typography variant = 'body1'>Could not find any previous games :(</Typography></Paper>);
+    previousMatchupContainers.push(<Paper key = {1} elevation = {3} style = {{ padding: 10 }}><Typography type = 'body1'>Could not find any previous games :(</Typography></Paper>);
   } else if (games) {
     const sorted_matchups: Game[] = Object.values(games).sort((a, b) => {
       return a.start_date > b.start_date ? -1 : 1;
@@ -136,24 +135,24 @@ const Client = ({ games, teams, home_team_id, away_team_id }: {games: Games, tea
 
     if (sorted_matchups.length > 5) {
       if (lastThree_home_wins >= lastThree_away_wins) {
-        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {lastThree_home_wins} of last 3 by an average of {(lastThree_home_points / lastThree_home_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography type = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {lastThree_home_wins} of last 3 by an average of {(lastThree_home_points / lastThree_home_wins).toFixed(2)} pts.</Typography>);
       } else {
-        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {lastThree_away_wins} of last 3 by an average of {(lastThree_away_points / lastThree_away_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography type = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {lastThree_away_wins} of last 3 by an average of {(lastThree_away_points / lastThree_away_wins).toFixed(2)} pts.</Typography>);
       }
     }
 
     if (sorted_matchups.length > 10) {
       if (lastTen_home_wins >= lastTen_away_wins) {
-        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {lastTen_home_wins} of last 10 by an average of {(lastTen_home_points / lastTen_home_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography type = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {lastTen_home_wins} of last 10 by an average of {(lastTen_home_points / lastTen_home_wins).toFixed(2)} pts.</Typography>);
       } else {
-        summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {lastTen_away_wins} of last 10 by an average of {(lastTen_away_points / lastTen_away_wins).toFixed(2)} pts.</Typography>);
+        summaryPRContainers.push(<Typography type = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {lastTen_away_wins} of last 10 by an average of {(lastTen_away_points / lastTen_away_wins).toFixed(2)} pts.</Typography>);
       }
     }
 
     if (home_wins >= away_wins) {
-      summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {home_wins} of last {sorted_matchups.length} by an average of {(home_points / home_wins).toFixed(2)} pts.</Typography>);
+      summaryPRContainers.push(<Typography type = 'body2'>{new HelperTeam({ team: teams[home_team_id] }).getName()} has won {home_wins} of last {sorted_matchups.length} by an average of {(home_points / home_wins).toFixed(2)} pts.</Typography>);
     } else {
-      summaryPRContainers.push(<Typography variant = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {away_wins} of last {sorted_matchups.length} by an average of {(away_points / away_wins).toFixed(2)} pts.</Typography>);
+      summaryPRContainers.push(<Typography type = 'body2'>{new HelperTeam({ team: teams[away_team_id] }).getName()} has won {away_wins} of last {sorted_matchups.length} by an average of {(away_points / away_wins).toFixed(2)} pts.</Typography>);
     }
   }
 

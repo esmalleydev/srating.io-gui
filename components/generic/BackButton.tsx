@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { setLoading } from '@/redux/features/display-slice';
 import { useAppDispatch } from '@/redux/hooks';
@@ -22,9 +22,11 @@ const BackButton = () => {
 
   return (
     <>
-      <IconButton color='primary' onClick = {handleClick}>
-        <ArrowBackIcon fontSize = 'small' />
-      </IconButton>
+      <Tooltip title = {'Back'}>
+        <IconButton color='primary' onClick = {handleClick}>
+          <ArrowBackIcon fontSize = 'small' />
+        </IconButton>
+      </Tooltip>
     </>
   );
 };

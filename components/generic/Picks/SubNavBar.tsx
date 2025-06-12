@@ -3,13 +3,15 @@
 import React, { useState, useTransition } from 'react';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import {
-  Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, Tab, Tabs, useTheme,
+  Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Tab, Tabs,
 } from '@mui/material';
 import { getBreakPoint, getMarginTop, getDateBarHeight } from '@/components/generic/DateBar';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setScrollTop } from '@/redux/features/picks-slice';
 import { setLoading } from '@/redux/features/display-slice';
+import { useTheme } from '@/components/hooks/useTheme';
+import Style from '@/components/utils/Style';
 
 const getHeaderHeight = () => {
   return 48;
@@ -64,8 +66,8 @@ const SubNavBar = ({ view }) => {
   const subHeaderStyle: React.CSSProperties = {
     height: subHeaderHeight,
     position: 'fixed',
-    backgroundColor: theme.palette.background.default,
-    zIndex: 1100,
+    backgroundColor: theme.background.main,
+    zIndex: Style.getStyle().zIndex.appBar,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -148,7 +150,7 @@ const SubNavBar = ({ view }) => {
             Subscribe for just $5 per month to get access to the betting calculator!
           </DialogContentText>
           <DialogContentText id="alert-dialog-description">
-            <Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {handleLiveWinRate}>View the live win rate</Link>
+            <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {handleLiveWinRate}>View the live win rate</a>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

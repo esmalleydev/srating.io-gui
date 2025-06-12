@@ -1,16 +1,13 @@
 'use client';
 
-import { useRef, useState, useTransition } from 'react';
+import { useRef, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
 
-import { useTheme } from '@mui/material/styles';
-
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
+import Paper from '@/components/ux/container/Paper';
 
 import Locked from '@/components/generic/Billing/Locked';
 import { Skeleton } from '@mui/material';
@@ -28,6 +25,10 @@ import { setLoading } from '@/redux/features/display-slice';
 import Record from './Tile/Record';
 import Rank from './Tile/Rank';
 import Organization from '@/components/helpers/Organization';
+import { reset } from '@/redux/features/game-slice';
+import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
+import Style from '@/components/utils/Style';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {
@@ -54,8 +55,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const [isPending, startTransition] = useTransition();
   const theme = useTheme();
 
-  const [hover, setHover] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const isVisible = useOnScreen(ref);
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
@@ -73,13 +74,13 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     game,
   });
 
-  const isVisible = useOnScreen(ref);
-
   const spreadToUseHome = (Game.isInProgress() ? Game.getLiveSpread('home') : Game.getPreSpread('home'));
   const spreadToUseAway = (Game.isInProgress() ? Game.getLiveSpread('away') : Game.getPreSpread('away'));
   const overUnderToUse = (Game.isInProgress() ? Game.getLiveOver() : Game.getPreOver());
 
   const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (
       scrollRef &&
       scrollRef.current
@@ -89,19 +90,13 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
     dispatch(updateGameSort(null));
     refresh(`${path}.games.${game.game_id}`);
+    dispatch(reset());
     dispatch(setLoading(true));
     startTransition(() => {
       router.push(`/${path}/games/${game.game_id}`);
     });
   };
 
-  const handleMouseEnter = (e) => {
-    setHover(true);
-  };
-
-  const handleMouseLeave = (e) => {
-    setHover(false);
-  };
 
   const getIndicators = () => {
     const flexContainer = {
@@ -137,14 +132,10 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       lineHeight: '36px',
     };
 
-    // if (hover) {
-    //   flexContainer.backgroundColor = theme.palette.action.hover;
-    // }
-
     const network: React.JSX.Element[] = [];
 
     if (!Game.isFinal() && Game.getNetwork()) {
-      network.push(<Typography key = {Game.getNetwork()} sx = {{ marginLeft: '5px' }} color = 'text.secondary' variant = 'overline'>{Game.getNetwork()}</Typography>);
+      network.push(<Typography key = {Game.getNetwork()} style = {{ display: 'inline-block', marginLeft: '5px', color: theme.text.secondary }} type = 'overline'>{Game.getNetwork()}</Typography>);
     }
 
     const oddsTexts: string[] = [];
@@ -160,10 +151,10 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
     return (
       <div style = {flexContainer} >
-        <div style = {timeStyle}><Typography color = {Game.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{Game.getTime()}</Typography>{network}</div>
+        <div style = {timeStyle}><Typography style = {{ display: 'inline-block', color: (Game.isInProgress() ? theme.info.dark : theme.text.secondary) }} type = 'overline'>{Game.getTime()}</Typography>{network}</div>
         {
           displayCardView === 'compact' && !Game.isFinal() && oddsTexts.length && hideOdds !== 1 ?
-            <div><Typography style={{ fontSize: '11px' }} variant = 'overline' color={'text.secondary'}>{oddsTexts.join(' | ')}</Typography></div>
+            <div><Typography style={{ display: 'inline-block', fontSize: '11px', color: theme.text.secondary }} type = 'overline'>{oddsTexts.join(' | ')}</Typography></div>
             : ''
         }
         <Pin game_id = {game.game_id} />
@@ -186,8 +177,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     const awayPercentage = +(game.prediction.away_percentage * 100).toFixed(0);
     const homePercentage = +(game.prediction.home_percentage * 100).toFixed(0);
 
-    awayWinPercentageContainer.push(<Typography key = {'away_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.away_percentage) }}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
-    homeWinPercentageContainer.push(<Typography key = {'home_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.home_percentage) }}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+    awayWinPercentageContainer.push(<Typography key = {'away_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.away_percentage) }}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+    homeWinPercentageContainer.push(<Typography key = {'home_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.home_percentage) }}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
   }
 
   const getOddsLine = () => {
@@ -207,27 +198,27 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
     if (Game.isFinal()) {
       if (Game.coveredSpread('away')) {
-        awaySpreadCoverStyle.color = theme.palette.success.main;
+        awaySpreadCoverStyle.color = theme.success.main;
         tdAwaySpreadTitle = 'Covered pre spread';
       }
       if (Game.coveredSpread('home')) {
-        homeSpreadCoverStyle.color = theme.palette.success.main;
+        homeSpreadCoverStyle.color = theme.success.main;
         tdHomeSpreadTitle = 'Covered pre spread';
       }
       if (Game.won('away')) {
-        awayMLStyle.color = theme.palette.success.main;
+        awayMLStyle.color = theme.success.main;
         tdAwayMLTitle = 'Covered money line';
       }
       if (Game.won('home')) {
-        homeMLStyle.color = theme.palette.success.main;
+        homeMLStyle.color = theme.success.main;
         tdHomeMLTitle = 'Covered money line';
       }
       if (Game.coveredOver()) {
-        overStyle.color = theme.palette.success.main;
+        overStyle.color = theme.success.main;
         tdOverTitle = 'Covered over';
       }
       if (Game.coveredUnder()) {
-        underStyle.color = theme.palette.success.main;
+        underStyle.color = theme.success.main;
         tdUnderTitle = 'Covered under';
       }
     } else if (Game.isInProgress()) {
@@ -243,26 +234,26 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       <table style = {{ width: '100%', textAlign: 'center' }}>
         <thead>
           <tr>
-            <th style = {{ textAlign: 'left' }}><Typography variant = 'caption'>-</Typography></th>
-            <th><Typography variant = 'caption'>SPREAD</Typography></th>
-            <th><Typography variant = 'caption'>ML</Typography></th>
-            <th><Typography variant = 'caption'>O/U</Typography></th>
-            <th style = {{ textAlign: 'right' }}><Typography variant = 'caption'>%</Typography></th>
+            <th style = {{ textAlign: 'left' }}><Typography type = 'caption'>-</Typography></th>
+            <th><Typography type = 'caption'>SPREAD</Typography></th>
+            <th><Typography type = 'caption'>ML</Typography></th>
+            <th><Typography type = 'caption'>O/U</Typography></th>
+            <th style = {{ textAlign: 'right' }}><Typography type = 'caption'>%</Typography></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style = {{ textAlign: 'left' }}><Typography variant = 'caption'>{Game.getTeamNameShort('away')}</Typography></td>
-            <td title = {tdAwaySpreadTitle}><Typography variant = 'caption' style = {awaySpreadCoverStyle}>{Game.getPreSpread('away')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('away')}` : ''}</Typography></td>
-            <td title = {tdAwayMLTitle} style = {({ color: Game.oddsReversal('away') ? theme.palette.warning.main : theme.palette.text.primary, ...awayMLStyle })}><Typography variant = 'caption'>{Game.getPreML('away')}{Game.isInProgress() ? ` / ${Game.getLiveML('away')}` : ''}</Typography></td>
-            <td title = {tdOverTitle}><Typography variant = 'caption' style = {overStyle}>{Game.getPreOver() !== '-' ? `O ${Game.getPreOver()}` : '-'}{Game.isInProgress() ? ` / ${Game.getLiveOver()}` : ''}</Typography></td>
+            <td style = {{ textAlign: 'left' }}><Typography type = 'caption'>{Game.getTeamNameShort('away')}</Typography></td>
+            <td title = {tdAwaySpreadTitle}><Typography type = 'caption' style = {awaySpreadCoverStyle}>{Game.getPreSpread('away')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('away')}` : ''}</Typography></td>
+            <td title = {tdAwayMLTitle} style = {({ color: Game.oddsReversal('away') ? theme.warning.main : theme.text.primary, ...awayMLStyle })}><Typography type = 'caption'>{Game.getPreML('away')}{Game.isInProgress() ? ` / ${Game.getLiveML('away')}` : ''}</Typography></td>
+            <td title = {tdOverTitle}><Typography type = 'caption' style = {overStyle}>{Game.getPreOver() !== '-' ? `O ${Game.getPreOver()}` : '-'}{Game.isInProgress() ? ` / ${Game.getLiveOver()}` : ''}</Typography></td>
             <td style = {{ textAlign: 'right' }}>{awayWinPercentageContainer}</td>
           </tr>
           <tr>
-            <td style = {{ textAlign: 'left' }}><Typography variant = 'caption'>{Game.getTeamNameShort('home')}</Typography></td>
-            <td title = {tdHomeSpreadTitle}><Typography variant = 'caption' style = {homeSpreadCoverStyle}>{Game.getPreSpread('home')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('home')}` : ''}</Typography></td>
-            <td title = {tdHomeMLTitle} style = {({ color: Game.oddsReversal('home') ? theme.palette.warning.main : theme.palette.text.primary, ...homeMLStyle })}><Typography variant = 'caption'>{Game.getPreML('home')}{Game.isInProgress() ? ` / ${Game.getLiveML('home')}` : ''}</Typography></td>
-            <td title = {tdUnderTitle}><Typography variant = 'caption' style = {underStyle}>{Game.getPreUnder() !== '-' ? `U ${Game.getPreUnder()}` : '-'}{Game.isInProgress() ? ` / ${Game.getLiveUnder()}` : ''}</Typography></td>
+            <td style = {{ textAlign: 'left' }}><Typography type = 'caption'>{Game.getTeamNameShort('home')}</Typography></td>
+            <td title = {tdHomeSpreadTitle}><Typography type = 'caption' style = {homeSpreadCoverStyle}>{Game.getPreSpread('home')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('home')}` : ''}</Typography></td>
+            <td title = {tdHomeMLTitle} style = {({ color: Game.oddsReversal('home') ? theme.warning.main : theme.text.primary, ...homeMLStyle })}><Typography type = 'caption'>{Game.getPreML('home')}{Game.isInProgress() ? ` / ${Game.getLiveML('home')}` : ''}</Typography></td>
+            <td title = {tdUnderTitle}><Typography type = 'caption' style = {underStyle}>{Game.getPreUnder() !== '-' ? `U ${Game.getPreUnder()}` : '-'}{Game.isInProgress() ? ` / ${Game.getLiveUnder()}` : ''}</Typography></td>
             <td style = {{ textAlign: 'right' }}>{homeWinPercentageContainer}</td>
           </tr>
         </tbody>
@@ -289,7 +280,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       margin: '0px 5px',
       width: '34px',
       maxWidth: '34px',
-      border: `2px solid ${theme.palette.text.secondary}`,
+      border: `2px solid ${theme.text.secondary}`,
       borderRadius: '5px',
       textAlign: 'center',
       flex: 2,
@@ -313,7 +304,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
         )
       )
     ) {
-      scoreStyle.border = `2px solid ${theme.palette.secondary.dark}`;
+      scoreStyle.border = `2px solid ${theme.secondary.dark}`;
     }
 
     // won
@@ -360,17 +351,15 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       <div style = {flexContainer} >
         <div style = {nameStyle}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <div>
-              <Typography variant = 'h6' sx = {{ fontSize: 14, display: 'inline-block' }}>
-                <Typography variant = 'overline' color = 'text.secondary' sx = {{ fontSize: 12 }}><Rank game={game} team_id={team_id} /></Typography>
-                {Game.getTeamName(side)}
-                {favorite_team_ids.indexOf(team_id) > -1 ? <FavoriteIcon style = {{ color: theme.palette.warning.light, fontSize: 12, marginLeft: 5 }} /> : ''}
-              </Typography>
+            <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', fontSize: 14 }} type = {'h6'}>
+              <Rank game={game} team_id={team_id} />
+              {Game.getTeamName(side)}
+              {favorite_team_ids.indexOf(team_id) > -1 ? <FavoriteIcon style = {{ color: theme.warning.light, fontSize: 12, marginLeft: 5 }} /> : ''}
               <Record game={game} team_id={team_id} />
-            </div>
+            </Typography>
             {
               displayCardView === 'compact' && !Game.isFinal() && hideOdds !== 1 ?
-                <div><Typography style={{ fontSize: '11px' }} variant = 'overline' color={(Game.oddsReversal(side) ? theme.palette.warning.main : 'text.secondary')}>{/* overUnder ? overUnder + ' | ' : '' */}{/* spread ? spread + ' | ' : '' */}{moneyLineToUse}</Typography></div>
+                <div><Typography style={{ fontSize: '11px', color: (Game.oddsReversal(side) ? theme.warning.main : theme.text.secondary) }} type = 'overline'>{/* overUnder ? overUnder + ' | ' : '' */}{/* spread ? spread + ' | ' : '' */}{moneyLineToUse}</Typography></div>
                 : ''
             }
           </div>
@@ -400,10 +389,10 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
           displayCardView === 'compact' && hideOdds !== 1 ?
           <div style = {{ display: 'flex', flexFlow: 'column', padding: `0px ${hasAccessToPercentages || isLoadingWinPercentage ? 5 : 0}px` }}>
             <div style={{
-              minHeight: 40, minWidth: 24, textAlign: 'center', lineHeight: '40px',
+              minHeight: 40, minWidth: 24, textAlign: 'center', lineHeight: '40px', alignContent: 'center',
             }}>{awayWinPercentageContainer}</div>
             <div style={{
-              minHeight: 40, minWidth: 24, textAlign: 'center', lineHeight: '40px',
+              minHeight: 40, minWidth: 24, textAlign: 'center', lineHeight: '40px', alignContent: 'center',
             }}>{homeWinPercentageContainer}</div>
           </div>
             : ''
@@ -414,8 +403,6 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
   const divStyle = getTileBaseStyle();
 
-  const paperStyle: React.CSSProperties = {};
-
   if (Game.isNeutralSite()) {
     divStyle.height = +(divStyle.height || 0) + 21;
   }
@@ -425,9 +412,6 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     padding: '10px',
   };
 
-  if (hover) {
-    paperStyle.backgroundColor = theme.palette.action.hover;
-  }
 
   if (displayCardView === 'large') {
     divStyle.height = 255 + (!hasAccessToPercentages ? 25 : 0) + (Game.isNeutralSite() ? 21 : 0);
@@ -435,12 +419,10 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
   return (
     <div
-      style = {divStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      className = {Style.getStyleClassName(divStyle)}
       onClick={handleClick}
     >
-      <Paper elevation={3} ref = {ref} style = {paperStyle}>
+      <Paper elevation={3} ref = {ref} hover>
         {
           isVisible ?
           <>

@@ -11,6 +11,10 @@ const MutationHandler = () => {
   const dispatch = useAppDispatch();
   let previousUrl = '';
 
+  if (typeof window === 'undefined') {
+    return null; // Prevents SSR issues
+  }
+
   const observer = new MutationObserver(() => {
     if (window.location.href !== previousUrl) {
       // console.log(`URL changed from ${previousUrl} to ${window.location.href}`);

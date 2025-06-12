@@ -4,13 +4,9 @@ import React, { ForwardRefExoticComponent, MutableRefObject, RefAttributes, useE
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { LinearProgress, useTheme } from '@mui/material';
+import { LinearProgress } from '@mui/material';
 import { TableVirtuoso } from 'react-virtuoso';
 
-
-import Typography from '@mui/material/Typography';
-
-import { styled } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -25,39 +21,23 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 import CheckIcon from '@mui/icons-material/Check';
-import { getHeaderColumns, getViewableColumns } from '../columns';
+import { getViewableColumns } from '../columns';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { useRouter } from 'next/navigation';
 import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
-import { getConferenceChips } from '../ConferenceChips';
 import RankSpan from '../../RankSpan';
 import { getRows } from '../DataHandler';
 import Organization from '@/components/helpers/Organization';
 import { CBBRankingTable } from '@/types/cbb';
 import { CFBRankingTable } from '@/types/cfb';
+import Typography from '@/components/ux/text/Typography';
+import { getConferenceChips } from '../../ConferenceChips';
+import TableColumns from '@/components/helpers/TableColumns';
+import Color from '@/components/utils/Color';
+import { useTheme } from '@/components/hooks/useTheme';
+import Style from '@/components/utils/Style';
+import Arithmetic from '@/components/utils/Arithmetic';
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  // '&:nth-of-type(odd)': {
-  //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.grey[900],
-  // },
-  // '&:nth-of-type(even)': {
-  //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
-  // },
-  '&:last-child td, &:last-child th': {
-    // border: 0,
-  },
-  '&:hover td': {
-    backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
-  },
-  border: 0,
-  '&:hover': {
-    cursor: 'pointer',
-  },
-}));
-
-const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
-}));
 
 
 /**
@@ -137,6 +117,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
   const tableRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
 
+
   const scrollerRef = React.useCallback(
     (element) => {
       if (element) {
@@ -156,7 +137,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     }
   }, [tableHorizontalScroll, order, orderBy]);
 
-  const headCells = getHeaderColumns({ organization_id, view });
+  const headCells = TableColumns.getColumns({ organization_id, view });
 
   if (data === null) {
     return <ClientSkeleton />;
@@ -229,9 +210,9 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     }
 
     let a_value = a[orderBy];
-    let a_secondary: number | null = null;
+    let a_secondary: number | string | null = null;
     let b_value = b[orderBy];
-    let b_secondary: number | null = null;
+    let b_secondary: number | string | null = null;
     if ((view !== 'coach' && orderBy === 'record') || orderBy === 'conf_record') {
       a_value = +a[orderBy].split('-')[0];
       a_secondary = +a[orderBy].split('-')[1];
@@ -240,6 +221,31 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     }
 
     const direction = (headCells[orderBy] && headCells[orderBy].sort) || 'lower';
+
+    // if the delta 7 is too high, maybe just default to delta 1 for a more stable sort?
+    if (orderBy === 'rank_delta_combo') {
+      [a_value, a_secondary] = a[orderBy].split('/');
+      a_value = a_value === '-' ? 0 : +a_value;
+      // @ts-expect-error - I know a_secondary can be null, +null is 0, still a number
+      a_secondary = a_secondary === '-' ? 0 : +a_secondary;
+
+      [b_value, b_secondary] = b[orderBy].split('/');
+      b_value = b_value === '-' ? 0 : +b_value;
+      // @ts-expect-error - I know b_secondary can be null, +null is 0, still a number
+      b_secondary = b_secondary === '-' ? 0 : +b_secondary;
+
+
+      if (a_secondary > a_value) {
+        a_value = a_secondary;
+      }
+      if (b_secondary > b_value) {
+        b_value = b_secondary;
+      }
+
+      a_secondary = null;
+      b_secondary = null;
+    }
+
 
     if (
       a_secondary !== null &&
@@ -270,11 +276,52 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
       : (a, b) => -descendingComparator(a, b, orderBy);
   };
 
+  let minDelta = -1;
+  let maxDelta = 1;
+
   if (rows && rows.length) {
     rows.sort(getComparator(order, orderBy));
+
+    for (let i = 0; i < rows.length; i++) {
+      let delta = 0;
+      if (rows[i].rank_delta_one) {
+        delta = rows[i].rank_delta_one;
+      }
+
+      if (
+        rows[i].rank_delta_seven &&
+        (
+          (delta > 0 && delta < rows[i].rank_delta_seven) ||
+          (delta < 0 && delta > rows[i].rank_delta_seven)
+        )
+      ) {
+        delta = rows[i].rank_delta_seven;
+      }
+
+      if (delta > 0 && delta > maxDelta) {
+        maxDelta = delta;
+      }
+
+      if (delta < 0 && delta < minDelta) {
+        minDelta = delta;
+      }
+    }
   }
 
-  const TableComponents: TableComponentsType = {
+
+  const TableRowCSS = Style.getStyleClassName(`
+    &:hover td {
+      background-color: ${theme.mode === 'light' ? theme.info.light : theme.info.dark};
+    },
+    border: 0;
+    &:hover {
+      cursor: pointer;
+    }
+  `);
+
+
+  const TableComponents = {
+  // const TableComponents: TableComponentsType = {
     Scroller: React.forwardRef<HTMLDivElement>((props, ref) => {
       return (
         <TableContainer component={Paper} {...props} ref={ref} />
@@ -284,7 +331,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     TableHead,
     TableRow: React.forwardRef<HTMLTableRowElement, TableRowProps>((props, ref) => {
       return (
-        <StyledTableRow {...props} ref={ref} onClick={() => {
+        <TableRow {...props} ref={ref} className={TableRowCSS} onClick={() => {
           const { item } = props;
           if ((view === 'player' || view === 'transfer') && item.player_id) {
             handlePlayer(item.player_id);
@@ -346,6 +393,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
           const tdStyle: React.CSSProperties = {
             padding: '4px 5px',
             border: 0,
+            backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
           };
 
           if (width <= breakPoint) {
@@ -365,7 +413,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
           }
 
           if (headCell.id === 'name') {
-            tdStyle.borderRight = `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`;
+            tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
           }
 
           let showSortArrow = true;
@@ -379,7 +427,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
 
           return (
             <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
-              <StyledTableHeadCell
+              <TableCell
                 sx = {tdStyle}
                 key={headCell.id}
                 align={'left'}
@@ -398,7 +446,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
                     </Box>
                   ) : null}
                 </TableSortLabel>
-              </StyledTableHeadCell>
+              </TableCell>
             </Tooltip>
           );
         })}
@@ -410,9 +458,9 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const getTableContents = (index, row) => {
     const columns = tableColumns;
 
-    let bgColor = (index % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]);
-    if (theme.palette.mode === 'light') {
-      bgColor = index % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300];
+    let bgColor = (index % 2 === 0 ? theme.grey[800] : theme.grey[900]);
+    if (theme.mode === 'light') {
+      bgColor = index % 2 === 0 ? theme.grey[200] : theme.grey[300];
     }
 
     const tdStyle: React.CSSProperties = {
@@ -437,7 +485,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
       textOverflow: 'ellipsis',
       minWidth: 125,
       maxWidth: 125,
-      borderRight: `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`,
+      borderRight: `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`,
     };
 
     const conferenceCellStyle: React.CSSProperties = {
@@ -477,6 +525,60 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
         tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...rankCellStyle })}>{row[columns[i]]}</TableCell>);
       } else if (columns[i] === 'conf') {
         tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...conferenceCellStyle })}>{row[columns[i]]}</TableCell>);
+      } else if (columns[i].includes('_delta_')) {
+        const value = row[columns[i]] !== null ? row[columns[i]] : '-';
+
+        if (columns[i] === 'rank_delta_combo') {
+          let rank_delta_one = value.split('/')[0];
+          let rank_delta_seven = value.split('/')[1];
+
+          const deltaOneSpanStyle: React.CSSProperties = {};
+          const deltaSevenSpanStyle: React.CSSProperties = {};
+          if (rank_delta_one !== '-') {
+            if (+rank_delta_one > 0) {
+              const normalizedNumber = Arithmetic.clamp(Math.abs(+rank_delta_one) / (maxDelta * 0.8), 0, 1);
+              deltaOneSpanStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
+            } else {
+              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+rank_delta_one) / (minDelta * 0.8), -1, 0));
+              deltaOneSpanStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
+            }
+          }
+          if (rank_delta_seven !== '-') {
+            if (+rank_delta_seven > 0) {
+              const normalizedNumber = Arithmetic.clamp(Math.abs(+rank_delta_seven) / (maxDelta * 0.8), 0, 1);
+              deltaSevenSpanStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
+            } else {
+              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+rank_delta_seven) / (minDelta * 0.8), -1, 0));
+              deltaSevenSpanStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
+            }
+          }
+
+          if (rank_delta_one > 0) {
+            rank_delta_one = `+${rank_delta_one}`;
+          }
+          if (rank_delta_seven > 0) {
+            rank_delta_seven = `+${rank_delta_seven}`;
+          }
+
+          tableCells.push(
+            <TableCell key = {i} sx = {tdStyle}>
+              <span style={deltaOneSpanStyle}>{rank_delta_one}</span>/<span style = {deltaSevenSpanStyle}>{rank_delta_seven}</span>
+            </TableCell>,
+          );
+        } else {
+          const deltaStyle: React.CSSProperties = {};
+          if (row[columns[i]]) {
+            if (+row[columns[i]] > 0) {
+              const normalizedNumber = Arithmetic.clamp(Math.abs(+row[columns[i]]) / (maxDelta * 0.8), 0, 1);
+              deltaStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
+            } else {
+              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+row[columns[i]]) / (minDelta * 0.8), -1, 0));
+              deltaStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
+            }
+          }
+
+          tableCells.push(<TableCell key = {i} sx = {{ ...tdStyle, ...deltaStyle }}>{(value > 0 ? '+' : '') + value}</TableCell>);
+        }
       } else if (columns[i] === 'committed') {
         tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] === 1 ? <CheckIcon fontSize='small' color = 'success' /> : '-'}</TableCell>);
       } else {
@@ -494,7 +596,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   return (
     <Contents>
       <div style = {{ padding: width < 600 ? `${tableFullscreen ? '10px' : '0px'} 10px 0px 10px` : `${tableFullscreen ? '10px' : '0px'} 20px 0px 20px` }}>
-        {rows.length ? <TableVirtuoso scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography variant='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>}
+        {rows.length ? <TableVirtuoso scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography type='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>}
       </div>
     </Contents>
   );

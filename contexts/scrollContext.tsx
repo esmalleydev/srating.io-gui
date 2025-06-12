@@ -2,19 +2,19 @@ import React, { createContext, useContext, ReactNode, RefObject, useRef, useEffe
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-type ScrollContextType = RefObject<HTMLDivElement> | null;
+type ScrollContextType = RefObject<HTMLDivElement | null>;
 
 // Create the context
-const ScrollContext = createContext<ScrollContextType>(null);
+const ScrollContext = createContext<ScrollContextType | null>(null);
 
 // Create a provider component
 interface ScrollProviderProps {
   children: ReactNode;
-};
+}
 
 interface ScrollContainerProps {
   children: ReactNode;
-};
+}
 
 const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -26,7 +26,7 @@ const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 };
 
 // Create a custom hook for using the context
-const useScrollContext = (): RefObject<HTMLDivElement> => {
+const useScrollContext = (): RefObject<HTMLDivElement | null> => {
   const context = useContext(ScrollContext);
   if (!context) {
     throw new Error('useScrollContext must be used within a ScrollProvider');
@@ -63,6 +63,7 @@ const ScrollContainer: React.FC<ScrollContainerProps> = ({ children }) => {
   // }, [router.events])
 
   useEffect(() => {
+    // console.log('ScrollContainer useEffect triggered')
     if (
       currentPathname !== pathname &&
       scrollRefContext &&

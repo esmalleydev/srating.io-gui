@@ -397,6 +397,7 @@ export interface ConferenceStatisticRanking {
   sport_conference_statistic_id: string;
   season: number;
   conference_id: string;
+  rank: number;
   elo: number;
   total_games: number;
   games: number;
@@ -706,6 +707,8 @@ export type TransferPlayerSeasons = {[coach_team_season_id: string]: TransferPla
 export interface CBBRankingTable {
   team_id: string;
   rank: number;
+  rank_delta_one: number;
+  rank_delta_seven: number;
   ap_rank: number,
   name: string;
   wins: number;
@@ -759,6 +762,7 @@ export interface CBBRankingTable {
   points: number;
   possessions: number;
   pace: number;
+  minutes_played: number;
   offensive_rating: number;
   defensive_rating: number;
   efficiency_rating: number;
@@ -785,6 +789,7 @@ export interface CBBRankingTable {
   opponent_fouls: number;
   opponent_points: number;
   opponent_possessions: number;
+  opponent_minutes_played: number;
   opponent_offensive_rating: number;
   opponent_defensive_rating: number;
   opponent_efficiency_rating: number;

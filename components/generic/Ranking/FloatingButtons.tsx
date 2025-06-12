@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Fab, Tooltip } from '@mui/material';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import { setTableFullscreen } from '@/redux/features/ranking-slice';
+import { setDataKey } from '@/redux/features/ranking-slice';
 
 
 const FloatingButtons = () => {
@@ -13,7 +13,7 @@ const FloatingButtons = () => {
   const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
 
   const handleFullscreen = () => {
-    dispatch(setTableFullscreen(!(tableFullscreen)));
+    dispatch(setDataKey({ key: 'tableFullscreen', value: !(tableFullscreen) }));
   };
 
 

@@ -1,83 +1,86 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
-import {
-  AppBar, Tab, Tabs, useTheme,
-} from '@mui/material';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useTransition } from 'react';
+
+import { usePathname, useRouter } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
-import { setLoading } from '@/redux/features/display-slice';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import Style from '@/components/utils/Style';
+import { useTheme } from '@/components/hooks/useTheme';
+import { setDataKey } from '@/redux/features/team-slice';
+import Tab from '@/components/ux/buttons/Tab';
+import SubNavBar from './SubNavbar';
 
 
 const getNavHeaderHeight = () => {
-  return 48;
+  return 42;
 };
 
 export { getNavHeaderHeight };
 
-const NavBar = ({ view, tabOrder }) => {
-  // const CBB = new HelperCBB();
+const NavBar = () => {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
-  const searchParams = useSearchParams();
-  const theme = useTheme();
+  const [isPending, startTransition] = useTransition();
+
+  const view = useAppSelector((state) => state.teamReducer.view) || 'schedule';
+
+  const tabOrder = ['schedule', 'stats', 'trends'];
 
   const tabOptions = {
     schedule: 'Schedule',
     stats: 'Stats / Roster',
     trends: 'Trends',
-    // 'seasons': 'Seasons',
   };
 
+  const backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.primary.light;
 
-  const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0);
-  const [isPending, startTransition] = useTransition();
+  const handleTabClick = (e, value) => {
+    const newView = value;
 
+    if (newView !== view) {
+      dispatch(setDataKey({ key: 'view', value: newView }));
+      dispatch(setDataKey({ key: 'subview', value: null }));
+      dispatch(setDataKey({ key: 'loadingView', value: true }));
 
-  const tabs: React.JSX.Element[] = [];
-
-  for (let i = 0; i < tabOrder.length; i++) {
-    tabs.push(<Tab key = {tabOrder[i]} label = {tabOptions[tabOrder[i]]} />);
-  }
-
-
-  const handleTabClick = (value) => {
-    setTabIndex(value);
-
-    const newView = tabOrder[value];
-
-    if (searchParams) {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      const current = new URLSearchParams(window.location.search);
       current.set('view', newView);
       current.delete('subview');
+
+      window.history.replaceState(null, '', `?${current.toString()}`);
+
+      // use pushState if we want to add to back button history
+      // window.history.pushState(null, '', `?${current.toString()}`);
+
       const search = current.toString();
       const query = search ? `?${search}` : '';
 
-      dispatch(setLoading(true));
       startTransition(() => {
         router.replace(`${pathName}${query}`);
       });
     }
-
-    // router.replace({
-    //   query: {...router.query, view: view},
-    // });
-
-    // todo scroll stuff
-    // if (value > 0 && props.scrollRef && props.scrollRef.current) {
-    //   props.scrollRef.current.scrollTo(0, 0);
-    // }
   };
+
+  const tabs: React.JSX.Element[] = [];
+
+  for (let i = 0; i < tabOrder.length; i++) {
+    tabs.push(
+      <Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} containerStyle={{ backgroundColor }} handleClick = {handleTabClick} />,
+    );
+  }
 
   return (
     <>
-      <AppBar position="sticky" style = {{ backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, top: getMarginTop() + getHeaderHeight(), position: 'fixed' }}>
-        <Tabs /* todo if width less than x variant="scrollable" scrollButtons="auto" */ value={tabIndex} onChange={(e, value) => { handleTabClick(value); }} centered indicatorColor="secondary" textColor="inherit">
-          {tabs}
-        </Tabs>
-      </AppBar>
+      <div style = {{
+        ...Style.getNavBar(),
+        backgroundColor,
+        top: getMarginTop() + getHeaderHeight(),
+      }}>
+        {tabs}
+      </div>
+      <SubNavBar view = {view} />
     </>
   );
 };

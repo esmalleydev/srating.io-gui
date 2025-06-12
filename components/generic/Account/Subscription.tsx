@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import moment from 'moment';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -18,6 +16,9 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
 import { ApiKey, Pricing, Subscription as SubscriptionType } from '@/types/general';
+import Paper from '@/components/ux/container/Paper';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 
@@ -25,6 +26,7 @@ const Subscription = (
   { subscription, pricing, api_key }:
   { subscription: SubscriptionType; pricing: Pricing; api_key: ApiKey | null; },
 ) => {
+  const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -104,22 +106,23 @@ const Subscription = (
 
   return (
     <Paper elevation={3} style = {{ minWidth: 320, maxWidth: 450, width: 'auto', padding: 15 }}>
-      <Typography style = {{ textAlign: 'center' }} variant='h5'>{pricing.type === 'api' || pricing.type === 'trial' ? 'API' : 'Picks'} subscription ({pricing.name})</Typography>
-      <Typography style = {{ marginTop: 5 }} color = {'text.secondary'} variant='body1'>{pricing.description}</Typography>
-      {pricing.type !== 'trial' && cancelledSub === null && !subscription.expires ? <Typography variant='body1'>Automatically renews on {due.format('MMM Do \'YY')}</Typography> : ''}
-      {expiration ? <Typography variant='body1'>Expires on {moment(expiration).format('MMM Do \'YY')}</Typography> : ''}
+      <Typography style = {{ textAlign: 'center' }} type='h5'>{pricing.type === 'api' || pricing.type === 'trial' ? 'API' : 'Picks'} subscription ({pricing.name})</Typography>
+      <Typography style = {{ marginTop: 5, color: theme.text.secondary, textAlign: 'center' }} type='body1'>{pricing.description}</Typography>
+      {pricing.type !== 'trial' && cancelledSub === null && !subscription.expires ? <Typography type='body1'>Automatically renews on {due.format('MMM Do \'YY')}</Typography> : ''}
+      {expiration ? <Typography type='body1'>Expires on {moment(expiration).format('MMM Do \'YY')}</Typography> : ''}
       {
         (pricing.type === 'api' || pricing.type === 'trial') && apiKey ?
         <div>
           <hr />
-          <Typography color = {'text.secondary'} variant='subtitle1'>API key</Typography>
+          <Typography style = {{ color: theme.text.secondary }} type='subtitle1'>Usage</Typography>
+          <Typography type='body1'>{apiKey.requests || 0} / {apiKey.request_limit} requests</Typography>
+          <Typography style = {{ color: theme.text.secondary }} type='subtitle2'>Resets 1st of every month.</Typography>
+          <hr />
+          <Typography style = {{ color: theme.text.secondary }} type='subtitle1'>API key</Typography>
           <div>
-            <Typography variant='body1'>{apiKey.key}</Typography>
+            <Typography type='body1'>{apiKey.key}</Typography>
             {cancelledSub === null && !subscription.expires ? <div style = {{ textAlign: 'right' }}><Button onClick={handleRegenerate}>Regenerate</Button></div> : ''}
           </div>
-          <Typography color = {'text.secondary'} variant='subtitle1'>Usage</Typography>
-          <Typography variant='body1'>{apiKey.requests || 0} / {apiKey.request_limit} requests</Typography>
-          <Typography color = {'text.secondary'} variant='subtitle2'>Resets 1st of every month.</Typography>
         </div>
           : ''
       }

@@ -1,43 +1,58 @@
 'use client';
 
-import { useState } from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import CloseIcon from '@mui/icons-material/Close';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItem from '@mui/material/ListItem';
-import List from '@mui/material/List';
-
-import Typography from '@mui/material/Typography';
-
-import CheckIcon from '@mui/icons-material/Check';
-import IconButton from '@mui/material/IconButton';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateConferences } from '@/redux/features/display-slice';
-
-// todo put these in url?
+import OptionPicker, { optionType } from './OptionPicker';
+import { getStore } from '@/app/StoreProvider';
+import { useEffect } from 'react';
 
 const ConferencePicker = () => {
+  // console.time('ConferencePicker')
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.displayReducer.conferences);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
-  const { width } = useWindowDimensions() as Dimensions;
 
-  const [confOpen, setConfOpen] = useState(false);
+  // useEffect(() => {
+  //   console.timeEnd('ConferencePicker')
+  // })
 
-  type conferenceOption = {
-    value: string | null;
-    label: string;
-  };
+  /**
+   * TODO:
+   * This is dangerous, it might overwrite the url params from a button click that uses the router
+   */
+  useEffect(() => {
+    let run = false;
+    const current = new URLSearchParams(window.location.search);
+    const urlConferences = current.getAll('conference_id');
 
-  const conferenceOptions: conferenceOption[] = [
+    if (selected && selected.length) {
+      let same = true;
+      for (let i = 0; i < selected.length; i++) {
+        if (!urlConferences.includes(selected[i])) {
+          same = false;
+          break;
+        }
+      }
+
+      if (!same || urlConferences.length !== selected.length) {
+        current.delete('conference_id');
+        for (let i = 0; i < selected.length; i++) {
+          current.append('conference_id', selected[i]);
+        }
+        run = true;
+      }
+    } else if (urlConferences && urlConferences.length) {
+      current.delete('conference_id');
+      run = true;
+    }
+
+    if (run) {
+      window.history.replaceState(null, '', `?${current.toString()}`);
+    }
+  });
+
+  const conferenceOptions: optionType[] = [
     { value: null, label: 'All' },
   ];
 
@@ -94,69 +109,33 @@ const ConferencePicker = () => {
   });
 
 
-  const handleConfOpen = () => {
-    setConfOpen(true);
+  const handleClick = (value) => {
+    // console.time('ConferencePicker.handleClick');
+    const store = getStore();
+    dispatch(updateConferences(value));
+    const results = store.getState().displayReducer.conferences;
+
+    const current = new URLSearchParams(window.location.search);
+    if (results.length) {
+      current.delete('conference_id');
+      for (let i = 0; i < results.length; i++) {
+        current.append('conference_id', results[i]);
+      }
+    } else {
+      current.delete('conference_id');
+    }
+
+    window.history.replaceState(null, '', `?${current.toString()}`);
+
+    // use pushState if we want to add to back button history
+    // window.history.pushState(null, '', `?${current.toString()}`);
+    // console.timeEnd('ConferencePicker.handleClick');
   };
 
-  const handleConfClose = () => {
-    setConfOpen(false);
-  };
 
   return (
     <div>
-      <Button
-        id="conf-picker-button"
-        aria-controls={confOpen ? 'conf-picker-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={confOpen ? 'true' : undefined}
-        variant="text"
-        disableElevation
-        onClick={handleConfOpen}
-        endIcon={<KeyboardArrowDownIcon />}
-      >
-        {width < 500 ? 'Conf.' : 'Conferences'}
-      </Button>
-      <Dialog
-        fullScreen
-        open={confOpen}
-        // TransitionComponent={Transition}
-        keepMounted
-        onClose={handleConfClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleConfClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Conferences
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <List>
-          {conferenceOptions.map((confOption) => {
-            const { value } = confOption;
-
-            return (
-              <ListItem key={value} button onClick={() => {
-                dispatch(updateConferences(value));
-                handleConfClose();
-              }}>
-                <ListItemIcon>
-                  {value && selected.indexOf(value) > -1 ? <CheckIcon /> : ''}
-                </ListItemIcon>
-                <ListItemText primary={confOption.label} />
-              </ListItem>
-            );
-          })}
-        </List>
-      </Dialog>
+      <OptionPicker buttonName = {'Conferences'} options = {conferenceOptions} selected = {selected.length ? selected : [null]} actionHandler = {handleClick} isRadio = {false} autoClose={false} />
     </div>
   );
 };

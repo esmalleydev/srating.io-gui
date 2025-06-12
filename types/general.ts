@@ -1,3 +1,5 @@
+import { StatisticRanking } from './cbb';
+
 export interface Organization {
   organization_id: string;
   code: string;
@@ -100,6 +102,8 @@ export interface Team {
   primary_color: string;
   secondary_color: string;
   conference_id?: string;
+  division_id?: string;
+  stats?: StatisticRanking;
   guid: string;
   deleted: number;
 }
@@ -117,7 +121,7 @@ export interface TeamSeasonConference {
   deleted: number;
 }
 
-export type TeamSeasonConferences = {[coach_team_season_id: string]: TeamSeasonConference};
+export type TeamSeasonConferences = {[team_season_conference_id: string]: TeamSeasonConference};
 
 export interface Prediction {
   prediction_id: string;
@@ -189,6 +193,7 @@ export type CoachTeamSeasons = {[coach_team_season_id: string]: CoachTeamSeason}
 
 export interface CoachElo {
   coach_elo_id: string;
+  parent_coach_elo_id: string;
   coach_id: string;
   game_id: string;
   season: number;
@@ -204,6 +209,7 @@ export type CoachElos = {[coach_elo_id: string]: CoachElo};
 
 export interface Elo {
   elo_id: string;
+  parent_elo_id: string;
   team_id: string;
   game_id: string;
   season: number;
@@ -216,6 +222,23 @@ export interface Elo {
 }
 
 export type Elos = {[elo_id: string]: Elo};
+
+
+export interface PlayerElo {
+  player_elo_id: string;
+  parent_player_elo_id: string;
+  player_id: string;
+  game_id: string;
+  season: number;
+  elo: number;
+  current: number;
+  date_of_entry: string;
+  updated_at: string;
+  guid: string;
+  deleted: number;
+}
+
+export type PlayerElos = {[player_elo_id: string]: PlayerElo};
 
 export interface Player {
   player_id: string;
@@ -231,6 +254,19 @@ export interface Player {
 }
 
 export type Players = {[player_id: string]: Player};
+
+export interface PlayerTeamSeason {
+  player_team_season_id: string;
+  organization_id: string;
+  division_id: string;
+  player_id: string;
+  team_id: string;
+  season: number;
+  guid: string;
+  deleted: number;
+}
+
+export type PlayerTeamSeasons = {[player_team_season_id: string]: PlayerTeamSeason};
 
 export interface GamePulse {
   game_pulse_id: string;

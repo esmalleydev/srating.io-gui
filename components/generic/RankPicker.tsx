@@ -4,13 +4,13 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setRank } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
+import { ListItemButton } from '@mui/material';
 
 
 /**
@@ -87,7 +87,7 @@ const RankPicker = (
       <DialogTitle>Pick ranking metric #</DialogTitle>
       <List>
         {rankDisplayOptions.map((rankDisplayOption) => (
-          <ListItem key={rankDisplayOption.value} button onClick={() => {
+          <ListItemButton key={rankDisplayOption.value} onClick={() => {
             dispatch(setRank(rankDisplayOption.value));
             handleClose();
           }}>
@@ -95,7 +95,7 @@ const RankPicker = (
               {rankDisplayOption.value === selected ? <CheckIcon /> : ''}
             </ListItemIcon>
             <ListItemText primary={rankDisplayOption.label} />
-          </ListItem>
+          </ListItemButton>
         ))}
       </List>
     </Dialog>

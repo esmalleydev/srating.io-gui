@@ -1,27 +1,42 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
-import {
-  AppBar, Box, Tab, Tabs, useTheme,
-} from '@mui/material';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
-import { useAppDispatch } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import Tab from '@/components/ux/buttons/Tab';
+import { useTheme } from '@/components/hooks/useTheme';
+import HelperGame from '@/components/helpers/Game';
+import { setDataKey } from '@/redux/features/game-slice';
+import { startTransition } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 
 const getNavHeaderHeight = () => {
   return 48;
 };
 
-export { getNavHeaderHeight };
+const getSubNavHeaderHeight = () => 48;
 
-const NavBar = ({ view, tabOrder }) => {
+export { getNavHeaderHeight, getSubNavHeaderHeight };
+
+const NavBar = () => {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
-  const searchParams = useSearchParams();
-  const theme = useTheme();
+
+  const game = useAppSelector((state) => state.gameReducer.game);
+
+  const Game = new HelperGame({
+    game,
+  });
+
+  const view = useAppSelector((state) => state.gameReducer.view) || (Game.isInProgress() || Game.isFinal() ? 'game_details' : 'matchup');
+  const subview = useAppSelector((state) => state.gameReducer.subview) || (view === 'game_details' ? 'boxscore' : null) || (view === 'trends' ? 'stat_compare' : null);
+
+  let tabOrder = ['matchup', 'trends'];
+  if (Game.isInProgress() || Game.isFinal()) {
+    tabOrder = ['game_details', 'matchup', 'trends'];
+  }
 
   const tabOptions = {
     game_details: 'Game details',
@@ -29,45 +44,117 @@ const NavBar = ({ view, tabOrder }) => {
     matchup: 'Matchup',
   };
 
-  const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view) > -1 ? tabOrder.indexOf(view) : 0);
-  const [isPending, startTransition] = useTransition();
-
-
-  const tabs: React.JSX.Element[] = [];
-
-  for (let i = 0; i < tabOrder.length; i++) {
-    tabs.push(<Tab key = {tabOrder[i]} label = {tabOptions[tabOrder[i]]} />);
+  let subTabOptions = {};
+  if (view === 'game_details') {
+    subTabOptions = {
+      charts: 'Charts',
+      boxscore: 'Boxscore',
+      pbp: 'Play by play',
+    };
+  } else if (view === 'trends') {
+    subTabOptions = {
+      stat_compare: 'Stat compare',
+      previous_matchups: 'Prev. Matchups',
+      odds: 'Odds',
+      momentum: 'Momentum',
+    };
   }
 
+  let subTabOrder: string[] = [];
+  if (view === 'game_details') {
+    subTabOrder = ['boxscore', 'charts', 'pbp'];
+  } else if (view === 'trends') {
+    subTabOrder = ['stat_compare', 'previous_matchups', 'odds', 'momentum'];
+  }
 
-  const handleTabClick = (value) => {
-    setTabIndex(value);
+  const backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.primary.light;
 
-    const newView = tabOrder[value];
+  const handleTabClick = (e, value) => {
+    const newView = value;
 
-    if (searchParams) {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
+    if (newView !== view) {
+      dispatch(setDataKey({ key: 'view', value: newView }));
+      dispatch(setDataKey({ key: 'subview', value: null }));
+      dispatch(setDataKey({ key: 'loadingView', value: true }));
+
+      const current = new URLSearchParams(window.location.search);
       current.set('view', newView);
       current.delete('subview');
+
+      window.history.replaceState(null, '', `?${current.toString()}`);
+
+      // use pushState if we want to add to back button history
+      // window.history.pushState(null, '', `?${current.toString()}`);
+
       const search = current.toString();
       const query = search ? `?${search}` : '';
 
-      dispatch(setLoading(true));
       startTransition(() => {
         router.replace(`${pathName}${query}`);
       });
     }
   };
 
+
+  const handleSubTabClick = (e, value) => {
+    const newSubView = value;
+
+    if (newSubView !== subview) {
+      dispatch(setDataKey({ key: 'subview', value: newSubView }));
+      dispatch(setDataKey({ key: 'loadingView', value: true }));
+
+      const current = new URLSearchParams(window.location.search);
+      current.set('subview', newSubView);
+
+      window.history.replaceState(null, '', `?${current.toString()}`);
+
+      // use pushState if we want to add to back button history
+      // window.history.pushState(null, '', `?${current.toString()}`);
+
+      const search = current.toString();
+      const query = search ? `?${search}` : '';
+
+      startTransition(() => {
+        router.replace(`${pathName}${query}`);
+      });
+    }
+  };
+
+
+  const tabs: React.JSX.Element[] = [];
+
+  for (let i = 0; i < tabOrder.length; i++) {
+    tabs.push(
+      <Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} containerStyle={{ backgroundColor }} handleClick = {handleTabClick} />,
+    );
+  }
+
+  const subTabs: React.JSX.Element[] = [];
+
+  for (let i = 0; i < subTabOrder.length; i++) {
+    subTabs.push(
+      <Tab key = {subTabOrder[i]} value = {subTabOrder[i]} selected = {subTabOrder[i] === subview} title = {subTabOptions[subTabOrder[i]]} handleClick = {handleSubTabClick} />,
+    );
+  }
+
   return (
     <>
-      <AppBar position="sticky" style = {{ backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : theme.palette.primary.light, top: getMarginTop() + getHeaderHeight(), position: 'fixed' }}>
-        <Box display="flex" justifyContent="center">
-          <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={(e, value) => { handleTabClick(value); }} indicatorColor="secondary" textColor="inherit">
-            {tabs}
-          </Tabs>
-        </Box>
-      </AppBar>
+      <div style = {{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor,
+        top: getMarginTop() + getHeaderHeight(),
+        position: 'fixed',
+        overflowX: 'scroll',
+        overflowY: 'hidden',
+        scrollbarWidth: 'none',
+      }}>
+        {tabs}
+      </div>
+      <div style = {{ marginTop: getNavHeaderHeight(), width: '100%', display: 'flex', justifyContent: 'center', overflowX: 'scroll', overflowY: 'hidden', scrollbarWidth: 'none' }}>
+        {subTabs}
+      </div>
     </>
   );
 };

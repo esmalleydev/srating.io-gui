@@ -1,12 +1,15 @@
 'use client';
 
-import { Link, Typography } from '@mui/material';
 import moment from 'moment';
 import HelpIcon from '@mui/icons-material/Help';
 import { getLastUpdated } from './DataHandler';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
+import Style from '@/components/utils/Style';
 
 
 const LastUpdated = ({ view, handleLegend }) => {
+  const theme = useTheme();
   const lastUpdated = getLastUpdated({ view });
   const formatLastUpdated = (): string => {
     if (!lastUpdated) {
@@ -21,14 +24,23 @@ const LastUpdated = ({ view, handleLegend }) => {
 
     return moment(lastUpdated).format('MMMM Do YYYY h:mm a');
   };
+
+  const spanStyle = {
+    '&:hover': {
+      'text-decoration': 'underline',
+    },
+    cursor: 'pointer',
+  };
+
+
   return (
     <>
       {
         lastUpdated ?
         <div style = {{ display: 'flex', alignItems: 'center', alignContent: 'center' }}>
-          <Typography color="text.secondary" variant = 'body1' style = {{ fontStyle: 'italic' }}>{`Last updated: ${formatLastUpdated()}`}</Typography>
+          <Typography type = 'body1' style = {{ fontStyle: 'italic', color: theme.text.secondary }}>{`Last updated: ${formatLastUpdated()}`}</Typography>
           <HelpIcon style = {{ margin: '0px 5px', cursor: 'pointer' }} onClick = {handleLegend} fontSize='small' color = 'info' />
-          <Typography color="text.secondary" variant = 'body1' style = {{ fontStyle: 'italic' }}><Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {handleLegend}>{'Legend'}</Link></Typography>
+          <Typography type = 'body1' style = {{ fontStyle: 'italic', color: theme.link.primary }}><span className={Style.getStyleClassName(spanStyle)} onClick = {handleLegend}>{'Legend'}</span></Typography>
         </div> :
           ''
       }

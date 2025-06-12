@@ -1,20 +1,30 @@
 import CBBPage from './cbb-page';
-import { Metadata } from 'next';
+import { Metadata, ResolvingMetadata } from 'next';
 
-
-
-export const metadata: Metadata = {
-  title: 'sRating | College basketball',
-  description: 'College basketball API / Picks',
-  openGraph: {
-    title: 'sRating.io college basketball API',
-    description: 'College basketball API / Picks',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'College basketball API / Picks',
-  }
+type Props = {
+  params: Promise<{ sport: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 };
+
+// export const dynamic = 'force-dynamic';
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  return {
+    title: 'sRating | College basketball',
+    description: 'College basketball API / Picks',
+    openGraph: {
+      title: 'sRating.io college basketball API',
+      description: 'College basketball API / Picks',
+    },
+    twitter: {
+      card: 'summary',
+      title: 'College basketball API / Picks',
+    },
+  };
+}
 
 export default async function Page() {
   return <CBBPage />;

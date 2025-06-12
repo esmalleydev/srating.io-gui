@@ -5,20 +5,29 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
   view: string,
+  subview: string | null,
   scrollTop: number,
   coach: Coach,
   coach_team_seasons: CoachTeamSeasons;
   teams: Teams;
   statistic_rankings: StatsCBB | StatsCFB;
+  loadingView: boolean;
+};
+
+type ActionPayload<K extends keyof InitialState> = {
+  key: K;
+  value: InitialState[K];
 };
 
 const initialState = {
   view: 'trends',
+  subview: null,
   scrollTop: 0,
   coach: {},
   coach_team_seasons: {},
   teams: {},
   statistic_rankings: {},
+  loadingView: false,
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -27,10 +36,19 @@ const updateStateFromUrlParams = (state: InitialState) => {
   }
   const urlParams = new URLSearchParams(window.location.search);
   const view = urlParams.get('view');
+  const subview = urlParams.get('subview');
+
+  // we only want to run this if on first load, if the pathname is relevant
+  if (!window.location.pathname.includes('coach')) {
+    return;
+  }
 
   // Update state if URL parameters are present
   if (view !== null) {
     state.view = view;
+  }
+  if (subview !== null) {
+    state.subview = subview;
   }
 };
 
@@ -43,32 +61,26 @@ export const coach = createSlice({
         state[key] = initialState[key];
       }
     },
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      state[action.payload.key] = action.payload.value;
+    },
     reset: (state) => {
+      for (const key in initialState) {
+        // we do not have to reset this one, it is controlled by the contents changing
+        if (key !== 'loadingView') {
+          state[key] = initialState[key];
+        }
+      }
+
       updateStateFromUrlParams(state);
-    },
-    setScrollTop: (state, action: PayloadAction<number>) => {
-      state.scrollTop = action.payload;
-    },
-    setView: (state, action: PayloadAction<string>) => {
-      state.view = action.payload;
-    },
-    setCoach: (state, action: PayloadAction<Coach>) => {
-      state.coach = action.payload;
-    },
-    setCoachTeamSeasons: (state, action: PayloadAction<CoachTeamSeasons>) => {
-      state.coach_team_seasons = action.payload;
-    },
-    setTeams: (state, action: PayloadAction<Teams>) => {
-      state.teams = action.payload;
-    },
-    setStatisticRankings: (state, action: PayloadAction<StatsCBB | StatsCFB>) => {
-      state.statistic_rankings = action.payload;
     },
   },
 });
 
 export const {
-  setView, setScrollTop, clear, reset, setCoach, setCoachTeamSeasons, setTeams, setStatisticRankings,
+  setDataKey,
+  clear,
+  reset,
 } = coach.actions;
 export default coach.reducer;
 

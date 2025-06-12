@@ -3,15 +3,17 @@
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Link, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton,
+  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton,
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 const Locked = ({ iconFontSize, iconPadding = 8 }) => {
+  const theme = useTheme();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const router = useRouter();
@@ -39,13 +41,17 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
     });
   };
 
+  const getLiveWinRateHref = () => {
+    return `/${path}/picks?view=stats`;
+  };
+
   const handleLiveWinRate = (e) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(setLoading(true));
     setOpenDialog(false);
     startTransition(() => {
-      router.push(`/${path}/picks?view=stats`);
+      router.push(getLiveWinRateHref());
     });
   };
 
@@ -72,7 +78,7 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
             Subscribe for just $5 per month to get access to win percentages for every game!
           </DialogContentText>
           <DialogContentText id="alert-dialog-description">
-            <Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {handleLiveWinRate}>View the live win rate</Link>
+            <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {handleLiveWinRate} href = {getLiveWinRateHref()}>View the live win rate</a>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

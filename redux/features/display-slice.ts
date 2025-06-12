@@ -55,6 +55,18 @@ const initialState = {
   // season: new HelperCBB().getCurrentSeason(),
 } as InitialState;
 
+const updateStateFromUrlParams = (state: InitialState) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const urlParams = new URLSearchParams(window.location.search);
+  const conferences = urlParams.getAll('conference_id');
+
+  if (conferences !== null) {
+    state.conferences = conferences;
+  }
+};
+
 export const display = createSlice({
   name: 'display',
   initialState,
@@ -164,3 +176,5 @@ export const {
   clearLocalStorage, setRank, setPicksSort, updateConferences, updatePositions, clearPositions, updateStatuses, setCardView, setGamesFilter, setLoading, setOdds,
 } = display.actions;
 export default display.reducer;
+
+updateStateFromUrlParams(initialState);

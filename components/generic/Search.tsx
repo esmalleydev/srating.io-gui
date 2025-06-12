@@ -4,9 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import useDebounce from '@/components/hooks/useDebounce';
 
-import { styled, alpha } from '@mui/material/styles';
 
-import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 
@@ -18,48 +16,8 @@ import Text from '../utils/Text';
 import Organization from '../helpers/Organization';
 import Alert from './Alert';
 import Division from '../helpers/Division';
-
-const Container = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '200px',
-      '&:focus': {
-        width: '250px',
-      },
-    },
-  },
-}));
+import Color from '../utils/Color';
+import Style from '../utils/Style';
 
 
 
@@ -231,13 +189,69 @@ const Search = (
     setCoaches([]);
   };
 
+  const containerStyle = {
+    position: 'relative',
+    borderRadius: '4px',
+    backgroundColor: Color.alphaColor('#fff', 0.15),
+    '&:hover': {
+      backgroundColor: Color.alphaColor('#fff', 0.25),
+    },
+    marginLeft: 0,
+    width: '100%',
+    '@media (min-width:600px)': {
+      marginLeft: 8,
+      width: 'auto',
+    },
+  };
+
+  const iconContainerStyle = {
+    padding: '0px 16px',
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+
+  const inputStyle = {
+    minWidth: '200px',
+    backgroundColor: 'transparent',
+    background: 'none',
+    color: '#fff',
+    font: 'inherit',
+    letterSpacing: 'inherit',
+    border: 0,
+    boxSizing: 'content-box',
+    margin: 0,
+    padding: '8px 8px 8px 0px',
+    '&::placeholder': {
+      opacity: 0.7,
+      color: '#fff',
+    },
+    '&:focus-visible': {
+      outline: 'none',
+    },
+    // vertical padding + font size from searchIcon
+    paddingLeft: 'calc(1em + 32px)',
+    transition: 'width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+    width: '100%',
+    '@media (min-width:600px)': {
+      width: '200px',
+      '&:focus': {
+        width: '250px',
+      },
+    },
+  };
+
 
   return (
-    <Container>
+    <div className={Style.getStyleClassName(containerStyle)}>
       <Alert open = {showAlert} title = 'Coming soon' message = 'Player page still under development, come back soon!' confirm = {() => setShowAlert(false)} />
-      <SearchIconWrapper>
+      <div className={Style.getStyleClassName(iconContainerStyle)}>
         <SearchIcon />
-      </SearchIconWrapper>
+      </div>
       <Autocomplete
         id="search-team-player-coach"
         freeSolo
@@ -253,22 +267,20 @@ const Search = (
         getOptionLabel = {(option) => { return option.name || 'Unknown'; }}
         fullWidth = {true}
         renderInput={(params) => {
-          const { InputLabelProps, InputProps, ...rest } = params;
-          rest.inputProps.value = value;
           return (
-            <StyledInputBase
-              {...params.InputProps}
-              {...rest}
-              value = {value}
-              placeholder = {'Search'}
-              autoFocus = {focus}
-              sx = {{ minWidth: '200px' }}
-              // onChange = {onChange}
-            />
+            <div ref={params.InputProps.ref}>
+              <input
+                {...params.inputProps}
+                className={Style.getStyleClassName(inputStyle)}
+                placeholder = 'Search'
+                autoFocus = {focus}
+                value = {value}
+              />
+            </div>
           );
         }}
       />
-    </Container>
+    </div>
   );
 };
 

@@ -1,16 +1,17 @@
+'use client';
+
 import React from 'react';
 import { Appearance, loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
-import { useTheme } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import CheckoutForm from './Billing/CheckoutForm';
 import FreeTrialForm from './Billing/FreeTrialForm';
+import Typography from '../ux/text/Typography';
+import { useTheme } from '../hooks/useTheme';
 
 
 
@@ -22,10 +23,10 @@ const Billing = ({ pricing, open, closeHandler }) => {
   const theme = useTheme();
 
   const appearance: Appearance = {
-    theme: (theme.palette.mode === 'dark' ? 'night' : 'stripe'),
+    theme: (theme.mode === 'dark' ? 'night' : 'stripe'),
     labels: 'floating',
     variables: {
-      colorBackground: theme.palette.mode === 'dark' ? '#383838' : theme.palette.background.default,
+      colorBackground: theme.mode === 'dark' ? '#383838' : theme.background.main,
     },
     rules: {
       '.Input': {
@@ -57,8 +58,7 @@ const Billing = ({ pricing, open, closeHandler }) => {
       <DialogTitle id="alert-dialog-title">{pricing.name || 'Loading...'} {pricing.type === 'picks' ? 'picks access' : 'API access'}</DialogTitle>
       <DialogContent>
         <div>
-          {!trial ? <Typography color = 'text.secondary' variant = 'caption'>See <Link underline="hover" href = "https://srating.io/terms-and-conditions" target = "_blank">terms and conditions</Link> before subscribing.</Typography> : ''}
-          {!trial ? <Typography color = 'text.secondary' variant = 'caption'> Payments processed securely via <Link underline="hover" href = "https://stripe.com" target = "_blank">Stripe</Link></Typography> : ''}
+          {!trial ? <Typography style = {{ color: theme.text.secondary }} type = 'caption'>See <a style = {{ color: theme.link.primary }} href = "https://srating.io/terms-and-conditions" target = "_blank">terms and conditions</a> before subscribing. Payments processed securely via <a style = {{ color: theme.link.primary }} href = "https://stripe.com" target = "_blank">Stripe</a></Typography> : ''}
         </div>
         {
         trial ?

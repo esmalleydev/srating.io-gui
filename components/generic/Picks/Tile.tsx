@@ -4,9 +4,8 @@ import React, { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import Paper from '@mui/material/Paper';
+
 import Skeleton from '@mui/material/Skeleton';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 import HelperGame from '@/components/helpers/Game';
@@ -21,6 +20,9 @@ import Rank from './Tile/Rank';
 import PredictionLine from './Tile/PredictionLine';
 import StatLine from './Tile/StatLine';
 import Organization from '@/components/helpers/Organization';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
+import Paper from '@/components/ux/container/Paper';
 
 
 /**
@@ -41,6 +43,7 @@ export const getSkeleton = (numberOfSkeletons: number): React.JSX.Element[] => {
 export const maxWidth = 750;
 
 const Tile = ({ game }) => {
+  const theme = useTheme();
   const router = useRouter();
 
   const scrollRef = useScrollContext();
@@ -80,11 +83,11 @@ const Tile = ({ game }) => {
     const network: React.JSX.Element[] = [];
 
     if (!Game.isFinal() && Game.getNetwork()) {
-      network.push(<Typography key = {Game.getNetwork()} sx = {{ marginLeft: '5px' }} color = 'text.secondary' variant = 'overline'>{Game.getNetwork()}</Typography>);
+      network.push(<Typography key = {Game.getNetwork()} style = {{ marginLeft: '5px', color: theme.text.secondary }} type = 'overline'>{Game.getNetwork()}</Typography>);
     }
     return (
       <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-        <div><Typography color = {Game.isInProgress() ? 'info.dark' : 'text.secondary'} variant = 'overline'>{Game.getTime()}</Typography>{network}</div>
+        <div><Typography style = {{ color: (Game.isInProgress() ? theme.info.dark : theme.text.secondary) }} type = 'overline'>{Game.getTime()}</Typography>{network}</div>
         <Pin game_id = {game.game_id} />
       </div>
     );
@@ -138,12 +141,12 @@ const Tile = ({ game }) => {
 
     return (
       <div style={flexContainerStyle}>
-        <Typography variant = 'h6' style = {{
+        <Typography type = 'h6' style = {{
           textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize, maxWidth: maxWidthTypography,
         }}>
           <Rank game={game} team_id={game.away_team_id} /> {awayName}
         </Typography>
-        <Typography variant = 'h6' style = {{
+        <Typography type = 'h6' style = {{
           textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize, maxWidth: maxWidthTypography,
         }}>
           <Rank game={game} team_id={game.home_team_id} /> {homeName}
@@ -166,11 +169,11 @@ const Tile = ({ game }) => {
     };
     return (
       <div style={containerStyle}>
-        <Typography variant = 'overline' color = 'text.secondary' style = {{
-          textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: (width < 525 ? 100 : 200),
+        <Typography type = 'overline' style = {{
+          textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: (width < 525 ? 100 : 200), color: theme.text.secondary,
         }}>{Game.getTeamConference('away', conferences)}</Typography>
-        <Typography variant = 'overline' color = 'text.secondary' style = {{
-          textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: (width < 525 ? 100 : 200),
+        <Typography type = 'overline' style = {{
+          textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: (width < 525 ? 100 : 200), color: theme.text.secondary,
         }}>{Game.getTeamConference('home', conferences)}</Typography>
       </div>
     );
@@ -192,13 +195,13 @@ const Tile = ({ game }) => {
     return (
       <div>
         <div style={containerStyle}>
-          <Typography color = 'text.secondary' sx = {{ display: 'block', lineHeight: '20px' }} variant = 'overline'>Money Line: {Game.getPreML('away')} / {Game.getPreML('home')}</Typography>
+          <Typography style = {{ display: 'block', lineHeight: '20px', color: theme.text.secondary }} type = 'overline'>Money Line: {Game.getPreML('away')} / {Game.getPreML('home')}</Typography>
         </div>
         <div style={containerStyle}>
-          <Typography color = 'text.secondary' sx = {{ display: 'block', lineHeight: '20px' }} variant = 'overline'>Spread: {Game.getPreSpread('away')} / {Game.getPreSpread('home')}</Typography>
+          <Typography style = {{ display: 'block', lineHeight: '20px', color: theme.text.secondary }} type = 'overline'>Spread: {Game.getPreSpread('away')} / {Game.getPreSpread('home')}</Typography>
         </div>
         <div style={containerStyle}>
-          <Typography color = 'text.secondary' sx = {{ display: 'block', lineHeight: '20px' }} variant = 'overline'>O/U: {Game.getPreOver()} / {Game.getPreUnder()}</Typography>
+          <Typography style = {{ display: 'block', lineHeight: '20px', color: theme.text.secondary }} type = 'overline'>O/U: {Game.getPreOver()} / {Game.getPreUnder()}</Typography>
         </div>
       </div>
     );

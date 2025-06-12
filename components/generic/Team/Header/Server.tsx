@@ -1,22 +1,18 @@
 'use server';
 
-import React from 'react';
-
 import { Client } from '@/components/generic/Team/Header/Client';
 import { useServerAPI } from '@/components/serverAPI';
-import { unstable_noStore } from 'next/cache';
 import {
-  CoachStatisticRanking, TeamSeasonConferences,
+  CoachStatisticRanking, TeamSeasonConferences, Coach, CoachTeamSeason,
+  Team,
 } from '@/types/general';
-import { Coach, CoachTeamSeason } from '@/types/general';
 
 
 
 const Server = async ({ organization_id, division_id, season, team_id }) => {
-  unstable_noStore();
   const revalidateSeconds = 60 * 60 * 2; // 2 hours
 
-  const team = await useServerAPI({
+  const team: Team = await useServerAPI({
     class: 'team',
     function: 'loadTeam',
     arguments: {
@@ -25,7 +21,8 @@ const Server = async ({ organization_id, division_id, season, team_id }) => {
       team_id,
       season,
     },
-  }, { revalidate: revalidateSeconds });
+    cache: revalidateSeconds,
+  });
 
   const team_season_conferences: TeamSeasonConferences = await useServerAPI({
     class: 'team_season_conference',
@@ -34,6 +31,7 @@ const Server = async ({ organization_id, division_id, season, team_id }) => {
       team_id,
       organization_id,
     },
+    cache: revalidateSeconds,
   });
 
   // todo this needs to get the active one, do a read and find the one without an end date
@@ -46,6 +44,7 @@ const Server = async ({ organization_id, division_id, season, team_id }) => {
       season,
       organization_id,
     },
+    cache: revalidateSeconds,
   });
 
   let coach: Coach | null = null;
@@ -58,6 +57,7 @@ const Server = async ({ organization_id, division_id, season, team_id }) => {
       arguments: {
         coach_id: coach_team_season.coach_id,
       },
+      cache: revalidateSeconds,
     });
 
     coach_statistic_ranking = await useServerAPI({
@@ -70,6 +70,7 @@ const Server = async ({ organization_id, division_id, season, team_id }) => {
         season: coach_team_season.season,
         current: '1',
       },
+      cache: revalidateSeconds,
     });
   }
 
@@ -83,6 +84,7 @@ const Server = async ({ organization_id, division_id, season, team_id }) => {
       season,
       current: '1',
     },
+    cache: revalidateSeconds,
   });
 
   const seasons = Object.values(team_season_conferences).map(((row) => row.season));

@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Chip, useTheme } from '@mui/material';
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import { RankingColumns } from '@/types/general';
+import { useTheme } from '@/components/hooks/useTheme';
+import Chip from '@/components/ux/container/Chip';
 
 
 const TrendsExample = () => {
@@ -28,11 +29,11 @@ const TrendsExample = () => {
     statsCompareChips.push(
       <Chip
         key = {column.id}
-        sx = {{ margin: '5px 5px 10px 5px' }}
-        variant = {selectedChip === column.id ? 'filled' : 'outlined'}
-        color = {selectedChip === column.id ? 'success' : 'primary'}
+        style = {{ margin: '5px 5px 10px 5px' }}
+        filled = {selectedChip === column.id}
+        value = {column.id}
         onClick = {() => { setSelectedChip(column.id); }}
-        label = {column.label}
+        title = {column.label}
       />,
     );
   }
@@ -68,7 +69,7 @@ const TrendsExample = () => {
         type: 'monotone',
         name: statistic.label,
         dataKey: statistic.id,
-        stroke: theme.palette.info.main,
+        stroke: theme.info.main,
         strokeWidth: 2,
         dot: false,
         connectNulls: true,
@@ -77,7 +78,7 @@ const TrendsExample = () => {
         type: 'monotone',
         name: `Conf. ${statistic.label}`,
         dataKey: `conf_${statistic.id}`,
-        stroke: theme.palette.warning.main,
+        stroke: theme.warning.main,
         strokeWidth: 2,
         dot: false,
         connectNulls: true,
@@ -86,7 +87,7 @@ const TrendsExample = () => {
         type: 'monotone',
         name: `League ${statistic.label}`,
         dataKey: `league_${statistic.id}`,
-        stroke: theme.palette.secondary.dark,
+        stroke: theme.secondary.dark,
         strokeWidth: 2,
         dot: false,
         connectNulls: true,

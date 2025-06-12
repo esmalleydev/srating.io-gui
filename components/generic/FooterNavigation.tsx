@@ -4,7 +4,6 @@ import { useTransition } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme, styled } from '@mui/material/styles';
 
-import Paper from '@mui/material/Paper';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 
@@ -19,6 +18,7 @@ import { setScrollTop as setPicksScrollTop } from '@/redux/features/picks-slice'
 import { setScrollTop as setGamesScrollTop } from '@/redux/features/games-slice';
 import { setLoading } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
+import Paper from '../ux/container/Paper';
 
 
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
@@ -123,7 +123,7 @@ const FooterNavigation = () => {
   return (
     <div>
     {/* {viewingSport ?  */}
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4 }}>
+      <Paper style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4 }}>
         <BottomNavigation style = {{ backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : '#1976d2' }} showLabels value={hightlightValue}>
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleHome} label="Home" icon={<HomeIcon />} />
           <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />

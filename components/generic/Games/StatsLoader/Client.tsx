@@ -20,7 +20,7 @@ const Client = ({ gameStats }) => {
   useEffect(() => {
     dispatch(setGameStats(gameStats));
     dispatch(setGameStatsLoading(false));
-  }, [dispatch]);
+  }, [dispatch, gameStats]);
 
   return null;
 };

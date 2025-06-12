@@ -15,18 +15,26 @@ import DictionaryWrapper from '@/components/handlers/dictionary/ClientWrapper';
 import DictionaryHandler from '@/components/handlers/dictionary/Server';
 import LayoutWrapper from './LayoutWrapper';
 import MutationHandler from '@/components/handlers/MutationHandler';
-// import SecretHandler from '@/components/handlers/SecretHandler';
+import Style from '@/components/utils/Style';
 
 
 
 export default async function RootLayout({ children }: {children: React.ReactNode}) {
+  // const css = Style.getCSS(); // <-- Collect styles generated during SSR
+  // Style.flush(); // <-- Clear cache for next request (important for SSR)
+
+  // todo this doesnt work for SSR yet... this rootlayout does not retrigger when a server component is streamed after the fact. need to do some sort of context hook thingy to stream the new css
+  // https://chatgpt.com/c/68367c38-f454-8002-a7dc-c16a706a3126
+
   return (
     <html lang="en">
+      {/* <head>
+        <style srating-ssr-css = "true" dangerouslySetInnerHTML={{ __html: css }}></style>
+      </head> */}
       <StoreProvider>
         <LayoutWrapper>
           <MutationHandler />
           <SecretWrapper><SecretHandler /></SecretWrapper>
-          {/* <SecretHandler /> */}
           <SessionHandler />
           <FavoriteHandler />
           <DictionaryWrapper><DictionaryHandler /></DictionaryWrapper>

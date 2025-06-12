@@ -8,9 +8,18 @@ body {
   height: 100%;
 }
 
+input, textarea, button {
+  font-family: inherit;
+}
+
 a {
   color: inherit;
   text-decoration: inherit;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 #__next {

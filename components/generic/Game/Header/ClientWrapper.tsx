@@ -4,11 +4,8 @@ import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import Typography from '@mui/material/Typography';
-
 import HelperGame from '@/components/helpers/Game';
 import HelperTeam from '@/components/helpers/Team';
-import { Link, useTheme } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import BackButton from '@/components/generic/BackButton';
 import Pin from '@/components/generic/Pin';
@@ -22,6 +19,8 @@ import CoachRecord from './CoachRecord';
 import ConferenceRank from './ConferenceRank';
 import ConferenceRecord from './ConferenceRecord';
 import RefreshCounter from './RefreshCounter';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 const getBreakPoint = () => {
@@ -45,6 +44,11 @@ const getMarginTop = () => {
 };
 
 export { getHeaderHeight, getMarginTop, getBreakPoint };
+
+/*
+If you are ever looking at this because of the react dev tools and wondering why it is rendering so much, it is not, only the RefreshCounter is rendering
+The tool are wrong and thinks everything in here is rendering, when they are not
+*/
 
 const ClientWrapper = (
   { game, coaches, coach_team_seasons, children }:
@@ -107,7 +111,7 @@ const ClientWrapper = (
     height: getHeaderHeight(),
     position: 'sticky',
     top: getMarginTop(),
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.background.main,
     zIndex: 1100,
   };
 
@@ -129,11 +133,6 @@ const ClientWrapper = (
 
   if (sideWidth > 225) {
     sideWidth = 225;
-  }
-
-  const network: React.JSX.Element[] = [];
-  if (Game.getNetwork()) {
-    network.push(<Typography key = {Game.getNetwork()} color = 'text.secondary' variant = 'overline'>{Game.getNetwork()}</Typography>);
   }
 
   const getTeam = (team_id: string) => {
@@ -160,23 +159,23 @@ const ClientWrapper = (
         <div style = {{
           display: 'flex', flexWrap: 'nowrap', cursor: 'pointer', justifyContent,
         }} onClick={() => { handleTeamClick(team_id); }}>
-          <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {'body1'}>
+          <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {'body1'}>
             <Rank game={game} team_id={team_id} />
-            <Link style = {{ cursor: 'pointer' }} underline='hover'>{teamName}</Link>
+            <Typography type = 'a'>{teamName}</Typography>
             <Record game={game} team_id={team_id} />
           </Typography>
         </div>
         <div style = {{ display: 'flex', justifyContent }} onClick={() => { handleConferenceClick(conference_id); }}>
-          <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {'caption'}>
+          <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {'caption'}>
             {conference_id ? <ConferenceRank game={game} conference_id={conference_id} /> : ''}
-            <Link style = {{ cursor: 'pointer' }} underline='hover'>{teamHelper.getConference(conferences)}</Link>
+            <Typography type = 'a'>{teamHelper.getConference(conferences)}</Typography>
             {conference_id ? <ConferenceRecord game={game} team_id={team_id} /> : ''}
           </Typography>
         </div>
         <div style = {{ display: 'flex', justifyContent }} onClick={() => { handleCoachClick(coach && coach.coach_id); }}>
-          <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {'caption'}>
+          <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {'caption'}>
             {coach ? <CoachRank game={game} coach_id={coach.coach_id} /> : ''}
-            <Link style = {{ cursor: 'pointer' }} underline='hover'>{coach ? `${coach.first_name.charAt(0)}. ${coach.last_name}` : 'Unknown'}</Link>
+            <Typography type = 'a'>{coach ? `${coach.first_name.charAt(0)}. ${coach.last_name}` : 'Unknown'}</Typography>
             {coach ? <CoachRecord game={game} coach_id={coach.coach_id} /> : ''}
           </Typography>
         </div>
@@ -192,7 +191,7 @@ const ClientWrapper = (
           <div style = {{ width: sideWidth, display: 'flex', alignItems: 'baseline' }}>
             <BackButton />
           </div>
-          <div><Typography key = {Game.getNetwork()} color = 'text.secondary' variant = 'overline'>{Game.getNetwork()}</Typography></div>
+          {Game.getNetwork() ? <div><Typography style = {{ color: theme.text.secondary }} type = 'overline'>{Game.getNetwork()}</Typography></div> : ''}
           <div style = {{
             display: 'flex', justifyContent: 'end', position: 'relative', alignItems: 'baseline', width: sideWidth, minWidth: sideWidth,
           }}>

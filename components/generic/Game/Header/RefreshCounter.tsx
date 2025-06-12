@@ -3,7 +3,9 @@
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Tooltip, Typography } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 /**
  * Be very careful with any logic in this, it will be running a lot! On every interval tick
@@ -13,6 +15,7 @@ const RefreshCounter = ({ game }) => {
   const refreshRate = useAppSelector((state) => state.gameReducer.refreshRate);
   const refreshLoading = useAppSelector((state) => state.gameReducer.refreshLoading);
   const refreshEnabled = useAppSelector((state) => state.gameReducer.refreshEnabled);
+  const theme = useTheme();
 
   if (!refreshEnabled || game.status === 'final') {
     return null;
@@ -40,12 +43,7 @@ const RefreshCounter = ({ game }) => {
                   justifyContent: 'center',
                 }}
               >
-                <Typography
-                  variant="caption"
-                  component="div"
-                  color="text.secondary"
-                  style = {{ fontSize: 11 }}
-                >{Math.round(refreshCountdown)}</Typography>
+                <Typography type='caption' style={{ color: theme.text.secondary, fontSize: 11 }}>{Math.round(refreshCountdown)}</Typography>
             </Box>
           </>
         }

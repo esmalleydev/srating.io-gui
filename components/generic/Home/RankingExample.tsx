@@ -5,7 +5,7 @@ import React, { ForwardRefExoticComponent, RefAttributes, useState, useTransitio
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button, useTheme } from '@mui/material';
-import { TableVirtuoso } from 'react-virtuoso';
+import { ContextProp, TableVirtuoso } from 'react-virtuoso';
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
@@ -24,11 +24,11 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 import CheckIcon from '@mui/icons-material/Check';
-import { getHeaderColumns } from '@/components/generic/Ranking/columns';
 import { useRouter } from 'next/navigation';
 import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 import RankSpan from '@/components/generic/RankSpan';
 import Organization from '@/components/helpers/Organization';
+import TableColumns from '@/components/helpers/TableColumns';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // '&:nth-of-type(odd)': {
@@ -74,6 +74,11 @@ const RankingExample = () => {
     coach_id?: number;
   }
 
+  interface FillerRowProps {
+    height: number;
+    // context?: any;
+  }
+
   interface TableComponentsType {
     Scroller: ForwardRefExoticComponent<React.HTMLAttributes<HTMLDivElement> & RefAttributes<HTMLDivElement>>;
     Table: React.ComponentType<React.TableHTMLAttributes<HTMLTableElement>>;
@@ -107,7 +112,7 @@ const RankingExample = () => {
 
   const currentPath = Organization.getPath({ organizations, organization_id });
 
-  const headCells = getHeaderColumns({ organization_id, view });
+  const headCells = TableColumns.getColumns({ organization_id, view });
 
   const rows = getExampleRows();
 
@@ -168,7 +173,8 @@ const RankingExample = () => {
     rows.sort(getComparator(order, orderBy));
   }
 
-  const TableComponents: TableComponentsType = {
+  // const TableComponents: TableComponentsType = {
+  const TableComponents = {
     Scroller: React.forwardRef<HTMLDivElement>((props, ref) => {
       return (
         <TableContainer component={Paper} {...props} ref={ref} />

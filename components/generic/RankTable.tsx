@@ -1,30 +1,19 @@
 'use client';
 
 import {
-  TableContainer, Table, TableHead, TableRow, Tooltip, TableSortLabel, Box, TableBody, TableCell, Paper,
+  TableContainer, Table, TableHead, TableRow, Tooltip, TableSortLabel, Box, TableBody, TableCell,
   SortDirection,
   TableFooter,
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { styled, useTheme } from '@mui/material/styles';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { useEffect, useState } from 'react';
 import Sorter from '../utils/Sorter';
 import RankSpan from './RankSpan';
+import { useTheme } from '../hooks/useTheme';
+import Style from '../utils/Style';
+import Paper from '../ux/container/Paper';
 
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:hover td': {
-    backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
-  },
-  '&:hover': {
-    cursor: 'pointer',
-  },
-}));
-
-const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark,
-}));
 
 type defaultSortOrderType = 'asc' | 'desc';
 
@@ -108,10 +97,10 @@ const RankTable = (
   const secondaryStickyCellWidth = stickyWidths.length > 1 ? stickyWidths[1] : 50;
 
   const row_containers = sortedRows.slice().map((row) => {
-    let tdColor = (b % 2 === 0 ? theme.palette.grey[800] : theme.palette.grey[900]);
+    let tdColor = (b % 2 === 0 ? theme.grey[800] : theme.grey[900]);
 
-    if (theme.palette.mode === 'light') {
-      tdColor = b % 2 === 0 ? theme.palette.grey[200] : theme.palette.grey[300];
+    if (theme.mode === 'light') {
+      tdColor = b % 2 === 0 ? theme.grey[200] : theme.grey[300];
     }
 
     b++;
@@ -160,7 +149,7 @@ const RankTable = (
         }
 
         if (i + 1 === numberOfStickyColumns) {
-          cellStyle.borderRight = `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`;
+          cellStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
         }
       }
 
@@ -168,7 +157,7 @@ const RankTable = (
 
       if (secondaryKey && row[`${displayColumns[i]}_${secondaryKey}`]) {
         secondarySpan = (
-          <span style = {{ color: theme.palette.grey[500] }}> {row[`${displayColumns[i]}_${secondaryKey}`]}</span>
+          <span style = {{ color: theme.grey[500] }}> {row[`${displayColumns[i]}_${secondaryKey}`]}</span>
         );
       } else if (row[`${displayColumns[i]}_rank`] && getRankSpanMax) {
         secondarySpan = <RankSpan key = {i} rank = {row[`${displayColumns[i]}_rank`]} max = {getRankSpanMax(row)} useOrdinal = {true} />;
@@ -179,8 +168,18 @@ const RankTable = (
       );
     }
 
+    const TableRowCSS = Style.getStyleClassName(`
+      &:hover td: {
+        backgroundColor: ${theme.mode === 'light' ? theme.info.light : theme.info.dark},
+      },
+      &:hover: {
+        cursor: 'pointer',
+      },
+    `);
+
     return (
-      <StyledTableRow
+      <TableRow
+      className={TableRowCSS}
         key={row[rowKey]}
         onClick={() => {
           if (handleRowClick) {
@@ -189,7 +188,7 @@ const RankTable = (
         }}
       >
         {tableCells}
-      </StyledTableRow>
+      </TableRow>
     );
   });
   return (
@@ -202,6 +201,7 @@ const RankTable = (
               const tdStyle: React.CSSProperties = {
                 padding: '4px 5px',
                 border: 0,
+                backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
               };
 
               if (width <= breakPoint) {
@@ -229,13 +229,13 @@ const RankTable = (
                 }
 
                 if (i + 1 === numberOfStickyColumns) {
-                  tdStyle.borderRight = `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`;
+                  tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
                 }
               }
 
               return (
                 <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
-                  <StyledTableHeadCell
+                  <TableCell
                     sx = {tdStyle}
                     key={headCell.id}
                     align={'left'}
@@ -253,7 +253,7 @@ const RankTable = (
                         </Box>
                       ) : null}
                     </TableSortLabel>
-                  </StyledTableHeadCell>
+                  </TableCell>
                 </Tooltip>
               );
             })}
@@ -269,7 +269,7 @@ const RankTable = (
               {displayColumns.map((column, i) => {
                 const headCell = columns[column];
 
-                const tdColor = theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.grey[900];
+                const tdColor = theme.mode === 'light' ? theme.grey[300] : theme.grey[900];
 
                 const tdStyle: React.CSSProperties = {
                   padding: '4px 5px',
@@ -303,7 +303,7 @@ const RankTable = (
                   }
 
                   if (i + 1 === numberOfStickyColumns) {
-                    tdStyle.borderRight = `3px solid ${theme.palette.mode === 'light' ? theme.palette.info.light : theme.palette.info.dark}`;
+                    tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
                   }
                 }
                 if (column in footerRow) {
@@ -311,7 +311,7 @@ const RankTable = (
 
                   if (secondaryKey && footerRow[`${column}_${secondaryKey}`]) {
                     secondarySpan = (
-                      <span style = {{ color: theme.palette.grey[500] }}> {footerRow[`${column}_${secondaryKey}`]}</span>
+                      <span style = {{ color: theme.grey[500] }}> {footerRow[`${column}_${secondaryKey}`]}</span>
                     );
                   }
 

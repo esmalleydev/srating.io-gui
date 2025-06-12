@@ -1,7 +1,8 @@
 'use client';
 
-import { useTheme } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
+import { useTheme } from '@/components/hooks/useTheme';
+import Color from '@/components/utils/Color';
 
 const Indicator = (
   { title, code, color }:
@@ -19,7 +20,7 @@ const Indicator = (
     borderBottomLeftRadius: '5px',
     borderBottomRightRadius: '5px',
     backgroundColor,
-    color: theme.palette.getContrastText(backgroundColor),
+    color: Color.getTextColor(theme.text.primary, backgroundColor),
   };
 
   return (

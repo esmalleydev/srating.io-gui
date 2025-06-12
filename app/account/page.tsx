@@ -8,9 +8,11 @@ import { ClientWrapper } from '@/components/generic/Account/ClientWrapper';
 
 
 type Props = {
-  params: { game_id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ game_id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+// export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(
   { params, searchParams }: Props,
@@ -30,8 +32,9 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ searchParams }) {
-  const view = searchParams?.view || 'subscriptions';
+export default async function Page({ searchParams }: Props) {
+  const searchParameters = await searchParams;
+  const view = searchParameters?.view || 'subscriptions';
 
   return (
     <>

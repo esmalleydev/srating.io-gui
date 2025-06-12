@@ -53,9 +53,9 @@ export default [
 
       // enforce that class methods use "this"
       // https://eslint.org/docs/rules/class-methods-use-this
-      'class-methods-use-this': ['error', {
-        exceptMethods: [],
-      }],
+      // 'class-methods-use-this': ['error', {
+      //   exceptMethods: [],
+      // }],
 
       // require return statements to either always or never specify values
       // https://eslint.org/docs/rules/consistent-return
@@ -1268,7 +1268,7 @@ export default [
 
       // Prefer use of an object spread over Object.assign
       // https://eslint.org/docs/rules/prefer-object-spread
-      'prefer-object-spread': 'error',
+      // 'prefer-object-spread': 'error',
 
       // require quotes around object literal property names
       // https://eslint.org/docs/rules/quote-props.html

@@ -13,7 +13,8 @@ const Server = async (
     arguments: {
       game_id,
     },
-  }, { revalidate: 30 });
+    cache: 30,
+  });
 
   const tag = `games.${game_id}`;
 

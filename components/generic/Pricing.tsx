@@ -3,15 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Grid2';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { Button, CardActionArea, Link } from '@mui/material';
+import { Button, CardActionArea } from '@mui/material';
 import PicksIcon from '@mui/icons-material/Casino';
 import LaunchIcon from '@mui/icons-material/Launch';
 import Billing from './Billing';
 import ButtonSwitch from './ButtonSwitch';
+import { useTheme } from '../hooks/useTheme';
+import Color from '../utils/Color';
+import Typography from '../ux/text/Typography';
 
 type priceOption = {
   code: string;
@@ -29,6 +31,7 @@ type priceOption = {
 
 const Pricing = ({ view }: { view: string | null; }) => {
   const router = useRouter();
+  const theme = useTheme();
   const [billingOpen, setBillingOpen] = useState(false);
   const [selectedPricing, setSelectedPricing] = useState({});
 
@@ -149,21 +152,23 @@ const Pricing = ({ view }: { view: string | null; }) => {
 
   const getPriceCard = (option: priceOption) => {
     const trial = (option.code === 'api_trial');
+    const buttonColor = (option.disabled ? theme.grey[500] : theme.info.main);
+    const textColor = Color.getTextColor('#ffffff', buttonColor);
     return (
-      <Grid item key={option.code} xs={12} sm={5} md={3}>
+      <Grid key={option.code} size = {{ xs: 12, sm: 5, md: 3 }}>
         <Card sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
           <CardActionArea onClick = {() => { handleBilling(option); }} disabled = {option.disabled}>
             <CardContent>
-              {option.disabled ? <Typography color = 'error.main' variant = 'h5'>Coming soon</Typography> : ''}
-              <Typography color = 'text.secondary' variant = 'body1'>{option.name}</Typography>
-              <Typography color = 'primary.main' variant = 'h3'><Typography sx = {{ fontSize: 16 }} variant='caption'>$</Typography>{option.price}</Typography>
-              <Typography color = 'text.secondary' variant = 'caption'>{option.price_description}</Typography>
-              {option.requests ? <div><Typography color = 'primary.main' variant = 'caption'>{option.requests}</Typography><Typography color = 'text.secondary' variant = 'caption'> requests per month</Typography></div> : ''}
+              {option.disabled ? <Typography style = {{ color: theme.error.main }} type = 'h6'>Coming soon</Typography> : ''}
+              <Typography style = {{ color: theme.text.secondary }} type = 'body1'>{option.name}</Typography>
+              <Typography style = {{ color: theme.primary.main }} type = 'h3'><Typography style = {{ fontSize: 16, display: 'inline-block', color: theme.primary.main }} type='caption'>$</Typography>{option.price}</Typography>
+              <Typography style = {{ color: theme.text.secondary }} type = 'caption'>{option.price_description}</Typography>
+              {option.requests ? <div><Typography style = {{ color: theme.primary.main, display: 'inline-block', marginRight: 2.5 }} type = 'caption'>{option.requests}</Typography><Typography style = {{ color: theme.text.secondary, display: 'inline-block' }} type = 'caption'> requests per month</Typography></div> : ''}
               {option.features.map((feature) => {
                 return (
                   <div key = {feature}>
                     <hr />
-                    <Typography variant = 'body1'>{feature}</Typography>
+                    <Typography type = 'body2'>{feature}</Typography>
                   </div>
                 );
               })}
@@ -171,11 +176,21 @@ const Pricing = ({ view }: { view: string | null; }) => {
                 return (
                   <div key = {missing}>
                     <hr />
-                    <Typography style = {{ textDecoration: 'line-through' }} color = 'text.secondary' variant = 'body1'>{missing}</Typography>
+                    <Typography style = {{ textDecoration: 'line-through', color: theme.text.secondary }} type = 'body2'>{missing}</Typography>
                   </div>
                 );
               })}
-              <Button style = {{ width: '100%', marginTop: 10 }} variant = 'contained' disabled = {option.disabled}>{trial ? 'Try now' : 'Subscribe'}</Button>
+              <div style = {{
+                width: '100%',
+                marginTop: 10,
+                backgroundColor: buttonColor,
+                color: textColor,
+                height: 30,
+                borderRadius: 3,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>{trial ? 'Try now' : 'Subscribe'}</div>
             </CardContent>
           </CardActionArea>
         </Card>
@@ -190,10 +205,10 @@ const Pricing = ({ view }: { view: string | null; }) => {
     {
     selectedView === leftSwitch ?
     <>
-      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='h5'>Picks access</Typography>
+      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='h5'>Picks access</Typography>
       <div style = {{ textAlign: 'center', margin: '10px 0px' }}><Button startIcon = {<PicksIcon />} variant='outlined' onClick={() => { router.push('/cbb/picks'); }}>View Picks</Button></div>
-      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='body1'>View our <Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {() => { router.push('/cbb/picks?view=stats'); }}>live win rate</Link> stats and read our blog about <Link style = {{ cursor: 'pointer' }} underline="hover" onClick = {() => { router.push('/blog/picks-2023-review'); }}>2023 picks breakdown</Link></Typography>
-      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='body1'>Algorithm trained on 10+ years of data (75000+ games)</Typography>
+      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='body1'>View our <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); router.push('/cbb/picks?view=stats'); }} href = '/cbb/picks?view=stats'>live win rate</a> stats and read our blog about <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); router.push('/blog/picks-2023-review'); }} href = '/blog/picks-2023-review'>2023 picks breakdown</a></Typography>
+      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='body1'>Algorithm trained on 10+ years of data (75000+ games)</Typography>
       <Grid container spacing={4} style = {{ justifyContent: 'center' }}>
         {picksOptions.map((option) => {
           return getPriceCard(option);
@@ -201,9 +216,9 @@ const Pricing = ({ view }: { view: string | null; }) => {
       </Grid>
     </> :
     <>
-      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='h5'>API access <sup style = {{ fontSize: '14px' }}>beta</sup></Typography>
+      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='h5'>API access <sup style = {{ fontSize: '14px' }}>beta</sup></Typography>
       <div style = {{ textAlign: 'center', margin: '10px 0px' }}><Button endIcon = {<LaunchIcon />} variant='outlined' onClick={() => { window.open('https://docs.srating.io/', '_blank'); }}>API Documentation</Button></div>
-      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='body1'>Set up takes less than 5 mins!</Typography>
+      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='body1'>Set up takes less than 5 mins!</Typography>
       <Grid container spacing={4} style = {{ justifyContent: 'center' }}>
         {apiOptions.map((option) => {
           return getPriceCard(option);
@@ -211,38 +226,38 @@ const Pricing = ({ view }: { view: string | null; }) => {
       </Grid>
     </>
     }
-    {/* <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant='h5'>Features</Typography>
+    {/* <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='h5'>Features</Typography>
     <div>
-      <Typography variant='h6'>Live scores</Typography>
+      <Typography type='h6'>Live scores</Typography>
       <ul>
-        <li><Typography variant='body1'>Get live scores for all college basketball games.</Typography></li>
+        <li><Typography type='body1'>Get live scores for all college basketball games.</Typography></li>
       </ul>
     </div>
     <hr />
     <div>
-      <Typography variant='h6'>Betting odds</Typography>
-      <Typography variant='body1'>Our API supports pre game and live odds.</Typography>
+      <Typography type='h6'>Betting odds</Typography>
+      <Typography type='body1'>Our API supports pre game and live odds.</Typography>
       <ul>
-        <li><Typography variant='body1'>Money line</Typography></li>
-        <li><Typography variant='body1'>Spread</Typography></li>
-        <li><Typography variant='body1'>Over / Under</Typography></li>
+        <li><Typography type='body1'>Money line</Typography></li>
+        <li><Typography type='body1'>Spread</Typography></li>
+        <li><Typography type='body1'>Over / Under</Typography></li>
       </ul>
     </div>
     <hr />
     <div>
-      <Typography variant='h6'>Teams and Players</Typography>
+      <Typography type='h6'>Teams and Players</Typography>
       <ul>
-        <li><Typography variant='body1'>Get all the college basketball D1 teams</Typography></li>
-        <li><Typography variant='body1'>Get all the players on every team</Typography></li>
+        <li><Typography type='body1'>Get all the college basketball D1 teams</Typography></li>
+        <li><Typography type='body1'>Get all the players on every team</Typography></li>
       </ul>
     </div>
     <hr />
     <div>
-      <Typography variant='h6'>Stats + Picks</Typography>
+      <Typography type='h6'>Stats + Picks</Typography>
       <ul>
-        <li><Typography variant='body1'>Get team statistics</Typography></li>
-        <li><Typography variant='body1'>Get player statistics</Typography></li>
-        <li><Typography variant='body1'>Get picks win percentage</Typography></li>
+        <li><Typography type='body1'>Get team statistics</Typography></li>
+        <li><Typography type='body1'>Get player statistics</Typography></li>
+        <li><Typography type='body1'>Get picks win percentage</Typography></li>
       </ul>
     </div> */}
    </div>

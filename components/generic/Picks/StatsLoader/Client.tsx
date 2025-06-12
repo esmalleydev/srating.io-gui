@@ -20,7 +20,7 @@ const Client = ({ gameStats }) => {
   useEffect(() => {
     dispatch(setDataKey({ key: 'gameStats', value: gameStats }));
     dispatch(setDataKey({ key: 'gameStatsLoading', value: false }));
-  }, [dispatch]);
+  }, [dispatch, gameStats]);
 
   return null;
 };

@@ -2,28 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import {
-  Chip, LinearProgress, Paper, Skeleton, Typography,
+  LinearProgress, Skeleton,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
 import { getHeaderHeight } from '@/components/generic/Games/SubNavBar';
-import { updateConferences } from '@/redux/features/display-slice';
 import Tile, { getTileBaseStyle } from '@/components/generic/Games/Tile';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { getDateBarHeight } from '../../DateBar';
+import Typography from '@/components/ux/text/Typography';
+import ConferenceChips from '../../ConferenceChips';
+import Paper from '@/components/ux/container/Paper';
 
 // todo move the StatsLoader into the page, just make it slower so I dont need to do the ClientSkeletonUnknown if top 25
 
 const Contents = ({ children, childStyle = {} }) => {
-  const dispatch = useAppDispatch();
-  const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
-  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
-
-  const confChips: React.JSX.Element[] = [];
-  for (let i = 0; i < selectedConferences.length; i++) {
-    confChips.push(<Chip key = {selectedConferences[i]} sx = {{ margin: '5px' }} label={conferences[selectedConferences[i]].code} onDelete={() => { dispatch(updateConferences(selectedConferences[i])); }} />);
-  }
-
   const gameContainerStyle: React.CSSProperties = {
     display: 'flex',
     flexWrap: 'wrap',
@@ -37,7 +30,7 @@ const Contents = ({ children, childStyle = {} }) => {
       <div style = {{
         display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px', flexWrap: 'wrap',
       }}>
-        {confChips}
+        <ConferenceChips />
       </div>
       <div style = {gameContainerStyle}>
         {children}
@@ -322,7 +315,7 @@ const Client = ({ games, date }) => {
       {
         gameContainers.length ?
           gameContainers :
-          <Typography variant = 'h5'>No games found :( please adjust filter. </Typography>
+          <Typography type = 'h5'>No games found :( please adjust filter. </Typography>
       }
     </Contents>
   );

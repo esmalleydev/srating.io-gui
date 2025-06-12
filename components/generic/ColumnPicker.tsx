@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,17 +10,17 @@ import DialogContent from '@mui/material/DialogContent';
 import CloseIcon from '@mui/icons-material/Close';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
-import { RankingColumns } from '@/types/general';
+import { ListItemButton } from '@mui/material';
+import { TableColumnsType } from '../helpers/TableColumns';
 
 
 const ColumnPicker = (
   { options, selected, open, saveHandler, closeHandler, limit, title = 'Set custom table columns' }:
-  {options: RankingColumns, selected: Array<string>, open: boolean, saveHandler: Function, closeHandler: Function, limit?: number, title?: string},
+  {options: TableColumnsType, selected: Array<string>, open: boolean, saveHandler: (columns: string[]) => void, closeHandler: () => void, limit?: number, title?: string},
 ) => {
   const [columns, setColumns] = useState(selected || []);
 
@@ -54,7 +54,7 @@ const ColumnPicker = (
         <DialogContent sx = {{ padding: 0 }}>
           <List style = {{ marginBottom: 60 }}>
             {Object.values(options).map((option) => (
-              <ListItem key={option.id} button disabled = {(option.disabled === true)} onClick={() => {
+              <ListItemButton key={option.id} disabled = {(option.disabled === true)} onClick={() => {
                 let autoClose = false;
                 const currentColumns = [...columns];
                 const index = currentColumns.indexOf(option.id);
@@ -85,7 +85,7 @@ const ColumnPicker = (
                   {columns.indexOf(option.id) > -1 ? <CheckIcon /> : ''}
                 </ListItemIcon>
                 <ListItemText primary={option.label} secondary = {option.tooltip} />
-              </ListItem>
+              </ListItemButton>
             ))}
           </List>
         </DialogContent>

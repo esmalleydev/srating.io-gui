@@ -1,34 +1,37 @@
-import { useTheme } from '@mui/material/styles';
+/* eslint-disable no-bitwise */
+
+import { useTheme } from '../hooks/useTheme';
+
 
 export const getBestColor: () => string = () => {
   const theme = useTheme();
 
-  return theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
+  return theme.mode === 'light' ? theme.success.main : theme.success.dark;
 };
 
 export const getWorstColor: () => string = () => {
   const theme = useTheme();
 
-  return theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
+  return theme.mode === 'light' ? theme.error.main : theme.error.dark;
 };
 
 export const getLogoColorPrimary: () => string = () => {
   const theme = useTheme();
 
-  // return theme.palette.mode === 'light' ? '#fd35ab' : '#FDD835';
-  return theme.palette.mode === 'light' ? theme.palette.warning.light : '#FDD835';
+  // return theme.mode === 'light' ? '#fd35ab' : '#FDD835';
+  return theme.mode === 'light' ? theme.warning.light : '#FDD835';
 };
 
 export const getLogoColorSecondary: () => string = () => {
   const theme = useTheme();
 
-  return theme.palette.mode === 'light' ? '#482ab9' : '#2ab92a';
+  return theme.mode === 'light' ? '#482ab9' : '#2ab92a';
 };
 
 
 class Color {
-  constructor() {
-  }
+  // constructor() {
+  // }
 
 
   /**
@@ -42,10 +45,16 @@ class Color {
    * @return {string}
    */
   public static lerpColor(a: string, b: string, amount: number): string {
-    var ah = ah = +a.replace('#', '0x');
-    const ar = ah >> 16; const ag = ah >> 8 & 0xff; const ab = ah & 0xff;
+    const ah = +a.replace('#', '0x');
+    const ar = ah >> 16;
+    const ag = ah >> 8 & 0xff;
+    const ab = ah & 0xff;
+
     const bh = +b.replace('#', '0x');
-    const br = bh >> 16; const bg = bh >> 8 & 0xff; const bb = bh & 0xff;
+    const br = bh >> 16;
+    const bg = bh >> 8 & 0xff;
+    const bb = bh & 0xff;
+
     const rr = ar + amount * (br - ar);
     const rg = ag + amount * (bg - ag);
     const rb = ab + amount * (bb - ab);
@@ -61,6 +70,7 @@ class Color {
    */
   public static getTextColor(color: string, backgroundColor: string) {
     // Convert hex colors to RGB
+    /*
     let [r1, g1, b1] = Color.hexToRgb(color);
     const [r2, g2, b2] = Color.hexToRgb(backgroundColor);
 
@@ -88,13 +98,103 @@ class Color {
         b1 = Math.min(255, b1 + 25);
       }
 
-      if (r1 === 0 && g1 === 0 && b1 === 0 || r1 === 255 && g1 === 255 && b1 === 255) {
+      if ((r1 === 0 && g1 === 0 && b1 === 0) || (r1 === 255 && g1 === 255 && b1 === 255)) {
         break; // avoid infinite loop
       }
     }
 
     // Convert back to hex
     return Color.rgbToHex(r1, g1, b1);
+    */
+    let [r, g, b] = Color.hexToRgb(color);
+    const [br, bg, bb] = Color.hexToRgb(backgroundColor);
+    const contrastTarget = 4.5;
+
+    if (Color.getContrastRatio([r, g, b], [br, bg, bb]) >= contrastTarget) {
+      return Color.rgbToHex(r, g, b);
+    }
+
+    const contrastToBlack = Color.getContrastRatio([0, 0, 0], [br, bg, bb]);
+    const contrastToWhite = Color.getContrastRatio([255, 255, 255], [br, bg, bb]);
+
+    const direction: 'lighter' | 'darker' =
+      contrastToWhite > contrastToBlack ? 'lighter' : 'darker';
+
+    const adjust = (c: number, lighter: boolean) => {
+      return lighter ? Math.min(255, c + 10) : Math.max(0, c - 10);
+    };
+
+    for (let i = 0; i < 25; i++) {
+      r = adjust(r, direction === 'lighter');
+      g = adjust(g, direction === 'lighter');
+      b = adjust(b, direction === 'lighter');
+
+      if (Color.getContrastRatio([r, g, b], [br, bg, bb]) >= contrastTarget) {
+        break;
+      }
+    }
+
+    return Color.rgbToHex(r, g, b);
+  }
+
+  public static getContrastRatio(rgb1: [number, number, number], rgb2: [number, number, number]): number {
+    const luminance = (r: number, g: number, b: number): number => {
+      const a = [r, g, b].map((v) => {
+        v /= 255;
+        return v <= 0.03928
+          ? v / 12.92
+          : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    };
+
+    const lum1 = luminance(...rgb1) + 0.05;
+    const lum2 = luminance(...rgb2) + 0.05;
+
+    return lum1 > lum2 ? lum1 / lum2 : lum2 / lum1;
+  }
+
+  /**
+   * Take a hex (#fff) and an amount and darken the color, return a hex
+   * @param {string} hex
+   * @param {number} amount
+   * @return {string} hex
+   */
+  public static darken(hex: string, amount: number = 0.02): string {
+    const [r, g, b] = this.hexToRgb(hex);
+    const [h, s, l] = this.rgbToHsl(r, g, b);
+
+    const newL = Math.max(0, (l / 100) - amount) * 100;
+    const [r2, g2, b2] = this.hslToRgb(h, s, newL);
+
+    return this.rgbToHex(r2, g2, b2);
+  }
+
+  /**
+   * Take a hex (#fff) and an amount and lighten the color, return a hex
+   * @param {string} hex
+   * @param {number} amount
+   * @return {string} hex
+   */
+  public static lighten(hex: string, amount: number = 0.02): string {
+    const [r, g, b] = this.hexToRgb(hex);
+    const [h, s, l] = this.rgbToHsl(r, g, b);
+
+    const newL = Math.min(1, (l / 100) + amount) * 100;
+    const [r2, g2, b2] = this.hslToRgb(h, s, newL);
+
+    return this.rgbToHex(r2, g2, b2);
+  }
+
+
+  public static shadeColor(hex: string, percent: number) {
+    let [r, g, b] = Color.hexToRgb(hex);
+
+    r = Math.min(255, Math.max(0, Math.round(r + (r * (percent / 100)))));
+    g = Math.min(255, Math.max(0, Math.round(g + (g * (percent / 100)))));
+    b = Math.min(255, Math.max(0, Math.round(b + (b * (percent / 100)))));
+
+    return Color.rgbToHex(r, g, b);
   }
 
 
@@ -129,6 +229,19 @@ class Color {
 
 
   /**
+   * Takes a hex (#fff) and returns an rgba with the provided alpha
+   * @param {string} hex
+   * @param {number} alpha
+   * @return {string} rgba()
+   */
+  public static alphaColor(hex: string, alpha: number): string {
+    const [r, g, b] = this.hexToRgb(hex);
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+
+  /**
    * Gets analogous colors
    * @param {string} hex
    * @return {Array<string>}
@@ -159,10 +272,20 @@ class Color {
    */
   private static hexToRgb(hex: string): Array<number> {
     // Remove the hash at the start if it's there
-    hex = hex.replace(/^#/, '');
+    let h = hex.replace(/^#/, '');
+
+    // Handle 3-character hex codes by expanding them to 6-character
+    if (h.length === 3) {
+      h = h.split('').map((char) => { return char + char; }).join('');
+    }
+
+    // Ensure it's a valid 6-character hex code
+    if (h.length !== 6) {
+      throw new Error(`Invalid hex color format: ${hex}`);
+    }
 
     // Parse r, g, b values
-    const bigint = parseInt(hex, 16);
+    const bigint = parseInt(h, 16);
     const r = (bigint >> 16) & 255;
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
@@ -207,8 +330,9 @@ class Color {
   }
 
   private static hslToRgb(h, s, l) {
-    let r; let g; let
-      b;
+    let r;
+    let g;
+    let b;
     h /= 360;
     s /= 100;
     l /= 100;

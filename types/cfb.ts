@@ -420,6 +420,8 @@ export type StatisticRankings = {[statistic_ranking_id: string]: StatisticRankin
 export interface CFBRankingTable {
   team_id: string;
   rank: number;
+  rank_delta_one: number;
+  rank_delta_seven: number;
   name: string;
   wins: number;
   losses: number;

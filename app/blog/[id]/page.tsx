@@ -8,14 +8,16 @@ import { getAllPostIds, getPostData, getSidebarPosts } from '@/lib/blog';
 export const dynamic = 'force-dynamic';
 
 type Props = {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
+
 
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const blogData = await getData(params);
+  const parameters = await params;
+  const blogData = await getData(parameters);
   const data = blogData.post;
   const { metadata } = data;
 
@@ -33,8 +35,9 @@ export async function generateMetadata(
   };
 }
 
-const Blog = async ({ params }) => {
-  const blogData = await getData(params);
+const Blog = async ({ params }: Props) => {
+  const parameters = await params;
+  const blogData = await getData(parameters);
 
   const data = blogData.post;
 

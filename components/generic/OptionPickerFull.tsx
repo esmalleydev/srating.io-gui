@@ -9,7 +9,6 @@ import Dialog from '@mui/material/Dialog';
 import CloseIcon from '@mui/icons-material/Close';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
 
 import Typography from '@mui/material/Typography';
@@ -17,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { ListItemButton } from '@mui/material';
 
 type optionType = {
   value: string;
@@ -98,7 +98,7 @@ const OptionPickerFull = (
         </AppBar>
         <List>
           {options.map((option) => (
-            <ListItem key={option.value} button onClick={() => {
+            <ListItemButton key={option.value} onClick={() => {
               if (actionHandler) {
                 actionHandler(option.value);
               }
@@ -108,7 +108,7 @@ const OptionPickerFull = (
                 {selected === option.value ? <CheckIcon /> : ''}
               </ListItemIcon>
               <ListItemText primary={option.label} />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       </Dialog>
