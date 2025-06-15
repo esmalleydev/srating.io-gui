@@ -135,7 +135,7 @@ const ConferencePicker = () => {
 
   return (
     <div>
-      <OptionPicker buttonName = {'Conferences'} options = {conferenceOptions} selected = {selected.length ? selected : [null]} actionHandler = {handleClick} isRadio = {false} autoClose={false} />
+      <OptionPicker buttonName = {'Conferences'} options = {conferenceOptions} selected = {selected.length ? selected : [null]} actionHandler = {handleClick} isRadio = {false} autoClose={true} />
     </div>
   );
 };

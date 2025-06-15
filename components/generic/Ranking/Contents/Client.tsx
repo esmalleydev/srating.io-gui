@@ -417,7 +417,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
           }
 
           let showSortArrow = true;
-          if (width <= breakPoint && (headCell.id === 'rank' || headCell.id === 'record' || headCell.id === 'conf_record')) {
+          if (width <= breakPoint && (headCell.id === 'rank' || headCell.id === 'record' || headCell.id === 'conf_record' || headCell.id === 'rank_delta_combo')) {
             showSortArrow = false;
             if (headCell.id === 'rank') {
               tdStyle.maxWidth = rankCellMaxWidth;
