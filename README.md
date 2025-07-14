@@ -16,44 +16,44 @@ Prerequisites: typescript, nodejs, npm.
 
 1. Clone or download this repository.
 
-  ```sh
-  git clone https://github.com/esmalleydev/srating.io-gui
-  cd srating.io-gui
-  ```
+    ```sh
+    git clone https://github.com/esmalleydev/srating.io-gui
+    cd srating.io-gui
+    ```
 
 2. Install build dependencies in the project directory.
 
-  ```sh
-  npm install
-  ```
+    ```sh
+    npm install
+    ```
 3. Set up a .env.local file in the root
 
-  ```
-  SERVER_PROTOCAL=http
-  SERVER_HOST=localhost
-  SERVER_PORT=3500
-  SERVER_SECRET=my_unrestricted_api_key
+    ```
+    SERVER_PROTOCAL=http
+    SERVER_HOST=localhost
+    SERVER_PORT=3500
+    SERVER_SECRET=my_unrestricted_api_key
 
-  NEXT_PUBLIC_CLIENT_PROTOCAL=http
-  NEXT_PUBLIC_CLIENT_HOST=localhost
-  NEXT_PUBLIC_CLIENT_PORT=4000
-  NEXT_PUBLIC_CLIENT_USE_ORIGIN=false
-  NEXT_PUBLIC_CLIENT_PATH=''
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=foo
-  ```
+    NEXT_PUBLIC_CLIENT_PROTOCAL=http
+    NEXT_PUBLIC_CLIENT_HOST=localhost
+    NEXT_PUBLIC_CLIENT_PORT=4000
+    NEXT_PUBLIC_CLIENT_USE_ORIGIN=false
+    NEXT_PUBLIC_CLIENT_PATH=''
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=foo
+    ```
 
 4. Run the web client with webpack for local development.
 
-  ```sh
-  npm run dev
-  ```
+    ```sh
+    npm run dev
+    ```
 
 5. Build the client and start production build
 
-   ```sh
-  npm run build
-  npm run start
-  ```
+    ```sh
+    npm run build
+    npm run start
+    ```
 
 ## Directory Structure
 
