@@ -9,14 +9,72 @@ Prerequisites: typescript, nodejs, npm.
 ## Looking for the API documentation?
 ### [docs.srating.io](https://docs.srating.io)
 
-## Set up
+## Getting Started
+> [!NOTE]
+> An unrestricted API key is required, to fully run this locally / develop.
+> Feel free to check out the project though (all api calls will fail) or [Contact](contact@srating.io) if you are interested.
 
-After cloning project, in the project directory run:
-`npm install`
+1. Clone or download this repository.
 
-To start developing run:
-`npm run dev`
+  ```sh
+  git clone https://github.com/esmalleydev/srating.io-gui
+  cd srating.io-gui
+  ```
 
+2. Install build dependencies in the project directory.
+
+  ```sh
+  npm install
+  ```
+3. Set up a .env.local file in the root
+
+  ```
+  SERVER_PROTOCAL=http
+  SERVER_HOST=localhost
+  SERVER_PORT=3500
+  SERVER_SECRET=my_unrestricted_api_key
+
+  NEXT_PUBLIC_CLIENT_PROTOCAL=http
+  NEXT_PUBLIC_CLIENT_HOST=localhost
+  NEXT_PUBLIC_CLIENT_PORT=4000
+  NEXT_PUBLIC_CLIENT_USE_ORIGIN=false
+  NEXT_PUBLIC_CLIENT_PATH=''
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=foo
+  ```
+
+4. Run the web client with webpack for local development.
+
+  ```sh
+  npm run dev
+  ```
+
+5. Build the client and start production build
+
+   ```sh
+  npm run build
+  npm run start
+  ```
+
+## Directory Structure
+
+```
+.
+└── srating.io-gui
+  ├── app                     # All the nextjs pages live here
+  ├── blog                    # Blog entries
+  ├── components              
+  │   ├── generic             # All the react components
+  │   ├── handlers            # useEffects which handling loading things like sessions, dictionary, favorite data
+  │   ├── helpers             # Classes with helper functions for formatting data on specific database tables
+  │   ├── hooks               # Custom React hooks
+  │   ├── utils               # Utility functions for things like Text, Color, Style, etc
+  │   ├── ux                  # Resuable UX components to be used across system
+  ├── contexts                # Custom react contexts
+  ├── redux                   # Redux features / store logic
+  ├── styles                  # CSS
+  ├── Surface                 # nextjs pages without needing nextjs
+  ├── types                   # Common TypeScript interfaces/types
+```
 
 ## Client api
 These calls run on the client. It will attach any required headers to the fetch request.
@@ -61,46 +119,12 @@ const scores = await useServerAPI({
 console.log(scores);
 ```
 
-## Pages
-
-### [Ranking](app/cbb/ranking/README.md)
-
-### [Games](app/cbb/games/README.md)
-
-### [Picks](app/cbb/picks/README.md)
-
-### [Team](app/cbb/team/[team_id]/README.md)
-
-### [Player](app/cbb/player/[player_id]/README.md)
-
-### [Game](app/cbb/games/[game_id]/README.md)
 
 ### Tips
 May need to clear out .next and node_modules folder before rebuilding
 `rm -r node_modules`
 `rm -r .next`
 
-### .env.local
-You will need to set up a .env.local file. Below is an example
-```
-SERVER_PROTOCAL=http
-SERVER_HOST=localhost
-SERVER_PORT=3500
-SERVER_SECRET=foo
-
-NEXT_PUBLIC_CLIENT_PROTOCAL=http
-NEXT_PUBLIC_CLIENT_HOST=localhost
-NEXT_PUBLIC_CLIENT_PORT=4000
-NEXT_PUBLIC_CLIENT_USE_ORIGIN=false
-NEXT_PUBLIC_CLIENT_PATH=''
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=foo
-```
-
-## Other Scripts
-
-### `npm run build`
-
-### `npm run start`
 
 
 
