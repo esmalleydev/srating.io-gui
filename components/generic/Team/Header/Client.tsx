@@ -133,16 +133,18 @@ const Client = (
     conferenceSupStyle.color = Color.lerpColor(bestColor, worstColor, (+(conferenceRank / conferenceNumber)));
   }
 
-  const handleSeason = (season) => {
-    if (searchParams) {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      current.set('season', season);
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.push(`${pathName}${query}`);
-      });
+  const handleSeason = (newSeason) => {
+    if (newSeason !== season) {
+      if (searchParams) {
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
+        current.set('season', newSeason);
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+        dispatch(setLoading(true));
+        startTransition(() => {
+          router.push(`${pathName}${query}`);
+        });
+      }
     }
   };
 

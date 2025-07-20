@@ -6,10 +6,14 @@ type InitialState = {
   conference: Conferences,
   organization: Organizations,
   division: Divisions,
+  organization_id_x_division_id_x_season_x_count: object,
+  organization_id_x_division_id_x_season_x_conference_id_x_true: object,
 };
 
 const initialState = {
   conference: {},
+  organization_id_x_division_id_x_season_x_count: {},
+  organization_id_x_division_id_x_season_x_conference_id_x_true: {},
 } as InitialState;
 
 export const dictionary = createSlice({

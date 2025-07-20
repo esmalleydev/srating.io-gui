@@ -9,13 +9,15 @@ import Script from 'next/script';
 import StoreProvider from './StoreProvider';
 import SessionHandler from '@/components/handlers/SessionHandler';
 import FavoriteHandler from '@/components/handlers/FavoriteHandler';
-import SecretWrapper from '@/components/handlers/secret/ClientWrapper';
-import SecretHandler from '@/components/handlers/secret/Server';
+import KryptosClient from '@/components/handlers/kryptos/Client';
+// import KryptosServer from '@/components/handlers/kryptos/Server';
 import DictionaryWrapper from '@/components/handlers/dictionary/ClientWrapper';
 import DictionaryHandler from '@/components/handlers/dictionary/Server';
 import LayoutWrapper from './LayoutWrapper';
 import MutationHandler from '@/components/handlers/MutationHandler';
-import Style from '@/components/utils/Style';
+// import Style from '@/components/utils/Style';
+import NewUpdateHandler from '@/components/handlers/NewUpdateHandler';
+import { useServerAPI } from '@/components/serverAPI';
 
 
 
@@ -26,6 +28,18 @@ export default async function RootLayout({ children }: {children: React.ReactNod
   // todo this doesnt work for SSR yet... this rootlayout does not retrigger when a server component is streamed after the fact. need to do some sort of context hook thingy to stream the new css
   // https://chatgpt.com/c/68367c38-f454-8002-a7dc-c16a706a3126
 
+  const kryptos = await useServerAPI({
+    class: 'secret',
+    function: 'kryptos',
+    arguments: {},
+  });
+
+  const secret = await useServerAPI({
+    class: 'secret',
+    function: 'find',
+    arguments: {},
+  });
+
   return (
     <html lang="en">
       {/* <head>
@@ -33,8 +47,9 @@ export default async function RootLayout({ children }: {children: React.ReactNod
       </head> */}
       <StoreProvider>
         <LayoutWrapper>
+          <NewUpdateHandler />
+          <KryptosClient kryptos = {kryptos} secret = {secret} />
           <MutationHandler />
-          <SecretWrapper><SecretHandler /></SecretWrapper>
           <SessionHandler />
           <FavoriteHandler />
           <DictionaryWrapper><DictionaryHandler /></DictionaryWrapper>

@@ -1,4 +1,6 @@
-import Division from './Division';
+
+import { getStore } from '@/app/StoreProvider';
+import Organization from './Organization';
 
 
 /**
@@ -13,23 +15,18 @@ class CFB {
   }
 
   /**
-   * TODO front load this or something, so I dont need to hardcode
+   * Get the number of teams for a division in a season
    */
   public static getNumberOfTeams({ division_id, season }: { division_id: string, season: string | number}): number {
-    if (Division.getFBS() === division_id) {
-      if (+season === 2024 || +season === 2025) {
-        return 133;
-      }
-    }
+    const store = getStore();
+    const { organization_id_x_division_id_x_season_x_count } = store.getState().dictionaryReducer;
 
-    if (Division.getFCS() === division_id) {
-      if (+season === 2024) {
-        return 128;
-      }
-
-      if (+season === 2025) {
-        return 118;
-      }
+    if (
+      Organization.getCFBID() in organization_id_x_division_id_x_season_x_count &&
+      division_id in organization_id_x_division_id_x_season_x_count[Organization.getCFBID()] &&
+      season in organization_id_x_division_id_x_season_x_count[Organization.getCFBID()][division_id]
+    ) {
+      return organization_id_x_division_id_x_season_x_count[Organization.getCFBID()][division_id][season];
     }
 
     return 1;
@@ -39,16 +36,15 @@ class CFB {
    * TODO front load this or something, so I dont need to hardcode
    */
   public static getNumberOfConferences({ division_id, season }: { division_id: string, season: string | number}): number {
-    if (Division.getFBS() === division_id) {
-      if (+season === 2024 || +season === 2025) {
-        return 10;
-      }
-    }
+    const store = getStore();
+    const { organization_id_x_division_id_x_season_x_conference_id_x_true } = store.getState().dictionaryReducer;
 
-    if (Division.getFCS() === division_id) {
-      if (+season === 2024 || +season === 2025) {
-        return 14;
-      }
+    if (
+      Organization.getCFBID() in organization_id_x_division_id_x_season_x_conference_id_x_true &&
+      division_id in organization_id_x_division_id_x_season_x_conference_id_x_true[Organization.getCFBID()] &&
+      season in organization_id_x_division_id_x_season_x_conference_id_x_true[Organization.getCFBID()][division_id]
+    ) {
+      return Object.keys(organization_id_x_division_id_x_season_x_conference_id_x_true[Organization.getCFBID()][division_id][season]).length;
     }
 
     return 1;

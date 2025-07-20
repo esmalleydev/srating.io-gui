@@ -1,5 +1,8 @@
 'use client';
 
+import { getStore } from '@/app/StoreProvider';
+import { setNewUpdate } from '@/redux/features/user-slice';
+
 const protocol = process.env.NEXT_PUBLIC_CLIENT_PROTOCAL;
 const hostname = process.env.NEXT_PUBLIC_CLIENT_HOST;
 const port = +(process.env.NEXT_PUBLIC_CLIENT_PORT || 4000);
@@ -14,6 +17,7 @@ export async function useClientAPI(args, optional_fetch_args = {}) {
 
   const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;
   const secret = (typeof window !== 'undefined' && sessionStorage.getItem('secret')) || null;
+  const kryptos = (typeof window !== 'undefined' && sessionStorage.getItem('kryptos')) || null;
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
@@ -31,14 +35,34 @@ export async function useClientAPI(args, optional_fetch_args = {}) {
     headers['X-SECRET-ID'] = secret;
   }
 
+  if (kryptos) {
+    headers['X-KRYPTOS-ID'] = kryptos;
+  }
+
   return fetch(url, Object.assign(optional_fetch_args, {
     method: 'POST',
     headers,
     body: JSON.stringify(args),
-  })).then((response) => response.json()).then((json) => json).catch((error) => {
-    console.log(error);
-    return {};
-    // throw new Error('Error');
-  });
+  }))
+    .then((response) => response.json())
+    .then((json) => {
+      // new update available
+      if (json && json.error && json.code === 105) {
+        const store = getStore();
+        store.dispatch(setNewUpdate(true));
+      }
+
+      // secret expired
+      if (json && json.error && json.code === 103) {
+        // todo trigger refresh?
+      }
+
+      return json;
+    })
+    .catch((error) => {
+      console.log(error);
+      return {};
+      // throw new Error('Error');
+    });
 }
 

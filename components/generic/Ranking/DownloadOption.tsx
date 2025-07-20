@@ -48,7 +48,7 @@ const DownloadOption = ({ view, organization_id, division_id, season }) => {
       },
     }).then((data) => {
       dispatch(setLoading(false));
-      if (data === false) {
+      if (!data || data === false || data.error) {
         setOpenDialog(true);
       } else {
         CSV.download(data);

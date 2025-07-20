@@ -1,4 +1,7 @@
 
+import { getStore } from '@/app/StoreProvider';
+import Organization from './Organization';
+import Division from './Division';
 
 class CBB {
   /**
@@ -18,20 +21,18 @@ class CBB {
    * @return {number}
    */
   public static getNumberOfD1Teams(season: number): number {
-    if (+season === 2025) {
-      return 364;
-    }
-    if (+season === 2024) {
-      return 362;
-    }
-    if (+season === 2023) {
-      return 363;
-    }
-    if (+season === 2022) {
-      return 359;
+    const store = getStore();
+    const { organization_id_x_division_id_x_season_x_count } = store.getState().dictionaryReducer;
+
+    if (
+      Organization.getCBBID() in organization_id_x_division_id_x_season_x_count &&
+      Division.getD1() in organization_id_x_division_id_x_season_x_count[Organization.getCBBID()] &&
+      season in organization_id_x_division_id_x_season_x_count[Organization.getCBBID()][Division.getD1()]
+    ) {
+      return organization_id_x_division_id_x_season_x_count[Organization.getCBBID()][Division.getD1()][season];
     }
 
-    return 363;
+    return 1;
   }
 
   /**

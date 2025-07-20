@@ -55,7 +55,7 @@ class Team extends Surface {
       sportText = 'football';
     }
 
-    const team = await this.getData({ team_id, season });
+    const { team } = await this.getData({ team_id, season });
 
     const helperTeam = new HelperTeam({ team });
 

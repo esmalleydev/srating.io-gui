@@ -12,7 +12,7 @@ const Server = async () => {
     class: 'secret',
     function: 'find',
     arguments: {},
-    cache: 60,
+    cache: 0,
   }, { tags: [tag] });
 
   let error = false;
