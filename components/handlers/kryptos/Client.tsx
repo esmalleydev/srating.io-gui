@@ -55,7 +55,7 @@ const Client = ({ kryptos, secret }) => {
     dispatch(setKryptos(kryptos));
     dispatch(setSecret(secret.secret_id));
     setExpires(secret.expires);
-  }, []);
+  }, [kryptos, secret]);
 
   useIdleTimer({
     onIdle,
