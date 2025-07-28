@@ -11,6 +11,7 @@ import { useClientAPI } from '@/components/clientAPI';
 const SessionHandler = () => {
   const dispatch = useAppDispatch();
 
+  const storedKryptos = useAppSelector((state) => state.userReducer.kryptos);
   const session_id = useAppSelector((state) => state.userReducer.session_id);
   const validSession = useAppSelector((state) => state.userReducer.isValidSession);
 
@@ -21,7 +22,7 @@ const SessionHandler = () => {
     dispatch(setValidSession(false));
   }
 
-  if (!requestedSession && session_id) {
+  if (!requestedSession && session_id && storedKryptos) {
     setRequestedSession(true);
     useClientAPI({
       class: 'session',
