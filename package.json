@@ -37,6 +37,7 @@
     "dev": "next dev -p 3000 --turbopack",
     "build": "next build",
     "start": "next start -p 3000",
+    "cluster": "cross-env NODE_ENV=production node server.js",
     "standalone": "node ./starter.js",
     "build-live": "node ./builder.js"
   },
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/lodash": "^4.17.10",
+    "cross-env": "^10.0.0",
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^5.1.0",
