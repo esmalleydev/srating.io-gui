@@ -17,6 +17,7 @@ const Paper = (
     style = {},
     children,
     ref,
+    tranparency = 0,
     hover = false,
     onClick,
   }:
@@ -24,6 +25,7 @@ const Paper = (
     elevation?: number;
     style?: React.CSSProperties;
     children: React.ReactNode;
+    tranparency?: number;
     ref?: RefObject<HTMLDivElement | null>;
     hover?: boolean;
     onClick?: (e: React.SyntheticEvent) => void
@@ -34,6 +36,11 @@ const Paper = (
   let backgroundColor = '#fff';
   if (theme.mode === 'dark') {
     backgroundColor = Color.lerpColor(theme.background.main, theme.grey[400], elevation / 24);
+  }
+
+  if (tranparency) {
+    const rgb = Color.hexToRgb(backgroundColor);
+    backgroundColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${tranparency})`;
   }
 
   const cStyle = {

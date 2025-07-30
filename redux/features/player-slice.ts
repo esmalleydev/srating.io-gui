@@ -14,6 +14,7 @@ type InitialState = {
   season: number | null;
   loadingView: boolean,
   trendsBoxscoreLine: boolean,
+  trendsColumn: string | null,
 };
 
 type ActionPayload<K extends keyof InitialState> = {
@@ -33,6 +34,7 @@ const initialState = {
   season: null,
   loadingView: true,
   trendsBoxscoreLine: true,
+  trendsColumn: null,
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -42,6 +44,7 @@ const updateStateFromUrlParams = (state: InitialState) => {
   const urlParams = new URLSearchParams(window.location.search);
   const view = urlParams.get('view');
   const subview = urlParams.get('subview');
+  const trendsColumn = urlParams.get('trendsColumn');
 
   // we only want to run this if on first load, if the pathname is relevant
   if (!window.location.pathname.includes('player')) {
@@ -54,6 +57,9 @@ const updateStateFromUrlParams = (state: InitialState) => {
   }
   if (subview !== null) {
     state.subview = subview;
+  }
+  if (trendsColumn !== null) {
+    state.trendsColumn = trendsColumn;
   }
 };
 

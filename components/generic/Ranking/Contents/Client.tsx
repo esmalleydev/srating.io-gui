@@ -327,7 +327,10 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
         <TableContainer component={Paper} {...props} ref={ref} />
       );
     }),
-    Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
+    Table: (props) => <Table {...props} style={{
+      borderCollapse: 'separate',
+      // tableLayout: 'fixed',
+    }} />,
     TableHead,
     TableRow: React.forwardRef<HTMLTableRowElement, TableRowProps>((props, ref) => {
       return (
@@ -484,6 +487,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       minWidth: 125,
+      width: 125,
       maxWidth: 125,
       borderRight: `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`,
     };
@@ -499,11 +503,13 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
       textAlign: 'center',
       position: 'sticky',
       left: 0,
+      width: rankCellMaxWidth,
       maxWidth: rankCellMaxWidth,
     };
 
     if (width <= breakPoint) {
       teamCellStyle.minWidth = 85;
+      teamCellStyle.width = 85;
       teamCellStyle.maxWidth = 85;
     }
 
@@ -514,12 +520,14 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
         tableCells.push(<TableCell title = {row[columns[i]]} key = {i} sx = {({
           ...tdStyle,
           minWidth: 85,
+          // width: 85,
           maxWidth: 85,
           overflow: 'hidden',
           whiteSpace: 'nowrap',
           textOverflow: 'ellipsis',
         })}>{row[columns[i]]}</TableCell>);
       } else if (columns[i] === 'name') {
+        // tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...teamCellStyle })}><div className = {Style.getStyleClassName(teamCellStyle)}>{row[columns[i]]}</div></TableCell>);
         tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...teamCellStyle })}>{row[columns[i]]}</TableCell>);
       } else if (columns[i] === 'rank') {
         tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...rankCellStyle })}>{row[columns[i]]}</TableCell>);

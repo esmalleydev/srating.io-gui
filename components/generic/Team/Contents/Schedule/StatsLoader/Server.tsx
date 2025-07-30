@@ -3,14 +3,11 @@
 import React from 'react';
 
 import { useServerAPI } from '@/components/serverAPI';
-import { unstable_noStore } from 'next/cache';
 import { Client } from './Client';
 
 
 
-const Server = async ({ game_ids, organization_id, division_id }) => {
-  unstable_noStore();
-
+const Server = async ({ game_ids, organization_id, division_id, season }) => {
   const revalidateSeconds = 60 * 60 * 12; // 12 hours
 
   const scheduleStats: object = await useServerAPI({
@@ -19,6 +16,7 @@ const Server = async ({ game_ids, organization_id, division_id }) => {
     arguments: {
       organization_id,
       division_id,
+      season,
       game_ids,
     },
     cache: revalidateSeconds,

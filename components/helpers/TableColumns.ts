@@ -13,6 +13,10 @@ type TableColumn = {
   organization_ids: string[];
   views: string[];
   graphable: boolean;
+  widths?: {
+    [breakpoint: string]: number;
+    default: number;
+  }
 }
 
 export type TableColumnsType = {
@@ -21,8 +25,8 @@ export type TableColumnsType = {
 
 class TableColumns {
   public static getColumns(
-    { organization_id, view, graphable }:
-    { organization_id: string; view: string; graphable?: boolean },
+    { organization_id, view, graphable, disabled }:
+    { organization_id: string; view: string; graphable?: boolean; disabled?: boolean; },
   ): TableColumnsType {
     const allViews = [
       'team',
@@ -39,11 +43,15 @@ class TableColumns {
         label: 'Rk',
         tooltip: 'srating.io Rank',
         sticky: true,
-        // disabled: true,
+        disabled: true,
         sort: 'lower',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: allViews,
         graphable: true,
+        widths: {
+          default: 50,
+          425: 40,
+        },
       },
       name: {
         id: 'name',
@@ -55,6 +63,10 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: allViews,
         graphable: false,
+        widths: {
+          default: 125,
+          425: 85,
+        },
       },
       team_name: {
         id: 'team_name',
@@ -2885,7 +2897,8 @@ class TableColumns {
       if (
         !columns[key].organization_ids.includes(organization_id) ||
         !columns[key].views.includes(view) ||
-        (graphable !== undefined && graphable !== columns[key].graphable)
+        (graphable !== undefined && graphable !== columns[key].graphable) ||
+        (disabled !== undefined && 'disabled' in columns[key] && disabled !== columns[key].disabled)
       ) {
         delete columns[key];
       }

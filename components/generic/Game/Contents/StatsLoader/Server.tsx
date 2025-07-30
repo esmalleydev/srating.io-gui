@@ -4,8 +4,8 @@ import { useServerAPI } from '@/components/serverAPI';
 import { Client } from './Client';
 
 const Server = async (
-  { game_ids, coach_ids, organization_id, division_id }:
-  { game_ids: string[]; coach_ids: string[]; organization_id: string | null; division_id: string | null; },
+  { game_ids, coach_ids, organization_id, division_id, season }:
+  { game_ids: string[]; coach_ids: string[]; organization_id: string; division_id: string; season: string | number; },
 ) => {
   const revalidateSeconds = 60 * 60 * 12; // 12 hours
 
@@ -15,6 +15,7 @@ const Server = async (
     arguments: {
       organization_id,
       division_id,
+      season,
       game_ids,
     },
     cache: revalidateSeconds,

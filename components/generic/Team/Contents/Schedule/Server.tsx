@@ -27,7 +27,7 @@ const Server = async ({ organization_id, division_id, season, team_id }) => {
     <>
       <Client games = {games} team_id = {team_id} />
       <Suspense fallback = {<ClientSkeleton />}>
-        <StatsLoaderServer game_ids = {Object.keys(games)} organization_id={organization_id} division_id={division_id} />
+        <StatsLoaderServer game_ids = {Object.keys(games)} organization_id={organization_id} division_id={division_id} season = {season} />
       </Suspense>
     </>
   );

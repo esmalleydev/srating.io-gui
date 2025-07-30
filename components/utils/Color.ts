@@ -270,7 +270,7 @@ class Color {
    * @param {string} hex
    * @return {Array} rgb
    */
-  private static hexToRgb(hex: string): Array<number> {
+  public static hexToRgb(hex: string): Array<number> {
     // Remove the hash at the start if it's there
     let h = hex.replace(/^#/, '');
 

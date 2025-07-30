@@ -105,7 +105,7 @@ class Games extends Surface {
         <SubNavBar />
         <ContentsClientWrapper>
           <Suspense key={selectedDate} fallback = {<ContentsClientSkeleton games = {games} />}>
-            <ContentsServer games = {games} date = {selectedDate} organization_id = {organization_id} division_id = {division_id} />
+            <ContentsServer games = {games} date = {selectedDate} organization_id = {organization_id} division_id = {division_id} season={season} />
           </Suspense>
         </ContentsClientWrapper>
         <FloatingButtons />

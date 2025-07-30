@@ -4,16 +4,18 @@ import React, { useState } from 'react';
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import moment from 'moment';
-import ColumnPicker from '@/components/generic/ColumnPicker';
+import ColumnPickerFull from '@/components/generic/ColumnPickerFull';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import AdditionalOptions from './AdditionalOptions';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CFB from '@/components/helpers/CFB';
 import CBB from '@/components/helpers/CBB';
+import { setDataKey } from '@/redux/features/player-slice';
+import ColumnPicker from '@/components/generic/ColumnPicker';
 
 
 const StatsGraph = (
@@ -41,72 +43,58 @@ const StatsGraph = (
     standardColumns = [
       'passing_rating_college',
       'points',
-      'yards_per_play',
       'elo',
     ];
   }
 
+  const dispatch = useAppDispatch();
   const trendsBoxscoreLine = useAppSelector((state) => state.playerReducer.trendsBoxscoreLine);
+  const trendsColumn = useAppSelector((state) => state.playerReducer.trendsColumn) || standardColumns[0];
 
-  const [selectedChip, setSelectedChip] = useState(standardColumns[0]);
-  const [customColumn, setCustomColumn] = useState<string | null>(null);
-  const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
-
-  const allColumns = TableColumns.getColumns({ organization_id, view: 'player', graphable: true });
+  const allColumns = TableColumns.getColumns({ organization_id, view: 'player', graphable: true, disabled: false });
 
   const theme = useTheme();
 
-  if (customColumn && customColumn in allColumns) {
-    standardColumns.push(allColumns[customColumn].id);
+  const handleColumn = (value: string) => {
+    dispatch(setDataKey({ key: 'trendsColumn', value }));
+
+    const current = new URLSearchParams(window.location.search);
+    current.set('trendsColumn', value);
+    window.history.replaceState(null, '', `?${current.toString()}`);
+
+    // use pushState if we want to add to back button history
+    // window.history.pushState(null, '', `?${current.toString()}`);
+    // console.timeEnd('ColumnPicker.handleClick');
+  };
+
+  if (
+    trendsColumn &&
+    trendsColumn in allColumns &&
+    !standardColumns.includes(trendsColumn)
+  ) {
+    standardColumns.push(allColumns[trendsColumn].id);
   }
 
   const statsCompareChips: React.JSX.Element[] = [];
 
   for (let i = 0; i < standardColumns.length; i++) {
     const column = allColumns[standardColumns[i]];
+
     statsCompareChips.push(
       <Chip
         key = {column.id}
         style = {{ margin: '5px 5px 10px 5px' }}
-        filled = {selectedChip === column.id}
+        filled = {trendsColumn === column.id}
         value = {column.id}
-        onClick = {() => { setSelectedChip(column.id); }}
+        onClick = {() => { handleColumn(column.id); }}
         title = {column.label}
       />,
     );
   }
 
   statsCompareChips.push(
-    <Chip
-      key = {'custom'}
-      style = {{ margin: '5px 5px 10px 5px' }}
-      filled = {selectedChip === 'custom'}
-      value = {'custom'}
-      onClick = {() => { handleCustom(); }}
-      title = {'+ Custom'}
-    />,
+    <ColumnPicker key = {'player-stat-custom-column-picker'} options = {allColumns} selected = {trendsColumn ? [trendsColumn] : []} filled = {false} isRadio = {true} autoClose={true} actionHandler = {handleColumn} />,
   );
-
-  const handleCustom = () => {
-    setCustomColumnsOpen(true);
-  };
-
-  const handlCustomColumnsSave = (columns) => {
-    const selectedColumn = columns.length ? columns[0] : null;
-    setCustomColumnsOpen(false);
-
-    if (!standardColumns.includes(selectedColumn)) {
-      setCustomColumn(selectedColumn);
-    }
-
-    if (selectedColumn) {
-      setSelectedChip(selectedColumn);
-    }
-  };
-
-  const handlCustomColumnsExit = () => {
-    setCustomColumnsOpen(false);
-  };
 
 
   // this will also include all the statistic_ranking columns
@@ -197,9 +185,9 @@ const StatsGraph = (
   const rows: Data[] = [];
   for (const dor in date_of_rank_x_data) {
     const data = date_of_rank_x_data[dor];
-    const value = data[selectedChip];
-    const playerBoxscoreValue = data[`player_boxscore_${selectedChip}${selectedChip.includes('percentage') ? '' : '_per_game'}`];
-    const leagueValue = data[`league_${selectedChip}`];
+    const value = data[trendsColumn];
+    const playerBoxscoreValue = data[`player_boxscore_${trendsColumn}${trendsColumn.includes('percentage') ? '' : '_per_game'}`];
+    const leagueValue = data[`league_${trendsColumn}`];
 
     let compareMaxValue = value;
     if (!compareMaxValue || leagueValue > compareMaxValue) {
@@ -248,7 +236,7 @@ const StatsGraph = (
     maxYaxis = +(maxYaxis + buffer).toFixed(0);
   }
 
-  if (selectedChip === 'elo') {
+  if (trendsColumn === 'elo') {
     minYaxis = minYaxisElo;
     maxYaxis = maxYaxisElo;
   }
@@ -270,8 +258,8 @@ const StatsGraph = (
 
   let chart: React.JSX.Element | null = null;
 
-  if (selectedChip in allColumns) {
-    const statistic = allColumns[selectedChip];
+  if (trendsColumn in allColumns) {
+    const statistic = allColumns[trendsColumn];
 
     const lines: LineProps[] = [
       {
@@ -320,7 +308,7 @@ const StatsGraph = (
     <>
       <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
         <div><AdditionalOptions /></div>
-        <div style = {{ textAlign: 'center' }}>
+        <div style = {{ display: 'flex', textAlign: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           {statsCompareChips}
         </div>
         <div></div>
@@ -329,7 +317,6 @@ const StatsGraph = (
         {!formattedData.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>Nothing here yet...</Typography> : ''}
         {formattedData.length ? chart : ''}
       </div>
-      <ColumnPicker key = {'team-stat-custom-column-picker'} options = {allColumns} open = {customColumnsOpen} selected = {customColumn ? [customColumn] : []} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} limit = {1} title='Select a column' />
     </>
   );
 };

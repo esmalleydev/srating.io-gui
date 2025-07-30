@@ -1,36 +1,72 @@
 'use client';
 
-import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setDataKey } from '@/redux/features/ranking-slice';
+import { resetDataKey, setDataKey } from '@/redux/features/ranking-slice';
 import ColumnPicker from '../ColumnPicker';
 import Organization from '@/components/helpers/Organization';
 import Text from '@/components/utils/Text';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
+import { getStore } from '@/app/StoreProvider';
 
 
 const ColumnChipPicker = ({ organization_id, view }) => {
   const dispatch = useAppDispatch();
   const columnView = useAppSelector((state) => state.rankingReducer.columnView);
   const customColumns = useAppSelector((state) => state.rankingReducer.customColumns);
-  const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
 
   const headCells = TableColumns.getColumns({ organization_id, view });
 
-  const handlCustomColumnsSave = (columns) => {
-    setCustomColumnsOpen(false);
-    localStorage.setItem(`${organization_id}.RANKING.COLUMNS.${view}`, JSON.stringify(columns));
-    dispatch(setDataKey({ key: 'customColumns', value: columns }));
-    handleRankingView('custom');
+  const handleCustomColumns = (value: string) => {
+    const newColumns = [...customColumns];
+
+    const index = newColumns.indexOf(value);
+
+    if (index !== -1) {
+      newColumns.splice(index, 1);
+    } else {
+      newColumns.push(value);
+    }
+
+    const store = getStore();
+    dispatch(setDataKey({ key: 'customColumns', value: newColumns }));
+    // dispatch(updateConferences(value));
+    const results = store.getState().rankingReducer.customColumns;
+
+    const current = new URLSearchParams(window.location.search);
+    if (results.length) {
+      current.delete('customColumns');
+      for (let i = 0; i < results.length; i++) {
+        current.append('customColumns', results[i]);
+      }
+    } else {
+      current.delete('customColumns');
+    }
+
+    window.history.replaceState(null, '', `?${current.toString()}`);
+
+    // use pushState if we want to add to back button history
+    // window.history.pushState(null, '', `?${current.toString()}`);
+    // console.timeEnd('ColumnPicker.handleClick');
   };
 
-  const handlCustomColumnsExit = () => {
-    setCustomColumnsOpen(false);
-  };
-
-  const handleRankingView = (value) => {
+  const handleRankingView = (value: string) => {
     dispatch(setDataKey({ key: 'columnView', value }));
+    dispatch(resetDataKey('customColumns'));
+
+    const current = new URLSearchParams(window.location.search);
+
+    if (value) {
+      current.set('columnView', value);
+      current.delete('customColumns');
+    } else {
+      current.delete('columnView');
+    }
+
+    window.history.replaceState(null, '', `?${current.toString()}`);
+
+    // use pushState if we want to add to back button history
+    // window.history.pushState(null, '', `?${current.toString()}`);
   };
 
   const getCBBChips = () => {
@@ -52,7 +88,7 @@ const ColumnChipPicker = ({ organization_id, view }) => {
   const getCFBChips = () => {
     const chips: React.JSX.Element[] = [];
 
-    const availableChips = ['passing', 'rushing', 'receiving'];
+    const availableChips = ['passing', 'rushing'];
 
     if (view !== 'coach') {
       availableChips.forEach((value) => {
@@ -70,8 +106,14 @@ const ColumnChipPicker = ({ organization_id, view }) => {
       <Chip key = {'composite'} style = {{ margin: '5px' }} title={Text.toSentenceCase('composite')} filled={(columnView === 'composite')} value = {'composite'} onClick={() => handleRankingView('composite')} />
       {Organization.getCBBID() === organization_id ? getCBBChips() : ''}
       {Organization.getCFBID() === organization_id ? getCFBChips() : ''}
-      <Chip key = {'custom'} style = {{ margin: '5px' }} title={Text.toSentenceCase('custom')} filled={(columnView === 'custom')} value = {'custom'} onClick={() => setCustomColumnsOpen(true)} />
-      <ColumnPicker key = {view} options = {headCells} open = {customColumnsOpen} selected = {customColumns} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} />
+      <ColumnPicker
+        key = {view}
+        filled = {(columnView === 'custom')}
+        options = {headCells}
+        selected = {customColumns}
+        actionHandler = {handleCustomColumns}
+        firstRunAction = {handleRankingView}
+      />
     </div>
   );
 };

@@ -43,6 +43,8 @@ const Chip = (
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: height / 2,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
     ...style,
   };
 

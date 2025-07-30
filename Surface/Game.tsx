@@ -150,6 +150,8 @@ class Game extends Surface {
       return notFound();
     }
 
+    const { season } = game;
+
     const Game = new HelperGame({
       game,
     });
@@ -240,7 +242,7 @@ class Game extends Surface {
     return (
       <ReduxWrapper game = {game} coach_team_seasons = {coach_team_seasons} coaches = {coaches} view = {currentView} subview = {currentSubView}>
         <Suspense key = {`${game_id}_statsloader`} fallback = {<StatsLoaderSkeleton />}>
-          <StatsLoaderServer game_ids = {[game_id]} coach_ids = {Object.keys(coaches)} organization_id = {organization_id} division_id = {division_id} />
+          <StatsLoaderServer game_ids = {[game_id]} coach_ids = {Object.keys(coaches)} organization_id = {organization_id} division_id = {division_id} season = {season} />
         </Suspense>
         <HeaderClientWrapper game = {game} coaches = {coaches} coach_team_seasons = {coach_team_seasons}>
           <Suspense key = {`${game_id}_headerloader`}>

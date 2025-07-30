@@ -45,15 +45,17 @@ const Client = ({ organization_id, division_id, coach_team_seasons, teams, stati
       team_id: coach_team_season.team_id,
     };
 
+    if (coach_team_season.team_id in teams) {
+      const teamHelper = new HelperTeam({ team: teams[row.team_id] });
+      row.name = teamHelper.getName();
+    }
+
     if (
       coach_team_season.team_id in team_id_x_season_x_statistic_ranking &&
       coach_team_season.season in team_id_x_season_x_statistic_ranking[coach_team_season.team_id]
     ) {
       const stats = team_id_x_season_x_statistic_ranking[coach_team_season.team_id][coach_team_season.season];
 
-      const teamHelper = new HelperTeam({ team: teams[row.team_id] });
-
-      row.name = teamHelper.getName();
       row.record = `${stats.wins || 0} - ${stats.losses || 0}`;
       row.conf_record = (stats.confwins === null || stats.conflosses === null) ? '-' : `${stats.confwins || 0} - ${stats.conflosses || 0}`;
 
@@ -84,6 +86,9 @@ const Client = ({ organization_id, division_id, coach_team_seasons, teams, stati
     organization_ids: [],
     views: [],
     graphable: false,
+    widths: {
+      default: 70,
+    },
   };
 
   const handleClick = (coach_team_season_id: string) => {
@@ -105,7 +110,6 @@ const Client = ({ organization_id, division_id, coach_team_seasons, teams, stati
   };
 
 
-
   return (
     <div style = {{ padding: '0px 5px 20px 5px', textAlign: 'center' }}>
       <RankTable
@@ -117,9 +121,7 @@ const Client = ({ organization_id, division_id, coach_team_seasons, teams, stati
         defaultSortOrderBy = 'season'
         defaultEmpty = '-'
         sessionStorageKey = {sessionStorageKey}
-        numberOfStickyColumns = {1}
         getRankSpanMax={getRankSpanMax}
-        stickyWidths={[75]}
         handleRowClick={handleClick}
       />
     </div>

@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useState } from 'react';
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import moment from 'moment';
@@ -11,14 +10,17 @@ import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import AdditionalOptions from './AdditionalOptions';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CFB from '@/components/helpers/CFB';
 import CBB from '@/components/helpers/CBB';
+import { setDataKey } from '@/redux/features/team-slice';
 
 
 const StatsGraph = (
-  { organization_id, division_id, season, statistic_rankings, elos, games, conference_statistic_rankings, league_statistic_rankings, boxscores }:
-  { organization_id: string, division_id: string, season: number, statistic_rankings: object, elos: object, games: object, conference_statistic_rankings: object, league_statistic_rankings: object, boxscores: object },
+  {
+    organization_id, division_id, season, statistic_rankings, games, conference_statistic_rankings, league_statistic_rankings, boxscores,
+  }:
+  { organization_id: string, division_id: string, season: number, statistic_rankings: object, games: object, conference_statistic_rankings: object, league_statistic_rankings: object, boxscores: object },
 ) => {
   const getMax = () => {
     if (Organization.isCFB()) {
@@ -27,8 +29,6 @@ const StatsGraph = (
 
     return CBB.getNumberOfD1Teams(season);
   };
-
-  console.log('todo remove elos, use stats ranking elo')
 
   let standardColumns = [
     'adjusted_efficiency_rating',
@@ -46,18 +46,32 @@ const StatsGraph = (
     ];
   }
 
-  const trendsBoxscoreLine = useAppSelector((state) => state.teamReducer.trendsBoxscoreLine);
-
-  const [selectedChip, setSelectedChip] = useState(standardColumns[0]);
-  const [customColumn, setCustomColumn] = useState<string | null>(null);
-  const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
-
-  const allColumns = TableColumns.getColumns({ organization_id, view: 'team', graphable: true });
-
+  const dispatch = useAppDispatch();
   const theme = useTheme();
+  const trendsBoxscoreLine = useAppSelector((state) => state.teamReducer.trendsBoxscoreLine);
+  const trendsColumn = useAppSelector((state) => state.teamReducer.trendsColumn) || standardColumns[0];
 
-  if (customColumn && customColumn in allColumns) {
-    standardColumns.push(allColumns[customColumn].id);
+  const allColumns = TableColumns.getColumns({ organization_id, view: 'team', graphable: true, disabled: false });
+
+  const handleColumn = (value: string) => {
+    dispatch(setDataKey({ key: 'trendsColumn', value }));
+
+    const current = new URLSearchParams(window.location.search);
+    current.set('trendsColumn', value);
+    window.history.replaceState(null, '', `?${current.toString()}`);
+
+    // use pushState if we want to add to back button history
+    // window.history.pushState(null, '', `?${current.toString()}`);
+    // console.timeEnd('ColumnPicker.handleClick');
+  };
+
+
+  if (
+    trendsColumn &&
+    trendsColumn in allColumns &&
+    !standardColumns.includes(trendsColumn)
+  ) {
+    standardColumns.push(allColumns[trendsColumn].id);
   }
 
   const statsCompareChips: React.JSX.Element[] = [];
@@ -68,45 +82,18 @@ const StatsGraph = (
       <Chip
         key = {column.id}
         style = {{ margin: '5px 5px 10px 5px' }}
-        filled = {selectedChip === column.id}
+        filled = {trendsColumn === column.id}
         value = {column.id}
-        onClick = {() => { setSelectedChip(column.id); }}
+        onClick = {() => { handleColumn(column.id); }}
         title = {column.label}
       />,
     );
   }
 
   statsCompareChips.push(
-    <Chip
-      key = {'custom'}
-      style = {{ margin: '5px 5px 10px 5px' }}
-      filled = {selectedChip === 'custom'}
-      value = {'custom'}
-      onClick = {() => { handleCustom(); }}
-      title = {'+ Custom'}
-    />,
+    <ColumnPicker key = {'team-stat-custom-column-picker'} options = {allColumns} selected = {trendsColumn ? [trendsColumn] : []} filled = {false} isRadio = {true} autoClose={true} actionHandler = {handleColumn} />,
   );
 
-  const handleCustom = () => {
-    setCustomColumnsOpen(true);
-  };
-
-  const handlCustomColumnsSave = (columns) => {
-    const selectedColumn = columns.length ? columns[0] : null;
-    setCustomColumnsOpen(false);
-
-    if (!standardColumns.includes(selectedColumn)) {
-      setCustomColumn(selectedColumn);
-    }
-
-    if (selectedColumn) {
-      setSelectedChip(selectedColumn);
-    }
-  };
-
-  const handlCustomColumnsExit = () => {
-    setCustomColumnsOpen(false);
-  };
 
 
   // this will also include all the statistic_ranking columns
@@ -206,33 +193,8 @@ const StatsGraph = (
     }
   }
 
-  let minYaxisElo = 1100;
-  let maxYaxisElo = 2000;
-
-  for (const elo_id in elos) {
-    const row = elos[elo_id];
-
-    if (row.elo < minYaxisElo) {
-      minYaxisElo = row.elo;
-    }
-
-    if (row.elo > maxYaxisElo) {
-      maxYaxisElo = row.elo;
-    }
-
-    if (row.game_id && row.game_id in games) {
-      const { start_date } = games[row.game_id];
-
-      if (!(start_date in date_of_rank_x_data)) {
-        date_of_rank_x_data[start_date] = {
-          date_of_rank: start_date,
-          date_friendly: moment(start_date).format('MMM Do'),
-        };
-      }
-
-      date_of_rank_x_data[start_date].elo = row.elo;
-    }
-  }
+  const minYaxisElo = 1100;
+  const maxYaxisElo = 2000;
 
   // const rows: Data[] = Object.values(date_of_rank_x_data);
   let minYaxis: number | null = null;
@@ -240,10 +202,10 @@ const StatsGraph = (
   const rows: Data[] = [];
   for (const dor in date_of_rank_x_data) {
     const data = date_of_rank_x_data[dor];
-    const value = data[selectedChip];
-    const boxscoreValue = data[`boxscore_${selectedChip}`];
-    const leagueValue = data[`league_${selectedChip}`];
-    const confValue = data[`conf_${selectedChip}`];
+    const value = data[trendsColumn];
+    const boxscoreValue = data[`boxscore_${trendsColumn}`];
+    const leagueValue = data[`league_${trendsColumn}`];
+    const confValue = data[`conf_${trendsColumn}`];
 
     let compareMaxValue = value;
     if (!compareMaxValue || leagueValue > compareMaxValue) {
@@ -298,9 +260,9 @@ const StatsGraph = (
     maxYaxis = +(maxYaxis + buffer).toFixed(0);
   }
 
-  if (selectedChip === 'elo') {
-    minYaxis = minYaxisElo;
-    maxYaxis = maxYaxisElo;
+  if (trendsColumn === 'elo') {
+    minYaxis = minYaxis && minYaxis < minYaxisElo ? minYaxis : minYaxisElo;
+    maxYaxis = maxYaxis && maxYaxis > maxYaxisElo ? maxYaxis : maxYaxis;
   }
 
   const formattedData: Data[] = rows.sort((a: Data, b: Data) => (a.date_of_rank > b.date_of_rank ? 1 : -1));
@@ -319,8 +281,8 @@ const StatsGraph = (
 
   let chart: React.JSX.Element | null = null;
 
-  if (selectedChip in allColumns) {
-    const statistic = allColumns[selectedChip];
+  if (trendsColumn in allColumns) {
+    const statistic = allColumns[trendsColumn];
 
     const lines: LineProps[] = [
       {
@@ -378,7 +340,7 @@ const StatsGraph = (
     <>
       <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
         <div><AdditionalOptions /></div>
-        <div style = {{ textAlign: 'center' }}>
+        <div style = {{ display: 'flex', textAlign: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           {statsCompareChips}
         </div>
         <div></div>
@@ -387,7 +349,6 @@ const StatsGraph = (
         {!formattedData.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>Nothing here yet...</Typography> : ''}
         {formattedData.length ? chart : ''}
       </div>
-      <ColumnPicker key = {'team-stat-custom-column-picker'} options = {allColumns} open = {customColumnsOpen} selected = {customColumn ? [customColumn] : []} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} limit = {1} title='Select a column' />
     </>
   );
 };

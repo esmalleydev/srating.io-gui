@@ -47,6 +47,7 @@ export default async function RootLayout({ children }: {children: React.ReactNod
       </head> */}
       <StoreProvider>
         <LayoutWrapper>
+          <div id = 'menu-root'></div>
           <NewUpdateHandler />
           <KryptosClient kryptos = {kryptos} secret = {secret} />
           <MutationHandler />

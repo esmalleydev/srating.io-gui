@@ -25,7 +25,7 @@ import StatsGraph from './StatsGraph';
 import { useSearchParams } from 'next/navigation';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { Elos, Games } from '@/types/general';
+import { Games } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
 import { Boxscores as BoxscoreCFB } from '@/types/cfb';
 import { useTheme } from '@/components/hooks/useTheme';
@@ -33,7 +33,6 @@ import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 
 export interface TrendsType {
-  elos: Elos;
   games: Games;
   statistic_rankings: StatisticRankings;
   conference_statistic_rankings: ConferenceStatisticRankings;
@@ -84,7 +83,6 @@ const Client = (
   const searchParams = useSearchParams();
   const subView = searchParams?.get('subview') || 'stats';
 
-  const elos = (data && data.elos) || {};
   const games = (data && data.games) || {};
   const statistic_rankings = (data && data.statistic_rankings) || {};
   const conference_statistic_rankings = (data && data.conference_statistic_rankings) || {};
@@ -92,8 +90,6 @@ const Client = (
   const boxscores = (data && data.boxscores) || {};
 
   const [inactiveSeries, setInactiveSeries] = useState<Array<string>>([]);
-
-  console.log(statistic_rankings)
 
 
   const sorted_statistic_rankings = Object.values(statistic_rankings).sort((a, b) => {
@@ -282,7 +278,7 @@ const Client = (
   return (
     <Contents>
       {subView === 'ranking' ? getRankingGraph() : ''}
-      {subView === 'stats' ? <StatsGraph organization_id = {organization_id} division_id = {division_id} season = {season} statistic_rankings = {statistic_rankings} elos = {elos} games = {games} conference_statistic_rankings = {conference_statistic_rankings} league_statistic_rankings = {league_statistic_rankings} boxscores={boxscores} /> : ''}
+      {subView === 'stats' ? <StatsGraph organization_id = {organization_id} division_id = {division_id} season = {season} statistic_rankings = {statistic_rankings} games = {games} conference_statistic_rankings = {conference_statistic_rankings} league_statistic_rankings = {league_statistic_rankings} boxscores={boxscores} /> : ''}
     </Contents>
   );
 };

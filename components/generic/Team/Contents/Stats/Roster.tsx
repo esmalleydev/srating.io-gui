@@ -26,12 +26,10 @@ const Roster = ({ organization_id, rosterStats }) => {
   // todo for CFB, split this into position ( 3 sections QB / Passing, Rushing, Receiving, Maybe defense? (opp_ stats?))
 
   const [view, setView] = useState<string | null>('overview');
-  const [showAlert, setShowAlert] = useState(false);
 
   const { players, player_statistic_rankings } = rosterStats;
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
-  const isCFB = (Organization.getCFBID() === organization_id);
 
   useEffect(() => {
     setView(sessionStorage.getItem(`${path}.TEAM.ROSTER.VIEW`) ? sessionStorage.getItem(`${path}.TEAM.ROSTER.VIEW`) : 'overview');
@@ -41,26 +39,26 @@ const Roster = ({ organization_id, rosterStats }) => {
   const getColumns = () => {
     if (Organization.getCBBID() === organization_id) {
       if (view === 'overview') {
-        return ['name', 'games', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
+        return ['rank', 'name', 'games', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
       }
       if (view === 'offensive') {
-        return ['name', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage', 'assists_per_game', 'turnovers_per_game'];
+        return ['rank', 'name', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage', 'assists_per_game', 'turnovers_per_game'];
       }
       if (view === 'defensive') {
-        return ['name', 'offensive_rebounds_per_game', 'defensive_rebounds_per_game', 'steals_per_game', 'blocks_per_game', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage', 'fouls_per_game'];
+        return ['rank', 'name', 'offensive_rebounds_per_game', 'defensive_rebounds_per_game', 'steals_per_game', 'blocks_per_game', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage', 'fouls_per_game'];
       }
     }
 
     if (Organization.getCFBID() === organization_id) {
       // todo when this is implemented updated the rankSpanMax on the RankTable from the hardcoded 5300
       if (view === 'overview') {
-        return ['name', 'position', 'games'];
+        return ['rank', 'name', 'position', 'games'];
       }
       if (view === 'offensive') {
-        return ['name', 'position', 'games'];
+        return ['rank', 'name', 'position', 'games'];
       }
       if (view === 'defensive') {
-        return ['name', 'position', 'games'];
+        return ['rank', 'name', 'position', 'games'];
       }
     }
     return [];
@@ -69,10 +67,6 @@ const Roster = ({ organization_id, rosterStats }) => {
   const columns = TableColumns.getColumns({ organization_id, view: 'player' });
 
   const handleClick = (player_id) => {
-    if (Organization.getCFBID() === organization_id) {
-      setShowAlert(true);
-      return;
-    }
     dispatch(setLoading(true));
     startTransition(() => {
       router.push(`/${path}/player/${player_id}`);
@@ -101,7 +95,9 @@ const Roster = ({ organization_id, rosterStats }) => {
 
   if (!rows.length && players && Object.keys(players).length) {
     for (const player_id in players) {
-      rows.push(players[player_id]);
+      const player = players[player_id];
+      player.name = `${player.first_name.charAt(0)}. ${player.last_name}`;
+      rows.push(player);
     }
   }
 
@@ -142,11 +138,6 @@ const Roster = ({ organization_id, rosterStats }) => {
 
 
   const getDisplay = () => {
-    if (isCFB) {
-      return (
-        <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>Coming soon!</Typography>
-      );
-    }
     if (player_statistic_rankings === null) {
       return (
         <Paper elevation = {3} style = {{ padding: 10 }}>
@@ -176,7 +167,6 @@ const Roster = ({ organization_id, rosterStats }) => {
 
     return (
       <>
-        <Alert open = {showAlert} title = 'Coming soon' message = 'Player page still under development, come back soon!' confirm = {() => setShowAlert(false)} />
         <div style = {{ textAlign: 'center' }}>{statDisplayChips}</div>
         <div style = {{ padding: '0px 5px' }}>
           <RankTable
@@ -187,7 +177,6 @@ const Roster = ({ organization_id, rosterStats }) => {
             defaultSortOrder = 'asc'
             defaultSortOrderBy = 'minutes_per_game'
             sessionStorageKey = {`${path}.TEAM.ROSTER`}
-            numberOfStickyColumns = {1}
             getRankSpanMax = {() => 5300}
             handleRowClick={handleClick}
            />

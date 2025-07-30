@@ -61,13 +61,13 @@ if (cluster.isPrimary) {
       } catch (err) {
         console.error(`[Worker ${process.pid}] Error handling request for ${req.url}`, err);
         res.statusCode = 500;
-        res.end("internal server error");
+        res.end('internal server error');
       }
     }).listen(port, (err) => {
       if (err) {
         console.error(`[Worker ${process.pid}] Failed to start server:`, err);
         // Exit the worker process if the server fails to start
-        process.exit(1); 
+        process.exit(1);
       }
       console.log(`[Worker ${process.pid}] Server ready on http://${hostname}:${port}`);
     });

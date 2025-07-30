@@ -38,6 +38,7 @@ const Base = (
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
 
+  const organization_id_x_division_id_x_ranking_seasons = useAppSelector((state) => state.dictionaryReducer.organization_id_x_division_id_x_ranking_seasons);
   const positions = useAppSelector((state) => state.displayReducer.positions);
   const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
   const columnView = useAppSelector((state) => state.rankingReducer.columnView);
@@ -47,8 +48,11 @@ const Base = (
 
   const columns = getViewableColumns({ organization_id, view, columnView, customColumns });
 
-  // todo grab this on page load
-  let seasons = Organization.getCBBID() === organization_id ? [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011] : [2025, 2024];
+  let seasons = (
+    organization_id in organization_id_x_division_id_x_ranking_seasons &&
+    division_id in organization_id_x_division_id_x_ranking_seasons[organization_id] &&
+    organization_id_x_division_id_x_ranking_seasons[organization_id][division_id]
+  ) || [];
 
   if (view === 'transfer') {
     seasons = [2025, 2024];
@@ -148,7 +152,7 @@ const Base = (
                 <OptionPicker buttonName = {season.toString()} options = {seasonOptions} selected = {[season.toString()]} actionHandler = {handleSeason} isRadio = {true} />
               </div>
               <Typography type = {width < 500 ? 'h6' : 'h5'}>{title}</Typography>
-              {Organization.getCFBID() === organization_id && view === 'coach' ? <Typography type = 'body1' style = {{ fontStyle: 'italic', color: theme.text.secondary }}>Games since Aug '23</Typography> : ''}
+              {Organization.getCFBID() === organization_id && view === 'coach' ? <Typography type = 'body1' style = {{ fontStyle: 'italic', color: theme.text.secondary }}>Games since Aug '00</Typography> : ''}
               <LastUpdated view = {view} handleLegend={handleLegend} />
               <ColumnChipPicker view = {view} organization_id={organization_id} />
               <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '10px' }}>

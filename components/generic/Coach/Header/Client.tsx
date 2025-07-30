@@ -183,7 +183,7 @@ const Client = ({ organization_id, division_id, coach_statistic_rankings, season
           {coachRank ? <span style = {supStyle}>{coachRank} </span> : ''}
           {`${coach.first_name} ${coach.last_name}`}
           <span style = {{ fontSize: '16px', verticalAlign: 'middle', display: 'inline-block', marginLeft: 5 }}>
-            <Typography type = 'overline' style = {{ color: theme.text.secondary }}> ({coach_statistic_ranking?.wins || 0}-{coach_statistic_ranking?.losses || 0}){Organization.getCFBID() === organization_id ? '* since \'23' : ''}</Typography>
+            <Typography type = 'overline' style = {{ color: theme.text.secondary }}> ({coach_statistic_ranking?.wins || 0}-{coach_statistic_ranking?.losses || 0}){Organization.getCFBID() === organization_id ? '* since \'00' : ''}</Typography>
           </span>
         </Typography>
       </PrimaryLine>

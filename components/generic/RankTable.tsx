@@ -28,10 +28,8 @@ const RankTable = (
     defaultSortOrderBy,
     defaultEmpty = 0,
     sessionStorageKey,
-    numberOfStickyColumns = 1,
     getRankSpanMax,
     secondaryKey,
-    stickyWidths = [],
     handleRowClick,
     customSortComparator,
   }:
@@ -45,15 +43,14 @@ const RankTable = (
     defaultSortOrderBy: string,
     defaultEmpty?: string | number,
     sessionStorageKey: string,
-    numberOfStickyColumns: number,
     getRankSpanMax?: (row: unknown) => number,
     secondaryKey?: string,
-    stickyWidths?: number[],
     handleRowClick?: (id: string) => void,
     customSortComparator?: (order: string, orderBy: string, direction?: string) => (a: unknown, b: unknown) => number,
   },
 ) => {
   const breakPoint = 425;
+  let numberOfStickyColumns = 0;
   const { width } = useWindowDimensions() as Dimensions;
   const theme = useTheme();
 
@@ -79,7 +76,15 @@ const RankTable = (
     }
   }, [defaultSortOrderBy, defaultSortOrder]);
 
-
+  for (let i = 0; i < displayColumns.length; i++) {
+    if (
+      displayColumns[i] in columns &&
+      'sticky' in columns[displayColumns[i]] &&
+      columns[displayColumns[i]].sticky === true
+    ) {
+      numberOfStickyColumns++;
+    }
+  }
 
   const handleSort = (id: string) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -90,11 +95,7 @@ const RankTable = (
   };
 
   let b = 0;
-
-  // todo handle this better
-  // eslint-disable-next-line no-nested-ternary
-  const stickyCellWidth = stickyWidths.length ? stickyWidths[0] : (width <= breakPoint) ? 85 : 100;
-  const secondaryStickyCellWidth = stickyWidths.length > 1 ? stickyWidths[1] : 50;
+  const i_x_left = {};
 
   const row_containers = sortedRows.slice().map((row) => {
     let tdColor = (b % 2 === 0 ? theme.grey[800] : theme.grey[900]);
@@ -119,38 +120,55 @@ const RankTable = (
       tdStyle.fontSize = '12px';
     }
 
-    const stickyCellStyle: React.CSSProperties = {
-      position: 'sticky',
-      left: 0,
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-      minWidth: stickyCellWidth,
-      width: stickyCellWidth,
-      maxWidth: stickyCellWidth,
-    };
-
     const tableCells: React.JSX.Element[] = [];
 
     for (let i = 0; i < displayColumns.length; i++) {
+      const headCell = columns[displayColumns[i]];
       const cellStyle = { ...tdStyle };
 
-      if (i + 1 <= numberOfStickyColumns) {
-        if (i === 0) {
-          Object.assign(cellStyle, stickyCellStyle);
-        }
+      let tdWidth: number | null = null;
+      const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
 
-        if (i > 0) {
-          Object.assign(cellStyle, stickyCellStyle, {
-            minWidth: secondaryStickyCellWidth,
-            maxWidth: secondaryStickyCellWidth,
-            left: stickyCellWidth * i,
-          });
-        }
+      if (headCell.widths) {
+        tdWidth = headCell.widths.default;
 
-        if (i + 1 === numberOfStickyColumns) {
-          cellStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
+        let lastBreakpoint: number | null = null;
+        for (const bp in headCell.widths) {
+          if (
+            bp !== 'default' &&
+            width <= Number(bp) &&
+            (
+              !lastBreakpoint ||
+              lastBreakpoint > width
+            )
+          ) {
+            lastBreakpoint = Number(bp);
+            tdWidth = headCell.widths[bp];
+          }
         }
+      }
+
+      if (tdWidth) {
+        cellStyle.width = tdWidth;
+        cellStyle.minWidth = tdWidth;
+        cellStyle.maxWidth = tdWidth;
+      }
+
+      if (headCell.sticky) {
+        cellStyle.position = 'sticky';
+        cellStyle.overflow = 'hidden';
+        cellStyle.whiteSpace = 'nowrap';
+        cellStyle.textOverflow = 'ellipsis';
+        cellStyle.zIndex = 3;
+        cellStyle.left = tdLeft;
+
+        if (!(i in i_x_left)) {
+          i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
+        }
+      }
+
+      if (i + 1 === numberOfStickyColumns) {
+        cellStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
       }
 
       let secondarySpan: string | React.JSX.Element = '';
@@ -179,7 +197,7 @@ const RankTable = (
 
     return (
       <TableRow
-      className={TableRowCSS}
+        className={TableRowCSS}
         key={row[rowKey]}
         onClick={() => {
           if (handleRowClick) {
@@ -192,90 +210,46 @@ const RankTable = (
     );
   });
   return (
-    <TableContainer component={Paper}>
-      <Table size="small" aria-label="data-table" style={{ borderCollapse: 'separate' }}>
-        <TableHead>
-          <TableRow>
-            {displayColumns.map((column, i) => {
-              const headCell = columns[column];
-              const tdStyle: React.CSSProperties = {
-                padding: '4px 5px',
-                border: 0,
-                backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
-              };
-
-              if (width <= breakPoint) {
-                tdStyle.fontSize = '13px';
-              }
-
-              if (headCell.sticky) {
-                tdStyle.position = 'sticky';
-                tdStyle.zIndex = 3;
-              } else {
-                tdStyle.whiteSpace = 'nowrap';
-              }
-
-              if (i + 1 <= numberOfStickyColumns) {
-                if (i === 0) {
-                  tdStyle.left = 0;
-                  tdStyle.maxWidth = stickyCellWidth;
-                  tdStyle.minWidth = stickyCellWidth;
-                }
-
-                if (i > 0) {
-                  tdStyle.minWidth = secondaryStickyCellWidth;
-                  tdStyle.maxWidth = secondaryStickyCellWidth;
-                  tdStyle.left = stickyCellWidth;
-                }
-
-                if (i + 1 === numberOfStickyColumns) {
-                  tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
-                }
-              }
-
-              return (
-                <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
-                  <TableCell
-                    sx = {tdStyle}
-                    key={headCell.id}
-                    align={'left'}
-                    sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
-                  >
-                    <TableSortLabel
-                      active={orderBy === headCell.id}
-                      direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
-                      onClick={() => { handleSort(headCell.id); }}
-                    >
-                      {headCell.label}
-                      {orderBy === headCell.id ? (
-                        <Box component="span" sx={visuallyHidden}>
-                          {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                        </Box>
-                      ) : null}
-                    </TableSortLabel>
-                  </TableCell>
-                </Tooltip>
-              );
-            })}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {row_containers}
-        </TableBody>
-        {
-          footerRow !== null ?
-          <TableFooter>
+    <div style = {{ overflow: 'scroll' }} >
+      <TableContainer component={Paper}>
+        <Table size="small" aria-label="data-table" style={{ borderCollapse: 'separate' }}>
+          <TableHead>
             <TableRow>
               {displayColumns.map((column, i) => {
                 const headCell = columns[column];
-
-                const tdColor = theme.mode === 'light' ? theme.grey[300] : theme.grey[900];
-
                 const tdStyle: React.CSSProperties = {
                   padding: '4px 5px',
                   border: 0,
-                  backgroundColor: tdColor,
+                  backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
                 };
+
+                let tdWidth: number | null = null;
+                const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+
+                if (headCell.widths) {
+                  tdWidth = headCell.widths.default;
+
+                  let lastBreakpoint: number | null = null;
+                  for (const bp in headCell.widths) {
+                    if (
+                      bp !== 'default' &&
+                      width <= Number(bp) &&
+                      (
+                        !lastBreakpoint ||
+                        lastBreakpoint > width
+                      )
+                    ) {
+                      lastBreakpoint = Number(bp);
+                      tdWidth = headCell.widths[bp];
+                    }
+                  }
+                }
+
+                if (tdWidth) {
+                  tdStyle.width = tdWidth;
+                  tdStyle.minWidth = tdWidth;
+                  tdStyle.maxWidth = tdWidth;
+                }
 
 
                 if (width <= breakPoint) {
@@ -285,49 +259,135 @@ const RankTable = (
                 if (headCell.sticky) {
                   tdStyle.position = 'sticky';
                   tdStyle.zIndex = 3;
+                  tdStyle.left = tdLeft;
+
+                  if (!(i in i_x_left)) {
+                    i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
+                  }
                 } else {
                   tdStyle.whiteSpace = 'nowrap';
                 }
 
-                if (i + 1 <= numberOfStickyColumns) {
-                  if (i === 0) {
-                    tdStyle.left = 0;
-                    tdStyle.maxWidth = stickyCellWidth;
-                    tdStyle.minWidth = stickyCellWidth;
+                if (i + 1 === numberOfStickyColumns) {
+                  tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
+                }
+
+                return (
+                  <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
+                    <TableCell
+                      sx = {tdStyle}
+                      key={headCell.id}
+                      align={'left'}
+                      sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
+                    >
+                      <TableSortLabel
+                        active={orderBy === headCell.id}
+                        direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
+                        onClick={() => { handleSort(headCell.id); }}
+                      >
+                        {headCell.label}
+                        {orderBy === headCell.id ? (
+                          <Box component="span" sx={visuallyHidden}>
+                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                          </Box>
+                        ) : null}
+                      </TableSortLabel>
+                    </TableCell>
+                  </Tooltip>
+                );
+              })}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {row_containers}
+          </TableBody>
+          {
+            footerRow !== null ?
+            <TableFooter>
+              <TableRow>
+                {displayColumns.map((column, i) => {
+                  const headCell = columns[column];
+
+                  const tdColor = theme.mode === 'light' ? theme.grey[300] : theme.grey[900];
+
+                  const tdStyle: React.CSSProperties = {
+                    padding: '4px 5px',
+                    border: 0,
+                    backgroundColor: tdColor,
+                  };
+
+                  let tdWidth: number | null = null;
+                  const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+
+                  if (headCell.widths) {
+                    tdWidth = headCell.widths.default;
+
+                    let lastBreakpoint: number | null = null;
+                    for (const bp in headCell.widths) {
+                      if (
+                        bp !== 'default' &&
+                        width <= Number(bp) &&
+                        (
+                          !lastBreakpoint ||
+                          lastBreakpoint > width
+                        )
+                      ) {
+                        lastBreakpoint = Number(bp);
+                        tdWidth = headCell.widths[bp];
+                      }
+                    }
                   }
 
-                  if (i > 0) {
-                    tdStyle.minWidth = secondaryStickyCellWidth;
-                    tdStyle.maxWidth = secondaryStickyCellWidth;
-                    tdStyle.left = stickyCellWidth;
+                  if (tdWidth) {
+                    tdStyle.width = tdWidth;
+                    tdStyle.minWidth = tdWidth;
+                    tdStyle.maxWidth = tdWidth;
+                  }
+
+
+                  if (width <= breakPoint) {
+                    tdStyle.fontSize = '13px';
+                  }
+
+                  if (headCell.sticky) {
+                    tdStyle.position = 'sticky';
+                    tdStyle.zIndex = 3;
+                    tdStyle.left = tdLeft;
+
+                    if (!(i in i_x_left)) {
+                      i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
+                    }
+                  } else {
+                    tdStyle.whiteSpace = 'nowrap';
                   }
 
                   if (i + 1 === numberOfStickyColumns) {
                     tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
                   }
-                }
-                if (column in footerRow) {
-                  let secondarySpan: string | React.JSX.Element = '';
 
-                  if (secondaryKey && footerRow[`${column}_${secondaryKey}`]) {
-                    secondarySpan = (
-                      <span style = {{ color: theme.grey[500] }}> {footerRow[`${column}_${secondaryKey}`]}</span>
+                  if (column in footerRow) {
+                    let secondarySpan: string | React.JSX.Element = '';
+
+                    if (secondaryKey && footerRow[`${column}_${secondaryKey}`]) {
+                      secondarySpan = (
+                        <span style = {{ color: theme.grey[500] }}> {footerRow[`${column}_${secondaryKey}`]}</span>
+                      );
+                    }
+
+                    return (
+                      <TableCell key = {column} sx = {tdStyle}>{footerRow[column]}{secondarySpan}</TableCell>
                     );
                   }
 
-                  return (
-                    <TableCell key = {column} sx = {tdStyle}>{footerRow[column]}{secondarySpan}</TableCell>
-                  );
-                }
-
-                return null;
-              })}
-            </TableRow>
-          </TableFooter>
-            : ''
-        }
-      </Table>
-    </TableContainer>
+                  return null;
+                })}
+              </TableRow>
+            </TableFooter>
+              : ''
+          }
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
 

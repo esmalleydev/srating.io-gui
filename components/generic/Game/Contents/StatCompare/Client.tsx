@@ -11,7 +11,7 @@ import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
 import Organization from '@/components/helpers/Organization';
-import ColumnPicker from '@/components/generic/ColumnPicker';
+import ColumnPickerFull from '@/components/generic/ColumnPickerFull';
 import { RankingColumns } from '@/types/general';
 import { useTheme } from '@/components/hooks/useTheme';
 import Chip from '@/components/ux/container/Chip';
@@ -316,7 +316,7 @@ const Client = ({ game, statistic_rankings, elos }) => {
       </div>
       {!formattedData.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>Nothing here yet...</Typography> : ''}
       {formattedData.length ? chart : ''}
-      <ColumnPicker key = {'game-stat-custom-column-picker'} options = {allColumns} open = {customColumnsOpen} selected = {customColumn ? [customColumn] : []} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} limit = {1} title='Select a column' />
+      <ColumnPickerFull key = {'game-stat-custom-column-picker'} options = {allColumns} open = {customColumnsOpen} selected = {customColumn ? [customColumn] : []} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} limit = {1} title='Select a column' />
     </Contents>
   );
 };

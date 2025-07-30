@@ -17,6 +17,7 @@ import { PlayerStatisticRanking } from '@/types/cbb';
 import Typography from '@/components/ux/text/Typography';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
+import Objector from '@/components/utils/Objector';
 
 
 /**
@@ -144,9 +145,13 @@ const Client = ({ teams }) => {
   };
 
 
-  const headCells = TableColumns.getColumns({ organization_id: Organization.getCBBID(), view: 'player' });
+  const headCells = Objector.deepClone(TableColumns.getColumns({ organization_id: Organization.getCBBID(), view: 'player' }));
 
   headCells.team_name.sticky = true;
+  headCells.team_name.widths = {
+    default: 50,
+    425: 45,
+  };
 
   const statDisplay = [
     {
@@ -218,7 +223,6 @@ const Client = ({ teams }) => {
         defaultSortOrder = 'asc'
         defaultSortOrderBy = 'minutes_per_game'
         sessionStorageKey = {sessionStorageKey}
-        numberOfStickyColumns = {2}
         getRankSpanMax = {() => 5300} // todo update when implementing CFB compare tool
         handleRowClick={handleClick}
       />

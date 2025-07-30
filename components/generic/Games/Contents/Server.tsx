@@ -8,7 +8,7 @@ import { ClientSkeleton } from '../StatsLoader/Client';
 import StatsLoaderServer from '../StatsLoader/Server';
 
 
-const Server = async ({ games, date, organization_id, division_id }) => {
+const Server = async ({ games, date, organization_id, division_id, season }) => {
   const revalidateSeconds = 20; // cache scores for 20 seconds
 
   const scores = await useServerAPI({
@@ -34,7 +34,7 @@ const Server = async ({ games, date, organization_id, division_id }) => {
     <>
       <Client games = {games} date = {date} />
       <Suspense fallback = {<ClientSkeleton />}>
-        <StatsLoaderServer game_ids = {Object.keys(games)} organization_id = {organization_id} division_id = {division_id} />
+        <StatsLoaderServer game_ids = {Object.keys(games)} organization_id = {organization_id} division_id = {division_id} season = {season} />
       </Suspense>
     </>
   );

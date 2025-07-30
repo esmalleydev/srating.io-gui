@@ -325,8 +325,6 @@ const Client = ({ organization_id, gamelogs }) => {
         defaultSortOrder = 'desc'
         defaultSortOrderBy = 'game_details'
         sessionStorageKey = {`${path}.PLAYER.GAMELOG`}
-        numberOfStickyColumns = {1}
-        stickyWidths = {[125]}
         secondaryKey = 'secondary'
         handleRowClick={handleClick}
         customSortComparator={getComparator}

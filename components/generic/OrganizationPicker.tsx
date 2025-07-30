@@ -53,6 +53,17 @@ const OrganizationPicker = () => {
 
   const handleOrganization = (value: string) => {
     handleClose();
+
+    // clear the url params while switching... The reset functions will take info from the url params to pre fill state.
+    // So these need cleared before switching
+    const current = new URLSearchParams(window.location.search);
+    current.forEach((value, key) => {
+      current.delete(key);
+    });
+    // this kind of messes up the back button though, w/e
+    window.history.replaceState(null, '', `?${current.toString()}`);
+    // window.history.pushState(null, '', `?${current.toString()}`);
+
     dispatch(setLoading(true));
     dispatch(clearLocalStorage());
     dispatch(updateOrganizationID(value));

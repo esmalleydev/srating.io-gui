@@ -258,9 +258,7 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
         defaultSortOrderBy = {defaultSortOrderBy}
         defaultEmpty = '-'
         sessionStorageKey = {sessionStorageKey}
-        numberOfStickyColumns = {2}
         getRankSpanMax={() => numberOfTeams }
-        stickyWidths={[rankCellMaxWidth, 125]}
         handleRowClick={handleClick}
         customSortComparator={getComparator}
       />

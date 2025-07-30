@@ -19,7 +19,9 @@ type InitialState = {
   filteredRows: CBBRankingTable[] | CFBRankingTable[] | null | boolean,
 };
 
-type ActionPayload<K extends keyof InitialState> = {
+type InitialStateKeys = keyof InitialState;
+
+type ActionPayload<K extends InitialStateKeys> = {
   key: K;
   value: InitialState[K];
 };
@@ -45,10 +47,15 @@ const updateStateFromUrlParams = (state: InitialState) => {
     return;
   }
   const urlParams = new URLSearchParams(window.location.search);
+
   const hideCommitted = urlParams.get('hideCommitted');
   const hideUnderTwoMPG = urlParams.get('hideUnderTwoMPG');
   const filterCommittedConf = urlParams.get('filterCommittedConf');
   const filterOriginalConf = urlParams.get('filterOriginalConf');
+  const columnView = urlParams.get('columnView');
+  const customColumns = urlParams.getAll('customColumns');
+
+
   // const view = urlParams.get('view');
 
   // we only want to run this if on first load, if the pathname is relevant
@@ -70,6 +77,15 @@ const updateStateFromUrlParams = (state: InitialState) => {
     state.filterOriginalConf = (+filterOriginalConf === 1);
   }
 
+  if (columnView !== null) {
+    state.columnView = columnView;
+  }
+
+  if (customColumns !== null) {
+    state.customColumns = [...new Set([...initialState.customColumns, ...customColumns])];
+  }
+
+
   // if (view !== null) {
   //   state.view = view;
   // }
@@ -89,6 +105,10 @@ export const ranking = createSlice({
 
       updateStateFromUrlParams(state);
     },
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      const keyToReset = action.payload as string;
+      state[keyToReset] = initialState[keyToReset];
+    },
     setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       state[action.payload.key] = action.payload.value;
     },
@@ -98,6 +118,7 @@ export const ranking = createSlice({
 export const {
   reset,
   setDataKey,
+  resetDataKey,
 } = ranking.actions;
 export default ranking.reducer;
 

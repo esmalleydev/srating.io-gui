@@ -22,7 +22,7 @@ import { Elos, Games, TeamSeasonConferences } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
 import { useAppSelector } from '@/redux/hooks';
 import Team from '@/components/helpers/Team';
-import ColumnPicker from '@/components/generic/ColumnPicker';
+import ColumnPickerFull from '@/components/generic/ColumnPickerFull';
 import Color from '@/components/utils/Color';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
@@ -437,7 +437,7 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
         {!formattedData.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>Nothing here yet...</Typography> : ''}
         {formattedData.length ? getRankingGraph() : ''}
       </div>
-      <ColumnPicker key = {'conference-stat-custom-column-picker'} options = {allColumns} open = {customColumnsOpen} selected = {customColumn ? [customColumn] : []} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} limit = {1} title='Select a column' />
+      <ColumnPickerFull key = {'conference-stat-custom-column-picker'} options = {allColumns} open = {customColumnsOpen} selected = {customColumn ? [customColumn] : []} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} limit = {1} title='Select a column' />
     </Contents>
   );
 };

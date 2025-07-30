@@ -7,18 +7,16 @@ import Organization from '@/components/helpers/Organization';
 import CFB from '@/components/helpers/CFB';
 import RankTable from '@/components/generic/RankTable';
 import HelperTeam from '@/components/helpers/Team';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { CBBRankingTable } from '@/types/cbb';
 import { CFBRankingTable } from '@/types/cfb';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
+import Objector from '@/components/utils/Objector';
 
 
 
 const TableView = ({ organization_id, division_id, teams, season }) => {
   const sessionStorageKey = 'CBB.COMPARE.TEAM';
-  const breakPoint = 425;
-  const { width } = useWindowDimensions() as Dimensions;
   let numberOfTeams = CBB.getNumberOfD1Teams(season);
 
   if (organization_id === Organization.getCFBID()) {
@@ -39,7 +37,12 @@ const TableView = ({ organization_id, division_id, teams, season }) => {
   };
 
 
-  const headCells = TableColumns.getColumns({ organization_id: Organization.getCBBID(), view: 'team' });
+  const headCells = Objector.deepClone(TableColumns.getColumns({ organization_id: Organization.getCBBID(), view: 'team' }));
+
+  headCells.name.widths = {
+    default: 50,
+    425: 45,
+  };
 
   const statDisplay = [
     {
@@ -91,13 +94,6 @@ const TableView = ({ organization_id, division_id, teams, season }) => {
     rows.push(data);
   }
 
-  let stickyWidths = [50];
-  if (width <= breakPoint) {
-    stickyWidths = [40];
-  }
-
-  stickyWidths.push(50);
-
   return (
     <div style = {{ padding: '0px 5px 20px 5px', textAlign: 'center' }}>
       <div style = {{ display: 'flex', justifyContent: 'center' }}>
@@ -111,8 +107,6 @@ const TableView = ({ organization_id, division_id, teams, season }) => {
           defaultSortOrder = 'asc'
           defaultSortOrderBy = 'rank'
           sessionStorageKey = {sessionStorageKey}
-          stickyWidths={stickyWidths}
-          numberOfStickyColumns = {2}
           getRankSpanMax = {() => numberOfTeams}
         />
     </div>

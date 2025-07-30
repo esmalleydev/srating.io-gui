@@ -787,7 +787,6 @@ const Client = (
             defaultSortOrder = 'asc'
             defaultSortOrderBy = 'minutes_played'
             sessionStorageKey = {`${path}.TEAM.ROSTER`}
-            numberOfStickyColumns = {1}
             secondaryKey = 'secondary'
             handleRowClick={handleClick}
            />

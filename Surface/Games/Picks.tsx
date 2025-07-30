@@ -80,7 +80,7 @@ class Picks extends Games {
             : ''
         }
         <Suspense key = {selectedDate} fallback = {<StatsLoaderClientSkeleton />}>
-          <StatsLoaderServer game_ids={Object.keys(games)} organization_id={organization_id} division_id={division_id} />
+          <StatsLoaderServer game_ids={Object.keys(games)} organization_id={organization_id} division_id={division_id} season={season} />
         </Suspense>
 
         {view === 'calculator' ? <div><Calculator games = {games} date = {selectedDate} /></div> : ''}
