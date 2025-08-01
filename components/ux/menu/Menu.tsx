@@ -76,9 +76,6 @@ const Menu = (
   // Store the actual calculated position after adjustment
   const [finalPosition, setFinalPosition] = useState<{ top: number; left: number } | null>(null);
 
-  // console.log('Menu')
-  // console.log(Objector.deepClone(finalPosition))
-
   const [finalDimensions, setFinalDimensions] = useState<{ maxHeight?: number; maxWidth?: number } | null>(null);
 
   // Store the determined transform origin for CSS
@@ -86,10 +83,23 @@ const Menu = (
 
   const { width } = useWindowDimensions() as Dimensions;
 
+
   // const theme = useTheme();
+
+  const overlayStyle: React.CSSProperties = {
+    position: 'fixed',
+    display: 'none',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1300,
+    // transition: 'background-color 285ms cubic-bezier(0.4, 0, 0.2, 1)',
+  };
 
 
   const paperStyle: React.CSSProperties = {
+    display: 'none',
     position: 'absolute',
     overflowY: 'auto',
     overflowX: 'hidden',
@@ -99,13 +109,15 @@ const Menu = (
     maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
     maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
     outline: 0,
-    opacity: _isVisible ? 1 : 0,
+    // opacity: _isVisible ? 1 : 0,
     transformOrigin: `${finalTransformOrigin.x} ${finalTransformOrigin.y}`,
     transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
     scrollbarGutter: 'stable',
   };
 
-  if (finalPosition) {
+  if (finalPosition && open) {
+    paperStyle.display = 'block';
+    overlayStyle.display = 'block';
     paperStyle.top = finalPosition.top;
     paperStyle.left = finalPosition.left;
   }
@@ -127,6 +139,69 @@ const Menu = (
     menuRootRef.current = document.getElementById('menu-root');
   }, []);
 
+  useEffect(() => {
+    if (open && anchor && menuContentRef.current) {
+      const anchorRect = anchor.getBoundingClientRect();
+      const menuRect = menuContentRef.current.getBoundingClientRect();
+      let calculatedTop = anchorRect.top + getOffsetTop(anchorRect, anchorOrigin.vertical);
+      let calculatedLeft = anchorRect.left + getOffsetLeft(anchorRect, anchorOrigin.horizontal);
+
+
+      let finalMaxHeight: number | undefined = undefined;
+
+      let originX = anchorOrigin.horizontal;
+      let originY = anchorOrigin.vertical;
+
+      // --- Vertical Positioning Adjustments (Prioritize below anchor, adjust height) ---
+      const spaceBelow = window.innerHeight - calculatedTop - menuPadding;
+      const spaceAbove = calculatedTop - menuPadding;
+
+      if (calculatedTop + menuRect.height > window.innerHeight - menuPadding) {
+        // Menu overflows bottom
+        if (spaceBelow >= menuRect.height) { // If there's just enough space below without adjusting height
+          // Don't adjust maxHeight, keep default
+        } else if (spaceBelow > spaceAbove) {
+          // More space below than above, so keep it below but limit height
+          finalMaxHeight = spaceBelow;
+          // Also, ensure the menu's top aligns with the anchor's bottom for common scenarios
+          if (anchorOrigin.vertical === 'top') { // If originally attached to top of anchor
+            calculatedTop = anchorRect.bottom; // Align menu top with anchor bottom
+          }
+        } else {
+          // More space above, but we don't want to go above the anchor.
+          // Adjust `calculatedTop` upwards to bring the bottom into view, but not above anchor's top
+          calculatedTop = Math.max(menuPadding, window.innerHeight - menuRect.height - menuPadding);
+          // Ensure calculatedTop doesn't go above anchorRect.top for this specific requirement
+          calculatedTop = Math.max(calculatedTop, anchorRect.top);
+          finalMaxHeight = window.innerHeight - calculatedTop - menuPadding;
+          originY = 'bottom'; // If it's pushed up, consider transforming from bottom
+        }
+      }
+
+      // If, after all adjustments, the top is still off-screen (shouldn't happen with current logic, but as safeguard)
+      if (calculatedTop < menuPadding) {
+        calculatedTop = menuPadding;
+        finalMaxHeight = window.innerHeight - calculatedTop - menuPadding;
+        originY = 'top';
+      }
+
+      // --- Horizontal Positioning Adjustments (Same as before) ---
+      if (calculatedLeft + menuRect.width > window.innerWidth - menuPadding) {
+        calculatedLeft = window.innerWidth - menuRect.width - menuPadding;
+        originX = 'right'; // If pushed to left, origin from right
+      }
+      if (calculatedLeft < menuPadding) {
+        calculatedLeft = menuPadding;
+        originX = 'left'; // If pushed to right, origin from left
+      }
+
+      setFinalPosition({ top: calculatedTop, left: calculatedLeft });
+      // setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36 });
+      // setFinalTransformOrigin({ x: String(originX), y: String(originY) });
+    }
+  }, [open, anchor, menuRootRef, menuContentRef.current, width]);
+
+  /*
   // Effect to manage shouldRender based on 'open' prop
   useEffect(() => {
     if (open) {
@@ -145,7 +220,7 @@ const Menu = (
       setShouldMount(false);
       setFinalPosition(null); // Clear position after unmount
       setFinalDimensions(null); // Clear dimensions after unmount
-    }, transitionDurationMS + 15);
+    }, transitionDurationMS);
     return () => clearTimeout(timer); // Cleanup timer if 'open' changes again
   }, [open]);
 
@@ -222,6 +297,7 @@ const Menu = (
 
     return undefined;
   }, [open, _shouldMount, anchor, anchorOrigin.vertical, anchorOrigin.horizontal]);
+  */
 
   // Effect to handle clicks outside the menu content to close it
   useEffect(() => {
@@ -308,19 +384,16 @@ const Menu = (
   // });
 
 
-  if (!_shouldMount || !menuRootRef.current) {
+  // if (!_shouldMount || !menuRootRef.current) {
+  //   return null;
+  // }
+
+
+  if (
+    !menuRootRef.current
+  ) {
     return null;
   }
-
-  const overlayStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1300,
-    // transition: 'background-color 285ms cubic-bezier(0.4, 0, 0.2, 1)',
-  };
 
   return ReactDOM.createPortal(
     <div className={Style.getStyleClassName(overlayStyle)}>
