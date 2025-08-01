@@ -8,6 +8,14 @@ body {
   height: 100%;
 }
 
+@supports (-moz-appearance: none) {
+  /* Put your Firefox-specific CSS here */
+  body {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(121, 121, 121, 0.25) transparent;
+  }
+}
+
 input, textarea, button {
   font-family: inherit;
 }

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import Style from '@/components/utils/Style';
 import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import Objector from '@/components/utils/Objector';
 // import Style from '@/components/utils/Style';
 
 const getOffsetTop = (rect, vertical) => {
@@ -41,7 +42,7 @@ type anchorOrigin = {
   horizontal: string | number;
 }
 
-const transitionDurationMS = 100;
+const transitionDurationMS = 0;
 const menuPadding = 16;
 
 const Menu = (
@@ -75,6 +76,9 @@ const Menu = (
   // Store the actual calculated position after adjustment
   const [finalPosition, setFinalPosition] = useState<{ top: number; left: number } | null>(null);
 
+  // console.log('Menu')
+  // console.log(Objector.deepClone(finalPosition))
+
   const [finalDimensions, setFinalDimensions] = useState<{ maxHeight?: number; maxWidth?: number } | null>(null);
 
   // Store the determined transform origin for CSS
@@ -91,12 +95,14 @@ const Menu = (
     overflowX: 'hidden',
     minWidth: 16,
     minHeight: 16,
+    width: 'auto',
     maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
     maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
     outline: 0,
     opacity: _isVisible ? 1 : 0,
     transformOrigin: `${finalTransformOrigin.x} ${finalTransformOrigin.y}`,
     transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    scrollbarGutter: 'stable',
   };
 
   if (finalPosition) {
