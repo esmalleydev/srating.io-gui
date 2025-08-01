@@ -5,12 +5,14 @@ import { updateConferences } from '@/redux/features/display-slice';
 import OptionPicker, { optionType } from './OptionPicker';
 import { getStore } from '@/app/StoreProvider';
 import { useEffect } from 'react';
+import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 
 const ConferencePicker = () => {
   // console.time('ConferencePicker')
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.displayReducer.conferences);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
+  const { width } = useWindowDimensions() as Dimensions;
 
 
   // useEffect(() => {
@@ -135,7 +137,7 @@ const ConferencePicker = () => {
 
   return (
     <div>
-      <OptionPicker buttonName = {'Conferences'} options = {conferenceOptions} selected = {selected.length ? selected : [null]} actionHandler = {handleClick} isRadio = {false} autoClose={true} />
+      <OptionPicker buttonName = {width <= 425 ? 'Conf.' : 'Conferences'} options = {conferenceOptions} selected = {selected.length ? selected : [null]} actionHandler = {handleClick} isRadio = {false} autoClose={true} />
     </div>
   );
 };

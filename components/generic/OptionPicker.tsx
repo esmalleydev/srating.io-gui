@@ -4,17 +4,16 @@ import { useState } from 'react';
 
 import {
   Button,
-  ListItemIcon,
-  ListItemText,
-  // Menu,
-  MenuItem,
-  MenuList,
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import Menu from '../ux/Menu';
+import Menu from '@/components/ux/menu/Menu';
+import MenuList from '@/components/ux/menu/MenuList';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
 
 export type optionType = {
   value: string | null;
@@ -106,9 +105,7 @@ const OptionPicker = (
         </Button>
       }
       <Menu
-        // id="option-menu"
         anchor={anchorEl}
-        // anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
       >
@@ -117,14 +114,14 @@ const OptionPicker = (
               const isSelected = selected.includes(option.value);
               return (
                 <MenuItem disabled = {option.disabled} key = {index} onClick = {() => handleAction(option.value)}>
-                  <ListItemIcon>
+                  <MenuListIcon>
                     {
                       isSelected ?
                       <CheckIcon color = 'success' fontSize='small' /> :
                         uncheckedIcon
                     }
-                  </ListItemIcon>
-                  {option.sublabel ? <ListItemText primary = {option.label} secondary = {option.sublabel} /> : <ListItemText>{option.label}</ListItemText>}
+                  </MenuListIcon>
+                  <MenuListText primary={option.label} secondary={option?.sublabel} />
                 </MenuItem>
               );
             })}

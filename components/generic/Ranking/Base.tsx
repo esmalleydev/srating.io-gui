@@ -146,7 +146,7 @@ const Base = (
       <FloatingButtons />
       {
         !tableFullscreen ?
-            <div style = {{ padding: '5px 20px 0px 20px' }}>
+            <div style = {{ padding: '5px 10px 0px 10px' }}>
               <div style = {{ display: 'flex', justifyContent: 'right', flexWrap: 'wrap' }}>
                 <OptionPicker buttonName = {`${view} rankings`} options = {rankViewOptions} selected = {[view]} actionHandler = {handleRankView} isRadio = {true} />
                 <OptionPicker buttonName = {season.toString()} options = {seasonOptions} selected = {[season.toString()]} actionHandler = {handleSeason} isRadio = {true} />

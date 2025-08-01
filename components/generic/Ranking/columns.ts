@@ -69,7 +69,7 @@ export const getViewableColumns = ({ organization_id, view, columnView, customCo
         return ['rank', 'name', 'rank_delta_combo', 'team_name', 'passing_rating_college'];
       }
       if (view === 'conference') {
-        return ['rank', 'name', 'rank_delta_combo', 'elo', 'record', 'passing_rating_college', 'points', 'yards_per_play', 'points_per_play'];
+        return ['rank', 'name', 'rank_delta_combo', 'elo', 'passing_rating_college', 'points', 'yards_per_play', 'points_per_play'];
       }
       if (view === 'coach') {
         return [

@@ -373,7 +373,7 @@ class TableColumns {
         tooltip: 'Win/Loss',
         sort: 'higher',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team'],
+        views: ['team', 'conference'],
         graphable: false,
       },
       conf_record: {

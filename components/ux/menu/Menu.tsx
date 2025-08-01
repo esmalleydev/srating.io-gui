@@ -1,11 +1,11 @@
 'use client';
 
 // import { useTheme } from '@/components/hooks/useTheme';
-import Paper from './container/Paper';
 import ReactDOM from 'react-dom';
-import Style from '../utils/Style';
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
+import Style from '@/components/utils/Style';
+import Paper from '@/components/ux/container/Paper';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 // import Style from '@/components/utils/Style';
 
 const getOffsetTop = (rect, vertical) => {
@@ -41,7 +41,7 @@ type anchorOrigin = {
   horizontal: string | number;
 }
 
-const transitionDurationMS = 285;
+const transitionDurationMS = 100;
 const menuPadding = 16;
 
 const Menu = (
@@ -201,7 +201,7 @@ const Menu = (
 
 
       setFinalPosition({ top: calculatedTop, left: calculatedLeft });
-      setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width });
+      setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36 });
       setFinalTransformOrigin({ x: String(originX), y: String(originY) });
 
       // Now that position is calculated, start fade-in
@@ -237,7 +237,6 @@ const Menu = (
   // Also handle Escape key press to close the menu
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
-      console.log(event)
       if (event.key === 'Escape') {
         onClose();
       }
