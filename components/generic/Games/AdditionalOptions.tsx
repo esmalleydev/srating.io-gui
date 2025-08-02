@@ -8,13 +8,16 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 
 import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 
 import RankPicker from '@/components/generic/RankPicker';
-import { Divider, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { Divider, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setCardView, setOdds } from '@/redux/features/display-slice';
+import Menu from '@/components/ux/menu/Menu';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuList from '@/components/ux/menu/MenuList';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -42,7 +45,7 @@ const AdditionalOptions = () => {
         setRankPickerOpen(true);
         handleClose();
       }}>
-        <ListItemText>Rank display</ListItemText>
+        <MenuListText primary='Rank display' />
       </MenuItem>,
     );
 
@@ -52,10 +55,10 @@ const AdditionalOptions = () => {
       <MenuItem key='odds-display' onClick={() => {
         dispatch(setOdds(hideOdds === 1 ? 0 : 1));
       }}>
-         <ListItemIcon>
+         <MenuListIcon>
            {hideOdds ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-         </ListItemIcon>
-        <ListItemText>Hide odds</ListItemText>
+         </MenuListIcon>
+         <MenuListText primary='Hide odds' />
       </MenuItem>,
     );
 
@@ -63,10 +66,10 @@ const AdditionalOptions = () => {
       <MenuItem key='card-display' onClick={() => {
         dispatch(setCardView(cardsView === 'large' ? 'compact' : 'large'));
       }}>
-         <ListItemIcon>
+         <MenuListIcon>
            {cardsView === 'large' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />}
-         </ListItemIcon>
-        <ListItemText>View card mode</ListItemText>
+         </MenuListIcon>
+         <MenuListText primary='View card mode' />
       </MenuItem>,
     );
 
@@ -88,12 +91,13 @@ const AdditionalOptions = () => {
         </IconButton>
       </Tooltip>
       <Menu
-        id="long-menu"
-        anchorEl={anchor}
+        anchor={anchor}
         open={open}
         onClose={handleClose}
       >
-        {getMenuItems()}
+        <MenuList>
+          {getMenuItems()}
+        </MenuList>
       </Menu>
       <RankPicker open = {rankPickerOpen} openHandler = {() => { setRankPickerOpen(true); }} closeHandler = {() => { setRankPickerOpen(false); }} />
     </div>

@@ -4,12 +4,17 @@ import { useState } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import { Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuList } from '@mui/material';
+import { Button } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateStatuses } from '@/redux/features/display-slice';
+import Menu from '@/components/ux/menu/Menu';
+import MenuList from '@/components/ux/menu/MenuList';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
 
 const StatusPicker = () => {
   const dispatch = useAppDispatch();
@@ -63,8 +68,7 @@ const StatusPicker = () => {
         {title}
       </Button>
       <Menu
-        id="status-menu"
-        anchorEl={anchorEl}
+        anchor={anchorEl}
         open={open}
         onClose={handleClose}
       >
@@ -73,10 +77,10 @@ const StatusPicker = () => {
               const isSelected = selected.indexOf(statusOption.value) > -1;
               return (
                 <MenuItem key = {index} onClick = {() => handleStatuses(statusOption.value)}>
-                  <ListItemIcon>
+                  <MenuListIcon>
                     {isSelected ? <CheckIcon color = 'success' fontSize='small' /> : <CheckBoxOutlineBlankIcon color = 'primary' fontSize='small' />}
-                  </ListItemIcon>
-                  <ListItemText>{statusOption.label}</ListItemText>
+                  </MenuListIcon>
+                  <MenuListText primary={statusOption.label} />
                 </MenuItem>
               );
             })}

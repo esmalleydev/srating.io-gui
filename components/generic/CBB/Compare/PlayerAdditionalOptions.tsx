@@ -1,13 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import { IconButton } from '@mui/material';
 import TripleDotsIcon from '@mui/icons-material/MoreVert';
 import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setHideLowerBench } from '@/redux/features/compare-slice';
+import Menu from '@/components/ux/menu/Menu';
+import MenuList from '@/components/ux/menu/MenuList';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
 
 const PlayerAdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -37,20 +42,21 @@ const PlayerAdditionalOptions = () => {
           <TripleDotsIcon />
         </IconButton>
         <Menu
-          id="long-menu"
-          anchorEl={anchor}
+          anchor={anchor}
           open={open}
           onClose={handleClose}
         >
-          <MenuItem key='hide-lower-bench-display' onClick={() => {
-            dispatch(setHideLowerBench(!hideLowerBench));
-            handleClose();
-          }}>
-            <ListItemIcon>
-              {hideLowerBench ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-            </ListItemIcon>
-            <ListItemText>Hide under 3 MPG</ListItemText>
-          </MenuItem>
+          <MenuList>
+            <MenuItem key='hide-lower-bench-display' onClick={() => {
+              dispatch(setHideLowerBench(!hideLowerBench));
+              handleClose();
+            }}>
+              <MenuListIcon>
+                {hideLowerBench ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
+              </MenuListIcon>
+              <MenuListText primary='Hide under 3 MPG' />
+            </MenuItem>
+          </MenuList>
         </Menu>
     </div>
   );

@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import { Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, useTheme } from '@mui/material';
+import { Button } from '@mui/material';
 // import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -16,10 +16,17 @@ import { usePathname, useRouter } from 'next/navigation';
 import { reset as resetGames } from '@/redux/features/games-slice';
 import { reset as resetRanking } from '@/redux/features/ranking-slice';
 import Organization from '@/components/helpers/Organization';
+import { useTheme } from '@/components/hooks/useTheme';
+import Menu from '@/components/ux/menu/Menu';
+import MenuList from '@/components/ux/menu/MenuList';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const selected = useAppSelector((state) => state.organizationReducer.organization_id);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -53,6 +60,10 @@ const OrganizationPicker = () => {
 
   const handleOrganization = (value: string) => {
     handleClose();
+
+    if (value === organization_id) {
+      return;
+    }
 
     // clear the url params while switching... The reset functions will take info from the url params to pre fill state.
     // So these need cleared before switching
@@ -108,13 +119,12 @@ const OrganizationPicker = () => {
         disableElevation
         onClick={handleOpen}
         endIcon={<KeyboardArrowDownIcon />}
-        sx={{ color: (theme.palette.mode === 'light' ? '#fff' : theme.palette.primary.main) }}
+        sx={{ color: (theme.mode === 'light' ? '#fff' : theme.primary.main) }}
       >
         {title}
       </Button>
       <Menu
-        id="organization-menu"
-        anchorEl={anchorEl}
+        anchor={anchorEl}
         open={open}
         onClose={handleClose}
       >
@@ -123,10 +133,10 @@ const OrganizationPicker = () => {
             const isSelected = selected.indexOf(statusOption.value) > -1;
             return (
               <MenuItem key = {index} onClick = {() => handleOrganization(statusOption.value)}>
-                <ListItemIcon>
+                <MenuListIcon>
                   {isSelected ? <CheckCircleIcon color = 'success' fontSize='small' /> : <RadioButtonUncheckedIcon color = 'primary' fontSize='small' />}
-                </ListItemIcon>
-                <ListItemText>{statusOption.label}</ListItemText>
+                </MenuListIcon>
+                <MenuListText primary={statusOption.label} />
               </MenuItem>
             );
           })}

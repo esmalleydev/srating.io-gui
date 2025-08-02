@@ -70,6 +70,8 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ generated, organization_id, division_id, season, view }) => {
+  // console.time('Ranking.Contents.Client')
+  // console.time('Ranking.Contents.Client.logic')
   interface ItemType {
     player_id?: number;
     team_id?: number;
@@ -90,6 +92,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     item: ItemType;
   }
 
+  // console.time('headers')
   const router = useRouter();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
@@ -104,18 +107,24 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const orderBy = useAppSelector((state) => state.rankingReducer.orderBy);
   const tableScrollTop = useAppSelector((state) => state.rankingReducer.tableScrollTop);
   const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
+
+  // console.time('getRows')
   const allRows = getRows({ view });
+  // console.timeEnd('getRows')
+
   const filteredRows = useAppSelector((state) => state.rankingReducer.filteredRows);
   const columnView = useAppSelector((state) => state.rankingReducer.columnView);
   const customColumns = useAppSelector((state) => state.rankingReducer.customColumns);
-
   const tableColumns = getViewableColumns({ organization_id, view, columnView, customColumns });
   const confChipsLength = getConferenceChips().length;
-
   const currentPath = Organization.getPath({ organizations, organization_id });
-
   const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
   const tableRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
+  // console.timeEnd('headers')
+
+  // useEffect(() => {
+  //   console.timeEnd('Ranking.Contents.Client')
+  // })
 
 
   const scrollerRef = React.useCallback(
@@ -138,6 +147,17 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   }, [tableHorizontalScroll, order, orderBy]);
 
   const headCells = TableColumns.getColumns({ organization_id, view });
+
+  let numberOfStickyColumns = 0;
+  for (let i = 0; i < tableColumns.length; i++) {
+    if (
+      tableColumns[i] in headCells &&
+      'sticky' in headCells[tableColumns[i]] &&
+      headCells[tableColumns[i]].sticky === true
+    ) {
+      numberOfStickyColumns++;
+    }
+  }
 
   if (data === null) {
     return <ClientSkeleton />;
@@ -280,7 +300,9 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   let maxDelta = 1;
 
   if (rows && rows.length) {
+    // console.time('sorter')
     rows.sort(getComparator(order, orderBy));
+    // console.timeEnd('sorter')
 
     for (let i = 0; i < rows.length; i++) {
       let delta = 0;
@@ -363,11 +385,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     },
   };
 
-  let rankCellMaxWidth = 50;
-  if (width <= breakPoint) {
-    rankCellMaxWidth = 35;
-  }
-
+  const i_x_left = {};
 
   let confHeightModifier = 0;
   if (confChipsLength) {
@@ -391,47 +409,74 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const getTableHeader = () => {
     return (
       <TableRow>
-        {tableColumns.map((column) => {
+        {tableColumns.map((column, i) => {
           const headCell = headCells[column];
           const tdStyle: React.CSSProperties = {
             padding: '4px 5px',
             border: 0,
             backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
+            whiteSpace: 'nowrap',
           };
 
-          if (width <= breakPoint) {
-            tdStyle.fontSize = '13px';
+          let tdWidth: number | null = null;
+          const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+
+          if (headCell.widths) {
+            tdWidth = headCell.widths.default;
+
+            let lastBreakpoint: number | null = null;
+            for (const bp in headCell.widths) {
+              if (
+                bp !== 'default' &&
+                width <= Number(bp) &&
+                (
+                  !lastBreakpoint ||
+                  lastBreakpoint > width
+                )
+              ) {
+                lastBreakpoint = Number(bp);
+                tdWidth = headCell.widths[bp];
+              }
+            }
+          }
+
+          if (tdWidth) {
+            tdStyle.width = tdWidth;
+            tdStyle.minWidth = tdWidth;
+            tdStyle.maxWidth = tdWidth;
           }
 
           if (headCell.sticky) {
             tdStyle.position = 'sticky';
-            tdStyle.left = (headCell.id === 'name' ? rankCellMaxWidth : 0);
             tdStyle.zIndex = 3;
-          } else {
-            tdStyle.whiteSpace = 'nowrap';
+            tdStyle.left = tdLeft;
+
+            if (!(i in i_x_left)) {
+              i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
+            }
+          }
+
+          if (i + 1 === numberOfStickyColumns) {
+            tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
+          }
+
+          if (width <= breakPoint) {
+            tdStyle.fontSize = '13px';
           }
 
           if (headCell.id === 'conf_record' || headCell.id === 'record') {
             tdStyle.minWidth = 41;
           }
 
-          if (headCell.id === 'name') {
-            tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
-          }
-
           let showSortArrow = true;
           if (width <= breakPoint && (headCell.id === 'rank' || headCell.id === 'record' || headCell.id === 'conf_record' || headCell.id === 'rank_delta_combo')) {
             showSortArrow = false;
-            if (headCell.id === 'rank') {
-              tdStyle.maxWidth = rankCellMaxWidth;
-              tdStyle.minWidth = rankCellMaxWidth;
-            }
           }
 
           return (
             <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
               <TableCell
-                sx = {tdStyle}
+                style = {tdStyle}
                 key={headCell.id}
                 align={'left'}
                 sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
@@ -459,6 +504,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
 
 
   const getTableContents = (index, row) => {
+    // console.time('getTableContents')
     const columns = tableColumns;
 
     let bgColor = (index % 2 === 0 ? theme.grey[800] : theme.grey[900]);
@@ -466,74 +512,74 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
       bgColor = index % 2 === 0 ? theme.grey[200] : theme.grey[300];
     }
 
-    const tdStyle: React.CSSProperties = {
-      padding: '4px 5px',
-      backgroundColor: bgColor,
-      border: 0,
-      borderTop: 0,
-      borderLeft: 0,
-      borderBottom: 0,
-    };
-
-    if (width <= breakPoint) {
-      tdStyle.fontSize = '12px';
-    }
-
-
-    const teamCellStyle: React.CSSProperties = {
-      position: 'sticky',
-      left: rankCellMaxWidth,
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-      minWidth: 125,
-      width: 125,
-      maxWidth: 125,
-      borderRight: `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`,
-    };
-
-    const conferenceCellStyle: React.CSSProperties = {
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-      maxWidth: 100,
-    };
-
-    const rankCellStyle: React.CSSProperties = {
-      textAlign: 'center',
-      position: 'sticky',
-      left: 0,
-      width: rankCellMaxWidth,
-      maxWidth: rankCellMaxWidth,
-    };
-
-    if (width <= breakPoint) {
-      teamCellStyle.minWidth = 85;
-      teamCellStyle.width = 85;
-      teamCellStyle.maxWidth = 85;
-    }
 
     const tableCells: React.JSX.Element[] = [];
 
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i] === 'team_name') {
-        tableCells.push(<TableCell title = {row[columns[i]]} key = {i} sx = {({
-          ...tdStyle,
-          minWidth: 85,
-          // width: 85,
-          maxWidth: 85,
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-        })}>{row[columns[i]]}</TableCell>);
-      } else if (columns[i] === 'name') {
-        // tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...teamCellStyle })}><div className = {Style.getStyleClassName(teamCellStyle)}>{row[columns[i]]}</div></TableCell>);
-        tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...teamCellStyle })}>{row[columns[i]]}</TableCell>);
-      } else if (columns[i] === 'rank') {
-        tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...rankCellStyle })}>{row[columns[i]]}</TableCell>);
-      } else if (columns[i] === 'conf') {
-        tableCells.push(<TableCell key = {i} sx = {({ ...tdStyle, ...conferenceCellStyle })}>{row[columns[i]]}</TableCell>);
-      } else if (columns[i].includes('_delta_')) {
+      const headCell = headCells[columns[i]];
+
+      const tdStyle: React.CSSProperties = {
+        padding: '4px 5px',
+        backgroundColor: bgColor,
+        border: 0,
+        borderTop: 0,
+        borderLeft: 0,
+        borderBottom: 0,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      };
+
+      if (headCell.id === 'rank') {
+        tdStyle.textAlign = 'center';
+      }
+
+      if (width <= breakPoint) {
+        tdStyle.fontSize = '12px';
+      }
+
+      let tdWidth: number | null = null;
+      const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+
+      if (headCell.widths) {
+        tdWidth = headCell.widths.default;
+
+        let lastBreakpoint: number | null = null;
+        for (const bp in headCell.widths) {
+          if (
+            bp !== 'default' &&
+            width <= Number(bp) &&
+            (
+              !lastBreakpoint ||
+              lastBreakpoint > width
+            )
+          ) {
+            lastBreakpoint = Number(bp);
+            tdWidth = headCell.widths[bp];
+          }
+        }
+      }
+
+      if (tdWidth) {
+        tdStyle.width = tdWidth;
+        tdStyle.minWidth = tdWidth;
+        tdStyle.maxWidth = tdWidth;
+      }
+
+      if (headCell.sticky) {
+        tdStyle.position = 'sticky';
+        tdStyle.left = tdLeft;
+
+        if (!(i in i_x_left)) {
+          i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
+        }
+      }
+
+      if (i + 1 === numberOfStickyColumns) {
+        tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
+      }
+
+      if (columns[i].includes('_delta_')) {
         const value = row[columns[i]] !== null ? row[columns[i]] : '-';
 
         if (columns[i] === 'rank_delta_combo') {
@@ -593,7 +639,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
         tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {(view !== 'player')} max = {dataLength} /> : ''}</TableCell>);
       }
     }
-
+    // console.timeEnd('getTableContents')
     return (
       <React.Fragment>
         {tableCells}
@@ -601,13 +647,18 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     );
   };
 
-  return (
+  // console.time('contents')
+  const foo = (
     <Contents>
       <div style = {{ padding: width < 600 ? `${tableFullscreen ? '10px' : '0px'} 10px 0px 10px` : `${tableFullscreen ? '10px' : '0px'} 20px 0px 20px` }}>
         {rows.length ? <TableVirtuoso scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography type='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>}
       </div>
     </Contents>
   );
+  // console.timeEnd('contents')
+
+  // console.timeEnd('Ranking.Contents.Client.logic')
+  return foo;
 };
 
 export { Client, ClientSkeleton };

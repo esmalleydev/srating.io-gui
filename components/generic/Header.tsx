@@ -14,8 +14,6 @@ import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
 
 // Icons
 import MenuIcon from '@mui/icons-material/Menu';
@@ -34,12 +32,17 @@ import Search from './Search';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSession, setValidSession } from '../../redux/features/user-slice';
-import { Divider, ListItemIcon, Tooltip } from '@mui/material';
+import { Divider, Tooltip } from '@mui/material';
 import { clear } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/display-slice';
 import OrganizationPicker from './OrganizationPicker';
 import Organization from '../helpers/Organization';
+import Menu from '@/components/ux/menu/Menu';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
+import MenuList from '@/components/ux/menu/MenuList';
 
 
 // todo hook up settings with router
@@ -198,25 +201,26 @@ const Header = () => {
                       <IconButton onClick={handleMenu} color="inherit">
                         <AccountCircle />
                       </IconButton>
-                      {/* <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                          vertical: 'top',
-                          horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'right',
-                        }}
+                      <Menu
+                        anchor={anchorEl}
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                       >
-                        <MenuItem onClick={handleAccount}>My account</MenuItem>
-                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                      </Menu> */}
-                       <Menu
+                        <MenuList>
+                          <MenuItem onClick={handleAccount}>
+                            <MenuListIcon><AccountCircleIcon fontSize="small" /></MenuListIcon>
+                            <MenuListText primary='My account' />
+                          </MenuItem>
+                          <Divider />
+                          <MenuItem onClick={handleLogout}>
+                            <MenuListIcon>
+                              <Logout fontSize="small" />
+                            </MenuListIcon>
+                            <MenuListText primary='Logout' />
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                      {/* <Menu
                         anchorEl={anchorEl}
                         id="account-menu"
                         open={Boolean(anchorEl)}
@@ -258,19 +262,13 @@ const Header = () => {
                           My account
                         </MenuItem>
                         <Divider />
-                        {/* <MenuItem onClick={handleClose}>
-                          <ListItemIcon>
-                            <Settings fontSize="small" />
-                          </ListItemIcon>
-                          Settings
-                        </MenuItem> */}
                         <MenuItem onClick={handleLogout}>
                           <ListItemIcon>
                             <Logout fontSize="small" />
                           </ListItemIcon>
                           Logout
                         </MenuItem>
-                      </Menu>
+                      </Menu> */}
                     </div>
                     :
                     <div>

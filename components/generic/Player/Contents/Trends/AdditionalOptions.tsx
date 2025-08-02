@@ -8,12 +8,15 @@ import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 
-import { ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/player-slice';
+import Menu from '@/components/ux/menu/Menu';
+import MenuList from '@/components/ux/menu/MenuList';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -44,10 +47,10 @@ const AdditionalOptions = () => {
       <MenuItem key='show-boxscore-line' onClick={() => {
         handleTrendsBoxscore();
       }}>
-        <ListItemIcon>
+        <MenuListIcon>
           {trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-        </ListItemIcon>
-        <ListItemText>Show boxscore data</ListItemText>
+        </MenuListIcon>
+        <MenuListText primary='Show boxscore data' />
       </MenuItem>,
     );
 
@@ -69,12 +72,13 @@ const AdditionalOptions = () => {
         </IconButton>
       </Tooltip>
       <Menu
-        id="long-menu"
-        anchorEl={anchor}
+        anchor={anchor}
         open={open}
         onClose={handleClose}
       >
-        {getMenuItems()}
+        <MenuList>
+          {getMenuItems()}
+        </MenuList>
       </Menu>
     </div>
   );

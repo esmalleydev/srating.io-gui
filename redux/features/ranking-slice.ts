@@ -17,6 +17,7 @@ type InitialState = {
   customColumns: Array<string>,
   data: object | null,
   filteredRows: CBBRankingTable[] | CFBRankingTable[] | null | boolean,
+  searchValue: string,
 };
 
 type InitialStateKeys = keyof InitialState;
@@ -40,6 +41,7 @@ const initialState = {
   customColumns: ['rank', 'name'],
   data: null,
   filteredRows: null,
+  searchValue: '',
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {

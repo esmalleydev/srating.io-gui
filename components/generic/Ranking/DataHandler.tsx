@@ -5,7 +5,8 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { CBBRankingTable } from '@/types/cbb';
 import { CFBRankingTable } from '@/types/cfb';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import Objector from '@/components/utils/Objector';
 
 const getData = ({ view }) => {
   // console.time('getData')
@@ -26,9 +27,10 @@ const getData = ({ view }) => {
 
   // you have to pass the functions the same arguments or on re-render it complains about hooks being different (re-rendering from CFB to CBB organization)
   if (isCBB) {
-    return formatCBBData(args);
     // console.time('formatCBBData')
+    const d = formatCBBData(args);
     // console.timeEnd('formatCBBData')
+    return d;
   }
   if (isCFB) {
     return formatCFBData(args);
@@ -44,16 +46,24 @@ const formatCBBData = (args) => {
   const rows: CBBRankingTable[] = [];
   let lastUpdated: string | null = null;
 
+  const selectedConferencesSet = new Set(selectedConferences);
+  const positionsSet = new Set(positions);
+
+  // console.time('loop formatCBBData')
   for (const id in data) {
     // Fixes - TypeError: Cannot add property name, object is not extensible
-    const row = { ...data[id] };
+    // console.time('spread')
+    // const row = { ...data[id] };
+    const row = Objector.deepClone(data[id]);
+    // const row = Object.assign({}, data[id]);
+    // console.timeEnd('spread')
 
     row.rank_delta_combo = `${row.rank_delta_one || '-'}/${row.rank_delta_seven || '-'}`;
 
     if (
       view !== 'transfer' &&
       selectedConferences.length &&
-      selectedConferences.indexOf(row.conference_id) === -1
+      !selectedConferencesSet.has(row.conference_id)
     ) {
       continue;
     }
@@ -112,6 +122,7 @@ const formatCBBData = (args) => {
         lastUpdated = row.updated_at;
       }
 
+      // console.time('player')
       row.name = row.player ? (`${row.player.first_name.charAt(0)}. ${row.player.last_name}`) : null;
       row.number = row.player ? row.player.number : null;
       row.position = row.player ? row.player.position : null;
@@ -120,15 +131,18 @@ const formatCBBData = (args) => {
       if (row.conference_id && row.conference_id in conferences) {
         row.conference_code = conferences[row.conference_id].code;
       }
+      // console.timeEnd('player')
 
       if (
         positions.length &&
-        positions.indexOf(row.position) === -1
+        !positionsSet.has(row.position)
       ) {
         continue;
       }
 
+      // console.time('push')
       rows.push(row);
+      // console.timeEnd('push')
     } else if (view === 'conference') {
       if (
         !lastUpdated ||
@@ -152,6 +166,7 @@ const formatCBBData = (args) => {
       rows.push(row);
     }
   }
+  // console.timeEnd('loop formatCBBData')
 
   return { rows, lastUpdated };
 };
@@ -163,7 +178,8 @@ const formatCFBData = (args) => {
 
   for (const id in data) {
     // Fixes - TypeError: Cannot add property name, object is not extensible
-    const row = { ...data[id] };
+    // const row = { ...data[id] };
+    const row = Objector.deepClone(data[id]);
 
     row.rank_delta_combo = `${row.rank_delta_one || '-'}/${row.rank_delta_seven || '-'}`;
 

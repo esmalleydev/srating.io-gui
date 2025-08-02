@@ -24,7 +24,7 @@ const MenuItem = (
     outline: 0,
     margin: 0,
     borderRadius: 0,
-    padding: '0px 8px',
+    padding: '0px 24px 0px 8px',
     cursor: disabled ? 'default' : 'pointer',
     color: 'inherit',
     display: 'flex',

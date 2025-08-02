@@ -6,8 +6,6 @@ import { useEffect, useRef, useState } from 'react';
 import Style from '@/components/utils/Style';
 import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import Objector from '@/components/utils/Objector';
-// import Style from '@/components/utils/Style';
 
 const getOffsetTop = (rect, vertical) => {
   let offset = 36;
@@ -69,22 +67,17 @@ const Menu = (
   const menuRootRef = useRef<HTMLElement | null>(null);
   const menuContentRef = useRef<HTMLDivElement | null>(null);
 
-  // State to control if the component is mounted in the DOM
-  const [_shouldMount, setShouldMount] = useState(open);
-  // State to control the CSS opacity (for transitions)
-  const [_isVisible, setIsVisible] = useState(open);
+  const [hasWidth, setHasWidth] = useState(false);
+
   // Store the actual calculated position after adjustment
   const [finalPosition, setFinalPosition] = useState<{ top: number; left: number } | null>(null);
 
   const [finalDimensions, setFinalDimensions] = useState<{ maxHeight?: number; maxWidth?: number } | null>(null);
 
   // Store the determined transform origin for CSS
-  const [finalTransformOrigin, setFinalTransformOrigin] = useState<{ x: string, y: string }>({ x: 'left', y: 'top' });
+  // const [finalTransformOrigin, setFinalTransformOrigin] = useState<{ x: string, y: string } | null>(null);
 
   const { width } = useWindowDimensions() as Dimensions;
-
-
-  // const theme = useTheme();
 
   const overlayStyle: React.CSSProperties = {
     position: 'fixed',
@@ -109,18 +102,32 @@ const Menu = (
     maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
     maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
     outline: 0,
+    opacity: 0,
     // opacity: _isVisible ? 1 : 0,
-    transformOrigin: `${finalTransformOrigin.x} ${finalTransformOrigin.y}`,
-    transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    scrollbarGutter: 'stable',
+    // transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    // scrollbarGutter: 'stable',
   };
 
-  if (finalPosition && open) {
+
+  if (finalPosition && open && finalDimensions) {
     paperStyle.display = 'block';
     overlayStyle.display = 'block';
+
+    // only make it visible after all the shifting and adjustments have been made
+    if (hasWidth) {
+      paperStyle.opacity = 1;
+    }
+    // paperStyle.transformOrigin = `${finalTransformOrigin.x} ${finalTransformOrigin.y}`;
     paperStyle.top = finalPosition.top;
     paperStyle.left = finalPosition.left;
   }
+
+  const handleClose = () => {
+    setFinalPosition(null);
+    setFinalDimensions(null);
+    setHasWidth(false);
+    onClose();
+  };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -129,7 +136,7 @@ const Menu = (
       anchor &&
       !anchor.contains(event.target as Node)
     ) {
-      onClose(); // Call the onClose handler passed from the parent
+      handleClose();
     }
   };
 
@@ -143,14 +150,23 @@ const Menu = (
     if (open && anchor && menuContentRef.current) {
       const anchorRect = anchor.getBoundingClientRect();
       const menuRect = menuContentRef.current.getBoundingClientRect();
+
+      if (menuRect.width) {
+        setHasWidth(true);
+      }
+
       let calculatedTop = anchorRect.top + getOffsetTop(anchorRect, anchorOrigin.vertical);
       let calculatedLeft = anchorRect.left + getOffsetLeft(anchorRect, anchorOrigin.horizontal);
 
 
       let finalMaxHeight: number | undefined = undefined;
 
-      let originX = anchorOrigin.horizontal;
-      let originY = anchorOrigin.vertical;
+      // let finalOriginX: string | undefined = undefined;
+      // let finalOriginY: string | undefined = undefined;
+
+      // let originX = anchorOrigin.horizontal;
+      // let originY = anchorOrigin.vertical;
+
 
       // --- Vertical Positioning Adjustments (Prioritize below anchor, adjust height) ---
       const spaceBelow = window.innerHeight - calculatedTop - menuPadding;
@@ -174,7 +190,7 @@ const Menu = (
           // Ensure calculatedTop doesn't go above anchorRect.top for this specific requirement
           calculatedTop = Math.max(calculatedTop, anchorRect.top);
           finalMaxHeight = window.innerHeight - calculatedTop - menuPadding;
-          originY = 'bottom'; // If it's pushed up, consider transforming from bottom
+          // finalOriginY = 'bottom'; // If it's pushed up, consider transforming from bottom
         }
       }
 
@@ -182,22 +198,25 @@ const Menu = (
       if (calculatedTop < menuPadding) {
         calculatedTop = menuPadding;
         finalMaxHeight = window.innerHeight - calculatedTop - menuPadding;
-        originY = 'top';
+        // finalOriginY = 'top';
       }
 
       // --- Horizontal Positioning Adjustments (Same as before) ---
       if (calculatedLeft + menuRect.width > window.innerWidth - menuPadding) {
         calculatedLeft = window.innerWidth - menuRect.width - menuPadding;
-        originX = 'right'; // If pushed to left, origin from right
+        // finalOriginX = 'right'; // If pushed to left, origin from right
       }
       if (calculatedLeft < menuPadding) {
         calculatedLeft = menuPadding;
-        originX = 'left'; // If pushed to right, origin from left
+        // finalOriginX = 'left'; // If pushed to right, origin from left
       }
 
       setFinalPosition({ top: calculatedTop, left: calculatedLeft });
-      // setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36 });
-      // setFinalTransformOrigin({ x: String(originX), y: String(originY) });
+      setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36 });
+
+      // if (finalOriginX && finalOriginY) {
+      //   setFinalTransformOrigin({ x: String(finalOriginX), y: String(finalOriginY) });
+      // }
     }
   }, [open, anchor, menuRootRef, menuContentRef.current, width]);
 
@@ -320,7 +339,7 @@ const Menu = (
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        handleClose();
       }
     };
 
@@ -384,13 +403,10 @@ const Menu = (
   // });
 
 
-  // if (!_shouldMount || !menuRootRef.current) {
-  //   return null;
-  // }
-
 
   if (
-    !menuRootRef.current
+    !menuRootRef.current ||
+    !open
   ) {
     return null;
   }

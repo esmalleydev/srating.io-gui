@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import { IconButton } from '@mui/material';
 import TripleDotsIcon from '@mui/icons-material/MoreVert';
 import CheckIcon from '@mui/icons-material/Check';
 import LuggageIcon from '@mui/icons-material/Luggage';
@@ -10,6 +10,11 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setNeutralSite } from '@/redux/features/compare-slice';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { setLoading } from '@/redux/features/display-slice';
+import Menu from '@/components/ux/menu/Menu';
+import MenuList from '@/components/ux/menu/MenuList';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
 
 
 const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
@@ -61,17 +66,18 @@ const TeamAdditionalOptions = ({ neutral_site }: { neutral_site: boolean}) => {
           <TripleDotsIcon />
         </IconButton>
         <Menu
-          id="long-menu"
-          anchorEl={anchor}
+          anchor={anchor}
           open={open}
           onClose={handleClose}
         >
-          <MenuItem key='neutral-site-display' onClick={handleNeutral}>
-            <ListItemIcon>
+          <MenuList>
+            <MenuItem key='neutral-site-display' onClick={handleNeutral}>
+            <MenuListIcon>
               {+neutral_site ? <CheckIcon fontSize='small' /> : <LuggageIcon fontSize='small' />}
-            </ListItemIcon>
-            <ListItemText>Neutral site game</ListItemText>
+            </MenuListIcon>
+            <MenuListText primary='Neutral site game' />
           </MenuItem>
+          </MenuList>
         </Menu>
     </div>
   );

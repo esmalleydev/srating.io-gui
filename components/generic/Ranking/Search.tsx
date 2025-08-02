@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { getRows } from './DataHandler';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
@@ -18,8 +18,11 @@ const Search = ({ view }: {view: string}) => {
   // console.time('Search.logic')
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const conferences = useAppSelector((state) => state.displayReducer.conferences);
   const rows = getRows({ view });
   const { width } = useWindowDimensions() as Dimensions;
+  const searchValue = useAppSelector((state) => state.rankingReducer.searchValue);
+  // const [value, setValue] = useState<string>('');
 
   const handleSearch = (filteredRows) => {
     dispatch(setDataKey({ key: 'filteredRows', value: filteredRows }));
@@ -31,37 +34,59 @@ const Search = ({ view }: {view: string}) => {
     };
   }, []);
 
+  useEffect(() => {
+    onChange(null, searchValue);
+  }, [conferences]);
+
   // useEffect(() => {
   //   console.timeEnd('Seach')
   // })
-  const [value, setValue] = useState<string>('');
 
-  const onChange = (e) => {
-    const { value } = e.target;
-    setValue(value || '');
 
-    if (value.length) {
+  const onChange = (e, v) => {
+    // console.time('Search.onChange')
+    const value: null | string = (e && e.target && e.target.value) || v;
+
+    dispatch(setDataKey({ key: 'searchValue', value: (value || '') }));
+
+    if (
+      value &&
+      value.length &&
+      (rows.length < 5000 || value.length > 1) // performance issues, the search is slow on players table, takes ~100ms, with less values it is faster
+    ) {
       const regex = new RegExp(value, 'i');
-      let filteredRows = rows.filter((row) => regex.test(row.name));
+      const filteredRows = rows.filter((row) => {
+        if (regex.test(row.name)) {
+          return true;
+        }
 
-      if (view === 'transfer') {
-        filteredRows = filteredRows.concat(rows.filter((row) => regex.test((
-          'committed_team_name' in row && row.committed_team_name !== undefined ? row.committed_team_name : ''
-        ))));
-        filteredRows = filteredRows.concat(rows.filter((row) => regex.test((
-          'team_name' in row && row.team_name !== undefined ? row.team_name : ''
-        ))));
-      }
-      if (view === 'player') {
-        filteredRows = filteredRows.concat(rows.filter((row) => regex.test((
-          'team_name' in row && row.team_name !== undefined ? row.team_name : ''
-        ))));
-      }
+        if (view === 'transfer') {
+          // apparently this is an equviant but i get a ts error, need to fix the type first. regex.test(row.committed_team_name ?? '')
+          if (regex.test(('committed_team_name' in row && row.committed_team_name !== undefined ? row.committed_team_name : ''))) {
+            return true;
+          }
+
+          if (regex.test(('team_name' in row && row.team_name !== undefined ? row.team_name : ''))) {
+            return true;
+          }
+        }
+
+        if (view === 'player') {
+          if (regex.test(('team_name' in row && row.team_name !== undefined ? row.team_name : ''))) {
+            return true;
+          }
+        }
+
+        return false;
+      });
+
       handleSearch(filteredRows);
     } else {
       handleSearch(false);
     }
+    // console.timeEnd('Search.onChange')
   };
+
 
   const inputWidth = width > 425 ? '150px' : '125px';
 
@@ -107,9 +132,9 @@ const Search = ({ view }: {view: string}) => {
       </div>
       <InputBase
         className={Style.getStyleClassName(inputStyle)}
-        value = {value}
+        value = {searchValue}
         placeholder = {'Search'}
-        onChange = {onChange}
+        onChange = {(e) => onChange(e, null)}
       />
     </div>
   );

@@ -76,6 +76,9 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['player', 'transfer', 'coach'],
         graphable: false,
+        widths: {
+          default: 85,
+        },
       },
       conference_code: {
         id: 'conference_code',
@@ -85,6 +88,9 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'player', 'transfer'],
         graphable: false,
+        widths: {
+          default: 100,
+        },
       },
       rank_delta_combo: {
         id: 'rank_delta_combo',

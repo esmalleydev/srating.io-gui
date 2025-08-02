@@ -97,6 +97,8 @@ const Base = (
       dispatch(setDataKey({ key: 'orderBy', value: 'rank' }));
       dispatch(setDataKey({ key: 'tableScrollTop', value: 0 }));
       dispatch(setDataKey({ key: 'columnView', value: 'composite' }));
+      dispatch(setDataKey({ key: 'filteredRows', value: null }));
+      dispatch(setDataKey({ key: 'searchValue', value: '' }));
 
       if (searchParams) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));

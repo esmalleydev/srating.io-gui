@@ -42,6 +42,9 @@ class Organization {
   }
 
   public static getPath({ organizations, organization_id }: { organizations: Organizations, organization_id: string}): string {
+    if (!organizations) {
+      return '';
+    }
     if (!organization_id) {
       throw new Error('organization_id required');
     }

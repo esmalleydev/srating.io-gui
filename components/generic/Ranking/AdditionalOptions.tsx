@@ -6,14 +6,17 @@ import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 
-import { Divider, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { Divider, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { useSearchParams } from 'next/navigation';
 import ConferenceFilterOptions from './ConferenceFilterOptions';
+import Menu from '@/components/ux/menu/Menu';
+import MenuList from '@/components/ux/menu/MenuList';
+import MenuItem from '@/components/ux/menu/MenuItem';
+import MenuListIcon from '@/components/ux/menu/MenuListIcon';
+import MenuListText from '@/components/ux/menu/MenuListText';
 
 const AdditionalOptions = ({ view }: {view: string}) => {
   const searchParams = useSearchParams();
@@ -95,10 +98,10 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         <MenuItem key='hide-committed-display' onClick={() => {
           handleCommitted();
         }}>
-          <ListItemIcon>
+          <MenuListIcon>
             {hideCommitted ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-          </ListItemIcon>
-          <ListItemText>Hide committed</ListItemText>
+          </MenuListIcon>
+          <MenuListText primary ='Hide committed' />
         </MenuItem>,
       );
     }
@@ -108,10 +111,10 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         <MenuItem key='hide-small-mins-display' onClick={() => {
           handleUnderTwo();
         }}>
-          <ListItemIcon>
+          <MenuListIcon>
             {hideUnderTwoMPG ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-          </ListItemIcon>
-          <ListItemText>Hide under 2 MPG</ListItemText>
+          </MenuListIcon>
+          <MenuListText primary ='Hide under 2 MPG' />
         </MenuItem>,
       );
     }
@@ -123,10 +126,10 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         <MenuItem key='conf-picker-options' onClick={() => {
           handleConferenceFilter();
         }}>
-          <ListItemIcon>
+          <MenuListIcon>
             <SettingsIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText>Conference filter</ListItemText>
+          </MenuListIcon>
+          <MenuListText primary ='Conference filter' />
         </MenuItem>,
       );
     }
@@ -149,12 +152,13 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         </IconButton>
       </Tooltip>
       <Menu
-        id="long-menu"
-        anchorEl={anchor}
+        anchor={anchor}
         open={open}
         onClose={handleClose}
       >
-        {getMenuItems()}
+        <MenuList>
+          {getMenuItems()}
+        </MenuList>
       </Menu>
       <ConferenceFilterOptions open={confOptionsOpen} onClose = {() => setConfOptionsOpen(false)} />
     </div>
