@@ -7,7 +7,7 @@ import TripleDotsIcon from '@mui/icons-material/MoreVert';
 import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setHideLowerBench } from '@/redux/features/compare-slice';
+import { setDataKey } from '@/redux/features/compare-slice';
 import Menu from '@/components/ux/menu/Menu';
 import MenuList from '@/components/ux/menu/MenuList';
 import MenuItem from '@/components/ux/menu/MenuItem';
@@ -48,7 +48,7 @@ const PlayerAdditionalOptions = () => {
         >
           <MenuList>
             <MenuItem key='hide-lower-bench-display' onClick={() => {
-              dispatch(setHideLowerBench(!hideLowerBench));
+              dispatch(setDataKey({ key: 'hideLowerBench', value: !hideLowerBench }));
               handleClose();
             }}>
               <MenuListIcon>

@@ -19,6 +19,7 @@ type InitialState = {
   loadingView: boolean,
   view: string | null,
   subview: string | null,
+  trendsColumn: string | null,
 };
 
 type ActionPayload<K extends keyof InitialState> = {
@@ -43,6 +44,7 @@ const initialState: InitialState = {
   loadingView: true,
   view: null,
   subview: null,
+  trendsColumn: null,
 };
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -58,6 +60,7 @@ const updateStateFromUrlParams = (state: InitialState) => {
 
   const view = urlParams.get('view');
   const subview = urlParams.get('subview');
+  const trendsColumn = urlParams.get('trendsColumn');
 
   // Update state if URL parameters are present
   if (view !== null) {
@@ -66,6 +69,10 @@ const updateStateFromUrlParams = (state: InitialState) => {
 
   if (subview !== null) {
     state.subview = subview;
+  }
+
+  if (trendsColumn !== null) {
+    state.trendsColumn = trendsColumn;
   }
 };
 

@@ -75,5 +75,5 @@ export const organization = createSlice({
   },
 });
 
-export const { updateOrganizationID } = organization.actions;
+export const { updateOrganizationID, updateDivisionID } = organization.actions;
 export default organization.reducer;

@@ -22,6 +22,7 @@ import MenuList from '@/components/ux/menu/MenuList';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
+import { reset } from '@/redux/features/compare-slice';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
@@ -80,6 +81,7 @@ const OrganizationPicker = () => {
     dispatch(updateOrganizationID(value));
     dispatch(resetGames());
     dispatch(resetRanking());
+    dispatch(reset());
     startTransition(() => {
       const splat = pathName.split('/');
 
@@ -88,9 +90,7 @@ const OrganizationPicker = () => {
 
       let newPathName = `/${path}/ranking`;
       if (splat.length === 3) {
-        if (splat[2] !== 'compare') {
-          newPathName = pathName.replace(`/${oldPath}/`, `/${path}/`);
-        }
+        newPathName = pathName.replace(`/${oldPath}/`, `/${path}/`);
       }
       // this will error out, first you would need the search params, then you do even know if it is valid, season doesnt exist or team is not in org, etc
       // so just default back to the ranking page

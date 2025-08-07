@@ -10,6 +10,7 @@ let intervalRefresher: NodeJS.Timeout;
 
 
 const Client = ({ kryptos, secret }) => {
+  // console.log('kryptos client')
   const dispatch = useAppDispatch();
 
   const storedKryptos = useAppSelector((state) => state.userReducer.kryptos);
@@ -24,6 +25,7 @@ const Client = ({ kryptos, secret }) => {
   // const idleTimeoutMS = 1000;
 
   const [requested, setRequested] = useState(false);
+  const [triggeringIntervalRefresh, setTriggeringIntervalRefresh] = useState(false);
   const [expires, setExpires] = useState(null);
 
   const checkExpired = (expires: string) => {
@@ -66,7 +68,12 @@ const Client = ({ kryptos, secret }) => {
 
   useEffect(() => {
     intervalRefresher = setInterval(() => {
-      if ((!expires || checkExpired(expires))) {
+      if (
+        (!expires || checkExpired(expires)) &&
+        !triggeringIntervalRefresh
+      ) {
+        // console.log('expires use effect')
+        setTriggeringIntervalRefresh(true);
         triggerRefresh();
       }
     }, refreshRate * 1000);
@@ -83,6 +90,7 @@ const Client = ({ kryptos, secret }) => {
       function: 'find',
       arguments: {},
     }).then((newSecret) => {
+      setTriggeringIntervalRefresh(false);
       // the current stored secret it old, try again
       if (secret_id && newSecret && newSecret.error && newSecret.code === 103) {
         dispatch(setSecret(null));

@@ -33,16 +33,16 @@ import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSession, setValidSession } from '../../redux/features/user-slice';
 import { Divider, Tooltip } from '@mui/material';
-import { clear } from '@/redux/features/compare-slice';
+import { reset } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/display-slice';
 import OrganizationPicker from './OrganizationPicker';
-import Organization from '../helpers/Organization';
 import Menu from '@/components/ux/menu/Menu';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import MenuList from '@/components/ux/menu/MenuList';
+import Organization from '../helpers/Organization';
 
 
 // todo hook up settings with router
@@ -52,7 +52,9 @@ export const headerBarHeight = 64;
 const Header = () => {
   const dispatch = useAppDispatch();
   const validSession = useAppSelector((state) => state.userReducer.isValidSession);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const viewingSport = Organization.getPath({ organizations, organization_id });
   const theme = useTheme();
 
   const router = useRouter();
@@ -70,8 +72,6 @@ const Header = () => {
   const logoPrimaryColor = getLogoColorPrimary();
   const logoSecondaryColor = getLogoColorSecondary();
 
-  const showCompareTool = Organization.getCBBID() === organization_id;
-
 
   useEffect(() => {
     setIsLoading(false);
@@ -88,12 +88,11 @@ const Header = () => {
   };
 
   const handleCompare = () => {
-    if (pathName !== '/cbb/compare') {
+    if (pathName !== `/${viewingSport}/compare`) {
       dispatch(setLoading(true));
-      dispatch(clear());
+      dispatch(reset());
       startTransition(() => {
-        // todo if you change this path to be generic, fix the OrganizationPicker, find the "compare" if statement for redirects
-        router.push('/cbb/compare');
+        router.push(`/${viewingSport}/compare`);
       });
     }
   };
@@ -190,7 +189,7 @@ const Header = () => {
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
-                {showCompareTool ? <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box> : ''}
+                <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
                 <Box sx={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px') }}>
                   {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search focus={false} />}
                 </Box>

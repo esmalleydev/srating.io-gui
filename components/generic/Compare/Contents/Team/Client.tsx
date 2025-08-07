@@ -4,10 +4,11 @@ import React from 'react';
 import TableView from './TableView';
 import CompareView from './CompareView';
 import { LinearProgress } from '@mui/material';
-import { getHeaderHeight } from '../Header/ClientWrapper';
-import { getSubNavHeaderHeight } from '../SubNavBar';
+import { getHeaderHeight } from '../../Header/ClientWrapper';
+import { getNavHeaderHeight } from '../../NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
+import { useAppSelector } from '@/redux/hooks';
 
 /**
  * The main wrapper div for all the contents
@@ -22,7 +23,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
-  const paddingTop = getHeaderHeight() + getSubNavHeaderHeight();
+  const paddingTop = getHeaderHeight() + getNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
   return (
@@ -40,10 +41,11 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ organization_id, division_id, home_team_id, away_team_id, teams, season, subview }) => {
+const Client = ({ statistic_rankings }) => {
+  const subview = useAppSelector((state) => state.compareReducer.subview);
   return (
     <Contents>
-    {subview === 'table' ? <TableView organization_id={organization_id} division_id={division_id} teams = {teams} season = {season} /> : <CompareView organization_id={organization_id} division_id={division_id} home_team_id = {home_team_id} away_team_id = {away_team_id} teams = {teams} season = {season} />}
+      {subview === 'table' ? <TableView statistic_rankings = {statistic_rankings} /> : <CompareView statistic_rankings = {statistic_rankings} />}
     </Contents>
   );
 };

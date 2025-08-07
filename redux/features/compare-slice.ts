@@ -1,31 +1,46 @@
+import { Teams } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialState = {
+  teams: Teams,
   home_team_id: string | null,
   away_team_id: string | null,
   next_search: string | null,
   neutral_site: boolean,
-  view: string,
+  view: string | null,
   subview: string | null,
+  season: number,
   scrollTop: number,
   hideLowerBench: boolean,
   topPlayersOnly: boolean,
   predictions: object,
   predictionsLoading: boolean,
+  loadingView: boolean,
+  trendsColumn: string | null,
 };
 
+type ActionPayload<K extends keyof InitialState> = {
+  key: K;
+  value: InitialState[K];
+};
+
+
 const initialState = {
+  teams: {},
   home_team_id: null,
   away_team_id: null,
   next_search: null,
   neutral_site: false,
   view: 'team',
   subview: null,
+  season: 0,
   scrollTop: 0,
   hideLowerBench: true,
   topPlayersOnly: false,
   predictions: {},
   predictionsLoading: true,
+  loadingView: true,
+  trendsColumn: null,
 } as InitialState;
 
 const updateStateFromUrlParams = (state: InitialState) => {
@@ -66,52 +81,25 @@ export const compare = createSlice({
   name: 'compare',
   initialState,
   reducers: {
-    clear: (state) => {
-      for (const key in initialState) {
-        state[key] = initialState[key];
-      }
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      state[action.payload.key] = action.payload.value;
     },
     reset: (state) => {
+      for (const key in initialState) {
+        // we do not have to reset this one, it is controlled by the contents changing
+        if (key !== 'loadingView') {
+          state[key] = initialState[key];
+        }
+      }
+
       updateStateFromUrlParams(state);
-    },
-    setNextSearch: (state, action: PayloadAction<string>) => {
-      state.next_search = action.payload;
-    },
-    setPredictions: (state, action: PayloadAction<object>) => {
-      state.predictions = action.payload;
-    },
-    setPredictionsLoading: (state, action: PayloadAction<boolean>) => {
-      state.predictionsLoading = action.payload;
-    },
-    setTopPlayersOnly: (state, action: PayloadAction<boolean>) => {
-      state.topPlayersOnly = action.payload;
-    },
-    setHideLowerBench: (state, action: PayloadAction<boolean>) => {
-      state.hideLowerBench = action.payload;
-    },
-    setScrollTop: (state, action: PayloadAction<number>) => {
-      state.scrollTop = action.payload;
-    },
-    setSubView: (state, action: PayloadAction<string | null>) => {
-      state.subview = action.payload;
-    },
-    setView: (state, action: PayloadAction<string>) => {
-      state.view = action.payload;
-    },
-    setNeutralSite: (state, action: PayloadAction<boolean>) => {
-      state.neutral_site = action.payload;
-    },
-    setHomeTeamID: (state, action: PayloadAction<string|null>) => {
-      state.home_team_id = action.payload;
-    },
-    setAwayTeamID: (state, action: PayloadAction<string|null>) => {
-      state.away_team_id = action.payload;
     },
   },
 });
 
 export const {
-  setHomeTeamID, setAwayTeamID, setNeutralSite, setView, setSubView, setScrollTop, setHideLowerBench, setTopPlayersOnly, setPredictions, setPredictionsLoading, setNextSearch, clear, reset,
+  setDataKey,
+  reset,
 } = compare.actions;
 export default compare.reducer;
 

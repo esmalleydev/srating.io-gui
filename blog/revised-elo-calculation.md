@@ -1,5 +1,5 @@
 ---
-title: 'ELO Revised'
+title: 'Elo Revised'
 excerpt: 'How srating.io calculates ELO (revised)'
 coverImage: null
 date: '2023-10-23T12:00:00.322Z'
@@ -10,10 +10,10 @@ ogImage:
   url: null
 ---
 
-# srating.io ELO revised calculation
+# srating.io Elo revised calculation
 
 ## Introduction
-In my first ELO post, I used chatGPT to generate a quick blog. I've decided it adds too much fluff or I'm not a great "prompt engineer".
+In my first Elo post, I used chatGPT to generate a quick blog. I've decided it adds too much fluff or I'm not a great "prompt engineer".
 
 ## Changes
 Orginally, every season, each team would start at 1500 rating. I have changed that to attempt to carry over a few points based on returning players + their efficiency.

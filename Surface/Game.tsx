@@ -22,7 +22,7 @@ import { ClientSkeleton as PlaybyplayClientSkeleton } from '@/components/generic
 import PlaybyplayServer from '@/components/generic/Game/Contents/Playbyplay/Server';
 
 import MatchupClientWrapper from '@/components/generic/Game/Contents/Matchup/ClientWrapper';
-import MatchupServer from '@/components/generic/Game/Contents/Matchup/Server';
+import MatchupClient from '@/components/generic/Game/Contents/Matchup/Client';
 
 import StatCompareClientWrapper from '@/components/generic/Game/Contents/StatCompare/ClientWrapper';
 import { ClientSkeleton as StatCompareClientSkeleton } from '@/components/generic/Game/Contents/StatCompare/Client';
@@ -200,7 +200,7 @@ class Game extends Surface {
       } if (currentView === 'matchup') {
         return (
           <MatchupClientWrapper>
-            <MatchupServer game = {game} />
+            <MatchupClient game = {game} />
           </MatchupClientWrapper>
         );
       } if (currentView === 'trends' && currentSubView === 'stat_compare') {

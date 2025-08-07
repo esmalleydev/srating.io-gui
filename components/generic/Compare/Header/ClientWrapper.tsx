@@ -3,11 +3,12 @@
 import React from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import { useTheme } from '@mui/material';
 import BackButton from '@/components/generic/BackButton';
 
 import Search from './Search';
 import AdditionalOptions from '../AdditionalOptions';
+import { useTheme } from '@/components/hooks/useTheme';
+import Style from '@/components/utils/Style';
 
 
 // todo make mobile friendly
@@ -50,14 +51,14 @@ const ClientWrapper = ({ children }) => {
     left: 0,
     right: 0,
     top: getMarginTop(),
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.background.main,
     zIndex: 1100,
   };
 
 
   return (
     <>
-      <div style = {titleStyle}>
+      <div className = {Style.getStyleClassName(titleStyle)}>
         <div style = {{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
           <div style = {{ width: 50, display: 'flex', alignItems: 'baseline' }}>
             <BackButton />

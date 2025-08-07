@@ -2,7 +2,6 @@
 
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
-import HelperGame from '@/components/helpers/Game';
 import Color from '@/components/utils/Color';
 import moment from 'moment';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
@@ -15,8 +14,9 @@ import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setDataKey } from '@/redux/features/game-slice';
+import { setDataKey } from '@/redux/features/compare-slice';
 import ColumnPicker from '@/components/generic/ColumnPicker';
+import Team from '@/components/helpers/Team';
 
 /**
  * The main wrapper div for all the contents
@@ -49,13 +49,53 @@ const ClientSkeleton = () => {
   );
 };
 
+const getColors = ({ home_team, away_team }) => {
+  const theme = useTheme();
 
-const Client = ({ game, statistic_rankings }) => {
-  const { organization_id } = game;
+  let homeColor = (home_team && home_team.primary_color);
+  let awayColor = (away_team && away_team.primary_color);
 
-  const Game = new HelperGame({
-    game,
-  });
+  if (awayColor === homeColor) {
+    awayColor = theme.info.main;
+  }
+
+  if (!homeColor) {
+    homeColor = theme.info.main;
+  }
+
+  if (!awayColor) {
+    awayColor = theme.info.main;
+  }
+
+  if (Color.areColorsSimilar(homeColor, awayColor)) {
+    const analogousColors = Color.getAnalogousColors(awayColor);
+    let any = false;
+
+    for (let i = 0; i < analogousColors.length; i++) {
+      if (!Color.areColorsSimilar(homeColor, analogousColors[i])) {
+        awayColor = analogousColors[i];
+        any = true;
+        break;
+      }
+    }
+
+    if (!any) {
+      awayColor = Color.invertColor(awayColor);
+    }
+  }
+
+  return { homeColor, awayColor };
+};
+
+
+const Client = ({ statistic_rankings }) => {
+  const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const backgroundColor = theme.background.main;
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const home_team_id = useAppSelector((state) => state.compareReducer.home_team_id);
+  const away_team_id = useAppSelector((state) => state.compareReducer.away_team_id);
+  const teams = useAppSelector((state) => state.compareReducer.teams);
 
   let standardColumns = [
     'adjusted_efficiency_rating',
@@ -72,12 +112,10 @@ const Client = ({ game, statistic_rankings }) => {
       'elo',
     ];
   }
+  const trendsColumn = useAppSelector((state) => state.compareReducer.trendsColumn) || standardColumns[0];
 
-  const theme = useTheme();
-  const dispatch = useAppDispatch();
-  const backgroundColor = theme.background.main;
-
-  const trendsColumn = useAppSelector((state) => state.gameReducer.trendsColumn) || standardColumns[0];
+  const homeName = (home_team_id && new Team({ team: teams[home_team_id] }).getName()) || 'Unknown';
+  const awayName = (away_team_id && new Team({ team: teams[away_team_id] }).getName()) || 'Unknown';
 
   const allColumns = TableColumns.getColumns({ organization_id, view: 'team', graphable: true, disabled: false });
 
@@ -118,7 +156,7 @@ const Client = ({ game, statistic_rankings }) => {
   }
 
   statsCompareChips.push(
-    <ColumnPicker key = {'game-trends-custom-column-picker'} options = {allColumns} selected = {trendsColumn ? [trendsColumn] : []} filled = {false} isRadio = {true} autoClose={true} actionHandler = {handleColumn} />,
+    <ColumnPicker key = {'compare-trends-custom-column-picker'} options = {allColumns} selected = {trendsColumn ? [trendsColumn] : []} filled = {false} isRadio = {true} autoClose={true} actionHandler = {handleColumn} />,
   );
 
 
@@ -147,7 +185,7 @@ const Client = ({ game, statistic_rankings }) => {
       };
     }
 
-    const which = game.home_team_id === row.team_id ? 'home' : 'away';
+    const which = home_team_id === row.team_id ? 'home' : 'away';
 
     for (const key in row) {
       date_of_rank_x_data[row.date_of_rank][`${which}_${key}`] = row[key];
@@ -233,15 +271,19 @@ const Client = ({ game, statistic_rankings }) => {
 
   let chart: React.JSX.Element | null = null;
 
-  const colors = Game.getColors();
+  const colors = getColors({
+    home_team: home_team_id && teams[home_team_id],
+    away_team: away_team_id && teams[away_team_id],
+  });
 
   if (trendsColumn in allColumns) {
     const statistic = allColumns[trendsColumn];
 
+
     const lines: LineProps[] = [
       {
         type: 'monotone',
-        name: Game.getTeamName('home'),
+        name: homeName,
         dataKey: `home_${statistic.id}`,
         stroke: Color.getTextColor(colors.homeColor, backgroundColor),
         strokeWidth: 2,
@@ -250,7 +292,7 @@ const Client = ({ game, statistic_rankings }) => {
       },
       {
         type: 'monotone',
-        name: Game.getTeamName('away'),
+        name: awayName,
         dataKey: `away_${statistic.id}`,
         stroke: Color.getTextColor(colors.awayColor, backgroundColor),
         strokeWidth: 2,

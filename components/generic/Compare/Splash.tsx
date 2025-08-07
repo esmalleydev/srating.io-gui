@@ -5,10 +5,10 @@ import React from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Typography } from '@mui/material';
 import { getHeaderHeight } from './Header/ClientWrapper';
-import { getSubNavHeaderHeight } from './SubNavBar';
+import { getNavHeaderHeight } from './NavBar';
 
 const Splash = () => {
-  const top = getHeaderHeight() + getSubNavHeaderHeight() + 5;
+  const top = getHeaderHeight() + getNavHeaderHeight() + 5;
   return (
     <div style = {{ textAlign: 'center', marginTop: top }}>
       <div><ArrowUpwardIcon fontSize='large' /></div>

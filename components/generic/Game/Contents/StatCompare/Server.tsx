@@ -1,7 +1,5 @@
 'use server';
 
-import React from 'react';
-
 import { Client } from '@/components/generic/Game/Contents/StatCompare/Client';
 import { useServerAPI } from '@/components/serverAPI';
 
@@ -20,7 +18,7 @@ const Server = async ({ game }) => {
 
   return (
     <>
-      <Client game = {game} statistic_rankings = {data.statistic_rankings} elos = {data.elos} />
+      <Client game = {game} statistic_rankings = {data.statistic_rankings} />
     </>
   );
 };

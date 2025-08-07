@@ -9,6 +9,25 @@ import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import { getStore } from '@/app/StoreProvider';
 
+export const getAvailableChips = ({ organization_id, view }) => {
+  let availableChips = ['composite'];
+
+  if (Organization.getCBBID() === organization_id) {
+    if (view !== 'coach') {
+      availableChips = availableChips.concat(['offense', 'defense']);
+    }
+  }
+
+  if (Organization.getCFBID() === organization_id) {
+    if (view !== 'coach') {
+      availableChips = availableChips.concat(['passing', 'rushing']);
+    }
+  }
+
+  return availableChips;
+};
+
+
 
 const ColumnChipPicker = ({ organization_id, view }) => {
   const dispatch = useAppDispatch();
@@ -69,43 +88,23 @@ const ColumnChipPicker = ({ organization_id, view }) => {
     // window.history.pushState(null, '', `?${current.toString()}`);
   };
 
-  const getCBBChips = () => {
+  const getChips = () => {
     const chips: React.JSX.Element[] = [];
 
-    const availableChips = ['offense', 'defense'];
+    const availableChips = getAvailableChips({ organization_id, view });
 
-    if (view !== 'coach') {
-      availableChips.forEach((value) => {
-        chips.push(
-          <Chip key = {value} style = {{ margin: '5px' }} title={Text.toSentenceCase(value)} filled={(columnView === value)} value = {value} onClick={() => handleRankingView(value)} />,
-        );
-      });
-    }
-
-    return chips;
-  };
-
-  const getCFBChips = () => {
-    const chips: React.JSX.Element[] = [];
-
-    const availableChips = ['passing', 'rushing'];
-
-    if (view !== 'coach') {
-      availableChips.forEach((value) => {
-        chips.push(
-          <Chip key = {value} style = {{ margin: '5px' }} title={Text.toSentenceCase(value)} filled={(columnView === value)} value = {value} onClick={() => handleRankingView(value)} />,
-        );
-      });
-    }
+    availableChips.forEach((value) => {
+      chips.push(
+        <Chip key = {value} style = {{ margin: '5px' }} title={Text.toSentenceCase(value)} filled={(columnView === value)} value = {value} onClick={() => handleRankingView(value)} />,
+      );
+    });
 
     return chips;
   };
 
   return (
     <div style = {{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-      <Chip key = {'composite'} style = {{ margin: '5px' }} title={Text.toSentenceCase('composite')} filled={(columnView === 'composite')} value = {'composite'} onClick={() => handleRankingView('composite')} />
-      {Organization.getCBBID() === organization_id ? getCBBChips() : ''}
-      {Organization.getCFBID() === organization_id ? getCFBChips() : ''}
+      {getChips()}
       <ColumnPicker
         key = {view}
         filled = {(columnView === 'custom')}

@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
 import { LinearProgress } from '@mui/material';
-import { getHeaderHeight } from '../Header/ClientWrapper';
-import { getSubNavHeaderHeight } from '../SubNavBar';
+import { getHeaderHeight } from '../../Header/ClientWrapper';
+import { getNavHeaderHeight } from '../../NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import RankTable from '@/components/generic/RankTable';
@@ -33,7 +33,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
-  const paddingTop = getHeaderHeight() + getSubNavHeaderHeight();
+  const paddingTop = getHeaderHeight() + getNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
   return (
@@ -51,63 +51,60 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ teams }) => {
-  const sessionStorageKey = 'CBB.COMPARE.PLAYER';
+const Client = ({ player_statistic_rankings, players }) => {
+  // console.time('Player.Client')
+  // console.time('Player.Client.logic')
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const path = Organization.getPath({ organizations, organization_id });
+  const sessionStorageKey = `${path}.COMPARE.PLAYER`;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
   const [view, setView] = useState<string | null>('overview');
-
   const dispatch = useAppDispatch();
+  const teams = useAppSelector((state) => state.compareReducer.teams);
   const hideLowerBench = useAppSelector((state) => state.compareReducer.hideLowerBench);
   const topPlayersOnly = useAppSelector((state) => state.compareReducer.topPlayersOnly);
+
+  // useEffect(() => {
+  //   console.timeEnd('Player.Client')
+  // })
 
   const guards: string[] = [];
   const forwards: string[] = [];
   const centers: string[] = [];
   let topPlayers: string[] = [];
   const player_id_x_stats = {};
-  const players = {};
   const team_id_x_stats = {};
 
-  for (const team_id in teams) {
-    const team = teams[team_id];
+  for (const player_id in players) {
+    const player = players[player_id];
 
-    if (!(team_id in team_id_x_stats)) {
-      team_id_x_stats[team_id] = [];
+    if (player.position === 'F') {
+      forwards.push(player_id);
+    }
+    if (player.position === 'C') {
+      centers.push(player_id);
+    }
+    if (player.position === 'G') {
+      guards.push(player_id);
+    }
+  }
+
+  for (const player_statistic_ranking_id in player_statistic_rankings) {
+    const row = player_statistic_rankings[player_statistic_ranking_id];
+
+    if (!(row.team_id in team_id_x_stats)) {
+      team_id_x_stats[row.team_id] = [];
     }
 
-    if (team.playerStats && team.playerStats.players) {
-      for (const player_id in team.playerStats.players) {
-        const player = team.playerStats.players[player_id];
-
-        if (player.position === 'F') {
-          forwards.push(player_id);
-        }
-        if (player.position === 'C') {
-          centers.push(player_id);
-        }
-        if (player.position === 'G') {
-          guards.push(player_id);
-        }
-
-        players[player_id] = player;
-      }
+    if (!(row.player_id in players)) {
+      continue;
     }
 
-    if (team.playerStats && team.playerStats.player_statistic_rankings) {
-      for (const player_statistic_ranking_id in team.playerStats.player_statistic_rankings) {
-        const row = team.playerStats.player_statistic_rankings[player_statistic_ranking_id];
-
-        if (!(row.player_id in players)) {
-          continue;
-        }
-
-        row.height = players[row.player_id].height;
-        team_id_x_stats[team_id].push(row);
-        player_id_x_stats[row.player_id] = row;
-      }
-    }
+    row.height = players[row.player_id].height;
+    team_id_x_stats[row.team_id].push(row);
+    player_id_x_stats[row.player_id] = row;
   }
 
   for (const team_id in team_id_x_stats) {
@@ -137,15 +134,15 @@ const Client = ({ teams }) => {
     return [];
   };
 
-  const handleClick = (player_id) => {
+  const handleClick = (player_id: string) => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/player/${player_id}`);
+      router.push(`/${path}/player/${player_id}`);
     });
   };
 
 
-  const headCells = Objector.deepClone(TableColumns.getColumns({ organization_id: Organization.getCBBID(), view: 'player' }));
+  const headCells = Objector.deepClone(TableColumns.getColumns({ organization_id, view: 'player' }));
 
   headCells.team_name.sticky = true;
   headCells.team_name.widths = {
@@ -229,6 +226,7 @@ const Client = ({ teams }) => {
     );
   };
 
+  // console.timeEnd('Player.Client.logic')
   return (
     <Contents>
       <div style = {{ display: 'flex', justifyContent: 'center' }}>

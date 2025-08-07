@@ -17,14 +17,14 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   return {
     title: 'sRating | Billing',
-    description: 'College basketball API / Picks',
+    description: 'API / Picks',
     openGraph: {
-      title: 'sRating.io college basketball API',
-      description: 'College basketball API / Picks',
+      title: 'sRating.io | Billing',
+      description: 'API / Picks',
     },
     twitter: {
       card: 'summary',
-      title: 'College basketball API / Picks',
+      title: 'API / Picks',
     },
   };
 }
@@ -44,5 +44,5 @@ export default async function Page() {
     <BillingPage />
     </>
   );
-};
+}
 

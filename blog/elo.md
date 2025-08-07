@@ -1,6 +1,6 @@
 ---
-title: 'ELO calc'
-excerpt: 'How to calculate ELO'
+title: 'Elo calc'
+excerpt: 'How to calculate Elo'
 coverImage: null
 date: '2023-06-10T12:00:00.322Z'
 author:

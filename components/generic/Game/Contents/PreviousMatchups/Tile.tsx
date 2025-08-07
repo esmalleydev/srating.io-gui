@@ -7,10 +7,11 @@ import moment from 'moment';
 
 import HelperGame from '@/components/helpers/Game';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
+import Organization from '@/components/helpers/Organization';
 
 
 const Tile = ({ game }) => {
@@ -18,6 +19,8 @@ const Tile = ({ game }) => {
   const theme = useTheme();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const path = Organization.getPath({ organizations, organization_id: game.organization_id });
 
   const Game = new HelperGame({
     game,
@@ -60,7 +63,7 @@ const Tile = ({ game }) => {
   const handleClick = () => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push(`/cbb/games/${game.game_id}`);
+      router.push(`/${path}/games/${game.game_id}`);
     });
   };
 

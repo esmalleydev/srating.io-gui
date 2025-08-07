@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { styled, alpha } from '@mui/material/styles';
 import { InputBase, Autocomplete } from '@mui/material';
@@ -11,11 +11,8 @@ import useDebounce from '@/components/hooks/useDebounce';
 import { useClientAPI } from '@/components/clientAPI';
 import { Team } from '@/types/general';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setHomeTeamID, setAwayTeamID, setNextSearch } from '@/redux/features/compare-slice';
-import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
+import { setDataKey } from '@/redux/features/compare-slice';
 import Text from '@/components/utils/Text';
-import Organization from '@/components/helpers/Organization';
-import Division from '@/components/helpers/Division';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -56,7 +53,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Search = () => {
   const router = useRouter();
   const pathName = usePathname();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
   const [value, setValue] = useState('');
@@ -64,12 +60,11 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useAppDispatch();
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const division_id = useAppSelector((state) => state.organizationReducer.division_id);
   const home_team_id = useAppSelector((state) => state.compareReducer.home_team_id); // || searchParams?.get('home_team_id') || null;
   const away_team_id = useAppSelector((state) => state.compareReducer.away_team_id); // || searchParams?.get('away_team_id') || null;
   const next_search = useAppSelector((state) => state.compareReducer.next_search);
-
-  const organization_id = Organization.getCBBID();
-  const division_id = Division.getD1();
 
   const [blur, setBlur] = useState<boolean>(false);
 
@@ -125,44 +120,42 @@ const Search = () => {
     const new_team_id = (option && option.team_id);
 
     if (new_team_id) {
-      dispatch(setLoadingDisplay(true));
-      startTransition(() => {
-        let key = next_search;
+      let key = next_search;
 
-        if (!away_team_id) {
-          key = 'away';
-        } else if (!home_team_id) {
-          key = 'home';
-        }
+      if (!away_team_id) {
+        key = 'away';
+      } else if (!home_team_id) {
+        key = 'home';
+      }
 
-        if (!key) {
-          key = 'away';
-        }
+      if (!key) {
+        key = 'away';
+      }
 
-        let changing = false;
-        if (searchParams?.get(`${key}_team_id`) !== new_team_id) {
-          const current = new URLSearchParams(Array.from(searchParams.entries()));
-          current.set(`${key}_team_id`, new_team_id);
+      if (key === 'away') {
+        dispatch(setDataKey({ key: 'away_team_id', value: new_team_id }));
+        dispatch(setDataKey({ key: 'next_search', value: 'home' }));
+      } else if (key === 'home') {
+        dispatch(setDataKey({ key: 'home_team_id', value: new_team_id }));
+        dispatch(setDataKey({ key: 'next_search', value: 'away' }));
+      }
+
+      const current = new URLSearchParams(window.location.search);
+
+      if (current.get(`${key}_team_id`) !== new_team_id) {
+        current.set(`${key}_team_id`, new_team_id);
+        window.history.replaceState(null, '', `?${current.toString()}`);
+
+        startTransition(() => {
           const search = current.toString();
           const query = search ? `?${search}` : '';
           router.replace(`${pathName}${query}`);
-          changing = true;
-        }
+        });
+      }
 
-        if (key === 'away') {
-          dispatch(setAwayTeamID(new_team_id));
-          dispatch(setNextSearch('home'));
-        } else if (key === 'home') {
-          dispatch(setHomeTeamID(new_team_id));
-          dispatch(setNextSearch('away'));
-        }
-        if (!changing) {
-          dispatch(setLoadingDisplay(false));
-        }
-        setBlur(true);
-        setValue('');
-        setTeams([]);
-      });
+      setBlur(true);
+      setValue('');
+      setTeams([]);
     }
   };
 

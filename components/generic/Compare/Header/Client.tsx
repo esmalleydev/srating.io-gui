@@ -4,7 +4,7 @@ import React, { useTransition } from 'react';
 
 
 import HelperTeam from '@/components/helpers/Team';
-import { getBreakPoint } from '@/components/generic/CBB/Compare/Header/ClientWrapper';
+import { getBreakPoint } from '@/components/generic/Compare/Header/ClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
@@ -12,14 +12,15 @@ import { IconButton, Skeleton, Tooltip } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { setHomeTeamID, setAwayTeamID } from '@/redux/features/compare-slice';
+import { setDataKey } from '@/redux/features/compare-slice';
 import { setLoading } from '@/redux/features/display-slice';
 import CBB from '@/components/helpers/CBB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import Organization from '@/components/helpers/Organization';
 
 
-const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => {
+const Client = () => {
   const theme = useTheme();
   const breakPoint = getBreakPoint();
   const bestColor = getBestColor();
@@ -31,52 +32,64 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
   const [isPending, startTransition] = useTransition();
 
   const dispatch = useAppDispatch();
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const path = Organization.getPath({ organizations, organization_id });
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
-  // const neutral_site = useAppSelector(state => state.compareReducer.neutral_site);
+  const home_team_id = useAppSelector((state) => state.compareReducer.home_team_id);
+  const away_team_id = useAppSelector((state) => state.compareReducer.away_team_id);
+  const season = useAppSelector((state) => state.compareReducer.season);
+  const teams = useAppSelector((state) => state.compareReducer.teams);
+  const neutral_site = useAppSelector((state) => state.compareReducer.neutral_site);
 
   const handleRemove = (team_id: string) => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      let key: string | null = null;
-      if (team_id === home_team_id) {
-        current.delete('home_team_id');
-        key = 'home';
-      } else if (team_id === away_team_id) {
-        current.delete('away_team_id');
-        key = 'away';
-      }
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-      router.replace(`${pathName}${query}`);
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    let key: string | null = null;
+    if (team_id === home_team_id) {
+      current.delete('home_team_id');
+      key = 'home';
+    } else if (team_id === away_team_id) {
+      current.delete('away_team_id');
+      key = 'away';
+    }
+    window.history.replaceState(null, '', `?${current.toString()}`);
 
-      if (key === 'home') {
-        dispatch(setHomeTeamID(null));
-      } else if (key === 'away') {
-        dispatch(setAwayTeamID(null));
-      }
+    if (key === 'home') {
+      dispatch(setDataKey({ key: 'home_team_id', value: null }));
+    } else if (key === 'away') {
+      dispatch(setDataKey({ key: 'away_team_id', value: null }));
+    }
+
+    const search = current.toString();
+    const query = search ? `?${search}` : '';
+
+    startTransition(() => {
+      router.replace(`${pathName}${query}`);
     });
   };
 
   const handleSwap = () => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      if (home_team_id && away_team_id) {
-        const current = new URLSearchParams(Array.from(searchParams.entries()));
-        current.set('home_team_id', away_team_id);
-        current.set('away_team_id', home_team_id);
-        const search = current.toString();
-        const query = search ? `?${search}` : '';
+    if (home_team_id && away_team_id) {
+      dispatch(setDataKey({ key: 'home_team_id', value: away_team_id }));
+      dispatch(setDataKey({ key: 'away_team_id', value: home_team_id }));
+
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('home_team_id', away_team_id);
+      current.set('away_team_id', home_team_id);
+      window.history.replaceState(null, '', `?${current.toString()}`);
+
+
+      const search = current.toString();
+      const query = search ? `?${search}` : '';
+      startTransition(() => {
         router.replace(`${pathName}${query}`);
-      }
-      dispatch(setHomeTeamID(away_team_id));
-      dispatch(setAwayTeamID(home_team_id));
-    });
+      });
+    }
   };
 
-  const getTeamHref = (team_id) => {
-    return `/cbb/team/${team_id}?season=${season}`;
+  const getTeamHref = (team_id: string) => {
+    return `/${path}/team/${team_id}?season=${season}`;
   };
 
   const handleTeamClick = (e, team_id: string) => {
@@ -127,12 +140,17 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
       );
     };
 
+    let headerText = (team_id === home_team_id ? 'Home' : 'Away');
+    if (neutral_site) {
+      headerText = 'Neutral';
+    }
+
     return (
       <div style = {{ display: 'flex', alignItems: 'center' }}>
         {team_id === home_team_id ? getRemoveButton() : ''}
         <div>
           <div style = {{ display: 'flex', justifyContent }}>
-            <Typography type = 'overline' style = {{ lineHeight: 'initial', color: theme.text.secondary }}>{neutral_site ? 'Neutral' : (team_id === home_team_id ? 'Home' : 'Away')}</Typography>
+            <Typography type = 'overline' style = {{ lineHeight: 'initial', color: theme.text.secondary }}>{headerText}</Typography>
           </div>
           <div style = {{ display: 'flex', flexWrap: 'nowrap', justifyContent }}>
             <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {'h6'}>
@@ -154,15 +172,25 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
     minWidth: 100,
   };
 
+  let homeNameElement = <Skeleton style={{ height: 60, transform: 'initial' }} />;
+  if (!home_team_id) {
+    homeNameElement = <Typography type='body1'>{'Pick a home team'}</Typography>;
+  } else if (home_team_id in teams) {
+    homeNameElement = getTeam(home_team_id);
+  }
+
+  let awayNameElement = <Skeleton style={{ height: 60, transform: 'initial' }} />;
+  if (!away_team_id) {
+    awayNameElement = <Typography type='body1'>{'Pick an away team'}</Typography>;
+  } else if (away_team_id in teams) {
+    awayNameElement = getTeam(away_team_id);
+  }
+
 
   return (
     <div style = {{ display: 'flex', justifyContent: 'space-between', padding: '0px 5px', alignItems: 'center' }}>
       <div style = {nameStyle}>
-        {
-        !away_team_id ?
-          'Pick an away team' :
-          (away_team_id in teams ? <>{getTeam(away_team_id)}</> : <Skeleton style={{ height: 60, transform: 'initial' }} />)
-        }
+        {awayNameElement}
       </div>
       <div>
         {
@@ -179,11 +207,7 @@ const Client = ({ home_team_id, away_team_id, teams, season, neutral_site }) => 
         }
       </div>
       <div style = {nameStyle}>
-      {
-        !home_team_id ?
-          'Pick a home team' :
-          (home_team_id in teams ? <>{getTeam(home_team_id)}</> : <Skeleton style={{ height: 60, transform: 'initial' }} />)
-        }
+        {homeNameElement}
       </div>
     </div>
   );

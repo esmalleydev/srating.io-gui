@@ -27,7 +27,7 @@ import PicksIcon from '@mui/icons-material/Casino';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArticleIcon from '@mui/icons-material/Article';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import { clear } from '@/redux/features/compare-slice';
+import { reset } from '@/redux/features/compare-slice';
 import { setLoading } from '@/redux/features/display-slice';
 import Organization from '../helpers/Organization';
 
@@ -93,7 +93,7 @@ const Sidebar = () => {
     if (newPathName !== pathName) {
       dispatch(setLoading(true));
       startTransition(() => {
-        dispatch(clear());
+        dispatch(reset());
         router.push(newPathName);
       });
     }

@@ -1,9 +1,9 @@
 // import { Game as GameType } from '@/types/general';
-import { useTheme } from '@mui/material';
 import moment from 'moment';
 import Color from '@/components/utils/Color';
 import Team from './Team';
 import Organization from './Organization';
+import { useTheme } from '../hooks/useTheme';
 
 
 /**
@@ -462,19 +462,20 @@ class Game {
    * @return {object} {homeColor: string, awayColor: string}
    */
   getColors() {
+    // todo probably shouldnt have hooks in here
     const theme = useTheme();
 
     const { game } = this;
 
-    let homeColor = game.teams[game.home_team_id].primary_color || theme.palette.info.main;
-    let awayColor = game.teams[game.away_team_id].primary_color === homeColor ? theme.palette.info.main : game.teams[game.away_team_id].primary_color;
+    let homeColor = game.teams[game.home_team_id].primary_color || theme.info.main;
+    let awayColor = game.teams[game.away_team_id].primary_color === homeColor ? theme.info.main : game.teams[game.away_team_id].primary_color;
 
     if (!homeColor) {
-      homeColor = theme.palette.info.main;
+      homeColor = theme.info.main;
     }
 
     if (!awayColor) {
-      awayColor = theme.palette.info.main;
+      awayColor = theme.info.main;
     }
 
     if (Color.areColorsSimilar(homeColor, awayColor)) {
