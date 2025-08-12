@@ -54,7 +54,7 @@ const Header = () => {
   const validSession = useAppSelector((state) => state.userReducer.isValidSession);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
-  const viewingSport = Organization.getPath({ organizations, organization_id });
+  const path = Organization.getPath({ organizations, organization_id });
   const theme = useTheme();
 
   const router = useRouter();
@@ -88,11 +88,11 @@ const Header = () => {
   };
 
   const handleCompare = () => {
-    if (pathName !== `/${viewingSport}/compare`) {
+    if (pathName !== `/${path}/compare`) {
       dispatch(setLoading(true));
       dispatch(reset());
       startTransition(() => {
-        router.push(`/${viewingSport}/compare`);
+        router.push(`/${path}/compare`);
       });
     }
   };

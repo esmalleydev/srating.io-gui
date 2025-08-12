@@ -34,8 +34,8 @@ export const getSections = ({ homeStats, awayStats }) => {
     {
       name: 'Record',
       title: 'Record',
-      away: 'wins' in awayStats ? `${awayStats.wins}-${awayStats.losses}` : '0-0',
-      home: 'wins' in homeStats ? `${homeStats.wins}-${homeStats.losses}` : '0-0',
+      away: `${awayStats.wins || 0}-${awayStats.losses || 0}`,
+      home: `${homeStats.wins || 0}-${homeStats.losses || 0}`,
       awayCompareValue: awayStats.wins,
       homeCompareValue: homeStats.wins,
       favored: 'higher',

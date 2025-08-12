@@ -23,6 +23,45 @@ export default [
       },
     },
     // plugins: {
+    //   'no-spread-or-assign': {
+    //     rules: {
+    //       'no-spread-or-assign': {
+    //         meta: {
+    //           type: 'problem',
+    //           docs: {
+    //             description: 'Disallow object spread and Object.assign',
+    //             category: 'Best Practices',
+    //             recommended: false,
+    //           },
+    //           schema: [],
+    //           messages: {
+    //             noSpread: 'Object spread syntax is not allowed.',
+    //             noAssign: 'Object.assign is not allowed.',
+    //           },
+    //         },
+    //         create(context) {
+    //           return {
+    //             SpreadElement(node) {
+    //               if (node.parent && node.parent.type === 'ObjectExpression') {
+    //                 context.report({ node, messageId: 'noSpread' });
+    //               }
+    //             },
+    //             CallExpression(node) {
+    //               if (
+    //                 node.callee.type === 'MemberExpression' &&
+    //                 node.callee.object.name === 'Object' &&
+    //                 node.callee.property.name === 'assign'
+    //               ) {
+    //                 context.report({ node, messageId: 'noAssign' });
+    //               }
+    //             },
+    //           };
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
+    // plugins: {
     //   react: pluginReact,
     //   'react-hooks': pluginReactHooks,
     // },

@@ -1,12 +1,23 @@
 'use client';
 
-import { Typography, Skeleton } from '@mui/material';
 
 import HelperGame from '@/components/helpers/Game';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game//NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
+import Paper from '@/components/ux/container/Paper';
+
+// import SportsScoreIcon from '@mui/icons-material/SportsScore';
+// import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+// import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+// import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+// import FunctionsIcon from '@mui/icons-material/Functions';
+// import LockOpenIcon from '@mui/icons-material/LockOpen';
+// import LockIcon from '@mui/icons-material/Lock';
+import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
+import Color from '@/components/utils/Color';
 
 /**
  * The main wrapper div for all the contents
@@ -41,43 +52,67 @@ const ClientSkeleton = () => {
 
 
 const Client = ({ game, oddsStats }) => {
+  const theme = useTheme();
   const Game = new HelperGame({
     game,
   });
 
-  console.log(game)
-  console.log(oddsStats)
 
-  let awayUnderdog = false;
-  let homeUnderdog = false;
+  const awayRows: React.JSX.Element[] = [];
+  const homeRows: React.JSX.Element[] = [];
 
-  if (game.odds && game.odds.pre) {
-    awayUnderdog = game.odds.pre.money_line_away > 0;
-    homeUnderdog = game.odds.pre.money_line_home > 0;
-  }
+  const getWinRows = (caption, number_of_wins, number_of_games) => {
+    const percentage = +(((number_of_wins / number_of_games) || 0) * 100).toFixed(0);
+
+    return (
+      <tr style = {{ textAlign: 'left' }}>
+        <td style = {{ textAlign: 'left' }}><Typography type='caption' style = {{ color: theme.info.main }}>{caption}</Typography></td>
+        <td style = {{ paddingLeft: '10px' }}><Typography type='caption' style = {{ color: theme.text.secondary }}>{`${number_of_wins}/${number_of_games}`}</Typography></td>
+        <td><Typography type='caption' style = {{ color: Color.lerpColor(theme.error.main, theme.success.light, percentage / 100) }}>{`(${percentage}%)`}</Typography></td>
+      </tr>
+    );
+  };
 
 
-  let awayOddsText: string | null = null;
+
   if (oddsStats && oddsStats[game.away_team_id]) {
     const awayOS = oddsStats[game.away_team_id];
-    awayOddsText = `${Game.getTeamName('away')} is ${awayUnderdog ? `${awayOS.underdog_wins}/${awayOS.underdog_games}, ${(((awayOS.underdog_wins / awayOS.underdog_games) || 0) * 100).toFixed(0)}% as the underdog this season.` : `${awayOS.favored_wins}/${awayOS.favored_games}, ${(((awayOS.favored_wins / awayOS.favored_games) || 0) * 100).toFixed(0)}% when favored this season.`}`;
+    awayRows.push(getWinRows('Favored:', awayOS.favored_wins, awayOS.favored_games));
+    awayRows.push(getWinRows('Underdog:', awayOS.underdog_wins, awayOS.underdog_games));
   }
 
-  let homeOddsText: string | null = null;
   if (oddsStats && oddsStats[game.home_team_id]) {
     const homeOS = oddsStats[game.home_team_id];
-    homeOddsText = `${Game.getTeamName('home')} is ${homeUnderdog ? `${homeOS.underdog_wins}/${homeOS.underdog_games}, ${(((homeOS.underdog_wins / homeOS.underdog_games) || 0) * 100).toFixed(0)}% as the underdog this season.` : `${homeOS.favored_wins}/${homeOS.favored_games}, ${(((homeOS.favored_wins / homeOS.favored_games) || 0) * 100).toFixed(0)}% when favored this season.`}`;
+    homeRows.push(getWinRows('Favored:', homeOS.favored_wins, homeOS.favored_games));
+    homeRows.push(getWinRows('Underdog:', homeOS.underdog_wins, homeOS.underdog_games));
   }
+
+  // https://gemini.google.com/app/4d6ea89566f3d71e
+  // todo show oddes history like this example
 
   return (
     <Contents>
-      <Typography variant = 'body1'>Odds trends</Typography>
-      <div>
-        <Typography variant = 'body2'>{oddsStats === null ? <Skeleton /> : (awayOddsText || 'Missing data')}</Typography>
-        <Typography variant = 'body2'>{oddsStats === null ? <Skeleton /> : (homeOddsText || 'Missing data')}</Typography>
-      </div>
-      <div>todo show the average ML, spread, O/U, could also show each game</div>
-      <>{JSON.stringify(oddsStats)}</>
+      <Paper style = {{ maxWidth: 600, margin: 'auto', marginTop: 8 }}>
+        <Typography type = 'h6' style = {{ textAlign: 'center' }}>{`${game.season - 1}-${game.season} season`}</Typography>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: 8 }}>
+          <div>
+            <Typography type = 'body1'>{Game.getTeamName('away')}</Typography>
+            <table>
+              <tbody>
+                {awayRows}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <Typography type = 'body1'>{Game.getTeamName('home')}</Typography>
+            <table>
+              <tbody>
+                {homeRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </Paper>
     </Contents>
   );
 };

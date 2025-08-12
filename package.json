@@ -39,7 +39,8 @@
     "start": "next start -p 3000",
     "cluster": "cross-env NODE_ENV=production node server.js",
     "standalone": "node ./starter.js",
-    "build-live": "node ./builder.js"
+    "build-live": "node ./builder.js",
+    "test": "jest"
   },
   "eslintConfig": {
     "extends": [
@@ -60,12 +61,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.10",
     "cross-env": "^10.0.0",
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^16.0.0",
+    "jest": "^30.0.5",
+    "ts-jest": "^29.4.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.26.1"
   }

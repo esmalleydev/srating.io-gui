@@ -5,6 +5,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import Organization from '../helpers/Organization';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
 import { setRefreshEnabled } from '@/redux/features/games-slice';
+import { getStore } from '@/app/StoreProvider';
 
 
 const MutationHandler = () => {
@@ -24,7 +25,7 @@ const MutationHandler = () => {
       const pathName = window.location.pathname;
       const splat = pathName.split('/');
 
-      let organization_id = Organization.getCBBID();
+      let organization_id: string | null = null;
       if (splat.length > 1) {
         if (splat[1] === 'cfb') {
           organization_id = Organization.getCFBID();
@@ -32,11 +33,18 @@ const MutationHandler = () => {
         if (splat[1] === 'cbb') {
           organization_id = Organization.getCBBID();
         }
+        const store = getStore();
+
+        if (
+          organization_id &&
+          store.getState().organizationReducer.organization_id !== organization_id
+        ) {
+          dispatch(updateOrganizationID(organization_id));
+        }
       }
 
       dispatch(setLoading(false));
       dispatch(setRefreshEnabled(true));
-      dispatch(updateOrganizationID(organization_id));
     }
   });
   const config = { subtree: true, childList: true };

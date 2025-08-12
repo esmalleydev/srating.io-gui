@@ -11,7 +11,7 @@ class CFB {
    * Get the current default season
    */
   public static getCurrentSeason(): number {
-    return 2025;
+    return 2026;
   }
 
   /**

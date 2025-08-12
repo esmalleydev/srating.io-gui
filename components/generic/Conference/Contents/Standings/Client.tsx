@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 
 import HelperTeam from '@/components/helpers/Team';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
@@ -29,9 +28,6 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-
-  const { width } = useWindowDimensions() as Dimensions;
-  const breakPoint = 425;
 
   const leftSwitch = 'Live';
   const rightSwitch = 'Predicted';
@@ -60,10 +56,10 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
 
   const team_id_x_statistic_ranking_id = {};
 
-  let statistic_rankings = { ...og_statistic_rankings };
+  let statistic_rankings = Objector.deepClone(og_statistic_rankings);
 
   if (subView === 'predicted') {
-    statistic_rankings = { ...statistic_rankings, ...predictions };
+    statistic_rankings = Objector.extender(statistic_rankings, predictions);
   }
 
   const hasConfGame = () => {
@@ -129,17 +125,18 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
       }
     }
 
-    if (!filledContainers) {
-      recordContainer = <>{`${stats.wins}-${stats.losses}`}</>;
-      confRecordContainer = <>{`${stats.confwins}-${stats.conflosses}`}</>;
-    }
-
     row.team_id = team_id;
     row.rank = stats.rank;
-    row.wins = stats.wins;
-    row.losses = stats.losses;
-    row.confwins = stats.confwins;
-    row.conflosses = stats.conflosses;
+    row.wins = stats.wins || 0;
+    row.losses = stats.losses || 0;
+    row.confwins = stats.confwins || 0;
+    row.conflosses = stats.conflosses || 0;
+
+    if (!filledContainers) {
+      recordContainer = <>{`${row.wins}-${row.losses}`}</>;
+      confRecordContainer = <>{`${row.confwins}-${row.conflosses}`}</>;
+    }
+
     row.name = teamHelper.getName();
 
     row.record = recordContainer;
@@ -176,11 +173,6 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
     setView(value);
   };
 
-
-  let rankCellMaxWidth = 50;
-  if (width <= breakPoint) {
-    rankCellMaxWidth = 35;
-  }
 
   const descendingComparator = (a, b, orderBy, direction_) => {
     if ((orderBy in a) && b[orderBy] === null) {

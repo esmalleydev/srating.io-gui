@@ -49,6 +49,7 @@ const Search = (
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<searchPlayer[]>([]);
   const [coaches, setCoaches] = useState<searchCoach[]>([]);
+  const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
@@ -139,6 +140,15 @@ const Search = (
       return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
     });
   }
+
+  // todo include conferences in search, but needs to be filtered in js first
+  // const conferenceOptions: OptionsType[] = Object.values(conferences).map((conference) => {
+  //   return {
+  //     group: 'Conference',
+  //     coach_id: conference.conference_id,
+  //     name: conference.name,
+  //   };
+  // });
 
   const options: OptionsType[] = [
     ...teamOptions,

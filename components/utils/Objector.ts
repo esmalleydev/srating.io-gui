@@ -60,6 +60,60 @@ class Objector {
 
     return clonedObj;
   }
+
+  /**
+   * Deeply merges one or more source objects into a target object.
+   *
+   * - Each property from the sources is deep-cloned before being assigned.
+   * - Existing properties in the target are overwritten by matching keys in later sources.
+   * - Does not use spread or Object.assign.
+   * - Mutates and returns the target object.
+   *
+   * @template T - The type of the target object.
+   * @param {T} target - The object to extend.
+   * @param {...U[]} sources - One or more source objects whose properties will be copied to the target.
+   * @returns {T & U} The mutated target object containing all deep-cloned properties from the sources.
+   *
+   * @throws {TypeError} If the target is null or undefined.
+   *
+   * @example
+   * const target = { a: 1 };
+   * const source = { b: { nested: 2 } };
+   * Objector.extender(target, source);
+   * // target is now { a: 1, b: { nested: 2 } }
+   */
+  public static extender<T extends object, U extends object>(
+    target: T,
+    ...sources: U[]
+  ): T & U {
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    const to = Object(target);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const source of sources) {
+      if (source != null) {
+        // String keys
+        // eslint-disable-next-line no-restricted-syntax
+        for (const key of Object.keys(source)) {
+          to[key] = Objector.deepClone(source[key]);
+        }
+
+        // Symbol keys
+        const symbols = Object.getOwnPropertySymbols(source);
+        // eslint-disable-next-line no-restricted-syntax
+        for (const sym of symbols) {
+          if (Object.prototype.propertyIsEnumerable.call(source, sym)) {
+            to[sym] = Objector.deepClone(source[sym]);
+          }
+        }
+      }
+    }
+
+    return to as T & U;
+  }
 }
 
 export default Objector;
