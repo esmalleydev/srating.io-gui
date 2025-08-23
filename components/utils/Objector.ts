@@ -33,7 +33,7 @@ class Objector {
 
     // Handle arrays
     if (Array.isArray(obj)) {
-      const clonedArray = obj.map((item) => Objector.deepClone(item)) as unknown as T;
+      const clonedArray = obj.map((item) => Objector.deepClone(item, memo)) as unknown as T;
       memo.set(obj, clonedArray);
       return clonedArray;
     }

@@ -482,6 +482,16 @@ class TableColumns {
         views: ['team', 'conference', 'coach'],
         graphable: true,
       },
+      confwins: {
+        id: 'confwins',
+        numeric: false,
+        label: 'CONF W',
+        tooltip: 'Conference Total Wins',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['team', 'coach'],
+        graphable: true,
+      },
       conflosses: {
         id: 'conflosses',
         numeric: false,

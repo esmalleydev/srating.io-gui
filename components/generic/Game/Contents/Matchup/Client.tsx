@@ -1,6 +1,5 @@
 'use client';
 
-import Typography from '@mui/material/Typography';
 import CompareStatistic from '@/components/generic/CompareStatistic';
 import { useAppSelector } from '@/redux/hooks';
 import { Skeleton } from '@mui/material';
@@ -9,6 +8,7 @@ import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
 import CFB from '@/components/helpers/CFB';
 import React from 'react';
+import Typography from '@/components/ux/text/Typography';
 
 
 /**
@@ -1402,7 +1402,7 @@ const Client = ({ game }) => {
       {sections.map((section) => {
         return (
           <React.Fragment key = {section.name}>
-            <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>{section.name}</Typography>
+            <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'body1'>{section.name}</Typography>
             <CompareStatistic max = {numberOfTeams} season = {game.season} paper = {true} rows = {section.rows} />
           </React.Fragment>
         );
