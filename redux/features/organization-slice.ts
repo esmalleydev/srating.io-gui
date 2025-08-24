@@ -1,4 +1,6 @@
 
+import CBB from '@/components/helpers/CBB';
+import CFB from '@/components/helpers/CFB';
 import Division from '@/components/helpers/Division';
 import Organization from '@/components/helpers/Organization';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -8,6 +10,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 type InitialState = {
   organization_id: string,
   division_id: string,
+  season: number,
 };
 
 const getInitialOrganizationID = () => {
@@ -43,12 +46,29 @@ const getInitialDivisionID = () => {
   return Division.getD1();
 };
 
+const getInitialSeason = () => {
+  const organization_id = getInitialOrganizationID();
+
+  // default to FBS
+  if (organization_id === Organization.getCFBID()) {
+    return CFB.getCurrentSeason();
+  }
+
+  if (organization_id === Organization.getCBBID()) {
+    return CBB.getCurrentSeason();
+  }
+
+  return 2026;
+};
+
 const initalOrganizationID = getInitialOrganizationID();
 const initalDivisionID = getInitialDivisionID();
+const initalSeason = getInitialSeason();
 
 const initialState = {
   organization_id: initalOrganizationID,
   division_id: initalDivisionID,
+  season: initalSeason,
 } as InitialState;
 
 export const organization = createSlice({

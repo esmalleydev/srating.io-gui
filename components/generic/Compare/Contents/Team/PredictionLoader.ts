@@ -10,10 +10,13 @@ const PredictionLoader = () => {
 
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const division_id = useAppSelector((state) => state.organizationReducer.division_id);
-  const season = useAppSelector((state) => state.compareReducer.season);
+  const organizationSeason = useAppSelector((state) => state.organizationReducer.season);
+  const compareSeason = useAppSelector((state) => state.compareReducer.season);
   const home_team_id = useAppSelector((state) => state.compareReducer.home_team_id);
   const away_team_id = useAppSelector((state) => state.compareReducer.away_team_id);
   const neutral_site = useAppSelector((state) => state.compareReducer.neutral_site);
+
+  const season = compareSeason || organizationSeason;
 
   const [loading, setLoading] = useState(false);
   const [lastSeason, setLastSeason] = useState<number | null>(null);
