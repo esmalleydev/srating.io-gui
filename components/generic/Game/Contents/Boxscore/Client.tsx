@@ -568,7 +568,7 @@ const Client = (
   /**
    * Get the team boxscore content
    */
-  const getBoxscoreContent = (): React.JSX.Element => {
+  const getBoxscoreContent = () => {
     if (!hasBoxscoreData) {
       return <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>No boxscore data yet...</Typography>;
     }
