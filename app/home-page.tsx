@@ -58,7 +58,7 @@ const Home = () => {
 
     if (selectedHero === 'trends') {
       contents.push(
-        <Paper style = {{ width: '100%', padding: '0px 0px 10px 0px' }}>
+        <Paper key = {'trends'} style = {{ width: '100%', padding: '0px 0px 10px 0px' }}>
           <TrendsExample />
         </Paper>,
       );
@@ -66,7 +66,7 @@ const Home = () => {
 
     if (selectedHero === 'rankings') {
       contents.push(
-        <Paper style = {{ width: '100%', padding: '0px' }}>
+        <Paper key = {'rankings'} style = {{ width: '100%', padding: '0px' }}>
           <RankingExample />
         </Paper>,
       );
@@ -74,7 +74,7 @@ const Home = () => {
 
     if (selectedHero === 'tools') {
       contents.push(
-        <Paper style = {{ width: '100%' }}>
+        <Paper key = {'tools'} style = {{ width: '100%' }}>
           <ToolsExample />
         </Paper>,
       );
@@ -134,7 +134,7 @@ const Home = () => {
             }
 
             return (
-              <Card sx={cardStyle}>
+              <Card key = {card.id} sx={cardStyle}>
                 <CardActionArea style={{ height: '100%' }} onClick={() => setSelectedHero(card.id)}>
                   <CardContent style = {cardContentStyle}>
                     <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography type={(hitBreakPoint ? 'body1' : 'h6')} style = {{ display: 'inline-block' }}>{card.name}</Typography>{card.icon}</div>

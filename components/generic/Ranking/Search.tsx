@@ -44,7 +44,7 @@ const Search = ({ view }: {view: string}) => {
 
 
   const onChange = (e, v) => {
-    console.time('Search.onChange')
+    // console.time('Search.onChange')
     const value: null | string = (e && e.target && e.target.value) || v;
 
     dispatch(setDataKey({ key: 'searchValue', value: (value || '') }));
@@ -84,7 +84,7 @@ const Search = ({ view }: {view: string}) => {
     } else {
       handleSearch(false);
     }
-    console.timeEnd('Search.onChange')
+    // console.timeEnd('Search.onChange')
   };
 
 
