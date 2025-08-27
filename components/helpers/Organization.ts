@@ -23,6 +23,10 @@ class Organization {
     return 'f1c37c98-3b4c-11ef-94bc-2a93761010b8';
   }
 
+  public static getDefault(): string {
+    return Organization.getCFBID();
+  }
+
   /**
    * Is the current organization college football?
    * Becareful using this, if you conditonally use it, the hooks between renders will be off and error out react

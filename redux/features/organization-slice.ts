@@ -28,7 +28,7 @@ const getInitialOrganizationID = () => {
     }
   }
 
-  return Organization.getCBBID();
+  return Organization.getDefault();
 };
 
 const getInitialDivisionID = () => {
