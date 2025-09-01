@@ -1,4 +1,5 @@
-'use server';
+
+export const dynamic = 'force-dynamic';
 
 import { Metadata, ResolvingMetadata } from 'next';
 
@@ -12,7 +13,6 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-// export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(
   { params, searchParams }: Props,

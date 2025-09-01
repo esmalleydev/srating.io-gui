@@ -1,4 +1,6 @@
-import React from 'react';
+
+export const dynamic = 'force-dynamic';
+
 import { Metadata } from 'next';
 
 import Pricing from '../../components/generic/Pricing';
