@@ -26,6 +26,11 @@ export default function StoreProvider({
     globalStore = storeRef.current;
   }
 
+  // so I can debug garbage redux + react
+  if (typeof window !== 'undefined') {
+    window.globalStore = globalStore;
+  }
+
   return (
     <Provider store={storeRef.current}>{children}</Provider>
   );
