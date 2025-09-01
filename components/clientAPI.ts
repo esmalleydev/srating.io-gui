@@ -15,9 +15,11 @@ export async function useClientAPI(args, optional_fetch_args = {}) {
     url = window.location.origin + path;
   }
 
-  const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;
-  const secret = (typeof window !== 'undefined' && sessionStorage.getItem('secret')) || null;
-  const kryptos = (typeof window !== 'undefined' && sessionStorage.getItem('kryptos')) || null;
+  let store = getStore();
+
+  const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || store.getState().userReducer.secret_id || null;
+  const secret = (typeof window !== 'undefined' && sessionStorage.getItem('secret')) || store.getState().userReducer.secret_id || null;
+  const kryptos = (typeof window !== 'undefined' && sessionStorage.getItem('kryptos')) || store.getState().userReducer.kryptos || null;
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
@@ -48,13 +50,18 @@ export async function useClientAPI(args, optional_fetch_args = {}) {
     .then((json) => {
       // new update available
       if (json && json.error && json.code === 105) {
-        const store = getStore();
+        store = getStore();
         store.dispatch(setNewUpdate(true));
       }
 
       // secret expired
       if (json && json.error && json.code === 103) {
         // todo trigger refresh?
+      }
+
+      // no krytos sent
+      if (json && json.error && json.code === 102) {
+        // todo
       }
 
       return json;
