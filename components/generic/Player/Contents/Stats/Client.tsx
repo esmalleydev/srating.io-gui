@@ -46,17 +46,7 @@ const ClientSkeleton = () => {
 const Client = ({ organization_id, division_id, season, player_statistic_ranking }) => {
   const theme = useTheme();
 
-  const getMax = () => {
-    if (Organization.isCFB()) {
-      // todo get CFB players length
-      return 0;
-    //   return CFB.getNumberOfD1Players({ division_id, season });
-    }
-
-    return CBB.getNumberOfD1Players(season);
-  };
-
-  const maxPlayers = getMax();
+  const maxPlayers = player_statistic_ranking.max;
 
   const columns = TableColumns.getColumns({ organization_id, view: 'player' });
 
@@ -179,6 +169,9 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
   const sections = getSections();
 
   const getStatBlock = (key: string) => {
+    if (!key || !(key in columns)) {
+      return <></>;
+    }
     const column = columns[key];
     const statistic = key in player_statistic_ranking ? player_statistic_ranking[key] : null;
     const rank = key in player_statistic_ranking ? player_statistic_ranking[`${key}_rank`] : null;
