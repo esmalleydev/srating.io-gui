@@ -51,6 +51,7 @@ Prerequisites: typescript, nodejs, npm.
 5. Build the client and start production build
 
     ```sh
+    npm ci
     npm run build
     npm run start
     ```
