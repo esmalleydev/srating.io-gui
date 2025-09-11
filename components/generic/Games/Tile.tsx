@@ -1,7 +1,6 @@
 'use client';
 
-import { useRef, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
@@ -21,7 +20,6 @@ import { useScrollContext } from '@/contexts/scrollContext';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { setScrollTop } from '@/redux/features/games-slice';
 import useOnScreen from '@/components/hooks/useOnScreen';
-import { setLoading } from '@/redux/features/display-slice';
 import Record from './Tile/Record';
 import Rank from './Tile/Rank';
 import Organization from '@/components/helpers/Organization';
@@ -29,6 +27,7 @@ import { reset } from '@/redux/features/game-slice';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Style from '@/components/utils/Style';
+import Navigation from '@/components/helpers/Navigation';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {
@@ -51,8 +50,7 @@ export const getTileBaseStyle = (): React.CSSProperties => {
 };
 
 const Tile = ({ game, isLoadingWinPercentage }) => {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const navigation = new Navigation();
   const theme = useTheme();
 
   const ref = useRef<HTMLDivElement>(null);
@@ -91,10 +89,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     dispatch(updateGameSort(null));
     refresh(`${path}.games.${game.game_id}`);
     dispatch(reset());
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/games/${game.game_id}`);
-    });
+
+    navigation.games(`/${path}/games/${game.game_id}`);
   };
 
 

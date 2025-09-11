@@ -2,6 +2,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
+// todo this is really the /sport/games/abc path, this name of "game" is confusing
+
+
 type InitialState = {
   game: object,
   coaches: object,

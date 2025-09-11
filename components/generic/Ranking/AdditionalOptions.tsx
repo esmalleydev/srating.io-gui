@@ -7,7 +7,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import IconButton from '@mui/material/IconButton';
 
-import { Divider, Tooltip } from '@mui/material';
+import { Divider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { useSearchParams } from 'next/navigation';
@@ -17,6 +17,7 @@ import MenuList from '@/components/ux/menu/MenuList';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 const AdditionalOptions = ({ view }: {view: string}) => {
   const searchParams = useSearchParams();
@@ -140,7 +141,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
 
   return (
     <div>
-      <Tooltip title = {'Additional filters'}>
+      <Tooltip onClickRemove text = {'Additional filters'}>
         <IconButton
             id="additional-filters"
             aria-controls={open ? 'long-menu' : undefined}

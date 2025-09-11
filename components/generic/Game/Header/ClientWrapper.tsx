@@ -1,15 +1,12 @@
 'use client';
 
-import { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
 import HelperTeam from '@/components/helpers/Team';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import BackButton from '@/components/generic/BackButton';
 import Pin from '@/components/generic/Pin';
-import { setLoading } from '@/redux/features/display-slice';
 import Rank from './Rank';
 import Record from './Record';
 import Organization from '@/components/helpers/Organization';
@@ -21,6 +18,7 @@ import ConferenceRecord from './ConferenceRecord';
 import RefreshCounter from './RefreshCounter';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import Navigation from '@/components/helpers/Navigation';
 
 
 const getBreakPoint = () => {
@@ -54,10 +52,8 @@ const ClientWrapper = (
   { game, coaches, coach_team_seasons, children }:
   { game: Game; coaches: Coaches; coach_team_seasons: CoachTeamSeasons; children: React.JSX.Element; },
 ) => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
+  const navigation = new Navigation();
   const theme = useTheme();
-  const [isPending, startTransition] = useTransition();
 
   const { width } = useWindowDimensions() as Dimensions;
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
@@ -82,27 +78,18 @@ const ClientWrapper = (
   }
 
   const handleTeamClick = (team_id: string) => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/team/${team_id}?season=${game.season}`);
-    });
+    navigation.team(`/${path}/team/${team_id}?season=${game.season}`);
   };
 
   const handleConferenceClick = (conference_id: string | null) => {
     if (conference_id) {
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.push(`/${path}/conference/${conference_id}?season=${game.season}`);
-      });
+      navigation.conference(`/${path}/conference/${conference_id}?season=${game.season}`);
     }
   };
 
   const handleCoachClick = (coach_id: string | null) => {
     if (coach_id) {
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.push(`/${path}/coach/${coach_id}?season=${game.season}`);
-      });
+      navigation.coach(`/${path}/coach/${coach_id}?season=${game.season}`);
     }
   };
 

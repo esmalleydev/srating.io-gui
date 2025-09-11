@@ -6,6 +6,7 @@ type TableColumn = {
   id: string;
   numeric: boolean;
   label: string;
+  alt_label?: string;
   tooltip: string;
   sticky?: boolean;
   disabled?: boolean;
@@ -18,6 +19,23 @@ type TableColumn = {
     default: number;
   }
 }
+
+type TableColumnBoxscore = {
+  id: string;
+  numeric: boolean;
+  label: string;
+  alt_label?: string;
+  tooltip: string;
+  sticky?: boolean;
+  disabled?: boolean;
+  sort?: 'lower' | 'higher';
+  organization_ids: string[];
+  views: string[];
+}
+
+export type TableColumnBoxscoresType = {
+  [key: string]: TableColumnBoxscore;
+};
 
 export type TableColumnsType = {
   [key: string]: TableColumn;
@@ -131,6 +149,36 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: allViews,
         graphable: true,
+      },
+      fatigue: {
+        id: 'fatigue',
+        numeric: true,
+        label: 'FA',
+        tooltip: 'Fatigue',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['team'],
+        graphable: false,
+      },
+      desperation: {
+        id: 'desperation',
+        numeric: true,
+        label: 'DES',
+        tooltip: 'Desperation',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['team'],
+        graphable: false,
+      },
+      over_confidence: {
+        id: 'over_confidence',
+        numeric: true,
+        label: 'OVC',
+        tooltip: 'Over confidence',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['team'],
+        graphable: false,
       },
       field_goal: {
         id: 'field_goal',
@@ -1350,8 +1398,9 @@ class TableColumns {
       passing_attempts: {
         id: 'passing_attempts',
         numeric: true,
-        label: 'Pass att.',
-        tooltip: 'Passing attempts',
+        label: (view === 'player' ? 'Pass att. total' : 'Pass att.'),
+        alt_label: (view === 'player' ? 'ATT-T' : 'ATT'),
+        tooltip: (view === 'player' ? 'Total passing attempts in a season' : 'Passing attempts per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1360,8 +1409,9 @@ class TableColumns {
       passing_completions: {
         id: 'passing_completions',
         numeric: true,
-        label: 'Pass comp.',
-        tooltip: 'Passing completions',
+        label: (view === 'player' ? 'Pass comp. total' : 'Pass comp.'),
+        alt_label: (view === 'player' ? 'COMP-T' : 'COMP'),
+        tooltip: (view === 'player' ? 'Total passing completions in a season' : 'Passing completions per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1370,8 +1420,9 @@ class TableColumns {
       passing_yards: {
         id: 'passing_yards',
         numeric: true,
-        label: 'Pass yards',
-        tooltip: 'Passing yards',
+        label: (view === 'player' ? 'Pass yards total' : 'Pass yards'),
+        alt_label: (view === 'player' ? 'YDS-T' : 'YDS'),
+        tooltip: (view === 'player' ? 'Total passing yards in a season' : 'Passing yards per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1381,6 +1432,7 @@ class TableColumns {
         id: 'passing_completion_percentage',
         numeric: true,
         label: 'Pass comp. %',
+        alt_label: 'COMP%',
         tooltip: 'Passing completions percentage',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -1391,6 +1443,7 @@ class TableColumns {
         id: 'passing_yards_per_attempt',
         numeric: true,
         label: 'Pass yards per att.',
+        alt_label: 'AVG',
         tooltip: 'Passing yard per attempt',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -1401,6 +1454,7 @@ class TableColumns {
         id: 'passing_yards_per_completion',
         numeric: true,
         label: 'Pass yards per comp.',
+        alt_label: 'YDS per COMP',
         tooltip: 'Passing yards per completion',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -1410,8 +1464,9 @@ class TableColumns {
       passing_touchdowns: {
         id: 'passing_touchdowns',
         numeric: true,
-        label: 'Pass TD',
-        tooltip: 'Passing touchdowns',
+        label: (view === 'player' ? 'Pass TD total' : 'Pass TD'),
+        alt_label: (view === 'player' ? 'TD-T' : 'TD'),
+        tooltip: (view === 'player' ? 'Total passing touchdowns in a season' : 'Passing touchdowns per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1420,8 +1475,9 @@ class TableColumns {
       passing_interceptions: {
         id: 'passing_interceptions',
         numeric: true,
-        label: 'Pass int.',
-        tooltip: 'Passing interceptions',
+        label: (view === 'player' ? 'Pass int. total' : 'Pass int.'),
+        alt_label: (view === 'player' ? 'INT-T' : 'INT'),
+        tooltip: (view === 'player' ? 'Total passing interceptions in a season' : 'Passing interceptions per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1451,6 +1507,7 @@ class TableColumns {
         id: 'passing_long',
         numeric: true,
         label: 'Pass long',
+        alt_label: 'LONG',
         tooltip: 'Passing long',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -1460,8 +1517,9 @@ class TableColumns {
       rushing_attempts: {
         id: 'rushing_attempts',
         numeric: true,
-        label: 'Rush att.',
-        tooltip: 'Rushing attempts',
+        label: (view === 'player' ? 'Rush att. total' : 'Rush att.'),
+        alt_label: (view === 'player' ? 'ATT-T' : 'ATT'),
+        tooltip: (view === 'player' ? 'Total rushing attempts in a season' : 'Rushing attempts per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1470,8 +1528,9 @@ class TableColumns {
       rushing_yards: {
         id: 'rushing_yards',
         numeric: true,
-        label: 'Rush yards',
-        tooltip: 'Rushing yards',
+        label: (view === 'player' ? 'Rush yards total' : 'Rush yards'),
+        alt_label: (view === 'player' ? 'YDS-T' : 'YDS'),
+        tooltip: (view === 'player' ? 'Total rushing yards in a season' : 'Rushing yards per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1481,6 +1540,7 @@ class TableColumns {
         id: 'rushing_yards_per_attempt',
         numeric: true,
         label: 'Rush yards per att.',
+        alt_label: 'AVG',
         tooltip: 'Rushing yards per attempt',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -1490,8 +1550,9 @@ class TableColumns {
       rushing_touchdowns: {
         id: 'rushing_touchdowns',
         numeric: true,
-        label: 'Rush TD',
-        tooltip: 'Rushing touchdowns',
+        label: (view === 'player' ? 'Rush TD total' : 'Rush TD'),
+        alt_label: (view === 'player' ? 'TD-T' : 'TD'),
+        tooltip: (view === 'player' ? 'Total rushing touchdowns in a season' : 'Rushing touchdowns per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1501,6 +1562,7 @@ class TableColumns {
         id: 'rushing_long',
         numeric: true,
         label: 'Rush long',
+        alt_label: 'LONG',
         tooltip: 'Rushing long',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -1510,8 +1572,9 @@ class TableColumns {
       receptions: {
         id: 'receptions',
         numeric: true,
-        label: 'Receptions',
-        tooltip: '# of receptions',
+        label: (view === 'player' ? 'Receptions total' : 'Receptions'),
+        alt_label: (view === 'player' ? 'REC-T' : 'REC'),
+        tooltip: (view === 'player' ? 'Total receptions in a season' : 'Receptions per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1520,8 +1583,9 @@ class TableColumns {
       receiving_yards: {
         id: 'receiving_yards',
         numeric: true,
-        label: 'Rec. yards',
-        tooltip: 'Receiving yards',
+        label: (view === 'player' ? 'Rec. yards total' : 'Rec. yards'),
+        alt_label: (view === 'player' ? 'YDS-T' : 'YDS'),
+        tooltip: (view === 'player' ? 'Total receiving yards in a season' : 'Receiving yards per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1531,6 +1595,7 @@ class TableColumns {
         id: 'receiving_yards_per_reception',
         numeric: true,
         label: 'Rec. yards per recep.',
+        alt_label: 'AVG',
         tooltip: 'Receiving yards per reception',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -1540,8 +1605,9 @@ class TableColumns {
       receiving_touchdowns: {
         id: 'receiving_touchdowns',
         numeric: true,
-        label: 'Rec. TD',
-        tooltip: 'Receiving touchdowns',
+        label: (view === 'player' ? 'Rec. TD total' : 'Rec. TD'),
+        alt_label: (view === 'player' ? 'TD-T' : 'TD'),
+        tooltip: (view === 'player' ? 'Total receiving touchdowns in a season' : 'Receiving touchdowns per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
         views: ['team', 'player', 'conference', 'transfer'],
@@ -1551,6 +1617,7 @@ class TableColumns {
         id: 'receiving_long',
         numeric: true,
         label: 'Rec. long',
+        alt_label: 'LONG',
         tooltip: 'Receiving long',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2670,7 +2737,8 @@ class TableColumns {
       passing_attempts_per_game: {
         id: 'passing_attempts_per_game',
         numeric: true,
-        label: 'Pass att. per game',
+        label: 'Pass att.',
+        alt_label: 'ATT',
         tooltip: 'Passing attempts per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2680,7 +2748,8 @@ class TableColumns {
       passing_completions_per_game: {
         id: 'passing_completions_per_game',
         numeric: true,
-        label: 'Pass comp. per game',
+        label: 'Pass comp.',
+        alt_label: 'COMP',
         tooltip: 'Passing completions per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2690,7 +2759,8 @@ class TableColumns {
       passing_yards_per_game: {
         id: 'passing_yards_per_game',
         numeric: true,
-        label: 'Pass yards per game',
+        label: 'Pass yards',
+        alt_label: 'YDS',
         tooltip: 'Passing yards per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2700,7 +2770,8 @@ class TableColumns {
       passing_touchdowns_per_game: {
         id: 'passing_touchdowns_per_game',
         numeric: true,
-        label: 'Pass TD per game',
+        label: 'Pass TD',
+        alt_label: 'TD',
         tooltip: 'Passing touchdowns per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2710,7 +2781,8 @@ class TableColumns {
       passing_interceptions_per_game: {
         id: 'passing_interceptions_per_game',
         numeric: true,
-        label: 'Pass int. per game',
+        label: 'Pass int.',
+        alt_label: 'INT',
         tooltip: 'Passing interceptions per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2720,7 +2792,8 @@ class TableColumns {
       rushing_attempts_per_game: {
         id: 'rushing_attempts_per_game',
         numeric: true,
-        label: 'Rush att. per game',
+        label: 'Rush att',
+        alt_label: 'ATT',
         tooltip: 'Rushing attempts per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2730,7 +2803,8 @@ class TableColumns {
       rushing_yards_per_game: {
         id: 'rushing_yards_per_game',
         numeric: true,
-        label: 'Rush yards per game',
+        label: 'Rush yards',
+        alt_label: 'YDS',
         tooltip: 'Rushing yards per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2740,7 +2814,8 @@ class TableColumns {
       rushing_touchdowns_per_game: {
         id: 'rushing_touchdowns_per_game',
         numeric: true,
-        label: 'Rush TD per game',
+        label: 'Rush TD',
+        alt_label: 'TD',
         tooltip: 'Rushing touchdowns per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2750,7 +2825,8 @@ class TableColumns {
       receptions_per_game: {
         id: 'receptions_per_game',
         numeric: true,
-        label: 'Receptions per game',
+        label: 'Receptions',
+        alt_label: 'REC',
         tooltip: '# of receptions per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2760,7 +2836,8 @@ class TableColumns {
       receiving_yards_per_game: {
         id: 'receiving_yards_per_game',
         numeric: true,
-        label: 'Rec. yards per game',
+        label: 'Rec. yards',
+        alt_label: 'YDS',
         tooltip: 'Receiving yards per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2770,7 +2847,8 @@ class TableColumns {
       receiving_touchdowns_per_game: {
         id: 'receiving_touchdowns_per_game',
         numeric: true,
-        label: 'Rec. TD per game',
+        label: 'Rec. TD',
+        alt_label: 'TD',
         tooltip: 'Receiving touchdowns per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2780,7 +2858,8 @@ class TableColumns {
       punt_returns_per_game: {
         id: 'punt_returns_per_game',
         numeric: true,
-        label: 'Punt ret. per game',
+        label: 'Punt ret.',
+        alt_label: 'RET',
         tooltip: 'Punt returns per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2790,7 +2869,8 @@ class TableColumns {
       punt_return_yards_per_game: {
         id: 'punt_return_yards_per_game',
         numeric: true,
-        label: 'Punt ret. yards per game',
+        label: 'Punt ret. yards',
+        alt_label: 'YDS',
         tooltip: 'Punt return yards per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2800,7 +2880,8 @@ class TableColumns {
       punt_return_touchdowns_per_game: {
         id: 'punt_return_touchdowns_per_game',
         numeric: true,
-        label: 'Punt ret. TD per game',
+        label: 'Punt ret. TD',
+        alt_label: 'TD',
         tooltip: 'Punt return touchdowns per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2810,7 +2891,8 @@ class TableColumns {
       kick_returns_per_game: {
         id: 'kick_returns_per_game',
         numeric: true,
-        label: 'Kick ret. per game',
+        label: 'Kick ret.',
+        alt_label: 'RET',
         tooltip: 'Kick returns per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2820,7 +2902,8 @@ class TableColumns {
       kick_return_yards_per_game: {
         id: 'kick_return_yards_per_game',
         numeric: true,
-        label: 'Kick ret. yards per game',
+        label: 'Kick ret. yards',
+        alt_label: 'YDS',
         tooltip: 'Kick return yards per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2830,7 +2913,8 @@ class TableColumns {
       kick_return_touchdowns_per_game: {
         id: 'kick_return_touchdowns_per_game',
         numeric: true,
-        label: 'Kick ret. TD per game',
+        label: 'Kick ret. TD',
+        alt_label: 'TD',
         tooltip: 'Kick return touchdowns per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2840,7 +2924,7 @@ class TableColumns {
       punts_per_game: {
         id: 'punts_per_game',
         numeric: true,
-        label: 'Punts per game',
+        label: 'Punts',
         tooltip: 'Punts per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2850,7 +2934,8 @@ class TableColumns {
       punt_yards_per_game: {
         id: 'punt_yards_per_game',
         numeric: true,
-        label: 'Punt yards per game',
+        label: 'Punt yards',
+        alt_label: 'YDS',
         tooltip: 'Punt yards per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2860,7 +2945,7 @@ class TableColumns {
       field_goals_attempted_per_game: {
         id: 'field_goals_attempted_per_game',
         numeric: true,
-        label: 'FG att. per game',
+        label: 'FGA',
         tooltip: 'Field goals attempted per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2870,7 +2955,7 @@ class TableColumns {
       field_goals_made_per_game: {
         id: 'field_goals_made_per_game',
         numeric: true,
-        label: 'FGs per game',
+        label: 'FG',
         tooltip: 'Field goals made per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2880,7 +2965,7 @@ class TableColumns {
       interceptions_per_game: {
         id: 'interceptions_per_game',
         numeric: true,
-        label: 'Int. per game',
+        label: 'INT',
         tooltip: 'Interceptions per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2890,7 +2975,7 @@ class TableColumns {
       sacks_per_game: {
         id: 'sacks_per_game',
         numeric: true,
-        label: 'Sacks per game',
+        label: 'Sacks',
         tooltip: 'Sacks per game',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
@@ -2900,7 +2985,7 @@ class TableColumns {
       fumbles_per_game: {
         id: 'fumbles_per_game',
         numeric: true,
-        label: 'Fumbles per game',
+        label: 'Fumbles',
         tooltip: 'Fumbles per game',
         sort: 'lower',
         organization_ids: [Organization.getCFBID()],
@@ -2915,6 +3000,310 @@ class TableColumns {
         !columns[key].views.includes(view) ||
         (graphable !== undefined && graphable !== columns[key].graphable) ||
         (disabled !== undefined && 'disabled' in columns[key] && disabled !== columns[key].disabled)
+      ) {
+        delete columns[key];
+      }
+    }
+
+    return columns;
+  }
+
+  public static getBoxscoreColumns(
+    { organization_id, view }:
+    { organization_id: string; view: string; },
+  ): TableColumnBoxscoresType {
+    const allViews = [
+      'game',
+      'player',
+    ];
+
+    const columns: TableColumnBoxscoresType = {
+      name: {
+        id: 'name',
+        numeric: false,
+        label: 'Player',
+        tooltip: 'Player',
+        sticky: true,
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: allViews,
+      },
+      game_details: {
+        id: 'game_details',
+        numeric: false,
+        label: 'Game',
+        tooltip: 'Game',
+        sticky: true,
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['player'],
+      },
+      minutes_played: {
+        id: 'minutes_played',
+        label: 'MP',
+        tooltip: 'Minutes played',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      points: {
+        id: 'points',
+        label: 'PTS',
+        tooltip: 'Points',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: allViews,
+      },
+      fg: {
+        id: 'fg',
+        label: 'FG',
+        tooltip: 'Field goals',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      two_fg: {
+        id: 'two_fg',
+        label: '2P',
+        tooltip: '2 point field goals',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      three_fg: {
+        id: 'three_fg',
+        label: '3P',
+        tooltip: '3 point field goals',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      ft: {
+        id: 'ft',
+        label: 'FT',
+        tooltip: 'Free throws',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      offensive_rebounds: {
+        id: 'offensive_rebounds',
+        label: 'ORB',
+        tooltip: 'Offensive rebounds',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      defensive_rebounds: {
+        id: 'defensive_rebounds',
+        label: 'DRB',
+        tooltip: 'Defensive rebounds',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      assists: {
+        id: 'assists',
+        label: 'AST',
+        tooltip: 'Assists',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      steals: {
+        id: 'steals',
+        label: 'STL',
+        tooltip: 'Steals',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      blocks: {
+        id: 'blocks',
+        label: 'BLK',
+        tooltip: 'Blocks',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      turnovers: {
+        id: 'turnovers',
+        label: 'TOV',
+        tooltip: 'Turnovers',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      fouls: {
+        id: 'fouls',
+        label: 'PF',
+        tooltip: 'Personal fouls',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: allViews,
+      },
+      passing_completions_and_attempts: {
+        id: 'passing_completions_and_attempts',
+        label: 'C/ATT',
+        tooltip: 'Completions / Attempts',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      passing_yards: {
+        id: 'passing_yards',
+        label: 'YDS',
+        tooltip: 'Yards',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      passing_yards_per_attempt: {
+        id: 'passing_yards_per_attempt',
+        label: 'AVG',
+        tooltip: 'Yards per attempt',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      passing_touchdowns: {
+        id: 'passing_touchdowns',
+        label: 'TD',
+        tooltip: 'Touchdowns',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      passing_interceptions: {
+        id: 'passing_interceptions',
+        label: 'INT',
+        tooltip: 'Interceptions',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      passing_rating_college: {
+        id: 'passing_rating_college',
+        label: 'QBR(c)',
+        tooltip: 'Quarterback rating college',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      rushing_attempts: {
+        id: 'rushing_attempts',
+        label: 'ATT',
+        tooltip: 'Attempts',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      rushing_yards: {
+        id: 'rushing_yards',
+        label: 'YDS',
+        tooltip: 'Yards',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      rushing_yards_per_attempt: {
+        id: 'rushing_yards_per_attempt',
+        label: 'AVG',
+        tooltip: 'Yards per attempt',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      rushing_touchdowns: {
+        id: 'rushing_touchdowns',
+        label: 'TD',
+        tooltip: 'Touchdowns',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      rushing_long: {
+        id: 'rushing_long',
+        label: 'LONG',
+        tooltip: 'Longest attempt',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      receptions: {
+        id: 'receptions',
+        label: 'REC',
+        tooltip: 'Receptions',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      receiving_yards: {
+        id: 'receiving_yards',
+        label: 'YDS',
+        tooltip: 'Yards',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      receiving_yards_per_reception: {
+        id: 'receiving_yards_per_reception',
+        label: 'AVG',
+        tooltip: 'Yards per reception',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      receiving_touchdowns: {
+        id: 'receiving_touchdowns',
+        label: 'TD',
+        tooltip: 'Touchdowns',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+      receiving_long: {
+        id: 'receiving_long',
+        label: 'LONG',
+        tooltip: 'Longest attempt',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+      },
+    };
+
+
+    for (const key in columns) {
+      if (
+        !columns[key].organization_ids.includes(organization_id) ||
+        !columns[key].views.includes(view)
       ) {
         delete columns[key];
       }

@@ -11,7 +11,6 @@ import { setLoading as setLoadingDisplay, clearPositions, updatePositions } from
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import AdditionalOptions from './AdditionalOptions';
-import PositionPicker from '../PositionPicker';
 import Search from './Search';
 import { getViewableColumns } from './columns';
 import LastUpdated from './LastUpdated';
@@ -23,6 +22,7 @@ import ConferencePicker from '../ConferencePicker';
 import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import PositionPicker from './PositionPicker';
 
 
 const Base = (
@@ -46,7 +46,7 @@ const Base = (
 
   const [legendOpen, setLegendOpen] = useState(false);
 
-  const columns = getViewableColumns({ organization_id, view, columnView, customColumns });
+  const columns = getViewableColumns({ organization_id, view, columnView, customColumns, positions });
 
   let seasons = (
     organization_id in organization_id_x_division_id_x_ranking_seasons &&
@@ -69,10 +69,10 @@ const Base = (
     { value: 'team', label: 'Team rankings' },
     { value: 'conference', label: 'Conference rankings' },
     { value: 'coach', label: 'Coach rankings' },
+    { value: 'player', label: 'Player rankings' },
   ];
 
   if (Organization.getCBBID() === organization_id) {
-    rankViewOptions.push({ value: 'player', label: 'Player rankings' });
     rankViewOptions.push({ value: 'transfer', label: 'Transfer rankings' });
   }
 
@@ -83,8 +83,10 @@ const Base = (
 
 
   const positionChips: React.JSX.Element[] = [];
-  for (let i = 0; i < positions.length; i++) {
-    positionChips.push(<Chip key = {positions[i]} value = {positions[i]} style = {{ margin: '5px' }} title={positions[i]} onDelete={() => { dispatch(updatePositions(positions[i])); }} />);
+  if (Organization.getCFBID() !== organization_id) {
+    for (let i = 0; i < positions.length; i++) {
+      positionChips.push(<Chip key = {positions[i]} value = {positions[i]} style = {{ margin: '5px' }} title={positions[i]} onDelete={() => { dispatch(updatePositions(positions[i])); }} />);
+    }
   }
 
   const handleRankView = (newRankView) => {
@@ -99,6 +101,13 @@ const Base = (
       dispatch(setDataKey({ key: 'columnView', value: 'composite' }));
       dispatch(setDataKey({ key: 'filteredRows', value: null }));
       dispatch(setDataKey({ key: 'searchValue', value: '' }));
+
+      if (
+        Organization.getCFBID() === organization_id &&
+        newRankView === 'player'
+      ) {
+        dispatch(updatePositions('QB'));
+      }
 
       if (searchParams) {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -161,7 +170,7 @@ const Base = (
                 <div style={{ display: 'flex', alignItems: 'baseline' }}>
                   {view === 'player' || view === 'transfer' ? <AdditionalOptions view = {view} /> : ''}
                   {view !== 'conference' ? <ConferencePicker /> : ''}
-                  {view === 'player' || view === 'transfer' ? <PositionPicker selected = {positions} /> : ''}
+                  {view === 'player' || view === 'transfer' ? <PositionPicker selected = {positions} isRadio = {Organization.getCFBID() === organization_id} /> : ''}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'baseline' }}>
                   <Search view = {view} />

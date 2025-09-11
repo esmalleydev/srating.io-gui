@@ -2,13 +2,14 @@
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import { Skeleton, Tooltip } from '@mui/material';
+import { Skeleton } from '@mui/material';
 
 import Locked from './Billing/Locked';
 import RankSpan from './RankSpan';
 import Typography from '../ux/text/Typography';
 import { useTheme } from '../hooks/useTheme';
 import Paper from '../ux/container/Paper';
+import Tooltip from '../ux/hover/Tooltip';
 
 
 const CompareStatistic = (
@@ -303,7 +304,7 @@ const CompareStatistic = (
                 }
               </div>
               <div style = {{ textAlign: 'center', whiteSpace: 'nowrap' }}>
-                <Tooltip enterTouchDelay={0} key={row.tooltip || row.title || row.name} disableFocusListener placement = 'top' title={row.tooltip || row.title || row.name}><Typography style = {titleStyle} type = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
+                <Tooltip key={row.tooltip || row.title || row.name} delay = {500} position = 'top' text={row.tooltip || row.title || row.name}><Typography style = {titleStyle} type = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
               </div>
               <div style = {{ margin: '0px 5px 0px 20px', minWidth: '100px', textAlign: 'right', overflow: 'hidden' }}>
                 {

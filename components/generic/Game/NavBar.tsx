@@ -8,6 +8,7 @@ import HelperGame from '@/components/helpers/Game';
 import { setDataKey } from '@/redux/features/game-slice';
 import { startTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import Style from '@/components/utils/Style';
 
 
 const getNavHeaderHeight = () => {
@@ -137,19 +138,15 @@ const NavBar = () => {
     );
   }
 
+  const divStyle = Style.getStyleClassName({
+    ...Style.getNavBar(),
+    backgroundColor,
+    top: getMarginTop() + getHeaderHeight(),
+  });
+
   return (
     <>
-      <div style = {{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        backgroundColor,
-        top: getMarginTop() + getHeaderHeight(),
-        position: 'fixed',
-        overflowX: 'scroll',
-        overflowY: 'hidden',
-        scrollbarWidth: 'none',
-      }}>
+      <div className={divStyle}>
         {tabs}
       </div>
       <div style = {{ marginTop: getNavHeaderHeight(), width: '100%', display: 'flex', justifyContent: 'center', overflowX: 'scroll', overflowY: 'hidden', scrollbarWidth: 'none' }}>

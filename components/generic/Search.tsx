@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import useDebounce from '@/components/hooks/useDebounce';
 
 
@@ -10,14 +9,13 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 import { useClientAPI } from '../clientAPI';
 import { Coach, Player, Team } from '@/types/general';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
+import { useAppSelector } from '@/redux/hooks';
 import Text from '../utils/Text';
 import Organization from '../helpers/Organization';
-import Alert from './Alert';
 import Division from '../helpers/Division';
 import Color from '../utils/Color';
 import Style from '../utils/Style';
+import Navigation from '../helpers/Navigation';
 
 
 
@@ -25,9 +23,7 @@ const Search = (
   { onRouter, focus }:
   { onRouter?: () => void; focus: boolean },
 ) => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const navigation = new Navigation();
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
@@ -51,7 +47,6 @@ const Search = (
   const [coaches, setCoaches] = useState<searchCoach[]>([]);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   const [loading, setLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
 
 
   const debouncedRequest = useDebounce(() => {
@@ -161,37 +156,11 @@ const Search = (
       return;
     }
     if (option && option.coach_id) {
-      dispatch(setLoadingDisplay(true));
-      startTransition(() => {
-        router.push(`/${path}/coach/${option.coach_id}`);
-        if (onRouter) {
-          onRouter();
-        }
-      });
+      navigation.coach(`/${path}/coach/${option.coach_id}`, onRouter);
     } else if (option && option.player_id) {
-      if (Organization.getCFBID() === organization_id) {
-        setShowAlert(true);
-        setValue('');
-        setTeams([]);
-        setPlayers([]);
-        setCoaches([]);
-        return;
-      }
-      dispatch(setLoadingDisplay(true));
-      startTransition(() => {
-        router.push(`/${path}/player/${option.player_id}`);
-        if (onRouter) {
-          onRouter();
-        }
-      });
+      navigation.player(`/${path}/player/${option.player_id}`, onRouter);
     } else if (option && option.team_id) {
-      dispatch(setLoadingDisplay(true));
-      startTransition(() => {
-        router.push(`/${path}/team/${option.team_id}`);
-        if (onRouter) {
-          onRouter();
-        }
-      });
+      navigation.team(`/${path}/team/${option.team_id}`, onRouter);
     }
     setValue('');
     setTeams([]);
@@ -258,7 +227,6 @@ const Search = (
 
   return (
     <div className={Style.getStyleClassName(containerStyle)}>
-      <Alert open = {showAlert} title = 'Coming soon' message = 'Player page still under development, come back soon!' confirm = {() => setShowAlert(false)} />
       <div className={Style.getStyleClassName(iconContainerStyle)}>
         <SearchIcon />
       </div>

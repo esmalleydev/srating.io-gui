@@ -13,8 +13,6 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import { Player, PlayerTeamSeasons, Team } from '@/types/general';
 import { Skeleton } from '@mui/material';
 import { setLoading } from '@/redux/features/display-slice';
-import CBB from '@/components/helpers/CBB';
-import CFB from '@/components/helpers/CFB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import FavoritePicker from '../../FavoritePicker';
@@ -94,15 +92,6 @@ const Client = (
   const player_team_seasons: PlayerTeamSeasons = useAppSelector((state) => state.playerReducer.player_team_seasons);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
-  let numberOfTeams = CBB.getNumberOfD1Teams(season);
-  let numberOfPlayers = CBB.getNumberOfD1Players(season);
-
-  if (organization_id === Organization.getCFBID()) {
-    // todo numberofplayers cfb'
-    numberOfPlayers = 0;
-    // numberOfPlayers = CFB.getNumberOfD1Players({ division_id, season });
-    numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
-  }
 
   const breakPoint = 475;
 
@@ -137,11 +126,11 @@ const Client = (
   const teamRank = (statistic_ranking && statistic_ranking.rank) || null;
 
   if (playerRank) {
-    supStyle.color = Color.lerpColor(bestColor, worstColor, (+(playerRank / numberOfPlayers)));
+    supStyle.color = Color.lerpColor(bestColor, worstColor, (+(playerRank / player_statistic_ranking.max)));
   }
 
   if (teamRank) {
-    teamSupStyle.color = Color.lerpColor(bestColor, worstColor, (+(teamRank / numberOfTeams)));
+    teamSupStyle.color = Color.lerpColor(bestColor, worstColor, (+(teamRank / statistic_ranking.max)));
   }
 
   const getTeamHref = () => {

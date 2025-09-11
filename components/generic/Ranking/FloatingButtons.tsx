@@ -2,10 +2,11 @@
 
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Fab, Tooltip } from '@mui/material';
+import { Fab } from '@mui/material';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import { setDataKey } from '@/redux/features/ranking-slice';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 
 const FloatingButtons = () => {
@@ -19,7 +20,7 @@ const FloatingButtons = () => {
 
   return (
     <div style = {{ position: 'absolute', bottom: 70, right: 15 }}>
-      <Tooltip disableFocusListener placement = 'top' title={`${tableFullscreen ? 'Minimize' : 'Full screen'} table`}>
+      <Tooltip position = 'top' text={`${tableFullscreen ? 'Minimize' : 'Full screen'} table`}>
         <Fab size = 'small' color = 'secondary' onClick={handleFullscreen}>
           {tableFullscreen ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
         </Fab>

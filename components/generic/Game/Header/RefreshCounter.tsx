@@ -3,9 +3,9 @@
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Tooltip } from '@mui/material';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 /**
  * Be very careful with any logic in this, it will be running a lot! On every interval tick
@@ -24,15 +24,15 @@ const RefreshCounter = ({ game }) => {
   const percentage = (1 - (refreshCountdown / refreshRate)) * 100;
 
   return (
-    <Tooltip title = {'Refresh rate'}>
+    <Tooltip text = {'Refresh rate'}>
       <div style = {{ display: 'flex', padding: '0px 8px', position: 'relative' }}>
         {
         refreshLoading ?
           <CircularProgress size={20} color = 'success' /> :
           <>
             <CircularProgress variant = 'determinate' value = {percentage} size={20} />
-            <Box
-                sx={{
+            <div
+                style={{
                   top: 0,
                   left: 0,
                   bottom: 0,
@@ -44,7 +44,7 @@ const RefreshCounter = ({ game }) => {
                 }}
               >
                 <Typography type='caption' style={{ color: theme.text.secondary, fontSize: 11 }}>{Math.round(refreshCountdown)}</Typography>
-            </Box>
+            </div>
           </>
         }
       </div>

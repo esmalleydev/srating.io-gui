@@ -3,10 +3,11 @@
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
-import { CBBRankingTable } from '@/types/cbb';
-import { CFBRankingTable } from '@/types/cfb';
+// import { CBBRankingTable } from '@/types/cbb';
 import { useEffect, useMemo } from 'react';
 import Objector from '@/components/utils/Objector';
+import { RankingTable as CBBRankingTable } from '@/types/cbb';
+import { RankingTable as CFBRankingTable } from '@/types/cfb';
 
 const getData = ({ view }) => {
   // console.time('getData')
@@ -231,11 +232,28 @@ const formatCFBData = (args) => {
         row.conference_code = conferences[row.conference_id].code;
       }
 
-      row.rank = row.efficiency_rating_rank;
+      row.rank = row.rank || row.efficiency_rating_rank;
+
+      // todo need to share this with the processors for player stat ranking, it resuses the same map
+      // todo update game boxscore as well, uses mapping
+      const map = {
+        receiving: ['WR', 'TE'],
+        rushing: ['RB', 'FB'],
+      };
+
+      let newPositions: string[] = [];
+      // eslint-disable-next-line no-restricted-syntax
+      for (const p of positions) {
+        if (p in map) {
+          newPositions = newPositions.concat(map[p]);
+        } else {
+          newPositions.push(p);
+        }
+      }
 
       if (
-        positions.length &&
-        positions.indexOf(row.position) === -1
+        newPositions.length &&
+        newPositions.indexOf(row.position) === -1
       ) {
         continue;
       }

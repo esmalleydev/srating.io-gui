@@ -1,9 +1,8 @@
 'use client';
 
 import {
-  useRef, useTransition, ReactElement, RefObject,
+  useRef, ReactElement, RefObject,
 } from 'react';
-import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import moment from 'moment';
@@ -11,7 +10,7 @@ import moment from 'moment';
 import HelperGame from '@/components/helpers/Game';
 
 import {
-  Card, Tooltip, Skeleton, IconButton,
+  Card, Skeleton, IconButton,
 } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
@@ -19,19 +18,19 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
 import { setDataKey, updateVisibleScheduleDifferentials } from '@/redux/features/team-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
-import { setLoading } from '@/redux/features/display-slice';
 import Rank from './Tile/Rank';
 import Record from './Tile/Record';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
+import Navigation from '@/components/helpers/Navigation';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 
 const Tile = ({ game, team }) => {
   const myRef: RefObject<HTMLDivElement | null> = useRef(null);
-  const router = useRouter();
+  const navigation = new Navigation();
   const theme = useTheme();
-  const [isPending, startTransition] = useTransition();
   // const [scrolled, setScrolled] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -94,10 +93,7 @@ const Tile = ({ game, team }) => {
       dispatch(setDataKey({ key: 'scrollTop', value: scrollRef.current.scrollTop }));
     }
 
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(getGameHref());
-    });
+    navigation.games(getGameHref());
   };
 
   const getTeamHref = (team_id) => {
@@ -113,10 +109,7 @@ const Tile = ({ game, team }) => {
       dispatch(setDataKey({ key: 'scrollTop', value: scrollRef.current.scrollTop }));
     }
 
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(getTeamHref(team_id));
-    });
+    navigation.team(getTeamHref(team_id));
   };
 
   // todo???
@@ -162,7 +155,7 @@ const Tile = ({ game, team }) => {
 
   let gameLocationText: string | React.JSX.Element = (game.home_team_id === team.team_id ? 'vs' : '@');
   if (game.neutral_site) {
-    gameLocationText = <Tooltip enterTouchDelay={0} disableFocusListener placement = 'top' title = {'Neutral site'}><span style = {neutralStyle}>N</span></Tooltip>;
+    gameLocationText = <Tooltip position = 'top' text = {'Neutral site'}><span style = {neutralStyle}>N</span></Tooltip>;
   }
 
   return (
@@ -190,7 +183,7 @@ const Tile = ({ game, team }) => {
           {
             Game.isFinal() ?
             <div>
-              <Tooltip title = {'Toggle historical chart'} placement="top">
+              <Tooltip text = {'Toggle historical chart'} position="top">
                 <IconButton
                   id = 'differential-button'
                   onClick = {() => dispatch(updateVisibleScheduleDifferentials(game.game_id))}
@@ -209,7 +202,7 @@ const Tile = ({ game, team }) => {
         }} onClick={handleGameClick}>
           <Typography type = 'caption'><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick={handleGameClick} href = {getGameHref()}>{scoreLineText}</a></Typography>
         </Card>
-        <Tooltip enterTouchDelay={1000} disableFocusListener disableHoverListener = {(width < 775)} placement = 'top' title={'Predicted win %'}>
+        <Tooltip delay={500} position = 'top' text={'Predicted win %'}>
           <Card style = {{
             display: 'flex', width: 50, marginLeft: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center',
           }}>

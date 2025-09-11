@@ -1,8 +1,8 @@
 'use client';
 
-import { Tooltip } from '@mui/material';
 import { useTheme } from '@/components/hooks/useTheme';
 import Color from '@/components/utils/Color';
+import Tooltip from '../ux/hover/Tooltip';
 
 const Indicator = (
   { title, code, color }:
@@ -24,7 +24,7 @@ const Indicator = (
   };
 
   return (
-    <Tooltip enterTouchDelay={0} disableFocusListener placement = 'top' title={title}>
+    <Tooltip position = 'top' text={title}>
       <span style = {spanStyle}>{code}</span>
     </Tooltip>
   );

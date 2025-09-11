@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  TableContainer, Table, TableHead, TableRow, Tooltip, TableSortLabel, Box, TableBody, TableCell,
+  TableContainer, Table, TableHead, TableRow, TableSortLabel, Box, TableBody, TableCell,
   SortDirection,
   TableFooter,
 } from '@mui/material';
@@ -13,6 +13,8 @@ import RankSpan from './RankSpan';
 import { useTheme } from '../hooks/useTheme';
 import Style from '../utils/Style';
 import Paper from '../ux/container/Paper';
+import { TableColumnBoxscoresType, TableColumnsType } from '../helpers/TableColumns';
+import Tooltip from '../ux/hover/Tooltip';
 
 
 type defaultSortOrderType = 'asc' | 'desc';
@@ -32,21 +34,23 @@ const RankTable = (
     secondaryKey,
     handleRowClick,
     customSortComparator,
+    useAlternateLabel = false,
   }:
   {
     rows: object[],
     footerRow?: object | null,
-    columns: object,
+    columns: TableColumnsType | TableColumnBoxscoresType,
     displayColumns: string[],
     rowKey: string,
     defaultSortOrder: defaultSortOrderType,
     defaultSortOrderBy: string,
     defaultEmpty?: string | number,
     sessionStorageKey: string,
-    getRankSpanMax?: (row: unknown) => number,
+    getRankSpanMax?: (row: object) => number,
     secondaryKey?: string,
     handleRowClick?: (id: string) => void,
     customSortComparator?: (order: string, orderBy: string, direction?: string) => (a: unknown, b: unknown) => number,
+    useAlternateLabel?: boolean;
   },
 ) => {
   const breakPoint = 425;
@@ -97,6 +101,20 @@ const RankTable = (
   let b = 0;
   const i_x_left = {};
 
+  const getMax = (row) => {
+    if (
+      'max' in row &&
+      row.max
+    ) {
+      return row.max;
+    }
+
+    if (getRankSpanMax) {
+      return getRankSpanMax(row);
+    }
+    return 0;
+  };
+
   const row_containers = sortedRows.slice().map((row) => {
     let tdColor = (b % 2 === 0 ? theme.grey[800] : theme.grey[900]);
 
@@ -129,7 +147,7 @@ const RankTable = (
       let tdWidth: number | null = null;
       const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
 
-      if (headCell.widths) {
+      if ('widths' in headCell && headCell.widths) {
         tdWidth = headCell.widths.default;
 
         let lastBreakpoint: number | null = null;
@@ -177,8 +195,8 @@ const RankTable = (
         secondarySpan = (
           <span style = {{ color: theme.grey[500] }}> {row[`${displayColumns[i]}_${secondaryKey}`]}</span>
         );
-      } else if (row[`${displayColumns[i]}_rank`] && getRankSpanMax) {
-        secondarySpan = <RankSpan key = {i} rank = {row[`${displayColumns[i]}_rank`]} max = {getRankSpanMax(row)} useOrdinal = {true} />;
+      } else if (row[`${displayColumns[i]}_rank`]) {
+        secondarySpan = <RankSpan key = {i} rank = {row[`${displayColumns[i]}_rank`]} max = {getMax(row)} useOrdinal = {true} />;
       }
 
       tableCells.push(
@@ -226,7 +244,7 @@ const RankTable = (
                 let tdWidth: number | null = null;
                 const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
 
-                if (headCell.widths) {
+                if ('widths' in headCell && headCell.widths) {
                   tdWidth = headCell.widths.default;
 
                   let lastBreakpoint: number | null = null;
@@ -273,7 +291,7 @@ const RankTable = (
                 }
 
                 return (
-                  <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
+                  <Tooltip key={headCell.id} position = 'top' text={headCell.tooltip}>
                     <TableCell
                       sx = {tdStyle}
                       key={headCell.id}
@@ -285,7 +303,7 @@ const RankTable = (
                         direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
                         onClick={() => { handleSort(headCell.id); }}
                       >
-                        {headCell.label}
+                        {useAlternateLabel && headCell.alt_label ? headCell.alt_label : headCell.label}
                         {orderBy === headCell.id ? (
                           <Box component="span" sx={visuallyHidden}>
                             {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -319,7 +337,7 @@ const RankTable = (
                   let tdWidth: number | null = null;
                   const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
 
-                  if (headCell.widths) {
+                  if ('widths' in headCell && headCell.widths) {
                     tdWidth = headCell.widths.default;
 
                     let lastBreakpoint: number | null = null;

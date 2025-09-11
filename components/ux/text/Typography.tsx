@@ -8,6 +8,7 @@ const Typography = (
     children,
     type,
     style = {},
+    ...props
   }:
   {
     children: React.ReactNode;
@@ -147,7 +148,7 @@ const Typography = (
   const Tag = types[type] || 'p'; // Ensure a default fallback
 
   return (
-    <Tag className ={Style.getStyleClassName(cStyle)}>
+    <Tag className ={Style.getStyleClassName(cStyle)} {...props}>
       {children}
     </Tag>
   );

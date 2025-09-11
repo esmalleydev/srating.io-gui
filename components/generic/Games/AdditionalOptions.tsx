@@ -10,7 +10,7 @@ import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import IconButton from '@mui/material/IconButton';
 
 import RankPicker from '@/components/generic/RankPicker';
-import { Divider, Tooltip } from '@mui/material';
+import { Divider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setCardView, setOdds } from '@/redux/features/display-slice';
 import Menu from '@/components/ux/menu/Menu';
@@ -18,6 +18,7 @@ import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuList from '@/components/ux/menu/MenuList';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -79,7 +80,7 @@ const AdditionalOptions = () => {
 
   return (
     <div>
-      <Tooltip title = {'Additional options'}>
+      <Tooltip onClickRemove text = {'Additional options'}>
         <IconButton
             id="additional-options"
             aria-controls={open ? 'long-menu' : undefined}

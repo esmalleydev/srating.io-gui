@@ -1,24 +1,20 @@
 'use client';
 
-import { useTransition } from 'react';
 import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
 
 import HelperGame from '@/components/helpers/Game';
-import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { useAppSelector } from '@/redux/hooks';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import Organization from '@/components/helpers/Organization';
+import Navigation from '@/components/helpers/Navigation';
 
 
 const Tile = ({ game }) => {
-  const dispatch = useAppDispatch();
+  const navigation = new Navigation();
   const theme = useTheme();
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
 
@@ -61,10 +57,7 @@ const Tile = ({ game }) => {
   };
 
   const handleClick = () => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/games/${game.game_id}`);
-    });
+    navigation.games(`/${path}/games/${game.game_id}`);
   };
 
   return (

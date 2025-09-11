@@ -68,13 +68,15 @@ const NavBar = () => {
     );
   }
 
+  const divStyle = Style.getStyleClassName({
+    ...Style.getNavBar(),
+    backgroundColor,
+    top: getMarginTop() + getHeaderHeight(),
+  });
+
   return (
     <>
-      <div style = {{
-        ...Style.getNavBar(),
-        backgroundColor,
-        top: getMarginTop() + getHeaderHeight(),
-      }}>
+      <div className={divStyle}>
         {tabs}
       </div>
       {/* <SubNavBar view = {view} /> */}

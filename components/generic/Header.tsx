@@ -32,7 +32,7 @@ import Search from './Search';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSession, setValidSession } from '../../redux/features/user-slice';
-import { Divider, Tooltip } from '@mui/material';
+import { Divider } from '@mui/material';
 import { reset } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/display-slice';
@@ -43,6 +43,7 @@ import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import MenuList from '@/components/ux/menu/MenuList';
 import Organization from '../helpers/Organization';
+import Tooltip from '../ux/hover/Tooltip';
 
 
 // todo hook up settings with router
@@ -189,7 +190,7 @@ const Header = () => {
                 </Box>
                 <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 </Box>
-                <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip title = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
+                <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip text = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
                 <Box sx={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px') }}>
                   {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search focus={false} />}
                 </Box>

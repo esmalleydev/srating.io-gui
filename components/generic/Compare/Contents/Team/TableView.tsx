@@ -7,8 +7,8 @@ import Organization from '@/components/helpers/Organization';
 import CFB from '@/components/helpers/CFB';
 import RankTable from '@/components/generic/RankTable';
 import HelperTeam from '@/components/helpers/Team';
-import { CBBRankingTable } from '@/types/cbb';
-import { CFBRankingTable } from '@/types/cfb';
+import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
+import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import Objector from '@/components/utils/Objector';
@@ -31,8 +31,8 @@ const TableView = ({ statistic_rankings }) => {
     numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
   }
 
-  const [view, setView] = useState<string | null>('composite');
-  const columns = getViewableColumns({ organization_id, view: 'team', columnView: view, customColumns: [] });
+  const [view, setView] = useState<string>('composite');
+  const columns = getViewableColumns({ organization_id, view: 'team', columnView: view, customColumns: [], positions: [] });
 
   for (let i = columns.length - 1; i >= 0; i--) {
     if (columns[i] === 'rank_delta_combo') {
@@ -53,7 +53,7 @@ const TableView = ({ statistic_rankings }) => {
 
   const chips: React.JSX.Element[] = [];
 
-  const handleView = (value) => {
+  const handleView = (value: string) => {
     sessionStorage.setItem(`${sessionStorageKey}.VIEW`, value);
     setView(value);
   };
@@ -64,10 +64,7 @@ const TableView = ({ statistic_rankings }) => {
     );
   });
 
-
-  // todo TS
-  const rows: CBBRankingTable[] | CFBRankingTable[] = [];
-
+  const rows: CBBStatisticRanking[] | CFBStatisticRanking[] = [];
 
   for (const statistic_ranking_id in statistic_rankings) {
     const row = statistic_rankings[statistic_ranking_id];

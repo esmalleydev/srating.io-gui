@@ -19,8 +19,8 @@ const Rank = ({ game, team_id }) => {
     numberOfTeams = CFB.getNumberOfTeams({ division_id: game.division_id, season: game.season });
   }
 
-  const current = (gameStats[game.game_id] && gameStats[game.game_id].current[team_id]) || null;
-  const historical = (gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
+  const current = (gameStats && gameStats[game.game_id] && gameStats[game.game_id].current[team_id]) || null;
+  const historical = (gameStats && gameStats[game.game_id] && gameStats[game.game_id].historical[team_id]) || null;
 
   const statistic_ranking = game.status === 'final' ? historical : current;
 

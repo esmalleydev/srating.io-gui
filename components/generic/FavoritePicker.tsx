@@ -3,13 +3,14 @@
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton } from '@mui/material';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
 import AccountHandler from '@/components/generic/AccountHandler';
 import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
+import Tooltip from '../ux/hover/Tooltip';
 
 const FavoritePicker = (
   { team_id = null, player_id = null }:
@@ -94,7 +95,7 @@ const FavoritePicker = (
 
   return (
     <>
-      <Tooltip enterTouchDelay={1000} disableFocusListener title={'Save favorite'}>
+      <Tooltip delay = {500} text = {'Save favorite'}>
         <IconButton color='primary' onClick = {handleFavorite}>
           <FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />
         </IconButton>

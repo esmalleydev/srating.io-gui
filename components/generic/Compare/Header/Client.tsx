@@ -8,19 +8,21 @@ import { getBreakPoint } from '@/components/generic/Compare/Header/ClientWrapper
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
-import { IconButton, Skeleton, Tooltip } from '@mui/material';
+import { IconButton, Skeleton } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { setDataKey } from '@/redux/features/compare-slice';
-import { setLoading } from '@/redux/features/display-slice';
 import CBB from '@/components/helpers/CBB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Organization from '@/components/helpers/Organization';
+import Navigation from '@/components/helpers/Navigation';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 
 const Client = () => {
+  const navigation = new Navigation();
   const theme = useTheme();
   const breakPoint = getBreakPoint();
   const bestColor = getBestColor();
@@ -94,10 +96,7 @@ const Client = () => {
 
   const handleTeamClick = (e, team_id: string) => {
     e.preventDefault();
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(getTeamHref(team_id));
-    });
+    navigation.team(getTeamHref(team_id));
   };
 
   const getTeam = (team_id: string) => {
@@ -128,7 +127,7 @@ const Client = () => {
     const getRemoveButton = () => {
       return (
         <div>
-          <Tooltip title = {'Remove team'}>
+          <Tooltip text = {'Remove team'}>
             <IconButton
               id = 'remove-button'
               onClick = {() => { handleRemove(team_id); }}
@@ -195,7 +194,7 @@ const Client = () => {
       <div>
         {
         home_team_id && away_team_id ?
-          <Tooltip title = {'Swap teams'}>
+          <Tooltip text = {'Swap teams'}>
             <IconButton
               id = 'swap-button'
               onClick = {handleSwap}

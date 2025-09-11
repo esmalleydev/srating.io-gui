@@ -247,10 +247,10 @@ const Client = ({ games, date }) => {
       continue;
     }
 
-    const awayCurrent = (gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].current[sortedGame.away_team_id]) || null;
-    const awayHistorical = (gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].historical[sortedGame.away_team_id]) || null;
-    const homeCurrent = (gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].current[sortedGame.home_team_id]) || null;
-    const homeHistorical = (gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].historical[sortedGame.home_team_id]) || null;
+    const awayCurrent = (gameStats && gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].current[sortedGame.away_team_id]) || null;
+    const awayHistorical = (gameStats && gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].historical[sortedGame.away_team_id]) || null;
+    const homeCurrent = (gameStats && gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].current[sortedGame.home_team_id]) || null;
+    const homeHistorical = (gameStats && gameStats[sortedGame.game_id] && gameStats[sortedGame.game_id].historical[sortedGame.home_team_id]) || null;
 
     const awayStats = sortedGame.status === 'final' ? awayHistorical : awayCurrent;
     const homeStats = sortedGame.status === 'final' ? homeHistorical : homeCurrent;

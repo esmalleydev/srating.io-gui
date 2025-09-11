@@ -17,19 +17,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
-import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { getViewableColumns } from '../columns';
 import { setDataKey } from '@/redux/features/ranking-slice';
-import { useRouter } from 'next/navigation';
-import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
 import RankSpan from '../../RankSpan';
 import { getRows } from '../DataHandler';
 import Organization from '@/components/helpers/Organization';
-import { CBBRankingTable } from '@/types/cbb';
-import { CFBRankingTable } from '@/types/cfb';
+// import { CBBRankingTable } from '@/types/cbb';
 import Typography from '@/components/ux/text/Typography';
 import { getConferenceChips } from '../../ConferenceChips';
 import TableColumns from '@/components/helpers/TableColumns';
@@ -37,6 +33,10 @@ import Color from '@/components/utils/Color';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Arithmetic from '@/components/utils/Arithmetic';
+import Navigation from '@/components/helpers/Navigation';
+import { RankingTable as CBBRankingTable } from '@/types/cbb';
+import { RankingTable as CFBRankingTable } from '@/types/cfb';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 
 
@@ -93,9 +93,8 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   }
 
   // console.time('headers')
-  const router = useRouter();
   const theme = useTheme();
-  const [isPending, startTransition] = useTransition();
+  const navigation = new Navigation();
   const { height, width } = useWindowDimensions() as Dimensions;
 
   const breakPoint = 425;
@@ -107,6 +106,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const orderBy = useAppSelector((state) => state.rankingReducer.orderBy);
   const tableScrollTop = useAppSelector((state) => state.rankingReducer.tableScrollTop);
   const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
+  const positions = useAppSelector((state) => state.displayReducer.positions);
 
   // console.time('getRows')
   const allRows = getRows({ view });
@@ -115,7 +115,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const filteredRows = useAppSelector((state) => state.rankingReducer.filteredRows);
   const columnView = useAppSelector((state) => state.rankingReducer.columnView);
   const customColumns = useAppSelector((state) => state.rankingReducer.customColumns);
-  const tableColumns = getViewableColumns({ organization_id, view, columnView, customColumns });
+  const tableColumns = getViewableColumns({ organization_id, view, columnView, customColumns, positions });
   const confChipsLength = getConferenceChips().length;
   const currentPath = Organization.getPath({ organizations, organization_id });
   const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
@@ -125,6 +125,8 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   // useEffect(() => {
   //   console.timeEnd('Ranking.Contents.Client')
   // })
+
+  // console.log(allRows)
 
 
   const scrollerRef = React.useCallback(
@@ -163,9 +165,10 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     return <ClientSkeleton />;
   }
 
+  // todo deprecate this after `max` column is fully populated
   const dataLength = (view === 'transfer' ? 5300 : Object.keys(data).length);
 
-  let rows: (CBBRankingTable | CFBRankingTable)[] = allRows;
+  let rows: (CFBRankingTable | CBBRankingTable)[] = allRows;
 
   if (filteredRows !== null && filteredRows !== false && filteredRows !== true) {
     // creates a shallow copy, since redux freezes the array / object
@@ -185,40 +188,29 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     if (tableRef && tableRef.current) {
       dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
     }
-    dispatch(setLoadingDisplay(true));
-    startTransition(() => {
-      router.push(`/${currentPath}/team/${team_id}?season=${season}`);
-    });
+    navigation.team(`/${currentPath}/team/${team_id}?season=${season}`);
   };
 
   const handlePlayer = (player_id) => {
     if (tableRef && tableRef.current) {
       dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
     }
-    dispatch(setLoadingDisplay(true));
-    startTransition(() => {
-      router.push(`/${currentPath}/player/${player_id}?season=${season}`);
-    });
+
+    navigation.player(`/${currentPath}/player/${player_id}?season=${season}`);
   };
 
   const handleConference = (conference_id) => {
     if (tableRef && tableRef.current) {
       dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
     }
-    dispatch(setLoadingDisplay(true));
-    startTransition(() => {
-      router.push(`/${currentPath}/conference/${conference_id}?season=${season}`);
-    });
+    navigation.conference(`/${currentPath}/conference/${conference_id}?season=${season}`);
   };
 
   const handleCoach = (coach_id) => {
     if (tableRef && tableRef.current) {
       dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
     }
-    dispatch(setLoadingDisplay(true));
-    startTransition(() => {
-      router.push(`/${currentPath}/coach/${coach_id}?season=${season}`);
-    });
+    navigation.coach(`/${currentPath}/coach/${coach_id}?season=${season}`);
   };
 
   const descendingComparator = (a, b, orderBy) => {
@@ -474,7 +466,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
           }
 
           return (
-            <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
+            <Tooltip key={headCell.id} position = 'top' text={headCell.tooltip}>
               <TableCell
                 style = {tdStyle}
                 key={headCell.id}
@@ -636,7 +628,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
       } else if (columns[i] === 'committed') {
         tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] === 1 ? <CheckIcon fontSize='small' color = 'success' /> : '-'}</TableCell>);
       } else {
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {(view !== 'player')} max = {dataLength} /> : ''}</TableCell>);
+        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {(view !== 'player')} max = {row.max || dataLength} /> : ''}</TableCell>);
       }
     }
     // console.timeEnd('getTableContents')

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import PinIcon from '@mui/icons-material/PushPin';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton } from '@mui/material';
 // import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
@@ -9,6 +9,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { updateGameIds, updateGameSort } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
+import Tooltip from '../ux/hover/Tooltip';
 
 // const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 //   props,
@@ -100,7 +101,7 @@ const Pin = ({ game_id }: { game_id: string; }) => {
 
   return (
     <>
-      <Tooltip title = {'Pin game'}>
+      <Tooltip text = {'Pin game'}>
         <IconButton color='primary' onClick = {handleFavorite}>
           <PinIcon sx = {pinStyle} fontSize = 'small' />
         </IconButton>

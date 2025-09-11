@@ -22,7 +22,8 @@ export async function useServerAPI(args, optional_fetch_args = {} as OptionalFet
   }
 
 
-  // console.time('fetcher ' + request)
+  // console.time(`useServerAPI.fetch.${args.class}:${args.function}()`);
+
   const results = await fetch(`${protocol}://${hostname}:${port}`, {
     next: { revalidate: 0 },
     cache: 'no-store',
@@ -37,7 +38,8 @@ export async function useServerAPI(args, optional_fetch_args = {} as OptionalFet
       console.log(error);
       // throw new Error('Error');
     });
-  // console.timeEnd('fetcher ' + request)
+
+  // console.timeEnd(`useServerAPI.fetch.${args.class}:${args.function}()`);
 
   return results;
 }

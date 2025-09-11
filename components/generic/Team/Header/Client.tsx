@@ -18,6 +18,7 @@ import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import { Coach, CoachStatisticRanking, Team } from '@/types/general';
 import { ConferenceStatisticRanking } from '@/types/cbb';
+import Navigation from '@/components/helpers/Navigation';
 
 
 /**
@@ -69,11 +70,30 @@ const ClientSkeleton = () => {
 };
 
 const Client = (
-  { team, season, organization_id, division_id, seasons, coach, coach_statistic_ranking, conference_statistic_ranking }:
-  { team: Team, season: number, organization_id: string, division_id: string, seasons: number[], coach: Coach | null, coach_statistic_ranking: CoachStatisticRanking | null, conference_statistic_ranking: ConferenceStatisticRanking },
+  {
+    team,
+    season,
+    organization_id,
+    division_id,
+    seasons,
+    coach,
+    coach_statistic_ranking,
+    conference_statistic_ranking,
+  }:
+  {
+    team: Team,
+    season: number,
+    organization_id: string,
+    division_id: string,
+    seasons: number[],
+    coach: Coach | null,
+    coach_statistic_ranking: CoachStatisticRanking | null,
+    conference_statistic_ranking: ConferenceStatisticRanking
+  },
 ) => {
   const breakPoint = 475;
 
+  const navigation = new Navigation();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();
@@ -161,10 +181,7 @@ const Client = (
 
   const handleCoach = (e) => {
     e.preventDefault();
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(getCoachHref());
-    });
+    navigation.coach(getCoachHref());
   };
 
   const getConferenceHref = () => {
@@ -173,10 +190,7 @@ const Client = (
 
   const handleConference = (e) => {
     e.preventDefault();
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(getConferenceHref());
-    });
+    navigation.conference(getConferenceHref());
   };
 
   return (

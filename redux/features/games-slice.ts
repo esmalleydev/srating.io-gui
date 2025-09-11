@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+// todo normalize with setDataKey
+// todo this is really the /sport/games path, this name is a little confusing and conflicting with the game slice
+
 type InitialState = {
   visibleGames: string[],
   nonVisibleGames: string[],

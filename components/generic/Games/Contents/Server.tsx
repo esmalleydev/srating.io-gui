@@ -22,11 +22,13 @@ const Server = async ({ games, date, organization_id, division_id, season }) => 
     cache: revalidateSeconds,
   });
 
-  for (const game_id in scores) {
-    if (game_id in games) {
-      delete scores[game_id].prediction;
-      delete scores[game_id].prediction;
-      Object.assign(games[game_id], scores[game_id]);
+  if (scores) {
+    for (const game_id in scores) {
+      if (game_id in games) {
+        delete scores[game_id].prediction;
+        delete scores[game_id].prediction;
+        Object.assign(games[game_id], scores[game_id]);
+      }
     }
   }
 

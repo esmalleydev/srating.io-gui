@@ -1,21 +1,18 @@
 'use client';
 
-import { useTransition } from 'react';
-
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperTeam from '@/components/helpers/Team';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
-import { useRouter } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Coach } from '@/types/general';
 import { Skeleton } from '@mui/material';
-import { setLoading } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
 import CBB from '@/components/helpers/CBB';
 import CFB from '@/components/helpers/CFB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import Navigation from '@/components/helpers/Navigation';
 
 
 /**
@@ -67,7 +64,9 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ organization_id, division_id, coach_statistic_rankings, season }) => {
+  const { width } = useWindowDimensions() as Dimensions;
   const theme = useTheme();
+  const navigation = new Navigation();
   const coach: Coach = useAppSelector((state) => state.coachReducer.coach);
   const coach_team_seasons = useAppSelector((state) => state.coachReducer.coach_team_seasons);
   const teams = useAppSelector((state) => state.coachReducer.teams);
@@ -121,13 +120,6 @@ const Client = ({ organization_id, division_id, coach_statistic_rankings, season
   const team = teams[season_x_team_id[lastSeason]];
   const breakPoint = 475;
 
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  const { width } = useWindowDimensions() as Dimensions;
-
-  const [isPending, startTransition] = useTransition();
-
 
   const teamHelper = new HelperTeam({ team });
 
@@ -169,10 +161,7 @@ const Client = ({ organization_id, division_id, coach_statistic_rankings, season
     if (!team || !team.team_id) {
       return;
     }
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(getTeamHref());
-    });
+    navigation.team(getTeamHref());
   };
 
 

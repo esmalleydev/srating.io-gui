@@ -79,7 +79,7 @@ class Compare extends Surface {
   }
 
 
-  async getData({ season, home_team_id, away_team_id }): Promise<Teams> {
+  async getData({ season, home_team_id, away_team_id }: {season: number; home_team_id: string | undefined; away_team_id: string | undefined;}): Promise<Teams> {
     const revalidateSeconds = 60 * 60 * 2; // 2 hours
 
     const organization_id = this.getOrganizationID();

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import {
@@ -8,8 +8,7 @@ import {
 } from '@mui/material';
 
 import HelperTeam from '@/components/helpers/Team';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import CBB from '@/components/helpers/CBB';
 import CFB from '@/components/helpers/CFB';
@@ -20,14 +19,15 @@ import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import RankTable from '@/components/generic/RankTable';
 import Objector from '@/components/utils/Objector';
 import TableColumns from '@/components/helpers/TableColumns';
+import Navigation from '@/components/helpers/Navigation';
 
 
 
 const Client = ({ organization_id, division_id, conference_id, season, subView }) => {
+  const navigation = new Navigation();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
 
   const leftSwitch = 'Live';
   const rightSwitch = 'Predicted';
@@ -38,7 +38,6 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
   }
 
   const [view, setView] = useState<string>(s);
-  const dispatch = useAppDispatch();
   const teams = useAppSelector((state) => state.conferenceReducer.teams);
   // const team_season_conferences = useAppSelector((state) => state.conferenceReducer.team_season_conferences);
   const og_statistic_rankings = useAppSelector((state) => state.conferenceReducer.statistic_rankings);
@@ -154,10 +153,7 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
 
 
   const handleClick = (team_id: string) => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/team/${team_id}?season=${season}`);
-    });
+    navigation.team(`/${path}/team/${team_id}?season=${season}`);
   };
 
   const handleView = (value: string) => {

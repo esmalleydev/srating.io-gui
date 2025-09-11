@@ -20,7 +20,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
-import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 
 import CheckIcon from '@mui/icons-material/Check';
@@ -29,6 +28,8 @@ import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice'
 import RankSpan from '@/components/generic/RankSpan';
 import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';
+import Navigation from '@/components/helpers/Navigation';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // '&:nth-of-type(odd)': {
@@ -92,10 +93,11 @@ const RankingExample = () => {
     item: ItemType;
   }
 
+  const navigation = new Navigation();
   const router = useRouter();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-  const { height, width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions() as Dimensions;
 
   const breakPoint = 425;
   const organization_id = Organization.getCBBID();
@@ -123,10 +125,7 @@ const RankingExample = () => {
   };
 
   const handleTeam = (team_id) => {
-    dispatch(setLoadingDisplay(true));
-    startTransition(() => {
-      router.push(`/${currentPath}/team/${team_id}?season=${season}`);
-    });
+    navigation.team(`/${currentPath}/team/${team_id}?season=${season}`);
   };
 
   const handlePath = (e, path) => {
@@ -258,7 +257,7 @@ const RankingExample = () => {
           }
 
           return (
-            <Tooltip key={headCell.id} disableFocusListener placement = 'top' title={headCell.tooltip}>
+            <Tooltip key={headCell.id} position = 'top' text={headCell.tooltip}>
               <StyledTableHeadCell
                 sx = {tdStyle}
                 key={headCell.id}

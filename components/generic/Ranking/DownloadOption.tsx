@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Tooltip,
+  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton,
 } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useClientAPI } from '@/components/clientAPI';
@@ -10,6 +10,7 @@ import CSV from '@/components/utils/CSV';
 import { setLoading } from '@/redux/features/display-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useRouter } from 'next/navigation';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 const DownloadOption = ({ view, organization_id, division_id, season }) => {
   const dispatch = useAppDispatch();
@@ -62,7 +63,7 @@ const DownloadOption = ({ view, organization_id, division_id, season }) => {
 
   return (
     <div>
-      <Tooltip title = {'Download CSV'}>
+      <Tooltip text = {'Download CSV'}>
         <IconButton
             color='primary'
             id="download-csv"

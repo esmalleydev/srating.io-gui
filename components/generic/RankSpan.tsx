@@ -1,10 +1,9 @@
 'use client';
 
-import { Tooltip } from '@mui/material';
-
 import Color from '@/components/utils/Color';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@/components/hooks/useTheme';
+import Tooltip from '../ux/hover/Tooltip';
 
 const RankSpan = (
   { rank, max, useOrdinal }:
@@ -51,7 +50,7 @@ const RankSpan = (
   const rankWithOrdinal = getNumberWithOrdinal(rank);
 
   return (
-    <Tooltip enterTouchDelay={1250} disableFocusListener placement = 'top' title={`Ranked ${rankWithOrdinal} out of ${max}`}>
+    <Tooltip delay={500} position = 'top' text={`Ranked ${rankWithOrdinal} out of ${max}`}>
       <span style = {spanStyle}>{useOrdinal ? rankWithOrdinal : rank}</span>
     </Tooltip>
   );

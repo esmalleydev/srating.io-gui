@@ -1,22 +1,18 @@
 'use client';
 
-import { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
 import HelperTeam from '@/components/helpers/Team';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { useAppSelector } from '@/redux/hooks';
 import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
 import CFB from '@/components/helpers/CFB';
 import RankTable from '@/components/generic/RankTable';
 import TableColumns from '@/components/helpers/TableColumns';
+import Navigation from '@/components/helpers/Navigation';
 
 
 
 const Client = ({ organization_id, division_id, coach_team_seasons, teams, statistic_rankings }) => {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const dispatch = useAppDispatch();
+  const navigation = new Navigation();
 
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
@@ -93,10 +89,7 @@ const Client = ({ organization_id, division_id, coach_team_seasons, teams, stati
 
   const handleClick = (coach_team_season_id: string) => {
     const coach_team_season = coach_team_seasons[coach_team_season_id];
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/team/${coach_team_season.team_id}?season=${coach_team_season.season}`);
-    });
+    navigation.team(`/${path}/team/${coach_team_season.team_id}?season=${coach_team_season.season}`);
   };
 
   const getRankSpanMax = (row) => {

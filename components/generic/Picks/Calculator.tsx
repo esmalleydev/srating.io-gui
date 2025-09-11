@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -35,6 +34,7 @@ import { Game } from '@/types/general';
 import { CircularProgress } from '@mui/material';
 import Sorter from '@/components/utils/Sorter';
 import Organization from '@/components/helpers/Organization';
+import Navigation from '@/components/helpers/Navigation';
 const Arrayifer = new utilsArrayifer();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -54,7 +54,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 // todo this somestimes triggers a double load in PicksLoader.... something with having const picksLoading = useAppSelector(state => state.picksReducer.picksLoading);, makes it double render
 
 const Calculator = ({ games, date }) => {
-  const router = useRouter();
+  const navigation = new Navigation();
   const theme = useTheme();
   const { width } = useWindowDimensions() as Dimensions;
 
@@ -101,7 +101,7 @@ const Calculator = ({ games, date }) => {
 
   const handleGame = (g: Game) => {
     const path = Organization.getPath({ organizations, organization_id: g.organization_id });
-    router.push(`/${path}/games/${g.game_id}`);
+    navigation.games(`/${path}/games/${g.game_id}`);
   };
 
   const headCells = [

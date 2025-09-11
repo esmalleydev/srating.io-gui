@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
@@ -15,7 +14,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setScrollTop } from '@/redux/features/picks-slice';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
-import { setLoading } from '@/redux/features/display-slice';
 import Rank from './Tile/Rank';
 import PredictionLine from './Tile/PredictionLine';
 import StatLine from './Tile/StatLine';
@@ -23,6 +21,7 @@ import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
+import Navigation from '@/components/helpers/Navigation';
 
 
 /**
@@ -43,12 +42,11 @@ export const getSkeleton = (numberOfSkeletons: number): React.JSX.Element[] => {
 export const maxWidth = 750;
 
 const Tile = ({ game }) => {
+  const navigation = new Navigation();
   const theme = useTheme();
-  const router = useRouter();
 
   const scrollRef = useScrollContext();
   const { width } = useWindowDimensions() as Dimensions;
-  const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
 
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
@@ -68,10 +66,7 @@ const Tile = ({ game }) => {
       dispatch(setScrollTop(scrollRef.current.scrollTop));
     }
     dispatch(updateGameSort(null));
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/games/${game.game_id}`);
-    });
+    navigation.games(`/${path}/games/${game.game_id}`);
   };
 
 

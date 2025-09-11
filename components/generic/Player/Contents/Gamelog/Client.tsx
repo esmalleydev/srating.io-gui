@@ -2,13 +2,12 @@
 
 /* eslint-disable no-nested-ternary */
 
-import { PlayerBoxscore } from '@/types/cbb';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { PlayerBoxscore as CBBPlayerBoxscore } from '@/types/cbb';
+import { PlayerBoxscore as CFBPlayerBoxscore } from '@/types/cfb';
+import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import HelperGame from '@/components/helpers/Game';
-import { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { setLoading } from '@/redux/features/display-slice';
+import { useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
@@ -17,6 +16,10 @@ import moment from 'moment';
 import { getNavHeaderHeight } from '../../NavBar';
 import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankTable from '@/components/generic/RankTable';
+import TableColumns, { TableColumnsType } from '@/components/helpers/TableColumns';
+import Chip from '@/components/ux/container/Chip';
+import Objector from '@/components/utils/Objector';
+import Navigation from '@/components/helpers/Navigation';
 
 /**
  * The main wrapper div for all the contents
@@ -50,155 +53,28 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ organization_id, gamelogs }) => {
-  const dispatch = useAppDispatch();
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const navigation = new Navigation();
   const theme = useTheme();
 
   // const player = useAppSelector((state) => state.playerReducer.player);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
-  const playerColumns = ['game_details', 'minutes_played', 'points', 'fg', 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
   const season = useAppSelector((state) => state.playerReducer.season);
   const subview = useAppSelector((state) => state.playerReducer.subview);
 
-  const playerBoxscoreHeaderColumns = {
-    game_details: {
-      id: 'game_details',
-      numeric: false,
-      label: 'Game',
-      tooltip: 'Game',
-      sticky: true,
-    },
-    minutes_played: {
-      id: 'minutes_played',
-      label: 'MP',
-      tooltip: 'Minutes played',
-      sort: 'higher',
-      numeric: true,
-    },
-    points: {
-      id: 'points',
-      label: 'PTS',
-      tooltip: 'Points',
-      sort: 'higher',
-      numeric: true,
-    },
-    fg: {
-      id: 'fg',
-      label: 'FG',
-      tooltip: 'Field goals',
-      sort: 'higher',
-      numeric: true,
-    },
-    two_fg: {
-      id: 'two_fg',
-      label: '2P',
-      tooltip: '2 point field goals',
-      sort: 'higher',
-      numeric: true,
-    },
-    three_fg: {
-      id: 'three_fg',
-      label: '3P',
-      tooltip: '3 point field goals',
-      sort: 'higher',
-      numeric: true,
-    },
-    ft: {
-      id: 'ft',
-      label: 'FT',
-      tooltip: 'Free throws',
-      sort: 'higher',
-      numeric: true,
-    },
-    offensive_rebounds: {
-      id: 'offensive_rebounds',
-      label: 'ORB',
-      tooltip: 'Offensive rebounds',
-      sort: 'higher',
-      numeric: true,
-    },
-    defensive_rebounds: {
-      id: 'defensive_rebounds',
-      label: 'DRB',
-      tooltip: 'Defensive rebounds',
-      sort: 'higher',
-      numeric: true,
-    },
-    assists: {
-      id: 'assists',
-      label: 'AST',
-      tooltip: 'Assists',
-      sort: 'higher',
-      numeric: true,
-    },
-    steals: {
-      id: 'steals',
-      label: 'STL',
-      tooltip: 'Steals',
-      sort: 'higher',
-      numeric: true,
-    },
-    blocks: {
-      id: 'blocks',
-      label: 'BLK',
-      tooltip: 'Blocks',
-      sort: 'higher',
-      numeric: true,
-    },
-    turnovers: {
-      id: 'turnovers',
-      label: 'TOV',
-      tooltip: 'Turnovers',
-      sort: 'higher',
-      numeric: true,
-    },
-    fouls: {
-      id: 'fouls',
-      label: 'PF',
-      title: 'Personal fouls',
-      sort: 'higher',
-      numeric: true,
-    },
+  const player_boxscores = {};
+
+  // grab some defaults for pickers, and since we are already looping, might as well filter it a bit
+  const key_x_attempts = {
+    passing_attempts: 0,
+    rushing_attempts: 0,
+    receptions: 0,
   };
-
-
-  const handleClick = (player_boxscore_id) => {
-    if (!player_boxscore_id) {
-      console.warn('Missing player_boxscore_id');
-      return;
-    }
-
-    let game_id = null;
-    if (player_boxscore_id in gamelogs) {
-      game_id = gamelogs[player_boxscore_id].game_id;
-    }
-
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/games/${game_id}`);
-    });
+  const key_x_chip = {
+    passing_attempts: 'passing',
+    rushing_attempts: 'rushing',
+    receptions: 'receiving',
   };
-
-  type FooterRow = Partial<PlayerBoxscore> & {
-    game_details?: React.JSX.Element | string;
-    fg?: string;
-    fg_secondary?: string;
-    two_fg?: string;
-    two_fg_secondary?: string;
-    three_fg?: string;
-    three_fg_secondary?: string;
-    ft?: string;
-    ft_secondary?: string;
-  }
-
-  const footerRow: FooterRow = {
-    game_details: 'Total',
-  };
-
-  const playerRows: object[] = [];
-
   for (const player_boxscore_id in gamelogs) {
     const row = gamelogs[player_boxscore_id];
 
@@ -213,7 +89,118 @@ const Client = ({ organization_id, gamelogs }) => {
       continue;
     }
 
-    const formattedRow = { ...row } as FooterRow;
+    for (const key in key_x_attempts) {
+      if (key in row) {
+        key_x_attempts[key] += row[key] || 0;
+      }
+    }
+
+    player_boxscores[player_boxscore_id] = row;
+  }
+
+  let defaultPosition = null;
+  let maxKeyCount = 0;
+
+  for (const key in key_x_attempts) {
+    if (key_x_attempts[key] > maxKeyCount) {
+      defaultPosition = key_x_chip[key];
+      maxKeyCount = key_x_attempts[key];
+    }
+  }
+
+  const [position, setPosition] = useState<string | null>(defaultPosition);
+
+  let playerColumns: string[] = [];
+
+  const playerBoxscoreHeaderColumns = TableColumns.getBoxscoreColumns({ organization_id, view: 'player' });
+
+  if (Organization.getCBBID() === organization_id) {
+    playerColumns = ['game_details', 'minutes_played', 'points', 'fg', 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
+  }
+
+  if (Organization.getCFBID() === organization_id) {
+    if (position === 'passing') {
+      playerColumns = [
+        'game_details',
+        'passing_completions_and_attempts',
+        'passing_yards',
+        'passing_yards_per_attempt',
+        'passing_touchdowns',
+        'passing_interceptions',
+        'passing_rating_college',
+        // 'passing_long',
+      ];
+    }
+
+    if (position === 'rushing') {
+      playerColumns = [
+        'game_details',
+        'rushing_attempts',
+        'rushing_yards',
+        'rushing_yards_per_attempt',
+        'rushing_touchdowns',
+        'rushing_long',
+      ];
+    }
+
+    if (position === 'receiving') {
+      playerColumns = [
+        'game_details',
+        'receptions',
+        'receiving_yards',
+        'receiving_yards_per_reception',
+        'receiving_touchdowns',
+        'receiving_long',
+      ];
+    }
+  }
+
+
+  const handleClick = (player_boxscore_id) => {
+    if (!player_boxscore_id) {
+      console.warn('Missing player_boxscore_id');
+      return;
+    }
+
+    let game_id = null;
+    if (player_boxscore_id in gamelogs) {
+      game_id = gamelogs[player_boxscore_id].game_id;
+    }
+
+    navigation.games(`/${path}/games/${game_id}`);
+  };
+
+  type PartialPlayerBoxscore = Partial<CBBPlayerBoxscore | CFBPlayerBoxscore> & {
+    name?: string;
+    fg?: string;
+    fg_secondary?: string;
+    two_fg?: string;
+    two_fg_secondary?: string;
+    three_fg?: string;
+    three_fg_secondary?: string;
+    ft?: string;
+    ft_secondary?: string;
+    passing_completions?: string;
+    passing_attempts?: string;
+    passing_completions_and_attempts?: string;
+    passing_completions_and_attempts_secondary?: string;
+    passing_yards?: string;
+    passing_yards_per_attempt?: string;
+    passing_touchdowns?: string;
+    passing_interceptions?: string;
+    passing_rating_college?: string;
+    game_details?: React.JSX.Element | string;
+  }
+  const playerRows: PartialPlayerBoxscore[] = [];
+
+  const footerRow: PartialPlayerBoxscore = {
+    game_details: 'Total',
+  };
+
+  for (const player_boxscore_id in player_boxscores) {
+    const row = player_boxscores[player_boxscore_id];
+
+    const formattedRow = Objector.deepClone(row) as PartialPlayerBoxscore;
 
     const won = (row.game.home_score > row.game.away_score && row.game.home_team_id === row.team_id) || (row.game.home_score < row.game.away_score && row.game.away_team_id === row.team_id);
     const Game = new HelperGame({
@@ -246,17 +233,28 @@ const Client = ({ organization_id, gamelogs }) => {
       </div>
     );
 
-    formattedRow.fg = `${row.field_goal || 0}-${row.field_goal_attempts || 0}`;
-    formattedRow.fg_secondary = `${row.field_goal_percentage || 0}%`;
+    if (Organization.getCBBID() === organization_id) {
+      // // # just typescript things
+      // row = row as CBBPlayerBoxscore;
+      formattedRow.fg = `${row.field_goal || 0}-${row.field_goal_attempts || 0}`;
+      formattedRow.fg_secondary = `${row.field_goal_percentage || 0}%`;
 
-    formattedRow.two_fg = `${row.two_point_field_goal || 0}-${row.two_point_field_goal_attempts || 0}`;
-    formattedRow.two_fg_secondary = `${row.two_point_field_goal_percentage || 0}%`;
+      formattedRow.two_fg = `${row.two_point_field_goal || 0}-${row.two_point_field_goal_attempts || 0}`;
+      formattedRow.two_fg_secondary = `${row.two_point_field_goal_percentage || 0}%`;
 
-    formattedRow.three_fg = `${row.three_point_field_goal || 0}-${row.three_point_field_goal_attempts || 0}`;
-    formattedRow.three_fg_secondary = `${row.three_point_field_goal_percentage || 0}%`;
+      formattedRow.three_fg = `${row.three_point_field_goal || 0}-${row.three_point_field_goal_attempts || 0}`;
+      formattedRow.three_fg_secondary = `${row.three_point_field_goal_percentage || 0}%`;
 
-    formattedRow.ft = `${row.free_throws || 0}-${row.free_throw_attempts || 0}`;
-    formattedRow.ft_secondary = `${row.free_throw_percentage || 0}%`;
+      formattedRow.ft = `${row.free_throws || 0}-${row.free_throw_attempts || 0}`;
+      formattedRow.ft_secondary = `${row.free_throw_percentage || 0}%`;
+    }
+
+    if (Organization.getCFBID() === organization_id) {
+      // # just typescript things
+      // row = row as CFBPlayerBoxscore;
+      formattedRow.passing_completions_and_attempts = `${row.passing_completions || 0}/${row.passing_attempts || 0}`;
+      formattedRow.passing_completions_and_attempts_secondary = `${row.passing_completion_percentage || 0}%`;
+    }
 
     for (const key in row) {
       if (!(key in footerRow)) {
@@ -269,17 +267,27 @@ const Client = ({ organization_id, gamelogs }) => {
     playerRows.push(formattedRow);
   }
 
-  footerRow.fg = `${footerRow.field_goal || 0}-${footerRow.field_goal_attempts || 0}`;
-  footerRow.fg_secondary = footerRow.field_goal_attempts !== undefined && footerRow.field_goal_attempts > 0 ? `${(((footerRow.field_goal || 0) / footerRow.field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+  if (Organization.getCBBID() === organization_id) {
+    // # just typescript things
+    const footy = footerRow as CBBPlayerBoxscore;
 
-  footerRow.two_fg = `${footerRow.two_point_field_goal || 0}-${footerRow.two_point_field_goal_attempts || 0}`;
-  footerRow.two_fg_secondary = footerRow.two_point_field_goal_attempts !== undefined && footerRow.two_point_field_goal_attempts > 0 ? `${(((footerRow.two_point_field_goal || 0) / footerRow.two_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+    footerRow.fg = `${footy.field_goal || 0}-${footy.field_goal_attempts || 0}`;
+    footerRow.fg_secondary = footy.field_goal_attempts !== undefined && footy.field_goal_attempts > 0 ? `${(((footy.field_goal || 0) / footy.field_goal_attempts) * 100).toFixed(2)}%` : '0%';
 
-  footerRow.three_fg = `${footerRow.three_point_field_goal || 0}-${footerRow.three_point_field_goal_attempts || 0}`;
-  footerRow.three_fg_secondary = footerRow.three_point_field_goal_attempts !== undefined && footerRow.three_point_field_goal_attempts > 0 ? `${(((footerRow.three_point_field_goal || 0) / footerRow.three_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+    footerRow.two_fg = `${footy.two_point_field_goal || 0}-${footy.two_point_field_goal_attempts || 0}`;
+    footerRow.two_fg_secondary = footy.two_point_field_goal_attempts !== undefined && footy.two_point_field_goal_attempts > 0 ? `${(((footy.two_point_field_goal || 0) / footy.two_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
 
-  footerRow.ft = `${footerRow.free_throws || 0}-${footerRow.free_throw_attempts || 0}`;
-  footerRow.ft_secondary = footerRow.free_throw_attempts !== undefined && footerRow.free_throw_attempts > 0 ? `${(((footerRow.free_throws || 0) / footerRow.free_throw_attempts) * 100).toFixed(2)}%` : '0%';
+    footerRow.three_fg = `${footy.three_point_field_goal || 0}-${footy.three_point_field_goal_attempts || 0}`;
+    footerRow.three_fg_secondary = footy.three_point_field_goal_attempts !== undefined && footy.three_point_field_goal_attempts > 0 ? `${(((footy.three_point_field_goal || 0) / footy.three_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+
+    footerRow.ft = `${footy.free_throws || 0}-${footy.free_throw_attempts || 0}`;
+    footerRow.ft_secondary = footy.free_throw_attempts !== undefined && footy.free_throw_attempts > 0 ? `${(((footy.free_throws || 0) / footy.free_throw_attempts) * 100).toFixed(2)}%` : '0%';
+  }
+
+  if (Organization.getCFBID() === organization_id) {
+    footerRow.passing_completions_and_attempts = `${footerRow.passing_completions || 0}/${footerRow.passing_attempts || 0}`;
+    footerRow.passing_completions_and_attempts_secondary = footerRow.passing_attempts !== undefined && +footerRow.passing_attempts > 0 ? `${(((+(footerRow.passing_completions ?? 0) / +footerRow.passing_attempts) * 100).toFixed(2))}%` : '0%';
+  }
 
   const descendingComparator = (a, b, orderBy, direction_) => {
     if ((orderBy in a) && b[orderBy] === null) {
@@ -314,8 +322,21 @@ const Client = ({ organization_id, gamelogs }) => {
       : (a, b) => -descendingComparator(a, b, orderBy, direction);
   };
 
+  let picker: React.JSX.Element = <></>;
+
+  if (organization_id === Organization.getCFBID()) {
+    picker = (
+      <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
+        <Chip style = {{ margin: '0px 10px 0px 10px' }} filled = {position === 'passing'} value = {'passing'} onClick= {() => { setPosition('passing'); }} title = {'Passing'} />
+        <Chip style = {{ margin: '0px 10px 0px 10px' }} filled = {position === 'rushing'} value = {'rushing'} onClick= {() => { setPosition('rushing'); }} title = {'Rushing'} />
+        <Chip style = {{ margin: '0px 10px 0px 10px' }} filled = {position === 'receiving'} value = {'receiving'} onClick= {() => { setPosition('receiving'); }} title = {'Receiving'} />
+      </div>
+    );
+  }
+
   return (
     <Contents>
+      {picker}
       <RankTable
         rows={playerRows}
         footerRow={footerRow}

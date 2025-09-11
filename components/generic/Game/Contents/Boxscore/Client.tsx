@@ -1,14 +1,12 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
 import HelperGame from '@/components/helpers/Game';
 import CompareStatistic from '@/components/generic/CompareStatistic';
-import { Boxscore as BoxscoreCBB, PlayerBoxscore, PlayerBoxscores } from '@/types/cbb';
-import { Boxscore as BoxscoreCFB } from '@/types/cfb';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { Boxscore as BoxscoreCBB, PlayerBoxscore as CBBPlayerBoxscore, PlayerBoxscores as CBBPlayerBoxscores } from '@/types/cbb';
+import { Boxscore as BoxscoreCFB, PlayerBoxscores as CFBPlayerBoxscores, PlayerBoxscore as CFBPlayerBoxscore } from '@/types/cfb';
+import { useAppSelector } from '@/redux/hooks';
 import { LinearProgress } from '@mui/material';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
@@ -25,6 +23,11 @@ import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
 import Color from '@/components/utils/Color';
+import Objector from '@/components/utils/Objector';
+import TableColumns from '@/components/helpers/TableColumns';
+import Text from '@/components/utils/Text';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import Navigation from '@/components/helpers/Navigation';
 
 
 
@@ -63,12 +66,12 @@ const ClientSkeleton = () => {
 
 const Client = (
   { game, boxscores, player_boxscores, players /* tag */ }:
-  { game: Game; boxscores: BoxscoreCBB[] | BoxscoreCFB[]; player_boxscores: any; players: Players /* tag */ },
+  { game: Game; boxscores: BoxscoreCBB[] | BoxscoreCFB[]; player_boxscores: CBBPlayerBoxscores | CFBPlayerBoxscores; players: Players /* tag */ },
 ) => {
-  const dispatch = useAppDispatch();
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const navigation = new Navigation();
   const theme = useTheme();
+
+  const { width } = useWindowDimensions() as Dimensions;
 
   let numberOfTeams = CBB.getNumberOfD1Teams(game.season);
 
@@ -81,10 +84,10 @@ const Client = (
 
   const [boxscore_team_id, set_boxscore_team_id] = useState(game.away_team_id);
 
-  const playerColumns = ['name', 'minutes_played', 'points', 'fg', 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
-
   let home_boxscore: BoxscoreCBB | BoxscoreCFB | null = null;
   let away_boxscore: BoxscoreCBB | BoxscoreCFB | null = null;
+
+  let defaultPlayerTableSort = 'minutes_played';
 
   for (const boxscore_id in boxscores) {
     const row = boxscores[boxscore_id];
@@ -100,15 +103,12 @@ const Client = (
 
   const hasBoxscoreData = away_boxscore && home_boxscore && ('points' in away_boxscore) && ('points' in home_boxscore);
 
-  const handleClick = (player_id) => {
+
+  const handleClick = (player_id: string) => {
     if (!player_id) {
-      console.warn('Missing player_id');
-      return;
+      throw new Error('Missing player_id');
     }
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/player/${player_id}`);
-    });
+    navigation.player(`/${path}/player/${player_id}`);
   };
 
   const Game = new HelperGame({
@@ -587,22 +587,26 @@ const Client = (
     );
   };
 
-
-  /**
-   * Get the player boxscore content
-   */
-  const getPlayerBoxscoreContent = (): React.JSX.Element => {
+  const getTopPlayers = (): React.JSX.Element => {
     if (game.organization_id === Organization.getCFBID()) {
-      let homeQB: any = null;
-      let awayQB: any = null;
-      let homeBestRusher: any = null;
-      let awayBestRusher: any = null;
-      let homeBestReceiver: any = null;
-      let awayBestReceiver: any = null;
+      type CFBPlayerPartial = CFBPlayerBoxscore & {
+        player_name?: string;
+        player_number?: string;
+        initials?: string;
+        color?: string;
+        teamCode?: string;
+      }
+
+      let homeQB: CFBPlayerPartial | null = null;
+      let awayQB: CFBPlayerPartial | null = null;
+      let homeBestRusher: CFBPlayerPartial | null = null;
+      let awayBestRusher: CFBPlayerPartial | null = null;
+      let homeBestReceiver: CFBPlayerPartial | null = null;
+      let awayBestReceiver: CFBPlayerPartial | null = null;
 
       const StatBlock = ({ value, label }) => (
         <div style = {{ textAlign: 'center' }}>
-          <Typography type = 'body1'>{value}</Typography>
+          <Typography type = {(width <= 425 ? 'body2' : 'body1')}>{value}</Typography>
           <Typography type = 'caption' style = {{ color: theme.text.secondary, textTransform: 'uppercase' }}>{label}</Typography>
         </div>
       );
@@ -642,15 +646,22 @@ const Client = (
           padding: '0px 10px',
         };
 
+        let avatarWidth = 50;
+
+        if (width <= 425) {
+          avatarWidth = 40;
+        }
+
         const avatarStyle = {
-          width: '50px',
-          height: '50px',
+          width: avatarWidth,
+          height: avatarWidth,
           borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: color,
           color: Color.getTextColor('#ffffff', color),
+          fontSize: width <= 425 ? '12px' : '14px',
         };
 
         const statsContainerStyle = {
@@ -670,7 +681,7 @@ const Client = (
             {/* Team Logo and Rank */}
             <div className = {Style.getStyleClassName(teamInfoStyle)}>
               <div className = {Style.getStyleClassName(teamLogoStyle)}>
-                <Typography type='caption'>{teamCode}</Typography>
+                <Typography style={{ color: teamLogoStyle.color }} type='caption'>{teamCode}</Typography>
               </div>
               {/* <img
                 src={null}
@@ -690,11 +701,11 @@ const Client = (
 
             {/* Player Name and Stats */}
             <div className={Style.getStyleClassName(statsContainerStyle)}>
-              <Typography type='h6'>{name}</Typography>
+              <Typography type='body1'>{name}</Typography>
               <div className={Style.getStyleClassName(statsGridStyle)}>
                 {blocks.map((block) => {
                   return (
-                    <StatBlock value={block.value} label={block.label} />
+                    <StatBlock key = {`stat-block-${block.label}-${block.value}`} value={block.value} label={block.label} />
                   );
                 })}
               </div>
@@ -704,7 +715,7 @@ const Client = (
       };
 
       for (const player_boxscore_id in player_boxscores) {
-        const row = player_boxscores[player_boxscore_id];
+        const row = player_boxscores[player_boxscore_id] as CFBPlayerPartial;
 
         let player_name = (row.first_name ? `${row.first_name.charAt(0)}. ` : '') + row.last_name;
         let player_number = '1';
@@ -917,148 +928,182 @@ const Client = (
         </>
       );
     }
+
+    return <></>;
+  };
+
+
+  const getPlayerBoxscoreContents = (): React.JSX.Element => {
+    const picker = (
+      <>
+        {/* <ButtonSwitch leftTitle={Game.getTeamName('away')} rightTitle={Game.getTeamName('home')} selected = {boxscore_team_id === 'away' ? 'left' : 'right'} handleClick={() => { set_boxscore_team_id(boxscore_team_id === 'away' ? 'home' : 'away'); }} /> */}
+          <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 8 }}>
+            <Chip style = {{ margin: '0px 10px 0px 10px' }} filled = {boxscore_team_id === game.away_team_id} value = {game.away_team_id} onClick= {() => { set_boxscore_team_id(game.away_team_id); }} title = {Game.getTeamName('away')} />
+            <Chip style = {{ margin: '0px 10px 0px 10px' }} filled = {boxscore_team_id === game.home_team_id} value = {game.home_team_id} onClick= {() => { set_boxscore_team_id(game.home_team_id); }} title = {Game.getTeamName('home')} />
+          </div>
+      </>
+    );
+
     if (game.organization_id === Organization.getCBBID()) {
-      const playerBoxscoreHeaderColumns = {
-        name: {
-          id: 'name',
-          numeric: false,
-          label: 'Player',
-          tooltip: 'Player',
-          sticky: true,
-        },
-        minutes_played: {
-          id: 'minutes_played',
-          label: 'MP',
-          tooltip: 'Minutes played',
-          sort: 'higher',
-          numeric: true,
-        },
-        points: {
-          id: 'points',
-          label: 'PTS',
-          tooltip: 'Points',
-          sort: 'higher',
-          numeric: true,
-        },
-        fg: {
-          id: 'fg',
-          label: 'FG',
-          tooltip: 'Field goals',
-          sort: 'higher',
-          numeric: true,
-        },
-        two_fg: {
-          id: 'two_fg',
-          label: '2P',
-          tooltip: '2 point field goals',
-          sort: 'higher',
-          numeric: true,
-        },
-        three_fg: {
-          id: 'three_fg',
-          label: '3P',
-          tooltip: '3 point field goals',
-          sort: 'higher',
-          numeric: true,
-        },
-        ft: {
-          id: 'ft',
-          label: 'FT',
-          tooltip: 'Free throws',
-          sort: 'higher',
-          numeric: true,
-        },
-        offensive_rebounds: {
-          id: 'offensive_rebounds',
-          label: 'ORB',
-          tooltip: 'Offensive rebounds',
-          sort: 'higher',
-          numeric: true,
-        },
-        defensive_rebounds: {
-          id: 'defensive_rebounds',
-          label: 'DRB',
-          tooltip: 'Defensive rebounds',
-          sort: 'higher',
-          numeric: true,
-        },
-        assists: {
-          id: 'assists',
-          label: 'AST',
-          tooltip: 'Assists',
-          sort: 'higher',
-          numeric: true,
-        },
-        steals: {
-          id: 'steals',
-          label: 'STL',
-          tooltip: 'Steals',
-          sort: 'higher',
-          numeric: true,
-        },
-        blocks: {
-          id: 'blocks',
-          label: 'BLK',
-          tooltip: 'Blocks',
-          sort: 'higher',
-          numeric: true,
-        },
-        turnovers: {
-          id: 'turnovers',
-          label: 'TOV',
-          tooltip: 'Turnovers',
-          sort: 'higher',
-          numeric: true,
-        },
-        fouls: {
-          id: 'fouls',
-          label: 'PF',
-          title: 'Personal fouls',
-          sort: 'higher',
-          numeric: true,
-        },
-      };
+      return (
+        <>
+          {picker}
+          {getPlayerBoxscoreContent(null)}
+        </>
+      );
+    }
 
-      const playerRows: object[] = [];
+    if (game.organization_id === Organization.getCFBID()) {
+      return (
+        <>
+        {getTopPlayers()}
+        {picker}
+        {getPlayerBoxscoreContent('passing')}
+        {getPlayerBoxscoreContent('rushing')}
+        {getPlayerBoxscoreContent('receiving')}
+        </>
+      );
+    }
 
-      type FooterRow = Partial<PlayerBoxscore> & {
-        name?: string;
-        fg?: string;
-        fg_secondary?: string;
-        two_fg?: string;
-        two_fg_secondary?: string;
-        three_fg?: string;
-        three_fg_secondary?: string;
-        ft?: string;
-        ft_secondary?: string;
+    return <></>;
+  };
+
+  /**
+   * Get the player boxscore content
+   */
+  const getPlayerBoxscoreContent = (position: string | null): React.JSX.Element => {
+    const playerBoxscoreHeaderColumns = TableColumns.getBoxscoreColumns({ organization_id: game.organization_id, view: 'game' });
+
+    let playerColumns: string[] = [];
+
+    if (Organization.getCBBID() === game.organization_id) {
+      playerColumns = ['name', 'minutes_played', 'points', 'fg', 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
+    }
+
+
+    if (Organization.getCFBID() === game.organization_id) {
+      if (position === 'passing') {
+        defaultPlayerTableSort = 'passing_yards';
+        playerColumns = [
+          'name',
+          'passing_completions_and_attempts',
+          'passing_yards',
+          'passing_yards_per_attempt',
+          'passing_touchdowns',
+          'passing_interceptions',
+          'passing_rating_college',
+          // 'passing_long',
+        ];
       }
 
-      const footerRow: FooterRow = {
-        name: 'Total',
-      };
+      if (position === 'rushing') {
+        defaultPlayerTableSort = 'rushing_yards';
+        playerColumns = [
+          'name',
+          'rushing_attempts',
+          'rushing_yards',
+          'rushing_yards_per_attempt',
+          'rushing_touchdowns',
+          'rushing_long',
+        ];
+      }
+
+      if (position === 'receiving') {
+        defaultPlayerTableSort = 'receiving_yards';
+        playerColumns = [
+          'name',
+          'receptions',
+          'receiving_yards',
+          'receiving_yards_per_reception',
+          'receiving_touchdowns',
+          'receiving_long',
+        ];
+      }
+    }
 
 
-      for (const player_boxscore_id in player_boxscores) {
-        const row = player_boxscores[player_boxscore_id];
+    type PartialPlayerBoxscore = Partial<CBBPlayerBoxscore | CFBPlayerBoxscore> & {
+      name?: string;
+      fg?: string;
+      fg_secondary?: string;
+      two_fg?: string;
+      two_fg_secondary?: string;
+      three_fg?: string;
+      three_fg_secondary?: string;
+      ft?: string;
+      ft_secondary?: string;
+      passing_completions?: string;
+      passing_attempts?: string;
+      passing_completions_and_attempts?: string;
+      passing_completions_and_attempts_secondary?: string;
+      passing_yards?: string;
+      passing_yards_per_attempt?: string;
+      passing_touchdowns?: string;
+      passing_interceptions?: string;
+      passing_rating_college?: string;
+    }
+    const playerRows: PartialPlayerBoxscore[] = [];
 
-        if (!row.minutes_played) {
-          continue;
-        }
+    const footerRow: PartialPlayerBoxscore = {
+      name: 'Total',
+    };
 
-        if (boxscore_team_id !== row.team_id) {
-          continue;
-        }
 
-        let player_name = (row.first_name ? `${row.first_name.charAt(0)}. ` : '') + row.last_name;
+    for (const player_boxscore_id in player_boxscores) {
+      let row = player_boxscores[player_boxscore_id];
 
-        if (row.player_id && players && row.player_id in players) {
-          const player = players[row.player_id];
-          player_name = (player.first_name ? `${player.first_name.charAt(0)}. ` : '') + player.last_name;
-        }
+      if (!row.minutes_played && Organization.getCBBID() === game.organization_id) {
+        continue;
+      }
 
-        const formattedRow = { ...row } as FooterRow;
+      if (boxscore_team_id !== row.team_id) {
+        continue;
+      }
 
-        formattedRow.name = player_name;
+
+      let player_name = (row.first_name ? `${row.first_name.charAt(0)}. ` : '') + row.last_name;
+
+      if (row.player_id && players && row.player_id in players) {
+        const player = players[row.player_id];
+        player_name = (player.first_name ? `${player.first_name.charAt(0)}. ` : '') + player.last_name;
+      }
+
+      // skip people with no passing attempts
+      if (
+        (
+          position === 'passing' &&
+          (
+            !('passing_attempts' in row) ||
+            !row.passing_attempts
+          )
+        ) ||
+        // skip people with no rushing attempts
+        (
+          position === 'rushing' &&
+          (
+            !('rushing_attempts' in row) ||
+            !row.rushing_attempts
+          )
+        ) ||
+        // skip people with no receiving attempts
+        (
+          position === 'receiving' &&
+          (
+            !('receptions' in row) ||
+            !row.receptions
+          )
+        )
+      ) {
+        continue;
+      }
+
+      const formattedRow = Objector.deepClone(row) as PartialPlayerBoxscore;
+
+      formattedRow.name = player_name;
+
+      if (Organization.getCBBID() === game.organization_id) {
+        // # just typescript things
+        row = row as CBBPlayerBoxscore;
 
         formattedRow.fg = `${row.field_goal || 0}-${row.field_goal_attempts || 0}`;
         formattedRow.fg_secondary = `${row.field_goal_percentage || 0}%`;
@@ -1071,54 +1116,75 @@ const Client = (
 
         formattedRow.ft = `${row.free_throws || 0}-${row.free_throw_attempts || 0}`;
         formattedRow.ft_secondary = `${row.free_throw_percentage || 0}%`;
-
-        for (const key in row) {
-          if (!(key in footerRow)) {
-            footerRow[key] = row[key];
-          } else {
-            footerRow[key] = +(+footerRow[key] + +row[key]).toFixed(2);
-          }
-        }
-
-        playerRows.push(formattedRow);
       }
 
-      footerRow.fg = `${footerRow.field_goal || 0}-${footerRow.field_goal_attempts || 0}`;
-      footerRow.fg_secondary = footerRow.field_goal_attempts !== undefined && footerRow.field_goal_attempts > 0 ? `${(((footerRow.field_goal || 0) / footerRow.field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+      if (Organization.getCFBID() === game.organization_id) {
+        // # just typescript things
+        row = row as CFBPlayerBoxscore;
+        formattedRow.passing_completions_and_attempts = `${row.passing_completions || 0}/${row.passing_attempts || 0}`;
+        formattedRow.passing_completions_and_attempts_secondary = `${row.passing_completion_percentage || 0}%`;
+      }
 
-      footerRow.two_fg = `${footerRow.two_point_field_goal || 0}-${footerRow.two_point_field_goal_attempts || 0}`;
-      footerRow.two_fg_secondary = footerRow.two_point_field_goal_attempts !== undefined && footerRow.two_point_field_goal_attempts > 0 ? `${(((footerRow.two_point_field_goal || 0) / footerRow.two_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+      for (const key in row) {
+        if (!(key in footerRow)) {
+          footerRow[key] = row[key];
+        } else {
+          footerRow[key] = +(+footerRow[key] + +row[key]).toFixed(2);
+        }
+      }
 
-      footerRow.three_fg = `${footerRow.three_point_field_goal || 0}-${footerRow.three_point_field_goal_attempts || 0}`;
-      footerRow.three_fg_secondary = footerRow.three_point_field_goal_attempts !== undefined && footerRow.three_point_field_goal_attempts > 0 ? `${(((footerRow.three_point_field_goal || 0) / footerRow.three_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
-
-      footerRow.ft = `${footerRow.free_throws || 0}-${footerRow.free_throw_attempts || 0}`;
-      footerRow.ft_secondary = footerRow.free_throw_attempts !== undefined && footerRow.free_throw_attempts > 0 ? `${(((footerRow.free_throws || 0) / footerRow.free_throw_attempts) * 100).toFixed(2)}%` : '0%';
-
-      return (
-        <>
-          {/* <ButtonSwitch leftTitle={Game.getTeamName('away')} rightTitle={Game.getTeamName('home')} selected = {boxscore_team_id === 'away' ? 'left' : 'right'} handleClick={() => { set_boxscore_team_id(boxscore_team_id === 'away' ? 'home' : 'away'); }} /> */}
-          <div style = {{ textAlign: 'center' }}>
-            <Chip style = {{ margin: '0px 10px 10px 10px' }} filled = {boxscore_team_id === game.away_team_id} value = {game.away_team_id} onClick= {() => { set_boxscore_team_id(game.away_team_id); }} title = {Game.getTeamName('away')} />
-            <Chip style = {{ margin: '0px 10px 10px 10px' }} filled = {boxscore_team_id === game.home_team_id} value = {game.home_team_id} onClick= {() => { set_boxscore_team_id(game.home_team_id); }} title = {Game.getTeamName('home')} />
-          </div>
-          <RankTable
-            rows={playerRows}
-            footerRow={footerRow}
-            columns={playerBoxscoreHeaderColumns}
-            displayColumns={playerColumns}
-            rowKey = 'player_id'
-            defaultSortOrder = 'asc'
-            defaultSortOrderBy = 'minutes_played'
-            sessionStorageKey = {`${path}.TEAM.ROSTER`}
-            secondaryKey = 'secondary'
-            handleRowClick={handleClick}
-            />
-        </>
-      );
+      playerRows.push(formattedRow);
     }
 
-    return <></>;
+    if (Organization.getCBBID() === game.organization_id) {
+      // # just typescript things
+      const footy = footerRow as CBBPlayerBoxscore;
+
+      footerRow.fg = `${footy.field_goal || 0}-${footy.field_goal_attempts || 0}`;
+      footerRow.fg_secondary = footy.field_goal_attempts !== undefined && footy.field_goal_attempts > 0 ? `${(((footy.field_goal || 0) / footy.field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+
+      footerRow.two_fg = `${footy.two_point_field_goal || 0}-${footy.two_point_field_goal_attempts || 0}`;
+      footerRow.two_fg_secondary = footy.two_point_field_goal_attempts !== undefined && footy.two_point_field_goal_attempts > 0 ? `${(((footy.two_point_field_goal || 0) / footy.two_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+
+      footerRow.three_fg = `${footy.three_point_field_goal || 0}-${footy.three_point_field_goal_attempts || 0}`;
+      footerRow.three_fg_secondary = footy.three_point_field_goal_attempts !== undefined && footy.three_point_field_goal_attempts > 0 ? `${(((footy.three_point_field_goal || 0) / footy.three_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+
+      footerRow.ft = `${footy.free_throws || 0}-${footy.free_throw_attempts || 0}`;
+      footerRow.ft_secondary = footy.free_throw_attempts !== undefined && footy.free_throw_attempts > 0 ? `${(((footy.free_throws || 0) / footy.free_throw_attempts) * 100).toFixed(2)}%` : '0%';
+    }
+
+    if (Organization.getCFBID() === game.organization_id) {
+      footerRow.passing_completions_and_attempts = `${footerRow.passing_completions || 0}/${footerRow.passing_attempts || 0}`;
+      footerRow.passing_completions_and_attempts_secondary = footerRow.passing_attempts !== undefined && +footerRow.passing_attempts > 0 ? `${(((+(footerRow.passing_completions ?? 0) / +footerRow.passing_attempts) * 100).toFixed(2))}%` : '0%';
+    }
+
+    let title = <></>;
+
+    if (position) {
+      title = <Typography type = 'body1'>{Text.toSentenceCase(position)}</Typography>;
+    }
+
+    if (!playerRows.length) {
+      return <></>;
+    }
+
+    return (
+      <>
+        {title}
+        <RankTable
+          rows={playerRows}
+          footerRow={footerRow}
+          columns={playerBoxscoreHeaderColumns}
+          displayColumns={playerColumns}
+          rowKey = 'player_id'
+          defaultSortOrder = 'asc'
+          defaultSortOrderBy = {defaultPlayerTableSort}
+          sessionStorageKey = {`${path}.GAME.BOXSCORE.${position}`}
+          secondaryKey = 'secondary'
+          handleRowClick={handleClick}
+          />
+      </>
+    );
   };
 
 
@@ -1130,7 +1196,7 @@ const Client = (
         </div>
       </div>
       <div style = {{ padding: '0px 5px 10px 5px' }}>
-        {getPlayerBoxscoreContent()}
+        {getPlayerBoxscoreContents()}
       </div>
     </Contents>
   );

@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useEffect, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { useAppSelector } from '@/redux/hooks';
 import { LinearProgress } from '@mui/material';
 import { getHeaderHeight } from '../../Header/ClientWrapper';
 import { getNavHeaderHeight } from '../../NavBar';
@@ -18,6 +16,7 @@ import Typography from '@/components/ux/text/Typography';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import Objector from '@/components/utils/Objector';
+import Navigation from '@/components/helpers/Navigation';
 
 
 /**
@@ -58,13 +57,12 @@ const Client = ({ player_statistic_rankings, players }) => {
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
   const sessionStorageKey = `${path}.COMPARE.PLAYER`;
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
   const [view, setView] = useState<string | null>('overview');
-  const dispatch = useAppDispatch();
   const teams = useAppSelector((state) => state.compareReducer.teams);
   const hideLowerBench = useAppSelector((state) => state.compareReducer.hideLowerBench);
   const topPlayersOnly = useAppSelector((state) => state.compareReducer.topPlayersOnly);
+
+  const navigation = new Navigation();
 
   // useEffect(() => {
   //   console.timeEnd('Player.Client')
@@ -135,10 +133,7 @@ const Client = ({ player_statistic_rankings, players }) => {
   };
 
   const handleClick = (player_id: string) => {
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(`/${path}/player/${player_id}`);
-    });
+    navigation.player(`/${path}/player/${player_id}`);
   };
 
 

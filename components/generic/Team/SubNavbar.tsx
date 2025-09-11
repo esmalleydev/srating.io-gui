@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react';
 import {
-  IconButton, Tooltip,
+  IconButton,
 } from '@mui/material';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
@@ -10,12 +10,12 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
 import HistoryIcon from '@mui/icons-material/History';
 import { usePathname, useRouter } from 'next/navigation';
-import { setLoading } from '@/redux/features/display-slice';
 import { setDataKey } from '@/redux/features/team-slice';
 import AdditionalOptions from './Contents/Schedule/AdditionalOptions';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Tab from '@/components/ux/buttons/Tab';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 const getSubNavHeaderHeight = () => 42;
 
@@ -78,7 +78,7 @@ const SubNavBar = ({ view }) => {
   if (view === 'schedule') {
     if (scheduleView === 'default') {
       leftButtons.push(
-        <Tooltip key = {'toggle-all-historical-charts-tooltip'} title = {'Toggle all historical charts'}>
+        <Tooltip key = {'toggle-all-historical-charts-tooltip'} text = {'Toggle all historical charts'}>
           <IconButton
             id = 'differential-button'
             onClick = {() => dispatch(setDataKey({ key: 'showScheduleDifferentials', value: !showScheduleDifferentials }))}
@@ -89,7 +89,7 @@ const SubNavBar = ({ view }) => {
       );
 
       leftButtons.push(
-        <Tooltip key = {'toggle-all-historical-ranking-tooltip'} title = {showScheduleHistoricalRankRecord ? 'Show current record / rank' : 'Show historical record / rank at time of game'}>
+        <Tooltip key = {'toggle-all-historical-ranking-tooltip'} text = {showScheduleHistoricalRankRecord ? 'Show current record / rank' : 'Show historical record / rank at time of game'}>
           <IconButton
             id = 'historical-button'
             onClick = {() => dispatch(setDataKey({ key: 'showScheduleHistoricalRankRecord', value: !showScheduleHistoricalRankRecord }))}

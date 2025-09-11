@@ -1,5 +1,5 @@
-import { CBBRankingTable } from '@/types/cbb';
-import { CFBRankingTable } from '@/types/cfb';
+import { RankingTable as CBBRankingTable } from '@/types/cbb';
+import { RankingTable as CFBRankingTable } from '@/types/cfb';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 

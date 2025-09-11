@@ -11,7 +11,7 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
-import { clearLocalStorage, setLoading } from '@/redux/features/display-slice';
+import { clearLocalStorage, clearPositions, setLoading } from '@/redux/features/display-slice';
 import { usePathname, useRouter } from 'next/navigation';
 import { reset as resetGames } from '@/redux/features/games-slice';
 import { reset as resetRanking } from '@/redux/features/ranking-slice';
@@ -82,6 +82,7 @@ const OrganizationPicker = () => {
     dispatch(resetGames());
     dispatch(resetRanking());
     dispatch(reset());
+    dispatch(clearPositions());
     startTransition(() => {
       const splat = pathName.split('/');
 

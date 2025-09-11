@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useTransition } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { getBreakPoint, getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -20,6 +20,7 @@ import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Tab from '@/components/ux/buttons/Tab';
+import Tooltip from '@/components/ux/hover/Tooltip';
 // import GroupsIcon from '@mui/icons-material/Groups';
 // import StadiumIcon from '@mui/icons-material/Stadium';
 // import LocalAirportIcon from '@mui/icons-material/LocalAirport';
@@ -217,7 +218,7 @@ const NavBar = () => {
     rightButtons.push(<TeamAdditionalOptions key = {'team-additional'} />);
 
     leftButtons.push(
-      <Tooltip key = {'table-button'} title = {subview === 'table' ? 'View compare mode' : 'View table mode'}>
+      <Tooltip key = {'table-button'} text = {subview === 'table' ? 'View compare mode' : 'View table mode'}>
         <IconButton
           id = 'table-card-button'
           onClick = {(e) => handleSubView(e, subview === 'table' ? null : 'table')}
@@ -230,7 +231,7 @@ const NavBar = () => {
     rightButtons.push(<PlayerAdditionalOptions key = {'player-additional'} />);
 
     leftButtons.push(
-      <Tooltip key = {'top-player-button'} title = {topPlayersOnly ? 'Show all players' : 'View top MPG players'}>
+      <Tooltip key = {'top-player-button'} text = {topPlayersOnly ? 'Show all players' : 'View top MPG players'}>
         <IconButton
           id = 'top-players-button'
           onClick = {() => { dispatch(setDataKey({ key: 'topPlayersOnly', value: !topPlayersOnly })); }}

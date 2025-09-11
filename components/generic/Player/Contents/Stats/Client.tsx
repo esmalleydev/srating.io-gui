@@ -1,16 +1,16 @@
 'use client';
 
-import { LinearProgress, Tooltip } from '@mui/material';
+import { LinearProgress } from '@mui/material';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
-import CBB from '@/components/helpers/CBB';
 import { getNavHeaderHeight } from '../../NavBar';
 import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankSpan from '@/components/generic/RankSpan';
 import TableColumns from '@/components/helpers/TableColumns';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 /**
  * The main wrapper div for all the contents
@@ -56,7 +56,7 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
         {
           name: 'Efficiency',
           keys: [
-            'points',
+            // 'points',
             'passing_rating_college',
             'passing_rating_pro',
             // 'yards_per_play',
@@ -175,11 +175,12 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
     const column = columns[key];
     const statistic = key in player_statistic_ranking ? player_statistic_ranking[key] : null;
     const rank = key in player_statistic_ranking ? player_statistic_ranking[`${key}_rank`] : null;
+    const label = column.alt_label || column.label;
     return (
       <div key = {`${column.id}-div`} style = {{
         textAlign: 'center', flex: '1', minWidth: 100, maxWidth: 100, margin: 10,
       }}>
-        <Tooltip key={column.id} disableFocusListener placement = 'top' title={column.tooltip}><Typography type='body1' style = {{ color: theme.text.secondary }}>{column.label}</Typography></Tooltip>
+        <Tooltip key={column.id} position = 'top' text={column.tooltip}><Typography type='body1' style = {{ color: theme.text.secondary }}>{label}</Typography></Tooltip>
         {/* <hr style = {{'padding': 0, 'margin': 'auto', 'width': 50}} /> */}
         <div><Typography style = {{ display: 'inline-block' }} type='caption'>{statistic || 0}</Typography>{rank ? <RankSpan rank = {rank} useOrdinal = {true} max = {maxPlayers} /> : ''}</div>
       </div>
@@ -192,7 +193,7 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
         {sections.map(({ name, keys }, sectionIndex) => {
           return (
             <div key = {`section-${name}-fragment`}>
-              <Typography type='subtitle' >{name}</Typography>
+              <Typography type='subtitle'>{name}</Typography>
               <div style = {{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                 {keys.map((key) => {
                   return getStatBlock(key);
