@@ -29,6 +29,7 @@
     "react-idle-timer": "^5.7.2",
     "react-redux": "^9.0.4",
     "react-virtuoso": "^4.6.2",
+    "typescript": "^5.5.3",
     "recharts": "^2.12.7",
     "typeface-roboto": "^1.1.13",
     "web-vitals": "^4.2.4"
@@ -71,7 +72,6 @@
     "globals": "^16.0.0",
     "jest": "^30.0.5",
     "ts-jest": "^29.4.1",
-    "typescript": "^5.5.3",
     "typescript-eslint": "^8.26.1"
   }
 }
