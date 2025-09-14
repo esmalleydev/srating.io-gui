@@ -96,7 +96,7 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
 
   for (const team_id in teams) {
     const team = teams[team_id];
-    const stats = statistic_rankings[team_id_x_statistic_ranking_id[team.team_id]] as StatsRows;
+    const stats = (statistic_rankings[team_id_x_statistic_ranking_id[team.team_id]] || {}) as StatsRows;
 
     const teamHelper = new HelperTeam({ team });
 
