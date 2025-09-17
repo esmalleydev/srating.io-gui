@@ -3,11 +3,11 @@
 import { useEffect, useState, useTransition } from 'react';
 import Legend from './Legend';
 import FloatingButtons from './FloatingButtons';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 // import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
-import { setLoading as setLoadingDisplay, clearPositions, updatePositions } from '@/redux/features/display-slice';
+import { setLoading as setLoadingDisplay, setDataKey as setDisplayDataKey } from '@/redux/features/display-slice';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import AdditionalOptions from './AdditionalOptions';
@@ -34,7 +34,6 @@ const Base = (
   const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
 
@@ -60,9 +59,16 @@ const Base = (
 
   const { width } = useWindowDimensions() as Dimensions;
 
-  // useEffect(() => {
-  //   console.timeEnd('Base')
-  // })
+  useEffect(() => {
+    if (
+      Organization.getCFBID() === organization_id &&
+      view === 'player' &&
+      !positions.length
+    ) {
+      dispatch(setDisplayDataKey({ key: 'positions', value: 'QB' }));
+    }
+    // console.timeEnd('Base')
+  }, [view]);
   // const breakPoint = 425;
 
   const rankViewOptions = [
@@ -85,7 +91,7 @@ const Base = (
   const positionChips: React.JSX.Element[] = [];
   if (Organization.getCFBID() !== organization_id) {
     for (let i = 0; i < positions.length; i++) {
-      positionChips.push(<Chip key = {positions[i]} value = {positions[i]} style = {{ margin: '5px' }} title={positions[i]} onDelete={() => { dispatch(updatePositions(positions[i])); }} />);
+      positionChips.push(<Chip key = {positions[i]} value = {positions[i]} style = {{ margin: '5px' }} title={positions[i]} onDelete={() => { dispatch(setDisplayDataKey({ key: 'positions', value: positions[i] })); }} />);
     }
   }
 
@@ -94,7 +100,7 @@ const Base = (
       localStorage.removeItem(`${organization_id}.RANKING.COLUMNS.${view}`);
       dispatch(setDataKey({ key: 'data', value: null }));
       dispatch(setDataKey({ key: 'customColumns', value: ['rank', 'name'] }));
-      dispatch(clearPositions());
+      dispatch(setDisplayDataKey({ key: 'positions', value: null }));
       dispatch(setDataKey({ key: 'order', value: 'asc' }));
       dispatch(setDataKey({ key: 'orderBy', value: 'rank' }));
       dispatch(setDataKey({ key: 'tableScrollTop', value: 0 }));
@@ -102,39 +108,29 @@ const Base = (
       dispatch(setDataKey({ key: 'filteredRows', value: null }));
       dispatch(setDataKey({ key: 'searchValue', value: '' }));
 
-      if (
-        Organization.getCFBID() === organization_id &&
-        newRankView === 'player'
-      ) {
-        dispatch(updatePositions('QB'));
-      }
+      const current = new URLSearchParams(window.location.search);
+      current.set('view', newRankView);
+      current.delete('hideCommitted');
+      current.delete('hideUnderTwoMPG');
+      const search = current.toString();
 
-      if (searchParams) {
-        const current = new URLSearchParams(Array.from(searchParams.entries()));
-        current.set('view', newRankView);
-        current.delete('hideCommitted');
-        current.delete('hideUnderTwoMPG');
-        const search = current.toString();
-        const query = search ? `?${search}` : '';
-        startTransition(() => {
-          router.push(`${pathName}${query}`);
-        });
-      }
+      const query = search ? `?${search}` : '';
+      startTransition(() => {
+        router.push(`${pathName}${query}`);
+      });
     }
   };
 
   const handleSeason = (newSeason) => {
     if (newSeason !== season) {
-      if (searchParams) {
-        const current = new URLSearchParams(Array.from(searchParams.entries()));
-        current.set('season', newSeason);
-        const search = current.toString();
-        const query = search ? `?${search}` : '';
-        dispatch(setLoadingDisplay(true));
-        startTransition(() => {
-          router.push(`${pathName}${query}`);
-        });
-      }
+      const current = new URLSearchParams(window.location.search);
+      current.set('season', newSeason);
+      const search = current.toString();
+      const query = search ? `?${search}` : '';
+      dispatch(setLoadingDisplay(true));
+      startTransition(() => {
+        router.push(`${pathName}${query}`);
+      });
     }
   };
 

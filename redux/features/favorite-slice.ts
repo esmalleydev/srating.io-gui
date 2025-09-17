@@ -1,3 +1,4 @@
+import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
@@ -14,6 +15,8 @@ const initialState = {
   game_ids: [],
   skip_sort_game_ids: [],
 } as InitialState;
+
+const defaultState = Object.freeze(Objector.deepClone(initialState));
 
 export const favorite = createSlice({
   name: 'favorite',

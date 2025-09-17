@@ -18,8 +18,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateConferences } from '@/redux/features/display-slice';
 import { ListItemButton } from '@mui/material';
+import { setDataKey } from '@/redux/features/display-slice';
 
 // Currently not in use, if you do want to use this again, update it to put conferences in url params
 
@@ -145,7 +145,7 @@ const ConferencePickerFull = () => {
 
             return (
               <ListItemButton key={value} onClick={() => {
-                dispatch(updateConferences(value));
+                dispatch(setDataKey({ key: 'conferences', value }));
                 handleConfClose();
               }}>
                 <ListItemIcon>

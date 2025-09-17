@@ -12,13 +12,13 @@ import IconButton from '@mui/material/IconButton';
 import RankPicker from '@/components/generic/RankPicker';
 import { Divider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setCardView, setOdds } from '@/redux/features/display-slice';
 import Menu from '@/components/ux/menu/Menu';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuList from '@/components/ux/menu/MenuList';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import { setDataKey } from '@/redux/features/display-slice';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -54,7 +54,7 @@ const AdditionalOptions = () => {
 
     menuItems.push(
       <MenuItem key='odds-display' onClick={() => {
-        dispatch(setOdds(hideOdds === 1 ? 0 : 1));
+        dispatch(setDataKey({ key: 'hideOdds', value: (hideOdds === 1 ? 0 : 1) }));
       }}>
          <MenuListIcon>
            {hideOdds ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
@@ -65,7 +65,7 @@ const AdditionalOptions = () => {
 
     menuItems.push(
       <MenuItem key='card-display' onClick={() => {
-        dispatch(setCardView(cardsView === 'large' ? 'compact' : 'large'));
+        dispatch(setDataKey({ key: 'cardsView', value: (cardsView === 'large' ? 'compact' : 'large') }));
       }}>
          <MenuListIcon>
            {cardsView === 'large' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />}

@@ -1,3 +1,4 @@
+import Objector from '@/components/utils/Objector';
 import { Conferences, Divisions, Organizations } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -17,6 +18,8 @@ const initialState = {
   organization_id_x_division_id_x_season_x_conference_id_x_true: {},
   organization_id_x_division_id_x_ranking_seasons: {},
 } as InitialState;
+
+const defaultState = Object.freeze(Objector.deepClone(initialState));
 
 export const dictionary = createSlice({
   name: 'dictionary',

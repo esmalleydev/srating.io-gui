@@ -101,7 +101,7 @@ const Pin = ({ game_id }: { game_id: string; }) => {
 
   return (
     <>
-      <Tooltip text = {'Pin game'}>
+      <Tooltip delay={250} text = {'Pin game'}>
         <IconButton color='primary' onClick = {handleFavorite}>
           <PinIcon sx = {pinStyle} fontSize = 'small' />
         </IconButton>

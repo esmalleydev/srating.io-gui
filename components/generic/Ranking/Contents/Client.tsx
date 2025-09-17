@@ -126,7 +126,6 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   //   console.timeEnd('Ranking.Contents.Client')
   // })
 
-  // console.log(allRows)
 
 
   const scrollerRef = React.useCallback(
@@ -643,7 +642,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const foo = (
     <Contents>
       <div style = {{ padding: width < 600 ? `${tableFullscreen ? '10px' : '0px'} 10px 0px 10px` : `${tableFullscreen ? '10px' : '0px'} 20px 0px 20px` }}>
-        {rows.length ? <TableVirtuoso scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography type='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>}
+        {rows.length ? <TableVirtuoso key = {generated} scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography type='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>}
       </div>
     </Contents>
   );

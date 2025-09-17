@@ -1,4 +1,5 @@
 
+import Objector from '@/components/utils/Objector';
 import { Player, PlayerTeamSeason, PlayerTeamSeasons, Team, Teams } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -37,6 +38,8 @@ const initialState = {
   trendsColumn: null,
 } as InitialState;
 
+const defaultState = Object.freeze(Objector.deepClone(initialState));
+
 const updateStateFromUrlParams = (state: InitialState) => {
   if (typeof window === 'undefined') {
     return;
@@ -71,10 +74,10 @@ export const player = createSlice({
       state[action.payload.key] = action.payload.value;
     },
     reset: (state) => {
-      for (const key in initialState) {
+      for (const key in defaultState) {
         // we do not have to reset this one, it is controlled by the contents changing
         if (key !== 'loadingView') {
-          state[key] = initialState[key];
+          state[key] = defaultState[key];
         }
       }
 

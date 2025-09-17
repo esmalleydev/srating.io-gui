@@ -1,11 +1,11 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateConferences } from '@/redux/features/display-slice';
 import OptionPicker, { optionType } from './OptionPicker';
-import { getStore } from '@/app/StoreProvider';
 import { useEffect } from 'react';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
+import { setDataKey } from '@/redux/features/display-slice';
+import { getStore } from '@/app/StoreProvider';
 
 const ConferencePicker = () => {
   // console.time('ConferencePicker')
@@ -19,40 +19,51 @@ const ConferencePicker = () => {
   //   console.timeEnd('ConferencePicker')
   // })
 
+
   /**
-   * TODO:
-   * This is dangerous, it might overwrite the url params from a button click that uses the router
+   * Dont touch this
    */
   useEffect(() => {
-    let run = false;
-    const current = new URLSearchParams(window.location.search);
-    const urlConferences = current.getAll('conference_id');
+    const timer = setTimeout(
+      () => {
+        let run = false;
+        const current = new URLSearchParams(window.location.search);
+        const urlConferences = current.getAll('conferences');
 
-    if (selected && selected.length) {
-      let same = true;
-      for (let i = 0; i < selected.length; i++) {
-        if (!urlConferences.includes(selected[i])) {
-          same = false;
-          break;
+        const store = getStore();
+        const { conferences } = store.getState().displayReducer;
+
+        if (conferences && conferences.length) {
+          let same = true;
+          for (let i = 0; i < conferences.length; i++) {
+            if (!urlConferences.includes(conferences[i])) {
+              same = false;
+              break;
+            }
+          }
+
+          if (!same || urlConferences.length !== conferences.length) {
+            current.delete('conferences');
+            for (let i = 0; i < conferences.length; i++) {
+              current.append('conferences', conferences[i]);
+            }
+            run = true;
+          }
+        } else if (urlConferences && urlConferences.length) {
+          current.delete('conferences');
+          run = true;
         }
-      }
 
-      if (!same || urlConferences.length !== selected.length) {
-        current.delete('conference_id');
-        for (let i = 0; i < selected.length; i++) {
-          current.append('conference_id', selected[i]);
+
+        if (run) {
+          window.history.replaceState(null, '', `?${current.toString()}`);
         }
-        run = true;
-      }
-    } else if (urlConferences && urlConferences.length) {
-      current.delete('conference_id');
-      run = true;
-    }
+      },
+      0,
+    );
 
-    if (run) {
-      window.history.replaceState(null, '', `?${current.toString()}`);
-    }
-  });
+    return () => clearTimeout(timer);
+  }, []);
 
   const conferenceOptions: optionType[] = [
     { value: null, label: 'All' },
@@ -111,27 +122,8 @@ const ConferencePicker = () => {
   });
 
 
-  const handleClick = (value) => {
-    // console.time('ConferencePicker.handleClick');
-    const store = getStore();
-    dispatch(updateConferences(value));
-    const results = store.getState().displayReducer.conferences;
-
-    const current = new URLSearchParams(window.location.search);
-    if (results.length) {
-      current.delete('conference_id');
-      for (let i = 0; i < results.length; i++) {
-        current.append('conference_id', results[i]);
-      }
-    } else {
-      current.delete('conference_id');
-    }
-
-    window.history.replaceState(null, '', `?${current.toString()}`);
-
-    // use pushState if we want to add to back button history
-    // window.history.pushState(null, '', `?${current.toString()}`);
-    // console.timeEnd('ConferencePicker.handleClick');
+  const handleClick = (value: string | null) => {
+    dispatch(setDataKey({ key: 'conferences', value }));
   };
 
 

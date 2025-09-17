@@ -8,9 +8,9 @@ import List from '@mui/material/List';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setRank } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
 import { ListItemButton } from '@mui/material';
+import { setDataKey } from '@/redux/features/display-slice';
 
 
 /**
@@ -88,7 +88,7 @@ const RankPicker = (
       <List>
         {rankDisplayOptions.map((rankDisplayOption) => (
           <ListItemButton key={rankDisplayOption.value} onClick={() => {
-            dispatch(setRank(rankDisplayOption.value));
+            dispatch(setDataKey({ key: 'rank', value: rankDisplayOption.value }));
             handleClose();
           }}>
             <ListItemIcon>

@@ -3,6 +3,7 @@ import CBB from '@/components/helpers/CBB';
 import CFB from '@/components/helpers/CFB';
 import Division from '@/components/helpers/Division';
 import Organization from '@/components/helpers/Organization';
+import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
@@ -13,7 +14,7 @@ type InitialState = {
   season: number,
 };
 
-const getInitialOrganizationID = () => {
+export const getInitialOrganizationID = () => {
   if (typeof window !== 'undefined') {
     const pathName = window.location.pathname;
     const splat = pathName.split('/');
@@ -70,6 +71,8 @@ const initialState = {
   division_id: initalDivisionID,
   season: initalSeason,
 } as InitialState;
+
+const defaultState = Object.freeze(Objector.deepClone(initialState));
 
 export const organization = createSlice({
   name: 'organization',

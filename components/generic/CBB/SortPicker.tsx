@@ -8,8 +8,8 @@ import List from '@mui/material/List';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setPicksSort } from '@/redux/features/display-slice';
 import { ListItemButton } from '@mui/material';
+import { setDataKey } from '@/redux/features/display-slice';
 
 
 /**
@@ -58,7 +58,7 @@ const SortPicker = ({ open, openHandler, closeHandler }) => {
       <List>
         {options.map((option) => (
           <ListItemButton key={option.value} onClick={() => {
-            dispatch(setPicksSort(option.value));
+            dispatch(setDataKey({ key: 'picksSort', value: option.value }));
             handleClose();
           }}>
             <ListItemIcon>

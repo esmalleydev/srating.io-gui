@@ -1,3 +1,4 @@
+import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const localStorageKey = 'theme';
@@ -27,6 +28,8 @@ const initalMode = getInitialMode();
 const initialState = {
   mode: initalMode,
 } as InitialState;
+
+const defaultState = Object.freeze(Objector.deepClone(initialState));
 
 export const theme = createSlice({
   name: 'theme',

@@ -1,3 +1,4 @@
+import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
@@ -20,6 +21,8 @@ const initialState = {
   loadingSecret: false,
   newUpdate: false,
 } as InitialState;
+
+const defaultState = Object.freeze(Objector.deepClone(initialState));
 
 export const user = createSlice({
   name: 'user',

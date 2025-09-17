@@ -2,9 +2,11 @@
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { clearPositions, updatePositions } from '@/redux/features/display-slice';
 import OptionPicker, { optionType } from '../OptionPicker';
 import Organization from '@/components/helpers/Organization';
+import { setDataKey } from '@/redux/features/display-slice';
+import { useEffect } from 'react';
+import { getStore } from '@/app/StoreProvider';
 
 
 const PositionPicker = ({ selected, isRadio = false }: { selected: string[]; isRadio?: boolean; }) => {
@@ -13,6 +15,8 @@ const PositionPicker = ({ selected, isRadio = false }: { selected: string[]; isR
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
 
   let options: optionType[] = [];
+
+  const breakPoint = width <= 425;
 
   if (Organization.getCBBID() === organization_id) {
     options = [
@@ -23,25 +27,67 @@ const PositionPicker = ({ selected, isRadio = false }: { selected: string[]; isR
     ];
   } else if (Organization.getCFBID() === organization_id) {
     options = [
-      { value: 'QB', label: 'Quarterback' },
-      { value: 'rushing', label: 'Rushing' },
-      { value: 'receiving', label: 'Receiving' },
+      { value: 'QB', label: (breakPoint ? 'QB' : 'Quarterback') },
+      { value: 'rushing', label: (breakPoint ? 'Rush' : 'Rushing') },
+      { value: 'receiving', label: (breakPoint ? 'REC.' : 'Receiving') },
     ];
   }
 
   const selectedOption = (selected && selected.length) ? selected : ['all'];
 
+  /**
+   * Dont touch this
+   */
+  useEffect(() => {
+    const timer = setTimeout(
+      () => {
+        let run = false;
+        const current = new URLSearchParams(window.location.search);
+        const urlPositions = current.getAll('positions');
+
+        const store = getStore();
+        const { positions } = store.getState().displayReducer;
+
+        if (positions && positions.length) {
+          let same = true;
+          for (let i = 0; i < positions.length; i++) {
+            if (!urlPositions.includes(positions[i])) {
+              same = false;
+              break;
+            }
+          }
+
+          if (!same || urlPositions.length !== positions.length) {
+            current.delete('positions');
+            for (let i = 0; i < positions.length; i++) {
+              current.append('positions', positions[i]);
+            }
+            run = true;
+          }
+        } else if (urlPositions && urlPositions.length) {
+          current.delete('positions');
+          run = true;
+        }
+
+
+        if (run) {
+          window.history.replaceState(null, '', `?${current.toString()}`);
+        }
+      },
+      0,
+    );
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handlePosition = (value: string) => {
     if (isRadio) {
-      dispatch(clearPositions());
-      dispatch(updatePositions(value));
-      return;
-    }
-
-    if (value === 'all') {
-      dispatch(clearPositions());
+      dispatch(setDataKey({ key: 'positions', value: null }));
+      dispatch(setDataKey({ key: 'positions', value }));
+    } else if (value === 'all') {
+      dispatch(setDataKey({ key: 'positions', value: null }));
     } else {
-      dispatch(updatePositions(value));
+      dispatch(setDataKey({ key: 'positions', value }));
     }
   };
 

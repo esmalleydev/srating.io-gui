@@ -2,7 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
-import { setGamesFilter } from '@/redux/features/display-slice';
+import { setDataKey } from '@/redux/features/display-slice';
 
 
 
@@ -21,7 +21,7 @@ const GamesFilterPicker = () => {
 
 
   const handleFilter = (value: string) => {
-    dispatch(setGamesFilter(value));
+    dispatch(setDataKey({ key: 'gamesFilter', value }));
   };
 
 

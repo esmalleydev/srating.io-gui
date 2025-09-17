@@ -134,9 +134,9 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
             'blocks',
             'turnovers',
             'fouls',
-            'fatigue',
-            'desperation',
-            'over_confidence',
+            // 'fatigue',
+            // 'desperation',
+            // 'over_confidence',
           ],
         },
         {
@@ -150,9 +150,12 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
         {
           name: 'Defensive',
           columns: [
-            'opponent_field_goal',
-            'opponent_field_goal_attempts',
-            'opponent_field_goal_percentage',
+            'opponent_two_point_field_goal',
+            'opponent_two_point_field_goal_attempts',
+            'opponent_two_point_field_goal_percentage',
+            'opponent_three_point_field_goal',
+            'opponent_three_point_field_goal_attempts',
+            'opponent_three_point_field_goal_percentage',
             'opponent_offensive_rebounds',
             'opponent_defensive_rebounds',
             'opponent_assists',

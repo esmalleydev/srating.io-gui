@@ -1,3 +1,4 @@
+import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // todo normalize with setDataKey
@@ -32,6 +33,8 @@ const initialState = {
   gameStatsLoading: true,
   gameStats: {},
 } as InitialState;
+
+const defaultState = Object.freeze(Objector.deepClone(initialState));
 
 export const games = createSlice({
   name: 'games',

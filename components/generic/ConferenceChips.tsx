@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateConferences } from '@/redux/features/display-slice';
 import Chip from '@/components/ux/container/Chip';
-import { getStore } from '@/app/StoreProvider';
+import { setDataKey } from '@/redux/features/display-slice';
 
 export const getConferenceChips = () => {
   // console.time('getConferenceChips')
@@ -12,35 +11,8 @@ export const getConferenceChips = () => {
   const selected = useAppSelector((state) => state.displayReducer.conferences);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
-  const handleClick = (value) => {
-    const store = getStore();
-    dispatch(updateConferences(value));
-    const results = store.getState().displayReducer.conferences;
-
-    const current = new URLSearchParams(window.location.search);
-
-    if (results.length) {
-      current.delete('conference_id');
-      for (let i = 0; i < results.length; i++) {
-        current.append('conference_id', results[i]);
-      }
-    } else {
-      current.delete('conference_id');
-    }
-
-    window.history.replaceState(null, '', `?${current.toString()}`);
-
-    // use pushState if we want to add to back button history
-    // window.history.pushState(null, '', `?${current.toString()}`);
-
-
-    // I dont think I need this?
-    // const search = current.toString();
-    // const query = search ? `?${search}` : '';
-
-    // startTransition(() => {
-    //   router.replace(`${pathName}${query}`);
-    // });
+  const handleClick = (value: string) => {
+    dispatch(setDataKey({ key: 'conferences', value }));
   };
 
   const confChips: React.JSX.Element[] = [];

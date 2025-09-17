@@ -9,12 +9,12 @@ import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateStatuses } from '@/redux/features/display-slice';
 import Menu from '@/components/ux/menu/Menu';
 import MenuList from '@/components/ux/menu/MenuList';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
+import { setDataKey } from '@/redux/features/display-slice';
 
 const StatusPicker = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +42,7 @@ const StatusPicker = () => {
   const statusOptions = [{ value: 'pre', label: 'Upcoming' }, { value: 'live', label: 'Live' }, { value: 'final', label: 'Final' }];
 
   const handleStatuses = (value: string) => {
-    dispatch(updateStatuses(value));
+    dispatch(setDataKey({ key: 'statuses', value }));
   };
 
   let title = 'Status';

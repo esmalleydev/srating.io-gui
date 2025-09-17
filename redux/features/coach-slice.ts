@@ -2,6 +2,7 @@ import { Coach, CoachTeamSeasons, Teams } from '@/types/general';
 import { StatisticRankings as StatsCBB } from '@/types/cbb';
 import { StatisticRankings as StatsCFB } from '@/types/cfb';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import Objector from '@/components/utils/Objector';
 
 type InitialState = {
   view: string,
@@ -30,6 +31,8 @@ const initialState = {
   loadingView: false,
 } as InitialState;
 
+const defaultState = Object.freeze(Objector.deepClone(initialState));
+
 const updateStateFromUrlParams = (state: InitialState) => {
   if (typeof window === 'undefined') {
     return;
@@ -57,18 +60,18 @@ export const coach = createSlice({
   initialState,
   reducers: {
     clear: (state) => {
-      for (const key in initialState) {
-        state[key] = initialState[key];
+      for (const key in defaultState) {
+        state[key] = defaultState[key];
       }
     },
     setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       state[action.payload.key] = action.payload.value;
     },
     reset: (state) => {
-      for (const key in initialState) {
+      for (const key in defaultState) {
         // we do not have to reset this one, it is controlled by the contents changing
         if (key !== 'loadingView') {
-          state[key] = initialState[key];
+          state[key] = defaultState[key];
         }
       }
 

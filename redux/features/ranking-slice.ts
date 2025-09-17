@@ -1,3 +1,4 @@
+import Objector from '@/components/utils/Objector';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -43,6 +44,8 @@ const initialState = {
   filteredRows: null,
   searchValue: '',
 } as InitialState;
+
+const defaultState = Object.freeze(Objector.deepClone(initialState));
 
 const updateStateFromUrlParams = (state: InitialState) => {
   if (typeof window === 'undefined') {
@@ -98,10 +101,10 @@ export const ranking = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      for (const key in initialState) {
+      for (const key in defaultState) {
         // we do not have to reset this one, it is controlled by the contents changing
         if (key !== 'loadingView') {
-          state[key] = initialState[key];
+          state[key] = defaultState[key];
         }
       }
 
@@ -109,7 +112,7 @@ export const ranking = createSlice({
     },
     resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
       const keyToReset = action.payload as string;
-      state[keyToReset] = initialState[keyToReset];
+      state[keyToReset] = defaultState[keyToReset];
     },
     setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       state[action.payload.key] = action.payload.value;

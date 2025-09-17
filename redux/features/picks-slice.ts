@@ -1,3 +1,4 @@
+import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // import HelperCBB from '@/components/helpers/CBB';
 
@@ -24,6 +25,8 @@ const initialState = {
   gameStats: {},
   gameStatsLoading: true,
 } as InitialState;
+
+const defaultState = Object.freeze(Objector.deepClone(initialState));
 
 export const picks = createSlice({
   name: 'picks',
