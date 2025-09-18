@@ -7,7 +7,6 @@ import Organization from '@/components/helpers/Organization';
 import Text from '@/components/utils/Text';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
-import { getStore } from '@/app/StoreProvider';
 
 export const getAvailableChips = ({ organization_id, view }) => {
   let availableChips = ['composite'];
@@ -47,45 +46,12 @@ const ColumnChipPicker = ({ organization_id, view }) => {
       newColumns.push(value);
     }
 
-    const store = getStore();
     dispatch(setDataKey({ key: 'customColumns', value: newColumns }));
-    // dispatch(updateConferences(value));
-    const results = store.getState().rankingReducer.customColumns;
-
-    const current = new URLSearchParams(window.location.search);
-    if (results.length) {
-      current.delete('customColumns');
-      for (let i = 0; i < results.length; i++) {
-        current.append('customColumns', results[i]);
-      }
-    } else {
-      current.delete('customColumns');
-    }
-
-    window.history.replaceState(null, '', `?${current.toString()}`);
-
-    // use pushState if we want to add to back button history
-    // window.history.pushState(null, '', `?${current.toString()}`);
-    // console.timeEnd('ColumnPicker.handleClick');
   };
 
   const handleRankingView = (value: string) => {
     dispatch(setDataKey({ key: 'columnView', value }));
     dispatch(resetDataKey('customColumns'));
-
-    const current = new URLSearchParams(window.location.search);
-
-    if (value) {
-      current.set('columnView', value);
-      current.delete('customColumns');
-    } else {
-      current.delete('columnView');
-    }
-
-    window.history.replaceState(null, '', `?${current.toString()}`);
-
-    // use pushState if we want to add to back button history
-    // window.history.pushState(null, '', `?${current.toString()}`);
   };
 
   const getChips = () => {

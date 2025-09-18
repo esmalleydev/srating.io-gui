@@ -110,8 +110,6 @@ const Base = (
 
       const current = new URLSearchParams(window.location.search);
       current.set('view', newRankView);
-      current.delete('hideCommitted');
-      current.delete('hideUnderTwoMPG');
       const search = current.toString();
 
       const query = search ? `?${search}` : '';
