@@ -28,8 +28,8 @@ const Tooltip = <T extends HTMLElement>(
     children: React.ReactElement<{
       ref?: React.Ref<T>;
       onClick?: () => void;
-      onMouseEnter?: () => void;
-      onMouseLeave?: () => void;
+      onPointerEnter?: () => void;
+      onPointerLeave?: () => void;
       onFocus?: () => void;
       onBlur?: () => void;
     }>;
@@ -152,14 +152,14 @@ const Tooltip = <T extends HTMLElement>(
     handleShow();
   };
 
-  const handleMouseEnter = () => {
+  const handlePointerEnter = () => {
     if (fadeTimeout) {
       clearTimeout(fadeTimeout);
     }
     handleShow();
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     if (fadeTimeout) {
       clearTimeout(fadeTimeout);
     }
@@ -194,16 +194,16 @@ const Tooltip = <T extends HTMLElement>(
         children.props.onClick(...args);
       }
     },
-    onMouseEnter: (...args) => {
-      handleMouseEnter(...args);
-      if (children.props.onMouseEnter) {
-        children.props.onMouseEnter(...args);
+    onPointerEnter: (...args) => {
+      handlePointerEnter(...args);
+      if (children.props.onPointerEnter) {
+        children.props.onPointerEnter(...args);
       }
     },
-    onMouseLeave: (...args) => {
-      handleMouseLeave(...args);
-      if (children.props.onMouseLeave) {
-        children.props.onMouseLeave(...args);
+    onPointerLeave: (...args) => {
+      handlePointerLeave(...args);
+      if (children.props.onPointerLeave) {
+        children.props.onPointerLeave(...args);
       }
     },
     onFocus: (...args) => {
@@ -213,7 +213,7 @@ const Tooltip = <T extends HTMLElement>(
       }
     },
     onBlur: (...args) => {
-      handleMouseLeave(...args);
+      handlePointerLeave(...args);
       if (children.props.onBlur) {
         children.props.onBlur(...args);
       }
