@@ -78,7 +78,7 @@ export const getViewableColumns = (
   if (organization_id === Organization.getCFBID()) {
     if (columnView === 'composite') {
       if (view === 'team') {
-        return ['rank', 'name', 'rank_delta_combo', 'record', 'conf_record', 'elo', 'passing_rating_college', 'points', 'yards_per_play', 'points_per_play', 'elo_sos', 'conference_code'];
+        return ['rank', 'name', 'rank_delta_combo', 'record', 'conf_record', 'elo', 'passing_rating_college', 'yards_per_play', 'points_per_play', 'points', 'opponent_points', 'elo_sos', 'conference_code'];
       }
       if (
         view === 'player' &&
@@ -121,13 +121,12 @@ export const getViewableColumns = (
           'neutral_win_percentage',
         ];
       }
-    } else if (columnView === 'passing') {
+    } else if (columnView === 'offense') {
       if (view === 'team' || view === 'conference') {
-        return ['rank', 'name', 'passing_rating_college', 'passing_rating_pro', 'passing_attempts', 'passing_completions', 'passing_yards', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns', 'passing_interceptions', 'passing_long'];
+        return ['rank', 'name', 'passing_rating_college', 'passing_yards_per_attempt', 'rushing_yards_per_attempt', 'passing_attempts', 'passing_completions', 'passing_yards', 'passing_completion_percentage', 'passing_yards_per_completion', 'passing_touchdowns', 'passing_interceptions', 'passing_long', 'rushing_attempts', 'rushing_yards', 'rushing_touchdowns', 'rushing_long'];
       }
-      if (view === 'player') {
-        return ['rank', 'name', 'passing_rating_college', 'passing_rating_pro', 'passing_attempts_per_game', 'passing_completions_per_game', 'passing_yards_per_game', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns_per_game', 'passing_interceptions_per_game', 'passing_long'];
-      }
+    } else if (columnView === 'passing') {
+      return ['rank', 'name', 'passing_rating_college', 'passing_rating_pro', 'passing_attempts_per_game', 'passing_completions_per_game', 'passing_yards_per_game', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns_per_game', 'passing_interceptions_per_game', 'passing_long'];
     } else if (columnView === 'rushing') {
       if (view === 'team' || view === 'conference') {
         return ['rank', 'name', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_long'];
@@ -143,6 +142,10 @@ export const getViewableColumns = (
 
       if (view === 'player') {
         return ['rank', 'name', 'receptions_per_game', 'receiving_yards_per_game', 'receiving_yards_per_reception', 'receiving_touchdowns_per_game', 'receiving_long'];
+      }
+    } else if (columnView === 'defense') {
+      if (view === 'team' || view === 'conference') {
+        return ['rank', 'name', 'opponent_points', 'opponent_yards_per_play', 'opponent_points_per_play', 'opponent_passing_completion_percentage', 'opponent_passing_yards_per_attempt', 'opponent_rushing_yards_per_attempt'];
       }
     }
   }

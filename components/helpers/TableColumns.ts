@@ -1398,7 +1398,7 @@ class TableColumns {
       passing_attempts: {
         id: 'passing_attempts',
         numeric: true,
-        label: (view === 'player' ? 'Pass att. total' : 'Pass att.'),
+        label: (view === 'player' ? 'P ATT-T' : 'P ATT'),
         alt_label: (view === 'player' ? 'ATT-T' : 'ATT'),
         tooltip: (view === 'player' ? 'Total passing attempts in a season' : 'Passing attempts per game'),
         sort: 'higher',
@@ -1409,7 +1409,7 @@ class TableColumns {
       passing_completions: {
         id: 'passing_completions',
         numeric: true,
-        label: (view === 'player' ? 'Pass comp. total' : 'Pass comp.'),
+        label: (view === 'player' ? 'P COMP-T' : 'P COMP'),
         alt_label: (view === 'player' ? 'COMP-T' : 'COMP'),
         tooltip: (view === 'player' ? 'Total passing completions in a season' : 'Passing completions per game'),
         sort: 'higher',
@@ -1420,7 +1420,7 @@ class TableColumns {
       passing_yards: {
         id: 'passing_yards',
         numeric: true,
-        label: (view === 'player' ? 'Pass yards total' : 'Pass yards'),
+        label: (view === 'player' ? 'P YDS-T' : 'P YDS'),
         alt_label: (view === 'player' ? 'YDS-T' : 'YDS'),
         tooltip: (view === 'player' ? 'Total passing yards in a season' : 'Passing yards per game'),
         sort: 'higher',
@@ -1431,7 +1431,7 @@ class TableColumns {
       passing_completion_percentage: {
         id: 'passing_completion_percentage',
         numeric: true,
-        label: 'Pass comp. %',
+        label: 'P COMP%',
         alt_label: 'COMP%',
         tooltip: 'Passing completions percentage',
         sort: 'higher',
@@ -1442,7 +1442,7 @@ class TableColumns {
       passing_yards_per_attempt: {
         id: 'passing_yards_per_attempt',
         numeric: true,
-        label: 'Pass yards per att.',
+        label: 'P AVG',
         alt_label: 'AVG',
         tooltip: 'Passing yard per attempt',
         sort: 'higher',
@@ -1453,7 +1453,7 @@ class TableColumns {
       passing_yards_per_completion: {
         id: 'passing_yards_per_completion',
         numeric: true,
-        label: 'Pass yards per comp.',
+        label: 'P YDS per COMP',
         alt_label: 'YDS per COMP',
         tooltip: 'Passing yards per completion',
         sort: 'higher',
@@ -1464,7 +1464,7 @@ class TableColumns {
       passing_touchdowns: {
         id: 'passing_touchdowns',
         numeric: true,
-        label: (view === 'player' ? 'Pass TD total' : 'Pass TD'),
+        label: (view === 'player' ? 'P TD-T' : 'P TD'),
         alt_label: (view === 'player' ? 'TD-T' : 'TD'),
         tooltip: (view === 'player' ? 'Total passing touchdowns in a season' : 'Passing touchdowns per game'),
         sort: 'higher',
@@ -1475,7 +1475,7 @@ class TableColumns {
       passing_interceptions: {
         id: 'passing_interceptions',
         numeric: true,
-        label: (view === 'player' ? 'Pass int. total' : 'Pass int.'),
+        label: (view === 'player' ? 'P INT-T' : 'P INT'),
         alt_label: (view === 'player' ? 'INT-T' : 'INT'),
         tooltip: (view === 'player' ? 'Total passing interceptions in a season' : 'Passing interceptions per game'),
         sort: 'higher',
@@ -1506,7 +1506,7 @@ class TableColumns {
       passing_long: {
         id: 'passing_long',
         numeric: true,
-        label: 'Pass long',
+        label: 'P LONG',
         alt_label: 'LONG',
         tooltip: 'Passing long',
         sort: 'higher',
@@ -1517,7 +1517,7 @@ class TableColumns {
       rushing_attempts: {
         id: 'rushing_attempts',
         numeric: true,
-        label: (view === 'player' ? 'Rush att. total' : 'Rush att.'),
+        label: (view === 'player' ? 'R ATT-T' : 'R ATT'),
         alt_label: (view === 'player' ? 'ATT-T' : 'ATT'),
         tooltip: (view === 'player' ? 'Total rushing attempts in a season' : 'Rushing attempts per game'),
         sort: 'higher',
@@ -1528,7 +1528,7 @@ class TableColumns {
       rushing_yards: {
         id: 'rushing_yards',
         numeric: true,
-        label: (view === 'player' ? 'Rush yards total' : 'Rush yards'),
+        label: (view === 'player' ? 'R YDS-T' : 'R YDS'),
         alt_label: (view === 'player' ? 'YDS-T' : 'YDS'),
         tooltip: (view === 'player' ? 'Total rushing yards in a season' : 'Rushing yards per game'),
         sort: 'higher',
@@ -1539,7 +1539,7 @@ class TableColumns {
       rushing_yards_per_attempt: {
         id: 'rushing_yards_per_attempt',
         numeric: true,
-        label: 'Rush yards per att.',
+        label: 'R AVG',
         alt_label: 'AVG',
         tooltip: 'Rushing yards per attempt',
         sort: 'higher',
@@ -1550,7 +1550,7 @@ class TableColumns {
       rushing_touchdowns: {
         id: 'rushing_touchdowns',
         numeric: true,
-        label: (view === 'player' ? 'Rush TD total' : 'Rush TD'),
+        label: (view === 'player' ? 'R TD-T' : 'R TD'),
         alt_label: (view === 'player' ? 'TD-T' : 'TD'),
         tooltip: (view === 'player' ? 'Total rushing touchdowns in a season' : 'Rushing touchdowns per game'),
         sort: 'higher',
@@ -1561,7 +1561,7 @@ class TableColumns {
       rushing_long: {
         id: 'rushing_long',
         numeric: true,
-        label: 'Rush long',
+        label: 'R LONG',
         alt_label: 'LONG',
         tooltip: 'Rushing long',
         sort: 'higher',
@@ -1572,7 +1572,7 @@ class TableColumns {
       receptions: {
         id: 'receptions',
         numeric: true,
-        label: (view === 'player' ? 'Receptions total' : 'Receptions'),
+        label: (view === 'player' ? 'REC-T' : 'REC'),
         alt_label: (view === 'player' ? 'REC-T' : 'REC'),
         tooltip: (view === 'player' ? 'Total receptions in a season' : 'Receptions per game'),
         sort: 'higher',
@@ -1583,7 +1583,7 @@ class TableColumns {
       receiving_yards: {
         id: 'receiving_yards',
         numeric: true,
-        label: (view === 'player' ? 'Rec. yards total' : 'Rec. yards'),
+        label: (view === 'player' ? 'REC YDS-T' : 'REC YDS'),
         alt_label: (view === 'player' ? 'YDS-T' : 'YDS'),
         tooltip: (view === 'player' ? 'Total receiving yards in a season' : 'Receiving yards per game'),
         sort: 'higher',
@@ -1594,7 +1594,7 @@ class TableColumns {
       receiving_yards_per_reception: {
         id: 'receiving_yards_per_reception',
         numeric: true,
-        label: 'Rec. yards per recep.',
+        label: 'REC AVG',
         alt_label: 'AVG',
         tooltip: 'Receiving yards per reception',
         sort: 'higher',
@@ -1605,7 +1605,7 @@ class TableColumns {
       receiving_touchdowns: {
         id: 'receiving_touchdowns',
         numeric: true,
-        label: (view === 'player' ? 'Rec. TD total' : 'Rec. TD'),
+        label: (view === 'player' ? 'REC TD-T' : 'REC TD'),
         alt_label: (view === 'player' ? 'TD-T' : 'TD'),
         tooltip: (view === 'player' ? 'Total receiving touchdowns in a season' : 'Receiving touchdowns per game'),
         sort: 'higher',
@@ -1616,7 +1616,7 @@ class TableColumns {
       receiving_long: {
         id: 'receiving_long',
         numeric: true,
-        label: 'Rec. long',
+        label: 'REC LONG',
         alt_label: 'LONG',
         tooltip: 'Receiving long',
         sort: 'higher',

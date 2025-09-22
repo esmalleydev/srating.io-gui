@@ -19,7 +19,7 @@ export const getAvailableChips = ({ organization_id, view }) => {
 
   if (Organization.getCFBID() === organization_id) {
     if (view !== 'coach' && view !== 'player') {
-      availableChips = availableChips.concat(['passing', 'rushing']);
+      availableChips = availableChips.concat(['offense', 'defense']);
     }
   }
 
