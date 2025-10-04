@@ -12,6 +12,9 @@ const ConferencePicker = () => {
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.displayReducer.conferences);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
+  const division_id_x_conference_id_x_season_x_true = useAppSelector((state) => state.dictionaryReducer.division_id_x_conference_id_x_season_x_true);
+  const division_id = useAppSelector((state) => state.organizationReducer.division_id);
+  const season = useAppSelector((state) => state.organizationReducer.season);
   const { width } = useWindowDimensions() as Dimensions;
 
 
@@ -71,6 +74,13 @@ const ConferencePicker = () => {
 
   for (const conference_id in conferences) {
     const row = conferences[conference_id];
+    if (
+      !(division_id in division_id_x_conference_id_x_season_x_true) ||
+      !(conference_id in division_id_x_conference_id_x_season_x_true[division_id]) ||
+      !(season in division_id_x_conference_id_x_season_x_true[division_id][conference_id])
+    ) {
+      continue;
+    }
     if (row.inactive === 0) {
       let label = row.code;
       if (row.code.toLowerCase() === row.name.toLowerCase()) {
