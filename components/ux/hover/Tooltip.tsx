@@ -39,6 +39,10 @@ const Tooltip = <T extends HTMLElement>(
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const containerRef = useRef<T>(null);
 
+  // Stable refs for timers so they can be cleared reliably across renders
+  const showTimeoutRef = useRef<number | null>(null);
+  const fadeTimeoutRef = useRef<number | null>(null);
+
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
     zIndex: 9999,
@@ -120,22 +124,42 @@ const Tooltip = <T extends HTMLElement>(
     }
   }, [isVisible, position, text]);
 
-  let timeout: null | NodeJS.Timeout = null;
-  let fadeTimeout: null | NodeJS.Timeout = null;
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => {
+      if (showTimeoutRef.current) {
+        clearTimeout(showTimeoutRef.current);
+        showTimeoutRef.current = null;
+      }
+      if (fadeTimeoutRef.current) {
+        clearTimeout(fadeTimeoutRef.current);
+        fadeTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
 
   const handleShow = () => {
-    if (timeout) {
-      clearTimeout(timeout);
+    // clear any prior show timer and schedule a new one
+    if (showTimeoutRef.current) {
+      clearTimeout(showTimeoutRef.current);
+      showTimeoutRef.current = null;
     }
-    timeout = setTimeout(
-      () => setIsVisible(true),
-      delay,
-    );
+    showTimeoutRef.current = window.setTimeout(() => {
+      setIsVisible(true);
+      showTimeoutRef.current = null;
+    }, delay);
   };
 
   const handleHide = () => {
-    if (timeout) {
-      clearTimeout(timeout);
+    // clear both timers and hide
+    if (showTimeoutRef.current) {
+      clearTimeout(showTimeoutRef.current);
+      showTimeoutRef.current = null;
+    }
+    if (fadeTimeoutRef.current) {
+      clearTimeout(fadeTimeoutRef.current);
+      fadeTimeoutRef.current = null;
     }
     setIsVisible(false);
   };
@@ -145,23 +169,27 @@ const Tooltip = <T extends HTMLElement>(
       return;
     }
 
-    if (fadeTimeout) {
-      clearTimeout(fadeTimeout);
+    if (fadeTimeoutRef.current) {
+      clearTimeout(fadeTimeoutRef.current);
+      fadeTimeoutRef.current = null;
     }
 
     handleShow();
   };
 
   const handlePointerEnter = () => {
-    if (fadeTimeout) {
-      clearTimeout(fadeTimeout);
+    if (fadeTimeoutRef.current) {
+      clearTimeout(fadeTimeoutRef.current);
+      fadeTimeoutRef.current = null;
     }
     handleShow();
   };
 
   const handlePointerLeave = () => {
-    if (fadeTimeout) {
-      clearTimeout(fadeTimeout);
+    // If a show timer is still pending, cancel it; otherwise hide immediately
+    if (showTimeoutRef.current) {
+      clearTimeout(showTimeoutRef.current);
+      showTimeoutRef.current = null;
     }
     handleHide();
   };
@@ -172,14 +200,16 @@ const Tooltip = <T extends HTMLElement>(
     }
 
     if (onClickFade) {
-      if (fadeTimeout) {
-        clearTimeout(fadeTimeout);
+      if (fadeTimeoutRef.current) {
+        clearTimeout(fadeTimeoutRef.current);
+        fadeTimeoutRef.current = null;
       }
 
-      fadeTimeout = setTimeout(
-        handleHide,
-        onClickFade,
-      );
+      // Schedule hide after onClickFade ms
+      fadeTimeoutRef.current = window.setTimeout(() => {
+        handleHide();
+        fadeTimeoutRef.current = null;
+      }, onClickFade);
     }
   };
 
