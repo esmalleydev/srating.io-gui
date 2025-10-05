@@ -6,6 +6,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 
 import IconButton from '@mui/material/IconButton';
 
@@ -19,15 +20,16 @@ import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/display-slice';
+import CardPicker from './CardPicker';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
   const [rankPickerOpen, setRankPickerOpen] = useState(false);
+  const [cardPickerOpen, setCardPickerOpen] = useState(false);
 
   const dispatch = useAppDispatch();
   const hideOdds = useAppSelector((state) => state.displayReducer.hideOdds);
-  const cardsView = useAppSelector((state) => state.displayReducer.cardsView);
 
 
   const handleOpen = (event) => {
@@ -46,7 +48,22 @@ const AdditionalOptions = () => {
         setRankPickerOpen(true);
         handleClose();
       }}>
+        <MenuListIcon>
+          <MilitaryTechIcon fontSize='small' />
+        </MenuListIcon>
         <MenuListText primary='Rank display' />
+      </MenuItem>,
+    );
+
+    menuItems.push(
+      <MenuItem key='card-display' onClick={() => {
+        setCardPickerOpen(true);
+        handleClose();
+      }}>
+        <MenuListIcon>
+          <ViewModuleIcon fontSize='small' />
+        </MenuListIcon>
+        <MenuListText primary='Card display' />
       </MenuItem>,
     );
 
@@ -60,17 +77,6 @@ const AdditionalOptions = () => {
            {hideOdds ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
          </MenuListIcon>
          <MenuListText primary='Hide odds' />
-      </MenuItem>,
-    );
-
-    menuItems.push(
-      <MenuItem key='card-display' onClick={() => {
-        dispatch(setDataKey({ key: 'cardsView', value: (cardsView === 'large' ? 'compact' : 'large') }));
-      }}>
-         <MenuListIcon>
-           {cardsView === 'large' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />}
-         </MenuListIcon>
-         <MenuListText primary='View card mode' />
       </MenuItem>,
     );
 
@@ -101,6 +107,7 @@ const AdditionalOptions = () => {
         </MenuList>
       </Menu>
       <RankPicker open = {rankPickerOpen} openHandler = {() => { setRankPickerOpen(true); }} closeHandler = {() => { setRankPickerOpen(false); }} />
+      <CardPicker open = {cardPickerOpen} openHandler = {() => { setCardPickerOpen(true); }} closeHandler = {() => { setCardPickerOpen(false); }} />
     </div>
   );
 };

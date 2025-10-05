@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
@@ -342,6 +342,15 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     //   }
     // }
 
+    let scores: null | React.JSX.Element = null;
+
+    if (displayCardView === 'super_compact') {
+      if (Game.isInProgress() || Game.isFinal()) {
+        scores = <div style = {scoreStyle}>{game[`${side}_score`] || 0}</div>;
+      }
+    } else {
+      scores = <div style = {scoreStyle}>{Game.isInProgress() || Game.isFinal() ? game[`${side}_score`] || 0 : '-'}</div>;
+    }
 
     return (
       <div style = {flexContainer} >
@@ -360,7 +369,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
             }
           </div>
         </div>
-        <div style = {scoreStyle}>{Game.isInProgress() || Game.isFinal() ? game[`${side}_score`] || 0 : '-'}</div>
+        {scores}
       </div>
     );
   };
@@ -393,6 +402,11 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
           </div>
             : ''
         }
+        {
+          displayCardView === 'super_compact' ?
+            <div style = {{ marginLeft: 5 }}><Typography style = {{ display: 'inline-block', color: (!Game.isFinal() ? theme.info.dark : theme.text.secondary) }} type = 'overline'>{Game.getTime()}{(!Game.isFinal() && !Game.isInProgress() ? <Typography key = {Game.getNetwork()} style = {{ display: 'inline-block', color: theme.text.secondary }} type = 'overline'>{Game.getNetwork()}</Typography> : '')}</Typography></div>
+            : ''
+        }
       </div>
     );
   };
@@ -411,6 +425,25 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
 
   if (displayCardView === 'large') {
     divStyle.height = 255 + (!hasAccessToPercentages ? 25 : 0) + (Game.isNeutralSite() ? 21 : 0);
+  }
+
+  if (displayCardView === 'super_compact') {
+    divStyle.cursor = 'pointer';
+    delete divStyle.height;
+    delete divStyle.minHeight;
+    divStyle.width = '100%';
+    divStyle.margin = '0px 3.5px';
+
+    return (
+      <div
+        className = {Style.getStyleClassName(divStyle)}
+        onClick={handleClick}
+        ref = {ref}
+      >
+        <div>{getTeamLines()}</div>
+        <hr className = {Style.getStyleClassName({ margin: 0, backgroundColor: (theme.mode === 'dark' ? theme.grey[800] : theme.grey[400]), border: 'none', height: 1 })} />
+      </div>
+    );
   }
 
   return (
