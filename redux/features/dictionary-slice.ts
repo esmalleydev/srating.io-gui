@@ -7,7 +7,6 @@ type InitialState = {
   conference: Conferences,
   organization: Organizations,
   division: Divisions,
-  division_id_x_conference_id_x_season_x_true: object,
   organization_id_x_division_id_x_season_x_count: object,
   organization_id_x_division_id_x_season_x_conference_id_x_true: object,
   organization_id_x_division_id_x_ranking_seasons: object,
@@ -15,7 +14,6 @@ type InitialState = {
 
 const initialState = {
   conference: {},
-  division_id_x_conference_id_x_season_x_true: {},
   organization_id_x_division_id_x_season_x_count: {},
   organization_id_x_division_id_x_season_x_conference_id_x_true: {},
   organization_id_x_division_id_x_ranking_seasons: {},

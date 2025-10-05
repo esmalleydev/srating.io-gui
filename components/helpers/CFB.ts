@@ -33,7 +33,7 @@ class CFB {
   }
 
   /**
-   * TODO front load this or something, so I dont need to hardcode
+   * Get the number of conferences in a specific division and season
    */
   public static getNumberOfConferences({ division_id, season }: { division_id: string, season: string | number}): number {
     const store = getStore();

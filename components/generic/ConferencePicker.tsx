@@ -12,7 +12,8 @@ const ConferencePicker = () => {
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.displayReducer.conferences);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
-  const division_id_x_conference_id_x_season_x_true = useAppSelector((state) => state.dictionaryReducer.division_id_x_conference_id_x_season_x_true);
+  const organization_id_x_division_id_x_season_x_conference_id_x_true = useAppSelector((state) => state.dictionaryReducer.organization_id_x_division_id_x_season_x_conference_id_x_true);
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const division_id = useAppSelector((state) => state.organizationReducer.division_id);
   const season = useAppSelector((state) => state.organizationReducer.season);
   const { width } = useWindowDimensions() as Dimensions;
@@ -75,9 +76,10 @@ const ConferencePicker = () => {
   for (const conference_id in conferences) {
     const row = conferences[conference_id];
     if (
-      !(division_id in division_id_x_conference_id_x_season_x_true) ||
-      !(conference_id in division_id_x_conference_id_x_season_x_true[division_id]) ||
-      !(season in division_id_x_conference_id_x_season_x_true[division_id][conference_id])
+      !(organization_id in organization_id_x_division_id_x_season_x_conference_id_x_true) ||
+      !(division_id in organization_id_x_division_id_x_season_x_conference_id_x_true[organization_id]) ||
+      !(season in organization_id_x_division_id_x_season_x_conference_id_x_true[organization_id][division_id]) ||
+      !(conference_id in organization_id_x_division_id_x_season_x_conference_id_x_true[organization_id][division_id][season])
     ) {
       continue;
     }
