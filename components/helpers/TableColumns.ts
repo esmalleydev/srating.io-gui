@@ -1,13 +1,14 @@
 /* eslint-disable no-nested-ternary */
 
+import { CompareStatisticRow } from '../generic/CompareStatistic';
 import Organization from './Organization';
 
-type TableColumn = {
+export type TableColumn = {
   id: string;
   numeric: boolean;
-  label: string;
-  alt_label?: string;
-  tooltip: string;
+  label: string; // todo deprecate, replace with getLabel()
+  alt_label?: string; // todo deprecate, replace with getLabel() some day, but for now keep separate
+  tooltip: string; // todo deprecate, replace with getTooltip()
   sticky?: boolean;
   disabled?: boolean;
   sort?: 'lower' | 'higher';
@@ -17,25 +18,19 @@ type TableColumn = {
   widths?: {
     [breakpoint: string]: number;
     default: number;
-  }
+  };
+  precision?: number;
+  showDifference?: boolean;
+  compareType?: string;
+  loading?: boolean;
+  locked?: boolean;
+  getLabel?: () => string; // todo make required when prop is deprecated
+  getAltLabel?: () => string; // todo make required when prop is deprecated
+  getTooltip?: () => string; // todo make required when prop is deprecated
+  getDisplayValue?: (row: object, side: string) => string | number | unknown;
+  getValue?: (row: object, side: string) => string | number | unknown;
 }
 
-type TableColumnBoxscore = {
-  id: string;
-  numeric: boolean;
-  label: string;
-  alt_label?: string;
-  tooltip: string;
-  sticky?: boolean;
-  disabled?: boolean;
-  sort?: 'lower' | 'higher';
-  organization_ids: string[];
-  views: string[];
-}
-
-export type TableColumnBoxscoresType = {
-  [key: string]: TableColumnBoxscore;
-};
 
 export type TableColumnsType = {
   [key: string]: TableColumn;
@@ -46,13 +41,24 @@ class TableColumns {
     { organization_id, view, graphable, disabled }:
     { organization_id: string; view: string; graphable?: boolean; disabled?: boolean; },
   ): TableColumnsType {
-    const allViews = [
+    const rankingViews = [
       'team',
       'conference',
       'coach',
       'player',
       'transfer',
     ];
+
+    const boxscoreViews = [
+      'boxscore',
+      'player_boxscore',
+    ];
+
+    const otherViews = [
+      'matchup',
+    ];
+
+    const allViews = [...rankingViews, ...boxscoreViews, ...otherViews];
 
     const columns: TableColumnsType = {
       rank: {
@@ -70,6 +76,14 @@ class TableColumns {
           default: 50,
           425: 40,
         },
+        getDisplayValue: (row: object) => {
+          return 'rank' in row ? row.rank : '-';
+        },
+        getValue: (row: object) => {
+          return 'rank' in row ? row.rank : Infinity;
+        },
+        showDifference: true,
+        precision: 0,
       },
       name: {
         id: 'name',
@@ -85,6 +99,50 @@ class TableColumns {
           default: 125,
           425: 85,
         },
+        getLabel: () => {
+          if (
+            view === 'player_boxscore' ||
+            view === 'player' ||
+            view === 'transfer'
+          ) {
+            return 'Player';
+          }
+          if (view === 'conference') {
+            return 'Conference';
+          }
+          if (view === 'coach') {
+            return 'Coach';
+          }
+
+          return 'Team';
+        },
+        getTooltip: () => {
+          if (
+            view === 'player_boxscore' ||
+            view === 'player' ||
+            view === 'transfer'
+          ) {
+            return 'Player name';
+          }
+          if (view === 'conference') {
+            return 'Conference name';
+          }
+          if (view === 'coach') {
+            return 'Coach name';
+          }
+
+          return 'Team name';
+        },
+      },
+      game_details: {
+        id: 'game_details',
+        numeric: false,
+        label: 'Game',
+        tooltip: 'Game',
+        sticky: true,
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['player_boxscore'],
+        graphable: false,
       },
       team_name: {
         id: 'team_name',
@@ -110,36 +168,6 @@ class TableColumns {
           default: 100,
         },
       },
-      rank_delta_combo: {
-        id: 'rank_delta_combo',
-        numeric: true,
-        label: 'Δ 1/7',
-        tooltip: 'Rank difference since last ranking (1 day / 7 days)',
-        sort: 'higher',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: allViews,
-        graphable: false,
-      },
-      rank_delta_one: {
-        id: 'rank_delta_one',
-        numeric: true,
-        label: 'Δ',
-        tooltip: 'Rank difference since last ranking (1 day)',
-        sort: 'higher',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: allViews,
-        graphable: true,
-      },
-      rank_delta_seven: {
-        id: 'rank_delta_seven',
-        numeric: true,
-        label: 'Δ7',
-        tooltip: 'Rank difference since last week ranking (7 days)',
-        sort: 'higher',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: allViews,
-        graphable: true,
-      },
       elo: {
         id: 'elo',
         numeric: true,
@@ -149,36 +177,95 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
       },
-      fatigue: {
-        id: 'fatigue',
+      points: {
+        id: 'points',
         numeric: true,
-        label: 'FA',
-        tooltip: 'Fatigue',
-        sort: 'lower',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team'],
-        graphable: false,
-      },
-      desperation: {
-        id: 'desperation',
-        numeric: true,
-        label: 'DES',
-        tooltip: 'Desperation',
+        label: 'PTS',
+        tooltip: (view === 'player' || view === 'transfer' ? 'Total points in season' : 'Average points per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team'],
-        graphable: false,
+        views: allViews,
+        graphable: true,
+        precision: 0,
+        showDifference: true,
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Points';
+          }
+
+          if (view === 'player' || view === 'transfer') {
+            return 'Total points in season';
+          }
+
+          return 'Average points per game';
+        },
       },
-      over_confidence: {
-        id: 'over_confidence',
+      offensive_rating: {
+        id: 'offensive_rating',
         numeric: true,
-        label: 'OVC',
-        tooltip: 'Over confidence',
+        label: 'ORT',
+        tooltip: 'Offensive rating ((PTS / Poss) * 100)',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'player', 'conference', 'transfer', 'matchup'],
+        graphable: true,
+        showDifference: true,
+      },
+      defensive_rating: {
+        id: 'defensive_rating',
+        numeric: true,
+        label: 'DRT',
+        tooltip: 'Defensive rating ((Opp. PTS / Opp. Poss) * 100)',
         sort: 'lower',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team'],
-        graphable: false,
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'player', 'conference', 'transfer', 'matchup'],
+        graphable: true,
+        showDifference: true,
+      },
+      efficiency_rating: {
+        id: 'efficiency_rating',
+        numeric: true,
+        label: (view === 'team' ? 'EM' : 'ERT'),
+        tooltip: (view === 'team' ? 'Efficiency margin (Offensive rating - Defensive rating)' : 'Efficiency rating'),
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'player', 'conference', 'transfer'],
+        graphable: true,
+      },
+      adjusted_efficiency_rating: {
+        id: 'adjusted_efficiency_rating',
+        numeric: true,
+        label: 'aEM',
+        tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + aSOS',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'conference', 'matchup'],
+        graphable: true,
+        showDifference: true,
+        compareType: 'rank',
+      },
+      passing_rating_pro: {
+        id: 'passing_rating_pro',
+        numeric: true,
+        label: 'QBR(p)',
+        tooltip: 'Quarter back rating (pro)',
+        sort: 'higher',
+        organization_ids: [Organization.getCFBID()],
+        views: ['team', 'player', 'conference', 'transfer'],
+        graphable: true,
+      },
+      passing_rating_college: {
+        id: 'passing_rating_college',
+        numeric: true,
+        label: 'QBR(c)',
+        tooltip: 'Quarter back rating (college)',
+        sort: 'higher',
+        organization_ids: [Organization.getCFBID()],
+        views: allViews,
+        graphable: true,
       },
       field_goal: {
         id: 'field_goal',
@@ -187,8 +274,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total field goals made in season' : 'Average field goals per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'FG-T';
+          }
+          return 'FG';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Field goals';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total field goals made in season' : 'Average field goals per game');
+        },
       },
       field_goal_attempts: {
         id: 'field_goal_attempts',
@@ -197,8 +298,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total field goal attempts in season' : 'Average field goal attempts per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'FGA-T';
+          }
+          return 'FGA';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Field goal attempts';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total field goal attempts in season' : 'Average field goal attempts per game');
+        },
       },
       field_goal_percentage: {
         id: 'field_goal_percentage',
@@ -207,8 +322,13 @@ class TableColumns {
         tooltip: 'Field goal percentage',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'field_goal_percentage' in row ? row.field_goal_percentage : 0}%`;
+        },
       },
       two_point_field_goal: {
         id: 'two_point_field_goal',
@@ -217,8 +337,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total two point field goals made in season' : 'Average two point field goals per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return '2FG-T';
+          }
+          return '2FG';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Two point field goals';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total two point field goals made in season' : 'Average two point field goals per game');
+        },
       },
       two_point_field_goal_attempts: {
         id: 'two_point_field_goal_attempts',
@@ -227,8 +361,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total two point field goal attempts in season' : 'Average two point field goal attempts per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return '2FGA-T';
+          }
+          return '2FGA';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Two point field goal attempts';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total two point field goal attempts in season' : 'Average two point field goal attempts per game');
+        },
       },
       two_point_field_goal_percentage: {
         id: 'two_point_field_goal_percentage',
@@ -237,8 +385,13 @@ class TableColumns {
         tooltip: 'Two point field goal percentage',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'two_point_field_goal_percentage' in row ? row.two_point_field_goal_percentage : 0}%`;
+        },
       },
       three_point_field_goal: {
         id: 'three_point_field_goal',
@@ -247,8 +400,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total three point field goals made in season' : 'Average three point field goals per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return '3FG-T';
+          }
+          return '3FG';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Three point field goals';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total three point field goals made in season' : 'Average three point field goals per game');
+        },
       },
       three_point_field_goal_attempts: {
         id: 'three_point_field_goal_attempts',
@@ -257,8 +424,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total three field goal attempts in season' : 'Average three field goal attempts per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return '3FGA-T';
+          }
+          return '3FGA';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Three point field goal attempts';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total three field goal attempts in season' : 'Average three field goal attempts per game');
+        },
       },
       three_point_field_goal_percentage: {
         id: 'three_point_field_goal_percentage',
@@ -267,8 +448,13 @@ class TableColumns {
         tooltip: 'Three field goal percentage',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'three_point_field_goal_percentage' in row ? row.three_point_field_goal_percentage : 0}%`;
+        },
       },
       free_throws: {
         id: 'free_throws',
@@ -277,8 +463,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total free throws made in season' : 'Average free throws per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'FT-T';
+          }
+          return 'FT';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Free throws';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total free throws made in season' : 'Average free throws per game');
+        },
       },
       free_throw_attempts: {
         id: 'free_throw_attempts',
@@ -287,8 +487,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total free throw attempts in season' : 'Average free throw attempts per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'FTA-T';
+          }
+          return 'FTA';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Free throw attempts';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total free throw attempts in season' : 'Average free throw attempts per game');
+        },
       },
       free_throw_percentage: {
         id: 'free_throw_percentage',
@@ -297,8 +511,55 @@ class TableColumns {
         tooltip: 'Free throw percentage',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'free_throw_percentage' in row ? row.free_throw_percentage : 0}%`;
+        },
+      },
+      fg: {
+        id: 'fg',
+        label: 'FG',
+        tooltip: 'Field goals',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: ['player_boxscore'],
+        graphable: false,
+      },
+      two_fg: {
+        id: 'two_fg',
+        label: '2P',
+        tooltip: '2 point field goals',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: ['player_boxscore'],
+        graphable: false,
+      },
+      three_fg: {
+        id: 'three_fg',
+        label: '3P',
+        tooltip: '3 point field goals',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: ['player_boxscore'],
+        graphable: false,
+      },
+      ft: {
+        id: 'ft',
+        label: 'FT',
+        tooltip: 'Free throws',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID()],
+        views: ['player_boxscore'],
+        precision: 0,
+        showDifference: true,
+        graphable: false,
       },
       offensive_rebounds: {
         id: 'offensive_rebounds',
@@ -307,8 +568,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total offensive rebounds in season' : 'Average offensive rebounds per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'ORB-T';
+          }
+          return 'ORB';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Offensive rebounds';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total offensive rebounds in season' : 'Average offensive rebounds per game');
+        },
       },
       defensive_rebounds: {
         id: 'defensive_rebounds',
@@ -317,8 +592,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total defensive rebounds in season' : 'Average defensive rebounds per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'DRB-T';
+          }
+          return 'DRB';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Defensive rebounds';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total defensive rebounds in season' : 'Average defensive rebounds per game');
+        },
       },
       total_rebounds: {
         id: 'total_rebounds',
@@ -337,8 +626,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total assists in season' : 'Average assists per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'AST-T';
+          }
+          return 'AST';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Assists';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total assists in season' : 'Average assists per game');
+        },
       },
       steals: {
         id: 'steals',
@@ -347,8 +650,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total steals in season' : 'Average steals per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'STL-T';
+          }
+          return 'STL';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Steals';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total steals in season' : 'Average steals per game');
+        },
       },
       blocks: {
         id: 'blocks',
@@ -357,8 +674,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total blocks in season' : 'Average blocks per game'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'BLK-T';
+          }
+          return 'BLK';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Blocks';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total blocks in season' : 'Average blocks per game');
+        },
       },
       turnovers: {
         id: 'turnovers',
@@ -367,8 +698,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total turnovers in season' : 'Average turnovers per game'),
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'TOV-T';
+          }
+          return 'TOV';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Turnovers';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total turnovers in season' : 'Average turnovers per game');
+        },
       },
       fouls: {
         id: 'fouls',
@@ -377,48 +722,22 @@ class TableColumns {
         tooltip: (view === 'player' || view === 'transfer' ? 'Total fouls in season' : 'Average fouls per game'),
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
-      },
-      points: {
-        id: 'points',
-        numeric: true,
-        label: 'PTS',
-        tooltip: (view === 'player' || view === 'transfer' ? 'Total points in season' : 'Average points per game'),
-        sort: 'higher',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
-        graphable: true,
-      },
-      offensive_rating: {
-        id: 'offensive_rating',
-        numeric: true,
-        label: 'ORT',
-        tooltip: 'Offensive rating ((PTS / Poss) * 100)',
-        sort: 'higher',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
-        graphable: true,
-      },
-      defensive_rating: {
-        id: 'defensive_rating',
-        numeric: true,
-        label: 'DRT',
-        tooltip: 'Defensive rating ((Opp. PTS / Opp. Poss) * 100)',
-        sort: 'lower',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
-        graphable: true,
-      },
-      efficiency_rating: {
-        id: 'efficiency_rating',
-        numeric: true,
-        label: (view === 'team' ? 'EM' : 'ERT'),
-        tooltip: (view === 'team' ? 'Efficiency margin (Offensive rating - Defensive rating)' : 'Efficiency rating'),
-        sort: 'higher',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
-        graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'player' || view === 'transfer') {
+            return 'PF-T';
+          }
+          return 'PF';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Personal fouls';
+          }
+          return (view === 'player' || view === 'transfer' ? 'Total fouls in season' : 'Average fouls per game');
+        },
       },
       record: {
         id: 'record',
@@ -427,8 +746,16 @@ class TableColumns {
         tooltip: 'Win/Loss',
         sort: 'higher',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: false,
+        showDifference: true,
+        precision: 0,
+        getDisplayValue: (row) => {
+          return `${('wins' in row ? row.wins : 0)}-${('losses' in row ? row.losses : 0)}`;
+        },
+        getValue: (row) => {
+          return ('wins' in row ? row.wins : 0);
+        },
       },
       conf_record: {
         id: 'conf_record',
@@ -437,8 +764,46 @@ class TableColumns {
         tooltip: 'Conference Record Win/Loss',
         sort: 'higher',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team'],
+        views: ['team', 'matchup'],
         graphable: false,
+        showDifference: true,
+        precision: 0,
+        getDisplayValue: (row) => {
+          return `${('confwins' in row ? row.confwins : 0)}-${('conflosses' in row ? row.conflosses : 0)}`;
+        },
+        getValue: (row) => {
+          return ('confwins' in row ? row.confwins : 0);
+        },
+      },
+      away_record_home_record: {
+        id: 'away_record_home_record',
+        label: 'A/H Rec.',
+        tooltip: 'Away record / Home record',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: allViews,
+        graphable: false,
+        showDifference: true,
+        precision: 0,
+        getDisplayValue: (row, side) => {
+          if (side === 'left') {
+            return `${'roadwins' in row ? row.roadwins : 0}-${'roadlosses' in row ? row.roadlosses : 0}`;
+          }
+          if (side === 'right') {
+            return `${'homewins' in row ? row.homewins : 0}-${'homelosses' in row ? row.homelosses : 0}`;
+          }
+          return 'unknown';
+        },
+        getValue: (row, side) => {
+          if (side === 'left') {
+            return 'roadlosses' in row ? row.roadlosses : 0;
+          }
+          if (side === 'right') {
+            return 'homelosses' in row ? row.homelosses : 0;
+          }
+          return 'unknown';
+        },
       },
       games: {
         id: 'games',
@@ -459,6 +824,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'conference', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       losses: {
         id: 'losses',
@@ -469,6 +835,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'conference', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       neutralwins: {
         id: 'neutralwins',
@@ -479,6 +846,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'conference', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       neutrallosses: {
         id: 'neutrallosses',
@@ -489,6 +857,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'conference', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       homewins: {
         id: 'homewins',
@@ -499,6 +868,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'conference', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       homelosses: {
         id: 'homelosses',
@@ -509,6 +879,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'conference', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       roadwins: {
         id: 'roadwins',
@@ -519,6 +890,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'conference', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       roadlosses: {
         id: 'roadlosses',
@@ -529,6 +901,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'conference', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       confwins: {
         id: 'confwins',
@@ -539,6 +912,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       conflosses: {
         id: 'conflosses',
@@ -549,6 +923,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'coach'],
         graphable: true,
+        showDifference: true,
       },
       nonconfwins: {
         id: 'nonconfwins',
@@ -559,6 +934,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'coach', 'conference'],
         graphable: true,
+        showDifference: true,
       },
       nonconflosses: {
         id: 'nonconflosses',
@@ -569,6 +945,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['team', 'coach', 'conference'],
         graphable: true,
+        showDifference: true,
       },
       win_percentage: {
         id: 'win_percentage',
@@ -579,6 +956,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['coach'],
         graphable: true,
+        showDifference: true,
       },
       conf_win_percentage: {
         id: 'conf_win_percentage',
@@ -589,6 +967,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['coach'],
         graphable: true,
+        showDifference: true,
       },
       nonconf_win_percentage: {
         id: 'nonconf_win_percentage',
@@ -599,6 +978,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['coach'],
         graphable: true,
+        showDifference: true,
       },
       home_win_percentage: {
         id: 'home_win_percentage',
@@ -609,6 +989,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['coach'],
         graphable: true,
+        showDifference: true,
       },
       road_win_percentage: {
         id: 'road_win_percentage',
@@ -619,6 +1000,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['coach'],
         graphable: true,
+        showDifference: true,
       },
       neutral_win_percentage: {
         id: 'neutral_win_percentage',
@@ -629,6 +1011,7 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['coach'],
         graphable: true,
+        showDifference: true,
       },
       streak: {
         id: 'streak',
@@ -637,8 +1020,20 @@ class TableColumns {
         tooltip: 'Number of wins or losses in a row (negative for loss)',
         sort: 'higher',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team'],
+        views: ['team', 'matchup'],
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Number of wins or losses in a row';
+          }
+
+          return 'Number of wins or losses in a row (negative for loss)';
+        },
+        getDisplayValue: (row) => {
+          return 'streak' in row ? ((Number(row.streak) < 0 ? 'L' : 'W') + Math.abs(Number(row.streak))) : '0';
+        },
       },
       win_margin: {
         id: 'win_margin',
@@ -647,8 +1042,10 @@ class TableColumns {
         tooltip: 'Win margin',
         sort: 'higher',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        precision: 0,
       },
       loss_margin: {
         id: 'loss_margin',
@@ -657,8 +1054,10 @@ class TableColumns {
         tooltip: 'Loss margin',
         sort: 'lower',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        precision: 0,
       },
       confwin_margin: {
         id: 'confwin_margin',
@@ -667,8 +1066,10 @@ class TableColumns {
         tooltip: 'Conference Win margin',
         sort: 'higher',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team'],
+        views: ['team', 'matchup'],
         graphable: true,
+        showDifference: true,
+        precision: 0,
       },
       confloss_margin: {
         id: 'confloss_margin',
@@ -677,8 +1078,10 @@ class TableColumns {
         tooltip: 'Conference Loss margin',
         sort: 'lower',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team'],
+        views: ['team', 'matchup'],
         graphable: true,
+        showDifference: true,
+        precision: 0,
       },
       nonconfwin_margin: {
         id: 'nonconfwin_margin',
@@ -689,6 +1092,8 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['conference'],
         graphable: true,
+        showDifference: true,
+        precision: 0,
       },
       nonconfloss_margin: {
         id: 'nonconfloss_margin',
@@ -699,6 +1104,8 @@ class TableColumns {
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
         views: ['conference'],
         graphable: true,
+        showDifference: true,
+        precision: 0,
       },
       possessions: {
         id: 'possessions',
@@ -707,8 +1114,10 @@ class TableColumns {
         tooltip: 'Average possessions per game',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        precision: 0,
       },
       pace: {
         id: 'pace',
@@ -717,8 +1126,9 @@ class TableColumns {
         tooltip: 'Average pace per game',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
       },
       minutes_played: {
         id: 'minutes_played',
@@ -727,17 +1137,7 @@ class TableColumns {
         tooltip: (view === 'team' ? 'Average minutes played per game' : 'Total minutes played'),
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'player', 'transfer'],
-        graphable: true,
-      },
-      adjusted_efficiency_rating: {
-        id: 'adjusted_efficiency_rating',
-        numeric: true,
-        label: 'aEM',
-        tooltip: 'Adjusted Efficiency margin (Offensive rating - Defensive rating) + aSOS',
-        sort: 'higher',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'player', 'transfer', 'player_boxscore'],
         graphable: true,
       },
       opponent_offensive_rating: {
@@ -767,8 +1167,10 @@ class TableColumns {
         tooltip: 'Strength of schedule (Opponent Efficiency margin (oORT - oDRT))',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        compareType: 'rank',
       },
       elo_sos: {
         id: 'elo_sos',
@@ -777,8 +1179,10 @@ class TableColumns {
         tooltip: 'Strength of schedule (opponent elo)',
         sort: 'higher',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team', 'conference', 'coach'],
+        views: ['team', 'conference', 'coach', 'matchup'],
         graphable: true,
+        showDifference: true,
+        compareType: 'rank',
       },
       opponent_field_goal: {
         id: 'opponent_field_goal',
@@ -787,8 +1191,15 @@ class TableColumns {
         tooltip: 'Opponent average field goals per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'FG';
+          }
+          return 'Opp. FG';
+        },
       },
       opponent_field_goal_attempts: {
         id: 'opponent_field_goal_attempts',
@@ -797,8 +1208,15 @@ class TableColumns {
         tooltip: 'Opponent average field goal attempts per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'FGA';
+          }
+          return 'Opp. FGA';
+        },
       },
       opponent_field_goal_percentage: {
         id: 'opponent_field_goal_percentage',
@@ -807,8 +1225,19 @@ class TableColumns {
         tooltip: 'Opponent average field goal percentage per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'FGA';
+          }
+          return 'Opp. FGA';
+        },
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'opponent_field_goal_percentage' in row ? row.opponent_field_goal_percentage : 0}%`;
+        },
       },
       opponent_two_point_field_goal: {
         id: 'opponent_two_point_field_goal',
@@ -817,8 +1246,16 @@ class TableColumns {
         tooltip: 'Opponent average two point field goals per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return '2FG';
+          }
+          return 'Opp. 2FG';
+        },
       },
       opponent_two_point_field_goal_attempts: {
         id: 'opponent_two_point_field_goal_attempts',
@@ -827,8 +1264,16 @@ class TableColumns {
         tooltip: 'Opponent average two point field goal attempts per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return '2FGA';
+          }
+          return 'Opp. 2FGA';
+        },
       },
       opponent_two_point_field_goal_percentage: {
         id: 'opponent_two_point_field_goal_percentage',
@@ -837,8 +1282,19 @@ class TableColumns {
         tooltip: 'Opponent average two point field goal percentage per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return '2FG%';
+          }
+          return 'Opp. 2FG%';
+        },
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'opponent_two_point_field_goal_percentage' in row ? row.opponent_two_point_field_goal_percentage : 0}%`;
+        },
       },
       opponent_three_point_field_goal: {
         id: 'opponent_three_point_field_goal',
@@ -847,8 +1303,16 @@ class TableColumns {
         tooltip: 'Opponent average three point field goals per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return '3FG';
+          }
+          return 'Opp. 3FG';
+        },
       },
       opponent_three_point_field_goal_attempts: {
         id: 'opponent_three_point_field_goal_attempts',
@@ -857,8 +1321,16 @@ class TableColumns {
         tooltip: 'Opponent average three point field goal attempts per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return '3FGA';
+          }
+          return 'Opp. 3FGA';
+        },
       },
       opponent_three_point_field_goal_percentage: {
         id: 'opponent_three_point_field_goal_percentage',
@@ -867,8 +1339,19 @@ class TableColumns {
         tooltip: 'Opponent average three point field goal percentage per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return '3FG%';
+          }
+          return 'Opp. 3FG%';
+        },
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'opponent_three_point_field_goal_percentage' in row ? row.opponent_three_point_field_goal_percentage : 0}%`;
+        },
       },
       opponent_free_throws: {
         id: 'opponent_free_throws',
@@ -877,8 +1360,16 @@ class TableColumns {
         tooltip: 'Opponent average free throws per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'FT';
+          }
+          return 'Opp. FT';
+        },
       },
       opponent_free_throw_attempts: {
         id: 'opponent_free_throw_attempts',
@@ -887,8 +1378,16 @@ class TableColumns {
         tooltip: 'Opponent average free throw attempts per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'FTA';
+          }
+          return 'Opp. FTA';
+        },
       },
       opponent_free_throw_percentage: {
         id: 'opponent_free_throw_percentage',
@@ -897,8 +1396,19 @@ class TableColumns {
         tooltip: 'Opponent average free throw percentage per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 2,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'FT%';
+          }
+          return 'Opp. FT%';
+        },
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'opponent_free_throw_percentage' in row ? row.opponent_free_throw_percentage : 0}%`;
+        },
       },
       opponent_offensive_rebounds: {
         id: 'opponent_offensive_rebounds',
@@ -907,8 +1417,16 @@ class TableColumns {
         tooltip: 'Opponent average offensive rebounds per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'ORB';
+          }
+          return 'Opp. ORB';
+        },
       },
       opponent_defensive_rebounds: {
         id: 'opponent_defensive_rebounds',
@@ -917,8 +1435,16 @@ class TableColumns {
         tooltip: 'Opponent average defensive rebounds per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'DRB';
+          }
+          return 'Opp. DRB';
+        },
       },
       opponent_total_rebounds: {
         id: 'opponent_total_rebounds',
@@ -927,8 +1453,16 @@ class TableColumns {
         tooltip: 'Opponent average total rebounds per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'TRB';
+          }
+          return 'Opp. TRB';
+        },
       },
       opponent_assists: {
         id: 'opponent_assists',
@@ -937,8 +1471,16 @@ class TableColumns {
         tooltip: 'Opponent average assists per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'AST';
+          }
+          return 'Opp. AST';
+        },
       },
       opponent_steals: {
         id: 'opponent_steals',
@@ -947,8 +1489,16 @@ class TableColumns {
         tooltip: 'Opponent average steals per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'STL';
+          }
+          return 'Opp. STL';
+        },
       },
       opponent_blocks: {
         id: 'opponent_blocks',
@@ -957,8 +1507,16 @@ class TableColumns {
         tooltip: 'Opponent average blocks per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'BLK';
+          }
+          return 'Opp. BLK';
+        },
       },
       opponent_turnovers: {
         id: 'opponent_turnovers',
@@ -967,8 +1525,16 @@ class TableColumns {
         tooltip: 'Opponent average turnovers per game',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'TOV';
+          }
+          return 'Opp. TOV';
+        },
       },
       opponent_fouls: {
         id: 'opponent_fouls',
@@ -977,8 +1543,16 @@ class TableColumns {
         tooltip: 'Opponent average fouls per game',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        precision: 0,
+        showDifference: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'PF';
+          }
+          return 'Opp. PF';
+        },
       },
       opponent_points: {
         id: 'opponent_points',
@@ -987,8 +1561,12 @@ class TableColumns {
         tooltip: 'Opponent average points per game',
         sort: 'lower',
         organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        getLabel: () => {
+          return 'Opp. PTS';
+        },
       },
       opponent_possessions: {
         id: 'opponent_possessions',
@@ -1009,101 +1587,6 @@ class TableColumns {
         organization_ids: [Organization.getCBBID()],
         views: ['team'],
         graphable: true,
-      },
-      ap_rank: {
-        id: 'ap_rank',
-        numeric: true,
-        label: 'AP',
-        tooltip: 'Associated Press rank',
-        sort: 'lower',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team'],
-        graphable: false,
-      },
-      kenpom_rank: {
-        id: 'kenpom_rank',
-        numeric: true,
-        label: 'KP',
-        tooltip: 'kenpom.com rank',
-        sort: 'lower',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team'],
-        graphable: false,
-      },
-      srs_rank: {
-        id: 'srs_rank',
-        numeric: true,
-        label: 'SRS',
-        tooltip: 'Simple rating system rank',
-        sort: 'lower',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team'],
-        graphable: false,
-      },
-      net_rank: {
-        id: 'net_rank',
-        numeric: true,
-        label: 'NET',
-        tooltip: 'NET rank',
-        sort: 'lower',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team'],
-        graphable: false,
-      },
-      coaches_rank: {
-        id: 'coaches_rank',
-        numeric: true,
-        label: 'Coaches',
-        tooltip: 'Coaches poll rank',
-        sort: 'lower',
-        organization_ids: [Organization.getCBBID()],
-        views: ['team'],
-        graphable: false,
-      },
-      committed: {
-        id: 'committed',
-        numeric: false,
-        label: 'Committed',
-        tooltip: 'Player committed',
-        organization_ids: [Organization.getCBBID()],
-        views: ['transfer'],
-        graphable: false,
-      },
-      committed_team_name: {
-        id: 'committed_team_name',
-        numeric: false,
-        label: 'New team',
-        tooltip: 'New (committed) team name',
-        organization_ids: [Organization.getCBBID()],
-        views: ['transfer'],
-        graphable: false,
-      },
-      position: {
-        id: 'position',
-        numeric: false,
-        label: 'Position',
-        tooltip: 'Player position',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['player', 'transfer'],
-        graphable: false,
-      },
-      number: {
-        id: 'number',
-        numeric: false,
-        label: 'Number',
-        tooltip: 'Jersey number',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['player', 'transfer'],
-        graphable: false,
-      },
-      height: {
-        id: 'height',
-        numeric: true,
-        label: 'Ht.',
-        tooltip: 'Player height',
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['player', 'transfer'],
-        graphable: false,
       },
       minutes_per_game: {
         id: 'minutes_per_game',
@@ -1403,8 +1886,33 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total passing attempts in a season' : 'Passing attempts per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        getLabel: () => {
+          if (view === 'matchup') {
+            return 'ATT';
+          }
+
+          return (view === 'player' ? 'P ATT-T' : 'P ATT');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'ATT-T' : 'ATT');
+        },
+        getTooltip: () => {
+          return (view === 'player' ? 'Total passing attempts in a season' : 'Passing attempts per game');
+        },
+      },
+      passing_completions_and_attempts: {
+        id: 'passing_completions_and_attempts',
+        label: 'C/ATT',
+        tooltip: 'Completions / Attempts',
+        sort: 'higher',
+        numeric: true,
+        organization_ids: [Organization.getCFBID()],
+        views: boxscoreViews,
+        graphable: false,
+        showDifference: true,
+        precision: 0,
       },
       passing_completions: {
         id: 'passing_completions',
@@ -1414,8 +1922,31 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total passing completions in a season' : 'Passing completions per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'COMP';
+          }
+
+          return (view === 'player' ? 'P COMP-T' : 'P COMP');
+        },
+        getAltLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'COMP';
+          }
+
+          return (view === 'player' ? 'COMP-T' : 'COMP');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Passing completions';
+          }
+
+          return (view === 'player' ? 'Total passing completions in a season' : 'Passing completions per game');
+        },
       },
       passing_yards: {
         id: 'passing_yards',
@@ -1425,8 +1956,27 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total passing yards in a season' : 'Passing yards per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'YDS';
+          }
+
+          return (view === 'player' ? 'P YDS-T' : 'P YDS');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'YDS-T' : 'YDS');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Passing yards';
+          }
+
+          return (view === 'player' ? 'Total passing yards in a season' : 'Passing yards per game');
+        },
       },
       passing_completion_percentage: {
         id: 'passing_completion_percentage',
@@ -1436,8 +1986,25 @@ class TableColumns {
         tooltip: 'Passing completions percentage',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'COMP%';
+          }
+
+          return 'P COMP%';
+        },
+        getAltLabel: () => {
+          return 'COMP%';
+        },
+        getTooltip: () => {
+          return 'Passing completions percentage';
+        },
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return `${'passing_completion_percentage' in row ? row.passing_completion_percentage : 0}%`;
+        },
       },
       passing_yards_per_attempt: {
         id: 'passing_yards_per_attempt',
@@ -1447,8 +2014,23 @@ class TableColumns {
         tooltip: 'Passing yard per attempt',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'AVG';
+          }
+
+          return 'P AVG';
+        },
+        getAltLabel: () => {
+          return 'AVG';
+        },
+        getTooltip: () => {
+          return 'Passing yard per attempt';
+        },
       },
       passing_yards_per_completion: {
         id: 'passing_yards_per_completion',
@@ -1458,8 +2040,20 @@ class TableColumns {
         tooltip: 'Passing yards per completion',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'YDS per COMP';
+          }
+
+          return 'P YDS per COMP';
+        },
+        getTooltip: () => {
+          return 'Passing yard per completion';
+        },
       },
       passing_touchdowns: {
         id: 'passing_touchdowns',
@@ -1469,8 +2063,26 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total passing touchdowns in a season' : 'Passing touchdowns per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'TD';
+          }
+
+          return (view === 'player' ? 'P TD-T' : 'P TD');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'TD-T' : 'TD');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Touchdowns';
+          }
+          return (view === 'player' ? 'Total passing touchdowns in a season' : 'Passing touchdowns per game');
+        },
       },
       passing_interceptions: {
         id: 'passing_interceptions',
@@ -1480,28 +2092,26 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total passing interceptions in a season' : 'Passing interceptions per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
-      },
-      passing_rating_pro: {
-        id: 'passing_rating_pro',
-        numeric: true,
-        label: 'QBR(p)',
-        tooltip: 'Quarter back rating (pro)',
-        sort: 'higher',
-        organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
-        graphable: true,
-      },
-      passing_rating_college: {
-        id: 'passing_rating_college',
-        numeric: true,
-        label: 'QBR(c)',
-        tooltip: 'Quarter back rating (college)',
-        sort: 'higher',
-        organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
-        graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'INT';
+          }
+
+          return (view === 'player' ? 'P INT-T' : 'P INT');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'INT-T' : 'INT');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Interceptions';
+          }
+          return (view === 'player' ? 'Total passing interceptions in a season' : 'Passing interceptions per game');
+        },
       },
       passing_long: {
         id: 'passing_long',
@@ -1511,8 +2121,26 @@ class TableColumns {
         tooltip: 'Passing long',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'LONG';
+          }
+
+          return 'P LONG';
+        },
+        getAltLabel: () => {
+          return 'LONG';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Long';
+          }
+          return 'Passing long';
+        },
       },
       rushing_attempts: {
         id: 'rushing_attempts',
@@ -1522,8 +2150,26 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total rushing attempts in a season' : 'Rushing attempts per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'ATT';
+          }
+
+          return (view === 'player' ? 'R ATT-T' : 'R ATT');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'ATT-T' : 'ATT');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Attempts';
+          }
+          return (view === 'player' ? 'Total rushing attempts in a season' : 'Rushing attempts per game');
+        },
       },
       rushing_yards: {
         id: 'rushing_yards',
@@ -1533,8 +2179,26 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total rushing yards in a season' : 'Rushing yards per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'YDS';
+          }
+
+          return (view === 'player' ? 'R YDS-T' : 'R YDS');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'YDS-T' : 'YDS');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Yards';
+          }
+          return (view === 'player' ? 'Total rushing yards in a season' : 'Rushing yards per game');
+        },
       },
       rushing_yards_per_attempt: {
         id: 'rushing_yards_per_attempt',
@@ -1544,8 +2208,26 @@ class TableColumns {
         tooltip: 'Rushing yards per attempt',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'AVG';
+          }
+
+          return 'R AVG';
+        },
+        getAltLabel: () => {
+          return 'AVG';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Yards per attempt';
+          }
+          return 'Rushing yards per attempt';
+        },
       },
       rushing_touchdowns: {
         id: 'rushing_touchdowns',
@@ -1555,19 +2237,54 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total rushing touchdowns in a season' : 'Rushing touchdowns per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'TD';
+          }
+
+          return (view === 'player' ? 'R TD-T' : 'R TD');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'TD-T' : 'TD');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Touchdowns';
+          }
+          return (view === 'player' ? 'Total rushing touchdowns in a season' : 'Rushing touchdowns per game');
+        },
       },
       rushing_long: {
         id: 'rushing_long',
-        numeric: true,
-        label: 'R LONG',
-        alt_label: 'LONG',
-        tooltip: 'Rushing long',
+        label: 'LONG',
+        tooltip: 'Longest attempt',
         sort: 'higher',
+        numeric: true,
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'LONG';
+          }
+
+          return 'R LONG';
+        },
+        getAltLabel: () => {
+          return 'LONG';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Long';
+          }
+          return 'Rushing long';
+        },
       },
       receptions: {
         id: 'receptions',
@@ -1577,8 +2294,26 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total receptions in a season' : 'Receptions per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'REC';
+          }
+
+          return (view === 'player' ? 'REC-T' : 'REC');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'REC-T' : 'REC');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Receptions';
+          }
+          return (view === 'player' ? 'Total receptions in a season' : 'Receptions per game');
+        },
       },
       receiving_yards: {
         id: 'receiving_yards',
@@ -1588,8 +2323,26 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total receiving yards in a season' : 'Receiving yards per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'YDS';
+          }
+
+          return (view === 'player' ? 'REC YDS-T' : 'REC YDS');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'YDS-T' : 'YDS');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Yards';
+          }
+          return (view === 'player' ? 'Total receiving yards in a season' : 'Receiving yards per game');
+        },
       },
       receiving_yards_per_reception: {
         id: 'receiving_yards_per_reception',
@@ -1599,8 +2352,26 @@ class TableColumns {
         tooltip: 'Receiving yards per reception',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'AVG';
+          }
+
+          return 'REC AVG';
+        },
+        getAltLabel: () => {
+          return 'AVG';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Yards per reception';
+          }
+          return 'Receiving yards per reception';
+        },
       },
       receiving_touchdowns: {
         id: 'receiving_touchdowns',
@@ -1610,8 +2381,26 @@ class TableColumns {
         tooltip: (view === 'player' ? 'Total receiving touchdowns in a season' : 'Receiving touchdowns per game'),
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'TD';
+          }
+
+          return (view === 'player' ? 'REC TD-T' : 'REC TD');
+        },
+        getAltLabel: () => {
+          return (view === 'player' ? 'TD-T' : 'TD');
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Touchdowns';
+          }
+          return (view === 'player' ? 'Total receiving touchdowns in a season' : 'Receiving touchdowns per game');
+        },
       },
       receiving_long: {
         id: 'receiving_long',
@@ -1621,8 +2410,26 @@ class TableColumns {
         tooltip: 'Receiving long',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'player', 'conference', 'transfer'],
+        views: allViews,
         graphable: true,
+        showDifference: true,
+        precision: 0,
+        getLabel: () => {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
+            return 'LONG';
+          }
+
+          return 'REC LONG';
+        },
+        getAltLabel: () => {
+          return 'LONG';
+        },
+        getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Longest attempt';
+          }
+          return 'Receiving long';
+        },
       },
       // punt_returns: {
       //   id: 'punt_returns',
@@ -1961,8 +2768,10 @@ class TableColumns {
         tooltip: 'Yards per play',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        compareType: 'rank',
       },
       points_per_play: {
         id: 'points_per_play',
@@ -1971,8 +2780,9 @@ class TableColumns {
         tooltip: 'Points per play',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
       },
       // successful_pass_plays: {
       //   id: 'successful_pass_plays',
@@ -2291,8 +3101,10 @@ class TableColumns {
         tooltip: 'Opponent Quarter back rating (college)',
         sort: 'higher',
         organization_ids: [Organization.getCFBID()],
-        views: ['team', 'conference'],
+        views: ['team', 'conference', 'matchup'],
         graphable: true,
+        showDifference: true,
+        compareType: 'rank',
       },
       opponent_passing_long: {
         id: 'opponent_passing_long',
@@ -2992,6 +3804,201 @@ class TableColumns {
         views: ['player'],
         graphable: true,
       },
+      rank_delta_combo: {
+        id: 'rank_delta_combo',
+        numeric: true,
+        label: 'Δ 1/7',
+        tooltip: 'Rank difference since last ranking (1 day / 7 days)',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: allViews,
+        graphable: false,
+      },
+      rank_delta_one: {
+        id: 'rank_delta_one',
+        numeric: true,
+        label: 'Δ',
+        tooltip: 'Rank difference since last ranking (1 day)',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: allViews,
+        graphable: true,
+      },
+      rank_delta_seven: {
+        id: 'rank_delta_seven',
+        numeric: true,
+        label: 'Δ7',
+        tooltip: 'Rank difference since last week ranking (7 days)',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: allViews,
+        graphable: true,
+      },
+      ap_rank: {
+        id: 'ap_rank',
+        numeric: true,
+        label: 'AP',
+        tooltip: 'Associated Press rank',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'matchup'],
+        graphable: false,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return 'ap_rank' in row ? row.ap_rank : '-';
+        },
+        getValue: (row: CompareStatisticRow) => {
+          return 'ap_rank' in row ? row.ap_rank : Infinity;
+        },
+        showDifference: true,
+        precision: 0,
+      },
+      kenpom_rank: {
+        id: 'kenpom_rank',
+        numeric: true,
+        label: 'KP',
+        tooltip: 'kenpom.com rank',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'matchup'],
+        graphable: false,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return 'kenpom_rank' in row ? row.kenpom_rank : '-';
+        },
+        getValue: (row: CompareStatisticRow) => {
+          return 'kenpom_rank' in row ? row.kenpom_rank : Infinity;
+        },
+        showDifference: true,
+        precision: 0,
+      },
+      srs_rank: {
+        id: 'srs_rank',
+        numeric: true,
+        label: 'SRS',
+        tooltip: 'Simple rating system rank',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'matchup'],
+        graphable: false,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return 'srs_rank' in row ? row.srs_rank : '-';
+        },
+        getValue: (row: CompareStatisticRow) => {
+          return 'srs_rank' in row ? row.srs_rank : Infinity;
+        },
+        showDifference: true,
+        precision: 0,
+      },
+      net_rank: {
+        id: 'net_rank',
+        numeric: true,
+        label: 'NET',
+        tooltip: 'NET rank',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'matchup'],
+        graphable: false,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return 'net_rank' in row ? row.net_rank : '-';
+        },
+        getValue: (row: CompareStatisticRow) => {
+          return 'net_rank' in row ? row.net_rank : Infinity;
+        },
+        showDifference: true,
+        precision: 0,
+      },
+      coaches_rank: {
+        id: 'coaches_rank',
+        numeric: true,
+        label: 'Coaches',
+        tooltip: 'Coaches poll rank',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID()],
+        views: ['team', 'matchup'],
+        graphable: false,
+        getDisplayValue: (row: CompareStatisticRow) => {
+          return 'coaches' in row ? row.coaches : '-';
+        },
+        getValue: (row: CompareStatisticRow) => {
+          return 'coaches' in row ? row.coaches : Infinity;
+        },
+        showDifference: true,
+        precision: 0,
+      },
+      committed: {
+        id: 'committed',
+        numeric: false,
+        label: 'Committed',
+        tooltip: 'Player committed',
+        organization_ids: [Organization.getCBBID()],
+        views: ['transfer'],
+        graphable: false,
+      },
+      committed_team_name: {
+        id: 'committed_team_name',
+        numeric: false,
+        label: 'New team',
+        tooltip: 'New (committed) team name',
+        organization_ids: [Organization.getCBBID()],
+        views: ['transfer'],
+        graphable: false,
+      },
+      position: {
+        id: 'position',
+        numeric: false,
+        label: 'Position',
+        tooltip: 'Player position',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['player', 'transfer'],
+        graphable: false,
+      },
+      number: {
+        id: 'number',
+        numeric: false,
+        label: 'Number',
+        tooltip: 'Jersey number',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['player', 'transfer'],
+        graphable: false,
+      },
+      height: {
+        id: 'height',
+        numeric: true,
+        label: 'Ht.',
+        tooltip: 'Player height',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['player', 'transfer'],
+        graphable: false,
+      },
+      fatigue: {
+        id: 'fatigue',
+        numeric: true,
+        label: 'FA',
+        tooltip: 'Fatigue',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['team'],
+        graphable: false,
+      },
+      desperation: {
+        id: 'desperation',
+        numeric: true,
+        label: 'DES',
+        tooltip: 'Desperation',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['team'],
+        graphable: false,
+      },
+      over_confidence: {
+        id: 'over_confidence',
+        numeric: true,
+        label: 'OVC',
+        tooltip: 'Over confidence',
+        sort: 'lower',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['team'],
+        graphable: false,
+      },
     };
 
     for (const key in columns) {
@@ -3000,310 +4007,6 @@ class TableColumns {
         !columns[key].views.includes(view) ||
         (graphable !== undefined && graphable !== columns[key].graphable) ||
         (disabled !== undefined && 'disabled' in columns[key] && disabled !== columns[key].disabled)
-      ) {
-        delete columns[key];
-      }
-    }
-
-    return columns;
-  }
-
-  public static getBoxscoreColumns(
-    { organization_id, view }:
-    { organization_id: string; view: string; },
-  ): TableColumnBoxscoresType {
-    const allViews = [
-      'game',
-      'player',
-    ];
-
-    const columns: TableColumnBoxscoresType = {
-      name: {
-        id: 'name',
-        numeric: false,
-        label: 'Player',
-        tooltip: 'Player',
-        sticky: true,
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: allViews,
-      },
-      game_details: {
-        id: 'game_details',
-        numeric: false,
-        label: 'Game',
-        tooltip: 'Game',
-        sticky: true,
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: ['player'],
-      },
-      minutes_played: {
-        id: 'minutes_played',
-        label: 'MP',
-        tooltip: 'Minutes played',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      points: {
-        id: 'points',
-        label: 'PTS',
-        tooltip: 'Points',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
-        views: allViews,
-      },
-      fg: {
-        id: 'fg',
-        label: 'FG',
-        tooltip: 'Field goals',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      two_fg: {
-        id: 'two_fg',
-        label: '2P',
-        tooltip: '2 point field goals',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      three_fg: {
-        id: 'three_fg',
-        label: '3P',
-        tooltip: '3 point field goals',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      ft: {
-        id: 'ft',
-        label: 'FT',
-        tooltip: 'Free throws',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      offensive_rebounds: {
-        id: 'offensive_rebounds',
-        label: 'ORB',
-        tooltip: 'Offensive rebounds',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      defensive_rebounds: {
-        id: 'defensive_rebounds',
-        label: 'DRB',
-        tooltip: 'Defensive rebounds',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      assists: {
-        id: 'assists',
-        label: 'AST',
-        tooltip: 'Assists',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      steals: {
-        id: 'steals',
-        label: 'STL',
-        tooltip: 'Steals',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      blocks: {
-        id: 'blocks',
-        label: 'BLK',
-        tooltip: 'Blocks',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      turnovers: {
-        id: 'turnovers',
-        label: 'TOV',
-        tooltip: 'Turnovers',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      fouls: {
-        id: 'fouls',
-        label: 'PF',
-        tooltip: 'Personal fouls',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCBBID()],
-        views: allViews,
-      },
-      passing_completions_and_attempts: {
-        id: 'passing_completions_and_attempts',
-        label: 'C/ATT',
-        tooltip: 'Completions / Attempts',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      passing_yards: {
-        id: 'passing_yards',
-        label: 'YDS',
-        tooltip: 'Yards',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      passing_yards_per_attempt: {
-        id: 'passing_yards_per_attempt',
-        label: 'AVG',
-        tooltip: 'Yards per attempt',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      passing_touchdowns: {
-        id: 'passing_touchdowns',
-        label: 'TD',
-        tooltip: 'Touchdowns',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      passing_interceptions: {
-        id: 'passing_interceptions',
-        label: 'INT',
-        tooltip: 'Interceptions',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      passing_rating_college: {
-        id: 'passing_rating_college',
-        label: 'QBR(c)',
-        tooltip: 'Quarterback rating college',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      rushing_attempts: {
-        id: 'rushing_attempts',
-        label: 'ATT',
-        tooltip: 'Attempts',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      rushing_yards: {
-        id: 'rushing_yards',
-        label: 'YDS',
-        tooltip: 'Yards',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      rushing_yards_per_attempt: {
-        id: 'rushing_yards_per_attempt',
-        label: 'AVG',
-        tooltip: 'Yards per attempt',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      rushing_touchdowns: {
-        id: 'rushing_touchdowns',
-        label: 'TD',
-        tooltip: 'Touchdowns',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      rushing_long: {
-        id: 'rushing_long',
-        label: 'LONG',
-        tooltip: 'Longest attempt',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      receptions: {
-        id: 'receptions',
-        label: 'REC',
-        tooltip: 'Receptions',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      receiving_yards: {
-        id: 'receiving_yards',
-        label: 'YDS',
-        tooltip: 'Yards',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      receiving_yards_per_reception: {
-        id: 'receiving_yards_per_reception',
-        label: 'AVG',
-        tooltip: 'Yards per reception',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      receiving_touchdowns: {
-        id: 'receiving_touchdowns',
-        label: 'TD',
-        tooltip: 'Touchdowns',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-      receiving_long: {
-        id: 'receiving_long',
-        label: 'LONG',
-        tooltip: 'Longest attempt',
-        sort: 'higher',
-        numeric: true,
-        organization_ids: [Organization.getCFBID()],
-        views: allViews,
-      },
-    };
-
-
-    for (const key in columns) {
-      if (
-        !columns[key].organization_ids.includes(organization_id) ||
-        !columns[key].views.includes(view)
       ) {
         delete columns[key];
       }

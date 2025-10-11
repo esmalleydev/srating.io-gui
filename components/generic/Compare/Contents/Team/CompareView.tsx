@@ -2,12 +2,12 @@
 
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import CompareStatistic from '@/components/generic/CompareStatistic';
+import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 import { useAppSelector } from '@/redux/hooks';
-import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import CFB from '@/components/helpers/CFB';
 import { getSections } from '@/components/generic/Game/Contents/Matchup/Client';
+import TableColumns from '@/components/helpers/TableColumns';
+import Objector from '@/components/utils/Objector';
 
 
 // todo for the conf recond compare, show their rank in the conference, not by total wins
@@ -41,41 +41,54 @@ const CompareView = ({ statistic_rankings }) => {
   }
 
 
-  let numberOfTeams = CBB.getNumberOfD1Teams(season);
+  const numberOfTeams = Organization.getNumberOfTeams({ organization_id, division_id, season });
 
-  if (organization_id === Organization.getCFBID()) {
-    numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
-  }
-
-
-  const predictionRows = [
+  const predictionRows: CompareStatisticRow[] = [
     {
-      name: 'Win %',
-      title: 'Predicted win %',
-      away: `${((predictions.away || 0) * 100).toFixed(0)}%`,
-      home: `${((predictions.home || 0) * 100).toFixed(0)}%`,
-      awayCompareValue: predictions.away,
-      homeCompareValue: predictions.home,
-      favored: 'higher',
+      id: 'win_percentage',
+      label: 'Win %',
+      tooltip: 'Predicted win %',
+      leftRow: { win_percentage: predictions.away },
+      rightRow: { win_percentage: predictions.home },
+      numeric: false,
+      organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+      views: ['matchup'],
+      graphable: false,
       showDifference: false,
+      sort: 'higher',
       locked: (!('away' in predictions) && !('home' in predictions)),
       loading: predictionsLoading,
+      getDisplayValue: (row) => {
+        return `${(('win_percentage' in row ? Number(row.win_percentage) : 0) * 100).toFixed(0)}%`;
+      },
+      getValue: (row) => {
+        return 'win_percentage' in row ? row.win_percentage : null;
+      },
     },
   ];
 
+  const sections = getSections();
 
-  const sections = getSections({ homeStats, awayStats });
-
+  const columns = Objector.deepClone(TableColumns.getColumns({ organization_id, view: 'matchup' }));
 
   return (
     <div style = {{ padding: '0px 5px 20px 5px' }}>
-      <CompareStatistic max = {numberOfTeams} season = {season} paper = {false} rows = {predictionRows} />
+      <CompareStatistic max = {numberOfTeams} paper = {false} rows = {predictionRows} />
 
       {sections.map((section) => {
+        const rows: CompareStatisticRow[] = [];
+        section.keys.forEach((key) => {
+          const row = columns[key] as CompareStatisticRow;
+
+          row.leftRow = awayStats;
+          row.rightRow = homeStats;
+
+          rows.push(row);
+        });
         return (
           <React.Fragment key = {section.name}>
             <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>{section.name}</Typography>
-            <CompareStatistic max = {numberOfTeams} season = {season} paper = {true} rows = {section.rows} />
+            <CompareStatistic max = {numberOfTeams} paper = {true} rows = {rows} />
           </React.Fragment>
         );
       })}

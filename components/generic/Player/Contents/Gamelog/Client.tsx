@@ -7,7 +7,7 @@ import { PlayerBoxscore as CFBPlayerBoxscore } from '@/types/cfb';
 import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import HelperGame from '@/components/helpers/Game';
-import { useState } from 'react';
+import { Profiler, useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
@@ -112,7 +112,7 @@ const Client = ({ organization_id, gamelogs }) => {
 
   let playerColumns: string[] = [];
 
-  const playerBoxscoreHeaderColumns = TableColumns.getBoxscoreColumns({ organization_id, view: 'player' });
+  const playerBoxscoreHeaderColumns = Objector.deepClone(TableColumns.getColumns({ organization_id, view: 'player_boxscore' }));
 
   if (Organization.getCBBID() === organization_id) {
     playerColumns = ['game_details', 'minutes_played', 'points', 'fg', 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
@@ -335,6 +335,9 @@ const Client = ({ organization_id, gamelogs }) => {
   }
 
   return (
+    <Profiler id="Player.Contents.Gamelog.Client" onRender={(id, phase, actualDuration) => {
+      console.log(id, phase, actualDuration);
+    }}>
     <Contents>
       {picker}
       <RankTable
@@ -351,6 +354,7 @@ const Client = ({ organization_id, gamelogs }) => {
         customSortComparator={getComparator}
         />
     </Contents>
+    </Profiler>
   );
 };
 

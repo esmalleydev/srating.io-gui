@@ -10,58 +10,83 @@ import Typography from '../ux/text/Typography';
 import { useTheme } from '../hooks/useTheme';
 import Paper from '../ux/container/Paper';
 import Tooltip from '../ux/hover/Tooltip';
+import React from 'react';
+import { TableColumn } from '../helpers/TableColumns';
+
+export type CompareStatisticRow = {
+  leftRow: object;
+  rightRow: object;
+} & TableColumn;
 
 
 const CompareStatistic = (
-  { rows, season, max, paper, maxWidth = 600 }:
-  { rows: any[]; season: number; max: number; paper: boolean; maxWidth?: number; },
+  {
+    rows,
+    max,
+    paper,
+    maxWidth = 600,
+  }:
+  {
+    rows: CompareStatisticRow[];
+    max: number;
+    paper: boolean;
+    maxWidth?: number;
+  },
 ) => {
   const { width } = useWindowDimensions() as Dimensions;
   const theme = useTheme();
 
-
   const fixedLength = width > 500 ? 2 : 1;
 
 
-  const getColor = (row, base) => {
-    if (row.favored === 'lower') {
-      if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'away' ? theme.success.light : theme.error.light;
+  const getColor = (row: CompareStatisticRow, base: string) => {
+    const leftValue = getRowValue(row, 'left');
+    const rightValue = getRowValue(row, 'right');
+
+    if (row.sort === 'lower') {
+      if (+leftValue < +rightValue) {
+        return base === 'left' ? theme.success.light : theme.error.light;
       }
-      if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'home' ? theme.success.light : theme.error.light;
+      if (+leftValue > +rightValue) {
+        return base === 'right' ? theme.success.light : theme.error.light;
       }
     }
 
-    if (row.favored === 'higher') {
-      if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? theme.success.light : theme.error.light;
+    if (row.sort === 'higher') {
+      if (+leftValue > +rightValue) {
+        return base === 'left' ? theme.success.light : theme.error.light;
       }
-      if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? theme.success.light : theme.error.light;
+      if (+leftValue < +rightValue) {
+        return base === 'right' ? theme.success.light : theme.error.light;
       }
     }
 
     return theme.secondary.light;
   };
 
-  const getPercentage = (row, base) => {
-    if (row.favored === 'lower') {
-      const total = +row.awayCompareValue + +row.homeCompareValue;
+  const getPercentage = (row: CompareStatisticRow, side: string) => {
+    const leftValue = getRowValue(row, 'left');
+    const rightValue = getRowValue(row, 'right');
 
-      if (+row.awayCompareValue < +row.homeCompareValue) {
-        const percentage = base === 'away' ? 100 * (+row.homeCompareValue / total) : 100 * (+row.awayCompareValue / total);
+    const leftRank = getRank(row, 'left');
+    const rightRank = getRank(row, 'right');
+
+    if (row.sort === 'lower') {
+      const total = +leftValue + +rightValue;
+
+      if (+leftValue < +rightValue) {
+        const percentage = side === 'left' ? 100 * (+rightValue / total) : 100 * (+leftValue / total);
         return `${percentage}%`;
       }
-      if (+row.awayCompareValue > +row.homeCompareValue) {
-        const percentage = base === 'home' ? 100 * (+row.awayCompareValue / total) : 100 * (+row.homeCompareValue / total);
+      if (+leftValue > +rightValue) {
+        const percentage = side === 'right' ? 100 * (+leftValue / total) : 100 * (+rightValue / total);
         return `${percentage}%`;
       }
     }
 
 
-    if (row.favored === 'higher') {
-      let total = +row.awayCompareValue + +row.homeCompareValue;
+    if (row.sort === 'higher') {
+      let total = +leftValue + +rightValue;
 
       // compareType rank is just for aEM because it is annoying as fuck and the numbers go all over
       /*
@@ -69,22 +94,22 @@ const CompareStatistic = (
         row.compareType === 'absolute' &&
         (
           (
-            +row.homeCompareValue < 0 &&
-            +row.awayCompareValue > 0
+            +rightValue < 0 &&
+            +leftValue > 0
           ) ||
-          (base === 'home' && +row.awayCompareValue > total) ||
-          (base === 'away' && +row.awayCompareValue > total)
+          (side === 'right' && +leftValue > total) ||
+          (side === 'left' && +leftValue > total)
         )
       ) {
-        let percentage = ((+row.awayCompareValue - +row.homeCompareValue) / Math.abs(+row.homeCompareValue)) * 100;
-        return (base === 'away' ? (percentage >= 100 ? 95 : percentage) : 100 - (percentage >= 100 ? 95 : percentage)) + '%';
+        let percentage = ((+leftValue - +rightValue) / Math.abs(+rightValue)) * 100;
+        return (side === 'left' ? (percentage >= 100 ? 95 : percentage) : 100 - (percentage >= 100 ? 95 : percentage)) + '%';
       } */
-      if (row.compareType === 'rank' && row.awayRank && row.homeRank) {
-        total = row.awayRank + row.homeRank;
-        const percentage = base === 'home' ? 100 * (+row.awayRank / total) : 100 * (+row.homeRank / total);
+      if (row.compareType === 'rank' && leftRank && rightRank) {
+        total = leftRank + rightRank;
+        const percentage = side === 'right' ? 100 * (+leftRank / total) : 100 * (+rightRank / total);
         return `${percentage}%`;
-      } if (+row.awayCompareValue > +row.homeCompareValue) {
-        const percentage = base === 'away' ? 100 * (+row.awayCompareValue / total) : 100 * (+row.homeCompareValue / total);
+      } if (+leftValue > +rightValue) {
+        const percentage = side === 'left' ? 100 * (+leftValue / total) : 100 * (+rightValue / total);
         return `${percentage}%`;
       }
 
@@ -93,22 +118,22 @@ const CompareStatistic = (
         row.compareType === 'absolute' &&
         (
           (
-            +row.awayCompareValue < 0 &&
-            +row.homeCompareValue > 0
+            +leftValue < 0 &&
+            +rightValue > 0
           ) ||
-          (base === 'home' && +row.homeCompareValue > total) ||
-          (base === 'away' && +row.homeCompareValue > total)
+          (side === 'right' && +rightValue > total) ||
+          (side === 'left' && +rightValue > total)
         )
       ) {
-        let percentage = ((+row.homeCompareValue - +row.awayCompareValue) / Math.abs(+row.awayCompareValue)) * 100;
-        return (base === 'home' ? (percentage >= 100 ? 95 : percentage) : 100 - (percentage >= 100 ? 95 : percentage)) + '%';
+        let percentage = ((+rightValue - +leftValue) / Math.abs(+leftValue)) * 100;
+        return (side === 'right' ? (percentage >= 100 ? 95 : percentage) : 100 - (percentage >= 100 ? 95 : percentage)) + '%';
       } */
-      if (row.compareType === 'rank' && row.awayRank && row.homeRank) {
-        total = row.awayRank + row.homeRank;
-        const percentage = base === 'away' ? 100 * (+row.homeRank / total) : 100 * (+row.awayRank / total);
+      if (row.compareType === 'rank' && leftRank && rightRank) {
+        total = leftRank + rightRank;
+        const percentage = side === 'left' ? 100 * (+rightRank / total) : 100 * (+leftRank / total);
         return `${percentage}%`;
-      } if (+row.awayCompareValue < +row.homeCompareValue) {
-        const percentage = base === 'home' ? 100 * (+row.homeCompareValue / total) : 100 * (+row.awayCompareValue / total);
+      } if (+leftValue < +rightValue) {
+        const percentage = side === 'right' ? 100 * (+rightValue / total) : 100 * (+leftValue / total);
         return `${percentage}%`;
       }
     }
@@ -116,79 +141,69 @@ const CompareStatistic = (
     return '50%';
   };
 
-  const getDifference = (row, base) => {
-    if (row.favored === 'lower') {
-      if (+row.awayCompareValue > +row.homeCompareValue) {
-        if (+row.awayCompareValue === Infinity) {
+  const getDifference = (row: CompareStatisticRow, side: string) => {
+    const leftValue = getRowValue(row, 'left');
+    const rightValue = getRowValue(row, 'right');
+
+    if (row.sort === 'lower') {
+      if (+leftValue > +rightValue) {
+        if (+leftValue === Infinity) {
           return 0;
         }
-        return base === 'away' ? 0 : `-${(+row.awayCompareValue - +row.homeCompareValue).toFixed(('precision' in row ? row.precision : fixedLength))}`;
+        return side === 'left' ? 0 : `-${(+leftValue - +rightValue).toFixed(('precision' in row ? row.precision : fixedLength))}`;
       }
-      if (+row.awayCompareValue < +row.homeCompareValue) {
-        if (+row.homeCompareValue === Infinity) {
+      if (+leftValue < +rightValue) {
+        if (+rightValue === Infinity) {
           return 0;
         }
-        return base === 'home' ? 0 : `-${(+row.homeCompareValue - +row.awayCompareValue).toFixed(('precision' in row ? row.precision : fixedLength))}`;
+        return side === 'right' ? 0 : `-${(+rightValue - +leftValue).toFixed(('precision' in row ? row.precision : fixedLength))}`;
       }
     }
 
-    if (row.favored === 'higher') {
-      if (+row.awayCompareValue > +row.homeCompareValue) {
-        return base === 'away' ? `+${(+row.awayCompareValue - +row.homeCompareValue).toFixed(('precision' in row ? row.precision : fixedLength))}` : 0;
+    if (row.sort === 'higher') {
+      if (+leftValue > +rightValue) {
+        return side === 'left' ? `+${(+leftValue - +rightValue).toFixed(('precision' in row ? row.precision : fixedLength))}` : 0;
       }
-      if (+row.awayCompareValue < +row.homeCompareValue) {
-        return base === 'home' ? `+${(+row.homeCompareValue - +row.awayCompareValue).toFixed(('precision' in row ? row.precision : fixedLength))}` : 0;
+      if (+leftValue < +rightValue) {
+        return side === 'right' ? `+${(+rightValue - +leftValue).toFixed(('precision' in row ? row.precision : fixedLength))}` : 0;
       }
     }
 
     return 0;
   };
 
-  /*
-  const flexContainerStyle = {
-    'display': 'flex',
-    'justifyContent': 'space-between',
+  const getRowDisplayValue = (row: CompareStatisticRow, side: string) => {
+    const thisRow = side === 'left' ? row.leftRow : row.rightRow;
+    if (row.getDisplayValue) {
+      return row.getDisplayValue(thisRow, side);
+    }
+
+    return getRowValue(row, side);
   };
 
-  const leftFlexColumnStyle = {
-    'margin': '5px 0px',
-    'height': '24px',
+  const getRowValue = (row: CompareStatisticRow, side: string) => {
+    const thisRow = side === 'left' ? row.leftRow : row.rightRow;
+    if (row.getValue) {
+      return row.getValue(thisRow, side);
+    }
+
+    if (row.id in thisRow) {
+      return thisRow[row.id];
+    }
+
+    // console.warn('thisRow missing value');
+    return '-';
   };
 
-  const middleFlexColumnStyle = {
-    'textAlign': 'center',
-    'flexGrow': '1',
-  };
+  const getRank = (row: CompareStatisticRow, side: string) => {
+    const thisRow = side === 'left' ? row.leftRow : row.rightRow;
+    const key = `${row.id}_rank`;
+    if (!(key in thisRow)) {
+      return null;
+    }
 
-  const rightFlexColumnStyle = {
-    'margin': '5px 0px',
-    'height': '24px',
-    'textAlign': 'right',
+    return thisRow[key];
   };
-
-  const middleSubFlexContainerStyle = {
-    'display': 'flex',
-    'margin': '5px 0px',
-    'height': '24px',
-  };
-
-  const middleSubFlexLeftColumn = {
-    'width': '100%',
-    'display': 'flex',
-    'margin': '0px 10px',
-    'justifyContent': 'flex-end',
-  };
-
-  const middleSubFlexMiddleColumn = {
-    'minWidth': '80px',
-  };
-
-  const middleSubFlexRightColumn = {
-    'width': '100%',
-    'display': 'flex',
-    'margin': '0px 10px',
-  };
-  */
 
 
   const Container = (props_) => {
@@ -198,63 +213,6 @@ const CompareStatistic = (
 
     return <div style = {{ maxWidth, width: '100%', margin: 'auto' }}>{props_.children}</div>;
   };
-
-
-  // return (
-  //   <Container>
-  //     <div style = {flexContainerStyle}>
-  //       <div>
-  //         {props.rows.map((row) => {
-  //           const colors = {};
-  //           let backgroundColor = null;
-
-  //           if (
-  //             row.awayRank &&
-  //             (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.awayRank / 363))) &&
-  //             backgroundColor !== '#'
-  //           ) {
-  //             colors.backgroundColor = backgroundColor;
-  //             colors.color = theme.palette.getContrastText(backgroundColor);
-  //           }
-  //           return <Typography style = {leftFlexColumnStyle} variant = 'body2'>{row.away}{row.awayRank ? <span style = {Object.assign(colors, spanStyle)}>{row.awayRank}</span> : ''}</Typography>
-  //         })}
-  //       </div>
-  //       <div style = {middleFlexColumnStyle}>
-  //         {props.rows.map((row) => (
-  //           <div style = {middleSubFlexContainerStyle}>
-  //             <div style = {middleSubFlexLeftColumn}>
-  //               <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'away'), 'backgroundColor': getColor(row, 'away'), 'color': '#fff'/*theme.palette.getContrastText(getColor(row, 'away'))*/}}>
-  //                 <Typography variant = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography>
-  //               </div>
-  //             </div>
-  //             <Tooltip key={row.name} disableFocusListener placement = 'top' title={row.title || row.name}><Typography style = {middleSubFlexMiddleColumn} variant = 'body2'>{row.name}</Typography></Tooltip>
-  //             <div style = {middleSubFlexRightColumn}>
-  //               <div style = {{'display': ('favored' in row ? 'block' : 'none'), 'width': getPercentage(row, 'home'), 'backgroundColor': getColor(row, 'home'), 'color': '#fff'/*theme.palette.getContrastText(getColor(row, 'home'))*/}}>
-  //                 <Typography variant = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //       <div>
-  //         {props.rows.map((row) => {
-  //           const colors = {};
-  //           let backgroundColor = null;
-
-  //           if (
-  //             row.homeRank &&
-  //             (backgroundColor = ColorUtil.lerpColor(bestColor, worstColor, (+row.homeRank / 363))) &&
-  //             backgroundColor !== '#'
-  //           ) {
-  //             colors.backgroundColor = backgroundColor;
-  //             colors.color = theme.palette.getContrastText(backgroundColor);
-  //           }
-  //           return <Typography style = {rightFlexColumnStyle} variant = 'body2'>{row.homeRank ? <span style = {Object.assign(colors, spanStyle)}>{row.homeRank}</span> : ''}{row.home}</Typography>
-  //         })}
-  //       </div>
-  //     </div>
-  //   </Container>
-  // );
 
   const titleStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
@@ -272,60 +230,80 @@ const CompareStatistic = (
     titleStyle.textOverflow = 'ellipsis';
   }
 
-  let key = 0;
-  return (
-    <Container>
-      {rows.map((row) => {
-        key++;
 
-        const radius = '4px';
 
-        const getRankSpan = (rank) => {
-          if (!rank) {
-            return '';
-          }
+  const getDecoratedRows = (rows: CompareStatisticRow[]) => {
+    const decorated: React.JSX.Element[] = [];
 
-          return (
-            <RankSpan rank = {rank} key = {key} max = {max} useOrdinal = {true} />
-          );
-        };
+    rows.forEach((row, index) => {
+      const radius = '4px';
 
-        if (row.loading) {
-          return <Skeleton key = {key} />;
+
+      const getLabel = () => {
+        return <Tooltip key={row.tooltip} delay = {500} position = 'top' text={row.tooltip}><Typography style = {titleStyle} type = 'body2'>{row.label}</Typography></Tooltip>;
+      };
+
+      const getRankSpan = (row: CompareStatisticRow, side: string) => {
+        const rank = getRank(row, side);
+        if (!rank) {
+          return '';
         }
 
         return (
-          <div key = {key} style = {{ margin: '10px 0px' }}>
+          <RankSpan rank = {rank} key = {index} max = {max} useOrdinal = {true} />
+        );
+      };
+
+
+      if (row.loading) {
+        decorated.push(<Skeleton key = {index} />);
+      } else {
+        const leftDifference = getDifference(row, 'left');
+        const rightDifference = getDifference(row, 'right');
+        const leftPercentage = getPercentage(row, 'left');
+        const rightPercentage = getPercentage(row, 'right');
+
+        decorated.push(
+          <div key = {index} style = {{ margin: '10px 0px' }}>
             <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style = {{ margin: '0px 20px 0px 5px', minWidth: '100px', textAlign: 'left', overflow: 'hidden' }}>
                 {
                 row.locked ? <Locked iconFontSize={'18px'} />
-                  : <Typography type = 'body2'>{row.away}{getRankSpan(row.awayRank)}<Typography style = {{ margin: `0px ${row.awayRank ? '5px' : '8px'}`, display: 'inline-block', color: theme.text.secondary }} type = 'caption'>{getDifference(row, 'away') && row.showDifference && width >= 375 ? getDifference(row, 'away') : ''}</Typography></Typography>
+                  : <Typography type = 'body2'>{getRowDisplayValue(row, 'left')}{getRankSpan(row, 'left')}<Typography style = {{ margin: `0px ${getRank(row, 'left') ? '5px' : '8px'}`, display: 'inline-block', color: theme.text.secondary }} type = 'caption'>{leftDifference && row.showDifference && width >= 375 ? leftDifference : ''}</Typography></Typography>
                 }
               </div>
               <div style = {{ textAlign: 'center', whiteSpace: 'nowrap' }}>
-                <Tooltip key={row.tooltip || row.title || row.name} delay = {500} position = 'top' text={row.tooltip || row.title || row.name}><Typography style = {titleStyle} type = 'body2'>{width > 700 ? row.title : row.name}</Typography></Tooltip>
+                {getLabel()}
               </div>
               <div style = {{ margin: '0px 5px 0px 20px', minWidth: '100px', textAlign: 'right', overflow: 'hidden' }}>
                 {
                 row.locked ? <Locked iconFontSize={'18px'} />
-                  : <Typography type = 'body2'><Typography style = {{ margin: `0px ${row.homeRank ? '5px' : '8px'}`, display: 'inline-block', color: theme.text.secondary }} type = 'caption'>{getDifference(row, 'home') && row.showDifference && width >= 375 ? getDifference(row, 'home') : ''}</Typography>{getRankSpan(row.homeRank)}{row.home}</Typography>
+                  : <Typography type = 'body2'><Typography style = {{ margin: `0px ${getRank(row, 'right') ? '5px' : '8px'}`, display: 'inline-block', color: theme.text.secondary }} type = 'caption'>{rightDifference && row.showDifference && width >= 375 ? rightDifference : ''}</Typography>{getRankSpan(row, 'right')}{getRowDisplayValue(row, 'right')}</Typography>
                 }
               </div>
             </div>
             <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '5px' }}>
               <div style = {{ flexGrow: '1', margin: '0px 5px', display: 'flex', height: '8px' }}>
-                <div style = {{ display: ('favored' in row ? 'block' : 'none'), width: getPercentage(row, 'away'), backgroundColor: getColor(row, 'away'), color: '#fff', textAlign: 'center', borderTopLeftRadius: radius, borderBottomLeftRadius: radius/* theme.palette.getContrastText(getColor(row, 'away')) */ }}>
+                <div style = {{ display: ('favored' in row || 'sort' in row ? 'block' : 'none'), width: leftPercentage, backgroundColor: getColor(row, 'left'), color: '#fff', textAlign: 'center', borderTopLeftRadius: radius, borderBottomLeftRadius: radius/* theme.palette.getContrastText(getColor(row, 'left')) */ }}>
 
                 </div>
-                <div style = {{ display: ('favored' in row ? 'block' : 'none'), width: getPercentage(row, 'home'), backgroundColor: getColor(row, 'home'), color: '#fff', textAlign: 'center', borderTopRightRadius: radius, borderBottomRightRadius: radius/* theme.palette.getContrastText(getColor(row, 'home')) */ }}>
+                <div style = {{ display: ('favored' in row || 'sort' in row ? 'block' : 'none'), width: rightPercentage, backgroundColor: getColor(row, 'right'), color: '#fff', textAlign: 'center', borderTopRightRadius: radius, borderBottomRightRadius: radius/* theme.palette.getContrastText(getColor(row, 'right')) */ }}>
 
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
         );
-      })}
+      }
+    });
+
+
+    return decorated;
+  };
+
+  return (
+    <Container>
+      {getDecoratedRows(rows)}
     </Container>
   );
 };

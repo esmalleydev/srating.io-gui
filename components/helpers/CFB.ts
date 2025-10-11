@@ -16,6 +16,7 @@ class CFB {
 
   /**
    * Get the number of teams for a division in a season
+   * todo deprecate, use the one in Organization
    */
   public static getNumberOfTeams({ division_id, season }: { division_id: string, season: string | number}): number {
     const store = getStore();

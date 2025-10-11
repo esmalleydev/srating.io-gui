@@ -26,6 +26,9 @@ const Legend = ({ open, onClose, columns, view, organization_id }) => {
         <DialogContent>
           {
             columns.map((column: string) => {
+              if (!(column in headers)) {
+                return null;
+              }
               return (
                 <div key = {column} style = {{ display: 'flex', margin: '5px 0px' }}>
                   <Typography type = 'subtitle2' style = {{ color: theme.info.main }}>{headers[column].label}:</Typography>

@@ -401,6 +401,9 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     return (
       <TableRow>
         {tableColumns.map((column, i) => {
+          if (!(column in headCells)) {
+            return null;
+          }
           const headCell = headCells[column];
           const tdStyle: React.CSSProperties = {
             padding: '4px 5px',
@@ -507,6 +510,9 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     const tableCells: React.JSX.Element[] = [];
 
     for (let i = 0; i < columns.length; i++) {
+      if (!(columns[i] in headCells)) {
+        continue;
+      }
       const headCell = headCells[columns[i]];
 
       const tdStyle: React.CSSProperties = {

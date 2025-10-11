@@ -48,6 +48,9 @@ const ColumnPicker = (
     }
   };
 
+  const mappedOptions = Object.values(options).map((r) => { return { value: r.id, label: r.label, sublabel: r.tooltip, disabled: r.disabled }; });
+
+  // todo sort these some day
 
 
   return (
@@ -67,7 +70,7 @@ const ColumnPicker = (
           />
         );
       }}
-      options = {Object.values(options).map((r) => { return { value: r.id, label: r.label, sublabel: r.tooltip, disabled: r.disabled }; })}
+      options = {mappedOptions}
       selected = {selected.length ? selected : [null]}
       actionHandler = {handleClick}
       isRadio = {isRadio}

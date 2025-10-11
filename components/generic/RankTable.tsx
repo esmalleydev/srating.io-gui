@@ -13,7 +13,7 @@ import RankSpan from './RankSpan';
 import { useTheme } from '../hooks/useTheme';
 import Style from '../utils/Style';
 import Paper from '../ux/container/Paper';
-import { TableColumnBoxscoresType, TableColumnsType } from '../helpers/TableColumns';
+import { TableColumnsType } from '../helpers/TableColumns';
 import Tooltip from '../ux/hover/Tooltip';
 
 
@@ -39,7 +39,7 @@ const RankTable = (
   {
     rows: object[],
     footerRow?: object | null,
-    columns: TableColumnsType | TableColumnBoxscoresType,
+    columns: TableColumnsType,
     displayColumns: string[],
     rowKey: string,
     defaultSortOrder: defaultSortOrderType,
@@ -290,6 +290,13 @@ const RankTable = (
                   tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
                 }
 
+                let label = headCell.getLabel ? headCell.getLabel() : headCell.label;
+
+                if (useAlternateLabel && (headCell.getAltLabel || headCell.alt_label)) {
+                  label = headCell.getAltLabel ? headCell.getAltLabel() : headCell.alt_label as string;
+                }
+
+
                 return (
                   <Tooltip key={headCell.id} position = 'top' text={headCell.tooltip}>
                     <TableCell
@@ -303,7 +310,7 @@ const RankTable = (
                         direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
                         onClick={() => { handleSort(headCell.id); }}
                       >
-                        {useAlternateLabel && headCell.alt_label ? headCell.alt_label : headCell.label}
+                        {label}
                         {orderBy === headCell.id ? (
                           <Box component="span" sx={visuallyHidden}>
                             {order === 'desc' ? 'sorted descending' : 'sorted ascending'}

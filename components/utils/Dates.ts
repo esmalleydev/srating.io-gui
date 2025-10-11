@@ -1,8 +1,8 @@
 // todo write unit tests for closest date function to test different scenarios
 
 class Dates {
-  constructor() {
-  }
+  // constructor() {
+  // }
 
   /**
    * Find the closest date in an array of dates
@@ -10,9 +10,9 @@ class Dates {
    * @param  {array} datesArray a date to match YYYY-MM-DD
    * @return {?string}
    */
-  getClosestDate = (dateToMatch, datesArray) => {
+  getClosestDate = (dateToMatch: string, datesArray: string[]) => {
     let closestDist: number | null = null;
-    let closestDate = null;
+    let closestDate: string | null = null;
 
     for (let i = 0; i < datesArray.length; i++) {
       const a = new Date(datesArray[i]).getTime();

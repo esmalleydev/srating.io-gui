@@ -1,3 +1,4 @@
+import { getStore } from '@/app/StoreProvider';
 import { useAppSelector } from '@/redux/hooks';
 import { Organizations } from '@/types/general';
 
@@ -63,6 +64,21 @@ class Organization {
     }
 
     return path;
+  }
+
+  public static getNumberOfTeams({ organization_id, division_id, season }: { organization_id: string, division_id: string, season: string | number}): number {
+    const store = getStore();
+    const { organization_id_x_division_id_x_season_x_count } = store.getState().dictionaryReducer;
+
+    if (
+      organization_id in organization_id_x_division_id_x_season_x_count &&
+      division_id in organization_id_x_division_id_x_season_x_count[organization_id] &&
+      season in organization_id_x_division_id_x_season_x_count[organization_id][division_id]
+    ) {
+      return organization_id_x_division_id_x_season_x_count[organization_id][division_id][season];
+    }
+
+    return 1;
   }
 }
 

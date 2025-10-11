@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import moment from 'moment';
-import ColumnPickerFull from '@/components/generic/ColumnPickerFull';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Chip from '@/components/ux/container/Chip';
@@ -12,8 +11,6 @@ import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import AdditionalOptions from './AdditionalOptions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import CFB from '@/components/helpers/CFB';
-import CBB from '@/components/helpers/CBB';
 import { setDataKey } from '@/redux/features/player-slice';
 import ColumnPicker from '@/components/generic/ColumnPicker';
 
@@ -22,13 +19,7 @@ const StatsGraph = (
   { organization_id, division_id, season, player_statistic_rankings, games, league_player_statistic_rankings, player_boxscores }:
   { organization_id: string, division_id: string, season: number, player_statistic_rankings: object, games: object, league_player_statistic_rankings: object, player_boxscores: object },
 ) => {
-  const getMax = () => {
-    if (Organization.isCFB()) {
-      return 0;
-    }
-
-    return CBB.getNumberOfD1Players(season);
-  };
+  let max = 0;
 
   let standardColumns = [
     'efficiency_rating',
@@ -131,6 +122,8 @@ const StatsGraph = (
     if (row.elo > maxYaxisElo) {
       maxYaxisElo = row.elo;
     }
+
+    max = row.max;
 
     for (const key in row) {
       date_of_rank_x_data[row.date_of_rank][key] = row[key];
@@ -300,7 +293,7 @@ const StatsGraph = (
     if (minYaxis !== null && maxYaxis !== null) {
       YAxisProps.domain = [minYaxis, maxYaxis];
     }
-    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={statistic.label} rows={formattedData} lines={lines} YAxisProps={YAxisProps} rankMax = {getMax()} />;
+    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={statistic.label} rows={formattedData} lines={lines} YAxisProps={YAxisProps} rankMax = {max} />;
   }
 
 

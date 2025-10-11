@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Profiler, useEffect, useState } from 'react';
 
 import HelperGame from '@/components/helpers/Game';
-import CompareStatistic from '@/components/generic/CompareStatistic';
+import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 import { Boxscore as BoxscoreCBB, PlayerBoxscore as CBBPlayerBoxscore, PlayerBoxscores as CBBPlayerBoxscores } from '@/types/cbb';
 import { Boxscore as BoxscoreCFB, PlayerBoxscores as CFBPlayerBoxscores, PlayerBoxscore as CFBPlayerBoxscore } from '@/types/cfb';
 import { useAppSelector } from '@/redux/hooks';
@@ -11,9 +11,7 @@ import { LinearProgress } from '@mui/material';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import CFB from '@/components/helpers/CFB';
 // import ButtonSwitch from '../../ButtonSwitch';
 import RankTable from '@/components/generic/RankTable';
 import { Game, Players } from '@/types/general';
@@ -73,14 +71,12 @@ const Client = (
 
   const { width } = useWindowDimensions() as Dimensions;
 
-  let numberOfTeams = CBB.getNumberOfD1Teams(game.season);
-
-  if (game.organization_id === Organization.getCFBID()) {
-    numberOfTeams = CFB.getNumberOfTeams({ division_id: game.division_id, season: game.season });
-  }
+  const numberOfTeams = Organization.getNumberOfTeams({ organization_id: game.organization_id, division_id: game.division_id, season: game.season });
 
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
+
+  const columns = Objector.deepClone(TableColumns.getColumns({ organization_id: game.organization_id, view: 'boxscore' }));
 
   const [boxscore_team_id, set_boxscore_team_id] = useState(game.away_team_id);
 
@@ -123,441 +119,62 @@ const Client = (
     }
 
     if (game.organization_id === Organization.getCFBID()) {
-      away_boxscore = away_boxscore as BoxscoreCFB;
-      home_boxscore = home_boxscore as BoxscoreCFB;
       return [
         {
           name: 'Efficiency',
-          rows: [
-            {
-              name: 'PTS',
-              title: 'PTS',
-              tooltip: 'Points',
-              away: away_boxscore.points,
-              home: home_boxscore.points,
-              awayCompareValue: away_boxscore.points,
-              homeCompareValue: home_boxscore.points,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-            {
-              name: 'QBR(c)',
-              title: 'QBR(c)',
-              away: away_boxscore.passing_rating_college,
-              home: home_boxscore.passing_rating_college,
-              awayCompareValue: away_boxscore.passing_rating_college,
-              homeCompareValue: home_boxscore.passing_rating_college,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-          ],
+          keys: ['points', 'passing_rating_college'],
         },
         {
           name: 'Passing',
-          rows: [
-            {
-              name: 'Att.',
-              title: 'Attempts',
-              away: away_boxscore.passing_attempts,
-              home: home_boxscore.passing_attempts,
-              awayCompareValue: away_boxscore.passing_attempts,
-              homeCompareValue: home_boxscore.passing_attempts,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-            {
-              name: 'Comp.',
-              title: 'Completions',
-              away: away_boxscore.passing_completions,
-              home: home_boxscore.passing_completions,
-              awayCompareValue: away_boxscore.passing_completions,
-              homeCompareValue: home_boxscore.passing_completions,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-            {
-              name: 'Yds',
-              title: 'Yards',
-              away: away_boxscore.passing_yards,
-              home: home_boxscore.passing_yards,
-              awayCompareValue: away_boxscore.passing_yards,
-              homeCompareValue: home_boxscore.passing_yards,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-            {
-              name: 'Comp. %',
-              title: 'Completion %',
-              away: away_boxscore.passing_completion_percentage,
-              home: home_boxscore.passing_completion_percentage,
-              awayCompareValue: away_boxscore.passing_completion_percentage,
-              homeCompareValue: home_boxscore.passing_completion_percentage,
-              favored: 'higher',
-              showDifference: true,
-            },
-            {
-              name: 'Yds per att.',
-              title: 'Yard per attempt',
-              away: away_boxscore.passing_yards_per_attempt,
-              home: home_boxscore.passing_yards_per_attempt,
-              awayCompareValue: away_boxscore.passing_yards_per_attempt,
-              homeCompareValue: home_boxscore.passing_yards_per_attempt,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-            {
-              name: 'Yds per comp.',
-              title: 'Yards per completion',
-              away: away_boxscore.passing_yards_per_completion,
-              home: home_boxscore.passing_yards_per_completion,
-              awayCompareValue: away_boxscore.passing_yards_per_completion,
-              homeCompareValue: home_boxscore.passing_yards_per_completion,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-            {
-              name: 'TDs',
-              title: 'Touchdowns',
-              away: away_boxscore.passing_touchdowns,
-              home: home_boxscore.passing_touchdowns,
-              awayCompareValue: away_boxscore.passing_touchdowns,
-              homeCompareValue: home_boxscore.passing_touchdowns,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-            {
-              name: 'INT',
-              title: 'Interceptions',
-              away: away_boxscore.passing_interceptions,
-              home: home_boxscore.passing_interceptions,
-              awayCompareValue: away_boxscore.passing_interceptions,
-              homeCompareValue: home_boxscore.passing_interceptions,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
-            {
-              name: 'Long',
-              title: 'Long',
-              away: away_boxscore.passing_long,
-              home: home_boxscore.passing_long,
-              awayCompareValue: away_boxscore.passing_long,
-              homeCompareValue: home_boxscore.passing_long,
-              favored: 'higher',
-              showDifference: true,
-              precision: 0,
-            },
+          keys: [
+            'passing_attempts',
+            'passing_completions',
+            'passing_yards',
+            'passing_completion_percentage',
+            'passing_yards_per_attempt',
+            'passing_yards_per_completion',
+            'passing_touchdowns',
+            'passing_interceptions',
+            'passing_long',
           ],
         },
         {
           name: 'Rushing',
-          rows: [
-            {
-              name: 'Att.',
-              title: 'Attempts',
-              away: away_boxscore.rushing_attempts,
-              home: home_boxscore.rushing_attempts,
-              awayCompareValue: away_boxscore.rushing_attempts,
-              homeCompareValue: home_boxscore.rushing_attempts,
-              favored: 'higher',
-              showDifference: true,
-            },
-            {
-              name: 'Yds',
-              title: 'Yards',
-              away: away_boxscore.rushing_yards,
-              home: home_boxscore.rushing_yards,
-              awayCompareValue: away_boxscore.rushing_yards,
-              homeCompareValue: home_boxscore.rushing_yards,
-              favored: 'higher',
-              showDifference: true,
-            },
-            {
-              name: 'Yds per att.',
-              title: 'Yards per attempt',
-              away: away_boxscore.rushing_yards_per_attempt,
-              home: home_boxscore.rushing_yards_per_attempt,
-              awayCompareValue: away_boxscore.rushing_yards_per_attempt,
-              homeCompareValue: home_boxscore.rushing_yards_per_attempt,
-              favored: 'higher',
-              showDifference: true,
-            },
-            {
-              name: 'TDs',
-              title: 'Touchdowns',
-              away: away_boxscore.rushing_touchdowns,
-              home: home_boxscore.rushing_touchdowns,
-              awayCompareValue: away_boxscore.rushing_touchdowns,
-              homeCompareValue: home_boxscore.rushing_touchdowns,
-              favored: 'higher',
-              showDifference: true,
-            },
-            {
-              name: 'Long',
-              title: 'Long',
-              away: away_boxscore.rushing_long,
-              home: home_boxscore.rushing_long,
-              awayCompareValue: away_boxscore.rushing_long,
-              homeCompareValue: home_boxscore.rushing_long,
-              favored: 'higher',
-              showDifference: true,
-            },
+          keys: [
+            'rushing_attempts',
+            'rushing_yards',
+            'rushing_yards_per_attempt',
+            'rushing_touchdowns',
+            'rushing_long',
           ],
         },
       ];
     }
 
-    away_boxscore = away_boxscore as BoxscoreCBB;
-    home_boxscore = home_boxscore as BoxscoreCBB;
-
     return [
       {
         name: 'Boxscore',
-        rows: [
-          {
-            name: 'PTS',
-            title: 'PTS',
-            tooltip: 'Points',
-            away: away_boxscore.points,
-            home: home_boxscore.points,
-            awayCompareValue: away_boxscore.points,
-            homeCompareValue: home_boxscore.points,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'FG',
-            title: 'FG',
-            tooltip: 'Field goals per game',
-            away: away_boxscore.field_goal,
-            home: home_boxscore.field_goal,
-            awayCompareValue: away_boxscore.field_goal,
-            homeCompareValue: home_boxscore.field_goal,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'FGA',
-            title: 'FGA',
-            tooltip: 'Field goal attempts per game',
-            away: away_boxscore.field_goal_attempts,
-            home: home_boxscore.field_goal_attempts,
-            awayCompareValue: away_boxscore.field_goal_attempts,
-            homeCompareValue: home_boxscore.field_goal_attempts,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'FG%',
-            title: 'FG%',
-            tooltip: 'Field goal percentage',
-            away: away_boxscore.field_goal_percentage !== null ? `${away_boxscore.field_goal_percentage}%` : '',
-            home: home_boxscore.field_goal_percentage !== null ? `${home_boxscore.field_goal_percentage}%` : '',
-            awayCompareValue: away_boxscore.field_goal_percentage,
-            homeCompareValue: home_boxscore.field_goal_percentage,
-            favored: 'higher',
-            showDifference: true,
-          },
-          {
-            name: '2P',
-            title: '2P',
-            tooltip: '2 point field goals per game',
-            away: away_boxscore.two_point_field_goal,
-            home: home_boxscore.two_point_field_goal,
-            awayCompareValue: away_boxscore.two_point_field_goal,
-            homeCompareValue: home_boxscore.two_point_field_goal,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: '2PA',
-            title: '2PA',
-            tooltip: '2 point field goal attempts per game',
-            away: away_boxscore.two_point_field_goal_attempts,
-            home: home_boxscore.two_point_field_goal_attempts,
-            awayCompareValue: away_boxscore.two_point_field_goal_attempts,
-            homeCompareValue: home_boxscore.two_point_field_goal_attempts,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: '2P%',
-            title: '2P%',
-            tooltip: '2 point field goal percentage',
-            away: away_boxscore.two_point_field_goal_percentage !== null ? `${away_boxscore.two_point_field_goal_percentage}%` : '',
-            home: home_boxscore.two_point_field_goal_percentage !== null ? `${home_boxscore.two_point_field_goal_percentage}%` : '',
-            awayCompareValue: away_boxscore.two_point_field_goal_percentage,
-            homeCompareValue: home_boxscore.two_point_field_goal_percentage,
-            favored: 'higher',
-            showDifference: true,
-          },
-          {
-            name: '3P',
-            title: '3P',
-            tooltip: '3 point field goals per game',
-            away: away_boxscore.three_point_field_goal,
-            home: home_boxscore.three_point_field_goal,
-            awayCompareValue: away_boxscore.three_point_field_goal,
-            homeCompareValue: home_boxscore.three_point_field_goal,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: '3PA',
-            title: '3PA',
-            tooltip: '3 point field goal attempts per game',
-            away: away_boxscore.three_point_field_goal_attempts,
-            home: home_boxscore.three_point_field_goal_attempts,
-            awayCompareValue: away_boxscore.three_point_field_goal_attempts,
-            homeCompareValue: home_boxscore.three_point_field_goal_attempts,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: '3P%',
-            title: '3P%',
-            tooltip: '3 point field goal percentage',
-            away: away_boxscore.three_point_field_goal_percentage !== null ? `${away_boxscore.three_point_field_goal_percentage}%` : '',
-            home: home_boxscore.three_point_field_goal_percentage !== null ? `${home_boxscore.three_point_field_goal_percentage}%` : '',
-            awayCompareValue: away_boxscore.three_point_field_goal_percentage,
-            homeCompareValue: home_boxscore.three_point_field_goal_percentage,
-            favored: 'higher',
-            showDifference: true,
-          },
-          {
-            name: 'FT',
-            title: 'FT',
-            tooltip: 'Free throws per game',
-            away: away_boxscore.free_throws,
-            home: home_boxscore.free_throws,
-            awayCompareValue: away_boxscore.free_throws,
-            homeCompareValue: home_boxscore.free_throws,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'FTA',
-            title: 'FTA',
-            tooltip: 'Free throw attempts per game',
-            away: away_boxscore.free_throw_attempts,
-            home: home_boxscore.free_throw_attempts,
-            awayCompareValue: away_boxscore.free_throw_attempts,
-            homeCompareValue: home_boxscore.free_throw_attempts,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'FT%',
-            title: 'FT%',
-            tooltip: 'Free throw percentage',
-            away: away_boxscore.free_throw_percentage !== null ? `${away_boxscore.free_throw_percentage}%` : '',
-            home: home_boxscore.free_throw_percentage !== null ? `${home_boxscore.free_throw_percentage}%` : '',
-            awayCompareValue: away_boxscore.free_throw_percentage,
-            homeCompareValue: home_boxscore.free_throw_percentage,
-            favored: 'higher',
-            showDifference: true,
-          },
-          {
-            name: 'ORB',
-            title: 'ORB',
-            tooltip: 'Offensive rebounds',
-            away: away_boxscore.offensive_rebounds,
-            home: home_boxscore.offensive_rebounds,
-            awayCompareValue: away_boxscore.offensive_rebounds,
-            homeCompareValue: home_boxscore.offensive_rebounds,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'DRB',
-            title: 'DRB',
-            tooltip: 'Defensive rebounds',
-            away: away_boxscore.defensive_rebounds,
-            home: home_boxscore.defensive_rebounds,
-            awayCompareValue: away_boxscore.defensive_rebounds,
-            homeCompareValue: home_boxscore.defensive_rebounds,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'AST',
-            title: 'AST',
-            tooltip: 'Assists',
-            away: away_boxscore.assists,
-            home: home_boxscore.assists,
-            awayCompareValue: away_boxscore.assists,
-            homeCompareValue: home_boxscore.assists,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'STL',
-            title: 'STL',
-            tooltip: 'Steals',
-            away: away_boxscore.steals,
-            home: home_boxscore.steals,
-            awayCompareValue: away_boxscore.steals,
-            homeCompareValue: home_boxscore.steals,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'BLK',
-            title: 'BLK',
-            tooltip: 'Blocks',
-            away: away_boxscore.blocks,
-            home: home_boxscore.blocks,
-            awayCompareValue: away_boxscore.blocks,
-            homeCompareValue: home_boxscore.blocks,
-            favored: 'higher',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'TOV',
-            title: 'TOV',
-            tooltip: 'Turnovers',
-            away: away_boxscore.turnovers,
-            home: home_boxscore.turnovers,
-            awayCompareValue: away_boxscore.turnovers,
-            homeCompareValue: home_boxscore.turnovers,
-            favored: 'lower',
-            showDifference: true,
-            precision: 0,
-          },
-          {
-            name: 'PF',
-            title: 'PF',
-            tooltip: 'Fouls',
-            away: away_boxscore.fouls,
-            home: home_boxscore.fouls,
-            awayCompareValue: away_boxscore.fouls,
-            homeCompareValue: home_boxscore.fouls,
-            favored: 'lower',
-            showDifference: true,
-            precision: 0,
-          },
+        keys: [
+          'points',
+          'field_goal',
+          'field_goal_attempts',
+          'field_goal_percentage',
+          'two_point_field_goal',
+          'two_point_field_goal_attempts',
+          'two_point_field_goal_percentage',
+          'three_point_field_goal',
+          'three_point_field_goal_attempts',
+          'three_point_field_goal_percentage',
+          'free_throws',
+          'free_throw_attempts',
+          'free_throw_percentage',
+          'offensive_rebounds',
+          'defensive_rebounds',
+          'assists',
+          'steals',
+          'blocks',
+          'turnovers',
+          'fouls',
         ],
       },
     ];
@@ -575,12 +192,29 @@ const Client = (
 
     const sections = getBoxscoreSections();
 
+    if (game.organization_id === Organization.getCFBID()) {
+      away_boxscore = away_boxscore as BoxscoreCFB;
+      home_boxscore = home_boxscore as BoxscoreCFB;
+    } else {
+      away_boxscore = away_boxscore as BoxscoreCBB;
+      home_boxscore = home_boxscore as BoxscoreCBB;
+    }
+
     return (
       sections.map((section) => {
+        const rows: CompareStatisticRow[] = [];
+
+        section.keys.forEach((key) => {
+          const row = columns[key] as CompareStatisticRow;
+          row.leftRow = away_boxscore || {};
+          row.rightRow = home_boxscore || {};
+          rows.push(row);
+        });
+
         return (
           <React.Fragment key = {section.name}>
             <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'body1'>{section.name}</Typography>
-            <CompareStatistic max = {numberOfTeams} season = {game.season} paper = {true} rows = {section.rows} />
+            <CompareStatistic max = {numberOfTeams} paper = {true} rows = {rows} />
           </React.Fragment>
         );
       })
@@ -937,7 +571,7 @@ const Client = (
     const picker = (
       <>
         {/* <ButtonSwitch leftTitle={Game.getTeamName('away')} rightTitle={Game.getTeamName('home')} selected = {boxscore_team_id === 'away' ? 'left' : 'right'} handleClick={() => { set_boxscore_team_id(boxscore_team_id === 'away' ? 'home' : 'away'); }} /> */}
-          <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 8 }}>
+          <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '4px 0px' }}>
             <Chip style = {{ margin: '0px 10px 0px 10px' }} filled = {boxscore_team_id === game.away_team_id} value = {game.away_team_id} onClick= {() => { set_boxscore_team_id(game.away_team_id); }} title = {Game.getTeamName('away')} />
             <Chip style = {{ margin: '0px 10px 0px 10px' }} filled = {boxscore_team_id === game.home_team_id} value = {game.home_team_id} onClick= {() => { set_boxscore_team_id(game.home_team_id); }} title = {Game.getTeamName('home')} />
           </div>
@@ -972,7 +606,7 @@ const Client = (
    * Get the player boxscore content
    */
   const getPlayerBoxscoreContent = (position: string | null): React.JSX.Element => {
-    const playerBoxscoreHeaderColumns = TableColumns.getBoxscoreColumns({ organization_id: game.organization_id, view: 'game' });
+    const playerBoxscoreHeaderColumns = TableColumns.getColumns({ organization_id: game.organization_id, view: 'player_boxscore' });
 
     let playerColumns: string[] = [];
 
@@ -1187,18 +821,29 @@ const Client = (
     );
   };
 
-
   return (
+    <Profiler id="BoxscoreClient" onRender={(id, phase, actualDuration) => {
+      console.log(id, phase, actualDuration);
+    }}>
     <Contents>
       <div>
         <div style = {{ padding: '10px 5px' }}>
+          <Profiler id="getBoxscoreContent" onRender={(id, phase, actualDuration) => {
+            console.log(id, phase, actualDuration);
+          }}>
           {getBoxscoreContent()}
+          </Profiler>
         </div>
       </div>
       <div style = {{ padding: '0px 5px 10px 5px' }}>
+        <Profiler id="getPlayerBoxscoreContents" onRender={(id, phase, actualDuration) => {
+          console.log(id, phase, actualDuration);
+        }}>
         {getPlayerBoxscoreContents()}
+        </Profiler>
       </div>
     </Contents>
+    </Profiler>
   );
 };
 

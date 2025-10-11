@@ -41,6 +41,13 @@ export default async function Page() {
         gtag('event', 'conversion', {'send_to': 'AW-11331182972/mmDvCKu5sIMaEPzCkJsq'});
       `}
     </Script>
+    <Script id="twitter-conversion" strategy="afterInteractive">
+      {`
+        twq('event', 'tw-qltj2-qltj3', {
+        conversion_id: 'twitter' 
+      });
+      `}
+    </Script>
     <BillingPage />
     </>
   );
