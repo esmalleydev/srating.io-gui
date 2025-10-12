@@ -1889,7 +1889,7 @@ class TableColumns {
         views: allViews,
         graphable: true,
         getLabel: () => {
-          if (view === 'matchup') {
+          if (boxscoreViews.includes(view) || view === 'matchup') {
             return 'ATT';
           }
 
@@ -1899,6 +1899,9 @@ class TableColumns {
           return (view === 'player' ? 'ATT-T' : 'ATT');
         },
         getTooltip: () => {
+          if (boxscoreViews.includes(view)) {
+            return 'Passing attempts';
+          }
           return (view === 'player' ? 'Total passing attempts in a season' : 'Passing attempts per game');
         },
       },

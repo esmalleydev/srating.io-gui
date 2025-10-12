@@ -240,7 +240,9 @@ const CompareStatistic = (
 
 
       const getLabel = () => {
-        return <Tooltip key={row.tooltip} delay = {500} position = 'top' text={row.tooltip}><Typography style = {titleStyle} type = 'body2'>{row.label}</Typography></Tooltip>;
+        const l = row.getLabel ? row.getLabel() : row.label;
+        const t = row.getTooltip ? row.getTooltip() : row.tooltip;
+        return <Tooltip key={t} delay = {500} position = 'top' text={t}><Typography style = {titleStyle} type = 'body2'>{l}</Typography></Tooltip>;
       };
 
       const getRankSpan = (row: CompareStatisticRow, side: string) => {
@@ -284,10 +286,10 @@ const CompareStatistic = (
             </div>
             <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '5px' }}>
               <div style = {{ flexGrow: '1', margin: '0px 5px', display: 'flex', height: '8px' }}>
-                <div style = {{ display: ('favored' in row || 'sort' in row ? 'block' : 'none'), width: leftPercentage, backgroundColor: getColor(row, 'left'), color: '#fff', textAlign: 'center', borderTopLeftRadius: radius, borderBottomLeftRadius: radius/* theme.palette.getContrastText(getColor(row, 'left')) */ }}>
+                <div style = {{ display: ('sort' in row ? 'block' : 'none'), width: leftPercentage, backgroundColor: getColor(row, 'left'), color: '#fff', textAlign: 'center', borderTopLeftRadius: radius, borderBottomLeftRadius: radius/* theme.palette.getContrastText(getColor(row, 'left')) */ }}>
 
                 </div>
-                <div style = {{ display: ('favored' in row || 'sort' in row ? 'block' : 'none'), width: rightPercentage, backgroundColor: getColor(row, 'right'), color: '#fff', textAlign: 'center', borderTopRightRadius: radius, borderBottomRightRadius: radius/* theme.palette.getContrastText(getColor(row, 'right')) */ }}>
+                <div style = {{ display: ('sort' in row ? 'block' : 'none'), width: rightPercentage, backgroundColor: getColor(row, 'right'), color: '#fff', textAlign: 'center', borderTopRightRadius: radius, borderBottomRightRadius: radius/* theme.palette.getContrastText(getColor(row, 'right')) */ }}>
 
                 </div>
               </div>

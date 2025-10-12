@@ -121,7 +121,7 @@ const Client = (
     if (game.organization_id === Organization.getCFBID()) {
       return [
         {
-          name: 'Efficiency',
+          name: 'Overview',
           keys: ['points', 'passing_rating_college'],
         },
         {

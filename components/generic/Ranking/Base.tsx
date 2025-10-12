@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { Profiler, useEffect, useState, useTransition } from 'react';
 import Legend from './Legend';
 import FloatingButtons from './FloatingButtons';
 import { usePathname, useRouter } from 'next/navigation';
@@ -29,8 +29,6 @@ const Base = (
   { organization_id, division_id, season, view, children }:
   { organization_id: string, division_id: string, season: number, view: string, children: React.JSX.Element | React.JSX.Element[] },
 ) => {
-  // console.time('Base')
-  // console.time('Base.logic')
   const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
@@ -144,8 +142,11 @@ const Base = (
   });
   const title = `College ${sport} ${view} rankings.`;
 
-  // console.timeEnd('Base.logic')
+
   return (
+    <Profiler id="Ranking.Base" onRender={(id, phase, actualDuration) => {
+      console.log(id, phase, actualDuration);
+    }}>
     <div>
       <Legend open = {legendOpen} onClose={handleLegend} columns={columns} view={view} organization_id = {organization_id} />
       <FloatingButtons />
@@ -178,6 +179,7 @@ const Base = (
       }
       {children}
     </div>
+    </Profiler>
   );
 };
 
