@@ -57,6 +57,7 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
           name: 'Efficiency',
           keys: [
             // 'points',
+            'adjusted_passing_rating',
             'passing_rating_college',
             'passing_rating_pro',
             // 'yards_per_play',
@@ -76,8 +77,6 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
             'passing_yards_per_completion',
             'passing_touchdowns',
             'passing_interceptions',
-            'passing_rating_pro',
-            'passing_rating_college',
             'passing_long',
           ],
         },

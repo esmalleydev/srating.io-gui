@@ -32,9 +32,9 @@ const StatsGraph = (
 
   if (Organization.getCFBID() === organization_id) {
     standardColumns = [
-      'passing_rating_college',
-      'points',
+      'adjusted_passing_rating',
       'elo',
+      'passing_yards_per_attempt',
     ];
   }
 

@@ -85,7 +85,7 @@ export const getViewableColumns = (
         positions &&
         positions.includes('QB')
       ) {
-        return ['rank', 'name', 'team_name', 'rank_delta_combo', 'elo', 'passing_rating_college', 'passing_attempts', 'passing_completions', 'passing_yards', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns', 'passing_interceptions'];
+        return ['rank', 'name', 'team_name', 'rank_delta_combo', 'elo', 'adjusted_passing_rating', 'passing_rating_college', 'passing_attempts', 'passing_completions', 'passing_yards', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns', 'passing_interceptions'];
       }
       if (
         view === 'player' &&
@@ -126,7 +126,7 @@ export const getViewableColumns = (
         return ['rank', 'name', 'passing_rating_college', 'passing_yards_per_attempt', 'rushing_yards_per_attempt', 'passing_attempts', 'passing_completions', 'passing_yards', 'passing_completion_percentage', 'passing_yards_per_completion', 'passing_touchdowns', 'passing_interceptions', 'passing_long', 'rushing_attempts', 'rushing_yards', 'rushing_touchdowns', 'rushing_long'];
       }
     } else if (columnView === 'passing') {
-      return ['rank', 'name', 'passing_rating_college', 'passing_rating_pro', 'passing_attempts_per_game', 'passing_completions_per_game', 'passing_yards_per_game', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns_per_game', 'passing_interceptions_per_game', 'passing_long'];
+      return ['rank', 'name', 'adjusted_passing_rating', 'passing_rating_college', 'passing_rating_pro', 'passing_attempts_per_game', 'passing_completions_per_game', 'passing_yards_per_game', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns_per_game', 'passing_interceptions_per_game', 'passing_long'];
     } else if (columnView === 'rushing') {
       if (view === 'team' || view === 'conference') {
         return ['rank', 'name', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_long'];

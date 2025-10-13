@@ -247,6 +247,16 @@ class TableColumns {
         showDifference: true,
         compareType: 'rank',
       },
+      adjusted_passing_rating: {
+        id: 'adjusted_passing_rating',
+        numeric: true,
+        label: 'aQBR',
+        tooltip: 'Adjusted Quarter back rating',
+        sort: 'higher',
+        organization_ids: [Organization.getCFBID()],
+        views: ['player'],
+        graphable: true,
+      },
       passing_rating_pro: {
         id: 'passing_rating_pro',
         numeric: true,
