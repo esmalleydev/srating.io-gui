@@ -1,3 +1,16 @@
+/* eslint-disable no-restricted-syntax */
+
+type Merge<T, U> = Omit<T, keyof U> & U;
+
+type MergeAll<T extends object[]> =
+  T extends [infer First, ...infer Rest]
+    ? First extends object
+      ? Rest extends object[]
+        ? Merge<First, MergeAll<Rest>>
+        : First
+      : unknown
+    : unknown;
+
 /**
  * Class to manipulate objects
  */
@@ -5,6 +18,7 @@ class Objector {
   // constructor() {
   // }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public static deepClone<T>(obj: T, memo = new WeakMap<any, any>()): T {
     // Check if the input is null or not an object/array
     if (obj === null || typeof obj !== 'object') {
@@ -23,12 +37,18 @@ class Objector {
     if (obj instanceof RegExp) {
       return new RegExp(obj.source, obj.flags) as unknown as T;
     }
-    // Add other types like Map, Set, etc.
     if (obj instanceof Map) {
       const clonedMap = new Map();
       memo.set(obj, clonedMap);
       obj.forEach((value, key) => clonedMap.set(key, Objector.deepClone(value, memo)));
       return clonedMap as unknown as T;
+    }
+    if (obj instanceof Set) {
+      const newSet = new Set();
+      for (const item of obj) {
+        newSet.add(Objector.deepClone(item));
+      }
+      return newSet as unknown as T;
     }
 
     // Handle arrays
@@ -58,6 +78,13 @@ class Objector {
     }
     */
 
+    // Symbol keys
+    Object.getOwnPropertySymbols(obj).forEach((sym) => {
+      if (Object.prototype.propertyIsEnumerable.call(obj, sym)) {
+        clonedObj[sym] = Objector.deepClone(obj[sym], memo);
+      }
+    });
+
     return clonedObj;
   }
 
@@ -82,10 +109,10 @@ class Objector {
    * Objector.extender(target, source);
    * // target is now { a: 1, b: { nested: 2 } }
    */
-  public static extender<T extends object, U extends object>(
+  public static extender<T extends object, U extends object[]>(
     target: T,
-    ...sources: U[]
-  ): T & U {
+    ...sources: U
+  ): MergeAll<[T, ...U]> {
     if (target == null) {
       throw new TypeError('Cannot convert undefined or null to object');
     }
@@ -112,7 +139,7 @@ class Objector {
       }
     }
 
-    return to as T & U;
+    return to as MergeAll<[T, ...U]>;
   }
 }
 

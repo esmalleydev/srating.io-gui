@@ -1,3 +1,5 @@
+// npx jest test
+/* eslint-disable prefer-regex-literals */
 /* eslint-disable no-self-compare */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -56,7 +58,7 @@ describe('Object.deepClone', () => {
   });
 
   it('should clone Map objects', () => {
-    const map = new Map([['a', 1], ['b', { c: 2 }]]);
+    const map = new Map<unknown, unknown>([['a', 1], ['b', { c: 2 }]]);
     const cloned = Objector.deepClone(map);
     expect(cloned).toEqual(map);
     expect(cloned).not.toBe(map);
@@ -85,7 +87,7 @@ describe('Object.deepClone', () => {
   });
 
   it('should not clone non-enumerable properties', () => {
-    const obj = {};
+    const obj: Record<string, unknown> = {};
     Object.defineProperty(obj, 'hidden', {
       value: 'secret',
       enumerable: false,

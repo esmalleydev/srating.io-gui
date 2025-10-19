@@ -121,6 +121,12 @@ console.log(scores);
 ```
 
 
+## Unit tests
+In the project root run:
+`npx jest test`
+Tests go in the `tests` folder and should have the same folder structure of the file they are testing
+
+
 ### Tips
 May need to clear out .next and node_modules folder before rebuilding
 `rm -r node_modules`
