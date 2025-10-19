@@ -9,14 +9,12 @@ class CBB {
    * @return {number}
    */
   public static getCurrentSeason(): number {
-    return 2025;
+    return 2026;
   }
 
   /**
-   * Instead of wasting time with a query and local storage etc
-   * Just hardcode this...
-   * Only do the first few seasons people will actually look at
-   * @todo When I have more time, add it to the site load and store in localStorage
+   * Get the number of D1 teams
+   * todo deprecate, use the one in Organization
    * @param {number} season
    * @return {number}
    */
@@ -33,19 +31,6 @@ class CBB {
     }
 
     return 1;
-  }
-
-  /**
-   * todo do no hardcode this
-   * @param season
-   * @returns {number}
-   */
-  public static getNumberOfD1Players(season: number): number {
-    if (+season === 2025) {
-      return 5919;
-    }
-
-    return 6000;
   }
 }
 

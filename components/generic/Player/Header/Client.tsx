@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { Player, PlayerTeamSeasons, Team } from '@/types/general';
+import { Player, PlayerTeamSeasons, Team, Teams } from '@/types/general';
 import { Skeleton } from '@mui/material';
 import { setLoading } from '@/redux/features/display-slice';
 import Typography from '@/components/ux/text/Typography';
@@ -90,6 +90,7 @@ const Client = (
   const player: Player = useAppSelector((state) => state.playerReducer.player);
   const team: Team | null = useAppSelector((state) => state.playerReducer.team);
   const player_team_seasons: PlayerTeamSeasons = useAppSelector((state) => state.playerReducer.player_team_seasons);
+  const teams: Teams = useAppSelector((state) => state.playerReducer.teams);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
 
@@ -165,9 +166,12 @@ const Client = (
   };
 
   const seasonOptions = Object.values(player_team_seasons).sort((a, b) => b.season - a.season).map((row) => {
+    const team = teams[row.team_id] || null;
+    const tHelper = new HelperTeam({ team });
     return {
       value: row.season.toString(),
       label: `${row.season - 1} - ${row.season}`,
+      sublabel: tHelper.getName(),
     };
   });
 

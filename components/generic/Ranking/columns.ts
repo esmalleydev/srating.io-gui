@@ -30,7 +30,7 @@ export const getViewableColumns = (
         return ['rank', 'name', 'team_name', 'rank_delta_combo', 'elo', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
       }
       if (view === 'conference') {
-        return ['rank', 'name', 'rank_delta_combo', 'adjusted_efficiency_rating', 'elo', 'elo_sos', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'nonconfwins'];
+        return ['rank', 'name', 'rank_delta_combo', 'elo', 'adjusted_efficiency_rating', 'elo_sos', 'opponent_efficiency_rating', 'offensive_rating', 'defensive_rating', 'nonconfwins'];
       }
       if (view === 'transfer') {
         return ['rank', 'name', 'team_name', 'rank_delta_combo', 'committed_team_name', 'elo', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'player_efficiency_rating', 'minutes_per_game', 'points_per_game', 'usage_percentage', 'true_shooting_percentage'];
