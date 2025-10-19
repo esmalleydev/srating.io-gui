@@ -20,7 +20,6 @@ import Paper from '@mui/material/Paper';
 import { visuallyHidden } from '@mui/utils';
 
 import CheckIcon from '@mui/icons-material/Check';
-import { getViewableColumns } from '../columns';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import RankSpan from '../../RankSpan';
 import { getRows } from '../DataHandler';
@@ -115,7 +114,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const filteredRows = useAppSelector((state) => state.rankingReducer.filteredRows);
   const columnView = useAppSelector((state) => state.rankingReducer.columnView);
   const customColumns = useAppSelector((state) => state.rankingReducer.customColumns);
-  const tableColumns = getViewableColumns({ organization_id, view, columnView, customColumns, positions });
+  const tableColumns = TableColumns.getViewableColumns({ organization_id, view, columnView, customColumns, positions });
   const confChipsLength = getConferenceChips().length;
   const currentPath = Organization.getPath({ organizations, organization_id });
   const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
@@ -126,7 +125,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   //   console.timeEnd('Ranking.Contents.Client')
   // })
 
-
+  // console.log(allRows)
 
   const scrollerRef = React.useCallback(
     (element) => {

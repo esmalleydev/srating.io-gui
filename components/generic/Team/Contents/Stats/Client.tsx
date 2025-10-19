@@ -41,14 +41,14 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ organization_id, division_id, season, teamStats, rosterStats }) => {
+const Client = ({ organization_id, division_id, season, teamStats, rosterStats, player_team_seasons }) => {
   const searchParams = useSearchParams();
   const subView = searchParams?.get('subview') || 'team';
 
   return (
     <Contents>
       {subView === 'team' ? <Team organization_id = {organization_id} division_id = {division_id} season = {season} teamStats = {teamStats} /> : ''}
-      {subView === 'player' ? <Roster organization_id = {organization_id} rosterStats = {rosterStats} /> : ''}
+      {subView === 'player' ? <Roster organization_id = {organization_id} rosterStats = {rosterStats} player_team_seasons = {player_team_seasons} /> : ''}
     </Contents>
   );
 };

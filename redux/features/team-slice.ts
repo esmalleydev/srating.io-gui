@@ -6,8 +6,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 type InitialState = {
   view: string,
   subview: string | null,
-  team: Team | object,
-  team_season_conference: TeamSeasonConference | object,
+  team: Team,
+  team_season_conference: TeamSeasonConference,
   schedulePredictions: object,
   schedulePredictionsLoading: boolean,
   scheduleStats: object,
@@ -30,8 +30,8 @@ type ActionPayload<K extends keyof InitialState> = {
 const initialState: InitialState = {
   view: 'schedule',
   subview: null,
-  team: {},
-  team_season_conference: {},
+  team: {} as Team,
+  team_season_conference: {} as TeamSeasonConference,
   schedulePredictions: {},
   schedulePredictionsLoading: true,
   scheduleStats: {},

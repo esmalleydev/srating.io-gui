@@ -13,11 +13,15 @@ import TableColumns from '@/components/helpers/TableColumns';
 import Navigation from '@/components/helpers/Navigation';
 import Text from '@/components/utils/Text';
 import { Player, Players } from '@/types/general';
-import { getViewableColumns } from '@/components/generic/Ranking/columns';
 import Style from '@/components/utils/Style';
+import Objector from '@/components/utils/Objector';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
+import { useTheme } from '@/components/hooks/useTheme';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 
-const Roster = ({ organization_id, rosterStats }) => {
+const Roster = ({ organization_id, rosterStats, player_team_seasons }) => {
+  const theme = useTheme();
   const navigation = new Navigation();
 
   const [view, setView] = useState<string>('composite');
@@ -25,6 +29,21 @@ const Roster = ({ organization_id, rosterStats }) => {
   const { players, player_statistic_rankings }: { players: Players; player_statistic_rankings: CBBPlayerStatisticRankings | CFBPlayerStatisticRankings} = rosterStats;
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
+  const team_season_conference = useAppSelector((state) => state.teamReducer.team_season_conference);
+
+  const lastSeason = +('season' in team_season_conference ? team_season_conference.season : 0) - 1;
+
+  const player_id_x_is_transfer = {};
+
+  for (const player_team_season_id in player_team_seasons) {
+    const row = player_team_seasons[player_team_season_id];
+
+    if (+row.season !== lastSeason) {
+      continue;
+    }
+
+    player_id_x_is_transfer[row.player_id] = (row.team_id !== team_season_conference.team_id);
+  }
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem(`${path}.TEAM.ROSTER.VIEW`);
@@ -42,21 +61,18 @@ const Roster = ({ organization_id, rosterStats }) => {
     if (position !== 'all') {
       columnView = position;
     }
-    let viewableColumns = getViewableColumns({ organization_id, view: 'player', columnView, customColumns: [], positions: [position] });
-
-    // todo should move this into getViewableColumns probably and just have a diff view of "roster" ?
-    viewableColumns = viewableColumns.filter((column) => {
-      if (column === 'team_name' || column === 'rank_delta_combo') {
-        return false;
-      }
-
-      return true;
-    });
-
-    return viewableColumns;
+    return TableColumns.getViewableColumns({ organization_id, view: 'roster', columnView, customColumns: [], positions: [position] });
   };
 
-  const columns = TableColumns.getColumns({ organization_id, view: 'player' });
+  const columns = Objector.extender(TableColumns.getColumns({ organization_id, view: 'player' }), TableColumns.getColumns({ organization_id, view: 'roster' }));
+
+  const checkIconClass = Style.getStyleClassName({
+    color: theme.secondary.dark,
+    fontSize: '16px',
+    display: 'flex',
+  });
+
+  const transferIcon = <Tooltip text = {'Player is a transfer'}><SyncAltIcon className={checkIconClass} /></Tooltip>;
 
   type groupedPosition = {
     [key:string]: (CBBPlayerStatisticRanking | CFBPlayerStatisticRanking | Player)[];
@@ -64,7 +80,7 @@ const Roster = ({ organization_id, rosterStats }) => {
   const grouped_position_x_playerRows: groupedPosition = {};
 
   for (const player_statistic_ranking_id in player_statistic_rankings) {
-    const row: (CBBPlayerStatisticRanking | CFBPlayerStatisticRanking) & { name?: string } = player_statistic_rankings[player_statistic_ranking_id];
+    const row: (CBBPlayerStatisticRanking | CFBPlayerStatisticRanking) & { name?: string; is_transfer?: string | React.JSX.Element; } = player_statistic_rankings[player_statistic_ranking_id];
 
     if (!(row.player_id in players)) {
       continue;
@@ -99,7 +115,10 @@ const Roster = ({ organization_id, rosterStats }) => {
       grouped_position_x_playerRows[grouped_position] = [];
     }
 
+    const isTransfer = (player_id_x_is_transfer[row.player_id]);
+
     row.name = `${player.first_name.charAt(0)}. ${player.last_name}`;
+    row.is_transfer = isTransfer ? transferIcon : '-';
 
     grouped_position_x_playerRows[grouped_position].push(row);
   }
@@ -107,8 +126,10 @@ const Roster = ({ organization_id, rosterStats }) => {
   if (!Object.keys(grouped_position_x_playerRows).length && players && Object.keys(players).length) {
     grouped_position_x_playerRows.all = [];
     for (const player_id in players) {
-      const player: Player & { name?: string } = players[player_id];
+      const isTransfer = (player_id_x_is_transfer[player_id]);
+      const player: Player & { name?: string; is_transfer?: string | React.JSX.Element } = players[player_id];
       player.name = `${player.first_name.charAt(0)}. ${player.last_name}`;
+      player.is_transfer = isTransfer ? transferIcon : '-';
       grouped_position_x_playerRows.all.push(player);
     }
   }

@@ -12,7 +12,6 @@ import { setDataKey } from '@/redux/features/ranking-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import AdditionalOptions from './AdditionalOptions';
 import Search from './Search';
-import { getViewableColumns } from './columns';
 import LastUpdated from './LastUpdated';
 import Organization from '@/components/helpers/Organization';
 import ColumnChipPicker from './ColumnChipPicker';
@@ -23,6 +22,7 @@ import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import PositionPicker from './PositionPicker';
+import TableColumns from '@/components/helpers/TableColumns';
 
 
 const Base = (
@@ -43,7 +43,7 @@ const Base = (
 
   const [legendOpen, setLegendOpen] = useState(false);
 
-  const columns = getViewableColumns({ organization_id, view, columnView, customColumns, positions });
+  const columns = TableColumns.getViewableColumns({ organization_id, view, columnView, customColumns, positions });
 
   let seasons = (
     organization_id in organization_id_x_division_id_x_ranking_seasons &&

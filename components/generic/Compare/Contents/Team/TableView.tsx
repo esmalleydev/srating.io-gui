@@ -12,7 +12,6 @@ import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import Objector from '@/components/utils/Objector';
-import { getViewableColumns } from '@/components/generic/Ranking/columns';
 import { getAvailableChips } from '@/components/generic/Ranking/ColumnChipPicker';
 import Text from '@/components/utils/Text';
 import { useAppSelector } from '@/redux/hooks';
@@ -32,7 +31,7 @@ const TableView = ({ statistic_rankings }) => {
   }
 
   const [view, setView] = useState<string>('composite');
-  const columns = getViewableColumns({ organization_id, view: 'team', columnView: view, customColumns: [], positions: [] });
+  const columns = TableColumns.getViewableColumns({ organization_id, view: 'team', columnView: view, customColumns: [], positions: [] });
 
   for (let i = columns.length - 1; i >= 0; i--) {
     if (columns[i] === 'rank_delta_combo') {

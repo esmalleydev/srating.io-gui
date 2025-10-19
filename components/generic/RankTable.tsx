@@ -15,6 +15,7 @@ import Style from '../utils/Style';
 import Paper from '../ux/container/Paper';
 import { TableColumnsType } from '../helpers/TableColumns';
 import Tooltip from '../ux/hover/Tooltip';
+import Objector from '../utils/Objector';
 
 
 type defaultSortOrderType = 'asc' | 'desc';
@@ -142,7 +143,7 @@ const RankTable = (
 
     for (let i = 0; i < displayColumns.length; i++) {
       const headCell = columns[displayColumns[i]];
-      const cellStyle = { ...tdStyle };
+      const cellStyle = Objector.extender({}, tdStyle, headCell.style || {});
 
       let tdWidth: number | null = null;
       const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
@@ -298,7 +299,7 @@ const RankTable = (
 
 
                 return (
-                  <Tooltip key={headCell.id} position = 'top' text={headCell.tooltip}>
+                  <Tooltip key={headCell.id} position = 'top' text={headCell.getTooltip ? headCell.getTooltip() : headCell.tooltip}>
                     <TableCell
                       sx = {tdStyle}
                       key={headCell.id}
