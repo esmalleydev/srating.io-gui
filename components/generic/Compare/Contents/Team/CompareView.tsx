@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import Typography from '@mui/material/Typography';
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { getSections } from '@/components/generic/Game/Contents/Matchup/Client';
 import TableColumns from '@/components/helpers/TableColumns';
 import Objector from '@/components/utils/Objector';
+import Typography from '@/components/ux/text/Typography';
 
 
 // todo for the conf recond compare, show their rank in the conference, not by total wins
@@ -87,7 +87,7 @@ const CompareView = ({ statistic_rankings }) => {
         });
         return (
           <React.Fragment key = {section.name}>
-            <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'body1'>{section.name}</Typography>
+            <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'body1'>{section.name}</Typography>
             <CompareStatistic max = {numberOfTeams} paper = {true} rows = {rows} />
           </React.Fragment>
         );

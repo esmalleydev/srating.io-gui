@@ -11,8 +11,6 @@ import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import AdditionalOptions from './AdditionalOptions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import CFB from '@/components/helpers/CFB';
-import CBB from '@/components/helpers/CBB';
 import { setDataKey } from '@/redux/features/team-slice';
 
 
@@ -23,11 +21,7 @@ const StatsGraph = (
   { organization_id: string, division_id: string, season: number, statistic_rankings: object, games: object, conference_statistic_rankings: object, league_statistic_rankings: object, boxscores: object },
 ) => {
   const getMax = () => {
-    if (Organization.isCFB()) {
-      return CFB.getNumberOfTeams({ division_id, season });
-    }
-
-    return CBB.getNumberOfD1Teams(season);
+    return Organization.getNumberOfTeams({ organization_id, division_id, season });
   };
 
   let standardColumns = [

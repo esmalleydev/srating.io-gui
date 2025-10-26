@@ -1,7 +1,8 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
+
 
 export async function refresh(tag: string) {
-  revalidateTag(tag);
+  updateTag(tag);
 }

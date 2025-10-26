@@ -1,4 +1,4 @@
-import Objector from '@/components/utils/Objector';
+import State from '@/components/helpers/State';
 import { Team, TeamSeasonConference } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -22,12 +22,30 @@ type InitialState = {
   trendsColumn: string | null,
 };
 
+type InitialStateKeys = keyof InitialState;
+
 type ActionPayload<K extends keyof InitialState> = {
   key: K;
   value: InitialState[K];
 };
 
-const initialState: InitialState = {
+
+const stateController = new State<InitialState>({
+  type: 'team',
+});
+
+stateController.set_url_param_type_x_keys({
+  string: [
+    'view',
+    'subview',
+    // 'season',
+    'trendsColumn',
+  ],
+  array: [],
+  boolean: [],
+});
+
+stateController.setInitialState({
   view: 'schedule',
   subview: null,
   team: {} as Team,
@@ -44,52 +62,21 @@ const initialState: InitialState = {
   loadingView: true,
   trendsBoxscoreLine: false,
   trendsColumn: null,
-};
+});
 
-const defaultState = Object.freeze(Objector.deepClone(initialState));
 
-const updateStateFromUrlParams = (state: InitialState) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const urlParams = new URLSearchParams(window.location.search);
-  const view = urlParams.get('view');
-  const subview = urlParams.get('subview');
-  const trendsColumn = urlParams.get('trendsColumn');
-
-  // we only want to run this if on first load, if the pathname is relevant
-  if (!window.location.pathname.includes('team')) {
-    return;
-  }
-
-  // Update state if URL parameters are present
-  if (view !== null) {
-    state.view = view;
-  }
-  if (subview !== null) {
-    state.subview = subview;
-  }
-  if (trendsColumn !== null) {
-    state.trendsColumn = trendsColumn;
-  }
-};
 
 export const team = createSlice({
   name: 'team',
-  initialState,
+  initialState: stateController.getInitialState(),
   reducers: {
-    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
-      state[action.payload.key] = action.payload.value;
+    reset: (state: InitialState) => stateController.reset(state),
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      stateController.resetDataKey(state, action.payload);
     },
-    reset: (state) => {
-      for (const key in defaultState) {
-        // we do not have to reset this one, it is controlled by the contents changing
-        if (key !== 'loadingView') {
-          state[key] = defaultState[key];
-        }
-      }
-
-      updateStateFromUrlParams(state);
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.setDataKey(state, key, value);
     },
     updateVisibleScheduleDifferentials: (state, action: PayloadAction<string>) => {
       const index = state.visibleScheduleDifferentials.indexOf(action.payload);
@@ -112,4 +99,4 @@ export const {
 } = team.actions;
 export default team.reducer;
 
-updateStateFromUrlParams(initialState);
+stateController.updateStateFromUrlParams(stateController.getInitialState());

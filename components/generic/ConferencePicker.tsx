@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker, { optionType } from './OptionPicker';
 import { useEffect } from 'react';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
-import { setDataKey } from '@/redux/features/display-slice';
+import { updateDataKey } from '@/redux/features/display-slice';
 import { getStore } from '@/app/StoreProvider';
 
 const ConferencePicker = () => {
@@ -135,7 +135,8 @@ const ConferencePicker = () => {
 
 
   const handleClick = (value: string | null) => {
-    dispatch(setDataKey({ key: 'conferences', value }));
+    const v = value || [];
+    dispatch(updateDataKey({ key: 'conferences', value: v }));
   };
 
 

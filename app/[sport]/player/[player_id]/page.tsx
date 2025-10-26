@@ -37,6 +37,7 @@ export default async function Page({ params, searchParams }: Props) {
   const season = searchParameters?.season;
   const view = searchParameters?.view || 'stats';
   const subview = searchParameters?.subview;
+  const trendsSeasons = searchParameters?.trendsSeasons as string[] | undefined;
 
   const Surface = new Player({
     sport: parameters.sport,
@@ -48,7 +49,7 @@ export default async function Page({ params, searchParams }: Props) {
   };
 
   if (subview) {
-    args.subview = subview;
+    args.subview = subview as string;
   }
 
   if (season) {
@@ -57,6 +58,10 @@ export default async function Page({ params, searchParams }: Props) {
 
   if (division_id) {
     args.division_id = division_id;
+  }
+
+  if (trendsSeasons && trendsSeasons.length) {
+    args.trendsSeasons = trendsSeasons;
   }
 
   return Surface.getDecorate(args);

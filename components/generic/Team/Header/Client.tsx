@@ -11,9 +11,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Skeleton } from '@mui/material';
 import { setLoading } from '@/redux/features/display-slice';
-import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import CFB from '@/components/helpers/CFB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import { Coach, CoachStatisticRanking, Team } from '@/types/general';
@@ -107,16 +105,12 @@ const Client = (
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   const path = Organization.getPath({ organizations, organization_id });
-  let numberOfTeams = CBB.getNumberOfD1Teams(season);
-
-  if (organization_id === Organization.getCFBID()) {
-    numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
-  }
+  const numberOfTeams = Organization.getNumberOfTeams({ organization_id, division_id, season });
 
   const teamHelper = new HelperTeam({ team });
 
   const conferenceName = teamHelper.getConference(conferences);
-  const conferenceNumber = (organization_id === Organization.getCFBID() ? CFB.getNumberOfConferences({ division_id, season }) : 35);
+  const conferenceNumber = Organization.getNumberOfConferences({ organization_id, division_id, season });
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();

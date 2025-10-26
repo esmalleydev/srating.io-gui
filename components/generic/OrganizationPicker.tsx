@@ -26,7 +26,7 @@ import { reset } from '@/redux/features/compare-slice';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
-  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization) || {};
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const selected = useAppSelector((state) => state.organizationReducer.organization_id);
 
@@ -108,7 +108,7 @@ const OrganizationPicker = () => {
     });
   };
 
-  const title = organizations[selected].code;
+  const title = selected in organizations ? organizations[selected].code : 'Loading...';
 
   return (
     <div>

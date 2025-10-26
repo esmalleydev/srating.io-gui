@@ -17,13 +17,17 @@ import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import Navigation from '@/components/helpers/Navigation';
 
 const AdditionalOptions = () => {
+  const navigation = new Navigation();
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
 
   const dispatch = useAppDispatch();
   const trendsBoxscoreLine = useAppSelector((state) => state.playerReducer.trendsBoxscoreLine);
+  const trendsSeasons = useAppSelector((state) => state.playerReducer.trendsSeasons);
+  const player_team_seasons = useAppSelector((state) => state.playerReducer.player_team_seasons);
 
 
   const handleOpen = (event) => {
@@ -40,6 +44,12 @@ const AdditionalOptions = () => {
     handleClose();
   };
 
+  const handleTrendsSeasons = () => {
+    const newValue: number[] = trendsSeasons.length ? [] : Object.values(player_team_seasons).map((r) => r.season);
+    navigation.playerView({ trendsSeasons: newValue });
+    handleClose();
+  };
+
   const getMenuItems = () => {
     const menuItems: React.JSX.Element[] = [];
 
@@ -51,6 +61,14 @@ const AdditionalOptions = () => {
           {trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
         </MenuListIcon>
         <MenuListText primary='Show boxscore data' />
+      </MenuItem>,
+      <MenuItem key='show-all-seasons' onClick={() => {
+        handleTrendsSeasons();
+      }}>
+        <MenuListIcon>
+          {trendsSeasons.length ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
+        </MenuListIcon>
+        <MenuListText primary='Show all seasons' />
       </MenuItem>,
     );
 

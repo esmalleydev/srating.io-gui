@@ -1,7 +1,7 @@
 'use client';
 
 import { setLoading } from '@/redux/features/display-slice';
-import { reset as resetPlayer } from '@/redux/features/player-slice';
+import { InitialState, InitialStateKeys, resetDataKey as resetDataKeyPlayer, reset as resetPlayer, setDataKey as setDataKeyPlayer } from '@/redux/features/player-slice';
 import { reset as resetCoach } from '@/redux/features/coach-slice';
 import { reset as resetConference } from '@/redux/features/conference-slice';
 import { reset as resetTeam } from '@/redux/features/team-slice';
@@ -9,7 +9,7 @@ import { reset as resetGame } from '@/redux/features/games-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { AppDispatch } from '@/redux/store';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { TransitionStartFunction, useTransition } from 'react';
 
 // todo remove nextjs router :D
@@ -21,6 +21,7 @@ class Navigation {
     this.isPending = isPending;
     this.startTransition = startTransition;
     this.router = useRouter();
+    this.pathName = usePathname();
   }
 
   private dispatch: AppDispatch;
@@ -30,6 +31,8 @@ class Navigation {
   private startTransition: TransitionStartFunction;
 
   private router: AppRouterInstance;
+
+  private pathName: string;
 
   /**
    * Navigate to a player page,
@@ -45,6 +48,44 @@ class Navigation {
       }
     });
   }
+
+  /**
+   * Navigate to something on a player view. Must already be on player view
+   */
+  public playerView<K extends InitialStateKeys>(args: Pick<InitialState, K>, onRouter: null | undefined | (() => void) = null) {
+    if (!this.pathName.includes('player')) {
+      throw new Error('playerView only usable when already navigated to player');
+    }
+
+    for (const key in args) {
+      this.dispatch(setDataKeyPlayer({ key, value: args[key] }));
+    }
+
+
+    // these MUST always be set this way if the view changes
+    if ('view' in args) {
+      this.dispatch(setDataKeyPlayer({ key: 'subview', value: null }));
+      this.dispatch(resetDataKeyPlayer('trendsSeasons'));
+      this.dispatch(resetDataKeyPlayer('trendsBoxscoreLine'));
+      this.dispatch(resetDataKeyPlayer('trendsColumn'));
+    }
+
+
+    this.dispatch(setDataKeyPlayer({ key: 'loadingView', value: true }));
+
+    // player slice handles this now, but just refetch it here for stupid nextjs router
+    const current = new URLSearchParams(window.location.search);
+    const search = current.toString();
+    const query = search ? `?${search}` : '';
+
+    this.startTransition(() => {
+      this.router.replace(`${this.pathName}${query}`);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
 
   /**
    * Navigate to a coach page,

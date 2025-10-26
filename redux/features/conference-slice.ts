@@ -1,4 +1,4 @@
-import Objector from '@/components/utils/Objector';
+import State from '@/components/helpers/State';
 import { StatisticRankings as StatsCBB } from '@/types/cbb';
 import { StatisticRankings as StatsCFB } from '@/types/cfb';
 import { Elos, Teams, TeamSeasonConferences } from '@/types/general';
@@ -18,12 +18,27 @@ type InitialState = {
   loadingView: boolean,
 };
 
+type InitialStateKeys = keyof InitialState;
+
 type ActionPayload<K extends keyof InitialState> = {
   key: K;
   value: InitialState[K];
 };
 
-const initialState = {
+const stateController = new State<InitialState>({
+  type: 'conference',
+});
+
+stateController.set_url_param_type_x_keys({
+  string: [
+    'view',
+    'subview',
+  ],
+  array: [],
+  boolean: [],
+});
+
+stateController.setInitialState({
   view: 'standings',
   subview: null,
   scrollTop: 0,
@@ -35,62 +50,29 @@ const initialState = {
   predictions: {},
   predictionsLoading: true,
   loadingView: false,
-} as InitialState;
+});
 
-const defaultState = Object.freeze(Objector.deepClone(initialState));
-
-const updateStateFromUrlParams = (state: InitialState) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const urlParams = new URLSearchParams(window.location.search);
-  const view = urlParams.get('view');
-  const subview = urlParams.get('subview');
-
-  // we only want to run this if on first load, if the pathname is relevant
-  if (!window.location.pathname.includes('conference')) {
-    return;
-  }
-
-  // Update state if URL parameters are present
-  if (view !== null) {
-    state.view = view;
-  }
-  if (subview !== null) {
-    state.subview = subview;
-  }
-};
 
 export const conference = createSlice({
   name: 'conference',
-  initialState,
+  initialState: stateController.getInitialState(),
   reducers: {
+    reset: (state: InitialState) => stateController.reset(state),
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      stateController.resetDataKey(state, action.payload);
+    },
     setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
-      state[action.payload.key] = action.payload.value;
-    },
-    clear: (state) => {
-      for (const key in defaultState) {
-        state[key] = defaultState[key];
-      }
-    },
-    reset: (state) => {
-      for (const key in defaultState) {
-        // we do not have to reset this one, it is controlled by the contents changing
-        if (key !== 'loadingView') {
-          state[key] = defaultState[key];
-        }
-      }
-
-      updateStateFromUrlParams(state);
+      const { value, key } = action.payload;
+      stateController.setDataKey(state, key, value);
     },
   },
 });
 
 export const {
   setDataKey,
-  clear,
+  resetDataKey,
   reset,
 } = conference.actions;
 export default conference.reducer;
 
-updateStateFromUrlParams(initialState);
+stateController.updateStateFromUrlParams(stateController.getInitialState());

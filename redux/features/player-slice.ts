@@ -1,9 +1,9 @@
 
-import Objector from '@/components/utils/Objector';
+import State from '@/components/helpers/State';
 import { Player, PlayerTeamSeason, PlayerTeamSeasons, Team, Teams } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type InitialState = {
+export type InitialState = {
   view: string;
   subview: string | null;
   scrollTop: number;
@@ -16,79 +16,69 @@ type InitialState = {
   loadingView: boolean,
   trendsBoxscoreLine: boolean,
   trendsColumn: string | null,
+  trendsSeasons: number[],
 };
 
-type ActionPayload<K extends keyof InitialState> = {
+export type InitialStateKeys = keyof InitialState;
+
+type ActionPayload<K extends InitialStateKeys> = {
   key: K;
   value: InitialState[K];
 };
 
-const initialState = {
+const stateController = new State<InitialState>({
+  type: 'player',
+});
+
+stateController.set_url_param_type_x_keys({
+  string: [
+    'view',
+    'subview',
+    'season',
+    'trendsColumn',
+  ],
+  array: [
+    'trendsSeasons',
+  ],
+  boolean: [
+    'trendsBoxscoreLine',
+  ],
+});
+
+stateController.setInitialState({
   view: 'stats',
   subview: null,
   scrollTop: 0,
-  player: {},
+  player: {} as Player,
   player_team_season: null,
-  player_team_seasons: {},
+  player_team_seasons: {} as PlayerTeamSeasons,
   team: null,
-  teams: {},
+  teams: {} as Teams,
   season: null,
   loadingView: true,
   trendsBoxscoreLine: true,
   trendsColumn: null,
-} as InitialState;
-
-const defaultState = Object.freeze(Objector.deepClone(initialState));
-
-const updateStateFromUrlParams = (state: InitialState) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const urlParams = new URLSearchParams(window.location.search);
-  const view = urlParams.get('view');
-  const subview = urlParams.get('subview');
-  const trendsColumn = urlParams.get('trendsColumn');
-
-  // we only want to run this if on first load, if the pathname is relevant
-  if (!window.location.pathname.includes('player')) {
-    return;
-  }
-
-  // Update state if URL parameters are present
-  if (view !== null) {
-    state.view = view;
-  }
-  if (subview !== null) {
-    state.subview = subview;
-  }
-  if (trendsColumn !== null) {
-    state.trendsColumn = trendsColumn;
-  }
-};
+  trendsSeasons: [],
+});
 
 export const player = createSlice({
   name: 'player',
-  initialState,
+  initialState: stateController.getInitialState(),
   reducers: {
-    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
-      state[action.payload.key] = action.payload.value;
+    reset: (state: InitialState) => stateController.reset(state),
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      stateController.resetDataKey(state, action.payload);
     },
-    reset: (state) => {
-      for (const key in defaultState) {
-        // we do not have to reset this one, it is controlled by the contents changing
-        if (key !== 'loadingView') {
-          state[key] = defaultState[key];
-        }
-      }
-
-      updateStateFromUrlParams(state);
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.setDataKey(state, key, value);
     },
   },
 });
 
 export const {
-  setDataKey, reset,
+  setDataKey, resetDataKey, reset,
 } = player.actions;
 export default player.reducer;
 
-updateStateFromUrlParams(initialState);
+stateController.updateStateFromUrlParams(stateController.getInitialState());

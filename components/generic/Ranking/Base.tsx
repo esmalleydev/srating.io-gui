@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 // import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
-import { setLoading as setLoadingDisplay, setDataKey as setDisplayDataKey } from '@/redux/features/display-slice';
+import { setLoading as setLoadingDisplay, updateDataKey } from '@/redux/features/display-slice';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import AdditionalOptions from './AdditionalOptions';
@@ -63,7 +63,7 @@ const Base = (
       view === 'player' &&
       !positions.length
     ) {
-      dispatch(setDisplayDataKey({ key: 'positions', value: 'QB' }));
+      dispatch(updateDataKey({ key: 'positions', value: 'QB' }));
     }
     // console.timeEnd('Base')
   }, [view]);
@@ -89,7 +89,7 @@ const Base = (
   const positionChips: React.JSX.Element[] = [];
   if (Organization.getCFBID() !== organization_id) {
     for (let i = 0; i < positions.length; i++) {
-      positionChips.push(<Chip key = {positions[i]} value = {positions[i]} style = {{ margin: '5px' }} title={positions[i]} onDelete={() => { dispatch(setDisplayDataKey({ key: 'positions', value: positions[i] })); }} />);
+      positionChips.push(<Chip key = {positions[i]} value = {positions[i]} style = {{ margin: '5px' }} title={positions[i]} onDelete={() => { dispatch(updateDataKey({ key: 'positions', value: positions[i] })); }} />);
     }
   }
 
@@ -98,7 +98,7 @@ const Base = (
       localStorage.removeItem(`${organization_id}.RANKING.COLUMNS.${view}`);
       dispatch(setDataKey({ key: 'data', value: null }));
       dispatch(setDataKey({ key: 'customColumns', value: ['rank', 'name'] }));
-      dispatch(setDisplayDataKey({ key: 'positions', value: null }));
+      dispatch(updateDataKey({ key: 'positions', value: [] }));
       dispatch(setDataKey({ key: 'order', value: 'asc' }));
       dispatch(setDataKey({ key: 'orderBy', value: 'rank' }));
       dispatch(setDataKey({ key: 'tableScrollTop', value: 0 }));

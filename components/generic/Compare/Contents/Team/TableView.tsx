@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 
-import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import CFB from '@/components/helpers/CFB';
 import RankTable from '@/components/generic/RankTable';
 import HelperTeam from '@/components/helpers/Team';
 import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
@@ -24,11 +22,7 @@ const TableView = ({ statistic_rankings }) => {
   const season = useAppSelector((state) => state.compareReducer.season);
   const teams = useAppSelector((state) => state.compareReducer.teams);
   const sessionStorageKey = `${organization_id}.COMPARE.TEAM`;
-  let numberOfTeams = CBB.getNumberOfD1Teams(season);
-
-  if (organization_id === Organization.getCFBID()) {
-    numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
-  }
+  const numberOfTeams = Organization.getNumberOfTeams({ organization_id, division_id, season });
 
   const [view, setView] = useState<string>('composite');
   const columns = TableColumns.getViewableColumns({ organization_id, view: 'team', columnView: view, customColumns: [], positions: [] });

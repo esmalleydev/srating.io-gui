@@ -2,9 +2,8 @@
 
 import React, { useEffect } from 'react';
 import { useAppDispatch } from '@/redux/hooks';
-import { reset, setDataKey } from '@/redux/features/player-slice';
+import { setDataKey } from '@/redux/features/player-slice';
 import { Player, PlayerTeamSeason, PlayerTeamSeasons, Team, Teams } from '@/types/general';
-import { getStore } from '@/app/StoreProvider';
 
 const ReduxWrapper = (
   {
@@ -14,11 +13,6 @@ const ReduxWrapper = (
 ) => {
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    return () => {
-      dispatch(reset());
-    };
-  }, []);
 
   useEffect(() => {
     // this should not be needed, the player navigation will reset back to the default view

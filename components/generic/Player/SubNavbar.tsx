@@ -1,15 +1,14 @@
 'use client';
 
-import { RefObject, useLayoutEffect, useRef, useTransition } from 'react';
+import { RefObject, useLayoutEffect, useRef } from 'react';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { usePathname, useRouter } from 'next/navigation';
+import { useAppSelector } from '@/redux/hooks';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Tab from '@/components/ux/buttons/Tab';
-import { setDataKey } from '@/redux/features/player-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import Navigation from '@/components/helpers/Navigation';
 
 const getSubNavHeaderHeight = () => {
   const view = useAppSelector((state) => state.playerReducer.view);
@@ -22,15 +21,12 @@ const getSubNavHeaderHeight = () => {
 export { getSubNavHeaderHeight };
 
 const SubNavBar = ({ view }) => {
+  const navigation = new Navigation();
   const theme = useTheme();
-  const router = useRouter();
-  const pathName = usePathname();
-  const [isPending, startTransition] = useTransition();
   const { width } = useWindowDimensions() as Dimensions;
 
   const scrollRefTab = useRef<HTMLDivElement>(null);
 
-  const dispatch = useAppDispatch();
 
   const season = useAppSelector((state) => state.playerReducer.season);
   const player_team_seasons = useAppSelector((state) => state.playerReducer.player_team_seasons);
@@ -42,7 +38,7 @@ const SubNavBar = ({ view }) => {
     scrollRefTab.current?.scrollIntoView({ inline: 'center', behavior: 'smooth' });
   };
 
-  console.log('todo add scroll to all subnavbars / normalize component')
+  // console.log('todo add scroll to all subnavbars / normalize component')
 
   useLayoutEffect(() => {
     scrollToElement();
@@ -86,23 +82,7 @@ const SubNavBar = ({ view }) => {
       const newSubview = value;
 
       if (newSubview !== subview) {
-        dispatch(setDataKey({ key: 'subview', value: newSubview }));
-        dispatch(setDataKey({ key: 'loadingView', value: true }));
-
-        const current = new URLSearchParams(window.location.search);
-        current.set('subview', newSubview);
-
-        window.history.replaceState(null, '', `?${current.toString()}`);
-
-        // use pushState if we want to add to back button history
-        // window.history.pushState(null, '', `?${current.toString()}`);
-
-        const search = current.toString();
-        const query = search ? `?${search}` : '';
-
-        startTransition(() => {
-          router.replace(`${pathName}${query}`);
-        });
+        navigation.playerView({ subview: newSubview });
       }
     };
 
@@ -139,7 +119,7 @@ const SubNavBar = ({ view }) => {
   }
 
   return (
-    <div style = {subHeaderStyle}>
+    <div className={Style.getStyleClassName(subHeaderStyle)}>
       <div style = {{ minWidth: minSubBarWidth, display: 'flex' }}>
         {leftButtons}
       </div>

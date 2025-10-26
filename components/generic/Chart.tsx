@@ -20,8 +20,26 @@ import RankSpan from './RankSpan';
  *
  */
 const Chart = (
-  { rows, lines, referenceLines, YAxisProps, XAxisDataKey, YAxisLabel, rankMax = 0 }:
-  { rows: object[], lines: LineProps[], referenceLines?: ReferenceLineProps[], YAxisProps: YAxisProps, XAxisDataKey: string, YAxisLabel: string, rankMax?: number },
+  {
+    rows,
+    lines,
+    referenceLines,
+    YAxisProps,
+    XAxisDataKey,
+    YAxisLabel,
+    rankMax = 0,
+    tooltipLabel,
+  }:
+  {
+    rows: object[],
+    lines: LineProps[],
+    referenceLines?: ReferenceLineProps[],
+    YAxisProps: YAxisProps,
+    XAxisDataKey: string,
+    YAxisLabel: string,
+    rankMax?: number,
+    tooltipLabel?: string,
+  },
 ) => {
   const theme = useTheme();
 
@@ -69,7 +87,7 @@ const Chart = (
     if (active && payload && payload.length) {
       return (
         <Paper elevation={3} style = {{ padding: '5px 10px' }}>
-          <div><Typography style = {{ color: theme.text.secondary }} type='subtitle2'>{payload[0].payload?.[XAxisDataKey] || label}</Typography></div>
+          <div><Typography style = {{ color: theme.text.secondary }} type='subtitle2'>{payload[0].payload?.[tooltipLabel || XAxisDataKey] || label}</Typography></div>
           {
             payload.map((entry, index) => {
               return (

@@ -73,11 +73,7 @@ const Client = ({ organization_id, division_id, coach_statistic_rankings, season
   const statistic_rankings = useAppSelector((state) => state.coachReducer.statistic_rankings);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
-  let numberOfTeams = CBB.getNumberOfD1Teams(season);
-
-  if (organization_id === Organization.getCFBID()) {
-    numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
-  }
+  const numberOfTeams = Organization.getNumberOfTeams({ organization_id, division_id, season });
 
   const season_x_team_id = {};
 

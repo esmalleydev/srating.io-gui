@@ -1,6 +1,6 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Objector from '@/components/utils/Objector';
+import State from '@/components/helpers/State';
 
 const rankLocalStorageKey = 'DISPLAY.RANK';
 const picksSortLocalStorageKey = 'DISPLAY.PICKS.SORT';
@@ -44,12 +44,30 @@ type InitialState = {
   // season: number,
 };
 
+type InitialStateKeys = keyof InitialState;
+
 type ActionPayload<K extends keyof InitialState> = {
   key: K;
-  value: InitialState[K] | null;
+  value: InitialState[K];
 };
 
-const key_x_local_storage_key = {
+const stateController = new State<InitialState>({
+  type: 'display',
+});
+
+stateController.set_checkType(false);
+
+stateController.set_url_param_type_x_keys({
+  string: [
+  ],
+  array: [
+    'conferences',
+    'positions',
+  ],
+  boolean: [],
+});
+
+stateController.set_key_x_local_storage_key({
   rank: rankLocalStorageKey,
   picksSort: picksSortLocalStorageKey,
   conferences: conferencesLocalStorageKey,
@@ -58,9 +76,9 @@ const key_x_local_storage_key = {
   cardsView: cardsViewLocalStorageKey,
   gamesFilter: gamesFilterLocalStorageKey,
   hideOdds: oddsLocalStorageKey,
-};
+});
 
-const defaultState: InitialState = Object.freeze({
+stateController.setDefaultState(Object.freeze({
   rank: 'rank',
   picksSort: 'start_time',
   conferences: [],
@@ -70,9 +88,10 @@ const defaultState: InitialState = Object.freeze({
   gamesFilter: 'all',
   hideOdds: 0,
   loading: false,
-});
+}));
 
-const initialState = {
+
+stateController.setInitialState({
   rank: rankLocalStorage || 'rank',
   picksSort: picksSortLocalStorage || 'start_time',
   conferences: (conferencesLocalStorage && JSON.parse(conferencesLocalStorage)) || [],
@@ -83,120 +102,24 @@ const initialState = {
   hideOdds: +(oddsLocalStorage || 0),
   loading: false,
   // season: new HelperCBB().getCurrentSeason(),
-} as InitialState;
-
-const updateStateFromUrlParams = (state: InitialState) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const urlParams = new URLSearchParams(window.location.search);
-
-  const conferences = urlParams.getAll('conferences');
-  const positions = urlParams.getAll('positions');
-
-
-  if (conferences !== null && conferences.length) {
-    state.conferences = conferences;
-    setLocalStorage('conferences', conferences);
-  }
-
-  if (positions !== null && positions.length) {
-    state.positions = positions;
-    setLocalStorage('positions', positions);
-  }
-};
-
-const setLocalStorage = (key, value) => {
-  if (typeof window !== 'undefined' && key in key_x_local_storage_key) {
-    let localStoreValue: string;
-    if (typeof value === 'object' && value !== null) {
-      localStoreValue = JSON.stringify(value);
-    } else if (value === null) {
-      localStorage.removeItem(key_x_local_storage_key[key]);
-      return;
-    } else {
-      localStoreValue = String(value);
-    }
-
-    localStorage.setItem(key_x_local_storage_key[key], localStoreValue);
-  }
-};
+});
 
 
 export const display = createSlice({
   name: 'display',
-  initialState,
+  initialState: stateController.getInitialState(),
   reducers: {
-    setDataKey: <K extends keyof InitialState & keyof typeof key_x_local_storage_key>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+    updateDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       const { value, key } = action.payload;
-
-      if (['conferences', 'positions', 'statuses'].includes(key)) {
-        let strate = state[key] as string[];
-        const v = value as string | string[];
-        if (typeof v === 'object' && v !== null) {
-          strate = Objector.deepClone(v);
-        } else if (value !== null) {
-          const index = strate.indexOf(v);
-          if (index !== -1) {
-            strate = [
-              ...strate.slice(0, index),
-              ...strate.slice(index + 1),
-            ];
-          } else {
-            strate = [...strate, v];
-          }
-        } else {
-          strate = [];
-        }
-
-        // Order here is kinda important, set url before the state
-        const current = new URLSearchParams(window.location.search);
-        if (strate !== null && strate.length) {
-          current.delete(key);
-          for (let i = 0; i < strate.length; i++) {
-            current.append(key, strate[i]);
-          }
-        } else {
-          current.delete(key);
-        }
-
-        window.history.replaceState(null, '', `?${current.toString()}`);
-
-        // use pushState if we want to add to back button history
-        // window.history.pushState(null, '', `?${current.toString()}`);
-
-        state[key] = strate as InitialState[K];
-      } else {
-        // Can only pass null to one of the array ones
-        if (value === null) {
-          throw new Error('Can not pass null');
-        }
-        state[key] = value;
-      }
-
-      setLocalStorage(key, state[key]);
+      stateController.updateDataKey(state, key, value);
     },
-    clear: (state) => {
-      for (const key in defaultState) {
-        state[key] = defaultState[key];
-        setLocalStorage(key, state[key]);
-      }
+    reset: (state: InitialState) => stateController.reset(state),
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      stateController.resetDataKey(state, action.payload);
     },
-    reset: (state) => {
-      for (const key in defaultState) {
-        // we do not have to reset this one, it is controlled by the contents changing
-        if (key !== 'loadingView') {
-          state[key] = defaultState[key];
-          setLocalStorage(key, state[key]);
-        }
-      }
-
-      updateStateFromUrlParams(state);
-    },
-    resetDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<K>) => {
-      const key = action.payload;
-      state[key] = defaultState[key];
-      setLocalStorage(key, state[key]);
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.setDataKey(state, key, value);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       // if you are wondering what sets this to false, check the handlers/MutationHandler
@@ -206,8 +129,8 @@ export const display = createSlice({
 });
 
 export const {
-  setDataKey, setLoading, clear, reset, resetDataKey,
+  setLoading, reset, resetDataKey, updateDataKey, setDataKey,
 } = display.actions;
 export default display.reducer;
 
-updateStateFromUrlParams(initialState);
+stateController.updateStateFromUrlParams(stateController.getInitialState());

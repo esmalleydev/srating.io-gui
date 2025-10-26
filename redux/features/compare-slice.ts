@@ -1,4 +1,4 @@
-import Objector from '@/components/utils/Objector';
+import State from '@/components/helpers/State';
 import { Teams } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -20,13 +20,31 @@ type InitialState = {
   trendsColumn: string | null,
 };
 
+type InitialStateKeys = keyof InitialState;
+
 type ActionPayload<K extends keyof InitialState> = {
   key: K;
   value: InitialState[K];
 };
 
+const stateController = new State<InitialState>({
+  type: 'compare',
+});
 
-const initialState = {
+stateController.set_url_param_type_x_keys({
+  string: [
+    'view',
+    'subview',
+    'home_team_id',
+    'away_team_id',
+  ],
+  array: [],
+  boolean: [
+    'neutral_site',
+  ],
+});
+
+stateController.setInitialState({
   teams: {},
   home_team_id: null,
   away_team_id: null,
@@ -42,68 +60,29 @@ const initialState = {
   predictionsLoading: true,
   loadingView: true,
   trendsColumn: null,
-} as InitialState;
+});
 
-const defaultState = Object.freeze(Objector.deepClone(initialState));
-
-const updateStateFromUrlParams = (state: InitialState) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const urlParams = new URLSearchParams(window.location.search);
-  const home_team_id = urlParams.get('home_team_id');
-  const away_team_id = urlParams.get('away_team_id');
-  const neutral_site = urlParams.get('neutral');
-  const view = urlParams.get('view');
-  const subview = urlParams.get('subview');
-
-  // we only want to run this if on first load, if the pathname is relevant
-  if (!window.location.pathname.includes('compare')) {
-    return;
-  }
-
-  // Update state if URL parameters are present
-  if (home_team_id !== null) {
-    state.home_team_id = home_team_id;
-  }
-  if (away_team_id !== null) {
-    state.away_team_id = away_team_id;
-  }
-  if (neutral_site !== null) {
-    state.neutral_site = (+neutral_site === 1);
-  }
-  if (view !== null) {
-    state.view = view;
-  }
-  if (subview !== null) {
-    state.subview = subview;
-  }
-};
 
 export const compare = createSlice({
   name: 'compare',
-  initialState,
+  initialState: stateController.getInitialState(),
   reducers: {
-    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
-      state[action.payload.key] = action.payload.value;
+    reset: (state: InitialState) => stateController.reset(state),
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      stateController.resetDataKey(state, action.payload);
     },
-    reset: (state) => {
-      for (const key in defaultState) {
-        // we do not have to reset this one, it is controlled by the contents changing
-        if (key !== 'loadingView') {
-          state[key] = defaultState[key];
-        }
-      }
-
-      updateStateFromUrlParams(state);
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.setDataKey(state, key, value);
     },
   },
 });
 
 export const {
   setDataKey,
+  resetDataKey,
   reset,
 } = compare.actions;
 export default compare.reducer;
 
-updateStateFromUrlParams(initialState);
+stateController.updateStateFromUrlParams(stateController.getInitialState());

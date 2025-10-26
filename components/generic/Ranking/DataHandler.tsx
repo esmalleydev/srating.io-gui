@@ -53,11 +53,11 @@ const formatCBBData = (args) => {
   // console.time('loop formatCBBData')
   for (const id in data) {
     // Fixes - TypeError: Cannot add property name, object is not extensible
-    // console.time('spread')
+    // console.time(`${id}: clone`)
     // const row = { ...data[id] };
     const row = Objector.deepClone(data[id]);
     // const row = Object.assign({}, data[id]);
-    // console.timeEnd('spread')
+    // console.timeEnd(`${id}: clone`)
 
     row.rank_delta_combo = `${row.rank_delta_one || '-'}/${row.rank_delta_seven || '-'}`;
 

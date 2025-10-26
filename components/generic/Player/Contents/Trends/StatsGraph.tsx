@@ -1,13 +1,11 @@
 'use client';
 
-import React from 'react';
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import moment from 'moment';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Chip from '@/components/ux/container/Chip';
-import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import AdditionalOptions from './AdditionalOptions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -16,8 +14,26 @@ import ColumnPicker from '@/components/generic/ColumnPicker';
 
 
 const StatsGraph = (
-  { organization_id, division_id, season, player_statistic_rankings, games, league_player_statistic_rankings, player_boxscores }:
-  { organization_id: string, division_id: string, season: number, player_statistic_rankings: object, games: object, league_player_statistic_rankings: object, player_boxscores: object },
+  {
+    organization_id,
+    division_id,
+    season,
+    player_statistic_rankings,
+    games,
+    league_player_statistic_rankings,
+    conference_player_statistic_rankings,
+    player_boxscores,
+  }:
+  {
+    organization_id: string,
+    division_id: string,
+    season: number,
+    player_statistic_rankings: object,
+    games: object,
+    league_player_statistic_rankings: object,
+    conference_player_statistic_rankings: object,
+    player_boxscores: object,
+  },
 ) => {
   let max = 0;
 
@@ -41,6 +57,7 @@ const StatsGraph = (
   const dispatch = useAppDispatch();
   const trendsBoxscoreLine = useAppSelector((state) => state.playerReducer.trendsBoxscoreLine);
   const trendsColumn = useAppSelector((state) => state.playerReducer.trendsColumn) || standardColumns[0];
+  const trendsSeasons = useAppSelector((state) => state.playerReducer.trendsSeasons);
 
   const allColumns = TableColumns.getColumns({ organization_id, view: 'player', graphable: true, disabled: false });
 
@@ -48,14 +65,6 @@ const StatsGraph = (
 
   const handleColumn = (value: string) => {
     dispatch(setDataKey({ key: 'trendsColumn', value }));
-
-    const current = new URLSearchParams(window.location.search);
-    current.set('trendsColumn', value);
-    window.history.replaceState(null, '', `?${current.toString()}`);
-
-    // use pushState if we want to add to back button history
-    // window.history.pushState(null, '', `?${current.toString()}`);
-    // console.timeEnd('ColumnPicker.handleClick');
   };
 
   if (
@@ -96,6 +105,8 @@ const StatsGraph = (
     date_friendly: string;
   };
 
+  const date_friendly_format = trendsSeasons.length > 1 ? 'MMMM Do YY' : 'MMM Do';
+
   const date_of_rank_x_data = {};
   let minYaxisElo = 1100;
   let maxYaxisElo = 2000;
@@ -111,7 +122,7 @@ const StatsGraph = (
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format('MMM Do'),
+        date_friendly: moment(row.date_of_rank).format(date_friendly_format),
       };
     }
 
@@ -133,16 +144,42 @@ const StatsGraph = (
   for (const league_player_statistic_ranking_id in league_player_statistic_rankings) {
     const row = league_player_statistic_rankings[league_player_statistic_ranking_id];
 
+    // remove preseason rows, so it doesnt start at 0... I think is is fine, unless I make preseason predictions for stats
+    if (!row.games) {
+      continue;
+    }
 
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format('MMM Do'),
+        date_friendly: moment(row.date_of_rank).format(date_friendly_format),
       };
     }
 
     for (const regularKey in row) {
       const modifiedKey = `league_${regularKey}`;
+      date_of_rank_x_data[row.date_of_rank][modifiedKey] = row[regularKey];
+    }
+  }
+
+  for (const conference_player_statistic_ranking_id in conference_player_statistic_rankings) {
+    const row = conference_player_statistic_rankings[conference_player_statistic_ranking_id];
+
+
+    // remove preseason rows, so it doesnt start at 0... I think is is fine, unless I make preseason predictions for stats
+    if (!row.games) {
+      continue;
+    }
+
+    if (!(row.date_of_rank in date_of_rank_x_data)) {
+      date_of_rank_x_data[row.date_of_rank] = {
+        date_of_rank: row.date_of_rank,
+        date_friendly: moment(row.date_of_rank).format(date_friendly_format),
+      };
+    }
+
+    for (const regularKey in row) {
+      const modifiedKey = `conf_${regularKey}`;
       date_of_rank_x_data[row.date_of_rank][modifiedKey] = row[regularKey];
     }
   }
@@ -160,7 +197,7 @@ const StatsGraph = (
       if (!(date in date_of_rank_x_data)) {
         date_of_rank_x_data[date] = {
           date_of_rank: date,
-          date_friendly: moment(row.date).format('MMM Do'),
+          date_friendly: moment(row.date).format(date_friendly_format),
         };
       }
 
@@ -181,10 +218,14 @@ const StatsGraph = (
     const value = data[trendsColumn];
     const playerBoxscoreValue = data[`player_boxscore_${trendsColumn}${trendsColumn.includes('percentage') ? '' : '_per_game'}`];
     const leagueValue = data[`league_${trendsColumn}`];
+    const confValue = data[`conf_${trendsColumn}`];
 
     let compareMaxValue = value;
     if (!compareMaxValue || leagueValue > compareMaxValue) {
       compareMaxValue = leagueValue;
+    }
+    if (!compareMaxValue || confValue > compareMaxValue) {
+      compareMaxValue = confValue;
     }
     if (!compareMaxValue || playerBoxscoreValue > compareMaxValue) {
       compareMaxValue = playerBoxscoreValue;
@@ -193,6 +234,9 @@ const StatsGraph = (
     let compareMixValue = value;
     if (!compareMixValue || leagueValue < compareMixValue) {
       compareMixValue = leagueValue;
+    }
+    if (!compareMixValue || confValue < compareMixValue) {
+      compareMixValue = confValue;
     }
     if (!compareMixValue || playerBoxscoreValue < compareMixValue) {
       compareMixValue = playerBoxscoreValue;
@@ -274,6 +318,15 @@ const StatsGraph = (
         dot: false,
         connectNulls: true,
       },
+      {
+        type: 'monotone',
+        name: `Conf ${statistic.label}`,
+        dataKey: `conf_${statistic.id}`,
+        stroke: theme.warning.dark,
+        strokeWidth: 2,
+        dot: false,
+        connectNulls: true,
+      },
     ];
 
     if (trendsBoxscoreLine) {
@@ -293,7 +346,7 @@ const StatsGraph = (
     if (minYaxis !== null && maxYaxis !== null) {
       YAxisProps.domain = [minYaxis, maxYaxis];
     }
-    chart = <Chart XAxisDataKey={'date_friendly'} YAxisLabel={statistic.label} rows={formattedData} lines={lines} YAxisProps={YAxisProps} rankMax = {max} />;
+    chart = <Chart XAxisDataKey={trendsSeasons.length > 1 ? 'season' : 'date_friendly'} tooltipLabel={'date_friendly'} YAxisLabel={statistic.label} rows={formattedData} lines={lines} YAxisProps={YAxisProps} rankMax = {max} />;
   }
 
 
@@ -307,8 +360,7 @@ const StatsGraph = (
         <div></div>
       </div>
       <div style = {{ textAlign: 'center' }}>
-        {!formattedData.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>Nothing here yet...</Typography> : ''}
-        {formattedData.length ? chart : ''}
+        {chart}
       </div>
     </>
   );

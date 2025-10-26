@@ -47,11 +47,7 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
   const sessionStorageKey = `${path}.CONFERENCE.STANDINGS.${view}`;
-  let numberOfTeams = CBB.getNumberOfD1Teams(season);
-
-  if (organization_id === Organization.getCFBID()) {
-    numberOfTeams = CFB.getNumberOfTeams({ division_id, season });
-  }
+  const numberOfTeams = Organization.getNumberOfTeams({ organization_id, division_id, season });
 
   const team_id_x_statistic_ranking_id = {};
 

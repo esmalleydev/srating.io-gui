@@ -4,7 +4,7 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker, { optionType } from '../OptionPicker';
 import Organization from '@/components/helpers/Organization';
-import { setDataKey } from '@/redux/features/display-slice';
+import { updateDataKey } from '@/redux/features/display-slice';
 import { useEffect } from 'react';
 import { getStore } from '@/app/StoreProvider';
 
@@ -82,12 +82,12 @@ const PositionPicker = ({ selected, isRadio = false }: { selected: string[]; isR
 
   const handlePosition = (value: string) => {
     if (isRadio) {
-      dispatch(setDataKey({ key: 'positions', value: null }));
-      dispatch(setDataKey({ key: 'positions', value }));
+      dispatch(updateDataKey({ key: 'positions', value: [] }));
+      dispatch(updateDataKey({ key: 'positions', value }));
     } else if (value === 'all') {
-      dispatch(setDataKey({ key: 'positions', value: null }));
+      dispatch(updateDataKey({ key: 'positions', value: [] }));
     } else {
-      dispatch(setDataKey({ key: 'positions', value }));
+      dispatch(updateDataKey({ key: 'positions', value }));
     }
   };
 

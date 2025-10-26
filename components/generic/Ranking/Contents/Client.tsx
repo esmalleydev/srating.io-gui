@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ForwardRefExoticComponent, MutableRefObject, RefAttributes, useEffect, useRef, useState, useTransition } from 'react';
+import React, { ForwardRefExoticComponent, MutableRefObject, Profiler, RefAttributes, useEffect, useRef, useState } from 'react';
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -643,18 +643,17 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     );
   };
 
-  // console.time('contents')
-  const foo = (
+  return (
+    <Profiler id="Ranking.Base.Contents.Client" onRender={(id, phase, actualDuration) => {
+      console.log(id, phase, actualDuration);
+    }}>
     <Contents>
       <div style = {{ padding: width < 600 ? `${tableFullscreen ? '10px' : '0px'} 10px 0px 10px` : `${tableFullscreen ? '10px' : '0px'} 20px 0px 20px` }}>
         {rows.length ? <TableVirtuoso key = {generated} scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography type='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>}
       </div>
     </Contents>
+    </Profiler>
   );
-  // console.timeEnd('contents')
-
-  // console.timeEnd('Ranking.Contents.Client.logic')
-  return foo;
 };
 
 export { Client, ClientSkeleton };

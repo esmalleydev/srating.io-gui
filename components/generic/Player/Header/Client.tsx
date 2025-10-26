@@ -1,23 +1,21 @@
 'use client';
 
-import React, { useTransition } from 'react';
 
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import Organization from '@/components/helpers/Organization';
 import HelperTeam from '@/components/helpers/Team';
 import HelperPlayer from '@/components/helpers/Player';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Player, PlayerTeamSeasons, Team, Teams } from '@/types/general';
 import { Skeleton } from '@mui/material';
-import { setLoading } from '@/redux/features/display-slice';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import FavoritePicker from '../../FavoritePicker';
 import OptionPicker from '../../OptionPicker';
 import { PlayerStatisticRanking, StatisticRanking } from '@/types/cbb';
+import Navigation from '@/components/helpers/Navigation';
 
 
 /**
@@ -86,6 +84,7 @@ const Client = (
   { organization_id, division_id, player_statistic_ranking, statistic_ranking, season }:
   { organization_id: string, division_id: string, player_statistic_ranking: PlayerStatisticRanking, statistic_ranking: StatisticRanking, season: number },
 ) => {
+  const navigation = new Navigation();
   const theme = useTheme();
   const player: Player = useAppSelector((state) => state.playerReducer.player);
   const team: Team | null = useAppSelector((state) => state.playerReducer.team);
@@ -96,14 +95,7 @@ const Client = (
 
   const breakPoint = 475;
 
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const pathName = usePathname();
-  const searchParams = useSearchParams();
-
   const { width } = useWindowDimensions() as Dimensions;
-
-  const [isPending, startTransition] = useTransition();
 
 
   const teamHelper = new HelperTeam({ team });
@@ -146,23 +138,11 @@ const Client = (
     if (!team || !team.team_id) {
       return;
     }
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.push(getTeamHref());
-    });
+    navigation.team(getTeamHref());
   };
 
   const handleSeason = (season) => {
-    if (searchParams) {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      current.set('season', season);
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.push(`${pathName}${query}`);
-      });
-    }
+    navigation.playerView({ season });
   };
 
   const seasonOptions = Object.values(player_team_seasons).sort((a, b) => b.season - a.season).map((row) => {

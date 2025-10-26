@@ -14,7 +14,7 @@ import MenuList from '@/components/ux/menu/MenuList';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
-import { setDataKey } from '@/redux/features/display-slice';
+import { updateDataKey } from '@/redux/features/display-slice';
 
 const StatusPicker = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +42,7 @@ const StatusPicker = () => {
   const statusOptions = [{ value: 'pre', label: 'Upcoming' }, { value: 'live', label: 'Live' }, { value: 'final', label: 'Final' }];
 
   const handleStatuses = (value: string) => {
-    dispatch(setDataKey({ key: 'statuses', value }));
+    dispatch(updateDataKey({ key: 'statuses', value }));
   };
 
   let title = 'Status';

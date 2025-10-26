@@ -1,14 +1,12 @@
 'use client';
 
-import React, { useTransition } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setDataKey } from '@/redux/features/player-slice';
+import { useAppSelector } from '@/redux/hooks';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tab from '@/components/ux/buttons/Tab';
 import Style from '@/components/utils/Style';
 import SubNavBar from './SubNavbar';
+import Navigation from '@/components/helpers/Navigation';
 
 
 const getNavHeaderHeight = () => {
@@ -18,11 +16,8 @@ const getNavHeaderHeight = () => {
 export { getNavHeaderHeight };
 
 const NavBar = () => {
-  const dispatch = useAppDispatch();
+  const navigation = new Navigation();
   const theme = useTheme();
-  const router = useRouter();
-  const pathName = usePathname();
-  const [isPending, startTransition] = useTransition();
 
   const view = useAppSelector((state) => state.playerReducer.view) || 'stats';
 
@@ -36,29 +31,11 @@ const NavBar = () => {
 
   const backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.primary.light;
 
-  const handleTabClick = (e, value) => {
+  const handleTabClick = (e, value: string) => {
     const newView = value;
 
     if (newView !== view) {
-      dispatch(setDataKey({ key: 'view', value: newView }));
-      dispatch(setDataKey({ key: 'subview', value: null }));
-      dispatch(setDataKey({ key: 'loadingView', value: true }));
-
-      const current = new URLSearchParams(window.location.search);
-      current.set('view', newView);
-      current.delete('subview');
-
-      window.history.replaceState(null, '', `?${current.toString()}`);
-
-      // use pushState if we want to add to back button history
-      // window.history.pushState(null, '', `?${current.toString()}`);
-
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-
-      startTransition(() => {
-        router.replace(`${pathName}${query}`);
-      });
+      navigation.playerView({ view: newView });
     }
   };
 

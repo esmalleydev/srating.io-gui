@@ -4,8 +4,6 @@ import React from 'react';
 
 import RankSpan from '@/components/generic/RankSpan';
 import Organization from '@/components/helpers/Organization';
-import CBB from '@/components/helpers/CBB';
-import CFB from '@/components/helpers/CFB';
 import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
 import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import TableColumns from '@/components/helpers/TableColumns';
@@ -21,11 +19,7 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
       return teamStats.max;
     }
 
-    if (Organization.getCFBID() === organization_id) {
-      return CFB.getNumberOfTeams({ division_id, season });
-    }
-
-    return CBB.getNumberOfD1Teams(season);
+    return Organization.getNumberOfTeams({ organization_id, division_id, season });
   };
 
   const maxTeams = getMax();

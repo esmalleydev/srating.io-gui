@@ -1,10 +1,9 @@
 
-import CBB from '@/components/helpers/CBB';
-import CFB from '@/components/helpers/CFB';
-import Division from '@/components/helpers/Division';
 import Organization from '@/components/helpers/Organization';
+import Division from '@/components/helpers/Division';
 import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import Initializer from '@/components/helpers/Initializer';
 
 
 
@@ -14,57 +13,10 @@ type InitialState = {
   season: number,
 };
 
-export const getInitialOrganizationID = () => {
-  if (typeof window !== 'undefined') {
-    const pathName = window.location.pathname;
-    const splat = pathName.split('/');
-    if (splat.length > 1) {
-      if (splat[1] === 'cfb') {
-        return Organization.getCFBID();
-      }
 
-      if (splat[1] === 'cbb') {
-        return Organization.getCBBID();
-      }
-    }
-  }
-
-  return Organization.getDefault();
-};
-
-const getInitialDivisionID = () => {
-  const organization_id = getInitialOrganizationID();
-
-  // default to FBS
-  if (organization_id === Organization.getCFBID()) {
-    return Division.getFBS();
-  }
-
-  if (organization_id === Organization.getCBBID()) {
-    return Division.getD1();
-  }
-
-  return Division.getD1();
-};
-
-const getInitialSeason = () => {
-  const organization_id = getInitialOrganizationID();
-
-  // default to FBS
-  if (organization_id === Organization.getCFBID()) {
-    return CFB.getCurrentSeason();
-  }
-
-  if (organization_id === Organization.getCBBID()) {
-    return CBB.getCurrentSeason();
-  }
-
-  return 2026;
-};
-
-const initalOrganizationID = getInitialOrganizationID();
-const initalDivisionID = getInitialDivisionID();
-const initalSeason = getInitialSeason();
+const initalOrganizationID = Initializer.getInitialOrganizationID();
+const initalDivisionID = Initializer.getInitialDivisionID();
+const initalSeason = Initializer.getInitialSeason();
 
 const initialState = {
   organization_id: initalOrganizationID,

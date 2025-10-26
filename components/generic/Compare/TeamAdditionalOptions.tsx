@@ -31,7 +31,7 @@ const TeamAdditionalOptions = () => {
     const newValue: boolean = !neutral_site;
     if (newValue !== neutral_site) {
       const current = new URLSearchParams(window.location.search);
-      current.set('neutral', (+newValue).toString());
+      current.set('neutral_site', (+newValue).toString());
       window.history.replaceState(null, '', `?${current.toString()}`);
 
       // use pushState if we want to add to back button history

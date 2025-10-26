@@ -1,4 +1,5 @@
 
+import State from '@/components/helpers/State';
 import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -26,12 +27,29 @@ type InitialState = {
   trendsColumn: string | null,
 };
 
+type InitialStateKeys = keyof InitialState;
+
 type ActionPayload<K extends keyof InitialState> = {
   key: K;
   value: InitialState[K];
 };
 
-const initialState: InitialState = {
+
+const stateController = new State<InitialState>({
+  type: 'game',
+});
+
+stateController.set_url_param_type_x_keys({
+  string: [
+    'view',
+    'subview',
+    'trendsColumn',
+  ],
+  array: [],
+  boolean: [],
+});
+
+stateController.setInitialState({
   game: {},
   coaches: {},
   coach_team_seasons: {},
@@ -49,56 +67,20 @@ const initialState: InitialState = {
   view: null,
   subview: null,
   trendsColumn: null,
-};
-
-const defaultState = Object.freeze(Objector.deepClone(initialState));
-
-const updateStateFromUrlParams = (state: InitialState) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const urlParams = new URLSearchParams(window.location.search);
-
-  // we only want to run this if on first load, if the pathname is relevant
-  if (!window.location.pathname.includes('games')) {
-    return;
-  }
-
-  const view = urlParams.get('view');
-  const subview = urlParams.get('subview');
-  const trendsColumn = urlParams.get('trendsColumn');
-
-  // Update state if URL parameters are present
-  if (view !== null) {
-    state.view = view;
-  }
-
-  if (subview !== null) {
-    state.subview = subview;
-  }
-
-  if (trendsColumn !== null) {
-    state.trendsColumn = trendsColumn;
-  }
-};
+});
 
 
 export const game = createSlice({
   name: 'game',
-  initialState,
+  initialState: stateController.getInitialState(),
   reducers: {
-    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
-      state[action.payload.key] = action.payload.value;
+    reset: (state: InitialState) => stateController.reset(state),
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      stateController.resetDataKey(state, action.payload);
     },
-    reset: (state) => {
-      for (const key in defaultState) {
-        // we do not have to reset this one, it is controlled by the contents changing
-        if (key !== 'loadingView') {
-          state[key] = defaultState[key];
-        }
-      }
-
-      updateStateFromUrlParams(state);
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.setDataKey(state, key, value);
     },
   },
 });
@@ -106,7 +88,8 @@ export const game = createSlice({
 export const {
   setDataKey,
   reset,
+  resetDataKey,
 } = game.actions;
 export default game.reducer;
 
-updateStateFromUrlParams(initialState);
+stateController.updateStateFromUrlParams(stateController.getInitialState());

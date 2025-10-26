@@ -48,27 +48,24 @@ export default bundleAnalyzer({
       fullUrl: true,
     },
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   devIndicators: false,
   // output: 'standalone',
   reactStrictMode: true,
-  webpack: (config /* options */) => {
-    config.module.rules.push({
-      test: /\.md$/,
-      use: [
-        {
-          loader: 'html-loader',
-        },
-        {
-          loader: 'markdown-loader',
-        },
-      ],
-    });
+  // webpack: (config /* options */) => {
+  //   config.module.rules.push({
+  //     test: /\.md$/,
+  //     use: [
+  //       {
+  //         loader: 'html-loader',
+  //       },
+  //       {
+  //         loader: 'markdown-loader',
+  //       },
+  //     ],
+  //   });
 
-    return config;
-  },
+  //   return config;
+  // },
 });
 
 

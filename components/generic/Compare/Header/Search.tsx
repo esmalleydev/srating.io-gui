@@ -140,18 +140,12 @@ const Search = () => {
         dispatch(setDataKey({ key: 'next_search', value: 'away' }));
       }
 
-      const current = new URLSearchParams(window.location.search);
-
-      if (current.get(`${key}_team_id`) !== new_team_id) {
-        current.set(`${key}_team_id`, new_team_id);
-        window.history.replaceState(null, '', `?${current.toString()}`);
-
-        startTransition(() => {
-          const search = current.toString();
-          const query = search ? `?${search}` : '';
-          router.replace(`${pathName}${query}`);
-        });
-      }
+      startTransition(() => {
+        const current = new URLSearchParams(window.location.search);
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+        router.replace(`${pathName}${query}`);
+      });
 
       setBlur(true);
       setValue('');

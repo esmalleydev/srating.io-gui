@@ -2,9 +2,7 @@
 
 import HelperTeam from '@/components/helpers/Team';
 import { useAppSelector } from '@/redux/hooks';
-import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import CFB from '@/components/helpers/CFB';
 import RankTable from '@/components/generic/RankTable';
 import TableColumns from '@/components/helpers/TableColumns';
 import Navigation from '@/components/helpers/Navigation';
@@ -93,13 +91,7 @@ const Client = ({ organization_id, division_id, coach_team_seasons, teams, stati
   };
 
   const getRankSpanMax = (row) => {
-    let numberOfTeams = CBB.getNumberOfD1Teams(row.season);
-
-    if (organization_id === Organization.getCFBID()) {
-      numberOfTeams = CFB.getNumberOfTeams({ division_id, season: row.season });
-    }
-
-    return numberOfTeams;
+    return Organization.getNumberOfTeams({ organization_id, division_id, season: row.season });
   };
 
 

@@ -8,9 +8,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import RankSpan from '@/components/generic/RankSpan';
 import moment from 'moment';
-import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import CFB from '@/components/helpers/CFB';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
@@ -20,8 +18,8 @@ const Differentials = ({ game, team_id }) => {
   const theme = useTheme();
   const isLoading = useAppSelector((state) => state.teamReducer.scheduleStatsLoading);
   const scheduleStats = useAppSelector((state) => state.teamReducer.scheduleStats);
+  const numberOfTeams = Organization.getNumberOfTeams({ organization_id: game.organization_id, division_id: game.division_id, season: game.season });
 
-  let numberOfTeams = 1;
   let compares: {
     label: string;
     code: string;
@@ -29,7 +27,6 @@ const Differentials = ({ game, team_id }) => {
   }[] = [];
 
   if (game.organization_id === Organization.getCBBID()) {
-    numberOfTeams = CBB.getNumberOfD1Teams(game.season);
     compares = [
       {
         label: 'Rank',
@@ -65,7 +62,6 @@ const Differentials = ({ game, team_id }) => {
   }
 
   if (game.organization_id === Organization.getCFBID()) {
-    numberOfTeams = CFB.getNumberOfTeams({ division_id: game.division_id, season: game.season });
     compares = [
       {
         label: 'Rank',

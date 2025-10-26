@@ -35,6 +35,7 @@ const Client = () => {
 
   const dispatch = useAppDispatch();
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const division_id = useAppSelector((state) => state.organizationReducer.division_id);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
@@ -44,29 +45,19 @@ const Client = () => {
   const season = useAppSelector((state) => state.compareReducer.season);
   const teams = useAppSelector((state) => state.compareReducer.teams);
   const neutral_site = useAppSelector((state) => state.compareReducer.neutral_site);
+  const numberOfTeams = Organization.getNumberOfTeams({ organization_id, division_id, season });
 
   const handleRemove = (team_id: string) => {
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
-    let key: string | null = null;
     if (team_id === home_team_id) {
-      current.delete('home_team_id');
-      key = 'home';
-    } else if (team_id === away_team_id) {
-      current.delete('away_team_id');
-      key = 'away';
-    }
-    window.history.replaceState(null, '', `?${current.toString()}`);
-
-    if (key === 'home') {
       dispatch(setDataKey({ key: 'home_team_id', value: null }));
-    } else if (key === 'away') {
+    } else if (team_id === away_team_id) {
       dispatch(setDataKey({ key: 'away_team_id', value: null }));
     }
 
-    const search = current.toString();
-    const query = search ? `?${search}` : '';
-
     startTransition(() => {
+      const current = new URLSearchParams(window.location.search);
+      const search = current.toString();
+      const query = search ? `?${search}` : '';
       router.replace(`${pathName}${query}`);
     });
   };
@@ -121,7 +112,7 @@ const Client = () => {
     };
 
     if (rank) {
-      supStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / CBB.getNumberOfD1Teams(CBB.getCurrentSeason()))));
+      supStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / numberOfTeams)));
     }
 
     const getRemoveButton = () => {

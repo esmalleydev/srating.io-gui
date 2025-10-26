@@ -3,7 +3,7 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Chip from '@/components/ux/container/Chip';
-import { setDataKey } from '@/redux/features/display-slice';
+import { updateDataKey } from '@/redux/features/display-slice';
 
 export const getConferenceChips = () => {
   // console.time('getConferenceChips')
@@ -12,7 +12,7 @@ export const getConferenceChips = () => {
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
   const handleClick = (value: string) => {
-    dispatch(setDataKey({ key: 'conferences', value }));
+    dispatch(updateDataKey({ key: 'conferences', value }));
   };
 
   const confChips: React.JSX.Element[] = [];

@@ -34,6 +34,7 @@ export type getDecoratePlayer = {
   subview?: string | null;
   season?: number;
   division_id?: string;
+  trendsSeasons?: string[];
 };
 
 class Player extends Surface {
@@ -102,7 +103,7 @@ class Player extends Surface {
 
 
   async getDecorate(
-    { player_id, view, season, division_id = this.getDivisionID() }:
+    { player_id, view, season, division_id = this.getDivisionID(), trendsSeasons }:
     getDecoratePlayer,
   ) {
     const organization_id = this.getOrganizationID();
@@ -169,7 +170,7 @@ class Player extends Surface {
         return (
           <TrendsClientWrapper>
             <Suspense fallback = {<TrendsClientSkeleton />}>
-              <TrendsServer organization_id={organization_id} division_id={division_id} season = {viewSeason} player_id = {player_id} />
+              <TrendsServer organization_id={organization_id} division_id={division_id} season = {viewSeason} player_id = {player_id} trendsSeasons = {trendsSeasons} />
             </Suspense>
           </TrendsClientWrapper>
         );
