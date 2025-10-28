@@ -57,7 +57,7 @@ const Tile = ({ game }) => {
   };
 
   const handleClick = () => {
-    navigation.games(`/${path}/games/${game.game_id}`);
+    navigation.game(`/${path}/games/${game.game_id}`);
   };
 
   return (

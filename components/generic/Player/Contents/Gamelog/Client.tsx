@@ -167,7 +167,7 @@ const Client = ({ organization_id, gamelogs }) => {
       game_id = gamelogs[player_boxscore_id].game_id;
     }
 
-    navigation.games(`/${path}/games/${game_id}`);
+    navigation.game(`/${path}/games/${game_id}`);
   };
 
   type PartialPlayerBoxscore = Partial<CBBPlayerBoxscore | CFBPlayerBoxscore> & {

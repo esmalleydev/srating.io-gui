@@ -66,7 +66,7 @@ const Tile = ({ game }) => {
       dispatch(setScrollTop(scrollRef.current.scrollTop));
     }
     dispatch(updateGameSort(null));
-    navigation.games(`/${path}/games/${game.game_id}`);
+    navigation.game(`/${path}/games/${game.game_id}`);
   };
 
 

@@ -70,7 +70,13 @@ export const team = createSlice({
   name: 'team',
   initialState: stateController.getInitialState(),
   reducers: {
-    reset: (state: InitialState) => stateController.reset(state),
+    reset: {
+      reducer: (state, action: PayloadAction<boolean | undefined>) => {
+        stateController.reset(state, action.payload);
+      },
+      // prepare receives optional payload and returns { payload }
+      prepare: (payload?: boolean) => ({ payload }),
+    },
     resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
       stateController.resetDataKey(state, action.payload);
     },

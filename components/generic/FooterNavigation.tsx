@@ -19,6 +19,7 @@ import { setScrollTop as setGamesScrollTop } from '@/redux/features/games-slice'
 import { setLoading } from '@/redux/features/display-slice';
 import Organization from '@/components/helpers/Organization';
 import Paper from '../ux/container/Paper';
+import Navigation from '../helpers/Navigation';
 
 
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
@@ -31,6 +32,7 @@ const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) 
 export const footerNavigationHeight = 56;
 
 const FooterNavigation = () => {
+  const navigation = new Navigation();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const theme = useTheme();
@@ -83,16 +85,15 @@ const FooterNavigation = () => {
     const newPathName = `/${viewingSport.toLowerCase()}/ranking`;
 
     if (newPathName !== pathName) {
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.push(newPathName);
-      });
+      navigation.ranking(newPathName);
     }
   };
 
   const handleScores = () => {
     const newPathName = `/${viewingSport.toLowerCase()}/games`;
 
+
+    // TODO replace with naviation component, but rewrite games-slice first
     if (newPathName !== pathName) {
       dispatch(setGamesScrollTop(0));
       dispatch(setLoading(true));
@@ -104,6 +105,8 @@ const FooterNavigation = () => {
 
   const handlePicks = () => {
     const newPathName = `/${viewingSport.toLowerCase()}/picks`;
+
+    // TODO replace with naviation component, but rewrite picks-slice first
 
     if (newPathName !== pathName) {
       dispatch(setPicksScrollTop(0));

@@ -137,6 +137,7 @@ class State<T extends object> {
   }
 
   public updateURL<K extends keyof T>(key: K, value: T[K] | null) {
+    // console.log('update URL:', this.type, key, value)
     let key_is_url_param = false;
     const url_param_type_x_keys = this.get_url_param_type_x_keys();
 
@@ -197,18 +198,22 @@ class State<T extends object> {
   /**
    * Reset the state back to the default state and update the URL
    */
-  public reset(state: T) {
+  public reset(state: T, updateURL = true) {
     const defaultState = this.getDefaultState();
     for (const key in defaultState) {
       // we do not have to reset this one, it is controlled by the contents changing
       if (key !== 'loadingView') {
         const typedKey = key;
-        this.updateURL(typedKey, defaultState[typedKey]);
+        if (updateURL) {
+          this.updateURL(typedKey, defaultState[typedKey]);
+        }
         state[key] = defaultState[typedKey];
         this.setLocalStorage(key, state[key]);
       }
     }
-    this.updateStateFromUrlParams(state);
+    if (updateURL) {
+      this.updateStateFromUrlParams(state);
+    }
   }
 
   /**

@@ -1,14 +1,12 @@
 'use client';
 
-import { Profiler, useEffect, useState, useTransition } from 'react';
+import { Profiler, useEffect, useState } from 'react';
 import Legend from './Legend';
 import FloatingButtons from './FloatingButtons';
-import { usePathname, useRouter } from 'next/navigation';
 // import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
-import { setLoading as setLoadingDisplay, updateDataKey } from '@/redux/features/display-slice';
-import { setDataKey } from '@/redux/features/ranking-slice';
+import { updateDataKey } from '@/redux/features/display-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import AdditionalOptions from './AdditionalOptions';
 import Search from './Search';
@@ -23,16 +21,15 @@ import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import PositionPicker from './PositionPicker';
 import TableColumns from '@/components/helpers/TableColumns';
+import Navigation from '@/components/helpers/Navigation';
 
 
 const Base = (
   { organization_id, division_id, season, view, children }:
   { organization_id: string, division_id: string, season: number, view: string, children: React.JSX.Element | React.JSX.Element[] },
 ) => {
+  const navigation = new Navigation();
   const theme = useTheme();
-  const router = useRouter();
-  const pathName = usePathname();
-  const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
 
   const organization_id_x_division_id_x_ranking_seasons = useAppSelector((state) => state.dictionaryReducer.organization_id_x_division_id_x_ranking_seasons);
@@ -93,40 +90,17 @@ const Base = (
     }
   }
 
-  const handleRankView = (newRankView) => {
+  const handleRankView = (newRankView: string) => {
     if (newRankView !== view) {
+      // todo move this to the state or navigation component
       localStorage.removeItem(`${organization_id}.RANKING.COLUMNS.${view}`);
-      dispatch(setDataKey({ key: 'data', value: null }));
-      dispatch(setDataKey({ key: 'customColumns', value: ['rank', 'name'] }));
-      dispatch(updateDataKey({ key: 'positions', value: [] }));
-      dispatch(setDataKey({ key: 'order', value: 'asc' }));
-      dispatch(setDataKey({ key: 'orderBy', value: 'rank' }));
-      dispatch(setDataKey({ key: 'tableScrollTop', value: 0 }));
-      dispatch(setDataKey({ key: 'columnView', value: 'composite' }));
-      dispatch(setDataKey({ key: 'filteredRows', value: null }));
-      dispatch(setDataKey({ key: 'searchValue', value: '' }));
-
-      const current = new URLSearchParams(window.location.search);
-      current.set('view', newRankView);
-      const search = current.toString();
-
-      const query = search ? `?${search}` : '';
-      startTransition(() => {
-        router.push(`${pathName}${query}`);
-      });
+      navigation.rankingView({ view: newRankView });
     }
   };
 
   const handleSeason = (newSeason) => {
     if (newSeason !== season) {
-      const current = new URLSearchParams(window.location.search);
-      current.set('season', newSeason);
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-      dispatch(setLoadingDisplay(true));
-      startTransition(() => {
-        router.push(`${pathName}${query}`);
-      });
+      navigation.rankingView({ season: newSeason });
     }
   };
 

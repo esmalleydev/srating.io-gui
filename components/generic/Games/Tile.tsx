@@ -90,7 +90,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     refresh(`${path}.games.${game.game_id}`);
     dispatch(reset());
 
-    navigation.games(`/${path}/games/${game.game_id}`);
+    navigation.game(`/${path}/games/${game.game_id}`);
   };
 
 

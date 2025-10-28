@@ -93,7 +93,7 @@ const Tile = ({ game, team }) => {
       dispatch(setDataKey({ key: 'scrollTop', value: scrollRef.current.scrollTop }));
     }
 
-    navigation.games(getGameHref());
+    navigation.game(getGameHref());
   };
 
   const getTeamHref = (team_id) => {

@@ -16,7 +16,7 @@ const ReduxWrapper = (
 
   useEffect(() => {
     return () => {
-      dispatch(reset());
+      dispatch(reset(false));
     };
   }, []);
 

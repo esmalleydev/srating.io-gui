@@ -2,7 +2,6 @@ import { Coach, CoachTeamSeasons, Teams } from '@/types/general';
 import { StatisticRankings as StatsCBB } from '@/types/cbb';
 import { StatisticRankings as StatsCFB } from '@/types/cfb';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Objector from '@/components/utils/Objector';
 import State from '@/components/helpers/State';
 
 type InitialState = {
@@ -53,7 +52,13 @@ export const coach = createSlice({
   name: 'coach',
   initialState: stateController.getInitialState(),
   reducers: {
-    reset: (state: InitialState) => stateController.reset(state),
+    reset: {
+      reducer: (state, action: PayloadAction<boolean | undefined>) => {
+        stateController.reset(state, action.payload);
+      },
+      // prepare receives optional payload and returns { payload }
+      prepare: (payload?: boolean) => ({ payload }),
+    },
     resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
       stateController.resetDataKey(state, action.payload);
     },

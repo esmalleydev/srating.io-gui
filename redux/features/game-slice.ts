@@ -1,10 +1,10 @@
 
 import State from '@/components/helpers/State';
-import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 // todo this is really the /sport/games/abc path, this name of "game" is confusing
+// need to swap it out with games
 
 
 type InitialState = {
@@ -74,7 +74,13 @@ export const game = createSlice({
   name: 'game',
   initialState: stateController.getInitialState(),
   reducers: {
-    reset: (state: InitialState) => stateController.reset(state),
+    reset: {
+      reducer: (state, action: PayloadAction<boolean | undefined>) => {
+        stateController.reset(state, action.payload);
+      },
+      // prepare receives optional payload and returns { payload }
+      prepare: (payload?: boolean) => ({ payload }),
+    },
     resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
       stateController.resetDataKey(state, action.payload);
     },

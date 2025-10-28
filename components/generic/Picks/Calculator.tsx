@@ -101,7 +101,7 @@ const Calculator = ({ games, date }) => {
 
   const handleGame = (g: Game) => {
     const path = Organization.getPath({ organizations, organization_id: g.organization_id });
-    navigation.games(`/${path}/games/${g.game_id}`);
+    navigation.game(`/${path}/games/${g.game_id}`);
   };
 
   const headCells = [

@@ -1,6 +1,6 @@
 'use client';
 
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading, updateDataKey as updateDataKeyDisplay } from '@/redux/features/display-slice';
 import { InitialState, InitialStateKeys, resetDataKey as resetDataKeyPlayer, reset as resetPlayer, setDataKey as setDataKeyPlayer } from '@/redux/features/player-slice';
 import { reset as resetCoach } from '@/redux/features/coach-slice';
 import { reset as resetConference } from '@/redux/features/conference-slice';
@@ -11,6 +11,7 @@ import { AppDispatch } from '@/redux/store';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { usePathname, useRouter } from 'next/navigation';
 import { TransitionStartFunction, useTransition } from 'react';
+import { resetDataKey as resetDataKeyRanking, reset as resetRanking, setDataKey as setDataKeyRanking } from '@/redux/features/ranking-slice';
 
 // todo remove nextjs router :D
 
@@ -34,13 +35,18 @@ class Navigation {
 
   private pathName: string;
 
+  public getRouter() {
+    return this.router;
+  }
+
   /**
    * Navigate to a player page,
    * reset the state to be fresh beforehand
    */
   public player(path: string, onRouter: null | undefined | (() => void) = null) {
     this.dispatch(setLoading(true));
-    this.dispatch(resetPlayer());
+    // this.dispatch(stateThunk({ router: this.getRouter() }));
+    this.dispatch(resetPlayer(false));
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -93,7 +99,7 @@ class Navigation {
    */
   public coach(path: string, onRouter: null | undefined | (() => void) = null) {
     this.dispatch(setLoading(true));
-    this.dispatch(resetCoach());
+    this.dispatch(resetCoach(false));
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -108,7 +114,7 @@ class Navigation {
    */
   public conference(path: string, onRouter: null | undefined | (() => void) = null) {
     this.dispatch(setLoading(true));
-    this.dispatch(resetConference());
+    this.dispatch(resetConference(false));
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -123,7 +129,7 @@ class Navigation {
    */
   public team(path: string, onRouter: null | undefined | (() => void) = null) {
     this.dispatch(setLoading(true));
-    this.dispatch(resetTeam());
+    this.dispatch(resetTeam(false));
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -136,9 +142,9 @@ class Navigation {
    * Navigate to a singular game page (/sports/games/abc),
    * reset the state to be fresh beforehand
    */
-  public games(path: string, onRouter: null | undefined | (() => void) = null) {
+  public game(path: string, onRouter: null | undefined | (() => void) = null) {
     this.dispatch(setLoading(true));
-    this.dispatch(resetGame());
+    this.dispatch(resetGame()); // todo url params thing
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -146,6 +152,74 @@ class Navigation {
       }
     });
   }
+
+  /**
+   * Navigate to the ranking page
+   */
+  public ranking(path: string, onRouter: null | undefined | (() => void) = null) {
+    this.dispatch(setLoading(true));
+    this.dispatch(resetRanking(false));
+    this.startTransition(() => {
+      this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+  public rankingView<K extends InitialStateKeys>(args: Pick<InitialState, K>, onRouter: null | undefined | (() => void) = null) {
+    if (!this.pathName.includes('ranking')) {
+      throw new Error('rankingView only usable when already navigated to ranking');
+    }
+
+    for (const key in args) {
+      this.dispatch(setDataKeyPlayer({ key, value: args[key] }));
+    }
+
+
+    // these MUST always be set this way if the view changes
+    if ('view' in args) {
+      this.dispatch(resetDataKeyRanking('data'));
+      this.dispatch(resetDataKeyRanking('customColumns'));
+      this.dispatch(updateDataKeyDisplay({ key: 'positions', value: [] }));
+      this.dispatch(resetDataKeyRanking('order'));
+      this.dispatch(resetDataKeyRanking('orderBy'));
+      this.dispatch(resetDataKeyRanking('tableScrollTop'));
+      this.dispatch(resetDataKeyRanking('columnView'));
+      this.dispatch(resetDataKeyRanking('filteredRows'));
+      this.dispatch(resetDataKeyRanking('searchValue'));
+    }
+
+
+    this.dispatch(setDataKeyPlayer({ key: 'loadingView', value: true }));
+
+    // player slice handles this now, but just refetch it here for stupid nextjs router
+    const current = new URLSearchParams(window.location.search);
+    const search = current.toString();
+    const query = search ? `?${search}` : '';
+
+    this.startTransition(() => {
+      this.router.replace(`${this.pathName}${query}`);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+  /**
+   * Navigate to the games (scores) page
+   * todo rewrite slice first
+   */
+  // public games(path: string, onRouter: null | undefined | (() => void) = null) {
+    // this.dispatch(setLoading(true));
+    // this.dispatch(reset());
+    // this.startTransition(() => {
+    //   this.router.push(path);
+    //   if (onRouter) {
+    //     onRouter();
+    //   }
+    // });
+  // }
 }
 
 export default Navigation;

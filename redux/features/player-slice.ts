@@ -61,11 +61,26 @@ stateController.setInitialState({
   trendsSeasons: [],
 });
 
+/*
+export const stateThunk = createAsyncThunk(
+  'router',
+  ({ router }: { router: AppRouterInstance }) => {
+    stateController.setRouter(router);
+  },
+);
+*/
+
 export const player = createSlice({
   name: 'player',
   initialState: stateController.getInitialState(),
   reducers: {
-    reset: (state: InitialState) => stateController.reset(state),
+    reset: {
+      reducer: (state, action: PayloadAction<boolean | undefined>) => {
+        stateController.reset(state, action.payload);
+      },
+      // prepare receives optional payload and returns { payload }
+      prepare: (payload?: boolean) => ({ payload }),
+    },
     resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
       stateController.resetDataKey(state, action.payload);
     },

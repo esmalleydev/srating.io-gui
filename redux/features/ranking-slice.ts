@@ -6,6 +6,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 type InitialState = {
+  view: string,
+  season: number | null,
   order: string,
   orderBy: string,
   hideCommitted: boolean,
@@ -20,6 +22,7 @@ type InitialState = {
   data: object | null,
   filteredRows: CBBRankingTable[] | CFBRankingTable[] | null | boolean,
   searchValue: string,
+  loadingView: boolean,
 };
 
 type InitialStateKeys = keyof InitialState;
@@ -35,6 +38,8 @@ const stateController = new State<InitialState>({
 
 stateController.set_url_param_type_x_keys({
   string: [
+    'view',
+    'season',
     'order',
     'orderBy',
     'columnView',
@@ -51,6 +56,8 @@ stateController.set_url_param_type_x_keys({
 });
 
 stateController.setInitialState({
+  view: 'team',
+  season: null,
   order: 'asc',
   orderBy: 'rank',
   hideCommitted: false,
@@ -65,6 +72,7 @@ stateController.setInitialState({
   data: null,
   filteredRows: null,
   searchValue: '',
+  loadingView: true,
 } as InitialState);
 
 
@@ -72,7 +80,13 @@ export const ranking = createSlice({
   name: 'ranking',
   initialState: stateController.getInitialState(),
   reducers: {
-    reset: (state: InitialState) => stateController.reset(state),
+    reset: {
+      reducer: (state, action: PayloadAction<boolean | undefined>) => {
+        stateController.reset(state, action.payload);
+      },
+      // prepare receives optional payload and returns { payload }
+      prepare: (payload?: boolean) => ({ payload }),
+    },
     resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
       stateController.resetDataKey(state, action.payload);
     },
