@@ -37,6 +37,7 @@ const OptionPicker = (
     closeHandler,
     autoClose = true,
     isRadio = false,
+    showMenuCloseButton = false,
   }:
   {
     selected: (string | null)[],
@@ -48,6 +49,7 @@ const OptionPicker = (
     closeHandler?: () => void,
     autoClose?: boolean,
     isRadio?: boolean,
+    showMenuCloseButton?: boolean,
   },
 ) => {
   // console.time('OptionPicker')
@@ -108,6 +110,7 @@ const OptionPicker = (
         anchor={anchorEl}
         open={open}
         onClose={handleClose}
+        showCloseButton = {showMenuCloseButton}
       >
           <MenuList>
             {options.map((option, index) => {

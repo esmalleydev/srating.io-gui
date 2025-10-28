@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import Style from '@/components/utils/Style';
 import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import CloseIcon from '@mui/icons-material/Close';
 
 const getOffsetTop = (rect, vertical) => {
   let offset = 36;
@@ -52,6 +53,7 @@ const Menu = (
       vertical: 'top',
       horizontal: 'left',
     },
+    showCloseButton = false,
     style = {},
     children,
   }:
@@ -60,6 +62,7 @@ const Menu = (
     anchor: HTMLElement | null;
     onClose: () => void;
     anchorOrigin?: anchorOrigin;
+    showCloseButton?: boolean;
     style?: React.CSSProperties;
     children: React.ReactNode;
   },
@@ -411,9 +414,31 @@ const Menu = (
     return null;
   }
 
+
+  const closeContainerStyle: React.CSSProperties = {
+    position: 'sticky',
+    top: 0,
+    right: 0,
+    width: 40,
+    height: 50,
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    float: 'right',
+    zIndex: 9999,
+  };
+
+  const closeContainer = (
+    <div className={Style.getStyleClassName(closeContainerStyle)} onClick={onClose}>
+      <CloseIcon />
+    </div>
+  );
+
   return ReactDOM.createPortal(
     <div className={Style.getStyleClassName(overlayStyle)}>
       <Paper style={paperStyle} ref = {menuContentRef} tranparency={0.95}>
+        {showCloseButton ? closeContainer : ''}
         {children}
       </Paper>
     </div>,

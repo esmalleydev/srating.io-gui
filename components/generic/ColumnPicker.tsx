@@ -75,6 +75,7 @@ const ColumnPicker = (
       actionHandler = {handleClick}
       isRadio = {isRadio}
       autoClose = {autoClose}
+      showMenuCloseButton = {true}
     />
   );
 };
