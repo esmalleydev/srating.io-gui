@@ -1,10 +1,7 @@
 'use client';
 
-import { setDataKey } from '@/redux/features/ranking-slice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
-// import { CBBRankingTable } from '@/types/cbb';
-import { useEffect, useMemo } from 'react';
 import Objector from '@/components/utils/Objector';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
@@ -293,7 +290,7 @@ export const getLastUpdated = ({ view }) => {
   return getData({ view }).lastUpdated;
 };
 
-
+/*
 const DataHandler = ({ data }) => {
   const dispatch = useAppDispatch();
 
@@ -305,3 +302,4 @@ const DataHandler = ({ data }) => {
 };
 
 export default DataHandler;
+*/

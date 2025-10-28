@@ -2,11 +2,12 @@
 
 import Surface from 'Surface';
 import ContentsClientWrapper from '@/components/generic/Ranking/Contents/ClientWrapper';
-import ContentsServer from '@/components/generic/Ranking/Contents/Server';
-import { ClientSkeleton as ContentsClientSkeleton } from '@/components/generic/Ranking/Contents/Client';
-import { Suspense } from 'react';
+// import ContentsServer from '@/components/generic/Ranking/Contents/Server';
+import { Client, ClientSkeleton as ContentsClientSkeleton } from '@/components/generic/Ranking/Contents/Client';
+// import { Suspense } from 'react';
 import Base from '@/components/generic/Ranking/Base';
 import Organization from '@/components/helpers/Organization';
+import Loader from '@/components/generic/Ranking/Contents/Loader';
 
 export type getDecorateRanking ={
   view: string;
@@ -69,13 +70,17 @@ class Ranking extends Surface {
   ) {
     const organization_id = this.getOrganizationID();
 
+    const generated = new Date().getTime();
+
     return (
       <>
         <Base organization_id = {organization_id} division_id = {division_id} season = {season} view = {view}>
+          <Loader key ={organization_id + division_id + season + view} organization_id = {organization_id} division_id = {division_id} season = {season} view = {view} />
           <ContentsClientWrapper>
-            <Suspense key={organization_id + division_id + season + view} fallback = {<ContentsClientSkeleton />}>
+            <Client generated = {generated} organization_id = {organization_id} division_id = {division_id} season = {season} view = {view} />
+            {/* <Suspense key={organization_id + division_id + season + view} fallback = {<ContentsClientSkeleton />}>
               <ContentsServer organization_id = {organization_id} division_id = {division_id} season = {season} view = {view} />
-            </Suspense>
+            </Suspense> */}
           </ContentsClientWrapper>
         </Base>
       </>

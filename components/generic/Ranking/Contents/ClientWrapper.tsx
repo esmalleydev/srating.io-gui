@@ -1,38 +1,20 @@
-// 'use client';
-
-// const ClientWrapper = ({ children }) => {
-//   return (
-//     <div>
-//       {children}
-//     </div>
-//   );
-// };
-
-// export default ClientWrapper;
 
 'use client';
 
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import { LinearProgress } from '@mui/material';
-import { useEffect } from 'react';
-import { setDataKey } from '@/redux/features/ranking-slice';
 
 const ClientWrapper = (
   { children }:
   { children: React.JSX.Element },
 ) => {
-  const dispatch = useAppDispatch();
-
   const loadingView = useAppSelector((state) => state.rankingReducer.loadingView);
 
   const paddingTop = 0;
 
-  const heightToRemove = 0;
+  // todo get the actual height
+  const heightToRemove = 190;
 
-
-  useEffect(() => {
-    dispatch(setDataKey({ key: 'loadingView', value: false }));
-  }, [children]);
 
   return (
     <div style = {{ paddingTop }}>

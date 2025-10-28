@@ -23,6 +23,7 @@ type InitialState = {
   filteredRows: CBBRankingTable[] | CFBRankingTable[] | null | boolean,
   searchValue: string,
   loadingView: boolean,
+  cachedData: object,
 };
 
 type InitialStateKeys = keyof InitialState;
@@ -73,6 +74,7 @@ stateController.setInitialState({
   filteredRows: null,
   searchValue: '',
   loadingView: true,
+  cachedData: {},
 } as InitialState);
 
 

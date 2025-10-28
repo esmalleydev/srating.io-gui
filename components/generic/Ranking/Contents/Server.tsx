@@ -1,9 +1,16 @@
-'use server';
+// 'use server';
 
-import { Client } from '@/components/generic/Ranking/Contents/Client';
-import { useServerAPI } from '@/components/serverAPI';
-import DataHandler from '../DataHandler';
+// import { Client } from '@/components/generic/Ranking/Contents/Client';
+// import { useServerAPI } from '@/components/serverAPI';
+// import DataHandler from '../DataHandler';
 
+// this file is deprecated
+// the player load is too big for ssr, if you navigate directly too it, it streams the entire object over the root html document instead of indepently
+// this takes forever, and lags the entire app
+// the only way to fix is with parellel nextjs crap or just do it client side
+// since I built my own caching, just move it client side
+
+/*
 const Server = async ({ organization_id, division_id, season, view }) => {
   const seconds = 60 * 60; // cache for 1 hours
 
@@ -53,3 +60,4 @@ const Server = async ({ organization_id, division_id, season, view }) => {
 };
 
 export default Server;
+*/
