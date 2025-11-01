@@ -13,6 +13,7 @@ const Tooltip = <T extends HTMLElement>(
     position = 'bottom',
     delay = 100,
     onClickFade = 3000,
+    onTouchFade = 2000,
     disableOnFocus = false,
     onClickRemove = false,
     style = {},
@@ -23,6 +24,7 @@ const Tooltip = <T extends HTMLElement>(
     position?: string;
     delay?: number;
     onClickFade?: number;
+    onTouchFade?: number;
     disableOnFocus?: boolean;
     onClickRemove?: boolean;
     style?: React.CSSProperties;
@@ -60,6 +62,25 @@ const Tooltip = <T extends HTMLElement>(
     left: coords.left,
     ...style,
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isVisible) {
+        // Hide the tooltip on any scroll event
+        handleHide();
+      }
+    };
+
+    // 2. Add the scroll event listener to the window when the component mounts
+    // and when the visibility state changes (to potentially re-enable)
+    window.addEventListener('scroll', handleScroll, true); // Use 'true' for capture phase if needed for better immediate detection
+
+    // 3. Cleanup function to remove the listener when the component unmounts
+    // or before the effect runs again (which is necessary for proper cleanup)
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, [isVisible]);
 
   useEffect(() => {
     if (isVisible && containerRef.current) {
@@ -186,6 +207,29 @@ const Tooltip = <T extends HTMLElement>(
       fadeTimeoutRef.current = null;
     }
     handleShow();
+
+    // if (onClickFade) {
+  };
+
+  const handlePointerDown = () => {
+    if (fadeTimeoutRef.current) {
+      clearTimeout(fadeTimeoutRef.current);
+      fadeTimeoutRef.current = null;
+    }
+    handleShow();
+
+    if (onTouchFade) {
+      if (fadeTimeoutRef.current) {
+        clearTimeout(fadeTimeoutRef.current);
+        fadeTimeoutRef.current = null;
+      }
+
+      // Schedule hide after onClickFade ms
+      fadeTimeoutRef.current = window.setTimeout(() => {
+        handleHide();
+        fadeTimeoutRef.current = null;
+      }, onTouchFade);
+    }
   };
 
   const handlePointerLeave = () => {
@@ -220,6 +264,10 @@ const Tooltip = <T extends HTMLElement>(
   const childWithProps = React.cloneElement(children, {
     ref: containerRef,
     onClick: (...args) => {
+      if (isTouchDevice) {
+        // console.log('Skipping onPointerLeave on touch device');
+        return;
+      }
       // Call the parent's event handler
       handleClick(...args);
       // Call the child's original event handler if it exists
@@ -242,12 +290,16 @@ const Tooltip = <T extends HTMLElement>(
         // console.log('Skipping onPointerDown on non-touch device');
         return;
       }
-      handlePointerEnter(...args);
+      handlePointerDown(...args);
       if (children.props.onPointerDown) {
         children.props.onPointerDown(...args);
       }
     },
     onPointerLeave: (...args) => {
+      if (isTouchDevice) {
+        // console.log('Skipping onPointerLeave on touch device');
+        return;
+      }
       handlePointerLeave(...args);
       if (children.props.onPointerLeave) {
         children.props.onPointerLeave(...args);
