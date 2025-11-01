@@ -57,7 +57,7 @@ const Client = ({ player_statistic_rankings, players }) => {
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
   const sessionStorageKey = `${path}.COMPARE.PLAYER`;
-  const [view, setView] = useState<string | null>('overview');
+  const [view, setView] = useState<string>('overview');
   const teams = useAppSelector((state) => state.compareReducer.teams);
   const hideLowerBench = useAppSelector((state) => state.compareReducer.hideLowerBench);
   const topPlayersOnly = useAppSelector((state) => state.compareReducer.topPlayersOnly);
@@ -71,6 +71,9 @@ const Client = ({ player_statistic_rankings, players }) => {
   const guards: string[] = [];
   const forwards: string[] = [];
   const centers: string[] = [];
+  const passing: string[] = [];
+  const rushing: string[] = [];
+  const receiving: string[] = [];
   let topPlayers: string[] = [];
   const player_id_x_stats = {};
   const team_id_x_stats = {};
@@ -86,6 +89,21 @@ const Client = ({ player_statistic_rankings, players }) => {
     }
     if (player.position === 'G') {
       guards.push(player_id);
+    }
+    if (player.position === 'QB') {
+      passing.push(player_id);
+    }
+    if (
+      player.position === 'FB' ||
+      player.position === 'RB'
+    ) {
+      rushing.push(player_id);
+    }
+    if (
+      player.position === 'TE' ||
+      player.position === 'WR'
+    ) {
+      receiving.push(player_id);
     }
   }
 
@@ -121,15 +139,26 @@ const Client = ({ player_statistic_rankings, players }) => {
     }
   }
 
-  const getColumns = () => {
-    if (view === 'overview') {
-      return ['name', 'team_name', 'height', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
-    } if (view === 'offensive') {
-      return ['name', 'team_name', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
-    } if (view === 'defensive') {
-      return ['name', 'team_name', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
+
+  const getColumns = (position: string) => {
+    let columnView = view;
+
+    if (position !== 'all') {
+      columnView = position;
     }
-    return [];
+
+    if (position === 'all') {
+      if (view === 'overview') {
+        return ['name', 'team_name', 'height', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
+      }
+      if (view === 'offensive') {
+        return ['name', 'team_name', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
+      }
+      if (view === 'defensive') {
+        return ['name', 'team_name', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
+      }
+    }
+    return TableColumns.getViewableColumns({ organization_id, view: 'compare', columnView, customColumns: [], positions: [position] });
   };
 
   const handleClick = (player_id: string) => {
@@ -145,7 +174,7 @@ const Client = ({ player_statistic_rankings, players }) => {
     425: 45,
   };
 
-  const statDisplay = [
+  let statDisplay = [
     {
       label: 'Overview',
       value: 'overview',
@@ -159,6 +188,10 @@ const Client = ({ player_statistic_rankings, players }) => {
       value: 'defensive',
     },
   ];
+
+  if (Organization.getCFBID() === organization_id) {
+    statDisplay = [];
+  }
 
   const statDisplayChips: React.JSX.Element[] = [];
 
@@ -180,14 +213,18 @@ const Client = ({ player_statistic_rankings, players }) => {
     );
   }
 
-  const getTable = (player_ids) => {
+  const getTable = (player_ids, position) => {
     const rows: PlayerStatisticRanking[] = [];
 
     for (let i = 0; i < player_ids.length; i++) {
       if (player_ids[i] in player_id_x_stats) {
         const stats = player_id_x_stats[player_ids[i]];
 
-        if (hideLowerBench && stats.minutes_per_game < 3) {
+        if (
+          hideLowerBench &&
+          stats.minutes_per_game < 3 &&
+          Organization.getCFBID() !== organization_id
+        ) {
           continue;
         }
 
@@ -206,14 +243,20 @@ const Client = ({ player_statistic_rankings, players }) => {
       }
     }
 
+    let defaultSortOrderBy = 'minutes_per_game';
+
+    if (Organization.getCFBID() === organization_id) {
+      defaultSortOrderBy = 'rank';
+    }
+
     return (
       <RankTable
         rows={rows}
         columns={headCells}
-        displayColumns={getColumns()}
+        displayColumns={getColumns(position)}
         rowKey = 'player_id'
         defaultSortOrder = 'asc'
-        defaultSortOrderBy = 'minutes_per_game'
+        defaultSortOrderBy = {defaultSortOrderBy}
         sessionStorageKey = {sessionStorageKey}
         getRankSpanMax = {() => 5300} // todo update when implementing CFB compare tool
         handleRowClick={handleClick}
@@ -231,14 +274,14 @@ const Client = ({ player_statistic_rankings, players }) => {
         topPlayersOnly ?
           <>
             <Typography type='h6'>Each team top 6 MPG</Typography>
-            {getTable(topPlayers)}
+            {getTable(topPlayers, 'all')}
           </> :
           <>
             {
             guards.length ?
               <>
               <Typography type='h6'>Guards</Typography>
-              {getTable(guards)}
+              {getTable(guards, 'all')}
               </>
               : ''
             }
@@ -246,7 +289,7 @@ const Client = ({ player_statistic_rankings, players }) => {
             forwards.length ?
               <>
               <Typography type='h6'>Forwards</Typography>
-              {getTable(forwards)}
+              {getTable(forwards, 'all')}
               </>
               : ''
             }
@@ -254,7 +297,31 @@ const Client = ({ player_statistic_rankings, players }) => {
             centers.length ?
               <>
               <Typography type='h6'>Centers</Typography>
-              {getTable(centers)}
+              {getTable(centers, 'all')}
+              </>
+              : ''
+            }
+            {
+            passing.length ?
+              <>
+              <Typography type='h6'>Passing</Typography>
+              {getTable(passing, 'passing')}
+              </>
+              : ''
+            }
+            {
+            rushing.length ?
+              <>
+              <Typography type='h6'>Rushing</Typography>
+              {getTable(rushing, 'rushing')}
+              </>
+              : ''
+            }
+            {
+            receiving.length ?
+              <>
+              <Typography type='h6'>Receiving</Typography>
+              {getTable(receiving, 'receiving')}
               </>
               : ''
             }

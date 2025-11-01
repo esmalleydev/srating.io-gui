@@ -34,6 +34,18 @@ const PredictionLine = ({ game }) => {
     gamePrediction[game.game_id].prediction.home_percentage
   );
 
+  const away_score = (
+    gamePrediction[game.game_id] &&
+    gamePrediction[game.game_id].prediction &&
+    gamePrediction[game.game_id].prediction.away_score
+  );
+
+  const home_score = (
+    gamePrediction[game.game_id] &&
+    gamePrediction[game.game_id].prediction &&
+    gamePrediction[game.game_id].prediction.home_score
+  );
+
 
   const compareRows: CompareStatisticRow[] = [
     {
@@ -56,6 +68,28 @@ const PredictionLine = ({ game }) => {
       },
     },
   ];
+
+  if (home_score && away_score) {
+    compareRows.push({
+      id: 'predicted_score',
+      label: 'Predicted score',
+      tooltip: 'Predicted score',
+      leftRow: { score: away_score },
+      rightRow: { score: home_score },
+      numeric: false,
+      organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+      views: ['matchup'],
+      graphable: false,
+      sort: 'higher',
+      locked,
+      getDisplayValue: (row) => {
+        return !locked && 'score' in row ? row.score : 0;
+      },
+      getValue: (row) => {
+        return !locked && 'score' in row ? row.score : 0;
+      },
+    });
+  }
 
 
   return (

@@ -65,10 +65,7 @@ const NavBar = () => {
     trends: 'Trends',
   };
 
-  let tabOrder: string[] = ['team', 'player', 'trends'];
-  if (organization_id === Organization.getCFBID()) {
-    tabOrder = ['team', 'trends'];
-  }
+  const tabOrder: string[] = ['team', 'player', 'trends'];
 
   let subTabOptions = {};
   if (view === 'trends') {
@@ -228,18 +225,20 @@ const NavBar = () => {
       </Tooltip>,
     );
   } else if (view === 'player') {
-    rightButtons.push(<PlayerAdditionalOptions key = {'player-additional'} />);
+    if (Organization.getCFBID() !== organization_id) {
+      rightButtons.push(<PlayerAdditionalOptions key = {'player-additional'} />);
 
-    leftButtons.push(
-      <Tooltip key = {'top-player-button'} text = {topPlayersOnly ? 'Show all players' : 'View top MPG players'}>
-        <IconButton
-          id = 'top-players-button'
-          onClick = {() => { dispatch(setDataKey({ key: 'topPlayersOnly', value: !topPlayersOnly })); }}
-        >
-          <SensorOccupiedIcon color = {topPlayersOnly ? 'success' : 'primary'} />
-        </IconButton>
-      </Tooltip>,
-    );
+      leftButtons.push(
+        <Tooltip key = {'top-player-button'} text = {topPlayersOnly ? 'Show all players' : 'View top MPG players'}>
+          <IconButton
+            id = 'top-players-button'
+            onClick = {() => { dispatch(setDataKey({ key: 'topPlayersOnly', value: !topPlayersOnly })); }}
+          >
+            <SensorOccupiedIcon color = {topPlayersOnly ? 'success' : 'primary'} />
+          </IconButton>
+        </Tooltip>,
+      );
+    }
   }
 
   if (!home_team_id || !away_team_id) {

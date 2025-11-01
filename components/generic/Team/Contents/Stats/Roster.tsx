@@ -240,7 +240,7 @@ const Roster = ({ organization_id, rosterStats, player_team_seasons }) => {
           secondaryKey = 'secondary'
           useAlternateLabel = {true}
           handleRowClick={handleClick}
-          />;
+        />;
     }
 
     return (

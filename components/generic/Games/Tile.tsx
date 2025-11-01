@@ -28,6 +28,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Style from '@/components/utils/Style';
 import Navigation from '@/components/helpers/Navigation';
+import Tooltip from '@/components/ux/hover/Tooltip';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {
@@ -75,6 +76,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const spreadToUseHome = (Game.isInProgress() ? Game.getLiveSpread('home') : Game.getPreSpread('home'));
   const spreadToUseAway = (Game.isInProgress() ? Game.getLiveSpread('away') : Game.getPreSpread('away'));
   const overUnderToUse = (Game.isInProgress() ? Game.getLiveOver() : Game.getPreOver());
+
+  const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.away_percentage === null));
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -145,6 +148,27 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       oddsTexts.push(`O${overUnderToUse}`);
     }
 
+    const predictedSpreadContainer: React.JSX.Element[] = [];
+
+    if (isLoadingWinPercentage) {
+      predictedSpreadContainer.push(<Skeleton key = {1} width={25} />);
+    } else if (!hasAccessToPercentages) {
+      predictedSpreadContainer.push(
+        <Tooltip text = {'Predicted spread and over'}>
+          <div><Locked iconFontSize={'20px'} key = {1} /></div>
+        </Tooltip>,
+      );
+    } else if (game.prediction.home_score && game.prediction.away_score) {
+      const spread = +(game.prediction.home_score - game.prediction.away_score).toFixed(0);
+      const over = (game.prediction.home_score + game.prediction.away_score).toFixed(0);
+      predictedSpreadContainer.push(
+        <Tooltip text = {'Predicted spread and over'}>
+          <Typography key = {'predicted_spread'} type = 'overline' style = {{ color: theme.info.main, marginLeft: 10, fontSize: '11px' }}>{`${spread < 0 ? Game.getTeamNameShort('away') : Game.getTeamNameShort('home')} ${spread} | O${over}`}</Typography>
+        </Tooltip>,
+      );
+    }
+
+
     return (
       <div style = {flexContainer} >
         <div style = {timeStyle}><Typography style = {{ display: 'inline-block', color: (Game.isInProgress() ? theme.info.dark : theme.text.secondary) }} type = 'overline'>{Game.getTime()}</Typography>{network}</div>
@@ -153,6 +177,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
             <div><Typography style={{ display: 'inline-block', fontSize: '11px', color: theme.text.secondary }} type = 'overline'>{oddsTexts.join(' | ')}</Typography></div>
             : ''
         }
+        {predictedSpreadContainer}
         <Pin game_id = {game.game_id} />
       </div>
     );
@@ -161,20 +186,34 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const awayWinPercentageContainer: React.JSX.Element[] = [];
   const homeWinPercentageContainer: React.JSX.Element[] = [];
 
-  const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.away_percentage === null));
-
   if (isLoadingWinPercentage) {
     awayWinPercentageContainer.push(<Skeleton key = {1} />);
     homeWinPercentageContainer.push(<Skeleton key = {2} />);
   } else if (!hasAccessToPercentages) {
-    awayWinPercentageContainer.push(<Locked iconFontSize={'20px'} key = {1} />);
-    homeWinPercentageContainer.push(<Locked iconFontSize={'20px'} key = {2} />);
+    awayWinPercentageContainer.push(
+      <Tooltip key = {1} text = {'Predicted win %'}>
+        <div><Locked iconFontSize={'20px'} /></div>
+      </Tooltip>,
+    );
+    homeWinPercentageContainer.push(
+      <Tooltip key = {2} text = {'Predicted win %'}>
+        <div><Locked iconFontSize={'20px'} /></div>
+      </Tooltip>,
+    );
   } else {
     const awayPercentage = +(game.prediction.away_percentage * 100).toFixed(0);
     const homePercentage = +(game.prediction.home_percentage * 100).toFixed(0);
 
-    awayWinPercentageContainer.push(<Typography key = {'away_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.away_percentage) }}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
-    homeWinPercentageContainer.push(<Typography key = {'home_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.home_percentage) }}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>);
+    awayWinPercentageContainer.push(
+      <Tooltip key = {1} text = {'Predicted win %'}>
+        <Typography key = {'away_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.away_percentage) }}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>
+      </Tooltip>,
+    );
+    homeWinPercentageContainer.push(
+      <Tooltip key = {2} text = {'Predicted win %'}>
+        <Typography key = {'home_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.home_percentage) }}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>
+      </Tooltip>,
+    );
   }
 
   const getOddsLine = () => {

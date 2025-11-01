@@ -4194,6 +4194,9 @@ class TableColumns {
         if (view === 'roster') {
           return ['rank', 'is_transfer', 'name', 'adjusted_passing_rating', 'passing_rating_college', 'passing_rating_pro', 'passing_attempts_per_game', 'passing_completions_per_game', 'passing_yards_per_game', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns_per_game', 'passing_interceptions_per_game', 'passing_long'];
         }
+        if (view === 'compare') {
+          return ['rank', 'name', 'team_name', 'adjusted_passing_rating', 'passing_rating_college', 'passing_rating_pro', 'passing_attempts_per_game', 'passing_completions_per_game', 'passing_yards_per_game', 'passing_completion_percentage', 'passing_yards_per_attempt', 'passing_yards_per_completion', 'passing_touchdowns_per_game', 'passing_interceptions_per_game', 'passing_long'];
+        }
       } else if (columnView === 'rushing') {
         if (view === 'team' || view === 'conference') {
           return ['rank', 'name', 'rushing_attempts', 'rushing_yards', 'rushing_yards_per_attempt', 'rushing_touchdowns', 'rushing_long'];
@@ -4204,6 +4207,9 @@ class TableColumns {
         }
         if (view === 'roster') {
           return ['rank', 'is_transfer', 'name', 'rushing_attempts_per_game', 'rushing_yards_per_game', 'rushing_yards_per_attempt', 'rushing_touchdowns_per_game', 'rushing_long'];
+        }
+        if (view === 'compare') {
+          return ['rank', 'name', 'team_name', 'rushing_attempts_per_game', 'rushing_yards_per_game', 'rushing_yards_per_attempt', 'rushing_touchdowns_per_game', 'rushing_long'];
         }
       } else if (columnView === 'receiving') {
         if (view === 'team' || view === 'conference') {
@@ -4216,6 +4222,10 @@ class TableColumns {
 
         if (view === 'roster') {
           return ['rank', 'is_transfer', 'name', 'receptions_per_game', 'receiving_yards_per_game', 'receiving_yards_per_reception', 'receiving_touchdowns_per_game', 'receiving_long'];
+        }
+
+        if (view === 'compare') {
+          return ['rank', 'name', 'team_name', 'receptions_per_game', 'receiving_yards_per_game', 'receiving_yards_per_reception', 'receiving_touchdowns_per_game', 'receiving_long'];
         }
       } else if (columnView === 'defense') {
         if (view === 'team' || view === 'conference') {

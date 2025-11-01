@@ -75,11 +75,11 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Subscribe for just $5 per month to get access to win percentages for every game!
+            Subscribe for just $5 per month to get access to win percentages and predicted score for every game!
           </DialogContentText>
-          <DialogContentText id="alert-dialog-description">
+          {/* <DialogContentText id="alert-dialog-description">
             <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {handleLiveWinRate} href = {getLiveWinRateHref()}>View the live win rate</a>
-          </DialogContentText>
+          </DialogContentText> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Maybe later</Button>

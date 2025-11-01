@@ -15,6 +15,8 @@ import Typography from '@/components/ux/text/Typography';
 type predictionsType = {
   away?: number;
   home?: number;
+  home_score?: number;
+  away_score?: number;
 }
 
 const CompareView = ({ statistic_rankings }) => {
@@ -66,6 +68,29 @@ const CompareView = ({ statistic_rankings }) => {
       },
     },
   ];
+
+  if (predictions.home_score && predictions.away_score) {
+    const locked = (!('away' in predictions) && !('home' in predictions));
+    predictionRows.push({
+      id: 'predicted_score',
+      label: 'Predicted score',
+      tooltip: 'Predicted score',
+      leftRow: { score: predictions.away_score },
+      rightRow: { score: predictions.home_score },
+      numeric: false,
+      organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+      views: ['matchup'],
+      graphable: false,
+      sort: 'higher',
+      locked,
+      getDisplayValue: (row) => {
+        return !locked && 'score' in row ? row.score : 0;
+      },
+      getValue: (row) => {
+        return !locked && 'score' in row ? row.score : 0;
+      },
+    });
+  }
 
   const sections = getSections();
 

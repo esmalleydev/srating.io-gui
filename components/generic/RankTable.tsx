@@ -143,6 +143,10 @@ const RankTable = (
 
     for (let i = 0; i < displayColumns.length; i++) {
       const headCell = columns[displayColumns[i]];
+      if (!headCell) {
+        console.warn('missing headcell for: ', displayColumns[i]);
+        continue;
+      }
       const cellStyle = Objector.extender({}, tdStyle, headCell.style || {});
 
       let tdWidth: number | null = null;
@@ -236,6 +240,10 @@ const RankTable = (
             <TableRow>
               {displayColumns.map((column, i) => {
                 const headCell = columns[column];
+                if (!headCell) {
+                  console.warn('missing headCell: ', column);
+                  return <></>;
+                }
                 const tdStyle: React.CSSProperties = {
                   padding: '4px 5px',
                   border: 0,
