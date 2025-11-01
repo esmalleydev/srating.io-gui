@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Paper from '@/components/ux/container/Paper';
+import useIsTouchDevice from '@/components/hooks/useIsTouchDevice';
 
 // todo on hover might need an if width < 500 to disable if hover amount is longer than x seconds, gets buggy while scrolling
 
@@ -10,8 +11,8 @@ const Tooltip = <T extends HTMLElement>(
   {
     text,
     position = 'bottom',
-    delay = 250,
-    onClickFade = 5000,
+    delay = 100,
+    onClickFade = 3000,
     disableOnFocus = false,
     onClickRemove = false,
     style = {},
@@ -30,11 +31,13 @@ const Tooltip = <T extends HTMLElement>(
       onClick?: () => void;
       onPointerEnter?: () => void;
       onPointerLeave?: () => void;
+      onPointerDown?: () => void;
       onFocus?: () => void;
       onBlur?: () => void;
     }>;
   },
 ) => {
+  const isTouchDevice = useIsTouchDevice();
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const containerRef = useRef<T>(null);
@@ -225,9 +228,23 @@ const Tooltip = <T extends HTMLElement>(
       }
     },
     onPointerEnter: (...args) => {
+      if (isTouchDevice) {
+        // console.log('Skipping onPointerEnter on touch device');
+        return;
+      }
       handlePointerEnter(...args);
       if (children.props.onPointerEnter) {
         children.props.onPointerEnter(...args);
+      }
+    },
+    onPointerDown: (...args) => {
+      if (!isTouchDevice) {
+        // console.log('Skipping onPointerDown on non-touch device');
+        return;
+      }
+      handlePointerEnter(...args);
+      if (children.props.onPointerDown) {
+        children.props.onPointerDown(...args);
       }
     },
     onPointerLeave: (...args) => {
