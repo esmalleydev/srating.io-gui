@@ -264,43 +264,34 @@ const Tooltip = <T extends HTMLElement>(
   const childWithProps = React.cloneElement(children, {
     ref: containerRef,
     onClick: (...args) => {
-      if (isTouchDevice) {
-        // console.log('Skipping onPointerLeave on touch device');
-        return;
+      if (!isTouchDevice) {
+        handleClick(...args);
       }
-      // Call the parent's event handler
-      handleClick(...args);
       // Call the child's original event handler if it exists
       if (children.props.onClick) {
         children.props.onClick(...args);
       }
     },
     onPointerEnter: (...args) => {
-      if (isTouchDevice) {
-        // console.log('Skipping onPointerEnter on touch device');
-        return;
+      if (!isTouchDevice) {
+        handlePointerEnter(...args);
       }
-      handlePointerEnter(...args);
       if (children.props.onPointerEnter) {
         children.props.onPointerEnter(...args);
       }
     },
     onPointerDown: (...args) => {
-      if (!isTouchDevice) {
-        // console.log('Skipping onPointerDown on non-touch device');
-        return;
+      if (isTouchDevice) {
+        handlePointerDown(...args);
       }
-      handlePointerDown(...args);
       if (children.props.onPointerDown) {
         children.props.onPointerDown(...args);
       }
     },
     onPointerLeave: (...args) => {
-      if (isTouchDevice) {
-        // console.log('Skipping onPointerLeave on touch device');
-        return;
+      if (!isTouchDevice) {
+        handlePointerLeave(...args);
       }
-      handlePointerLeave(...args);
       if (children.props.onPointerLeave) {
         children.props.onPointerLeave(...args);
       }
