@@ -23,6 +23,7 @@ import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import { reset } from '@/redux/features/compare-slice';
+import Tooltip from '../ux/hover/Tooltip';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
@@ -51,10 +52,10 @@ const OrganizationPicker = () => {
   }
   const statusOptions: Options[] = [];
 
-  for (const organization_id in organizations) {
+  for (const id in organizations) {
     statusOptions.push({
-      value: organization_id,
-      label: `${organizations[organization_id].code} (${organizations[organization_id].name})`,
+      value: id,
+      label: `${organizations[id].code} (${organizations[id].name})`,
     });
   }
 
@@ -108,23 +109,34 @@ const OrganizationPicker = () => {
     });
   };
 
-  const title = selected in organizations ? organizations[selected].code : 'Loading...';
+  let emoji = '';
+
+  if (organization_id === Organization.getCFBID()) {
+    emoji = '🏈 ';
+  }
+  if (organization_id === Organization.getCBBID()) {
+    emoji = '🏀 ';
+  }
+
+  const title = selected in organizations ? `${emoji}${organizations[selected].code}` : 'Loading...';
 
   return (
     <div>
-      <Button
-        id="organization-picker-button"
-        aria-controls={open ? 'organization-picker-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        variant="text"
-        disableElevation
-        onClick={handleOpen}
-        endIcon={<KeyboardArrowDownIcon />}
-        sx={{ color: (theme.mode === 'light' ? '#fff' : theme.primary.main) }}
-      >
-        {title}
-      </Button>
+      <Tooltip text='Change to a different sport'>
+        <Button
+          id="organization-picker-button"
+          aria-controls={open ? 'organization-picker-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          variant="text"
+          disableElevation
+          onClick={handleOpen}
+          endIcon={<KeyboardArrowDownIcon />}
+          sx={{ color: (theme.mode === 'light' ? '#fff' : theme.primary.main) }}
+        >
+          {title}
+        </Button>
+      </Tooltip>
       <Menu
         anchor={anchorEl}
         open={open}
