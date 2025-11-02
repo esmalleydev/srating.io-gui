@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label, Brush,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, Label, Brush,
   YAxisProps,
 } from 'recharts';
 import {
@@ -418,7 +418,7 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
                   <Brush dataKey = 'name' startIndex={0} height={20} stroke = {theme.success.dark} /> :
                   ''
               }
-              <Tooltip cursor = {{ stroke: theme.warning.main, strokeWidth: 2 }} content={<CustomTooltip />} />
+              <RechartsTooltip cursor = {{ stroke: theme.warning.main, strokeWidth: 2 }} content={<CustomTooltip />} />
               {getLines()}
             </LineChart>
           </ResponsiveContainer>

@@ -118,7 +118,7 @@ const Client = () => {
     const getRemoveButton = () => {
       return (
         <div>
-          <Tooltip text = {'Remove team'}>
+          <Tooltip onClickRemove text = {'Remove team'}>
             <IconButton
               id = 'remove-button'
               onClick = {() => { handleRemove(team_id); }}
@@ -185,7 +185,7 @@ const Client = () => {
       <div>
         {
         home_team_id && away_team_id ?
-          <Tooltip text = {'Swap teams'}>
+          <Tooltip onClickRemove text = {'Swap teams'}>
             <IconButton
               id = 'swap-button'
               onClick = {handleSwap}

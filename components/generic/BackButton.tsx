@@ -12,7 +12,7 @@ const BackButton = () => {
 
   return (
     <>
-      <Tooltip text = {'Back'}>
+      <Tooltip onClickRemove text = {'Back'}>
         <IconButton color='primary' onClick = {handleClick}>
           <ArrowBackIcon fontSize = 'small' />
         </IconButton>

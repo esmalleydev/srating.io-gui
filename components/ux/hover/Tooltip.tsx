@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, Profiler } from 'react';
 import { createPortal } from 'react-dom';
 import Paper from '@/components/ux/container/Paper';
-import useIsTouchDevice from '@/components/hooks/useIsTouchDevice';
+// import useIsTouchDevice from '@/components/hooks/useIsTouchDevice';
 
 // todo on hover might need an if width < 500 to disable if hover amount is longer than x seconds, gets buggy while scrolling
 
@@ -13,7 +13,7 @@ const Tooltip = <T extends HTMLElement>(
     position = 'bottom',
     delay = 100,
     onClickFade = 3000,
-    onTouchFade = 2000,
+    // onTouchFade = 2000,
     disableOnFocus = false,
     onClickRemove = false,
     style = {},
@@ -24,7 +24,7 @@ const Tooltip = <T extends HTMLElement>(
     position?: string;
     delay?: number;
     onClickFade?: number;
-    onTouchFade?: number;
+    // onTouchFade?: number;
     disableOnFocus?: boolean;
     onClickRemove?: boolean;
     style?: React.CSSProperties;
@@ -39,7 +39,7 @@ const Tooltip = <T extends HTMLElement>(
     }>;
   },
 ) => {
-  const isTouchDevice = useIsTouchDevice();
+  // const isTouchDevice = useIsTouchDevice();
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const containerRef = useRef<T>(null);
@@ -162,20 +162,35 @@ const Tooltip = <T extends HTMLElement>(
     };
   }, []);
 
+  const log = (...args) => {
+    // console.log(...args);
+  };
 
-  const handleShow = () => {
+  const handleShow = (overrideDelay: number | null = null) => {
+    log('handleShow');
     // clear any prior show timer and schedule a new one
     if (showTimeoutRef.current) {
       clearTimeout(showTimeoutRef.current);
       showTimeoutRef.current = null;
     }
-    showTimeoutRef.current = window.setTimeout(() => {
+
+    const d = overrideDelay !== null ? overrideDelay : delay;
+
+    if (d === 0) {
+      log('handleShow now!');
       setIsVisible(true);
       showTimeoutRef.current = null;
-    }, delay);
+    } else {
+      showTimeoutRef.current = window.setTimeout(() => {
+        log('handleShow timeout');
+        setIsVisible(true);
+        showTimeoutRef.current = null;
+      }, d);
+    }
   };
 
   const handleHide = () => {
+    log('handleHide');
     // clear both timers and hide
     if (showTimeoutRef.current) {
       clearTimeout(showTimeoutRef.current);
@@ -189,7 +204,9 @@ const Tooltip = <T extends HTMLElement>(
   };
 
   const handleFocus = () => {
+    log('handleFocus');
     if (disableOnFocus) {
+      log('disableOnFocus');
       return;
     }
 
@@ -202,16 +219,23 @@ const Tooltip = <T extends HTMLElement>(
   };
 
   const handlePointerEnter = () => {
+    log('handlePointerEnter');
     if (fadeTimeoutRef.current) {
       clearTimeout(fadeTimeoutRef.current);
       fadeTimeoutRef.current = null;
     }
     handleShow();
-
-    // if (onClickFade) {
   };
 
+  /*
   const handlePointerDown = () => {
+    log('handlePointerDown');
+
+    if (onClickRemove) {
+      log('onClickRemove');
+      handleHide();
+    }
+
     if (fadeTimeoutRef.current) {
       clearTimeout(fadeTimeoutRef.current);
       fadeTimeoutRef.current = null;
@@ -231,8 +255,10 @@ const Tooltip = <T extends HTMLElement>(
       }, onTouchFade);
     }
   };
+  */
 
   const handlePointerLeave = () => {
+    log('handlePointerLeave');
     // If a show timer is still pending, cancel it; otherwise hide immediately
     if (showTimeoutRef.current) {
       clearTimeout(showTimeoutRef.current);
@@ -242,11 +268,18 @@ const Tooltip = <T extends HTMLElement>(
   };
 
   const handleClick = () => {
+    log('handleClick');
     if (onClickRemove) {
+      log('onClickRemove');
       handleHide();
+      return;
     }
 
+    handleShow(0);
+
     if (onClickFade) {
+      log('onClickFade');
+
       if (fadeTimeoutRef.current) {
         clearTimeout(fadeTimeoutRef.current);
         fadeTimeoutRef.current = null;
@@ -254,6 +287,7 @@ const Tooltip = <T extends HTMLElement>(
 
       // Schedule hide after onClickFade ms
       fadeTimeoutRef.current = window.setTimeout(() => {
+        log('onClickFade timeout');
         handleHide();
         fadeTimeoutRef.current = null;
       }, onClickFade);
@@ -264,47 +298,54 @@ const Tooltip = <T extends HTMLElement>(
   const childWithProps = React.cloneElement(children, {
     ref: containerRef,
     onClick: (...args) => {
-      if (!isTouchDevice) {
-        handleClick(...args);
-      }
+      log('onClick');
+      handleClick(...args);
       // Call the child's original event handler if it exists
       if (children.props.onClick) {
+        log('onClick child');
         children.props.onClick(...args);
       }
     },
     onPointerEnter: (...args) => {
-      if (!isTouchDevice) {
-        handlePointerEnter(...args);
-      }
+      log('onPointerEnter');
+      handlePointerEnter(...args);
       if (children.props.onPointerEnter) {
+        log('onPointerEnter child');
         children.props.onPointerEnter(...args);
       }
     },
-    onPointerDown: (...args) => {
-      if (isTouchDevice) {
-        handlePointerDown(...args);
-      }
-      if (children.props.onPointerDown) {
-        children.props.onPointerDown(...args);
-      }
-    },
+    // onPointerDown: (...args) => {
+    //   log('onPointerDown');
+    //   if (isTouchDevice) {
+    //     log('onPointerDown isTouchDevice');
+    //     handlePointerDown(...args);
+    //   }
+    //   if (children.props.onPointerDown) {
+    //     log('onPointerDown child');
+    //     children.props.onPointerDown(...args);
+    //   }
+    // },
     onPointerLeave: (...args) => {
-      if (!isTouchDevice) {
-        handlePointerLeave(...args);
-      }
+      log('onPointerLeave');
+      handlePointerLeave(...args);
       if (children.props.onPointerLeave) {
+        log('onPointerLeave child');
         children.props.onPointerLeave(...args);
       }
     },
     onFocus: (...args) => {
+      log('onFocus');
       handleFocus(...args);
       if (children.props.onFocus) {
+        log('onFocus child');
         children.props.onFocus(...args);
       }
     },
     onBlur: (...args) => {
+      log('onBlur');
       handlePointerLeave(...args);
       if (children.props.onBlur) {
+        log('onBlur child');
         children.props.onBlur(...args);
       }
     },
@@ -312,6 +353,9 @@ const Tooltip = <T extends HTMLElement>(
 
   return (
     <>
+      <Profiler id="Tooltip" onRender={(id, phase, actualDuration, baseDuration, startTime, commitTime) => {
+        console.log(id, phase, actualDuration);
+      }}>
       {childWithProps}
       {isVisible && createPortal(
         <Paper style ={baseStyles}>
@@ -319,6 +363,7 @@ const Tooltip = <T extends HTMLElement>(
         </Paper>,
         document.body,
       )}
+      </Profiler>
     </>
   );
 };

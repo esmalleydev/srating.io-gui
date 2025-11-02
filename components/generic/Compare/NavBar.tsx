@@ -215,7 +215,7 @@ const NavBar = () => {
     rightButtons.push(<TeamAdditionalOptions key = {'team-additional'} />);
 
     leftButtons.push(
-      <Tooltip key = {'table-button'} text = {subview === 'table' ? 'View compare mode' : 'View table mode'}>
+      <Tooltip onClickRemove key = {'table-button'} text = {subview === 'table' ? 'View compare mode' : 'View table mode'}>
         <IconButton
           id = 'table-card-button'
           onClick = {(e) => handleSubView(e, subview === 'table' ? null : 'table')}
@@ -229,7 +229,7 @@ const NavBar = () => {
       rightButtons.push(<PlayerAdditionalOptions key = {'player-additional'} />);
 
       leftButtons.push(
-        <Tooltip key = {'top-player-button'} text = {topPlayersOnly ? 'Show all players' : 'View top MPG players'}>
+        <Tooltip onClickRemove key = {'top-player-button'} text = {topPlayersOnly ? 'Show all players' : 'View top MPG players'}>
           <IconButton
             id = 'top-players-button'
             onClick = {() => { dispatch(setDataKey({ key: 'topPlayersOnly', value: !topPlayersOnly })); }}

@@ -95,7 +95,7 @@ const FavoritePicker = (
 
   return (
     <>
-      <Tooltip delay = {500} text = {'Save favorite'}>
+      <Tooltip onClickRemove text = {'Save favorite'}>
         <IconButton color='primary' onClick = {handleFavorite}>
           <FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />
         </IconButton>

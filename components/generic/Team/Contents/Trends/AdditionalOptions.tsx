@@ -60,7 +60,7 @@ const AdditionalOptions = () => {
 
   return (
     <div>
-      <Tooltip text = {'Additional filters'}>
+      <Tooltip onClickRemove text = {'Additional filters'}>
         <IconButton
             id="additional-filters"
             aria-controls={open ? 'long-menu' : undefined}

@@ -122,7 +122,7 @@ const OrganizationPicker = () => {
 
   return (
     <div>
-      {/* <Tooltip text='Change to a different sport'> */}
+      <Tooltip onClickRemove text='Change to a different sport'>
         <Button
           id="organization-picker-button"
           aria-controls={open ? 'organization-picker-menu' : undefined}
@@ -136,7 +136,7 @@ const OrganizationPicker = () => {
         >
           {title}
         </Button>
-      {/* </Tooltip> */}
+      </Tooltip>
       <Menu
         anchor={anchorEl}
         open={open}

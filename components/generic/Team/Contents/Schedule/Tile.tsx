@@ -202,7 +202,7 @@ const Tile = ({ game, team }) => {
         }} onClick={handleGameClick}>
           <Typography type = 'caption'><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick={handleGameClick} href = {getGameHref()}>{scoreLineText}</a></Typography>
         </Card>
-        <Tooltip delay={500} position = 'top' text={'Predicted win %'}>
+        <Tooltip position = 'top' text={'Predicted win %'}>
           <Card style = {{
             display: 'flex', width: 50, marginLeft: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center',
           }}>

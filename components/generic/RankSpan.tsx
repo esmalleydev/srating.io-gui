@@ -50,7 +50,7 @@ const RankSpan = (
   const rankWithOrdinal = getNumberWithOrdinal(rank);
 
   return (
-    <Tooltip delay={500} position = 'top' text={`Ranked ${rankWithOrdinal} out of ${max}`}>
+    <Tooltip position = 'top' text={`Ranked ${rankWithOrdinal} out of ${max}`}>
       <span style = {spanStyle}>{useOrdinal ? rankWithOrdinal : rank}</span>
     </Tooltip>
   );
