@@ -94,6 +94,7 @@ const DateBar = (
       const query = search ? `?${search}` : '';
 
       dispatch(setDataKey({ key: 'refreshEnabled', value: false }));
+      dispatch(setDataKey({ key: 'scrollTop', value: 0 }));
       dispatch(setLoading(true));
       startTransition(() => {
         router.replace(`${pathName}${query}`);
