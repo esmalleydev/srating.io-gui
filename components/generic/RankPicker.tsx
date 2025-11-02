@@ -41,26 +41,26 @@ const RankPicker = (
     },
     {
       value: 'elo_rank',
-      label: 'SR Elo',
+      label: 'sRating Elo',
     },
   ];
 
-  if (isCBB) {
-    rankDisplayOptions = rankDisplayOptions.concat([
-      {
-        value: 'kenpom_rank',
-        label: 'Kenpom',
-      },
-      {
-        value: 'srs_rank',
-        label: 'SRS',
-      },
-      {
-        value: 'net_rank',
-        label: 'NET',
-      },
-    ]);
-  }
+  // if (isCBB) {
+  //   rankDisplayOptions = rankDisplayOptions.concat([
+  //     {
+  //       value: 'kenpom_rank',
+  //       label: 'Kenpom',
+  //     },
+  //     {
+  //       value: 'srs_rank',
+  //       label: 'SRS',
+  //     },
+  //     {
+  //       value: 'net_rank',
+  //       label: 'NET',
+  //     },
+  //   ]);
+  // }
 
   rankDisplayOptions = rankDisplayOptions.concat([
     {
