@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import OptionPicker from '@/components/generic/OptionPicker';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import Rank from './Rank';
 import { getBreakPoint } from './ClientWrapper';
 import Record from './Record';

@@ -6,6 +6,7 @@ import { Client } from '@/components/generic/Games/Contents/Client';
 import { useServerAPI } from '@/components/serverAPI';
 import { ClientSkeleton } from '../StatsLoader/Client';
 import StatsLoaderServer from '../StatsLoader/Server';
+import Objector from '@/components/utils/Objector';
 
 
 const Server = async ({ games, date, organization_id, division_id, season }) => {
@@ -27,7 +28,7 @@ const Server = async ({ games, date, organization_id, division_id, season }) => 
       if (game_id in games) {
         delete scores[game_id].prediction;
         delete scores[game_id].prediction;
-        Object.assign(games[game_id], scores[game_id]);
+        Objector.extender(games[game_id], scores[game_id]);
       }
     }
   }

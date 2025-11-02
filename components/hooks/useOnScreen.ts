@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 
 export default function useOnScreen<T extends HTMLElement>(
   ref: React.RefObject<T | null>,
+  scrollRef: React.RefObject<T | null>,
   rootMargin = '0px',
   threshold = 0.01,
 ) {
@@ -34,7 +35,7 @@ export default function useOnScreen<T extends HTMLElement>(
         observer.unobserve(node);
       }
     };
-  }, [ref.current, rootMargin, threshold]);
+  }, [ref.current, scrollRef.current?.scrollTop, rootMargin, threshold]);
 
   return isIntersecting;
 }

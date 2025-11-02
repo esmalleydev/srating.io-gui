@@ -9,7 +9,7 @@ import { getBreakPoint, getMarginTop, getDateBarHeight } from '@/components/gene
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setScrollTop } from '@/redux/features/picks-slice';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 

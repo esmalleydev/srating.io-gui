@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { updateDataKey } from '@/redux/features/display-slice';
 import { getStore } from '@/app/StoreProvider';
+import Objector from '../utils/Objector';
 
 const ConferencePicker = () => {
   // console.time('ConferencePicker')
@@ -35,7 +36,7 @@ const ConferencePicker = () => {
         const urlConferences = current.getAll('conferences');
 
         const store = getStore();
-        const { conferences } = store.getState().displayReducer;
+        const conferences = Objector.deepClone(store.getState().displayReducer.conferences);
 
         if (conferences && conferences.length) {
           let same = true;

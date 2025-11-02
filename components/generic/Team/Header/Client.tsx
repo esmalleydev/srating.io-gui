@@ -10,7 +10,7 @@ import OptionPicker from '@/components/generic/OptionPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Skeleton } from '@mui/material';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';

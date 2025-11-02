@@ -40,7 +40,6 @@ type InitialState = {
   cardsView: string,
   gamesFilter: string,
   hideOdds: number, // 0 or 1
-  loading: boolean,
   // season: number,
 };
 
@@ -87,7 +86,6 @@ stateController.setDefaultState(Object.freeze({
   cardsView: 'compact',
   gamesFilter: 'all',
   hideOdds: 0,
-  loading: false,
 }));
 
 
@@ -100,7 +98,6 @@ stateController.setInitialState({
   cardsView: cardsViewLocalStorage || 'compact',
   gamesFilter: gamesFilterLocalStorage || 'all',
   hideOdds: +(oddsLocalStorage || 0),
-  loading: false,
   // season: new HelperCBB().getCurrentSeason(),
 });
 
@@ -127,15 +124,11 @@ export const display = createSlice({
       const { value, key } = action.payload;
       stateController.setDataKey(state, key, value);
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      // if you are wondering what sets this to false, check the handlers/MutationHandler
-      state.loading = action.payload;
-    },
   },
 });
 
 export const {
-  setLoading, reset, resetDataKey, updateDataKey, setDataKey,
+  reset, resetDataKey, updateDataKey, setDataKey,
 } = display.actions;
 export default display.reducer;
 

@@ -7,6 +7,7 @@ import Organization from '@/components/helpers/Organization';
 import { updateDataKey } from '@/redux/features/display-slice';
 import { useEffect } from 'react';
 import { getStore } from '@/app/StoreProvider';
+import Objector from '@/components/utils/Objector';
 
 
 const PositionPicker = ({ selected, isRadio = false }: { selected: string[]; isRadio?: boolean; }) => {
@@ -46,7 +47,7 @@ const PositionPicker = ({ selected, isRadio = false }: { selected: string[]; isR
         const urlPositions = current.getAll('positions');
 
         const store = getStore();
-        const { positions } = store.getState().displayReducer;
+        const positions = Objector.deepClone(store.getState().displayReducer.positions);
 
         if (positions && positions.length) {
           let same = true;

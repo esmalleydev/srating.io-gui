@@ -24,7 +24,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { useRouter } from 'next/navigation';
-import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
+import { setLoading as setLoadingDisplay } from '@/redux/features/loading-slice';
 import RankSpan from '@/components/generic/RankSpan';
 import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';

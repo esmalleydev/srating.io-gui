@@ -4,7 +4,7 @@ import React, { useTransition } from 'react';
 import { Button, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 
 const ClientWrapper = ({ children }) => {
   const router = useRouter();

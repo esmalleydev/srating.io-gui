@@ -2,12 +2,14 @@
 
 import { useClientAPI } from '@/components/clientAPI';
 import {
-  setRefreshCountdown, setRefreshEnabled, setRefreshLoading, updateDateChecked, updateScores,
+  setDataKey,
 } from '@/redux/features/games-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 import { refresh } from '../actions';
 import { getTagLabel } from '@/components/handlers/secret/shared';
+import { getStore } from '@/app/StoreProvider';
+import Objector from '@/components/utils/Objector';
 
 
 const Refresher = ({ date, games }) => {
@@ -47,7 +49,7 @@ const Refresher = ({ date, games }) => {
 
     setLastDate(date);
     setLoading(true);
-    dispatch(setRefreshLoading(true));
+    dispatch(setDataKey({ key: 'refreshLoading', value: true }));
 
     useClientAPI({
       class: 'game',
@@ -60,11 +62,14 @@ const Refresher = ({ date, games }) => {
     }).then((response) => {
       if (response && !response.error) {
         failures = 0;
-        dispatch(updateDateChecked(date));
-        dispatch(updateScores(response));
+        const store = getStore();
+        const dates_checked = Objector.deepClone(store.getState().gamesReducer.dates_checked);
+        dates_checked[date] = true;
+        dispatch(setDataKey({ key: 'dates_checked', value: dates_checked }));
+        dispatch(setDataKey({ key: 'scores', value: response }));
       }
-      dispatch(setRefreshLoading(false));
-      dispatch(setRefreshEnabled(!isFinal));
+      dispatch(setDataKey({ key: 'refreshLoading', value: false }));
+      dispatch(setDataKey({ key: 'refreshEnabled', value: !isFinal }));
       setLoading(false);
 
       // so if the response failed, because secret is still refreshing, try this again in 1 second
@@ -74,7 +79,7 @@ const Refresher = ({ date, games }) => {
         setTimeout(getData, 1000);
       }
     }).catch((e) => {
-      dispatch(setRefreshLoading(false));
+      dispatch(setDataKey({ key: 'refreshLoading', value: false }));
       setLoading(false);
     });
   };
@@ -98,7 +103,7 @@ const Refresher = ({ date, games }) => {
 
       intervalCountdown = setInterval(() => {
         refreshCountdown -= (intervalRate / 1000);
-        dispatch(setRefreshCountdown(refreshCountdown));
+        dispatch(setDataKey({ key: 'refreshCountdown', value: refreshCountdown }));
       }, intervalRate);
     }
     return () => {

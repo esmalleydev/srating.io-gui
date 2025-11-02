@@ -6,7 +6,6 @@ import React, {
 import { useTheme } from '@mui/material/styles';
 
 import Popover from '@mui/material/Popover';
-import TextField from '@mui/material/TextField';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
@@ -22,8 +21,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
-import { setLoading } from '@/redux/features/display-slice';
-import { setRefreshEnabled } from '@/redux/features/games-slice';
+import { setLoading } from '@/redux/features/loading-slice';
+import { setDataKey } from '@/redux/features/games-slice';
 
 const getBreakPoint: () => number = () => {
   return 600;
@@ -94,7 +93,7 @@ const DateBar = (
       const search = current.toString();
       const query = search ? `?${search}` : '';
 
-      dispatch(setRefreshEnabled(false));
+      dispatch(setDataKey({ key: 'refreshEnabled', value: false }));
       dispatch(setLoading(true));
       startTransition(() => {
         router.replace(`${pathName}${query}`);

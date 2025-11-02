@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles';
 
 import Paper from '@mui/material/Paper';
 import { useAppDispatch } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 
 const Tile = (props) => {
   const self = this;

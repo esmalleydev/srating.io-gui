@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { FormControlLabel, FormGroup, IconButton, Switch } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/ranking-slice';
 
 const ConferenceFilterOptions = ({ open, onClose }) => {

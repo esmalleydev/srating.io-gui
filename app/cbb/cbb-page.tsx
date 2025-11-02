@@ -14,7 +14,7 @@ import ThrillerGames from '../../components/generic/CBB/Home/ThrillerGames.jsx';
 import CloseGames from '../../components/generic/CBB/Home/CloseGames.jsx';
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
-import { setLoading as setLoadingDisplay } from '@/redux/features/display-slice';
+import { setLoading as setLoadingDisplay } from '@/redux/features/loading-slice';
 import CBB from '@/components/helpers/CBB';
 
 let intervalRefresher: NodeJS.Timeout;

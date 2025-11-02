@@ -8,7 +8,7 @@ import HelperTeam from '../../../helpers/Team';
 import Tile from './Tile';
 import { Link, Typography } from '@mui/material';
 import { useAppDispatch } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 
 
 const Teams = (props) => {

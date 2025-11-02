@@ -15,7 +15,7 @@ import DataObjectIcon from '@mui/icons-material/DataObject';
 import EventIcon from '@mui/icons-material/Event';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useRouter } from 'next/navigation';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
 
 const ToolsExample = () => {

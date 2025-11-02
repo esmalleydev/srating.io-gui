@@ -15,9 +15,9 @@ import Button from '@mui/material/Button';
 import { useAppDispatch } from '@/redux/hooks';
 import { setSession, setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
-import { clearDatesChecked } from '@/redux/features/games-slice';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import { useTheme } from '../hooks/useTheme';
+import { setDataKey } from '@/redux/features/games-slice';
 
 
 const AccountHandler = ({ open, closeHandler, loginCallback }) => {
@@ -83,7 +83,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
         // sessionStorage.clear();
         dispatch(setSession(session_id));
         dispatch(setValidSession(true));
-        dispatch(clearDatesChecked(null));
+        dispatch(setDataKey({ key: 'dates_checked', value: {} }));
         closeHandler();
         window.location.reload();
       }

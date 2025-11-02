@@ -1,11 +1,11 @@
-import React from 'react';
+
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useAppSelector } from '@/redux/hooks';
 
 
 const Spinner = () => {
-  const loading = useAppSelector((state) => state.displayReducer.loading);
+  const loading = useAppSelector((state) => state.loadingReducer.loading);
   // console.log('spinner')
   // console.log(loading)
 

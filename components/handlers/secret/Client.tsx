@@ -5,7 +5,7 @@ import { setSecret } from '@/redux/features/user-slice';
 import { useIdleTimer } from 'react-idle-timer';
 import { useEffect, useState } from 'react';
 import { refresh } from '@/components/generic/actions';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import { getTagLabel } from './shared';
 
 let intervalRefresher: NodeJS.Timeout;
@@ -14,7 +14,7 @@ let intervalRefresher: NodeJS.Timeout;
 
 const Client = ({ secret, expires, error }) => {
   const dispatch = useAppDispatch();
-  const loading = useAppSelector((state) => state.displayReducer.loading);
+  const loading = useAppSelector((state) => state.loadingReducer.loading);
   const secret_id = useAppSelector((state) => state.userReducer.secret_id);
   const [idle, setIdle] = useState<boolean>(false);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
@@ -15,20 +15,18 @@ import Pin from '@/components/generic/Pin';
 
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { refresh } from '@/components/generic/actions';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { updateGameSort } from '@/redux/features/favorite-slice';
-import { setScrollTop } from '@/redux/features/games-slice';
 import useOnScreen from '@/components/hooks/useOnScreen';
 import Record from './Tile/Record';
 import Rank from './Tile/Rank';
 import Organization from '@/components/helpers/Organization';
-import { reset } from '@/redux/features/game-slice';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Style from '@/components/utils/Style';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import { setDataKey } from '@/redux/features/games-slice';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {
@@ -55,7 +53,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const theme = useTheme();
 
   const ref = useRef<HTMLDivElement>(null);
-  const isVisible = useOnScreen(ref);
+  const scrollRef = useScrollContext();
+  const isVisible = useOnScreen(ref, scrollRef);
 
   const bestColor = getBestColor();
   const worstColor = getWorstColor();
@@ -64,7 +63,6 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const hideOdds = useAppSelector((state) => state.displayReducer.hideOdds);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
 
-  const scrollRef = useScrollContext();
 
   const dispatch = useAppDispatch();
   const displayCardView = useAppSelector((state) => state.displayReducer.cardsView);
@@ -86,12 +84,10 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       scrollRef &&
       scrollRef.current
     ) {
-      dispatch(setScrollTop(scrollRef.current.scrollTop));
+      dispatch(setDataKey({ key: 'scrollTop', value: scrollRef.current.scrollTop }));
     }
 
     dispatch(updateGameSort(null));
-    refresh(`${path}.games.${game.game_id}`);
-    dispatch(reset());
 
     navigation.game(`/${path}/games/${game.game_id}`);
   };

@@ -12,7 +12,7 @@ import HelperGame from '@/components/helpers/Game';
 import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useRouter } from 'next/navigation';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
 

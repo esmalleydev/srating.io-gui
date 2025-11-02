@@ -14,7 +14,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import { ApiKey, Pricing, Subscription as SubscriptionType } from '@/types/general';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';

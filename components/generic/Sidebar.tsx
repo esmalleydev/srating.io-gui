@@ -28,7 +28,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArticleIcon from '@mui/icons-material/Article';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import { reset } from '@/redux/features/compare-slice';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '../helpers/Organization';
 
 // todo spin does nothing here, I think I need to use redux for a global spin and decorate it in another place

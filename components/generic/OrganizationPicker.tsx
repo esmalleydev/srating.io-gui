@@ -11,7 +11,7 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
-import { resetDataKey, setLoading } from '@/redux/features/display-slice';
+import { resetDataKey } from '@/redux/features/display-slice';
 import { usePathname, useRouter } from 'next/navigation';
 import { reset as resetGames } from '@/redux/features/games-slice';
 import { reset as resetRanking } from '@/redux/features/ranking-slice';
@@ -24,6 +24,7 @@ import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import { reset } from '@/redux/features/compare-slice';
 import Tooltip from '../ux/hover/Tooltip';
+import { setLoading } from '@/redux/features/loading-slice';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();

@@ -15,6 +15,7 @@ import conferenceReducer from './features/conference-slice';
 import organizationReducer from './features/organization-slice';
 import gameReducer from './features/game-slice';
 import playerReducer from './features/player-slice';
+import loadingReducer from './features/loading-slice';
 
 
 export const makeStore = () => configureStore({
@@ -34,6 +35,7 @@ export const makeStore = () => configureStore({
     organizationReducer,
     gameReducer,
     playerReducer,
+    loadingReducer,
   },
 });
 

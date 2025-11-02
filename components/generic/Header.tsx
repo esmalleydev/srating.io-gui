@@ -35,7 +35,7 @@ import { setSession, setValidSession } from '../../redux/features/user-slice';
 import { Divider } from '@mui/material';
 import { reset } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import OrganizationPicker from './OrganizationPicker';
 import Menu from '@/components/ux/menu/Menu';
 import MenuItem from '@/components/ux/menu/MenuItem';

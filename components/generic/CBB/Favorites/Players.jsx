@@ -6,7 +6,7 @@ import { Link, Typography } from '@mui/material';
 
 import GameLog from './GameLog';
 import { useAppDispatch } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 
 
 const Players = (props) => {

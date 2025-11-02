@@ -354,7 +354,7 @@ const Tooltip = <T extends HTMLElement>(
   return (
     <>
       <Profiler id="Tooltip" onRender={(id, phase, actualDuration, baseDuration, startTime, commitTime) => {
-        console.log(id, phase, actualDuration);
+        // console.log(id, phase, actualDuration);
       }}>
       {childWithProps}
       {isVisible && createPortal(

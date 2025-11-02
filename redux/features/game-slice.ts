@@ -3,9 +3,7 @@ import State from '@/components/helpers/State';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
-// todo this is really the /sport/games/abc path, this name of "game" is confusing
-// need to swap it out with games
-
+// this is the /sport/games/abc path
 
 type InitialState = {
   game: object,
@@ -33,7 +31,6 @@ type ActionPayload<K extends keyof InitialState> = {
   key: K;
   value: InitialState[K];
 };
-
 
 const stateController = new State<InitialState>({
   type: 'game',

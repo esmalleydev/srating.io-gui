@@ -1,10 +1,10 @@
 'use client';
 
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import Organization from '../helpers/Organization';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
-import { setRefreshEnabled } from '@/redux/features/games-slice';
+import { setDataKey } from '@/redux/features/games-slice';
 import { getStore } from '@/app/StoreProvider';
 
 
@@ -44,7 +44,7 @@ const MutationHandler = () => {
       }
 
       dispatch(setLoading(false));
-      dispatch(setRefreshEnabled(true));
+      dispatch(setDataKey({ key: 'refreshLoading', value: true }));
     }
   });
   const config = { subtree: true, childList: true };

@@ -15,8 +15,7 @@ import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setScrollTop as setPicksScrollTop } from '@/redux/features/picks-slice';
-import { setScrollTop as setGamesScrollTop } from '@/redux/features/games-slice';
-import { setLoading } from '@/redux/features/display-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
 import Paper from '../ux/container/Paper';
 import Navigation from '../helpers/Navigation';
@@ -92,14 +91,8 @@ const FooterNavigation = () => {
   const handleScores = () => {
     const newPathName = `/${viewingSport.toLowerCase()}/games`;
 
-
-    // TODO replace with naviation component, but rewrite games-slice first
     if (newPathName !== pathName) {
-      dispatch(setGamesScrollTop(0));
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.push(newPathName);
-      });
+      navigation.games(newPathName);
     }
   };
 

@@ -1,17 +1,19 @@
 'use client';
 
-import { setLoading, updateDataKey as updateDataKeyDisplay } from '@/redux/features/display-slice';
+import { updateDataKey as updateDataKeyDisplay } from '@/redux/features/display-slice';
 import { InitialState, InitialStateKeys, resetDataKey as resetDataKeyPlayer, reset as resetPlayer, setDataKey as setDataKeyPlayer } from '@/redux/features/player-slice';
 import { reset as resetCoach } from '@/redux/features/coach-slice';
 import { reset as resetConference } from '@/redux/features/conference-slice';
 import { reset as resetTeam } from '@/redux/features/team-slice';
-import { reset as resetGame } from '@/redux/features/games-slice';
+import { reset as resetGames } from '@/redux/features/games-slice';
+import { reset as resetGame } from '@/redux/features/game-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { AppDispatch } from '@/redux/store';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { usePathname, useRouter } from 'next/navigation';
 import { TransitionStartFunction, useTransition } from 'react';
 import { resetDataKey as resetDataKeyRanking, reset as resetRanking, setDataKey as setDataKeyRanking } from '@/redux/features/ranking-slice';
+import { setLoading } from '@/redux/features/loading-slice';
 
 // todo remove nextjs router :D
 
@@ -144,7 +146,7 @@ class Navigation {
    */
   public game(path: string, onRouter: null | undefined | (() => void) = null) {
     this.dispatch(setLoading(true));
-    this.dispatch(resetGame()); // todo url params thing
+    this.dispatch(resetGame(false));
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -208,18 +210,17 @@ class Navigation {
 
   /**
    * Navigate to the games (scores) page
-   * todo rewrite slice first
    */
-  // public games(path: string, onRouter: null | undefined | (() => void) = null) {
-    // this.dispatch(setLoading(true));
-    // this.dispatch(reset());
-    // this.startTransition(() => {
-    //   this.router.push(path);
-    //   if (onRouter) {
-    //     onRouter();
-    //   }
-    // });
-  // }
+  public games(path: string, onRouter: null | undefined | (() => void) = null) {
+    this.dispatch(setLoading(true));
+    this.dispatch(resetGames(false));
+    this.startTransition(() => {
+      this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
 }
 
 export default Navigation;
