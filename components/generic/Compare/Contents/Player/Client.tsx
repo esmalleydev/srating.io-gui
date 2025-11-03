@@ -149,13 +149,13 @@ const Client = ({ player_statistic_rankings, players }) => {
 
     if (position === 'all') {
       if (view === 'overview') {
-        return ['name', 'team_name', 'height', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
+        return ['rank', 'name', 'team_name', 'height', 'minutes_per_game', 'points_per_game', 'player_efficiency_rating', 'efficiency_rating', 'offensive_rating', 'defensive_rating', 'effective_field_goal_percentage', 'true_shooting_percentage', 'usage_percentage'];
       }
       if (view === 'offensive') {
-        return ['name', 'team_name', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
+        return ['rank', 'name', 'team_name', 'field_goal_percentage', 'two_point_field_goal_percentage', 'three_point_field_goal_percentage', 'free_throw_percentage', 'assist_percentage', 'turnover_percentage'];
       }
       if (view === 'defensive') {
-        return ['name', 'team_name', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
+        return ['rank', 'name', 'team_name', 'offensive_rebound_percentage', 'defensive_rebound_percentage', 'steal_percentage', 'block_percentage'];
       }
     }
     return TableColumns.getViewableColumns({ organization_id, view: 'compare', columnView, customColumns: [], positions: [position] });
