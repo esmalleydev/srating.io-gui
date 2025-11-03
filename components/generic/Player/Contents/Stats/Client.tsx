@@ -194,7 +194,7 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
         {sections.map(({ name, keys }, sectionIndex) => {
           return (
             <div key = {`section-${name}-fragment`}>
-              <Typography type='subtitle'>{name}</Typography>
+              <Typography type='subtitle1'>{name}</Typography>
               <div style = {{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                 {keys.map((key) => {
                   return getStatBlock(key);

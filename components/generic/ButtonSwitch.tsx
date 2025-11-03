@@ -40,10 +40,10 @@ const ButtonSwitch = (
     <div style = {({ width: '100%', maxWidth: 300, margin: 'auto', ...style })}>
       <div style = {containerStyle}>
         <div style = {({ backgroundColor: leftBackgroundColor, ...buttonStyle })} onClick={() => { handleClick(leftTitle); }}>
-          <Typography style = {{ color: Color.getTextColor(theme.text.primary, leftBackgroundColor), fontSize }} type = 'button'>{leftTitle}</Typography>
+          <Typography style = {{ color: Color.getTextColor(theme.text.primary, leftBackgroundColor), fontSize }} type = 'body1'>{leftTitle}</Typography>
         </div>
         <div style = {({ backgroundColor: rightBackgroundColor, ...buttonStyle })} onClick={() => { handleClick(rightTitle); }}>
-          <Typography style = {({ color: Color.getTextColor(theme.text.primary, rightBackgroundColor), fontSize })} type = 'button'>{rightTitle}</Typography>
+          <Typography style = {({ color: Color.getTextColor(theme.text.primary, rightBackgroundColor), fontSize })} type = 'body1'>{rightTitle}</Typography>
         </div>
       </div>
     </div>
