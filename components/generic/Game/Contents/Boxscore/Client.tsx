@@ -156,9 +156,9 @@ const Client = (
         name: 'Boxscore',
         keys: [
           'points',
-          'field_goal',
-          'field_goal_attempts',
-          'field_goal_percentage',
+          // 'field_goal',
+          // 'field_goal_attempts',
+          // 'field_goal_percentage',
           'two_point_field_goal',
           'two_point_field_goal_attempts',
           'two_point_field_goal_percentage',
@@ -611,7 +611,7 @@ const Client = (
     let playerColumns: string[] = [];
 
     if (Organization.getCBBID() === game.organization_id) {
-      playerColumns = ['name', 'minutes_played', 'points', 'fg', 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
+      playerColumns = ['name', 'minutes_played', 'points', /*'fg',*/ 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
     }
 
 
@@ -658,8 +658,8 @@ const Client = (
 
     type PartialPlayerBoxscore = Partial<CBBPlayerBoxscore | CFBPlayerBoxscore> & {
       name?: string;
-      fg?: string;
-      fg_secondary?: string;
+      // fg?: string;
+      // fg_secondary?: string;
       two_fg?: string;
       two_fg_secondary?: string;
       three_fg?: string;
@@ -739,8 +739,8 @@ const Client = (
         // # just typescript things
         row = row as CBBPlayerBoxscore;
 
-        formattedRow.fg = `${row.field_goal || 0}-${row.field_goal_attempts || 0}`;
-        formattedRow.fg_secondary = `${row.field_goal_percentage || 0}%`;
+        // formattedRow.fg = `${row.field_goal || 0}-${row.field_goal_attempts || 0}`;
+        // formattedRow.fg_secondary = `${row.field_goal_percentage || 0}%`;
 
         formattedRow.two_fg = `${row.two_point_field_goal || 0}-${row.two_point_field_goal_attempts || 0}`;
         formattedRow.two_fg_secondary = `${row.two_point_field_goal_percentage || 0}%`;
@@ -774,8 +774,8 @@ const Client = (
       // # just typescript things
       const footy = footerRow as CBBPlayerBoxscore;
 
-      footerRow.fg = `${footy.field_goal || 0}-${footy.field_goal_attempts || 0}`;
-      footerRow.fg_secondary = footy.field_goal_attempts !== undefined && footy.field_goal_attempts > 0 ? `${(((footy.field_goal || 0) / footy.field_goal_attempts) * 100).toFixed(2)}%` : '0%';
+      // footerRow.fg = `${footy.field_goal || 0}-${footy.field_goal_attempts || 0}`;
+      // footerRow.fg_secondary = footy.field_goal_attempts !== undefined && footy.field_goal_attempts > 0 ? `${(((footy.field_goal || 0) / footy.field_goal_attempts) * 100).toFixed(2)}%` : '0%';
 
       footerRow.two_fg = `${footy.two_point_field_goal || 0}-${footy.two_point_field_goal_attempts || 0}`;
       footerRow.two_fg_secondary = footy.two_point_field_goal_attempts !== undefined && footy.two_point_field_goal_attempts > 0 ? `${(((footy.two_point_field_goal || 0) / footy.two_point_field_goal_attempts) * 100).toFixed(2)}%` : '0%';
