@@ -77,19 +77,31 @@ const ClientWrapper = (
     }
   }
 
-  const handleTeamClick = (team_id: string) => {
-    navigation.team(`/${path}/team/${team_id}?season=${game.season}`);
+  const getTeamHref = (team_id: string) => {
+    return `/${path}/team/${team_id}?season=${game.season}`;
   };
 
-  const handleConferenceClick = (conference_id: string | null) => {
+  const getConferenceHref = (conference_id: string) => {
+    return `/${path}/conference/${conference_id}?season=${game.season}`;
+  };
+
+  const getCoachHref = (coach_id: string) => {
+    return `/${path}/coach/${coach_id}?season=${game.season}`;
+  };
+
+  const handleTeamClick = (team_id: string) => {
+    navigation.team(getTeamHref(team_id));
+  };
+
+  const handleConferenceClick = (conference_id: string) => {
     if (conference_id) {
-      navigation.conference(`/${path}/conference/${conference_id}?season=${game.season}`);
+      navigation.conference(getConferenceHref(conference_id));
     }
   };
 
-  const handleCoachClick = (coach_id: string | null) => {
+  const handleCoachClick = (coach_id: string) => {
     if (coach_id) {
-      navigation.coach(`/${path}/coach/${coach_id}?season=${game.season}`);
+      navigation.coach(getCoachHref(coach_id));
     }
   };
 
@@ -145,24 +157,24 @@ const ClientWrapper = (
       <div>
         <div style = {{
           display: 'flex', flexWrap: 'nowrap', cursor: 'pointer', justifyContent,
-        }} onClick={() => { handleTeamClick(team_id); }}>
+        }}>
           <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {'body1'}>
             <Rank game={game} team_id={team_id} />
-            <Typography type = 'a'>{teamName}</Typography>
+            <Typography type = 'a' onClick={() => { handleTeamClick(team_id); }} href={getTeamHref(team_id)}>{teamName}</Typography>
             <Record game={game} team_id={team_id} />
           </Typography>
         </div>
-        <div style = {{ display: 'flex', justifyContent }} onClick={() => { handleConferenceClick(conference_id); }}>
+        <div style = {{ display: 'flex', justifyContent }}>
           <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {'caption'}>
             {conference_id ? <ConferenceRank game={game} conference_id={conference_id} /> : ''}
-            <Typography type = 'a'>{teamHelper.getConference(conferences)}</Typography>
+            {conference_id ? <Typography type = 'a' onClick = {() => { handleConferenceClick(conference_id); }} href = {getConferenceHref(conference_id)}>{teamHelper.getConference(conferences)}</Typography> : <Typography type = 'a'>{teamHelper.getConference(conferences)}</Typography>}
             {conference_id ? <ConferenceRecord game={game} team_id={team_id} /> : ''}
           </Typography>
         </div>
-        <div style = {{ display: 'flex', justifyContent }} onClick={() => { handleCoachClick(coach && coach.coach_id); }}>
+        <div style = {{ display: 'flex', justifyContent }}>
           <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {'caption'}>
             {coach ? <CoachRank game={game} coach_id={coach.coach_id} /> : ''}
-            <Typography type = 'a'>{coach ? `${coach.first_name.charAt(0)}. ${coach.last_name}` : 'Unknown'}</Typography>
+            {coach ? <Typography type = 'a' onClick={() => { handleCoachClick(coach.coach_id); }} href={getCoachHref(coach.coach_id)}>{`${coach.first_name.charAt(0)}. ${coach.last_name}`}</Typography> : <Typography type = 'a'>Unknown</Typography>}
             {coach ? <CoachRecord game={game} coach_id={coach.coach_id} /> : ''}
           </Typography>
         </div>
