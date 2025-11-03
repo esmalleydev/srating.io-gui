@@ -15,7 +15,7 @@ const ConferenceRank = (
   const gameStatsLoading = useAppSelector((state) => state.gameReducer.gameStatsLoading);
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
 
-  const numberOfTeams = Organization.getNumberOfTeams({ organization_id: game.organization_id, division_id: game.division_id, season: game.season });
+  const numberOfConferences = Organization.getNumberOfConferences({ organization_id: game.organization_id, division_id: game.division_id, season: game.season });
 
   // const current = (conferenceStats[game.game_id] && conferenceStats[game.game_id].current[conference_id]) || null;
   const historical = (conferenceStats[game.game_id] && conferenceStats[game.game_id].historical[conference_id]) || null;
@@ -38,7 +38,7 @@ const ConferenceRank = (
   };
 
   if (rank) {
-    supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / numberOfTeams)));
+    supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / numberOfConferences)));
   }
 
   if (gameStatsLoading) {
