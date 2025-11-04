@@ -682,7 +682,6 @@ const Client = (
       name: 'Total',
     };
 
-
     for (const player_boxscore_id in player_boxscores) {
       let row = player_boxscores[player_boxscore_id];
 
@@ -806,6 +805,7 @@ const Client = (
       <>
         {title}
         <RankTable
+          key = {boxscore_team_id}
           rows={playerRows}
           footerRow={footerRow}
           columns={playerBoxscoreHeaderColumns}
