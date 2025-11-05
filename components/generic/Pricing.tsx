@@ -21,6 +21,9 @@ import SmartToyIcon from '@mui/icons-material/SmartToy';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import LaunchIcon from '@mui/icons-material/Launch';
+import DataObjectIcon from '@mui/icons-material/DataObject';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import Billing from './Billing';
 import ButtonSwitch from './ButtonSwitch';
 import { useTheme } from '../hooks/useTheme';
@@ -219,23 +222,11 @@ const Pricing = ({ view }: { view: string | null; }) => {
   };
 
   return (
-   <div>
+  <div>
     <Billing open = {billingOpen} closeHandler = {handleBillingClose} pricing = {selectedPricing} />
     <ButtonSwitch leftTitle={leftSwitch} rightTitle={rightSwitch} selected = {selectedView} handleClick={(e) => setSelectedView(e)} />
     {
     selectedView === leftSwitch ?
-    // <>
-    //   <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='h5'>Picks access</Typography>
-    //   <div style = {{ textAlign: 'center', margin: '10px 0px' }}><Button startIcon = {<PicksIcon />} variant='outlined' onClick={() => { router.push('/cbb/picks'); }}>View Picks</Button></div>
-    //   <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='body1'>View our <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); router.push('/cbb/picks?view=stats'); }} href = '/cbb/picks?view=stats'>live win rate</a> stats and read our blog about <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); router.push('/blog/picks-2023-review'); }} href = '/blog/picks-2023-review'>2023 picks breakdown</a></Typography>
-    //   <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='body1'>🏀 Algorithm trained on 10+ years of data (75000+ games)</Typography>
-    //   <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='body1'>🏈 trained on 20+ years of data (20000+ games)</Typography>
-    //   <Grid container spacing={4} style = {{ justifyContent: 'center' }}>
-    //     {picksOptions.map((option) => {
-    //       return getPriceCard(option);
-    //     })}
-    //   </Grid>
-    // </> :
     <>
       <Stack spacing={3} style={{ display: 'flex', alignItems: 'center', marginTop: 8 }}>
         <Typography type='body1' style={{ maxWidth: '600px', margin: 'auto', color: theme.text.secondary }}>
@@ -299,8 +290,48 @@ const Pricing = ({ view }: { view: string | null; }) => {
     </> :
     <>
       <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='h5'>API access <sup style = {{ fontSize: '14px' }}>beta</sup></Typography>
-      <div style = {{ textAlign: 'center', margin: '10px 0px' }}><Button endIcon = {<LaunchIcon />} variant='outlined' onClick={() => { window.open('https://docs.srating.io/', '_blank'); }}>API Documentation</Button></div>
-      <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='body1'>Set up takes less than 5 mins!</Typography>
+      <Stack spacing={3} style={{ display: 'flex', alignItems: 'center', marginTop: 8 }}>
+        <Typography type='body1' style={{ maxWidth: '600px', margin: 'auto', color: theme.text.secondary }}>
+          Integrate our powerful sports data and predictions directly into your applications with our flexible API.
+        </Typography>
+        <Box style={{ maxWidth: '600px', margin: 0 }}>
+          <List style = {{ padding: 0 }}>
+            <ListItem>
+              <ListItemIcon><DataObjectIcon color='primary' /></ListItemIcon>
+              <ListItemText
+                primary='Flexible & Powerful Data'
+                secondary='Access comprehensive data for games, teams, players, stats, live scores, and our AI-powered picks.'
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><ShowChartIcon color='primary' /></ListItemIcon>
+              <ListItemText
+                primary='Live Scores & Betting Odds'
+                secondary='Get up-to-the-minute game scores and betting odds to power real-time applications and analysis.'
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon><IntegrationInstructionsIcon color='primary' /></ListItemIcon>
+              <ListItemText
+                primary='Simple & Fast Integration'
+                secondary={
+                  <>
+                    Start building in minutes. Read our {' '}
+                    <a
+                      style={{ cursor: 'pointer', color: theme.link.primary }}
+                      onClick={(e) => { e.preventDefault(); window.open('https://docs.srating.io/', '_blank'); }}
+                      href='https://docs.srating.io/'
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >API Documentation</a>
+                    {' '} and try it free.
+                  </>
+                }
+              />
+            </ListItem>
+          </List>
+        </Box>
+      </Stack>
       <Grid container spacing={4} style = {{ justifyContent: 'center' }}>
         {apiOptions.map((option) => {
           return getPriceCard(option);
@@ -308,41 +339,7 @@ const Pricing = ({ view }: { view: string | null; }) => {
       </Grid>
     </>
     }
-    {/* <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type='h5'>Features</Typography>
-    <div>
-      <Typography type='h6'>Live scores</Typography>
-      <ul>
-        <li><Typography type='body1'>Get live scores for all college basketball games.</Typography></li>
-      </ul>
-    </div>
-    <hr />
-    <div>
-      <Typography type='h6'>Betting odds</Typography>
-      <Typography type='body1'>Our API supports pre game and live odds.</Typography>
-      <ul>
-        <li><Typography type='body1'>Money line</Typography></li>
-        <li><Typography type='body1'>Spread</Typography></li>
-        <li><Typography type='body1'>Over / Under</Typography></li>
-      </ul>
-    </div>
-    <hr />
-    <div>
-      <Typography type='h6'>Teams and Players</Typography>
-      <ul>
-        <li><Typography type='body1'>Get all the college basketball D1 teams</Typography></li>
-        <li><Typography type='body1'>Get all the players on every team</Typography></li>
-      </ul>
-    </div>
-    <hr />
-    <div>
-      <Typography type='h6'>Stats + Picks</Typography>
-      <ul>
-        <li><Typography type='body1'>Get team statistics</Typography></li>
-        <li><Typography type='body1'>Get player statistics</Typography></li>
-        <li><Typography type='body1'>Get picks win percentage</Typography></li>
-      </ul>
-    </div> */}
-   </div>
+  </div>
   );
 };
 
