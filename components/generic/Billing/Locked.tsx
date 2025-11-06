@@ -9,11 +9,9 @@ import LockIcon from '@mui/icons-material/Lock';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/hooks/useTheme';
 
 
 const Locked = ({ iconFontSize, iconPadding = 8 }) => {
-  const theme = useTheme();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const router = useRouter();
@@ -27,6 +25,8 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
     setOpenDialog(true);
   };
@@ -34,6 +34,9 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
   const handleSubscribe = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     dispatch(setLoading(true));
     setOpenDialog(false);
     startTransition(() => {
@@ -48,6 +51,7 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
   const handleLiveWinRate = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     dispatch(setLoading(true));
     setOpenDialog(false);
     startTransition(() => {
@@ -58,13 +62,28 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
   const handleClose = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     setOpenDialog(false);
+  };
+
+  // why is this here? because react and MUI is stupid
+  // Clicking on the Dialog fires a click event EVEN though I have none attached,
+  // then it bubbles down to underneath it triggering those
+  const onClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
   };
 
   return (
     <>
       <IconButton style = {{ padding: iconPadding }} onClick={handleClick}><LockIcon style={{ fontSize: iconFontSize || '24px' }} color='error' /></IconButton>
       <Dialog
+        onClick={onClick}
         open={openDialog}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"

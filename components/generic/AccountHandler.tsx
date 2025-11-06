@@ -52,6 +52,9 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const handleLogin = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -95,6 +98,9 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const handleRegister = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -161,6 +167,9 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const sendLoginCode = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -193,6 +202,9 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   const useLoginCode = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.preventDefault();
+    e.nativeEvent.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -438,6 +450,14 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
 
   return (
     <Dialog
+      onClick={(e) => {
+        // react and MUI is dumb
+        e.preventDefault();
+        e.stopPropagation();
+        e.nativeEvent.preventDefault();
+        e.nativeEvent.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+      }}
       open={open}
       onClose={closeHandler}
     >

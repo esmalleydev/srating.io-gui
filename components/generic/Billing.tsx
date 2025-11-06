@@ -52,6 +52,14 @@ const Billing = ({ pricing, open, closeHandler }) => {
 
   return (
     <Dialog
+      onClick={(e) => {
+        // react and MUI is dumb
+        e.preventDefault();
+        e.stopPropagation();
+        e.nativeEvent.preventDefault();
+        e.nativeEvent.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+      }}
       open={open}
       onClose={closeHandler}
     >

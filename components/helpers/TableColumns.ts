@@ -772,6 +772,18 @@ class TableColumns {
           return (view === 'player' || view === 'transfer' ? 'Total fouls in season' : 'Average fouls per game');
         },
       },
+      plus_minus: {
+        id: 'plus_minus',
+        numeric: true,
+        label: 'plus minus',
+        tooltip: 'plus minus',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID()],
+        views: ['player', 'transfer', 'player_boxscore', 'roster'],
+        graphable: true,
+        precision: 0,
+        showDifference: true,
+      },
       record: {
         id: 'record',
         numeric: false,

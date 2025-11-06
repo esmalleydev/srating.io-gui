@@ -611,7 +611,7 @@ const Client = (
     let playerColumns: string[] = [];
 
     if (Organization.getCBBID() === game.organization_id) {
-      playerColumns = ['name', 'minutes_played', 'points', /*'fg',*/ 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls'];
+      playerColumns = ['name', 'minutes_played', 'points', /*'fg',*/ 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls', 'plus_minus'];
     }
 
 

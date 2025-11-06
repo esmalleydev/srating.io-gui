@@ -80,6 +80,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
     if (
       scrollRef &&
       scrollRef.current
@@ -150,7 +151,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       predictedSpreadContainer.push(<Skeleton key = {1} width={25} />);
     } else if (!hasAccessToPercentages) {
       predictedSpreadContainer.push(
-        <Tooltip text = {'Predicted spread and over'}>
+        <Tooltip onClickRemove text = {'Predicted spread and over'}>
           <div><Locked iconFontSize={'20px'} key = {1} /></div>
         </Tooltip>,
       );
@@ -158,7 +159,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       const spread = +(game.prediction.home_score - game.prediction.away_score).toFixed(0);
       const over = (game.prediction.home_score + game.prediction.away_score).toFixed(0);
       predictedSpreadContainer.push(
-        <Tooltip text = {'Predicted spread and over'}>
+        <Tooltip onClickRemove text = {'Predicted spread and over'}>
           <Typography key = {'predicted_spread'} type = 'overline' style = {{ color: theme.info.main, marginLeft: 10, fontSize: '11px' }}>{`${spread < 0 ? Game.getTeamNameShort('away') : Game.getTeamNameShort('home')} ${spread} | O${over}`}</Typography>
         </Tooltip>,
       );
@@ -187,12 +188,12 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     homeWinPercentageContainer.push(<Skeleton key = {2} />);
   } else if (!hasAccessToPercentages) {
     awayWinPercentageContainer.push(
-      <Tooltip key = {1} text = {'Predicted win %'}>
+      <Tooltip key = {1} onClickRemove text = {'Predicted win %'}>
         <div><Locked iconFontSize={'20px'} /></div>
       </Tooltip>,
     );
     homeWinPercentageContainer.push(
-      <Tooltip key = {2} text = {'Predicted win %'}>
+      <Tooltip key = {2} onClickRemove text = {'Predicted win %'}>
         <div><Locked iconFontSize={'20px'} /></div>
       </Tooltip>,
     );
