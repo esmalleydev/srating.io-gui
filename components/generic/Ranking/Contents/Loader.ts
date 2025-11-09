@@ -90,6 +90,10 @@ const Loader = ({ organization_id, division_id, season, view }) => {
 
     useClientAPI(cacheArgs)
       .then((response) => {
+        let data = response;
+        if (data.error) {
+          data = {};
+        }
         const store = getStore();
         const cachedData = Objector.deepClone(store.getState().rankingReducer.cachedData);
         delete cachedData[cachedDataKey];

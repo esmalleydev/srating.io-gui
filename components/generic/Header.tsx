@@ -182,7 +182,7 @@ const Header = () => {
                   </Drawer>
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }} style = {logoStyle} onClick = {handleHome}>
-                  <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} />
+                  {width > 425 ? <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} /> : ''}
                   <><span style = {{ color: (theme.palette.mode === 'dark' ? logoPrimaryColor : '#fff') }}>S</span><span style = {{ color: (theme.palette.mode === 'dark' ? logoSecondaryColor : '#31ff00') }}>R{shrinkName ? '' : 'ATING'}</span></>
                 </Box>
                 <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }}>

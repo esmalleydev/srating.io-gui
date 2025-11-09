@@ -1,7 +1,11 @@
 'use client';
 
 import { getStore } from '@/app/StoreProvider';
-import { setNewUpdate } from '@/redux/features/user-slice';
+import { setNewUpdate, setSecret } from '@/redux/features/user-slice';
+import Objector from './utils/Objector';
+import { setLoading } from '@/redux/features/loading-slice';
+import { refresh } from './generic/actions';
+import { getTagLabel } from './handlers/secret/shared';
 
 const protocol = process.env.NEXT_PUBLIC_CLIENT_PROTOCAL;
 const hostname = process.env.NEXT_PUBLIC_CLIENT_HOST;
@@ -9,7 +13,70 @@ const port = +(process.env.NEXT_PUBLIC_CLIENT_PORT || 4000);
 const useOrigin = (typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_CLIENT_USE_ORIGIN === 'true') : false);
 const path = process.env.NEXT_PUBLIC_CLIENT_PATH || '';
 
-export async function useClientAPI(args, optional_fetch_args = {}) {
+const sleep = async (ms: number) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+};
+
+interface ApiResponse {
+  error?: boolean;
+  code?: number;
+}
+
+/**
+ * Handles the common response logic (error codes 105, 103, 102).
+ * @param json - The JSON response from the API.
+ * @param isRetry - Flag to indicate if this is a retry response (to skip 'secret expired' dispatch).
+ * @returns The original JSON response.
+ */
+function handleResponse(json: ApiResponse, isRetry: boolean = false): object {
+  if (json && json.error) {
+    const store = getStore();
+
+    switch (json.code) {
+      case 105: // New update available
+        store.dispatch(setNewUpdate(true));
+        break;
+      case 103: // Secret expired
+        // On first failure, we dispatch to clear the secret.
+        // Then try to reload it
+        if (!isRetry) {
+          store.dispatch(setLoading(true));
+          store.dispatch(setSecret(null));
+          refresh(getTagLabel());
+        }
+        break;
+      case 102: // No kryptos sent
+        // todo: Implement logic for no kryptos sent
+        break;
+      default:
+        // Handle other errors if necessary
+        break;
+    }
+  }
+  return json;
+}
+
+/**
+ * Executes the actual fetch request and handles JSON parsing and error processing.
+ * @param url - The target URL for the API request.
+ * @param fetchArgs - Arguments to pass to the fetch function (including method, headers, body).
+ * @param isRetry - Flag to pass to handleResponse.
+ * @returns The JSON response or an empty object on fetch/parse error.
+ */
+async function executeFetch(url: string, fetchArgs: RequestInit, isRetry: boolean = false): Promise<ApiResponse> {
+  try {
+    const response = await fetch(url, fetchArgs);
+    const json = await response.json();
+    return handleResponse(json, isRetry);
+  } catch (error) {
+    console.log(error);
+    return {};
+  }
+}
+
+export async function useClientAPI(args, optional_fetch_args = {}): Promise<any> {
   let url: string = `${protocol}://${hostname}:${port}`;
   if (useOrigin) {
     url = window.location.origin + path;
@@ -18,7 +85,7 @@ export async function useClientAPI(args, optional_fetch_args = {}) {
   let store = getStore();
 
   const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || store.getState().userReducer.secret_id || null;
-  const secret = (typeof window !== 'undefined' && sessionStorage.getItem('secret')) || store.getState().userReducer.secret_id || null;
+  let secret = (typeof window !== 'undefined' && sessionStorage.getItem('secret')) || store.getState().userReducer.secret_id || null;
   const kryptos = (typeof window !== 'undefined' && sessionStorage.getItem('kryptos')) || store.getState().userReducer.kryptos || null;
 
   const headers: HeadersInit = {
@@ -41,35 +108,29 @@ export async function useClientAPI(args, optional_fetch_args = {}) {
     headers['X-KRYPTOS-ID'] = kryptos;
   }
 
-  return fetch(url, Object.assign(optional_fetch_args, {
+  const fetchArgs: RequestInit = Objector.extender({}, optional_fetch_args, {
     method: 'POST',
     headers,
     body: JSON.stringify(args),
-  }))
-    .then((response) => response.json())
-    .then((json) => {
-      // new update available
-      if (json && json.error && json.code === 105) {
-        store = getStore();
-        store.dispatch(setNewUpdate(true));
-      }
+  });
 
-      // secret expired
-      if (json && json.error && json.code === 103) {
-        // todo trigger refresh?
-      }
+  let fetchRequest = await executeFetch(url, fetchArgs, false);
 
-      // no krytos sent
-      if (json && json.error && json.code === 102) {
-        // todo
-      }
 
-      return json;
-    })
-    .catch((error) => {
-      console.log(error);
-      return {};
-      // throw new Error('Error');
-    });
+  if (fetchRequest.error && fetchRequest.code === 103) {
+    // try again in 3 seconds on first failure
+    await sleep(3000);
+
+    store = getStore();
+
+    secret = (typeof window !== 'undefined' && sessionStorage.getItem('secret')) || store.getState().userReducer.secret_id || null;
+
+    // @ts-expect-error it will be defined
+    fetchArgs.headers['X-SECRET-ID'] = secret;
+
+    fetchRequest = await executeFetch(url, fetchArgs, true);
+  }
+
+  return fetchRequest;
 }
 

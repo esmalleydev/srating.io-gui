@@ -25,6 +25,7 @@ import MenuListText from '@/components/ux/menu/MenuListText';
 import { reset } from '@/redux/features/compare-slice';
 import Tooltip from '../ux/hover/Tooltip';
 import { setLoading } from '@/redux/features/loading-slice';
+import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +40,8 @@ const OrganizationPicker = () => {
   const router = useRouter();
   const pathName = usePathname();
   const theme = useTheme();
+
+  const { width } = useWindowDimensions() as Dimensions;
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -112,10 +115,10 @@ const OrganizationPicker = () => {
 
   let emoji = '';
 
-  if (organization_id === Organization.getCFBID()) {
+  if (width > 375 && organization_id === Organization.getCFBID()) {
     emoji = '🏈 ';
   }
-  if (organization_id === Organization.getCBBID()) {
+  if (width > 375 && organization_id === Organization.getCBBID()) {
     emoji = '🏀 ';
   }
 

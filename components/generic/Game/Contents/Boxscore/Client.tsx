@@ -4,8 +4,8 @@ import React, { Profiler, useEffect, useState } from 'react';
 
 import HelperGame from '@/components/helpers/Game';
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
-import { Boxscore as BoxscoreCBB, PlayerBoxscore as CBBPlayerBoxscore, PlayerBoxscores as CBBPlayerBoxscores } from '@/types/cbb';
-import { Boxscore as BoxscoreCFB, PlayerBoxscores as CFBPlayerBoxscores, PlayerBoxscore as CFBPlayerBoxscore } from '@/types/cfb';
+import { Boxscore as BoxscoreCBB, PlayerBoxscore as CBBPlayerBoxscore, PlayerBoxscores as CBBPlayerBoxscores, PlayerStatisticRankings as CBBPlayerStatisticRankings } from '@/types/cbb';
+import { Boxscore as BoxscoreCFB, PlayerBoxscores as CFBPlayerBoxscores, PlayerBoxscore as CFBPlayerBoxscore, PlayerStatisticRankings as CFBPlayerStatisticRankings } from '@/types/cfb';
 import { useAppSelector } from '@/redux/hooks';
 import { LinearProgress } from '@mui/material';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
@@ -20,7 +20,7 @@ import Typography from '@/components/ux/text/Typography';
 import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
-import Color from '@/components/utils/Color';
+import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import Objector from '@/components/utils/Objector';
 import TableColumns from '@/components/helpers/TableColumns';
 import Text from '@/components/utils/Text';
@@ -63,12 +63,26 @@ const ClientSkeleton = () => {
 
 
 const Client = (
-  { game, boxscores, player_boxscores, players /* tag */ }:
-  { game: Game; boxscores: BoxscoreCBB[] | BoxscoreCFB[]; player_boxscores: CBBPlayerBoxscores | CFBPlayerBoxscores; players: Players /* tag */ },
+  {
+    game,
+    boxscores,
+    player_boxscores,
+    players,
+    player_statistic_rankings,
+  }:
+  {
+    game: Game;
+    boxscores: BoxscoreCBB[] | BoxscoreCFB[];
+    player_boxscores: CBBPlayerBoxscores | CFBPlayerBoxscores;
+    players: Players;
+    player_statistic_rankings: CBBPlayerStatisticRankings | CFBPlayerStatisticRankings;
+  },
 ) => {
   const navigation = new Navigation();
   const theme = useTheme();
 
+  const bestColor = getBestColor();
+  const worstColor = getWorstColor();
   const { width } = useWindowDimensions() as Dimensions;
 
   const numberOfTeams = Organization.getNumberOfTeams({ organization_id: game.organization_id, division_id: game.division_id, season: game.season });
@@ -77,6 +91,13 @@ const Client = (
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
 
   const columns = Objector.deepClone(TableColumns.getColumns({ organization_id: game.organization_id, view: 'boxscore' }));
+  const playerBoxscoreHeaderColumns = Objector.deepClone(TableColumns.getColumns({ organization_id: game.organization_id, view: 'player_boxscore' }));
+
+  if (playerBoxscoreHeaderColumns.name.widths) {
+    playerBoxscoreHeaderColumns.name.widths.default = 175;
+    playerBoxscoreHeaderColumns.name.widths[425] = 125;
+    playerBoxscoreHeaderColumns.name.widths[320] = 100;
+  }
 
   const [boxscore_team_id, set_boxscore_team_id] = useState(game.away_team_id);
 
@@ -99,6 +120,13 @@ const Client = (
 
   const hasBoxscoreData = away_boxscore && home_boxscore && ('points' in away_boxscore) && ('points' in home_boxscore);
 
+  const player_id_x_player_statistic_ranking = {};
+
+  for (const player_statistic_ranking_id in player_statistic_rankings) {
+    const row = player_statistic_rankings[player_statistic_ranking_id];
+
+    player_id_x_player_statistic_ranking[row.player_id] = row;
+  }
 
   const handleClick = (player_id: string) => {
     if (!player_id) {
@@ -606,12 +634,10 @@ const Client = (
    * Get the player boxscore content
    */
   const getPlayerBoxscoreContent = (position: string | null): React.JSX.Element => {
-    const playerBoxscoreHeaderColumns = TableColumns.getColumns({ organization_id: game.organization_id, view: 'player_boxscore' });
-
     let playerColumns: string[] = [];
 
     if (Organization.getCBBID() === game.organization_id) {
-      playerColumns = ['name', 'minutes_played', 'points', /*'fg',*/ 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls', 'plus_minus'];
+      playerColumns = ['name', 'minutes_played', 'points', 'two_fg', 'three_fg', 'ft', 'offensive_rebounds', 'defensive_rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'fouls', 'plus_minus'];
     }
 
 
@@ -657,7 +683,8 @@ const Client = (
 
 
     type PartialPlayerBoxscore = Partial<CBBPlayerBoxscore | CFBPlayerBoxscore> & {
-      name?: string;
+      name?: string | React.JSX.Element;
+      name_secondary?: string;
       // fg?: string;
       // fg_secondary?: string;
       two_fg?: string;
@@ -694,11 +721,32 @@ const Client = (
       }
 
 
-      let player_name = (row.first_name ? `${row.first_name.charAt(0)}. ` : '') + row.last_name;
+      let player_name: string | React.JSX.Element = (row.first_name ? `${row.first_name.charAt(0)}. ` : '') + row.last_name;
+      let player_number: string | null = null;
 
       if (row.player_id && players && row.player_id in players) {
         const player = players[row.player_id];
-        player_name = (player.first_name ? `${player.first_name.charAt(0)}. ` : '') + player.last_name;
+        let rank = null;
+        const supStyle: React.CSSProperties = {
+          verticalAlign: 'super',
+          fontSize: 10,
+          // fontWeight: 500,
+        };
+
+        if (row.player_id in player_id_x_player_statistic_ranking) {
+          rank = player_id_x_player_statistic_ranking[row.player_id].rank;
+          supStyle.color = Color.lerpColor(bestColor, worstColor, (+(player_id_x_player_statistic_ranking[row.player_id].rank / player_id_x_player_statistic_ranking[row.player_id].max)));
+        }
+
+        const name = (player.first_name ? `${player.first_name.charAt(0)}. ` : '') + player.last_name;
+
+        if (rank) {
+          player_name = <><span style = {supStyle}>{rank} </span> {name}</>;
+        } else {
+          player_name = name;
+        }
+
+        player_number = `#${player.number}`;
       }
 
       // skip people with no passing attempts
@@ -733,6 +781,9 @@ const Client = (
       const formattedRow = Objector.deepClone(row) as PartialPlayerBoxscore;
 
       formattedRow.name = player_name;
+      if (player_number) {
+        formattedRow.name_secondary = player_number;
+      }
 
       if (Organization.getCBBID() === game.organization_id) {
         // # just typescript things
@@ -759,11 +810,24 @@ const Client = (
       }
 
       for (const key in row) {
-        if (!(key in footerRow)) {
-          footerRow[key] = row[key];
+        let value;
+
+        if (key === 'minutes_played') {
+          const splat = row[key].toString().split('.');
+          const seconds = (+splat[1] || 0) + +splat[0] * 60;
+
+          if (!(key in footerRow)) {
+            value = seconds / 60;
+          } else {
+            value = +(+(footerRow[key] || 0) + (seconds / 60)).toFixed(2);
+          }
+        } else if (!(key in footerRow)) {
+          value = row[key];
         } else {
-          footerRow[key] = +(+footerRow[key] + +row[key]).toFixed(2);
+          value = +(+footerRow[key] + +row[key]).toFixed(2);
         }
+
+        footerRow[key] = value;
       }
 
       playerRows.push(formattedRow);
