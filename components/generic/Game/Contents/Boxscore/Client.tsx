@@ -68,14 +68,12 @@ const Client = (
     boxscores,
     player_boxscores,
     players,
-    player_statistic_rankings,
   }:
   {
     game: Game;
     boxscores: BoxscoreCBB[] | BoxscoreCFB[];
     player_boxscores: CBBPlayerBoxscores | CFBPlayerBoxscores;
     players: Players;
-    player_statistic_rankings: CBBPlayerStatisticRankings | CFBPlayerStatisticRankings;
   },
 ) => {
   const navigation = new Navigation();
@@ -87,6 +85,8 @@ const Client = (
 
   const numberOfTeams = Organization.getNumberOfTeams({ organization_id: game.organization_id, division_id: game.division_id, season: game.season });
 
+
+  const player_statistic_rankings = useAppSelector((state) => state.gameReducer.player_statistic_rankings);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
 

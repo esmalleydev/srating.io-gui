@@ -21,7 +21,6 @@ const Server = async (
     cache: revalidateSeconds,
   });
 
-
   const coachStats: object = await useServerAPI({
     class: 'coach',
     function: 'getAllStats',
@@ -45,10 +44,19 @@ const Server = async (
     cache: revalidateSeconds,
   });
 
+  const player_statistic_rankings = await useServerAPI({
+    class: 'game',
+    function: 'getPlayerRankings',
+    arguments: {
+      game_id: game_ids,
+    },
+    cache: revalidateSeconds,
+  });
+
 
   return (
     <>
-      <Client gameStats={gameStats} coachStats = {coachStats} conferenceStats = {conferenceStats} />
+      <Client gameStats={gameStats} coachStats = {coachStats} conferenceStats = {conferenceStats} player_statistic_rankings = {player_statistic_rankings} />
     </>
   );
 };

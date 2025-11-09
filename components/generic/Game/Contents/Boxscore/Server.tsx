@@ -30,7 +30,6 @@ const Server = async (
   const players_ids = Object.values(player_boxscores).filter((player_boxscore) => (player_boxscore.player_id)).map((player_boxscore) => player_boxscore.player_id);
 
   let players = {};
-  let player_statistic_rankings = {};
 
   if (players_ids.length) {
     players = await useServerAPI({
@@ -39,18 +38,11 @@ const Server = async (
       arguments: { player_id: players_ids },
       cache: revalidateSeconds,
     });
-
-    player_statistic_rankings = await useServerAPI({
-      class: 'game',
-      function: 'getPlayerRankings',
-      arguments: { game_id },
-      cache: 60 * 60 * 3, // 3 hours
-    });
   }
 
   return (
     <>
-      <Client game = {game} boxscores = {boxscores} player_boxscores = {player_boxscores} players = {players} player_statistic_rankings = {player_statistic_rankings} />
+      <Client game = {game} boxscores = {boxscores} player_boxscores = {player_boxscores} players = {players} />
     </>
   );
 };

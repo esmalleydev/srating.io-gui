@@ -15,10 +15,11 @@ const ClientSkeleton = () => {
   return null;
 };
 
-const Client = ({ gameStats, coachStats, conferenceStats }) => {
+const Client = ({ gameStats, coachStats, conferenceStats, player_statistic_rankings }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(setDataKey({ key: 'player_statistic_rankings', value: player_statistic_rankings }));
     dispatch(setDataKey({ key: 'conferenceStats', value: conferenceStats }));
     dispatch(setDataKey({ key: 'coachStats', value: coachStats }));
     dispatch(setDataKey({ key: 'gameStats', value: gameStats }));
