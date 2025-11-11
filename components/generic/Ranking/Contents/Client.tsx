@@ -190,6 +190,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   };
 
   const handlePlayer = (player_id) => {
+    console.log(currentPath)
     if (tableRef && tableRef.current) {
       dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
     }

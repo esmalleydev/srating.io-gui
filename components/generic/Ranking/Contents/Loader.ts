@@ -2,6 +2,7 @@
 
 import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/ranking-slice';
+import { setDataKey as setCacheDataKey } from '@/redux/features/cache-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 import { getStore } from '@/app/StoreProvider';
@@ -30,25 +31,15 @@ const Loader = ({ organization_id, division_id, season, view }) => {
 
   const dataArgs = {
     class: 'ranking',
-    function: fxn,
+    function: 'load',
     arguments: {
       organization_id,
       division_id,
-      season: season.toString(),
-    },
-  };
-
-  const cacheArgs = {
-    class: 'cache',
-    function: 'handle',
-    arguments: {
-      class: dataArgs.class,
-      function: dataArgs.function,
-      arguments: dataArgs.arguments,
+      season,
+      fxn,
     },
     cache: seconds,
   };
-
 
   const getData = () => {
     if (loading) {
@@ -66,15 +57,15 @@ const Loader = ({ organization_id, division_id, season, view }) => {
     const requestTime = new Date().getTime();
     const cachedDataKey = `${organization_id}${division_id}${season}${view}_ranking_data`;
 
-    const { cachedData } = store.getState().rankingReducer;
+    const { rankingData } = store.getState().cacheReducer;
 
     if (
-      cachedData &&
-      cachedDataKey in cachedData &&
-      'timer' in cachedData[cachedDataKey] &&
-      'data' in cachedData[cachedDataKey]
+      rankingData &&
+      cachedDataKey in rankingData &&
+      'timer' in rankingData[cachedDataKey] &&
+      'data' in rankingData[cachedDataKey]
     ) {
-      const { data, timer } = cachedData[cachedDataKey];
+      const { data, timer } = rankingData[cachedDataKey];
       const timerValue = +(timer || Infinity);
       if ((+requestTime - timerValue) < one_hour_ms) {
         if (data) {
@@ -88,18 +79,18 @@ const Loader = ({ organization_id, division_id, season, view }) => {
     setLoading(true);
     dispatch(setDataKey({ key: 'loadingView', value: true }));
 
-    useClientAPI(cacheArgs)
+    useClientAPI(dataArgs)
       .then((response) => {
         let data = response;
         if (data.error) {
           data = {};
         }
         const store = getStore();
-        const cachedData = Objector.deepClone(store.getState().rankingReducer.cachedData);
-        delete cachedData[cachedDataKey];
-        cachedData[cachedDataKey] = { timer: requestTime, data: response };
+        const rankingData = Objector.deepClone(store.getState().cacheReducer.rankingData);
+        delete rankingData[cachedDataKey];
+        rankingData[cachedDataKey] = { timer: requestTime, data: response };
 
-        dispatch(setDataKey({ key: 'cachedData', value: cachedData }));
+        dispatch(setCacheDataKey({ key: 'rankingData', value: rankingData }));
         dispatch(setDataKey({ key: 'data', value: response }));
         dispatch(setDataKey({ key: 'loadingView', value: false }));
         setLoading(false);

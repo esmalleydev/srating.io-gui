@@ -1,18 +1,20 @@
 'use client';
 
 import React from 'react';
-import { useTheme } from '@mui/material/styles';
 
 import moment from 'moment';
 import {
-  Typography, Skeleton, Card, CardContent,
+  Skeleton,
 } from '@mui/material';
 
 import Color from '@/components/utils/Color';
+import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
+import Paper from '@/components/ux/container/Paper';
 
 
 const getCardStyle = () => {
-  return { width: 300, minWidth: 200, margin: '5px' };
+  return { width: 300, minWidth: 200, margin: '5px', padding: 12 };
 };
 
 const getOrderedBuckets = () => {
@@ -40,8 +42,8 @@ const Client = ({ date, stats }) => {
     const weekDate = moment(date).subtract(7, 'days').format('MMM Do');
     const monthDate = moment(date).subtract(1, 'months').format('MMM Do');
 
-    const bestColor = theme.palette.mode === 'light' ? theme.palette.success.main : theme.palette.success.dark;
-    const worstColor = theme.palette.mode === 'light' ? theme.palette.error.main : theme.palette.error.dark;
+    const bestColor = theme.mode === 'light' ? theme.success.main : theme.success.dark;
+    const worstColor = theme.mode === 'light' ? theme.error.main : theme.error.dark;
 
     for (let i = 0; i < orderedBuckets.length; i++) {
       if (orderedBuckets[i] in stats) {
@@ -97,9 +99,9 @@ const Client = ({ date, stats }) => {
 
           subBucketContainers.push(
             <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>{subBucketsLabels[subBuckets[s]]}</Typography>
-              <Typography sx={subColorStyle}>{subTotalGames ? `${subPercentCorrect}%` : '-'}</Typography>
-              <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }}>({`${subCorrectGames} / ${subTotalGames}`})</Typography>
+              <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary }} type = 'caption'>{subBucketsLabels[subBuckets[s]]}</Typography>
+              <Typography style={subColorStyle} type = 'caption'>{subTotalGames ? `${subPercentCorrect}%` : '-'}</Typography>
+              <Typography style={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} type = 'caption'>({`${subCorrectGames} / ${subTotalGames}`})</Typography>
             </div>,
           );
         }
@@ -119,27 +121,25 @@ const Client = ({ date, stats }) => {
 
 
         statContainers.push(
-          <Card key = {i} sx = {getCardStyle()}>
-            <CardContent>
-              <Typography sx={{ fontSize: 14, textAlign: 'center' }} color = 'info.dark' gutterBottom>{label}</Typography>
+          <Paper key = {i} elevation={2} style = {getCardStyle()}>
+              <Typography style={{ fontSize: 14, textAlign: 'center', color: theme.info.dark }} type = 'h6'>{label}</Typography>
               {
-              totalGames === 0 ? <Typography sx = {({ textAlign: 'center', ...colorStyle })} variant="h5" component="div">-</Typography> :
+              totalGames === 0 ? <Typography style = {({ textAlign: 'center', ...colorStyle })} type="h5">-</Typography> :
               <>
                 <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>Predicted win %</Typography>
-                  <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'center' }} color="text.secondary" gutterBottom>Accuracy</Typography>
-                  <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} color="text.secondary" gutterBottom># games</Typography>
+                  <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary }} type = 'caption'>Predicted win %</Typography>
+                  <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary, textAlign: 'center' }} type = 'caption'>Accuracy</Typography>
+                  <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary, textAlign: 'right' }} type = 'caption'># games</Typography>
                 </div>
                 {subBucketContainers}
                 <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography sx={{ fontSize: 12, minWidth: 60 }} color="text.secondary" gutterBottom>Total:</Typography>
-                  <Typography sx={colorStyle}>{`${percentCorrect}%`}</Typography>
-                  <Typography sx={{ fontSize: 12, minWidth: 60, textAlign: 'right' }}>({totalCorrect} / {totalGames})</Typography>
+                  <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary }} type = 'caption'>Total:</Typography>
+                  <Typography style={colorStyle} type = 'caption'>{`${percentCorrect}%`}</Typography>
+                  <Typography style={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} type = 'caption'>({totalCorrect} / {totalGames})</Typography>
                 </div>
               </>
               }
-            </CardContent>
-          </Card>,
+          </Paper>,
         );
       }
     }

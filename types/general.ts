@@ -281,6 +281,19 @@ export interface GamePulse {
 
 export type GamePulses = {[game_pulse_id: string]: GamePulse};
 
+export interface GamePlayer {
+  game_player_id: string;
+  game_id: string;
+  team_id: string;
+  player_id: string;
+  start: string;
+  stop: string | null;
+  period: number;
+  date_of_entry: string;
+}
+
+export type GamePlayers = {[game_player_id: string]: GamePlayer};
+
 export interface Odds {
   odds_id: string;
   game_id: string;

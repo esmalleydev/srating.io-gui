@@ -56,12 +56,7 @@ class Organization {
       throw new Error('organization_id not in organizations');
     }
 
-    let path = organizations[organization_id].code.toLowerCase();
-    if (organizations[organization_id].code === 'NCAAM') {
-      path = 'cbb';
-    }
-
-    return path;
+    return organizations[organization_id].code.toLowerCase();
   }
 
   public static getNumberOfTeams({ organization_id, division_id, season }: { organization_id: string, division_id: string, season: string | number}): number {

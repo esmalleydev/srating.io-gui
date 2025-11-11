@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { getMarginTop } from '@/components/generic/DateBar';
 import { getHeaderHeight } from './SubNavBar';
 import { useAppSelector } from '@/redux/hooks';
