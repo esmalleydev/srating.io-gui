@@ -4,6 +4,7 @@ import Color from '@/components/utils/Color';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tooltip from '../ux/hover/Tooltip';
+import Style from '../utils/Style';
 
 const RankSpan = (
   { rank, max, useOrdinal }:
@@ -51,7 +52,7 @@ const RankSpan = (
 
   return (
     <Tooltip position = 'top' text={`Ranked ${rankWithOrdinal} out of ${max}`}>
-      <span style = {spanStyle}>{useOrdinal ? rankWithOrdinal : rank}</span>
+      <span className = {Style.getStyleClassName(spanStyle)}>{useOrdinal ? rankWithOrdinal : rank}</span>
     </Tooltip>
   );
 };

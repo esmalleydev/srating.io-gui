@@ -10,6 +10,7 @@ const getData = ({ view }) => {
   // console.time('getData')
   const data = useAppSelector((state) => state.rankingReducer.data);
   const positions = useAppSelector((state) => state.displayReducer.positions);
+  const class_years = useAppSelector((state) => state.rankingReducer.class_years);
   const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
   const hideCommitted = useAppSelector((state) => state.rankingReducer.hideCommitted);
   const hideUnderTwoMPG = useAppSelector((state) => state.rankingReducer.hideUnderTwoMPG);
@@ -20,7 +21,7 @@ const getData = ({ view }) => {
   const isCFB = Organization.isCFB();
 
   const args = {
-    view, data, positions, selectedConferences, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, conferences,
+    view, data, positions, selectedConferences, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, conferences, class_years,
   };
 
   // you have to pass the functions the same arguments or on re-render it complains about hooks being different (re-rendering from CFB to CBB organization)
@@ -39,13 +40,14 @@ const getData = ({ view }) => {
 
 const formatCBBData = (args) => {
   const {
-    view, data, positions, selectedConferences, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, conferences,
+    view, data, positions, selectedConferences, hideCommitted, hideUnderTwoMPG, filterCommittedConf, filterOriginalConf, conferences, class_years,
   } = args;
   const rows: CBBRankingTable[] = [];
   let lastUpdated: string | null = null;
 
   const selectedConferencesSet = new Set(selectedConferences);
   const positionsSet = new Set(positions);
+  const class_yearsSet = new Set(class_years);
 
   // console.time('loop formatCBBData')
   for (const id in data) {
@@ -122,9 +124,13 @@ const formatCBBData = (args) => {
 
       // console.time('player')
       row.name = row.player ? (`${row.player.first_name.charAt(0)}. ${row.player.last_name}`) : null;
-      row.number = row.player ? row.player.number : null;
-      row.position = row.player ? row.player.position : null;
-      row.height = row.player ? row.player.height : null;
+
+      row.number = (row.player_team_season && row.player_team_season.number) || (row.player && row.player.number) || null;
+      row.position = (row.player_team_season && row.player_team_season.position) || (row.player && row.player.position) || null;
+      row.height = (row.player_team_season && row.player_team_season.height) || (row.player && row.player.height) || null;
+      row.weight = (row.player_team_season && row.player_team_season.weight) || (row.player && row.player.weight) || null;
+      row.class_year = (row.player_team_season && row.player_team_season.class_year) || null;
+
 
       if (row.conference_id && row.conference_id in conferences) {
         row.conference_code = conferences[row.conference_id].code;
@@ -134,6 +140,13 @@ const formatCBBData = (args) => {
       if (
         positions.length &&
         !positionsSet.has(row.position)
+      ) {
+        continue;
+      }
+
+      if (
+        class_years.length &&
+        !class_yearsSet.has(row.class_year)
       ) {
         continue;
       }
@@ -170,9 +183,11 @@ const formatCBBData = (args) => {
 };
 
 const formatCFBData = (args) => {
-  const { view, data, positions, selectedConferences, hideUnderTwoMPG, conferences } = args;
+  const { view, data, positions, selectedConferences, hideUnderTwoMPG, conferences, class_years } = args;
   const rows: CFBRankingTable[] = [];
   let lastUpdated: string | null = null;
+
+  const class_yearsSet = new Set(class_years);
 
   for (const id in data) {
     // Fixes - TypeError: Cannot add property name, object is not extensible
@@ -221,13 +236,24 @@ const formatCFBData = (args) => {
       }
 
       row.name = row.player ? (`${row.player.first_name.charAt(0)}. ${row.player.last_name}`) : null;
-      row.number = row.player ? row.player.number : null;
-      row.position = row.player ? row.player.position : null;
-      row.height = row.player ? row.player.height : null;
+
+      row.number = (row.player_team_season && row.player_team_season.number) || (row.player && row.player.number) || null;
+      row.position = (row.player_team_season && row.player_team_season.position) || (row.player && row.player.position) || null;
+      row.height = (row.player_team_season && row.player_team_season.height) || (row.player && row.player.height) || null;
+      row.weight = (row.player_team_season && row.player_team_season.weight) || (row.player && row.player.weight) || null;
+      row.class_year = (row.player_team_season && row.player_team_season.class_year) || null;
 
       if (row.conference_id && row.conference_id in conferences) {
         row.conference_code = conferences[row.conference_id].code;
       }
+
+      if (
+        class_years.length &&
+        !class_yearsSet.has(row.class_year)
+      ) {
+        continue;
+      }
+
 
       row.rank = row.rank || row.efficiency_rating_rank;
 

@@ -1,4 +1,4 @@
-import { CoachStatisticRanking } from './general';
+import { CoachStatisticRanking, Player, PlayerTeamSeason } from './general';
 
 export interface Boxscore {
   boxscore_id: string;
@@ -1032,4 +1032,6 @@ export type ConferenceStatisticRankings = {[conference_statistic_ranking_id: str
 export type RankingTable = (StatisticRanking | PlayerStatisticRanking | ConferenceStatisticRanking | CoachStatisticRanking) & {
   name: string;
   team_name?: string;
+  player?: Player;
+  player_team_season?: PlayerTeamSeason;
 }

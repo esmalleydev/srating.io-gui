@@ -262,6 +262,11 @@ export interface PlayerTeamSeason {
   player_id: string;
   team_id: string;
   season: number;
+  position: string;
+  height: string;
+  weight: string;
+  number: string;
+  class_year: string;
   guid: string;
   deleted: number;
 }

@@ -1,4 +1,5 @@
-import { CoachStatisticRanking } from './general';
+import Player from '@/components/helpers/Player';
+import { CoachStatisticRanking, PlayerTeamSeason } from './general';
 
 
 export interface Boxscore {
@@ -719,4 +720,6 @@ export type RankingTable = (StatisticRanking | PlayerStatisticRanking | Conferen
   committed_team_name?: string;
   committed_conference_id?: string;
   team_name?: string;
+  player?: Player;
+  player_team_season?: PlayerTeamSeason;
 }

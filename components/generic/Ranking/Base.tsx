@@ -7,6 +7,7 @@ import FloatingButtons from './FloatingButtons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
 import { updateDataKey } from '@/redux/features/display-slice';
+import { updateDataKey as updateDataKeyRanking } from '@/redux/features/ranking-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import AdditionalOptions from './AdditionalOptions';
 import Search from './Search';
@@ -22,6 +23,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import PositionPicker from './PositionPicker';
 import TableColumns from '@/components/helpers/TableColumns';
 import Navigation from '@/components/helpers/Navigation';
+import ClassYearPicker from './ClassYearPicker';
 
 
 const Base = (
@@ -33,6 +35,7 @@ const Base = (
   const dispatch = useAppDispatch();
 
   const organization_id_x_division_id_x_ranking_seasons = useAppSelector((state) => state.dictionaryReducer.organization_id_x_division_id_x_ranking_seasons);
+  const class_years = useAppSelector((state) => state.rankingReducer.class_years);
   const positions = useAppSelector((state) => state.displayReducer.positions);
   const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
   const columnView = useAppSelector((state) => state.rankingReducer.columnView);
@@ -90,6 +93,12 @@ const Base = (
     }
   }
 
+  const classChips: React.JSX.Element[] = [];
+  for (let i = 0; i < class_years.length; i++) {
+    classChips.push(<Chip key = {class_years[i]} value = {class_years[i]} style = {{ margin: '5px' }} title={class_years[i]} onDelete={() => { dispatch(updateDataKeyRanking({ key: 'class_years', value: class_years[i] })); }} />);
+  }
+
+
   const handleRankView = (newRankView: string) => {
     if (newRankView !== view) {
       // todo move this to the state or navigation component
@@ -140,6 +149,7 @@ const Base = (
                   {view === 'player' || view === 'transfer' ? <AdditionalOptions view = {view} /> : ''}
                   {view !== 'conference' ? <ConferencePicker /> : ''}
                   {view === 'player' || view === 'transfer' ? <PositionPicker selected = {positions} isRadio = {Organization.getCFBID() === organization_id} /> : ''}
+                  {(view === 'player' || view === 'transfer') && width > 700 ? <ClassYearPicker selected = {class_years} /> : ''}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'baseline' }}>
                   <Search view = {view} />
@@ -148,6 +158,7 @@ const Base = (
               </div>
               <ConferenceChips />
               {positionChips}
+              {classChips}
             </div>
           : ''
       }

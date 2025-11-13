@@ -10,6 +10,7 @@ type InitialState = {
   season: number | null,
   order: string,
   orderBy: string,
+  class_years: string[],
   hideCommitted: boolean,
   hideUnderTwoMPG: boolean,
   filterCommittedConf: boolean,
@@ -46,6 +47,7 @@ stateController.set_url_param_type_x_keys({
   ],
   array: [
     'customColumns',
+    'class_years',
   ],
   boolean: [
     'hideCommitted',
@@ -60,6 +62,7 @@ stateController.setInitialState({
   season: null,
   order: 'asc',
   orderBy: 'rank',
+  class_years: [],
   hideCommitted: false,
   hideUnderTwoMPG: false,
   filterCommittedConf: true,
@@ -80,6 +83,10 @@ export const ranking = createSlice({
   name: 'ranking',
   initialState: stateController.getInitialState(),
   reducers: {
+    updateDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.updateDataKey(state, key, value);
+    },
     reset: {
       reducer: (state, action: PayloadAction<boolean | undefined>) => {
         stateController.reset(state, action.payload);
@@ -101,6 +108,7 @@ export const {
   reset,
   setDataKey,
   resetDataKey,
+  updateDataKey,
 } = ranking.actions;
 export default ranking.reducer;
 

@@ -98,8 +98,8 @@ class TableColumns {
         views: allViews,
         graphable: false,
         widths: {
-          default: 125,
-          425: 85,
+          default: (view === 'player' || view === 'transfer' ? 150 : 125),
+          425: (view === 'player' || view === 'transfer' ? 100 : 85),
         },
         getLabel: () => {
           if (

@@ -36,6 +36,7 @@ import Navigation from '@/components/helpers/Navigation';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import ClassSpan from '../../ClassSpan';
 
 
 
@@ -125,7 +126,6 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   //   console.timeEnd('Ranking.Contents.Client')
   // })
 
-  // console.log(allRows)
 
   const scrollerRef = React.useCallback(
     (element) => {
@@ -190,7 +190,6 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   };
 
   const handlePlayer = (player_id) => {
-    console.log(currentPath)
     if (tableRef && tableRef.current) {
       dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
     }
@@ -632,6 +631,16 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
         }
       } else if (columns[i] === 'committed') {
         tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] === 1 ? <CheckIcon fontSize='small' color = 'success' /> : '-'}</TableCell>);
+      } else if (columns[i] === 'name' && (view === 'player' || view === 'transfer')) {
+        let classSpan: string | React.JSX.Element = '';
+
+        if (row.class_year) {
+          classSpan = <ClassSpan class_year = {row.class_year}/>;
+        }
+
+        tableCells.push(
+          <TableCell key = {i} sx = {tdStyle}>{classSpan}{row[columns[i]]}</TableCell>,
+        );
       } else {
         tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {(view !== 'player')} max = {row.max || dataLength} /> : ''}</TableCell>);
       }

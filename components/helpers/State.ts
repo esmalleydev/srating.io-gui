@@ -2,6 +2,7 @@
 // todo remove redux :D
 
 import Objector from '@/components/utils/Objector';
+import { WritableDraft } from '@reduxjs/toolkit';
 
 type url_param_type_x_keysType = {
   string: string[];
@@ -55,7 +56,7 @@ class State<T extends object> {
     this.url_param_type_x_keys = url_param_type_x_keys;
   }
 
-  public get_url_param_type_x_keys():url_param_type_x_keysType {
+  public get_url_param_type_x_keys(): url_param_type_x_keysType {
     return this.url_param_type_x_keys;
   }
 
@@ -63,7 +64,7 @@ class State<T extends object> {
     this.key_x_local_storage_key = key_x_local_storage_key;
   }
 
-  public get_key_x_local_storage_key():key_x_local_storage_keyType {
+  public get_key_x_local_storage_key(): key_x_local_storage_keyType {
     return this.key_x_local_storage_key || {};
   }
 
@@ -91,7 +92,7 @@ class State<T extends object> {
   }
 
 
-  public updateStateFromUrlParams(state: T): void {
+  public updateStateFromUrlParams(state: WritableDraft<T>): void {
     if (typeof window === 'undefined') {
       return;
     }
@@ -160,16 +161,25 @@ class State<T extends object> {
       if (value !== null) {
         current.delete(key as string);
 
-        if (typeof value === 'object' && Array.isArray(value)) {
+        // console.log('value', value)
+
+        if (Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
+            // console.log('append')
             current.append(key as string, value[i].toString());
           }
+        } else if (typeof value === 'object' && value !== null) {
+          throw new Error('Can not set object in url');
         } else {
+          // console.log('set')
           current.set(key as string, String(value));
         }
       } else {
+        // console.log('del')
         current.delete(key as string);
       }
+
+      // console.log('current', current.toString())
 
       window.history.replaceState(null, '', `?${current.toString()}`);
 
@@ -198,16 +208,20 @@ class State<T extends object> {
   /**
    * Reset the state back to the default state and update the URL
    */
-  public reset(state: T, updateURL = true) {
+  public reset(state: WritableDraft<T>, updateURL = true) {
     const defaultState = this.getDefaultState();
-    for (const key in defaultState) {
+    // Use a temporary constant to assert the type of the keys being iterated.
+    const keys = Object.keys(defaultState) as Array<keyof T>;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key of keys) {
       // we do not have to reset this one, it is controlled by the contents changing
       if (key !== 'loadingView') {
-        const typedKey = key;
+        // const typedKey = key as keyof T;
         if (updateURL) {
-          this.updateURL(typedKey, defaultState[typedKey]);
+          this.updateURL(key, defaultState[key]);
         }
-        state[key] = defaultState[typedKey];
+        (state as T)[key] = defaultState[key];
         this.setLocalStorage(key, state[key]);
       }
     }
@@ -219,19 +233,19 @@ class State<T extends object> {
   /**
    * Reset a specific data key and then the URL
    */
-  public resetDataKey<K extends keyof T>(state: T, key: K) {
+  public resetDataKey<K extends keyof T>(state: WritableDraft<T>, key: K) {
     const defaultState = this.getDefaultState();
     this.updateURL(key, defaultState[key]);
-    state[key] = defaultState[key];
+    (state as T)[key] = defaultState[key];
     this.setLocalStorage(key, state[key]);
   }
 
   /**
    * Set a specific data key value and update the URL
    */
-  public setDataKey<K extends keyof T>(state: T, key: K, value: T[K]) {
+  public setDataKey<K extends keyof T>(state: WritableDraft<T>, key: K, value: T[K]) {
     this.updateURL(key, value);
-    state[key] = value;
+    (state as T)[key] = value;
     this.setLocalStorage(key, state[key]);
   }
 
@@ -244,7 +258,7 @@ class State<T extends object> {
    *
    * updateDataKey will remove 1 while keeping the other elements [2, 3]
    */
-  public updateDataKey<K extends keyof T>(state: T, key: K, value: T[K] | null) {
+  public updateDataKey<K extends keyof T>(state: WritableDraft<T>, key: K, value: T[K] | null) {
     // if the default value is null, but it can be an array, this will not work
     if (Array.isArray(state[key])) {
       let strate = state[key] as string[];
@@ -265,15 +279,15 @@ class State<T extends object> {
         strate = [];
       }
 
-      this.updateURL(key, value);
+      this.updateURL(key, strate as T[K]);
 
-      state[key] = strate as T[K];
+      (state as T)[key] = strate as T[K];
     } else {
       // Can only pass null to one of the array ones
       if (value === null) {
         throw new Error('Can not pass null');
       }
-      state[key] = value;
+      (state as T)[key] = value;
     }
 
     this.setLocalStorage(key, state[key]);

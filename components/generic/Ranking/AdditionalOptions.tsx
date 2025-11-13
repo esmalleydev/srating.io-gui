@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import IconButton from '@mui/material/IconButton';
 
@@ -17,15 +18,20 @@ import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { ClassYearPickerDialog } from './ClassYearPicker';
 
 const AdditionalOptions = ({ view }: {view: string}) => {
+  const { width } = useWindowDimensions() as Dimensions;
   const [anchor, setAnchor] = useState(null);
+  const [classPickerDialogOpen, setClassPickerDialogOpen] = useState(false);
   const [confOptionsOpen, setConfOptionsOpen] = useState(false);
   const open = Boolean(anchor);
 
   const dispatch = useAppDispatch();
   const hideCommitted = useAppSelector((state) => state.rankingReducer.hideCommitted);
   const hideUnderTwoMPG = useAppSelector((state) => state.rankingReducer.hideUnderTwoMPG);
+  const class_years = useAppSelector((state) => state.rankingReducer.class_years);
 
 
   const handleOpen = (event) => {
@@ -57,6 +63,11 @@ const AdditionalOptions = ({ view }: {view: string}) => {
     setConfOptionsOpen(true);
   };
 
+  const handleClassYearFilter = () => {
+    handleClose();
+    setClassPickerDialogOpen(true);
+  };
+
   const getMenuItems = () => {
     const menuItems: React.JSX.Element[] = [];
 
@@ -74,6 +85,19 @@ const AdditionalOptions = ({ view }: {view: string}) => {
     }
 
     if (view === 'transfer' || view === 'player') {
+      if (width < 700) {
+        menuItems.push(
+          <MenuItem key='class-year-display' onClick={() => {
+            handleClassYearFilter();
+          }}>
+            <MenuListIcon>
+              <FilterAltIcon fontSize='small' />
+            </MenuListIcon>
+            <MenuListText primary ='Class filter' />
+          </MenuItem>,
+        );
+      }
+
       menuItems.push(
         <MenuItem key='hide-small-mins-display' onClick={() => {
           handleUnderTwo();
@@ -128,6 +152,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         </MenuList>
       </Menu>
       <ConferenceFilterOptions open={confOptionsOpen} onClose = {() => setConfOptionsOpen(false)} />
+      <ClassYearPickerDialog open = {classPickerDialogOpen} selected={class_years} openHandler={handleClassYearFilter} closeHandler={() => setClassPickerDialogOpen(false)} />
     </div>
   );
 };
