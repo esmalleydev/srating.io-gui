@@ -16,6 +16,7 @@ import FavoritePicker from '../../FavoritePicker';
 import OptionPicker from '../../OptionPicker';
 import { PlayerStatisticRanking, StatisticRanking } from '@/types/cbb';
 import Navigation from '@/components/helpers/Navigation';
+import ClassSpan from '../../ClassSpan';
 
 
 /**
@@ -89,6 +90,7 @@ const Client = (
   const player: Player = useAppSelector((state) => state.playerReducer.player);
   const team: Team | null = useAppSelector((state) => state.playerReducer.team);
   const player_team_seasons: PlayerTeamSeasons = useAppSelector((state) => state.playerReducer.player_team_seasons);
+  const player_team_season = useAppSelector((state) => state.playerReducer.player_team_season);
   const teams: Teams = useAppSelector((state) => state.playerReducer.teams);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });
@@ -161,7 +163,10 @@ const Client = (
       <PrimaryLine>
         <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {(width < breakPoint ? 'h6' : 'h5')}>
           {playerRank ? <span style = {supStyle}>{playerRank} </span> : ''}
-          {playerHelper.getName()}
+          <div style = {{ display: 'inline-flex', alignItems: 'center' }}>
+            {playerHelper.getName()}
+            {player_team_season && player_team_season.class_year ? <ClassSpan class_year={player_team_season.class_year} /> : ''}
+          </div>
         </Typography>
         <FavoritePicker player_id = {player?.player_id} />
         <OptionPicker buttonName = {season.toString()} options = {seasonOptions} selected = {[season.toString()]} actionHandler = {handleSeason} isRadio = {true} />

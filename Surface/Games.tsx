@@ -93,10 +93,9 @@ class Games extends Surface {
     { season = this.getCurrentSeason(), division_id = this.getDivisionID(), date }:
     getDecorateGames,
   ) {
-    const datesHelper = new Dates();
     const organization_id = this.getOrganizationID();
     const dates = await this.getDates({ season, organization_id, division_id });
-    const selectedDate = date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
+    const selectedDate = date || Dates.getClosestDate(Dates.getToday(), dates);
     const games = await this.getGames({ date: selectedDate, organization_id, division_id });
 
     return (

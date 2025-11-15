@@ -48,7 +48,7 @@ const Client = ({ organization_id, division_id, season, teamStats, rosterStats, 
   return (
     <Contents>
       {subView === 'team' ? <Team organization_id = {organization_id} division_id = {division_id} season = {season} teamStats = {teamStats} /> : ''}
-      {subView === 'player' ? <Roster organization_id = {organization_id} rosterStats = {rosterStats} player_team_seasons = {player_team_seasons} /> : ''}
+      {subView === 'player' ? <Roster organization_id = {organization_id} rosterStats = {rosterStats} player_team_seasons = {player_team_seasons} season = {season} /> : ''}
     </Contents>
   );
 };

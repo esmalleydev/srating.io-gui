@@ -1,4 +1,5 @@
-import React from 'react';
+
+
 import { Metadata, ResolvingMetadata } from 'next';
 
 import Post from '@/components/generic/Blog/Post';
@@ -37,16 +38,12 @@ export async function generateMetadata(
 
 const Blog = async ({ params }: Props) => {
   const parameters = await params;
-  const blogData = await getData(parameters);
-
-  const data = blogData.post;
-
-  const sidebarPosts = blogData.sidebar;
+  const { post, sidebarPosts } = await getData(parameters);
 
   return (
     <div>
       <div style = {{ display: 'flex', padding: 20 }}>
-        <Post post = {data} posts = {sidebarPosts} />
+        <Post post = {post} sidebarPosts = {sidebarPosts} />
       </div>
     </div>
   );
@@ -65,7 +62,7 @@ async function getData(params) {
   const sidebarPosts = getSidebarPosts();
   return {
     post: postData,
-    sidebar: sidebarPosts,
+    sidebarPosts,
   };
 }
 

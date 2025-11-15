@@ -179,6 +179,7 @@ const NavBar = () => {
 
   const subHeaderStyle: React.CSSProperties = {
     position: 'fixed',
+    backgroundColor: theme.background.main,
     height: getSubNavHeaderHeight(),
     width: '100%',
     display: 'flex',

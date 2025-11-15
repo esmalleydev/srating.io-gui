@@ -18,10 +18,21 @@ const Server = async ({ organization_id, division_id, home_team_id, away_team_id
     cache: revalidateSeconds,
   });
 
+  const player_team_seasons = await useServerAPI({
+    class: 'player_team_season',
+    function: 'read',
+    arguments: {
+      organization_id,
+      division_id,
+      season,
+      player_id: Object.keys(players),
+    },
+    cache: 60 * 60 * 12,
+  });
 
   return (
     <>
-      <Client player_statistic_rankings = {player_statistic_rankings} players = {players} />
+      <Client player_statistic_rankings = {player_statistic_rankings} players = {players} player_team_seasons = {player_team_seasons} />
     </>
   );
 };

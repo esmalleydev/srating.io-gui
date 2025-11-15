@@ -249,6 +249,7 @@ export interface Player {
   weight: string;
   number: string;
   hometown: string;
+  class_year?: string;
   guid: string;
   deleted: number;
 }

@@ -160,7 +160,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       const over = (game.prediction.home_score + game.prediction.away_score).toFixed(0);
       predictedSpreadContainer.push(
         <Tooltip onClickRemove text = {'Predicted spread and over'}>
-          <Typography key = {'predicted_spread'} type = 'overline' style = {{ color: theme.info.main, marginLeft: 10, fontSize: '11px' }}>{`${spread < 0 ? Game.getTeamNameShort('away') : Game.getTeamNameShort('home')} ${spread} | O${over}`}</Typography>
+          <Typography key = {'predicted_spread'} type = 'overline' style = {{ color: theme.info.main, marginLeft: 10, fontSize: '11px' }}>{`${spread < 0 ? Game.getTeamNameShort('away') : Game.getTeamNameShort('home')} ${(spread > 0 ? spread * -1 : spread)} | O${over}`}</Typography>
         </Tooltip>,
       );
     }

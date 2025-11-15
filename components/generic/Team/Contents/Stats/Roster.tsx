@@ -18,9 +18,10 @@ import Objector from '@/components/utils/Objector';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import ClassSpan from '@/components/generic/ClassSpan';
 
 
-const Roster = ({ organization_id, rosterStats, player_team_seasons }) => {
+const Roster = ({ organization_id, rosterStats, player_team_seasons, season }) => {
   const theme = useTheme();
   const navigation = new Navigation();
 
@@ -34,9 +35,14 @@ const Roster = ({ organization_id, rosterStats, player_team_seasons }) => {
   const lastSeason = +('season' in team_season_conference ? team_season_conference.season : 0) - 1;
 
   const player_id_x_is_transfer = {};
+  const player_id_x_current_player_team_season = {};
 
   for (const player_team_season_id in player_team_seasons) {
     const row = player_team_seasons[player_team_season_id];
+
+    if (+row.season === +season) {
+      player_id_x_current_player_team_season[row.player_id] = row;
+    }
 
     if (+row.season !== lastSeason) {
       continue;
@@ -80,7 +86,7 @@ const Roster = ({ organization_id, rosterStats, player_team_seasons }) => {
   const grouped_position_x_playerRows: groupedPosition = {};
 
   for (const player_statistic_ranking_id in player_statistic_rankings) {
-    const row: (CBBPlayerStatisticRanking | CFBPlayerStatisticRanking) & { name?: string; is_transfer?: string | React.JSX.Element; } = player_statistic_rankings[player_statistic_ranking_id];
+    const row: (CBBPlayerStatisticRanking | CFBPlayerStatisticRanking) & { name?: string | React.JSX.Element; is_transfer?: string | React.JSX.Element; } = player_statistic_rankings[player_statistic_ranking_id];
 
     if (!(row.player_id in players)) {
       continue;
@@ -120,6 +126,17 @@ const Roster = ({ organization_id, rosterStats, player_team_seasons }) => {
     row.name = `${player.first_name.charAt(0)}. ${player.last_name}`;
     row.is_transfer = isTransfer ? transferIcon : '-';
 
+    // row.number = (row.player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[row.player_id].number) || null;
+    // row.position = (row.player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[row.player_id].position) || null;
+    // row.height = (row.player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[row.player_id].height) || null;
+    // row.weight = (row.player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[row.player_id].weight) || null;
+    const class_year = (row.player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[row.player_id].class_year) || null;
+
+
+    if (class_year) {
+      row.name = <><ClassSpan class_year={class_year} />{row.name}</>;
+    }
+
     grouped_position_x_playerRows[grouped_position].push(row);
   }
 
@@ -127,9 +144,20 @@ const Roster = ({ organization_id, rosterStats, player_team_seasons }) => {
     grouped_position_x_playerRows.all = [];
     for (const player_id in players) {
       const isTransfer = (player_id_x_is_transfer[player_id]);
-      const player: Player & { name?: string; is_transfer?: string | React.JSX.Element } = players[player_id];
+      const player: Player & { name?: string | React.JSX.Element; is_transfer?: string | React.JSX.Element } = players[player_id];
       player.name = `${player.first_name.charAt(0)}. ${player.last_name}`;
       player.is_transfer = isTransfer ? transferIcon : '-';
+
+      player.number = (player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[player_id].number) || null;
+      player.position = (player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[player_id].position) || null;
+      player.height = (player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[player_id].height) || null;
+      player.weight = (player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[player_id].weight) || null;
+      player.class_year = (player_id in player_id_x_current_player_team_season && player_id_x_current_player_team_season[player_id].class_year) || null;
+
+      if (player.class_year) {
+        player.name = <><ClassSpan class_year={player.class_year} />{player.name}</>;
+      }
+
       grouped_position_x_playerRows.all.push(player);
     }
   }
@@ -252,7 +280,7 @@ const Roster = ({ organization_id, rosterStats, player_team_seasons }) => {
   };
 
   return (
-    <div style = {{ paddingTop: 10 }}>
+    <div style = {{ padding: '10px 5px 0px 5px' }}>
       {getPlayerTableContents()}
     </div>
   );

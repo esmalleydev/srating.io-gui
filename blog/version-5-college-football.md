@@ -11,7 +11,7 @@ ogImage:
 ---
 
 
-## New Features
+# New Features
 - College football data back to 2000-2001 season
 - CFB prediction algorithm trained on 20,000 games
 - Ranking delta, view the ranking change compared to 1 day and 7 days ago

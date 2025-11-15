@@ -17,6 +17,7 @@ import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import Objector from '@/components/utils/Objector';
 import Navigation from '@/components/helpers/Navigation';
+import ClassSpan from '@/components/generic/ClassSpan';
 
 
 /**
@@ -50,7 +51,7 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ player_statistic_rankings, players }) => {
+const Client = ({ player_statistic_rankings, players, player_team_seasons }) => {
   // console.time('Player.Client')
   // console.time('Player.Client.logic')
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
@@ -67,6 +68,13 @@ const Client = ({ player_statistic_rankings, players }) => {
   // useEffect(() => {
   //   console.timeEnd('Player.Client')
   // })
+
+  const player_id_x_player_team_season = {};
+
+  for (const player_team_season_id in player_team_seasons) {
+    const row = player_team_seasons[player_team_season_id];
+    player_id_x_player_team_season[row.player_id] = row;
+  }
 
   const guards: string[] = [];
   const forwards: string[] = [];
@@ -235,6 +243,10 @@ const Client = ({ player_statistic_rankings, players }) => {
         }
 
         stats.name = `${player.first_name.charAt(0)}. ${player.last_name}`;
+
+        if (player.player_id in player_id_x_player_team_season && player_id_x_player_team_season[player.player_id].class_year) {
+          stats.name = <><ClassSpan class_year={player_id_x_player_team_season && player_id_x_player_team_season[player.player_id].class_year} />{stats.name}</>;
+        }
 
         const teamHelper = new HelperTeam({ team: teams[stats.team_id] });
         stats.team_name = teamHelper.getNameShort();

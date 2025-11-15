@@ -61,41 +61,40 @@ class Picks extends Games {
     { view, season = this.getCurrentSeason(), division_id = this.getDivisionID(), date }:
     getDecoratePicks,
   ) {
-    const datesHelper = new Dates();
     const organization_id = this.getOrganizationID();
     const dates = await this.getDates({ season, organization_id, division_id });
-    const selectedDate = date || datesHelper.getClosestDate(datesHelper.getToday(), dates);
+    const selectedDate = date || Dates.getClosestDate(Dates.getToday(), dates);
     const games = await this.getGames({ date: selectedDate, organization_id, division_id });
 
     return (
       <>
-      <DateBar dates = {dates} date = {selectedDate} />
-      <SubNavBar view = {view} />
-      <PicksLoader organization_id={organization_id} division_id={division_id} date = {selectedDate} />
+        <DateBar dates = {dates} date = {selectedDate} />
+        <SubNavBar view = {view} />
+        <PicksLoader organization_id={organization_id} division_id={division_id} date = {selectedDate} />
 
-      <ClientWrapper>
-        {
-          view === 'picks' ?
-            <PicksComponent games = {games} />
-            : ''
-        }
-        <Suspense key = {selectedDate} fallback = {<StatsLoaderClientSkeleton />}>
-          <StatsLoaderServer game_ids={Object.keys(games)} organization_id={organization_id} division_id={division_id} season={season} />
-        </Suspense>
+        <ClientWrapper>
+          {
+            view === 'picks' ?
+              <PicksComponent games = {games} />
+              : ''
+          }
+          <Suspense key = {selectedDate} fallback = {<StatsLoaderClientSkeleton />}>
+            <StatsLoaderServer game_ids={Object.keys(games)} organization_id={organization_id} division_id={division_id} season={season} />
+          </Suspense>
 
-        {view === 'calculator' ? <div><Calculator games = {games} date = {selectedDate} /></div> : ''}
+          {view === 'calculator' ? <div><Calculator games = {games} date = {selectedDate} /></div> : ''}
 
-        {
-          view === 'stats' ?
-          <StatsClientWrapper>
-            <Suspense key = {selectedDate} fallback = {<StatsLoading />}>
-              <StatsServer organization_id={organization_id} division_id={division_id} date = {selectedDate} season = {season} />
-            </Suspense>
-          </StatsClientWrapper>
-            : ''
-        }
-      </ClientWrapper>
-    </>
+          {
+            view === 'stats' ?
+            <StatsClientWrapper>
+              <Suspense key = {selectedDate} fallback = {<StatsLoading />}>
+                <StatsServer organization_id={organization_id} division_id={division_id} date = {selectedDate} season = {season} />
+              </Suspense>
+            </StatsClientWrapper>
+              : ''
+          }
+        </ClientWrapper>
+      </>
     );
   }
 }

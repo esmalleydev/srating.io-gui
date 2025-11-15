@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Metadata } from 'next';
 
 
@@ -15,18 +15,17 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'Information about college basketball statistics and analysis',
-  }
+  },
 };
 
-const Blog = async() => {
+const Blog = async () => {
   const mainPost = getLastPost();
   const sidebarPosts = getSidebarPosts();
 
-
   return (
     <div>
-      <div style = {{'padding': 20}}>
-        <Post post = {mainPost} posts = {sidebarPosts} />
+      <div style = {{ padding: 20 }}>
+        <Post post = {mainPost} sidebarPosts = {sidebarPosts} />
       </div>
     </div>
   );
