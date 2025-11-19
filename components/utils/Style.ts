@@ -2,6 +2,7 @@
 
 
 
+
 type CSSMap = Map<string, string>;
 
 /**
@@ -278,67 +279,122 @@ class Style {
 
 
     const topLevelRules: string[] = [];
-    const nestedRules: string[] = []; // for &:hover etc
-    const atRules: string[] = []; // for @keyframes, @media
+    const nestedRules: string[] = [];
+    const atRules: string[] = [];
 
-    let currentBlockLines: string[] = [];
-    let currentBlockType: 'nested' | 'at-rule' | null = null;
-    let depth = 0;
+    let currentNestedSelector: string | null = null;
+    let insideNestedBlock = false;
+    let nestedBlockLines: string[] = [];
+
+    let currentAtRule: string | null = null;
+    let insideAtRule = false;
+    let atRuleLines: string[] = [];
+    let atRuleBraceCount = 0;
 
     // eslint-disable-next-line no-restricted-syntax
     for (const line of lines) {
-      const normalized = normalizeCSSLine(line);
-      const openBraces = (line.match(/{/g) || []).length;
-      const closeBraces = (line.match(/}/g) || []).length;
+      if (line.startsWith('@')) {
+        // Start of at-rule
+        const atRulePart = line.split('{')[0].trim();
+        currentAtRule = atRulePart;
+        atRuleLines = [];
 
-      // Check if we are starting a new block from root (depth 0)
-      if (depth === 0) {
-        if (line.startsWith('@')) {
-          currentBlockType = 'at-rule';
-          currentBlockLines.push(normalized);
-        } else if (line.startsWith('&')) {
-          currentBlockType = 'nested';
-          currentBlockLines.push(normalized);
-        } else if (openBraces > 0) {
-          // Edge case: A selector that doesn't start with & (bad practice in this system, but possible)
-          // Treated as top level property usually, or ignored.
-          // Assuming top-level properties don't have braces.
-          topLevelRules.push(normalized);
+        if (line.includes('{')) {
+          insideAtRule = true;
+          atRuleBraceCount = 1;
+
+          // Add rest of line after '{' if any
+          const afterBrace = line.split('{').slice(1).join('{').trim();
+          if (afterBrace) {
+            atRuleLines.push(normalizeCSSLine(afterBrace));
+
+            // Check if there are closing braces on same line
+            atRuleBraceCount += (afterBrace.match(/{/g) || []).length;
+            atRuleBraceCount -= (afterBrace.match(/}/g) || []).length;
+
+            if (atRuleBraceCount === 0) {
+              atRules.push(`${currentAtRule} { ${atRuleLines.join(' ')} }`);
+              currentAtRule = null;
+              insideAtRule = false;
+              atRuleLines = [];
+            }
+          }
+        }
+      } else if (line.startsWith('&')) {
+        // Start of nested selector
+        if (currentNestedSelector && nestedBlockLines.length) {
+          nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
+        }
+
+        // Start new nested selector (grab until first '{' or whole line)
+        const selectorPart = line.split('{')[0].trim();
+        currentNestedSelector = selectorPart;
+        nestedBlockLines = [];
+
+        if (line.includes('{')) {
+          insideNestedBlock = true;
+          // Add rest of line after '{' if any
+          const afterBrace = line.split('{').slice(1).join('{').trim();
+          if (afterBrace) {
+            nestedBlockLines.push(normalizeCSSLine(afterBrace));
+          }
+        }
+      } else if (insideAtRule) {
+        // Continue collecting at-rule content
+        atRuleLines.push(normalizeCSSLine(line));
+
+        // Count braces to track nesting depth
+        atRuleBraceCount += (line.match(/{/g) || []).length;
+        atRuleBraceCount -= (line.match(/}/g) || []).length;
+
+        // When we've closed all braces, the at-rule is complete
+        if (atRuleBraceCount === 0) {
+          atRules.push(`${currentAtRule} { ${atRuleLines.join(' ')} }`);
+          currentAtRule = null;
+          insideAtRule = false;
+          atRuleLines = [];
+        }
+      } else if (insideNestedBlock) {
+        if (line.includes('}')) {
+          // end nested block
+          insideNestedBlock = false;
+          const beforeBrace = line.split('}')[0].trim();
+          if (beforeBrace) {
+            nestedBlockLines.push(normalizeCSSLine(beforeBrace));
+          }
+
+          if (currentNestedSelector) {
+            nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
+          }
+
+          currentNestedSelector = null;
+          nestedBlockLines = [];
         } else {
-          // Standard property
-          topLevelRules.push(normalized);
+          nestedBlockLines.push(normalizeCSSLine(line));
         }
-      } else if (currentBlockType) {
-        // We are inside a block (depth > 0), just accumulate
-        currentBlockLines.push(normalized);
-      }
-
-      // Update depth
-      depth += openBraces;
-      depth -= closeBraces;
-
-      // Check if a block just finished
-      if (depth === 0 && currentBlockType) {
-        const blockString = currentBlockLines.join(' ');
-        if (currentBlockType === 'at-rule') {
-          // At-rules (keyframes) are injected globally, outside the class
-          atRules.push(blockString);
-        } else if (currentBlockType === 'nested') {
-          // Nested rules replace & with the generated class name
-          nestedRules.push(blockString.replace(/&/g, `.${className}`));
-        }
-
-        // Reset
-        currentBlockLines = [];
-        currentBlockType = null;
+      } else {
+        topLevelRules.push(normalizeCSSLine(line));
       }
     }
 
-    const topLevelCSS = `.${className} { ${topLevelRules.join(' ')} }`;
-    const nestedCSS = nestedRules.join(' ');
-    const atRuleCSS = atRules.join(' ');
+    // Close any remaining nested block
+    if (insideNestedBlock && currentNestedSelector && nestedBlockLines.length) {
+      nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
+    }
 
-    return `${topLevelCSS} ${nestedCSS} ${atRuleCSS}`;
+    if (currentAtRule && atRuleLines.length) {
+      atRules.push(`${currentAtRule} { ${atRuleLines.join(' ')} }`);
+    }
+
+    // Compose final CSS:
+    const topLevelCSS = `.${className} { ${topLevelRules.join(' ')} }`;
+    // Replace & in nested rules with .classname
+    const nestedCSS = nestedRules.map((rule) => rule.replace(/&/g, `.${className}`)).join(' ');
+    const atCSS = atRules.map((rule) => rule.replace(/&/g, `.${className}`)).join(' ');
+
+    const finalCSS = `${topLevelCSS} ${nestedCSS} ${atCSS}`;
+
+    return finalCSS;
   }
 }
 
