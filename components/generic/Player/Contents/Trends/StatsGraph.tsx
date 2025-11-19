@@ -2,7 +2,6 @@
 
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
-import moment from 'moment';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Chip from '@/components/ux/container/Chip';
@@ -11,6 +10,7 @@ import AdditionalOptions from './AdditionalOptions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/player-slice';
 import ColumnPicker from '@/components/generic/ColumnPicker';
+import Dates from '@/components/utils/Dates';
 
 
 const StatsGraph = (
@@ -105,7 +105,7 @@ const StatsGraph = (
     date_friendly: string;
   };
 
-  const date_friendly_format = trendsSeasons.length > 1 ? 'MMMM Do YY' : 'MMM Do';
+  const date_friendly_format = trendsSeasons.length > 1 ? 'F jS y' : 'M jS';
 
   const date_of_rank_x_data = {};
   let minYaxisElo = 1100;
@@ -122,7 +122,7 @@ const StatsGraph = (
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format(date_friendly_format),
+        date_friendly: Dates.format(row.date_of_rank, date_friendly_format),
       };
     }
 
@@ -152,7 +152,7 @@ const StatsGraph = (
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format(date_friendly_format),
+        date_friendly: Dates.format(row.date_of_rank, date_friendly_format),
       };
     }
 
@@ -174,7 +174,7 @@ const StatsGraph = (
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format(date_friendly_format),
+        date_friendly: Dates.format(row.date_of_rank, date_friendly_format),
       };
     }
 
@@ -197,7 +197,7 @@ const StatsGraph = (
       if (!(date in date_of_rank_x_data)) {
         date_of_rank_x_data[date] = {
           date_of_rank: date,
-          date_friendly: moment(row.date).format(date_friendly_format),
+          date_friendly: Dates.format(row.date, date_friendly_format),
         };
       }
 

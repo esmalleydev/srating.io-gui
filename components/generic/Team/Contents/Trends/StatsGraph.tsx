@@ -2,7 +2,6 @@
 
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
-import moment from 'moment';
 import ColumnPicker from '@/components/generic/ColumnPicker';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
@@ -12,6 +11,7 @@ import TableColumns from '@/components/helpers/TableColumns';
 import AdditionalOptions from './AdditionalOptions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
+import Dates from '@/components/utils/Dates';
 
 
 const StatsGraph = (
@@ -111,7 +111,7 @@ const StatsGraph = (
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format('MMM Do'),
+        date_friendly: Dates.format(row.date_of_rank, 'M jS'),
       };
     }
 
@@ -132,7 +132,7 @@ const StatsGraph = (
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format('MMM Do'),
+        date_friendly: Dates.format(row.date_of_rank, 'M jS'),
       };
     }
 
@@ -153,7 +153,7 @@ const StatsGraph = (
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format('MMM Do'),
+        date_friendly: Dates.format(row.date_of_rank, 'M jS'),
       };
     }
 
@@ -176,7 +176,7 @@ const StatsGraph = (
       if (!(date in date_of_rank_x_data)) {
         date_of_rank_x_data[date] = {
           date_of_rank: date,
-          date_friendly: moment(row.date).format('MMM Do'),
+          date_friendly: Dates.format(row.date, 'M jS'),
         };
       }
 

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-import moment from 'moment';
 
 import HelperGames from '../../components/helpers/Games';
 
@@ -16,6 +15,7 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading as setLoadingDisplay } from '@/redux/features/loading-slice';
 import CBB from '@/components/helpers/CBB';
+import Dates from '@/components/utils/Dates';
 
 let intervalRefresher: NodeJS.Timeout;
 
@@ -34,7 +34,7 @@ const Home = () => {
     };
   };
 
-  const defaultDate = moment().format('YYYY-MM-DD');
+  const defaultDate = Dates.format(Dates.parse(), 'Y-m-d');
 
   const [request, setRequest] = useState(false);
   const [loading, setLoading] = useState(false);

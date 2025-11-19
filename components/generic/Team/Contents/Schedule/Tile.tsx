@@ -5,8 +5,6 @@ import {
 } from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import moment from 'moment';
-
 import HelperGame from '@/components/helpers/Game';
 
 import {
@@ -25,6 +23,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import Dates from '@/components/utils/Dates';
 
 
 const Tile = ({ game, team }) => {
@@ -164,7 +163,7 @@ const Tile = ({ game, team }) => {
         <Card style = {{
           display: 'flex', width: (width <= 475 ? 40 : 75), marginRight: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center', cursor: 'pointer',
         }} onClick={handleGameClick}>
-          <Typography type = 'caption' style = {{ color: textBackgroundColor }}>{moment(`${game.start_date.split('T')[0]} 12:00:00`).format((width <= 475 ? 'Do' : 'ddd Do'))}</Typography>
+          <Typography type = 'caption' style = {{ color: textBackgroundColor }}>{Dates.format(`${game.start_date.split('T')[0]} 12:00:00`, (width <= 475 ? 'jS' : 'D jS'))}</Typography>
         </Card>
       </div>
       <Card style = {{ width: '100%' }}>

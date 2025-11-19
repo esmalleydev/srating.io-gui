@@ -5,15 +5,12 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label, Brush,
   YAxisProps,
 } from 'recharts';
-import {
-  purple, blue, teal, lime, green, indigo, yellow,
-} from '@mui/material/colors';
+
 import {
   LinearProgress,
 } from '@mui/material';
 import LinearScaleIcon from '@mui/icons-material/LinearScale';
 
-import moment from 'moment';
 
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import {
@@ -31,6 +28,7 @@ import { Boxscores as BoxscoreCFB } from '@/types/cfb';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
+import Dates from '@/components/utils/Dates';
 
 export interface TrendsType {
   games: Games;
@@ -115,7 +113,7 @@ const Client = (
 
     for (let i = 0; i < sorted_statistic_rankings.length; i++) {
       const row = sorted_statistic_rankings[i];
-      const date_of_rank = moment(row.date_of_rank).format('MMM Do');
+      const date_of_rank = Dates.format(row.date_of_rank, 'M jS');
 
       const d = {
         name: date_of_rank,
@@ -199,7 +197,7 @@ const Client = (
       if (active && payload && payload.length) {
         return (
           <Paper elevation={3} style = {{ padding: '5px 10px' }}>
-            <div><Typography type='subtitle2' style={{ color: theme.text.secondary }}>{payload[0].payload?.date ? moment(payload[0].payload?.date).format('MMM Do \'YY') : label}</Typography></div>
+            <div><Typography type='subtitle2' style={{ color: theme.text.secondary }}>{payload[0].payload?.date ? Dates.format(payload[0].payload?.date, 'M jS \'y') : label}</Typography></div>
             {
               payload.map((entry, index) => {
                 return (
@@ -216,16 +214,16 @@ const Client = (
 
     const getLines = () => {
       const lines = [
-        <Line type = 'monotone' hide={inactiveSeries.includes('rank')} name = 'SRating.io (rank)' dataKey = 'rank' stroke = {purple[500]} strokeWidth={2} dot = {false} connectNulls = {true} />,
-        <Line type = 'monotone' hide={inactiveSeries.includes('elo_rank')} name = 'SRating.io (elo)' dataKey = 'elo_rank' stroke = {green[500]} strokeWidth={2} dot = {false} connectNulls = {true} />,
+        <Line type = 'monotone' hide={inactiveSeries.includes('rank')} name = 'SRating.io (rank)' dataKey = 'rank' stroke = {theme.purple[500]} strokeWidth={2} dot = {false} connectNulls = {true} />,
+        <Line type = 'monotone' hide={inactiveSeries.includes('elo_rank')} name = 'SRating.io (elo)' dataKey = 'elo_rank' stroke = {theme.green[500]} strokeWidth={2} dot = {false} connectNulls = {true} />,
       ];
 
       if (Organization.getCBBID() === organization_id) {
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('kenpom_rank')} name = 'Kenpom' dataKey = 'kenpom_rank' stroke = {blue[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('net_rank')} name = 'NET' dataKey = 'net_rank' stroke = {teal[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('srs_rank')} name = 'SRS' dataKey = 'srs_rank' stroke = {lime[300]} strokeWidth={2} dot = {false} connectNulls = {true} />);
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('ap_rank')} name = 'AP' dataKey = 'ap_rank' stroke = {indigo[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
-        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('coaches_rank')} name = 'Coach Poll' dataKey = 'coaches_rank' stroke = {yellow[700]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('kenpom_rank')} name = 'Kenpom' dataKey = 'kenpom_rank' stroke = {theme.blue[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('net_rank')} name = 'NET' dataKey = 'net_rank' stroke = {theme.teal[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('srs_rank')} name = 'SRS' dataKey = 'srs_rank' stroke = {theme.lime[300]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('ap_rank')} name = 'AP' dataKey = 'ap_rank' stroke = {theme.indigo[500]} strokeWidth={2} dot = {false} connectNulls = {true} />);
+        lines.push(<Line type = 'monotone' hide={inactiveSeries.includes('coaches_rank')} name = 'Coach Poll' dataKey = 'coaches_rank' stroke = {theme.yellow[700]} strokeWidth={2} dot = {false} connectNulls = {true} />);
       }
 
       return lines;

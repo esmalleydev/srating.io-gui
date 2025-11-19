@@ -1,11 +1,44 @@
-// todo write unit tests for closest date function to test different scenarios
+
 
 class Dates {
   // constructor() {
   // }
 
-  public static parse(str: string) {
+  public static parse(str?: Date | string | number | undefined | null): Date {
+    if (!str) {
+      return new Date();
+    }
+
+    if (str instanceof Date) {
+      return new Date(str.getTime()); // Return copy
+    }
+
+    if (typeof str === 'string') {
+      // Fix: "2025-11-03" is parsed as UTC midnight by JS, which is Nov 2nd 7pm in EST.
+      // We force it to be Local Midnight by appending time if missing.
+      if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+        return new Date(`${str}T00:00:00`);
+      }
+      return new Date(str);
+    }
+
     return new Date(str);
+  }
+
+  public static getMonthsShort(): string[] {
+    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  }
+
+  public static getMonths(): string[] {
+    return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  }
+
+  public static getDaysShort(): string[] {
+    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  }
+
+  public static getDays(): string[] {
+    return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   }
 
   /**
@@ -19,6 +52,7 @@ class Dates {
     | `n`   | month (no leading zero)   | 3       |
     | `d`   | day (2-digit)             | 09      |
     | `j`   | day (no leading zero)     | 9       |
+    | `S`   | Ordinal suffix            | th      |
     | `H`   | 24-hour                   | 14      |
     | `G`   | 24-hour (no leading zero) | 14      |
     | `h`   | 12-hour                   | 02      |
@@ -34,16 +68,16 @@ class Dates {
     | `D`   | short weekday             | Mon     |
     | `l`   | full weekday              | Monday  |
    */
-  public static format(date: Date, format: string) {
+  public static format(dateInput: Date | string, format: string) {
+    const date = this.parse(dateInput);
     const pad = (n: number) => String(n).padStart(2, '0');
 
-    const monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const monthsLong = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const monthsShort = this.getMonthsShort();
+    const monthsLong = this.getMonths();
+    const daysShort = this.getDaysShort();
+    const daysLong = this.getDays();
 
-    const daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const daysLong = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-    // Use UTC getters so formatting is deterministic for ISO "Z" dates in tests
+    /*
     const Y = date.getUTCFullYear();
     const y = String(Y).slice(-2);
     const month = date.getUTCMonth(); // 0-11
@@ -52,6 +86,40 @@ class Dates {
     const hours = date.getUTCHours(); // 0-23
     const minutes = date.getUTCMinutes();
     const seconds = date.getUTCSeconds();
+    */
+
+    const Y = date.getFullYear();
+    const y = String(Y).slice(-2);
+    const month = date.getMonth(); // 0-11
+    const dateNum = date.getDate(); // 1-31
+    const day = date.getDay(); // 0-6, Sun = 0
+    const hours = date.getHours(); // 0-23
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    // Logic for ordinal suffix (st, nd, rd, th)
+    const getOrdinalSuffix = (n: number) => {
+      const v = n % 100;
+      // 11th, 12th, 13th are exceptions to the 1st, 2nd, 3rd rule
+      if (v >= 11 && v <= 13) {
+        return 'th';
+      }
+
+      switch (n % 10) {
+        case 1: {
+          return 'st';
+        }
+        case 2: {
+          return 'nd';
+        }
+        case 3: {
+          return 'rd';
+        }
+        default: {
+          return 'th';
+        }
+      }
+    };
 
     const tokens: Record<string, string> = {
       /// Year
@@ -71,6 +139,7 @@ class Dates {
       l: daysLong[day],
       w: String(day), // 0 (Sun) - 6
       N: String(day === 0 ? 7 : day), // 1 (Mon) - 7 (Sun)
+      S: getOrdinalSuffix(dateNum),
 
       // Time
       H: pad(hours),
@@ -95,50 +164,105 @@ class Dates {
     });
   }
 
-  public static add(date: Date, amount: number, unit: 'days' | 'hours' | 'minutes') {
-    const d = new Date(date);
-    const map = {
-      days: amount * 24 * 60 * 60 * 1000,
-      hours: amount * 60 * 60 * 1000,
-      minutes: amount * 60 * 1000,
-    };
-    d.setTime(d.getTime() + map[unit]);
+  public static add(date: Date | string, amount: number, unit: 'years' | 'months' | 'days' | 'hours' | 'minutes') {
+    const d = this.parse(date);
+
+    if (unit === 'years') {
+      const originalDay = d.getDate();
+      d.setFullYear(d.getFullYear() + amount);
+      // Handle Leap Year Rollover:
+      // Feb 29, 2024 + 1 year -> Mar 1, 2025 (Standard JS behavior)
+      // If strict "same day or last day of month" logic is desired (turning it into Feb 28):
+      if (d.getDate() !== originalDay) {
+        d.setDate(0); // Set to last day of previous month (Feb 28)
+      }
+    } else if (unit === 'months') {
+      const originalDay = d.getDate();
+      d.setMonth(d.getMonth() + amount);
+      // Handle rollover: Jan 31 + 1 month -> Feb 28/29
+      if (d.getDate() !== originalDay) {
+        d.setDate(0); // Set to last day of previous month
+      }
+    } else if (unit === 'days') {
+      // Use setDate to be DST safe (24h addition via ms is unsafe across DST)
+      d.setDate(d.getDate() + amount);
+    } else {
+      const map: Record<'hours' | 'minutes', number> = {
+        hours: amount * 60 * 60 * 1000,
+        minutes: amount * 60 * 1000,
+      };
+      // Use getTime() for day/hour/minute units for simple millisecond addition
+      d.setTime(d.getTime() + map[unit]);
+    }
+
     return d;
   }
 
-  public static fromNow(date: Date) {
-    const diff = Date.now() - date.getTime();
+  public static subtract(
+    date: Date | string,
+    amount: number,
+    unit: 'years' | 'months' | 'days' | 'hours' | 'minutes',
+  ) {
+    return this.add(date, -amount, unit);
+  }
+
+  public static fromNow(date: Date | string) {
+    const d = this.parse(date);
+    const diff = Date.now() - d.getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'just now';
-    if (mins < 60) return `${mins}m ago`;
+
+    if (Math.abs(mins) < 1) {
+      return 'just now';
+    }
+
+    // Handle future dates roughly
+    if (mins < 0) {
+      return 'in the future';
+    }
+
+    if (mins < 60) {
+      return `${mins}m ago`;
+    }
+
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h ago`;
+
+    if (hours < 24) {
+      return `${hours}h ago`;
+    }
+
     const days = Math.floor(hours / 24);
+
     return `${days}d ago`;
   }
 
   /**
    * Find the closest date in an array of dates
    */
-  public static getClosestDate(dateToMatch: string, datesArray: string[]): string | null {
-    let closestDist: number | null = null;
+  public static getClosestDate(dateToMatch: string | Date, datesArray: string[]): string | null {
+    if (!datesArray.length) {
+      return null;
+    }
+
+    const matchDate = this.parse(dateToMatch).getTime();
+
     let closestDate: string | null = null;
+    let closestDist = Infinity;
 
-    for (let i = 0; i < datesArray.length; i++) {
-      const a = new Date(datesArray[i]).getTime();
-      const b = new Date(dateToMatch).getTime();
+    // eslint-disable-next-line no-restricted-syntax
+    for (const dateStr of datesArray) {
+      const currDate = this.parse(dateStr).getTime();
+      const dist = Math.abs(currDate - matchDate);
 
-      const dist = Math.abs(a - b);
-
-      // todo this will pick the future date, assuming it was sorted correctly in the array
-      // need to add time to these dates, to correctly pick the closest
-      // ex: I have games on 2024-03-17 and 2024-03-19, if the dateToMatch is 2024-03-18, both 17th and 19th have the same dist. It should pick 19th?
-      if (
-        closestDist === null ||
-        dist <= closestDist
-      ) {
+      if (dist < closestDist) {
         closestDist = dist;
-        closestDate = datesArray[i];
+        closestDate = dateStr;
+      } else if (dist === closestDist) {
+        // Tie-breaker: Prefer the date that is in the future relative to the matchDate
+        // Or if both are same direction, just keep the current one (or implementation defined)
+        // Requirement: "Both 17th and 19th have same dist. It should pick 19th"
+        if (currDate > matchDate) {
+          closestDate = dateStr;
+        }
       }
     }
 
@@ -146,17 +270,61 @@ class Dates {
   }
 
   public static getToday() {
-    const formatYmd = (date) => {
-      const year = date.getFullYear();
-      const month = date.getMonth() < 9 ? `0${(date.getMonth() + 1).toString()}` : (date.getMonth() + 1);
-      const day = date.getDate() < 10 ? `0${date.getDate().toString()}` : date.getDate();
+    return this.format(new Date(), 'Y-m-d');
+  }
 
-      return `${year}-${month}-${day}`;
-    };
+  public static getStartOfDay(date: Date | string) {
+    const d = this.parse(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
 
-    const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  public static getStartOfMonth(date: Date | string) {
+    const d = this.parse(date);
+    d.setDate(1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
 
-    return formatYmd(today);
+  public static getStartOfGrid(date: Date | string) {
+    const d = this.getStartOfMonth(date);
+    const dayOfWeek = d.getDay(); // 0 (Sunday) is the start in standard JS
+
+    // Move back to the beginning of the week
+    const result = this.parse(d);
+    // Subtract days to get to the start of the week (Sunday)
+    result.setDate(d.getDate() - dayOfWeek);
+    return result;
+  }
+
+  public static isSameDay(date1: Date | string, date2: Date | string) {
+    if (!date1 || !date2) {
+      return false;
+    }
+    const d1 = this.parse(date1);
+    const d2 = this.parse(date2);
+
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()
+    );
+  }
+
+  // Helper to check if one date is before another (ignoring time)
+  public static isBeforeDay(date1: Date | string, date2: Date | string) {
+    if (!date1 || !date2) {
+      return false;
+    }
+    return this.getStartOfDay(date1).getTime() < this.getStartOfDay(date2).getTime();
+  }
+
+  // Helper to check if one date is after another (ignoring time)
+  public static isAfterDay(date1: Date | string, date2: Date | string) {
+    if (!date1 || !date2) {
+      return false;
+    }
+    return this.getStartOfDay(date1).getTime() > this.getStartOfDay(date2).getTime();
   }
 }
 

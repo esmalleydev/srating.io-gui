@@ -3,8 +3,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 
-import moment from 'moment';
-
 import Tile from '@/components/generic/Team/Contents/Schedule/Tile';
 import { useAppSelector } from '@/redux/hooks';
 import Differentials from './Differentials';
@@ -12,6 +10,7 @@ import Differentials from './Differentials';
 import TableView from './TableView';
 import { Skeleton } from '@mui/material';
 import { Games } from '@/types/general';
+import Dates from '@/components/utils/Dates';
 
 
 /**
@@ -83,10 +82,10 @@ const Client = ({ games, team_id }: {games: Games, team_id: string}) => {
     for (let i = 0; i < sorted_games.length; i++) {
       const game = sorted_games[i];
 
-      if (!lastMonth || lastMonth < +moment(game.start_datetime).format('MM') || (lastYear && lastYear < +moment(game.start_datetime).format('YYYY'))) {
-        lastMonth = +moment(game.start_datetime).format('MM');
-        lastYear = +moment(game.start_datetime).format('YYYY');
-        gameContainers.push(<Typography key = {i} style = {{ marginBottom: '10px', padding: 5 }} variant = 'body1'>{moment(game.start_datetime).format('MMMM')}</Typography>);
+      if (!lastMonth || lastMonth < +Dates.format(game.start_datetime, 'n') || (lastYear && lastYear < +Dates.format(game.start_datetime, 'Y'))) {
+        lastMonth = +Dates.format(game.start_datetime, 'n');
+        lastYear = +Dates.format(game.start_datetime, 'Y');
+        gameContainers.push(<Typography key = {i} style = {{ marginBottom: '10px', padding: 5 }} variant = 'body1'>{Dates.format(game.start_datetime, 'F')}</Typography>);
       }
 
       if (!nextUpcomingGame && (game.status === 'pre' || game.status === 'live')) {

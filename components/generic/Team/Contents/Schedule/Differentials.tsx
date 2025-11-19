@@ -7,11 +7,11 @@ import { Skeleton } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import RankSpan from '@/components/generic/RankSpan';
-import moment from 'moment';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
+import Dates from '@/components/utils/Dates';
 
 
 const Differentials = ({ game, team_id }) => {
@@ -130,8 +130,8 @@ const Differentials = ({ game, team_id }) => {
     return null;
   }
 
-  const historicalDate = moment(historical.date_of_rank || game.start_date).format('MMM Do');
-  const currentDate = moment(current.date_of_rank || game.start_date).format('MMM Do');
+  const historicalDate = Dates.format(historical.date_of_rank || game.start_date, 'M jS');
+  const currentDate = Dates.format(current.date_of_rank || game.start_date, 'M jS');
 
   const rows: React.JSX.Element[] = [];
 

@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import LinearScaleIcon from '@mui/icons-material/LinearScale';
 
-import moment from 'moment';
 
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import { StatisticRankings as CBBStatisticRankings } from '@/types/cbb';
@@ -29,6 +28,7 @@ import Typography from '@/components/ux/text/Typography';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import Paper from '@/components/ux/container/Paper';
+import Dates from '@/components/utils/Dates';
 
 export interface TrendsType {
   elos: Elos;
@@ -222,7 +222,7 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
     const date_of_rank = sorted_date_of_ranks[i];
 
     const row = {
-      date_friendly: moment(date_of_rank).format('MMM Do'),
+      date_friendly: Dates.format(date_of_rank, 'M jS'),
     };
 
     for (const team_id in date_of_rank_x_team_id_x_data[date_of_rank]) {
@@ -364,7 +364,7 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
 
         return (
           <Paper elevation={3} style = {{ padding: '5px 10px' }}>
-            <div><Typography type ='subtitle2' style = {{ color: theme.text.secondary }}>{payload[0].payload?.date ? moment(payload[0].payload?.date).format('MMM Do \'YY') : label}</Typography></div>
+            <div><Typography type ='subtitle2' style = {{ color: theme.text.secondary }}>{payload[0].payload?.date ? Dates.format(payload[0].payload?.date, 'M jS \'y') : label}</Typography></div>
             {
               sortedPayload.map((entry, index) => {
                 return (

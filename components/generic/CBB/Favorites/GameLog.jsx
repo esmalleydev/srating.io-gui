@@ -12,11 +12,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-import moment from 'moment';
-
 import HelperCBB from '../../../helpers/CBB';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
+import Dates from '@/components/utils/Dates';
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -198,7 +197,7 @@ const GameLog = (props) => {
                   <TableCell sx={Object.assign({}, tdStyle, { 'textAlign': 'left', 'position': 'sticky', 'left': 0, 'minWidth': 125, 'maxWidth': 125 })}>
                     <div style={{ 'display': 'flex', 'flexDirection': 'column' }}>
                       <div>
-                        {moment(row.game.start_date.split('T')[0] + ' 12:00:00').format('MMM Do')}
+                        {Dates.format(row.game.start_date.split('T')[0] + ' 12:00:00', 'M jS')}
                       </div>
                       <div style={{ 'color': theme.palette.grey[500] }}>
                         {row.game.home_team_id !== player_team_season.team_id ? '@ ' : ''}{opponent} <span style={spanStyle}>{CBB.isFinal() ? (won ? 'W' : 'L') : CBB.getTime()}</span> {row.game.home_score + '-' + row.game.away_score}

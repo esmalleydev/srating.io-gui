@@ -118,7 +118,7 @@ const Client = ({ game, previousMatchups }: {game: Game, previousMatchups: Games
         }
       }
       if (i < 3 || showAllPreviousMatchups) {
-        previousMatchupContainers.push(<PreviousMatchupTile key = {`PreviousMatchupTile_${game.game_id}`} game = {sorted_matchups[i]} />);
+        previousMatchupContainers.push(<PreviousMatchupTile key = {`PreviousMatchupTile_${sortedGame.game_id}`} game = {sorted_matchups[i]} />);
       }
     }
 

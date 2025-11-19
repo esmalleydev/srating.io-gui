@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import moment from 'moment';
+
 import {
   Skeleton,
 } from '@mui/material';
@@ -11,6 +11,7 @@ import Color from '@/components/utils/Color';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
+import Dates from '@/components/utils/Dates';
 
 
 const getCardStyle = () => {
@@ -37,10 +38,10 @@ const Client = ({ date, stats }) => {
 
   const statContainers: React.JSX.Element[] = [];
   if (stats) {
-    const todayDate = moment(date).format('MMM Do');
-    const yesterdayDate = moment(date).subtract(1, 'days').format('MMM Do');
-    const weekDate = moment(date).subtract(7, 'days').format('MMM Do');
-    const monthDate = moment(date).subtract(1, 'months').format('MMM Do');
+    const todayDate = Dates.format(date, 'M jS');
+    const yesterdayDate = Dates.format(Dates.subtract(date, 1, 'days'), 'M jS');
+    const weekDate = Dates.format(Dates.subtract(date, 7, 'days'), 'M jS');
+    const monthDate = Dates.format(Dates.subtract(date, 1, 'months'), 'M jS');
 
     const bestColor = theme.mode === 'light' ? theme.success.main : theme.success.dark;
     const worstColor = theme.mode === 'light' ? theme.error.main : theme.error.dark;
@@ -98,7 +99,7 @@ const Client = ({ date, stats }) => {
           }
 
           subBucketContainers.push(
-            <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
+            <div key = {subBuckets[s]} style = {{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary }} type = 'caption'>{subBucketsLabels[subBuckets[s]]}</Typography>
               <Typography style={subColorStyle} type = 'caption'>{subTotalGames ? `${subPercentCorrect}%` : '-'}</Typography>
               <Typography style={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} type = 'caption'>({`${subCorrectGames} / ${subTotalGames}`})</Typography>

@@ -3,7 +3,6 @@ import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import moment from 'moment';
 
 import HelperCBB from '../../../helpers/CBB';
 
@@ -12,6 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
+import Dates from '@/components/utils/Dates';
 
 const Tile = (props) => {
   const self = this;
@@ -54,7 +54,7 @@ const Tile = (props) => {
     let startTime = CBB.getTime();
 
     if (!CBB.isInProgress() && !CBB.isFinal()) {
-      startTime = moment(game.start_datetime).format('MMM Do') + ' - ' + startTime;
+      startTime = Dates.format(game.start_datetime, 'M jS') + ' - ' + startTime;
     }
     
     const flexContainer = {

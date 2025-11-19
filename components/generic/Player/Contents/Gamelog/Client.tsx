@@ -12,7 +12,6 @@ import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
 import { useTheme } from '@/components/hooks/useTheme';
-import moment from 'moment';
 import { getNavHeaderHeight } from '../../NavBar';
 import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankTable from '@/components/generic/RankTable';
@@ -20,6 +19,7 @@ import TableColumns, { TableColumnsType } from '@/components/helpers/TableColumn
 import Chip from '@/components/ux/container/Chip';
 import Objector from '@/components/utils/Objector';
 import Navigation from '@/components/helpers/Navigation';
+import Dates from '@/components/utils/Dates';
 
 /**
  * The main wrapper div for all the contents
@@ -225,7 +225,7 @@ const Client = ({ organization_id, gamelogs }) => {
     formattedRow.game_details = (
       <div style = {{ display: 'flex', flexDirection: 'column' }}>
         <div>
-          {moment(`${row.game.start_date.split('T')[0]} 12:00:00`).format('MMM Do YYYY')}
+          {Dates.format(`${row.game.start_date.split('T')[0]} 12:00:00`, 'M jS Y')}
         </div>
         <div style = {{ color: theme.grey[500] }}>
           {row.game.home_team_id !== row.team_id ? '@ ' : ''}{opponent} <span style = {spanStyle}>{Game.isFinal() ? (won ? 'W' : 'L') : Game.getTime()}</span> {`${row.game.home_score}-${row.game.away_score}`}

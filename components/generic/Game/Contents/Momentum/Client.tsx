@@ -2,7 +2,6 @@
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import moment from 'moment';
 
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 
@@ -19,6 +18,7 @@ import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import TableColumns from '@/components/helpers/TableColumns';
 import Objector from '@/components/utils/Objector';
+import Dates from '@/components/utils/Dates';
 
 /**
  * The main wrapper div for all the contents
@@ -316,7 +316,7 @@ const Client = ({ game, momentumData, stats }) => {
                         const won = ((game_.home_score || 0) > (game_.away_score || 0) && game_.home_team_id === game.away_team_id) || ((game_.home_score || 0) < (game_.away_score || 0) && game_.away_team_id === game.away_team_id);
 
                         return (<tr>
-                          <td style = {{ padding: '0px 5px' }}><Typography type = 'caption'>{moment(game_.start_datetime).format('M/D')}</Typography></td>
+                          <td style = {{ padding: '0px 5px' }}><Typography type = 'caption'>{Dates.format(game_.start_datetime, 'n/j')}</Typography></td>
                           <td style = {{ padding: '0px 5px' }}><Typography type = 'caption'>{game_.away_team_id === game.away_team_id ? `@ ${G.getTeamName('home')}` : `vs ${G.getTeamName('away')}`}</Typography></td>
                           <td style = {{ padding: '0px 5px', textAlign: 'right' }}><Typography type = 'caption'>{won ? 'W' : 'L'} {game_.away_score} - {game_.home_score}</Typography></td>
                         </tr>);
@@ -341,7 +341,7 @@ const Client = ({ game, momentumData, stats }) => {
                         const won = ((game_.home_score || 0) > (game_.away_score || 0) && game_.home_team_id === game.home_team_id) || ((game_.home_score || 0) < (game_.away_score || 0) && game_.away_team_id === game.home_team_id);
 
                         return (<tr>
-                          <td style = {{ padding: '0px 5px' }}><Typography type = 'caption'>{moment(game_.start_datetime).format('M/D')}</Typography></td>
+                          <td style = {{ padding: '0px 5px' }}><Typography type = 'caption'>{Dates.format(game_.start_datetime, 'n/j')}</Typography></td>
                           <td style = {{ padding: '0px 5px' }}><Typography type = 'caption'>{game_.home_team_id === game.home_team_id ? `@ ${G.getTeamName('away')}` : `vs ${G.getTeamName('home')}`}</Typography></td>
                           <td style = {{ padding: '0px 5px', textAlign: 'right' }}><Typography type = 'caption'>{won ? 'W' : 'L'} {game_.away_score} - {game_.home_score}</Typography></td>
                         </tr>);

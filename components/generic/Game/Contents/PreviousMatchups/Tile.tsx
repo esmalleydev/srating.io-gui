@@ -1,8 +1,6 @@
 'use client';
 
-import { useTheme } from '@mui/material/styles';
 
-import moment from 'moment';
 
 import HelperGame from '@/components/helpers/Game';
 import { useAppSelector } from '@/redux/hooks';
@@ -10,6 +8,8 @@ import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import Organization from '@/components/helpers/Organization';
 import Navigation from '@/components/helpers/Navigation';
+import { useTheme } from '@/components/hooks/useTheme';
+import Dates from '@/components/utils/Dates';
 
 
 const Tile = ({ game }) => {
@@ -24,14 +24,14 @@ const Tile = ({ game }) => {
 
   const getColor = (side) => {
     if (side === 'away' && game.away_score > game.home_score) {
-      return theme.palette.success.light;
+      return theme.success.light;
     }
 
     if (side === 'home' && game.away_score < game.home_score) {
-      return theme.palette.success.light;
+      return theme.success.light;
     }
 
-    return theme.palette.text.primary;
+    return theme.text.primary;
   };
 
   const getTitle = () => {
@@ -42,7 +42,7 @@ const Tile = ({ game }) => {
       team = Game.getTeamName('home');
     }
 
-    return <span style = {{ color: theme.palette.success.light }}>{team}</span>;
+    return <span style = {{ color: theme.success.light }}>{team}</span>;
   };
 
   const getScore = () => {
@@ -56,17 +56,23 @@ const Tile = ({ game }) => {
     return <span>{score}</span>;
   };
 
+  const getHref = () => {
+    return `/${path}/games/${game.game_id}`;
+  };
+
   const handleClick = () => {
-    navigation.game(`/${path}/games/${game.game_id}`);
+    navigation.game(getHref());
   };
 
   return (
-    <Paper elevation = {3} hover style = {{ margin: '5px 10px', padding: 10, cursor: 'pointer' }} onClick = {handleClick}>
-      <div>
-        <Typography type = 'body2'>{moment(game.start_date).format('MMM Do, YYYY')}</Typography>
-        <Typography type = 'body1'>{getTitle()} ({getScore()})</Typography>
-      </div>
-    </Paper>
+    <a href={getHref()} style = {{ textDecoration: 'none' }}>
+      <Paper elevation = {3} hover style = {{ margin: '5px 10px', padding: 10, cursor: 'pointer' }} onClick = {handleClick}>
+        <div>
+          <Typography type = 'body2'>{Dates.format(game.start_date, 'M, jS, Y')}</Typography>
+          <Typography type = 'body1'>{getTitle()} ({getScore()})</Typography>
+        </div>
+      </Paper>
+    </a>
   );
 };
 

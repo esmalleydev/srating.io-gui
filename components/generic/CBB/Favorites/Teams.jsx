@@ -2,13 +2,13 @@
 import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
-import moment from 'moment';
 
 import HelperTeam from '../../../helpers/Team';
 import Tile from './Tile';
 import { Link, Typography } from '@mui/material';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
+import Dates from '@/components/utils/Dates';
 
 
 const Teams = (props) => {
@@ -27,7 +27,7 @@ const Teams = (props) => {
   const team_id_x_last_game = {};
   const team_id_x_next_2_games = {};
 
-  const now = moment().format('YYYY-MM-DD');
+  const now = Dates.format(Dates.parse(), 'Y-m-d');
 
   const handleTeamClick = (team_id) => {
     dispatch(setLoading(true));
@@ -43,7 +43,7 @@ const Teams = (props) => {
       // game in the past
       if (
         game.status === 'final' &&
-        moment(game.start_datetime).format('YYYY-MM-DD') <= now
+        Dates.format(game.start_datetime, 'Y-m-d') <= now
       ) {
         // handle the away team, add last game if it more recent
         if (
@@ -71,7 +71,7 @@ const Teams = (props) => {
       // handle the 2 future games now
       if (
         // game.status !== 'final' && // todo uncomment
-        moment(game.start_datetime).format('YYYY-MM-DD') >= now
+        Dates.format(game.start_datetime, 'Y-m-d') >= now
       ) {
 
         // handle the away team, initialize array if needed

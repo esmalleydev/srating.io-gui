@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import moment from 'moment';
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -35,6 +34,7 @@ import { CircularProgress } from '@mui/material';
 import Sorter from '@/components/utils/Sorter';
 import Organization from '@/components/helpers/Organization';
 import Navigation from '@/components/helpers/Navigation';
+import Dates from '@/components/utils/Dates';
 const Arrayifer = new utilsArrayifer();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -63,7 +63,7 @@ const Calculator = ({ games, date }) => {
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
 
-  const [now, setNow] = useState(moment().format('YYYY-MM-DD'));
+  const [now, setNow] = useState(Dates.format(Dates.parse(), 'Y-m-d'));
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('start_timestamp');
   const [inputBet, setBet] = useState<string | number>(10);

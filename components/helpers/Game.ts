@@ -1,9 +1,10 @@
 // import { Game as GameType } from '@/types/general';
-import moment from 'moment';
+
 import Color from '@/components/utils/Color';
 import Team from './Team';
 import Organization from './Organization';
 import { useTheme } from '../hooks/useTheme';
+import Dates from '../utils/Dates';
 
 
 /**
@@ -45,7 +46,7 @@ class Game {
    * Get the friendly formatted start date of the game
    */
   getStartDate(opt_format: string | null | undefined): string {
-    return moment(this.getGame().start_datetime).format(opt_format || 'MMM Do');
+    return Dates.format(this.getGame().start_datetime, opt_format || 'M jS');
   }
 
   /**

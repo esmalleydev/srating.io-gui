@@ -4,7 +4,6 @@ import React from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label, ReferenceLine,
 } from 'recharts';
-import moment from 'moment';
 
 
 import { CoachElo, CoachElos, Games } from '@/types/general';
@@ -15,6 +14,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
+import Dates from '@/components/utils/Dates';
 
 
 // todo compare to 2 or more coach elos on the same graph? might be cool to see them with the time comparison. ex: and old coach vs relativiely new
@@ -128,7 +128,7 @@ const Client = ({ coach_elos, games }: {coach_elos: CoachElos, games: Games}) =>
     if (active && payload && payload.length) {
       return (
         <Paper elevation={3} style = {{ padding: '5px 10px' }}>
-          <div><Typography type='subtitle2' style = {{ color: theme.text.secondary }}>{payload[0].payload?.date ? moment(payload[0].payload?.date).format('MMM Do \'YY') : label}</Typography></div>
+          <div><Typography type='subtitle2' style = {{ color: theme.text.secondary }}>{payload[0].payload?.date ? Dates.format(payload[0].payload?.date, 'M jS \'y') : label}</Typography></div>
           <div style = {{ display: 'inline-flex' }}>
             <Typography type='body1' style = {{ color: theme.text.secondary }}>Rating:</Typography>
             <Typography style = {{ marginLeft: 5, color: theme.info.main }} type='body1'>{payload[0].value}</Typography>
@@ -141,7 +141,7 @@ const Client = ({ coach_elos, games }: {coach_elos: CoachElos, games: Games}) =>
   };
 
   const formatXAxis = (value) => {
-    return moment(value).format('YYYY');
+    return Dates.format(value, 'Y');
   };
 
   const referenceLineStroke = theme.success[(theme.mode === 'dark' ? 'light' : 'dark')];
@@ -167,7 +167,7 @@ const Client = ({ coach_elos, games }: {coach_elos: CoachElos, games: Games}) =>
               <Label value={highestElo} style={{ textAnchor: 'middle', fill: referenceLineStroke, fontSize: 18 }} dy={-10} />
             </ReferenceLine>
             <ReferenceLine x = {highestEloDate} stroke = {referenceLineStroke}>
-              <Label value = {moment(highestEloDate).format('MMM Do \'YY')} angle={-90} dx={-15} style={{ textAnchor: 'middle', fill: referenceLineStroke, fontSize: 18 }} />
+              <Label value = {Dates.format(highestEloDate, 'M jS \'y')} angle={-90} dx={-15} style={{ textAnchor: 'middle', fill: referenceLineStroke, fontSize: 18 }} />
             </ReferenceLine>
             {/* {formattedData.length > 1 ? <ReferenceLine label="Segment" stroke="green" strokeDasharray="3 3" segment={[{x: formattedData[0].name, y: formattedData[0].value}, {x: formattedData[formattedData.length - 1].name, y: formattedData[formattedData.length - 1].value}]} /> : ''} */}
             <Line type = 'monotone' dataKey = 'value' stroke = {theme.info.main} strokeWidth={2} dot = {false} />

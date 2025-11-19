@@ -1,11 +1,12 @@
 'use client';
 
-import moment from 'moment';
+
 import HelpIcon from '@mui/icons-material/Help';
 import { getLastUpdated } from './DataHandler';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
+import Dates from '@/components/utils/Dates';
 
 
 const LastUpdated = ({ view, handleLegend }) => {
@@ -16,13 +17,7 @@ const LastUpdated = ({ view, handleLegend }) => {
       return '';
     }
 
-    if (view === 'transfer') {
-      let date = moment();
-      date = date.subtract(1, 'days');
-      return date.format('MMMM Do YYYY');
-    }
-
-    return moment(lastUpdated).format('MMMM Do YYYY h:mm a');
+    return Dates.format(lastUpdated, 'F jS Y g:i a');
   };
 
   const spanStyle = {

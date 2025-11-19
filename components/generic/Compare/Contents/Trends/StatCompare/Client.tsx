@@ -3,7 +3,6 @@
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import Color from '@/components/utils/Color';
-import moment from 'moment';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
@@ -17,6 +16,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
 import ColumnPicker from '@/components/generic/ColumnPicker';
 import Team from '@/components/helpers/Team';
+import Dates from '@/components/utils/Dates';
 
 /**
  * The main wrapper div for all the contents
@@ -181,7 +181,7 @@ const Client = ({ statistic_rankings }) => {
     if (!(row.date_of_rank in date_of_rank_x_data)) {
       date_of_rank_x_data[row.date_of_rank] = {
         date_of_rank: row.date_of_rank,
-        date_friendly: moment(row.date_of_rank).format('MMM Do'),
+        date_friendly: Dates.format(row.date_of_rank, 'M jS'),
       };
     }
 

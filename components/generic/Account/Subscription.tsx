@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import moment from 'moment';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -19,7 +18,7 @@ import { ApiKey, Pricing, Subscription as SubscriptionType } from '@/types/gener
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
-
+import Dates from '@/components/utils/Dates';
 
 
 const Subscription = (
@@ -34,17 +33,16 @@ const Subscription = (
   const [cancelledSub, setCancelledSub] = useState<SubscriptionType | null>(null);
   const [apiKey, setApiKey] = useState<ApiKey | null>(api_key);
 
+  const renewDay = Dates.parse(subscription.renewed);
 
-  const renewDay = moment(subscription.renewed);
-
-  let due;
+  let due: Date;
 
   if (
     pricing.code === 'picks_yearly'
   ) {
-    due = moment(subscription.renewed).add(1, 'years');
+    due = Dates.add(subscription.renewed, 1, 'years');
   } else {
-    due = moment(subscription.renewed).add(1, 'months');
+    due = Dates.add(subscription.renewed, 1, 'months');
   }
 
 
@@ -108,8 +106,8 @@ const Subscription = (
     <Paper elevation={3} style = {{ minWidth: 320, maxWidth: 450, width: 'auto', padding: 15 }}>
       <Typography style = {{ textAlign: 'center' }} type='h5'>{pricing.type === 'api' || pricing.type === 'trial' ? 'API' : 'Picks'} subscription ({pricing.name})</Typography>
       <Typography style = {{ marginTop: 5, color: theme.text.secondary, textAlign: 'center' }} type='body1'>{pricing.description}</Typography>
-      {pricing.type !== 'trial' && cancelledSub === null && !subscription.expires ? <Typography type='body1'>Automatically renews on {due.format('MMM Do \'YY')}</Typography> : ''}
-      {expiration ? <Typography type='body1'>Expires on {moment(expiration).format('MMM Do \'YY')}</Typography> : ''}
+      {pricing.type !== 'trial' && cancelledSub === null && !subscription.expires ? <Typography type='body1'>Automatically renews on {Dates.format(due, 'M jS \'y')}</Typography> : ''}
+      {expiration ? <Typography type='body1'>Expires on {Dates.format(expiration, 'M jS \'y')}</Typography> : ''}
       {
         (pricing.type === 'api' || pricing.type === 'trial') && apiKey ?
         <div>

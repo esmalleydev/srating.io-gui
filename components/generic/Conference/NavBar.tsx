@@ -69,13 +69,15 @@ const NavBar = () => {
     );
   }
 
+  const navStyle = {
+    ...Style.getNavBar(),
+    backgroundColor,
+    top: getMarginTop() + getHeaderHeight(),
+  };
+
   return (
     <>
-      <div style = {{
-        ...Style.getNavBar(),
-        backgroundColor,
-        top: getMarginTop() + getHeaderHeight(),
-      }}>
+      <div className = {Style.getStyleClassName(navStyle)}>
         {tabs}
       </div>
     </>
