@@ -269,8 +269,8 @@ class Dates {
     return closestDate;
   }
 
-  public static getToday() {
-    return this.format(new Date(), 'Y-m-d');
+  public static getTodayEST() {
+    return this.format(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }), 'Y-m-d');
   }
 
   public static getStartOfDay(date: Date | string) {
