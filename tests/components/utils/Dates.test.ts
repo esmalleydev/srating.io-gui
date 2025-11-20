@@ -400,7 +400,7 @@ describe('Dates', () => {
       expect(Dates.getClosestDate(dateToMatch, dates)).toBe('2024-03-17T12:00:00');
     });
 
-    it('Tie-Breaker: Picks the PAST date when equidistant', () => {
+    it('Tie-Breaker: Picks the FUTURE date when equidistant', () => {
       // Reference: 18th
       // Options: 17th and 19th (both 24 hours away)
       const dates = [
@@ -409,15 +409,15 @@ describe('Dates', () => {
       ];
 
       // Should pick 19th per Todo requirement
-      expect(Dates.getClosestDate(dateToMatch, dates)).toBe('2024-03-17T12:00:00');
+      expect(Dates.getClosestDate(dateToMatch, dates)).toBe('2024-03-19T12:00:00');
     });
 
-    it('Tie-Breaker: Picks the PAST date even if array order is reversed', () => {
+    it('Tie-Breaker: Picks the FUTURE date even if array order is reversed', () => {
       const dates = [
         '2024-03-19T12:00:00',
         '2024-03-17T12:00:00',
       ];
-      expect(Dates.getClosestDate(dateToMatch, dates)).toBe('2024-03-17T12:00:00');
+      expect(Dates.getClosestDate(dateToMatch, dates)).toBe('2024-03-19T12:00:00');
     });
 
     // Test 1: Simple case - the closest date is clear
@@ -445,14 +445,16 @@ describe('Dates', () => {
     // Test 3: Two dates equidistant (but day-only strings) - should pick the second one due to sorting or implementation detail
     // This is the scenario mentioned in the original code's comment.
     // dateToMatch '2024-03-18' (defaults to 2024-03-18T00:00:00.000Z)
-    test('should pick the past day (2024-03-19) when equidistant day-strings are used (implementation detail)', () => {
+    test('should pick the future day (2024-03-19) when equidistant day-strings are used (implementation detail)', () => {
       const dateToMatchDay = '2024-03-18';
       const dates = [
         '2024-03-17', // dist: 1 day (parsed as 17th midnight)
         '2024-03-19', // dist: 1 day (parsed as 19th midnight)
       ];
-
-      expect(Dates.getClosestDate(dateToMatchDay, dates)).toBe('2024-03-17');
+        // The current implementation uses `dist <= closestDist`.
+        // 1. First iteration: closestDist = 1 day, closestDate = '2024-03-17'
+        // 2. Second iteration: dist = 1 day. Since (1 <= 1) is true, it updates.
+      expect(Dates.getClosestDate(dateToMatchDay, dates)).toBe('2024-03-19');
     });
 
     // Test 4: Equidistant with one having a closer time component

@@ -257,10 +257,10 @@ class Dates {
         closestDist = dist;
         closestDate = dateStr;
       } else if (dist === closestDist) {
-        // Tie-breaker: Prefer the date that is in the past relative to the matchDate
+        // Tie-breaker: Prefer the date that is in the future relative to the matchDate
         // Or if both are same direction, just keep the current one (or implementation defined)
-        // Requirement: "Both 17th and 19th have same dist. It should pick 17th"
-        if (currDate < matchDate) {
+        // Requirement: "Both 17th and 19th have same dist. It should pick 19th"
+        if (currDate > matchDate) {
           closestDate = dateStr;
         }
       }
