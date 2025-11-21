@@ -4,11 +4,9 @@ import { useState, useTransition } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import { Button } from '@mui/material';
 // import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
 import { resetDataKey } from '@/redux/features/display-slice';
@@ -26,6 +24,7 @@ import { reset } from '@/redux/features/compare-slice';
 import Tooltip from '../ux/hover/Tooltip';
 import { setLoading } from '@/redux/features/loading-slice';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
+import Button from '@/components/ux/buttons/Button';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
@@ -128,18 +127,13 @@ const OrganizationPicker = () => {
     <div>
       <Tooltip onClickRemove text='Change to a different sport'>
         <Button
-          id="organization-picker-button"
-          aria-controls={open ? 'organization-picker-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          variant="text"
-          disableElevation
-          onClick={handleOpen}
-          endIcon={<KeyboardArrowDownIcon />}
-          sx={{ color: (theme.mode === 'light' ? '#fff' : theme.primary.main) }}
-        >
-          {title}
-        </Button>
+          type = 'select'
+          ink
+          handleClick={handleOpen}
+          buttonStyle={(theme.mode === 'light' ? { color: '#fff' } : {})}
+          title = {title}
+          value = {title}
+        />
       </Tooltip>
       <Menu
         anchor={anchorEl}

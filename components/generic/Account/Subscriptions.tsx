@@ -1,13 +1,12 @@
 'use client';
 
-import { Button } from '@mui/material';
-
 import { ApiKeys, Pricings, Subscriptions as SubscriptionsType } from '@/types/general';
 import Subscription from './Subscription';
 import { useRouter } from 'next/navigation';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import Button from '@/components/ux/buttons/Button';
 
 
 const Subscriptions = (
@@ -48,7 +47,7 @@ const Subscriptions = (
         <Paper elevation={3} style = {{ minWidth: 320, maxWidth: 450, width: 'auto', padding: 15 }}>
           <Typography type='h5'>No active subscriptions</Typography>
           <Typography style = {{ color: theme.text.secondary }} type='body1'>Subscribe today for picks or API access!</Typography>
-          <div style = {{ textAlign: 'right' }}><Button onClick={() => { router.push('/pricing'); }}>View pricing</Button></div>
+          <div style = {{ textAlign: 'right' }}><Button handleClick={() => { router.push('/pricing'); }} title = 'View pricing' ink value = 'pricing' /></div>
         </Paper>
       </div>,
     );

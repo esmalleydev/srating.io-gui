@@ -1,8 +1,10 @@
 'use client';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
-import Alert from '@/components/generic/Alert';
 import { setKryptos, setNewUpdate } from '@/redux/features/user-slice';
+import Modal from '@/components/ux/container/Modal';
+import Typography from '@/components/ux/text/Typography';
+import Button from '@/components/ux/buttons/Button';
 
 const NewUpdateHandler = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +17,18 @@ const NewUpdateHandler = () => {
   };
 
   if (newUpdate) {
-    return <Alert open={true} title={'A new update is available.'} message={'You are running an outdated version, please refresh the page.'} confirmText='Refresh' confirm={handle} />;
+    return (
+      <Modal
+        open
+        onClose={handle}
+      >
+        <Typography type = 'h6'>A new update is available</Typography>
+        <Typography type = 'body1' style = {{ marginTop: 10 }}>You are running an outdated version, please refresh the page.</Typography>
+        <div style = {{ textAlign: 'right', marginTop: 10 }}>
+          <Button title='Refresh' ink handleClick={handle} value = 'refresh' />
+        </div>
+      </Modal>
+    );
   }
 
   return null;

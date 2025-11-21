@@ -1,17 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 
-import { Button } from '@mui/material';
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setSession } from '@/redux/features/user-slice';
+import Button from '@/components/ux/buttons/Button';
+import { useTheme } from '@/components/hooks/useTheme';
 
 const FreeTrialForm = () => {
+  const theme = useTheme();
   const router = useRouter();
 
   const dispatch = useAppDispatch();
@@ -109,7 +111,7 @@ const FreeTrialForm = () => {
         fullWidth
         variant="standard"
       />
-      <Button type = 'submit' style = {{ width: '100%', marginTop: '20px', textAlign: 'center' }} disabled = {isLoading} variant = "contained">Get free trial</Button>
+      <Button handleClick={handleSubmit} containerStyle={{ width: '100%' }} buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.info.main }} disabled = {isLoading} title = {'Get free trial'} value = 'trial' />
       {errorMessage && <div id="payment-message">{errorMessage}</div>}
     </form>
   );

@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client';
+
+import { useState } from 'react';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
@@ -8,16 +10,18 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
-import { Button } from '@mui/material';
 
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
 import { setSession } from '@/redux/features/user-slice';
+import Button from '@/components/ux/buttons/Button';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 const CheckoutForm = ({ pricing }) => {
+  const theme = useTheme();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -179,7 +183,13 @@ const CheckoutForm = ({ pricing }) => {
         variant="standard"
       />
       <PaymentElement id="payment-element" options = {paymentElementOptions} />
-      <Button type = 'submit' style = {{ width: '100%', marginTop: '20px', textAlign: 'center' }} variant = "contained" disabled={isLoading || !stripe || !elements} >Pay ${pricing.price}</Button>
+      <Button
+        handleClick={handleSubmit}
+        containerStyle={{ width: '100%' }}
+        buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.info.main }}
+        disabled={isLoading || !stripe || !elements}
+        title = {`Pay $${pricing.price}`} value = 'pay'
+      />
       {errorMessage && <div id="payment-message">{errorMessage}</div>}
     </form>
   );

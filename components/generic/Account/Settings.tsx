@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 
-import { Button, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useClientAPI } from '@/components/clientAPI';
 import { User } from '@/types/general';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import Button from '@/components/ux/buttons/Button';
 
 
 
@@ -136,7 +137,7 @@ const Settings = (
           reset ?
           <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon color='success' /><Typography type='body1' style={{ display: 'inline-block', marginLeft: 10, color: theme.success.main }}>Password reset!</Typography></div>
             :
-          <Button disabled = {isReseting} onClick={handleResetPassword}>Change password</Button>
+          <Button disabled = {isReseting} handleClick={handleResetPassword} title = {'Change password'} value = 'change-password' />
         }</div>
       </Paper>
     </div>

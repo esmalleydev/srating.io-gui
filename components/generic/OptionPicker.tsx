@@ -2,18 +2,15 @@
 
 import { useState } from 'react';
 
-import {
-  Button,
-} from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Menu from '@/components/ux/menu/Menu';
 import MenuList from '@/components/ux/menu/MenuList';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
+import Button from '@/components/ux/buttons/Button';
 
 export type optionType = {
   value: string | null;
@@ -94,17 +91,12 @@ const OptionPicker = (
         renderButton ?
           renderButton(handleOpen, open) :
         <Button
-          id="option-picker-button"
-          aria-controls={open ? 'option-picker-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          variant="text"
-          disableElevation
-          onClick={handleOpen}
-          endIcon={<KeyboardArrowDownIcon />}
-        >
-          {buttonName}
-        </Button>
+          type = 'select'
+          ink
+          handleClick={handleOpen}
+          title = {buttonName || 'Loading'}
+          value = {buttonName || 'loading'}
+        />
       }
       <Menu
         anchor={anchorEl}

@@ -4,10 +4,8 @@ import { useState } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import { Button } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Menu from '@/components/ux/menu/Menu';
 import MenuList from '@/components/ux/menu/MenuList';
@@ -15,6 +13,7 @@ import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import { updateDataKey } from '@/redux/features/display-slice';
+import Button from '@/components/ux/buttons/Button';
 
 const StatusPicker = () => {
   const dispatch = useAppDispatch();
@@ -56,17 +55,12 @@ const StatusPicker = () => {
   return (
     <div>
       <Button
-        id="status-picker-button"
-        aria-controls={open ? 'status-picker-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        variant="text"
-        disableElevation
-        onClick={handleOpen}
-        endIcon={<KeyboardArrowDownIcon />}
-      >
-        {title}
-      </Button>
+        type = 'select'
+        ink
+        handleClick={handleOpen}
+        title = {title}
+        value = {title}
+      />
       <Menu
         anchor={anchorEl}
         open={open}
