@@ -44,7 +44,7 @@ const Button = (
 
   const backgroundColor = cStyle.backgroundColor || theme.background.main;
 
-  let regularButtonStyle = {
+  let regularButtonStyle: any = {
     backgroundColor: theme.green[600],
     color: '#fff',
     borderRadius: 6,
