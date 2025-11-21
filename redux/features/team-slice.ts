@@ -70,6 +70,9 @@ export const team = createSlice({
   name: 'team',
   initialState: stateController.getInitialState(),
   reducers: {
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
+    },
     reset: {
       reducer: (state, action: PayloadAction<boolean | undefined>) => {
         stateController.reset(state, action.payload);
@@ -80,28 +83,22 @@ export const team = createSlice({
     resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
       stateController.resetDataKey(state, action.payload);
     },
+    updateDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.updateDataKey(state, key, value);
+    },
     setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       const { value, key } = action.payload;
       stateController.setDataKey(state, key, value);
-    },
-    updateVisibleScheduleDifferentials: (state, action: PayloadAction<string>) => {
-      const index = state.visibleScheduleDifferentials.indexOf(action.payload);
-      if (index !== -1) {
-        state.visibleScheduleDifferentials = [
-          ...state.visibleScheduleDifferentials.slice(0, index),
-          ...state.visibleScheduleDifferentials.slice(index + 1),
-        ];
-      } else {
-        state.visibleScheduleDifferentials = [...state.visibleScheduleDifferentials, action.payload];
-      }
     },
   },
 });
 
 export const {
+  updateFromURL,
   setDataKey,
   reset,
-  updateVisibleScheduleDifferentials,
+  updateDataKey,
 } = team.actions;
 export default team.reducer;
 

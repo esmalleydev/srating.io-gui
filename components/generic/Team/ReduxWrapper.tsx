@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useAppDispatch } from '@/redux/hooks';
-import { reset, setDataKey } from '@/redux/features/team-slice';
+import { setDataKey } from '@/redux/features/team-slice';
 import { Team, TeamSeasonConference } from '@/types/general';
 
 const ReduxWrapper = (
@@ -10,12 +10,6 @@ const ReduxWrapper = (
   { children: React.ReactNode, team: Team, team_season_conference: TeamSeasonConference, view: string },
 ) => {
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    return () => {
-      dispatch(reset(false));
-    };
-  }, []);
 
   useEffect(() => {
     dispatch(setDataKey({ key: 'view', value: view }));

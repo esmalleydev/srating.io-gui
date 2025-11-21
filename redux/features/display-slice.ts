@@ -106,6 +106,9 @@ export const display = createSlice({
   name: 'display',
   initialState: stateController.getInitialState(),
   reducers: {
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
+    },
     updateDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       const { value, key } = action.payload;
       stateController.updateDataKey(state, key, value);
@@ -128,7 +131,7 @@ export const display = createSlice({
 });
 
 export const {
-  reset, resetDataKey, updateDataKey, setDataKey,
+  reset, resetDataKey, updateDataKey, setDataKey, updateFromURL,
 } = display.actions;
 export default display.reducer;
 

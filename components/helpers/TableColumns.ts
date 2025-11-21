@@ -105,6 +105,7 @@ class TableColumns {
           if (
             view === 'player_boxscore' ||
             view === 'player' ||
+            view === 'roster' ||
             view === 'transfer'
           ) {
             return 'Player';
@@ -122,6 +123,7 @@ class TableColumns {
           if (
             view === 'player_boxscore' ||
             view === 'player' ||
+            view === 'roster' ||
             view === 'transfer'
           ) {
             return 'Player name';
@@ -1798,7 +1800,7 @@ class TableColumns {
         id: 'turnovers_per_game',
         numeric: true,
         label: 'TO',
-        tooltip: 'Blocks per game',
+        tooltip: 'Turnovers per game',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
         views: ['player', 'transfer'],

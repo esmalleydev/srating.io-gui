@@ -52,6 +52,9 @@ export const coach = createSlice({
   name: 'coach',
   initialState: stateController.getInitialState(),
   reducers: {
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
+    },
     reset: {
       reducer: (state, action: PayloadAction<boolean | undefined>) => {
         stateController.reset(state, action.payload);
@@ -70,6 +73,7 @@ export const coach = createSlice({
 });
 
 export const {
+  updateFromURL,
   setDataKey,
   resetDataKey,
   reset,

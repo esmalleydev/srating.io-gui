@@ -67,6 +67,9 @@ export const compare = createSlice({
   name: 'compare',
   initialState: stateController.getInitialState(),
   reducers: {
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
+    },
     reset: {
       reducer: (state, action: PayloadAction<boolean | undefined>) => {
         stateController.reset(state, action.payload);
@@ -85,6 +88,7 @@ export const compare = createSlice({
 });
 
 export const {
+  updateFromURL,
   setDataKey,
   resetDataKey,
   reset,

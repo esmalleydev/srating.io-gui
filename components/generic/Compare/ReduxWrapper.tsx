@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useAppDispatch } from '@/redux/hooks';
-import { reset, setDataKey } from '@/redux/features/compare-slice';
+import { setDataKey } from '@/redux/features/compare-slice';
 import { updateOrganizationID, updateDivisionID } from '@/redux/features/organization-slice';
 import { Teams } from '@/types/general';
 
@@ -33,12 +33,6 @@ const ReduxWrapper = (
   },
 ) => {
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    return () => {
-      dispatch(reset(false));
-    };
-  }, []);
 
   useEffect(() => {
     dispatch(updateOrganizationID(organization_id));

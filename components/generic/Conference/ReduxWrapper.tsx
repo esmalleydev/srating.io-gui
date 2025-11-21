@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { reset, setDataKey } from '@/redux/features/conference-slice';
+import { setDataKey } from '@/redux/features/conference-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { StatisticRankings as StatsCBB } from '@/types/cbb';
 import { StatisticRankings as StatsCFB } from '@/types/cfb';
@@ -13,12 +13,6 @@ const ReduxWrapper = (
   { children: React.ReactNode, team_season_conferences: TeamSeasonConferences, teams: Teams, statistic_rankings: StatsCBB | StatsCFB, elos: Elos, view: string, subview: string | null | undefined },
 ) => {
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    return () => {
-      dispatch(reset(false));
-    };
-  }, []);
 
   useEffect(() => {
     dispatch(setDataKey({ key: 'view', value: view }));

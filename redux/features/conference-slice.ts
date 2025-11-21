@@ -57,6 +57,9 @@ export const conference = createSlice({
   name: 'conference',
   initialState: stateController.getInitialState(),
   reducers: {
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
+    },
     reset: {
       reducer: (state, action: PayloadAction<boolean | undefined>) => {
         stateController.reset(state, action.payload);
@@ -78,6 +81,7 @@ export const {
   setDataKey,
   resetDataKey,
   reset,
+  updateFromURL,
 } = conference.actions;
 export default conference.reducer;
 

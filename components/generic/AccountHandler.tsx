@@ -1,23 +1,19 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 
 
 import { useAppDispatch } from '@/redux/hooks';
 import { setSession, setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { setLoading } from '@/redux/features/loading-slice';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/hooks/useTheme';
 import { setDataKey } from '@/redux/features/games-slice';
+import Typography from '@/components/ux/text/Typography';
+import Modal from '@/components/ux/container/Modal';
+import Button from '@/components/ux/buttons/Button';
+import { TextField } from '@mui/material';
 
 
 const AccountHandler = ({ open, closeHandler, loginCallback }) => {
@@ -50,11 +46,6 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   };
 
   const handleLogin = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.preventDefault();
-    e.nativeEvent.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -96,11 +87,6 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   };
 
   const handleRegister = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.preventDefault();
-    e.nativeEvent.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
@@ -287,183 +273,176 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
 
   const boxContents: React.JSX.Element[] = [];
 
+  const buttons: React.JSX.Element[] = [];
+
   if (tempLogin) {
     boxContents.push(
-      <DialogContent key = {'temp_login_content'}>
-        <DialogContentText sx = {{ marginBottom: 2 }}>Login with temporary code</DialogContentText>
+      <div>
+        <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Login with temporary code</Typography>
         <TextField
-            required
-            disabled
-            value = {email}
-            error = {!!emailError}
-            helperText = {emailError || null}
-            onChange = {handleEmail}
-            onKeyDown = {handleEnter}
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            required
-            error = {!!loginCodeError}
-            helperText = {loginCodeError || null}
-            onChange = {handleLoginCode}
-            onKeyDown = {handleEnter}
-            margin="dense"
-            id="login-code"
-            label="Code"
-            type="number"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>,
+          required
+          disabled
+          value = {email}
+          error = {!!emailError}
+          helperText = {emailError || null}
+          onChange = {handleEmail}
+          onKeyDown = {handleEnter}
+          margin="dense"
+          id="name"
+          label="Email Address"
+          type="email"
+          fullWidth
+          variant="standard"
+        />
+        <TextField
+          autoFocus
+          required
+          error = {!!loginCodeError}
+          helperText = {loginCodeError || null}
+          onChange = {handleLoginCode}
+          onKeyDown = {handleEnter}
+          margin="dense"
+          id="login-code"
+          label="Code"
+          type="number"
+          fullWidth
+          variant="standard"
+        />
+      </div>,
     );
 
-    boxContents.push(
-      <DialogActions key = {'temp_login_actions'}>
-        <Button onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setTempLogin(false); setForgotPassword(false); }}>Back</Button>
-        <Button onClick = {useLoginCode}>Sign in</Button>
-      </DialogActions>,
+    buttons.push(
+      <Button handleClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />,
+      <Button handleClick = {useLoginCode} title = {'Sign in'} value = 'sign-in' />,
     );
   } else if (forgotPassword) {
     boxContents.push(
-      <DialogContent key = {'forgot_password_content'} sx = {{ minWidth: 320 }}>
-        <DialogContentText sx = {{ marginBottom: 2 }}>Send a Forgot Password email</DialogContentText>
+      <div style = {{ minWidth: 320 }}>
+        <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Send a Forgot Password email</Typography>
         <TextField
-            autoFocus
-            required
-            error = {!!emailError}
-            helperText = {emailError || null}
-            onChange = {handleEmail}
-            onKeyDown = {handleEnter}
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
+          autoFocus
+          required
+          error = {!!emailError}
+          helperText = {emailError || null}
+          onChange = {handleEmail}
+          onKeyDown = {handleEnter}
+          margin="dense"
+          id="name"
+          label="Email Address"
+          type="email"
+          fullWidth
+          variant="standard"
         />
-      </DialogContent>,
+      </div>,
     );
 
-    boxContents.push(
-      <DialogActions key = {'forgot_password_actions'}>
-        <Button onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setTempLogin(false); setForgotPassword(false); }}>Back</Button>
-        <Button onClick = {sendLoginCode}>Send temporary code</Button>
-      </DialogActions>,
+    buttons.push(
+      <Button handleClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />,
+      <Button handleClick = {sendLoginCode} title = {'Send temporary code'} value = 'temp-code' />,
     );
   } else if (register) {
     boxContents.push(
-      <DialogContent key = {'register_content'}>
-          <DialogContentText sx = {{ marginBottom: 2 }}>Create an account</DialogContentText>
-          <TextField
-            autoFocus
-            required
-            error = {!!emailError}
-            helperText = {emailError || null}
-            onChange = {handleEmail}
-            onKeyDown = {handleEnter}
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            required
-            error = {!!passwordError}
-            helperText = {passwordError || null}
-            onChange = {handlePassword}
-            margin="dense"
-            label="Password"
-            type="password"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            required
-            error = {!!passwordErrorConfirm}
-            helperText = {passwordErrorConfirm || null}
-            onChange = {handlePasswordConfirm}
-            onKeyDown = {handleEnter}
-            margin="dense"
-            label="Confirm password"
-            type="password"
-            fullWidth
-            variant="standard"
-          />
-          <DialogContentText sx = {{ marginTop: 3 }}>Have an account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setRegister(false); }}>Sign in</a></DialogContentText>
-        </DialogContent>,
+      <div>
+        <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Create an account</Typography>
+        <TextField
+          autoFocus
+          required
+          error = {!!emailError}
+          helperText = {emailError || null}
+          onChange = {handleEmail}
+          onKeyDown = {handleEnter}
+          margin="dense"
+          id="name"
+          label="Email Address"
+          type="email"
+          fullWidth
+          variant="standard"
+        />
+        <TextField
+          required
+          error = {!!passwordError}
+          helperText = {passwordError || null}
+          onChange = {handlePassword}
+          margin="dense"
+          label="Password"
+          type="password"
+          fullWidth
+          variant="standard"
+        />
+        <TextField
+          required
+          error = {!!passwordErrorConfirm}
+          helperText = {passwordErrorConfirm || null}
+          onChange = {handlePasswordConfirm}
+          onKeyDown = {handleEnter}
+          margin="dense"
+          label="Confirm password"
+          type="password"
+          fullWidth
+          variant="standard"
+        />
+        <Typography type = 'body2' style = {{ color: theme.text.secondary, marginTop: 10 }}>Have an account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { setRegister(false); }}>Sign in</a></Typography>
+      </div>,
     );
 
-    boxContents.push(
-      <DialogActions key = {'register_actions'}>
-        <Button onClick = {handleRegister}>Create account</Button>
-      </DialogActions>,
+    buttons.push(
+      <Button handleClick = {handleRegister} title = {'Create account'} value = 'create' />,
     );
   } else {
     boxContents.push(
-      <DialogContent key = {'login_content'}>
-        <DialogContentText sx = {{ marginBottom: 2 }}>Sign in to your account</DialogContentText>
+      <div>
+        <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Sign in to your account</Typography>
         <TextField
-            autoFocus
-            required
-            error = {!!emailError}
-            helperText = {emailError || null}
-            onChange = {handleEmail}
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            required
-            error = {!!passwordError}
-            helperText = {passwordError || null}
-            onChange = {handlePassword}
-            onKeyDown = {handleEnter}
-            margin="dense"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            fullWidth
-            variant="standard"
-          />
-          <DialogContentText sx = {{ marginTop: 3 }}><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setForgotPassword(true); }}>Forgot Password?</a></DialogContentText>
-          <DialogContentText sx = {{ marginTop: 3 }}>No account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { e.preventDefault(); e.stopPropagation(); setRegister(true); }}>Create account</a></DialogContentText>
-        </DialogContent>,
+          autoFocus
+          required
+          error = {!!emailError}
+          helperText = {emailError || null}
+          onChange = {handleEmail}
+          margin="dense"
+          id="name"
+          label="Email Address"
+          type="email"
+          fullWidth
+          variant="standard"
+        />
+        <TextField
+          required
+          error = {!!passwordError}
+          helperText = {passwordError || null}
+          onChange = {handlePassword}
+          onKeyDown = {handleEnter}
+          margin="dense"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          fullWidth
+          variant="standard"
+        />
+        <div style = {{ marginTop: 10 }}>
+          <Typography type = 'a'><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { setForgotPassword(true); }}>Forgot Password?</a></Typography>
+        </div>
+        <div style = {{ marginTop: 10 }}>
+          <Typography type = 'body1' style = {{ color: theme.text.secondary }}>No account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { setRegister(true); }}>Create account</a></Typography>
+        </div>
+      </div>,
     );
 
-    boxContents.push(
-      <DialogActions key = {'login_actions'}>
-        <Button onClick = {handleLogin}>Sign in</Button>
-      </DialogActions>,
+    buttons.push(
+      <Button handleClick = {handleLogin} title = {'Sign in'} value = 'sign-in' />,
     );
   }
 
   return (
-    <Dialog
-      onClick={(e) => {
-        // react and MUI is dumb
-        e.preventDefault();
-        e.stopPropagation();
-        e.nativeEvent.preventDefault();
-        e.nativeEvent.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-      }}
+    <Modal
       open={open}
       onClose={closeHandler}
     >
-      <DialogTitle id="alert-dialog-title">Account</DialogTitle>
+      <Typography type = 'h6'>Account</Typography>
       {boxContents}
-    </Dialog>
+      <div style = {{ textAlign: 'right', marginTop: 10 }}>
+        {buttons}
+      </div>
+    </Modal>
   );
 };
 

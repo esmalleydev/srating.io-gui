@@ -1,17 +1,14 @@
 'use client';
 
-import React from 'react';
 import { Appearance, loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 
 import CheckoutForm from './Billing/CheckoutForm';
 import FreeTrialForm from './Billing/FreeTrialForm';
 import Typography from '../ux/text/Typography';
 import { useTheme } from '../hooks/useTheme';
+import Modal from '../ux/container/Modal';
 
 
 
@@ -51,12 +48,13 @@ const Billing = ({ pricing, open, closeHandler }) => {
   const trial = (pricing.code === 'api_trial');
 
   return (
-    <Dialog
+    <Modal
       open={open}
       onClose={closeHandler}
+      paperStyle={{ maxWidth: 550 }}
     >
-      <DialogTitle id="alert-dialog-title">{pricing.name || 'Loading...'} {pricing.type === 'picks' ? 'picks access' : 'API access'}</DialogTitle>
-      <DialogContent>
+      <Typography type = 'h5' >{pricing.name || 'Loading...'} {pricing.type === 'picks' ? 'picks access' : 'API access'}</Typography>
+      <div>
         <div>
           {!trial ? <Typography style = {{ color: theme.text.secondary }} type = 'caption'>See <a style = {{ color: theme.link.primary }} href = "https://srating.io/terms-and-conditions" target = "_blank">terms and conditions</a> before subscribing. Payments processed securely via <a style = {{ color: theme.link.primary }} href = "https://stripe.com" target = "_blank">Stripe</a></Typography> : ''}
         </div>
@@ -72,8 +70,8 @@ const Billing = ({ pricing, open, closeHandler }) => {
             </Elements>
           </div>
         }
-      </DialogContent>
-    </Dialog>
+      </div>
+    </Modal>
   );
 };
 

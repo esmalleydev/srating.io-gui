@@ -55,6 +55,9 @@ export const games = createSlice({
   name: 'games',
   initialState: stateController.getInitialState(),
   reducers: {
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
+    },
     reset: {
       reducer: (state, action: PayloadAction<boolean | undefined>) => {
         stateController.reset(state, action.payload);
@@ -77,6 +80,7 @@ export const games = createSlice({
 });
 
 export const {
+  updateFromURL,
   updateDataKey,
   setDataKey,
   reset,

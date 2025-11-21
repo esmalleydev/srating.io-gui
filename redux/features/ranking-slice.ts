@@ -83,6 +83,9 @@ export const ranking = createSlice({
   name: 'ranking',
   initialState: stateController.getInitialState(),
   reducers: {
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
+    },
     updateDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
       const { value, key } = action.payload;
       stateController.updateDataKey(state, key, value);
@@ -105,6 +108,7 @@ export const ranking = createSlice({
 });
 
 export const {
+  updateFromURL,
   reset,
   setDataKey,
   resetDataKey,

@@ -1,7 +1,6 @@
 'use client';
 
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
+
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import List from '@mui/material/List';
@@ -11,20 +10,19 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { ListItemButton } from '@mui/material';
 import { setDataKey } from '@/redux/features/display-slice';
+import Modal from '../ux/container/Modal';
+import Typography from '../ux/text/Typography';
+import { useTheme } from '../hooks/useTheme';
 
 
 /**
  * RankPicker
- * @param  {Object} props
- * @param  {Boolean} props.open
- * @param  {Function} props.closeHandler
- * @param  {Function} props.openHandler
- * @return {<Dialog>}
  */
 const RankPicker = (
   { open, closeHandler, openHandler } :
   { open: boolean; closeHandler: () => void; openHandler: () => void },
 ) => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
 
   const selected = useAppSelector((state) => state.displayReducer.rank);
@@ -78,13 +76,13 @@ const RankPicker = (
   };
 
   return (
-    <Dialog
+    <Modal
       open={open}
-      keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-rank-picker-description"
     >
-      <DialogTitle>Pick ranking metric #</DialogTitle>
+      <Typography type = 'h6'>Rank metric</Typography>
+      <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Pick which ranking # to display next to a team.</Typography>
       <List>
         {rankDisplayOptions.map((rankDisplayOption) => (
           <ListItemButton key={rankDisplayOption.value} onClick={() => {
@@ -98,7 +96,7 @@ const RankPicker = (
           </ListItemButton>
         ))}
       </List>
-    </Dialog>
+    </Modal>
   );
 };
 

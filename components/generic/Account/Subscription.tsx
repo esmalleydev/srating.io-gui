@@ -3,14 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-
-
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
@@ -19,6 +11,8 @@ import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Dates from '@/components/utils/Dates';
+import Modal from '@/components/ux/container/Modal';
+import Button from '@/components/ux/buttons/Button';
 
 
 const Subscription = (
@@ -119,7 +113,7 @@ const Subscription = (
           <Typography style = {{ color: theme.text.secondary }} type='subtitle1'>API key</Typography>
           <div>
             <Typography type='body1'>{apiKey.key}</Typography>
-            {cancelledSub === null && !subscription.expires ? <div style = {{ textAlign: 'right' }}><Button onClick={handleRegenerate}>Regenerate</Button></div> : ''}
+            {cancelledSub === null && !subscription.expires ? <div style = {{ textAlign: 'right' }}><Button handleClick={handleRegenerate} title = 'Regenerate' ink value = 'regen' /></div> : ''}
           </div>
         </div>
           : ''
@@ -128,32 +122,24 @@ const Subscription = (
         pricing.type !== 'trial' ?
         <div style = {{ textAlign: 'right' }}>
           {
-            cancelledSub === null && !subscription.expires ? <Button onClick={handleCancelOpen} color='error'>Cancel subscription</Button> : <Button onClick={handleRenewClick} color='success'>Renew</Button>
+            cancelledSub === null && !subscription.expires ?
+              <Button handleClick={handleCancelOpen} title = 'Cancel subscription' value = 'cancel' ink buttonStyle = {{ color: theme.error.main }} /> :
+              <Button handleClick={handleRenewClick} title = 'Renew' value = 'renew' ink buttonStyle = {{ color: theme.success.main }} />
           }
         </div>
           : ''
       }
-      <Dialog
+      <Modal
         open={cancelOpen}
         onClose={handleCancelClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Cancel subscription?'}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Subscription will remain active until next billing date.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelClose} autoFocus>Back</Button>
-          <Button onClick={handleCancelSubscription}>
-            Cancel subscription
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Typography type = 'h6'>{'Cancel subscription?'}</Typography>
+        <Typography type = 'body1' style = {{ color: theme.text.secondary, margin: '10px 0px' }}>Subscription will remain active until next billing date.</Typography>
+        <div style={{ textAlign: 'right', marginTop: 10 }}>
+          <Button handleClick={handleCancelClose} autoFocus title='Back' ink value = 'back' />
+          <Button handleClick={handleCancelSubscription} buttonStyle={{ backgroundColor: theme.error.main }} title = 'Cancel subscription' value = 'cancel' />
+        </div>
+      </Modal>
     </Paper>
   );
 };

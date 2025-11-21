@@ -145,7 +145,7 @@ const SubNavBar = ({ view }) => {
 
 
     middleButtons.push(
-      <div style = {{ width: '100%', display: 'flex', justifyContent: 'center', overflowX: 'scroll', overflowY: 'hidden', scrollbarWidth: 'none' }}>
+      <div key = {subview} style = {{ width: '100%', display: 'flex', justifyContent: 'center', overflowX: 'scroll', overflowY: 'hidden', scrollbarWidth: 'none' }}>
         {tabs}
       </div>,
     );

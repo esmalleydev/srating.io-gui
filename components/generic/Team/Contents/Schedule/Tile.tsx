@@ -14,7 +14,7 @@ import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
-import { setDataKey, updateVisibleScheduleDifferentials } from '@/redux/features/team-slice';
+import { setDataKey, updateDataKey } from '@/redux/features/team-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
 import Rank from './Tile/Rank';
 import Record from './Tile/Record';
@@ -185,7 +185,7 @@ const Tile = ({ game, team }) => {
               <Tooltip text = {'Toggle historical chart'} position="top">
                 <IconButton
                   id = 'differential-button'
-                  onClick = {() => dispatch(updateVisibleScheduleDifferentials(game.game_id))}
+                  onClick = {() => dispatch(updateDataKey({ key: 'visibleScheduleDifferentials', value: game.game_id }))}
                 >
                   <LegendToggleIcon style = {{ fontSize: (width < 475 ? '22px' : '24px') }} color = {isScheduleDiffVisible ? 'success' : 'primary'} />
                 </IconButton>

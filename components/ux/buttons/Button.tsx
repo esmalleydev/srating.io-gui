@@ -12,6 +12,7 @@ const Button = (
     value,
     handleClick,
     ink = false,
+    autoFocus = false,
     containerStyle = {},
     buttonStyle = {},
     ref = null,
@@ -21,6 +22,7 @@ const Button = (
     value: string|number;
     handleClick: (e: React.SyntheticEvent, value: string | number) => void;
     ink?: boolean;
+    autoFocus?: boolean;
     containerStyle?: React.CSSProperties;
     buttonStyle?: React.CSSProperties;
     ref?: RefObject<HTMLDivElement> | null;
@@ -41,32 +43,56 @@ const Button = (
 
 
   const backgroundColor = cStyle.backgroundColor || theme.background.main;
-  const textColor = theme.text.primary;
+
+  let regularButtonStyle: React.CSSProperties = {
+    backgroundColor: theme.green[600],
+    color: '#fff',
+    borderRadius: 6,
+  };
+
+
+  if (ink) {
+    const textColor = buttonStyle.color || theme.blue[500];
+
+    const hoverColor = buttonStyle.color ? (
+      theme.mode === 'dark' ? Color.lighten(buttonStyle.color) : Color.darken(buttonStyle.color)
+    ) : (
+      theme.mode === 'dark' ? theme.blue[300] : theme.blue[700]
+    );
+
+    regularButtonStyle = {
+      backgroundColor: 'transparent',
+      color: Color.getTextColor(textColor, backgroundColor),
+      '&:hover': {
+        color: hoverColor,
+      },
+    };
+  }
 
   const bStyle: React.CSSProperties = {
-  //   width: '50%',
-    // minWidth: width <= 425 ? 50 : 100,
+    fontWeight: 500,
+    fontSize: 14,
     minWidth: 100,
-    // padding: '0px 8px',
     height: 40,
-    backgroundColor: 'transparent',
-    color: Color.getTextColor(textColor, backgroundColor),
     textAlign: 'center',
     display: 'flex',
-    // fontWeight: 500,
-    // fontStyle: 'italic',
-    // textTransform: 'uppercase',
-    // alignContent: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     cursor: 'pointer',
     border: 'none',
+    ...regularButtonStyle,
     ...buttonStyle,
   };
 
+  if (bStyle.backgroundColor !== 'transparent') {
+    bStyle['&:hover'] = {
+      backgroundColor: theme.mode === 'dark' ? Color.darken(bStyle.backgroundColor as string) : Color.lighten(bStyle.backgroundColor as string),
+    };
+  }
+
   return (
     <div ref = {ref} className = {Style.getStyleClassName(cStyle)} onClick={(e) => { handleClick(e, value); }}>
-      <button className = {Style.getStyleClassName(bStyle)}>
+      <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus}>
         {title}
       </button>
     </div>
