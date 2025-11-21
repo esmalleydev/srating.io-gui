@@ -44,7 +44,7 @@ const Button = (
 
   const backgroundColor = cStyle.backgroundColor || theme.background.main;
 
-  let regularButtonStyle: React.CSSProperties = {
+  let regularButtonStyle = {
     backgroundColor: theme.green[600],
     color: '#fff',
     borderRadius: 6,
@@ -69,7 +69,7 @@ const Button = (
     };
   }
 
-  const bStyle: React.CSSProperties = {
+  const bStyle = {
     fontWeight: 500,
     fontSize: 14,
     minWidth: 100,
