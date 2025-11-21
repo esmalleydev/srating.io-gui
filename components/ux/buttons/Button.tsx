@@ -44,7 +44,7 @@ const Button = (
 
   const backgroundColor = cStyle.backgroundColor || theme.background.main;
 
-  let regularButtonStyle: any = {
+  let regularButtonStyle: object = {
     backgroundColor: theme.green[600],
     color: '#fff',
     borderRadius: 6,
@@ -53,12 +53,15 @@ const Button = (
 
   if (ink) {
     const textColor = buttonStyle.color || theme.blue[500];
-
-    const hoverColor = buttonStyle.color ? (
-      theme.mode === 'dark' ? Color.lighten(buttonStyle.color) : Color.darken(buttonStyle.color)
-    ) : (
+    let hoverColor = (
       theme.mode === 'dark' ? theme.blue[300] : theme.blue[700]
     );
+
+    if (buttonStyle.color) {
+      hoverColor = (
+        theme.mode === 'dark' ? Color.lighten(buttonStyle.color) : Color.darken(buttonStyle.color)
+      );
+    }
 
     regularButtonStyle = {
       backgroundColor: 'transparent',
@@ -86,7 +89,7 @@ const Button = (
 
   if (bStyle.backgroundColor !== 'transparent') {
     bStyle['&:hover'] = {
-      backgroundColor: theme.mode === 'dark' ? Color.darken(bStyle.backgroundColor as string) : Color.lighten(bStyle.backgroundColor as string),
+      backgroundColor: theme.mode === 'dark' ? Color.lighten(bStyle.backgroundColor as string) : Color.darken(bStyle.backgroundColor as string),
     };
   }
 

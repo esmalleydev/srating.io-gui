@@ -160,15 +160,15 @@ class Color {
    * @param {number} amount
    * @return {string} hex
    */
-  public static darken(hex: string, amount: number = 0.02): string {
-    const [r, g, b] = this.hexToRgb(hex);
-    const [h, s, l] = this.rgbToHsl(r, g, b);
+  // public static darken(hex: string, amount: number = 0.02): string {
+  //   const [r, g, b] = this.hexToRgb(hex);
+  //   const [h, s, l] = this.rgbToHsl(r, g, b);
 
-    const newL = Math.max(0, (l / 100) - amount) * 100;
-    const [r2, g2, b2] = this.hslToRgb(h, s, newL);
+  //   const newL = Math.max(0, (l / 100) - amount) * 100;
+  //   const [r2, g2, b2] = this.hslToRgb(h, s, newL);
 
-    return this.rgbToHex(r2, g2, b2);
-  }
+  //   return this.rgbToHex(r2, g2, b2);
+  // }
 
   /**
    * Take a hex (#fff) and an amount and lighten the color, return a hex
@@ -176,12 +176,51 @@ class Color {
    * @param {number} amount
    * @return {string} hex
    */
-  public static lighten(hex: string, amount: number = 0.02): string {
-    const [r, g, b] = this.hexToRgb(hex);
-    const [h, s, l] = this.rgbToHsl(r, g, b);
+  // public static lighten(hex: string, amount: number = 0.02): string {
+  //   const [r, g, b] = this.hexToRgb(hex);
+  //   const [h, s, l] = this.rgbToHsl(r, g, b);
 
-    const newL = Math.min(1, (l / 100) + amount) * 100;
-    const [r2, g2, b2] = this.hslToRgb(h, s, newL);
+  //   const newL = Math.min(1, (l / 100) + amount) * 100;
+  //   const [r2, g2, b2] = this.hslToRgb(h, s, newL);
+
+  //   return this.rgbToHex(r2, g2, b2);
+  // }
+
+  /**
+   * Mixes the color with black to create a Shade.
+   * Prevents the "muddy/brown" look of HSL darkening.
+   * @param {string} hex - The color to darken
+   * @param {number} amount - 0 to 1 (e.g. 0.1 is 10% darker)
+   * @return {string} hex
+   */
+  public static darken(hex: string, amount: number = 0.1): string {
+    const [r, g, b] = this.hexToRgb(hex);
+
+    // Calculate new color by mixing with black (0)
+    // Formula: Current * (1 - amount)
+    const remaining = 1 - amount;
+    const r2 = Math.round(r * remaining);
+    const g2 = Math.round(g * remaining);
+    const b2 = Math.round(b * remaining);
+
+    return this.rgbToHex(r2, g2, b2);
+  }
+
+  /**
+   * Mixes the color with white to create a Tint.
+   * cleaner and less "washed out" than HSL lightness adjustment.
+   * @param {string} hex - The color to lighten
+   * @param {number} amount - 0 to 1 (e.g. 0.1 is 10% lighter)
+   * @return {string} hex
+   */
+  public static lighten(hex: string, amount: number = 0.1): string {
+    const [r, g, b] = this.hexToRgb(hex);
+
+    // Calculate new color by mixing with white (255)
+    // Formula: Current + ((Target - Current) * amount)
+    const r2 = Math.round(r + (255 - r) * amount);
+    const g2 = Math.round(g + (255 - g) * amount);
+    const b2 = Math.round(b + (255 - b) * amount);
 
     return this.rgbToHex(r2, g2, b2);
   }
