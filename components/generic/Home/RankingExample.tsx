@@ -4,7 +4,7 @@ import React, { ForwardRefExoticComponent, RefAttributes, useState, useTransitio
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Button, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { ContextProp, TableVirtuoso } from 'react-virtuoso';
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -30,6 +30,7 @@ import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import Button from '@/components/ux/buttons/Button';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // '&:nth-of-type(odd)': {
@@ -372,7 +373,7 @@ const RankingExample = () => {
 
   return (
     <Contents>
-      <div style = {{ textAlign: 'center' }}><Button onClick={(e) => { handlePath(e, '/cbb/ranking'); } } endIcon = {<ArrowForwardIcon />}>View Full Live Rankings</Button></div>
+      <div style = {{ textAlign: 'center' }}><Button ink handleClick={(e) => { handlePath(e, '/cbb/ranking'); } } endIcon = {<ArrowForwardIcon />} title = {'View Full Live Rankings'} value = 'view-full' /></div>
       <div>
         <TableVirtuoso style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} />
       </div>

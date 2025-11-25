@@ -16,6 +16,7 @@ import Division from '../helpers/Division';
 import Color from '../utils/Color';
 import Style from '../utils/Style';
 import Navigation from '../helpers/Navigation';
+import { maxWidth } from './Picks/Tile';
 
 
 
@@ -202,9 +203,8 @@ const Search = (
     font: 'inherit',
     letterSpacing: 'inherit',
     border: 0,
-    boxSizing: 'content-box',
     margin: 0,
-    padding: '8px 8px 8px 0px',
+    padding: '8px 8px 8px calc(1em + 32px)',
     '&::placeholder': {
       opacity: 0.7,
       color: '#fff',
@@ -213,7 +213,6 @@ const Search = (
       outline: 'none',
     },
     // vertical padding + font size from searchIcon
-    paddingLeft: 'calc(1em + 32px)',
     transition: 'width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     width: '100%',
     '@media (min-width:600px)': {

@@ -7,6 +7,7 @@ import { reset as resetConference } from '@/redux/features/conference-slice';
 import { reset as resetTeam } from '@/redux/features/team-slice';
 import { reset as resetGames } from '@/redux/features/games-slice';
 import { reset as resetGame } from '@/redux/features/game-slice';
+import { reset as resetPicks, setDataKey as setDataKeyPicks, InitialStateKeys as InitialStateKeysPicks, InitialState as InitialStatePicks } from '@/redux/features/picks-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { AppDispatch } from '@/redux/store';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
@@ -216,6 +217,55 @@ class Navigation {
     this.dispatch(resetGames(false));
     this.startTransition(() => {
       this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+  /**
+   * Navigate to a picks page,
+   * reset the state to be fresh beforehand
+   */
+  public picks(path: string, onRouter: null | undefined | (() => void) = null) {
+    this.dispatch(setLoading(true));
+    this.dispatch(resetPicks(false));
+    this.startTransition(() => {
+      this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+  /**
+   * Navigate to something on a player view. Must already be on player view
+   */
+  public picksView<K extends InitialStateKeysPicks>(args: Pick<InitialStatePicks, K>, onRouter: null | undefined | (() => void) = null) {
+    if (!this.pathName.includes('picks')) {
+      throw new Error('picksView only usable when already navigated to picks');
+    }
+
+    for (const key in args) {
+      this.dispatch(setDataKeyPicks({ key, value: args[key] }));
+    }
+
+
+    // these MUST always be set this way if the view changes
+    if ('view' in args) {
+      // nothing here yet
+    }
+
+    this.dispatch(setDataKeyPicks({ key: 'loadingView', value: true }));
+
+
+    // picks slice handles this now, but just refetch it here for stupid nextjs router
+    const current = new URLSearchParams(window.location.search);
+    const search = current.toString();
+    const query = search ? `?${search}` : '';
+
+    this.startTransition(() => {
+      this.router.replace(`${this.pathName}${query}`);
       if (onRouter) {
         onRouter();
       }

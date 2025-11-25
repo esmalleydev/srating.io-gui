@@ -293,6 +293,52 @@ class Style {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const line of lines) {
+      // PRIORITY 1: If we are actively collecting an At-Rule (@media), we consume EVERYTHING
+      // until braces balance. We do NOT check for '&' or property types here, because
+      // they belong to the recursive scope.
+      if (insideAtRule) {
+        // Do not normalize here, accumulate raw lines
+        atRuleLines.push(line);
+
+        // Count braces to track nesting depth
+        atRuleBraceCount += (line.match(/{/g) || []).length;
+        atRuleBraceCount -= (line.match(/}/g) || []).length;
+
+        // When we've closed all braces, the at-rule is complete
+        if (atRuleBraceCount === 0) {
+          // Recursively process the content inside the media query
+          const innerCSS = this.processCSS(className, atRuleLines.join('\n'));
+          atRules.push(`${currentAtRule} { ${innerCSS} }`);
+          currentAtRule = null;
+          insideAtRule = false;
+          atRuleLines = [];
+        }
+        continue;
+      }
+
+      // PRIORITY 2: If we are inside a generic nested block (like &:focus), consume lines
+      if (insideNestedBlock) {
+        if (line.includes('}')) {
+          // end nested block
+          insideNestedBlock = false;
+          const beforeBrace = line.split('}')[0].trim();
+          if (beforeBrace) {
+            nestedBlockLines.push(normalizeCSSLine(beforeBrace));
+          }
+
+          if (currentNestedSelector) {
+            nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
+          }
+
+          currentNestedSelector = null;
+          nestedBlockLines = [];
+        } else {
+          nestedBlockLines.push(normalizeCSSLine(line));
+        }
+        continue;
+      }
+
+      // PRIORITY 3: Start of a new At-Rule
       if (line.startsWith('@')) {
         // Start of at-rule
         const atRulePart = line.split('{')[0].trim();
@@ -306,21 +352,28 @@ class Style {
           // Add rest of line after '{' if any
           const afterBrace = line.split('{').slice(1).join('{').trim();
           if (afterBrace) {
-            atRuleLines.push(normalizeCSSLine(afterBrace));
+            // Do not normalize here, keep raw line for recursive processing
+            atRuleLines.push(afterBrace);
 
             // Check if there are closing braces on same line
             atRuleBraceCount += (afterBrace.match(/{/g) || []).length;
             atRuleBraceCount -= (afterBrace.match(/}/g) || []).length;
 
             if (atRuleBraceCount === 0) {
-              atRules.push(`${currentAtRule} { ${atRuleLines.join(' ')} }`);
+              // Recursively process the content inside the media query
+              const innerCSS = this.processCSS(className, atRuleLines.join('\n'));
+              atRules.push(`${currentAtRule} { ${innerCSS} }`);
               currentAtRule = null;
               insideAtRule = false;
               atRuleLines = [];
             }
           }
         }
-      } else if (line.startsWith('&')) {
+        continue;
+      }
+
+      // PRIORITY 4: Start of a new Nested Selector
+      if (line.startsWith('&')) {
         // Start of nested selector
         if (currentNestedSelector && nestedBlockLines.length) {
           nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
@@ -339,42 +392,11 @@ class Style {
             nestedBlockLines.push(normalizeCSSLine(afterBrace));
           }
         }
-      } else if (insideAtRule) {
-        // Continue collecting at-rule content
-        atRuleLines.push(normalizeCSSLine(line));
-
-        // Count braces to track nesting depth
-        atRuleBraceCount += (line.match(/{/g) || []).length;
-        atRuleBraceCount -= (line.match(/}/g) || []).length;
-
-        // When we've closed all braces, the at-rule is complete
-        if (atRuleBraceCount === 0) {
-          atRules.push(`${currentAtRule} { ${atRuleLines.join(' ')} }`);
-          currentAtRule = null;
-          insideAtRule = false;
-          atRuleLines = [];
-        }
-      } else if (insideNestedBlock) {
-        if (line.includes('}')) {
-          // end nested block
-          insideNestedBlock = false;
-          const beforeBrace = line.split('}')[0].trim();
-          if (beforeBrace) {
-            nestedBlockLines.push(normalizeCSSLine(beforeBrace));
-          }
-
-          if (currentNestedSelector) {
-            nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
-          }
-
-          currentNestedSelector = null;
-          nestedBlockLines = [];
-        } else {
-          nestedBlockLines.push(normalizeCSSLine(line));
-        }
-      } else {
-        topLevelRules.push(normalizeCSSLine(line));
+        continue;
       }
+
+      // PRIORITY 5: Standard property
+      topLevelRules.push(normalizeCSSLine(line));
     }
 
     // Close any remaining nested block
@@ -382,15 +404,21 @@ class Style {
       nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
     }
 
+    // Handle edge case where atRule is unfinished (though valid CSS usually isn't)
     if (currentAtRule && atRuleLines.length) {
-      atRules.push(`${currentAtRule} { ${atRuleLines.join(' ')} }`);
+      const innerCSS = this.processCSS(className, atRuleLines.join('\n'));
+      atRules.push(`${currentAtRule} { ${innerCSS} }`);
     }
 
     // Compose final CSS:
     const topLevelCSS = `.${className} { ${topLevelRules.join(' ')} }`;
     // Replace & in nested rules with .classname
     const nestedCSS = nestedRules.map((rule) => rule.replace(/&/g, `.${className}`)).join(' ');
-    const atCSS = atRules.map((rule) => rule.replace(/&/g, `.${className}`)).join(' ');
+
+    // atRules already contain full CSS blocks thanks to recursion, but we need to ensure inner & replacement happened
+    // The recursion already handles replacement of & with .classname inside the recursive call!
+    // So we just join them.
+    const atCSS = atRules.join(' ');
 
     const finalCSS = `${topLevelCSS} ${nestedCSS} ${atCSS}`;
 

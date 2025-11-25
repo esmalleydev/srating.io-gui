@@ -10,11 +10,11 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import WarningIcon from '@mui/icons-material/Warning';
 import ErrorIcon from '@mui/icons-material/Error';
-import { Button } from '@mui/material';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import Footer from '../Footer';
 import { useTheme } from '@/components/hooks/useTheme';
+import Button from '@/components/ux/buttons/Button';
 
 
 const Status = () => {
@@ -116,7 +116,7 @@ const Status = () => {
               <Typography type='body2'>{reference}</Typography>
             </div>
             <div style = {{ textAlign: 'right' }}>
-              <Button variant='text' onClick={() => { router.push('/account'); }}>View account</Button>
+              <Button ink handleClick={() => { router.push('/account'); }} title = {'View account'} value = 'view-account' />
             </div>
           </Paper>
         </div>

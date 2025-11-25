@@ -1,7 +1,6 @@
 'use client';
 
 import { useTransition } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import { useTheme, styled } from '@mui/material/styles';
 
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -13,9 +12,7 @@ import PicksIcon from '@mui/icons-material/Casino';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setScrollTop as setPicksScrollTop } from '@/redux/features/picks-slice';
-import { setLoading } from '@/redux/features/loading-slice';
+import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import Paper from '../ux/container/Paper';
 import Navigation from '../helpers/Navigation';
@@ -35,13 +32,11 @@ const FooterNavigation = () => {
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const theme = useTheme();
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const dispatch = useAppDispatch();
 
   const viewingSport = Organization.getPath({ organizations, organization_id });
   let viewingPage: string | null = null;
-  const pathName = usePathname();
+  const pathName = window.location.pathname;
 
   // todo the /team page highlights home button, because there is no sport / viewing page
 
@@ -70,13 +65,10 @@ const FooterNavigation = () => {
     }
   }
 
-  // TODO click away from scores, clear all the game data slice
-
-
   const handleHome = () => {
     startTransition(() => {
       // router.push('/'+viewingSport.toLowerCase());
-      router.push('/');
+      navigation.getRouter().push('/');
     });
   };
 
@@ -99,14 +91,8 @@ const FooterNavigation = () => {
   const handlePicks = () => {
     const newPathName = `/${viewingSport.toLowerCase()}/picks`;
 
-    // TODO replace with naviation component, but rewrite picks-slice first
-
     if (newPathName !== pathName) {
-      dispatch(setPicksScrollTop(0));
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.push(newPathName);
-      });
+      navigation.picks(newPathName);
     }
   };
 

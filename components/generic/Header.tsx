@@ -5,15 +5,12 @@ import { useRouter, usePathname } from 'next/navigation';
 // import { Link } from 'next/link';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import { useTheme } from '@mui/material/styles';
-
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
 
 // Icons
 import MenuIcon from '@mui/icons-material/Menu';
@@ -44,6 +41,8 @@ import MenuListText from '@/components/ux/menu/MenuListText';
 import MenuList from '@/components/ux/menu/MenuList';
 import Organization from '../helpers/Organization';
 import Tooltip from '../ux/hover/Tooltip';
+import Button from '../ux/buttons/Button';
+import { useTheme } from '../hooks/useTheme';
 
 
 // todo hook up settings with router
@@ -51,12 +50,12 @@ import Tooltip from '../ux/hover/Tooltip';
 export const headerBarHeight = 64;
 
 const Header = () => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const validSession = useAppSelector((state) => state.userReducer.isValidSession);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const path = Organization.getPath({ organizations, organization_id });
-  const theme = useTheme();
 
   const router = useRouter();
   const pathName = usePathname();
@@ -183,7 +182,7 @@ const Header = () => {
                 </IconButton>
                 <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }} style = {logoStyle} onClick = {handleHome}>
                   {width > 425 ? <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} /> : ''}
-                  <><span style = {{ color: (theme.palette.mode === 'dark' ? logoPrimaryColor : '#fff') }}>S</span><span style = {{ color: (theme.palette.mode === 'dark' ? logoSecondaryColor : '#31ff00') }}>R{shrinkName ? '' : 'ATING'}</span></>
+                  <><span style = {{ color: (theme.mode === 'dark' ? logoPrimaryColor : '#fff') }}>S</span><span style = {{ color: (theme.mode === 'dark' ? logoSecondaryColor : '#31ff00') }}>R{shrinkName ? '' : 'ATING'}</span></>
                 </Box>
                 <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }}>
                   <OrganizationPicker />
@@ -273,7 +272,7 @@ const Header = () => {
                     :
                     <div>
                       {/* {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''} */}
-                      <Button color = {theme.palette.mode === 'light' ? 'secondary' : 'success'} variant = 'contained' disableElevation onClick={handleAccount}>{width > 550 ? 'Signup / Login' : 'Login'}</Button>
+                      <Button buttonStyle = {{ backgroundColor: (theme.mode === 'light' ? theme.secondary.main : theme.success.dark) }} handleClick={handleAccount} title = {(width > 550 ? 'Signup / Login' : 'Login')} value = 'login' />
                     </div>
                   }
                 </Box>

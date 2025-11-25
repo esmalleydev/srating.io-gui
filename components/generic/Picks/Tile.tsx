@@ -5,13 +5,11 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 
 
 import Skeleton from '@mui/material/Skeleton';
-import Button from '@mui/material/Button';
 
 import HelperGame from '@/components/helpers/Game';
 import Indicator from '@/components/generic/Indicator';
 import Pin from '@/components/generic/Pin';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setScrollTop } from '@/redux/features/picks-slice';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
 import Rank from './Tile/Rank';
@@ -22,6 +20,8 @@ import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
 import Navigation from '@/components/helpers/Navigation';
+import Button from '@/components/ux/buttons/Button';
+import { setDataKey } from '@/redux/features/picks-slice';
 
 
 /**
@@ -63,7 +63,7 @@ const Tile = ({ game }) => {
       scrollRef &&
       scrollRef.current
     ) {
-      dispatch(setScrollTop(scrollRef.current.scrollTop));
+      dispatch(setDataKey({ key: 'scrollTop', value: scrollRef.current.scrollTop }));
     }
     dispatch(updateGameSort(null));
     navigation.game(`/${path}/games/${game.game_id}`);
@@ -214,7 +214,7 @@ const Tile = ({ game }) => {
         <StatLine game = {game} />
         {getOdds()}
         <div style = {{ textAlign: 'right' }}>
-          <Button onClick = {handleMatchup}>Full matchup</Button>
+          <Button handleClick = {handleMatchup} title = {'Full matchup'} value={'full-matchup'} ink />
         </div>
       </div>
     </Paper>

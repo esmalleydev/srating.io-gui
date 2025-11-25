@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-
 import { useAppSelector } from '@/redux/hooks';
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 import { getSkeleton, maxWidth } from '../Tile';

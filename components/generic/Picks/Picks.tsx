@@ -2,19 +2,28 @@
 
 
 import Tile from '@/components/generic/Picks/Tile';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import AdditionalOptions from '@/components/generic/Picks/AdditionalOptions';
 import ConferencePicker from '@/components/generic/ConferencePicker';
 import { Games } from '@/types/general';
 import ConferenceChips from '../ConferenceChips';
 import Typography from '@/components/ux/text/Typography';
+import Button from '@/components/ux/buttons/Button';
+import { setLoading } from '@/redux/features/loading-slice';
+import { useTransition } from 'react';
+import Navigation from '@/components/helpers/Navigation';
 
 
 const Picks = ({ games }: {games: Games}) => {
+  const navigation = new Navigation();
+  const dispatch = useAppDispatch();
+  const [isPending, startTransition] = useTransition();
   const skip_sort_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_game_ids);
   const game_ids = useAppSelector((state) => state.favoriteReducer.game_ids);
   const picksSort = useAppSelector((state) => state.displayReducer.picksSort);
   const selectedConferences = useAppSelector((state) => state.displayReducer.conferences);
+
+  const hasAccess = useAppSelector((state) => state.userReducer.isValidSession);
 
   const sorted_games = Object.values(games);
 
@@ -69,6 +78,32 @@ const Picks = ({ games }: {games: Games}) => {
     }
 
     gameContainers.push(<Tile key = {game.game_id} game = {game} />);
+  }
+
+  if (!hasAccess) {
+    const handleSubscribe = () => {
+      dispatch(setLoading(true));
+      startTransition(() => {
+        navigation.getRouter().push('/pricing');
+      });
+    };
+
+    const handleLiveWinRate = () => {
+      navigation.picksView({
+        view: 'stats',
+      });
+    };
+
+    return (
+      <div style = {{ maxWidth: 400, margin: 'auto' }}>
+        <Typography type = 'h6' style = {{ marginBottom: 10 }}>Subscription required</Typography>
+        <Typography type = 'body1' style = {{ marginBottom: 10 }}>Subscribe for just $5 per month to get access to the betting calculator!</Typography>
+        <Typography type = 'a' onClick = {handleLiveWinRate}>View the live win rate</Typography>
+        <div style = {{ textAlign: 'right' }}>
+          <Button handleClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
+        </div>
+      </div>
+    );
   }
 
   return (

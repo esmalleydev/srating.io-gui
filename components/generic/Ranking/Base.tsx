@@ -24,6 +24,7 @@ import PositionPicker from './PositionPicker';
 import TableColumns from '@/components/helpers/TableColumns';
 import Navigation from '@/components/helpers/Navigation';
 import ClassYearPicker from './ClassYearPicker';
+import Text from '@/components/utils/Text';
 
 
 const Base = (
@@ -137,7 +138,7 @@ const Base = (
         !tableFullscreen ?
             <div style = {{ padding: '5px 10px 0px 10px' }}>
               <div style = {{ display: 'flex', justifyContent: 'right', flexWrap: 'wrap' }}>
-                <OptionPicker buttonName = {`${view} rankings`} options = {rankViewOptions} selected = {[view]} actionHandler = {handleRankView} isRadio = {true} />
+                <OptionPicker buttonName = {Text.toSentenceCase(`${view} rankings`)} options = {rankViewOptions} selected = {[view]} actionHandler = {handleRankView} isRadio = {true} />
                 <OptionPicker buttonName = {season.toString()} options = {seasonOptions} selected = {[season.toString()]} actionHandler = {handleSeason} isRadio = {true} />
               </div>
               <Typography type = {width < 500 ? 'h6' : 'h5'}>{title}</Typography>

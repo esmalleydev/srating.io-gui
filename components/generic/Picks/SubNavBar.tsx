@@ -1,17 +1,16 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import {
-  Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Tab, Tabs,
-} from '@mui/material';
 import { getBreakPoint, getMarginTop, getDateBarHeight } from '@/components/generic/DateBar';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setScrollTop } from '@/redux/features/picks-slice';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
+import Modal from '@/components/ux/container/Modal';
+import Tab from '@/components/ux/buttons/Tab';
+import Typography from '@/components/ux/text/Typography';
+import Button from '@/components/ux/buttons/Button';
+import Navigation from '@/components/helpers/Navigation';
 
 const getHeaderHeight = () => {
   return 48;
@@ -20,16 +19,12 @@ const getHeaderHeight = () => {
 
 export { getHeaderHeight };
 
-// todo update the calc to use the billing locked component
-
-const SubNavBar = ({ view }) => {
+const SubNavBar = () => {
+  const navigation = new Navigation();
   const theme = useTheme();
-  const { width } = useWindowDimensions() as Dimensions;
-  const router = useRouter();
-  const pathName = usePathname();
-  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
 
+  const view = useAppSelector((state) => state.picksReducer.view);
 
   const tabOptions = {
     stats: 'Stats',
@@ -39,29 +34,13 @@ const SubNavBar = ({ view }) => {
 
   const tabOrder = ['picks', 'calculator', 'stats'];
 
-  const [tabIndex, setTabIndex] = useState(tabOrder.indexOf(view));
   const [showLockedDialog, setShowLockedDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const calcAccess = useAppSelector((state) => state.userReducer.isValidSession);
-  // const picksData = useAppSelector(state => state.picksReducer.picks);
-
-  // let calcAccess = false;
-  // for (let game_id in picksData) {
-  //   if (picksData[game_id].home_percentage !== null && picksData[game_id].away_percentage !== null) {
-  //     calcAccess = true;
-  //     break;
-  //   }
-  // }
 
   const subHeaderHeight = getHeaderHeight();
   const subHeaderTop = getMarginTop() + getDateBarHeight();
-  let minSubBarWidth = 75;
-
-  if (width < getBreakPoint()) {
-    minSubBarWidth = 0;
-  }
-
 
   const subHeaderStyle: React.CSSProperties = {
     height: subHeaderHeight,
@@ -78,13 +57,13 @@ const SubNavBar = ({ view }) => {
 
   const tabs: React.JSX.Element[] = [];
   for (let i = 0; i < tabOrder.length; i++) {
-    tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{ fontSize: '12px' }}>{tabOptions[tabOrder[i]]}</span>)} />);
+    tabs.push(<Tab key = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} value = {tabOrder[i]} handleClick={(e) => handleTabClick(e, tabOrder[i])} />);
   }
 
   const handleSubscribe = () => {
     dispatch(setLoading(true));
     startTransition(() => {
-      router.push('/pricing');
+      navigation.getRouter().push('/pricing');
     });
   };
 
@@ -92,7 +71,7 @@ const SubNavBar = ({ view }) => {
   const handleLiveWinRate = () => {
     dispatch(setLoading(true));
     setShowLockedDialog(false);
-    handleTabClick(null, 2);
+    handleTabClick(null, 'stats');
   };
 
   const handleCloseLockedDialog = () => {
@@ -101,65 +80,47 @@ const SubNavBar = ({ view }) => {
 
   const handleTabClick = (e, value) => {
     setShowLockedDialog(false);
-    if (value === 1 && !calcAccess) {
+    if ((value === 'calculator' || value === 'picks') && !calcAccess) {
       setShowLockedDialog(true);
       return;
     }
 
-    setTabIndex(value);
+    const newView = value;
 
-    const newView = tabOrder[value];
-
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.set('view', newView);
-    const search = current.toString();
-    const query = search ? `?${search}` : '';
-
-    dispatch(setLoading(true));
-    startTransition(() => {
-      router.replace(`${pathName}${query}`);
-      dispatch(setScrollTop(0));
+    navigation.picksView({
+      view: newView,
+      scrollTop: 0,
     });
   };
+
+  const divStyle = Style.getStyleClassName({
+    ...Style.getNavBar(),
+  });
 
 
   return (
     <div style = {subHeaderStyle}>
 
-      <Box display="flex" justifyContent="center" /* sx = {{'position': 'sticky', 'top': 100}} */>
-        <Tabs variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabClick} indicatorColor="secondary" textColor="inherit">
-          {tabs}
-        </Tabs>
-      </Box>
+      <div className={divStyle}>
+        {tabs}
+      </div>
 
       {/* <div style = {{'minWidth': minSubBarWidth, 'display': 'flex', 'alignItems': 'center'}}>
         <AdditionalOptions />
       </div> */}
 
-      <Dialog
+      <Modal
         open={showLockedDialog}
         onClose={handleCloseLockedDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Subscription required'}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Subscribe for just $5 per month to get access to the betting calculator!
-          </DialogContentText>
-          <DialogContentText id="alert-dialog-description">
-            <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {handleLiveWinRate}>View the live win rate</a>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseLockedDialog}>Maybe later</Button>
-          <Button onClick={handleSubscribe} autoFocus>
-            Subscribe
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Typography type = 'h6'>Subscription required</Typography>
+        <Typography type = 'body1'>Subscribe for just $5 per month to get access to the betting calculator!</Typography>
+        <Typography type = 'a' onClick = {handleLiveWinRate}>View the live win rate</Typography>
+        <div style = {{ textAlign: 'right' }}>
+          <Button handleClick={handleCloseLockedDialog} title = {'Maybe later'} ink value = 'later' />
+          <Button handleClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -1,11 +1,12 @@
 'use client';
 
-import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import TableColumns from '@/components/helpers/TableColumns';
+import Modal from '@/components/ux/container/Modal';
 
 const Legend = ({ open, onClose, columns, view, organization_id }) => {
   const headers = TableColumns.getColumns({ organization_id, view });
@@ -13,17 +14,15 @@ const Legend = ({ open, onClose, columns, view, organization_id }) => {
 
   return (
     <>
-      <Dialog
+      <Modal
         open={open}
         onClose={onClose}
       >
-        <DialogTitle id="alert-dialog-title-legend">
-          <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-            {'Column legend'}
-            {<IconButton aria-label="close" onClick={onClose}><CloseIcon /></IconButton>}
-          </div>
-        </DialogTitle>
-        <DialogContent>
+        <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography type = 'h6'>Column legend</Typography>
+          <IconButton aria-label="close" onClick={onClose}><CloseIcon /></IconButton>
+        </div>
+        <div>
           {
             columns.map((column: string) => {
               if (!(column in headers)) {
@@ -37,8 +36,8 @@ const Legend = ({ open, onClose, columns, view, organization_id }) => {
               );
             })
           }
-        </DialogContent>
-      </Dialog>
+        </div>
+      </Modal>
     </>
   );
 };

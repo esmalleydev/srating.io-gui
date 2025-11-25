@@ -1,7 +1,7 @@
 'use client';
 
 import { useClientAPI } from '@/components/clientAPI';
-import { setPicksLoading, updatePicks } from '@/redux/features/picks-slice';
+import { setDataKey } from '@/redux/features/picks-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 
@@ -19,7 +19,7 @@ const PicksLoader = ({ organization_id, division_id, date }) => {
 
     setLoading(true);
     setLastDate(date);
-    dispatch(setPicksLoading(true));
+    dispatch(setDataKey({ key: 'picksLoading', value: true }));
 
     useClientAPI({
       class: 'game',
@@ -30,11 +30,11 @@ const PicksLoader = ({ organization_id, division_id, date }) => {
         start_date: date,
       },
     }).then((response) => {
-      dispatch(updatePicks(response));
-      dispatch(setPicksLoading(false));
+      dispatch(setDataKey({ key: 'picks', value: response }));
+      dispatch(setDataKey({ key: 'picksLoading', value: false }));
       setLoading(false);
     }).catch((e) => {
-      dispatch(setPicksLoading(false));
+      dispatch(setDataKey({ key: 'picksLoading', value: false }));
       setLoading(false);
     });
   };

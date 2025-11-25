@@ -1,9 +1,12 @@
+/* eslint-disable prefer-destructuring */
+
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
 // import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Color from '@/components/utils/Color';
 import Style from '@/components/utils/Style';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { RefObject } from 'react';
 
 const Button = (
@@ -11,21 +14,27 @@ const Button = (
     title,
     value,
     handleClick,
+    type = 'standard',
+    disabled = false,
     ink = false,
     autoFocus = false,
     containerStyle = {},
     buttonStyle = {},
     ref = null,
+    endIcon = null,
   }:
   {
     title: string;
     value: string|number;
     handleClick: (e: React.SyntheticEvent, value: string | number) => void;
+    type?: 'standard' | 'select',
+    disabled?: boolean;
     ink?: boolean;
     autoFocus?: boolean;
     containerStyle?: React.CSSProperties;
     buttonStyle?: React.CSSProperties;
     ref?: RefObject<HTMLDivElement> | null;
+    endIcon?: React.JSX.Element | null
   },
 ) => {
   const theme = useTheme();
@@ -52,7 +61,7 @@ const Button = (
 
 
   if (ink) {
-    const textColor = buttonStyle.color || theme.blue[500];
+    const textColor = buttonStyle.color || theme.blue[400];
     let hoverColor = (
       theme.mode === 'dark' ? theme.blue[300] : theme.blue[700]
     );
@@ -72,10 +81,12 @@ const Button = (
     };
   }
 
-  const bStyle = {
+  const bStyle: React.CSSProperties & {
+    '&:hover'?: React.CSSProperties
+  } = {
     fontWeight: 500,
     fontSize: 14,
-    minWidth: 100,
+    minWidth: type === 'select' ? 40 : 100,
     height: 40,
     textAlign: 'center',
     display: 'flex',
@@ -93,10 +104,31 @@ const Button = (
     };
   }
 
+  if (disabled) {
+    if (ink) {
+      // Disabled ink button
+      bStyle.color = theme.grey[500];
+      // bStyle.cursor = 'default';
+      delete bStyle['&:hover']; // Remove hover effect
+    } else {
+      // Disabled regular button (fill/solid)
+      bStyle.backgroundColor = theme.grey[300]; // Light background for disabled
+      bStyle.color = theme.grey[500]; // Grey text for disabled
+      // bStyle.cursor = 'default';
+      delete bStyle['&:hover']; // Remove hover effect
+    }
+  }
+
+  let endIconInternal = endIcon;
+  if (type === 'select' && !endIcon) {
+    endIconInternal = <KeyboardArrowDownIcon />;
+  }
+
   return (
     <div ref = {ref} className = {Style.getStyleClassName(cStyle)} onClick={(e) => { handleClick(e, value); }}>
-      <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus}>
+      <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled}>
         {title}
+        {endIconInternal || ''}
       </button>
     </div>
   );

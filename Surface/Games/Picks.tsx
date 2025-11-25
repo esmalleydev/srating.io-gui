@@ -10,11 +10,12 @@ import { ClientSkeleton as StatsLoaderClientSkeleton } from '@/components/generi
 import StatsLoaderServer from '@/components/generic/Picks/StatsLoader/Server';
 import Calculator from '@/components/generic/Picks/Calculator';
 import PicksLoader from '@/components/generic/Picks/PicksLoader';
-import ClientWrapper from '@/components/generic/Picks/ClientWrapper';
+import ContentsWrapper from '@/components/generic/Picks/ContentsWrapper';
 import Dates from '@/components/utils/Dates';
 import DateBar from '@/components/generic/DateBar';
 import Games from 'Surface/Games';
 import { Suspense } from 'react';
+import ReduxWrapper from '@/components/generic/Picks/ReduxWrapper';
 
 
 export type getDecoratePicks = {
@@ -68,32 +69,36 @@ class Picks extends Games {
 
     return (
       <>
-        <DateBar dates = {dates} date = {selectedDate} />
-        <SubNavBar view = {view} />
-        <PicksLoader organization_id={organization_id} division_id={division_id} date = {selectedDate} />
+        <ReduxWrapper view = {view} season = {season}>
+          <DateBar dates = {dates} date = {selectedDate} />
+          <SubNavBar />
+          <PicksLoader organization_id={organization_id} division_id={division_id} date = {selectedDate} />
 
-        <ClientWrapper>
-          {
-            view === 'picks' ?
-              <PicksComponent games = {games} />
-              : ''
-          }
-          <Suspense key = {selectedDate} fallback = {<StatsLoaderClientSkeleton />}>
-            <StatsLoaderServer game_ids={Object.keys(games)} organization_id={organization_id} division_id={division_id} season={season} />
-          </Suspense>
-
-          {view === 'calculator' ? <div><Calculator games = {games} date = {selectedDate} /></div> : ''}
-
-          {
-            view === 'stats' ?
-            <StatsClientWrapper>
-              <Suspense key = {selectedDate} fallback = {<StatsLoading />}>
-                <StatsServer organization_id={organization_id} division_id={division_id} date = {selectedDate} season = {season} />
+          <ContentsWrapper>
+            <>
+              {
+                view === 'picks' ?
+                  <PicksComponent games = {games} />
+                  : ''
+              }
+              <Suspense key = {selectedDate} fallback = {<StatsLoaderClientSkeleton />}>
+                <StatsLoaderServer game_ids={Object.keys(games)} organization_id={organization_id} division_id={division_id} season={season} />
               </Suspense>
-            </StatsClientWrapper>
-              : ''
-          }
-        </ClientWrapper>
+
+              {view === 'calculator' ? <div><Calculator games = {games} date = {selectedDate} /></div> : ''}
+
+              {
+                view === 'stats' ?
+                <StatsClientWrapper>
+                  <Suspense key = {selectedDate} fallback = {<StatsLoading />}>
+                    <StatsServer organization_id={organization_id} division_id={division_id} date = {selectedDate} season = {season} />
+                  </Suspense>
+                </StatsClientWrapper>
+                  : ''
+              }
+            </>
+          </ContentsWrapper>
+        </ReduxWrapper>
       </>
     );
   }

@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Table from '@mui/material/Table';
@@ -28,13 +27,16 @@ import HelperGame from '@/components/helpers/Game';
 import utilsArrayifer from '@/components/utils/Arrayifer';
 
 
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
 import { CircularProgress } from '@mui/material';
 import Sorter from '@/components/utils/Sorter';
 import Organization from '@/components/helpers/Organization';
 import Navigation from '@/components/helpers/Navigation';
 import Dates from '@/components/utils/Dates';
+import { setLoading } from '@/redux/features/loading-slice';
+import Button from '@/components/ux/buttons/Button';
+import Typography from '@/components/ux/text/Typography';
 const Arrayifer = new utilsArrayifer();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -58,10 +60,14 @@ const Calculator = ({ games, date }) => {
   const theme = useTheme();
   const { width } = useWindowDimensions() as Dimensions;
 
+  const dispatch = useAppDispatch();
+  const [isPending, startTransition] = useTransition();
+
   const picksData = useAppSelector((state) => state.picksReducer.picks);
   const picksLoading = useAppSelector((state) => state.picksReducer.picksLoading);
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const hasAccess = useAppSelector((state) => state.userReducer.isValidSession);
 
   const [now, setNow] = useState(Dates.format(Dates.parse(), 'Y-m-d'));
   const [order, setOrder] = useState('asc');
@@ -652,98 +658,124 @@ const Calculator = ({ games, date }) => {
     betting_contents.push(oddsMinInput);
     betting_contents.push(oddsMaxInput);
     betting_contents.push(percentageInput);
-    betting_contents.push(<Typography variant = 'subtitle1' color = 'text.secondary'>Hypothetical pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>Hypothetical pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
 
     if (total_bet) {
-      betting_contents.push(<Typography variant = 'body1'>Total bet: ${total_bet} ({games_bet} games)</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(winnings.toString()).toFixed(2)} ({wins}  ({((wins / games_bet) * 100).toFixed(2)}%))</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((winnings - total_bet).toString()).toFixed(2)} ({total_bet > 0 ? parseFloat((((winnings - total_bet) / total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Total bet: ${total_bet} ({games_bet} games)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(winnings.toString()).toFixed(2)} ({wins}  ({((wins / games_bet) * 100).toFixed(2)}%))</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((winnings - total_bet).toString()).toFixed(2)} ({total_bet > 0 ? parseFloat((((winnings - total_bet) / total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
 
-    betting_contents.push(<Typography variant = 'subtitle1' color = 'text.secondary'>A round robin bet creates a parlay for every possible combination of games based on the input below. It will use the inputs above as a base for games to select. Must have at least 2 eligible games. Ex: if there are 10 games total and you select 9 games, it would create 10 parlays of 9 games each.</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>A round robin bet creates a parlay for every possible combination of games based on the input below. It will use the inputs above as a base for games to select. Must have at least 2 eligible games. Ex: if there are 10 games total and you select 9 games, it would create 10 parlays of 9 games each.</Typography>);
     betting_contents.push(roundRobinInput);
     if (games_bet > 2 && roundRobinLength) {
-      betting_contents.push(<Typography variant = 'body1'>Total bet: ${roundRobinBetTotal} ({roundRobinBetCombos} parlays)</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(roundRobinWonTotal.toString()).toFixed(2)} ({roundRobinWins}  ({((roundRobinWins / roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((roundRobinWonTotal - roundRobinBetTotal).toString()).toFixed(2)} ({roundRobinBetTotal > 0 ? parseFloat((((roundRobinWonTotal - roundRobinBetTotal) / roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Total bet: ${roundRobinBetTotal} ({roundRobinBetCombos} parlays)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(roundRobinWonTotal.toString()).toFixed(2)} ({roundRobinWins}  ({((roundRobinWins / roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((roundRobinWonTotal - roundRobinBetTotal).toString()).toFixed(2)} ({roundRobinBetTotal > 0 ? parseFloat((((roundRobinWonTotal - roundRobinBetTotal) / roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
   } else if (date === now) {
     betting_contents.push(bettingInput);
     betting_contents.push(oddsMinInput);
     betting_contents.push(oddsMaxInput);
     betting_contents.push(percentageInput);
-    betting_contents.push(<Typography variant = 'subtitle1' color = 'text.secondary'>Future pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>Future pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
 
     if (future_total_bet) {
-      betting_contents.push(<Typography variant = 'body1'>Total bet: ${future_total_bet} ({future_games_bet} games)</Typography>);
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>100% win rate</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_winnings_100.toString()).toFixed(2)} ({future_games_bet} games) (100%)</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_winnings_100 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_100 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>Random ~75% win rate</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_winnings_75.toString()).toFixed(2)} ({future_games_won_75} games) ({((future_games_won_75 / future_games_bet) * 100).toFixed(2)}%)</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_winnings_75 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_75 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>Random ~60% win rate</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_winnings_60.toString()).toFixed(2)} ({future_games_won_60} games) ({((future_games_won_60 / future_games_bet) * 100).toFixed(2)}%)</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_winnings_60 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_60 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Total bet: ${future_total_bet} ({future_games_bet} games)</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>100% win rate</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_winnings_100.toString()).toFixed(2)} ({future_games_bet} games) (100%)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_winnings_100 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_100 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>Random ~75% win rate</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_winnings_75.toString()).toFixed(2)} ({future_games_won_75} games) ({((future_games_won_75 / future_games_bet) * 100).toFixed(2)}%)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_winnings_75 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_75 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>Random ~60% win rate</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_winnings_60.toString()).toFixed(2)} ({future_games_won_60} games) ({((future_games_won_60 / future_games_bet) * 100).toFixed(2)}%)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_winnings_60 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_60 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
 
-    betting_contents.push(<Typography variant = 'subtitle1' color = 'text.secondary'>A round robin bet creates a parlay for every possible combination of games based on the input below. It will use the inputs above as a base for games to select. Must have at least 2 eligible games. Ex: if there are 10 games total and you select 9 games, it would create 10 parlays of 9 games each.</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>A round robin bet creates a parlay for every possible combination of games based on the input below. It will use the inputs above as a base for games to select. Must have at least 2 eligible games. Ex: if there are 10 games total and you select 9 games, it would create 10 parlays of 9 games each.</Typography>);
     betting_contents.push(roundRobinInput);
 
     if (future_games_bet > 2 && roundRobinLength) {
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>100% win rate</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_100.toString()).toFixed(2)} ({future_roundRobinWins_100}  ({((future_roundRobinWins_100 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_100 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_100 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>100% win rate</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_100.toString()).toFixed(2)} ({future_roundRobinWins_100}  ({((future_roundRobinWins_100 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_100 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_100 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
 
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>75% win rate</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_75.toString()).toFixed(2)} ({future_roundRobinWins_75}  ({((future_roundRobinWins_75 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_75 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_75 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>75% win rate</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_75.toString()).toFixed(2)} ({future_roundRobinWins_75}  ({((future_roundRobinWins_75 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_75 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_75 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
 
-      betting_contents.push(<Typography variant = 'subtitle2' color = 'text.secondary' style = {{ marginTop: '10px' }}>60% win rate</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_60.toString()).toFixed(2)} ({future_roundRobinWins_60}  ({((future_roundRobinWins_60 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
-      betting_contents.push(<Typography variant = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_60 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_60 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>60% win rate</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_60.toString()).toFixed(2)} ({future_roundRobinWins_60}  ({((future_roundRobinWins_60 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
+      betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_60 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_60 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
   } else {
-    betting_contents.push(<Typography variant = 'subtitle1' style = {{ textAlign: 'center' }} color = 'text.secondary'>No betting info available yet... come back soon!</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ textAlign: 'center', color: theme.palette.text.secondary }}>No betting info available yet... come back soon!</Typography>);
     // if (date > now) {
-    //   betting_contents.push(<Typography variant = 'caption' style = {{'textAlign': 'center'}} color = 'text.secondary'>Picks for games greater than today may change</Typography>);
+    //   betting_contents.push(<Typography type = 'caption' style = {{'textAlign': 'center'}} style = {{ color: theme.palette.text.secondary }}>Picks for games greater than today may change</Typography>);
     // }
+  }
+
+  if (!hasAccess) {
+    const handleSubscribe = () => {
+      dispatch(setLoading(true));
+      startTransition(() => {
+        navigation.getRouter().push('/pricing');
+      });
+    };
+
+    const handleLiveWinRate = () => {
+      navigation.picksView({
+        view: 'stats',
+      });
+    };
+
+    return (
+      <div style = {{ maxWidth: 400, margin: 'auto' }}>
+        <Typography type = 'h6' style = {{ marginBottom: 10 }}>Subscription required</Typography>
+        <Typography type = 'body1' style = {{ marginBottom: 10 }}>Subscribe for just $5 per month to get access to the betting calculator!</Typography>
+        <Typography type = 'a' onClick = {handleLiveWinRate}>View the live win rate</Typography>
+        <div style = {{ textAlign: 'right' }}>
+          <Button handleClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
+        </div>
+      </div>
+    );
   }
 
 
 
   return (
-    <>
+    <div style = {{ padding: '0px 5px'}}>
       {
         picksLoading ?
           <Paper elevation = {3} style = {{ padding: 10 }}>
             <div>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
-              <Typography variant = 'h5'><Skeleton /></Typography>
+              <Typography type = 'h5'><Skeleton /></Typography>
+              <Typography type = 'h5'><Skeleton /></Typography>
+              <Typography type = 'h5'><Skeleton /></Typography>
+              <Typography type = 'h5'><Skeleton /></Typography>
+              <Typography type = 'h5'><Skeleton /></Typography>
             </div>
           </Paper>
           :
         <div>
-          <Typography variant="h5">Betting calculator</Typography>
+          <Typography type="h6">Betting calculator</Typography>
           <Paper elevation={3} style = {{ padding: '10px', margin: '0px 0px 10px 0px' }}>
             {betting_contents}
           </Paper>
           {total_final ? <div>Total win rate: {Math.round((correct / total_final) * 100)}% {correct} / {total_final}</div> : ''}
-          {rows_parlay.length ? <Typography style = {{ margin: '10px 0px' }} variant="h5">Parley games</Typography> : ''}
+          {rows_parlay.length ? <Typography style = {{ margin: '10px 0px' }} type="h6">Parley games</Typography> : ''}
           {rows_parlay.length ? getTable(parleyRowsConatiner) : ''}
-          {rows_picked.length ? <Typography style = {{ margin: '10px 0px' }} variant="h5">Games bet</Typography> : ''}
+          {rows_picked.length ? <Typography style = {{ margin: '10px 0px' }} type="h6">Games bet</Typography> : ''}
           {rows_picked.length ? getTable(pickedRowsContainer) : ''}
-          {rows_other.length ? <Typography style = {{ margin: '10px 0px' }} variant="h5">Other games</Typography> : ''}
+          {rows_other.length ? <Typography style = {{ margin: '10px 0px' }} type="h6">Other games</Typography> : ''}
           {rows_other.length ? getTable(otherRowsConatiner) : ''}
         </div>
       }
-    </>
+    </div>
   );
 };
 
