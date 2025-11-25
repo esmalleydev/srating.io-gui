@@ -16,6 +16,7 @@ import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import Paper from '../ux/container/Paper';
 import Navigation from '../helpers/Navigation';
+import { usePathname } from 'next/navigation';
 
 
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
@@ -36,7 +37,10 @@ const FooterNavigation = () => {
 
   const viewingSport = Organization.getPath({ organizations, organization_id });
   let viewingPage: string | null = null;
-  const pathName = window.location.pathname;
+
+  // todo when you remove nextjs / thing function, when the location changes, this code runs before it is updated, so there is nothing retriggering this
+  // probably need a useEffect or something
+  const pathName = usePathname();
 
   // todo the /team page highlights home button, because there is no sport / viewing page
 
