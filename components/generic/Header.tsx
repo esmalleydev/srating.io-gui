@@ -5,11 +5,8 @@ import { useRouter, usePathname } from 'next/navigation';
 // import { Link } from 'next/link';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
+
 import IconButton from '@mui/material/IconButton';
-import Container from '@mui/material/Container';
 import Drawer from '@mui/material/Drawer';
 
 // Icons
@@ -29,7 +26,6 @@ import Search from './Search';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSession, setValidSession } from '../../redux/features/user-slice';
-import { Divider } from '@mui/material';
 import { reset } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/loading-slice';
@@ -43,6 +39,8 @@ import Organization from '../helpers/Organization';
 import Tooltip from '../ux/hover/Tooltip';
 import Button from '../ux/buttons/Button';
 import { useTheme } from '../hooks/useTheme';
+import Style from '../utils/Style';
+import Objector from '../utils/Objector';
 
 
 // todo hook up settings with router
@@ -154,135 +152,103 @@ const Header = () => {
 
   const shrinkName = width <= 425;
 
+  const headerStyle = {
+    position: 'fixed',
+    width: '100%',
+    zIndex: Style.getZIndex().appBar,
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: theme.mode === 'dark' ? theme.grey[900] : theme.blue[700],
+    color: '#fff',
+  };
+
+  const toolBarStyle = {
+    minHeight: 56,
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    '@media (min-width: 600px)': {
+      minHeight: 64,
+    },
+  };
+
 
   return (
-    <AppBar position="fixed">
-      {isLoading ? <Container maxWidth="xl"><Toolbar disableGutters /></Container> : // This prevents flashing on mobile since mediaQuery / width is a hook, will not be useable for first load
-      <div>
-        <Container maxWidth="xl">
-          {
-            fullSearch ?
-              <Toolbar disableGutters>
-                <IconButton onClick = {() => { setFullSearch(false); }} size="large" edge="start" color="inherit" aria-label="menu">
-                  <ArrowBackIcon />
-                </IconButton>
-                <Box sx={{ flexGrow: 1, display: 'flex' }}>
-                  <Search onRouter = {() => { setFullSearch(false); }} focus = {true} />
-                </Box>
-              </Toolbar> :
-              <Toolbar disableGutters>
-                <IconButton onClick = {toggleDrawer} size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-                  <MenuIcon />
-                  <Drawer
-                    open={drawerOpen}
-                    onClose={toggleDrawer}
+    <div className={Style.getStyleClassName(headerStyle)}>
+      <div style = {{ padding: '0px 20px' }}>
+      {
+        fullSearch ?
+          <div className = {Style.getStyleClassName(toolBarStyle)}>
+            <IconButton onClick = {() => { setFullSearch(false); }} size="large" edge="start" color="inherit" aria-label="menu">
+              <ArrowBackIcon />
+            </IconButton>
+            <div style={{ flexGrow: 1, display: 'flex' }}>
+              <Search onRouter = {() => { setFullSearch(false); }} focus = {true} />
+            </div>
+          </div> :
+          <div className = {Style.getStyleClassName(toolBarStyle)}>
+            <IconButton onClick = {toggleDrawer} size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+              <MenuIcon />
+              <Drawer
+                open={drawerOpen}
+                onClose={toggleDrawer}
+              >
+                <Sidebar />
+              </Drawer>
+            </IconButton>
+            <div style = {Objector.extender({ display: 'flex', marginRight: 5, alignItems: 'center' }, logoStyle)} onClick = {handleHome}>
+              {width > 425 ? <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} /> : ''}
+              <><span style = {{ color: (theme.mode === 'dark' ? logoPrimaryColor : '#fff') }}>S</span><span style = {{ color: (theme.mode === 'dark' ? logoSecondaryColor : '#31ff00') }}>R{shrinkName ? '' : 'ATING'}</span></>
+            </div>
+            <div style = {{ display: 'flex', marginRight: 5, alignItems: 'center' }}>
+              <OrganizationPicker />
+            </div>
+            <div style={{ flexGrow: 1, display: 'flex' }}>
+            </div>
+            <div style={{ flexGrow: 0 }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</div>
+            <div style={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px') }}>
+              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search focus={false} />}
+            </div>
+            <div style={{ flexGrow: 0 }}>
+              {
+              validSession ?
+                <div>
+                  <IconButton onClick={handleMenu} color="inherit">
+                    <AccountCircle />
+                  </IconButton>
+                  <Menu
+                    anchor={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
                   >
-                    <Sidebar />
-                  </Drawer>
-                </IconButton>
-                <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }} style = {logoStyle} onClick = {handleHome}>
-                  {width > 425 ? <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} /> : ''}
-                  <><span style = {{ color: (theme.mode === 'dark' ? logoPrimaryColor : '#fff') }}>S</span><span style = {{ color: (theme.mode === 'dark' ? logoSecondaryColor : '#31ff00') }}>R{shrinkName ? '' : 'ATING'}</span></>
-                </Box>
-                <Box sx = {{ display: 'flex', mr: 1, alignItems: 'center' }}>
-                  <OrganizationPicker />
-                </Box>
-                <Box sx={{ flexGrow: 1, display: 'flex' }}>
-                </Box>
-                <Box sx={{ flexGrow: 0 }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</Box>
-                <Box sx={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px') }}>
-                  {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search focus={false} />}
-                </Box>
-                <Box sx={{ flexGrow: 0 }}>
-                  {
-                  validSession ?
-                    <div>
-                      <IconButton onClick={handleMenu} color="inherit">
-                        <AccountCircle />
-                      </IconButton>
-                      <Menu
-                        anchor={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                      >
-                        <MenuList>
-                          <MenuItem onClick={handleAccount}>
-                            <MenuListIcon><AccountCircleIcon fontSize="small" /></MenuListIcon>
-                            <MenuListText primary='My account' />
-                          </MenuItem>
-                          <Divider />
-                          <MenuItem onClick={handleLogout}>
-                            <MenuListIcon>
-                              <Logout fontSize="small" />
-                            </MenuListIcon>
-                            <MenuListText primary='Logout' />
-                          </MenuItem>
-                        </MenuList>
-                      </Menu>
-                      {/* <Menu
-                        anchorEl={anchorEl}
-                        id="account-menu"
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                        onClick={handleClose}
-                        PaperProps={{
-                          elevation: 0,
-                          sx: {
-                            overflow: 'visible',
-                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                            mt: 1.5,
-                            '& .MuiAvatar-root': {
-                              width: 32,
-                              height: 32,
-                              ml: -0.5,
-                              mr: 1,
-                            },
-                            '&::before': {
-                              content: '""',
-                              display: 'block',
-                              position: 'absolute',
-                              top: 0,
-                              right: 14,
-                              width: 10,
-                              height: 10,
-                              bgcolor: 'background.paper',
-                              transform: 'translateY(-50%) rotate(45deg)',
-                              zIndex: 0,
-                            },
-                          },
-                        }}
-                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                      >
-                        <MenuItem onClick={handleAccount}>
-                          <ListItemIcon>
-                            <AccountCircleIcon fontSize="small" />
-                          </ListItemIcon>
-                          My account
-                        </MenuItem>
-                        <Divider />
-                        <MenuItem onClick={handleLogout}>
-                          <ListItemIcon>
-                            <Logout fontSize="small" />
-                          </ListItemIcon>
-                          Logout
-                        </MenuItem>
-                      </Menu> */}
-                    </div>
-                    :
-                    <div>
-                      {/* {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''} */}
-                      <Button buttonStyle = {{ backgroundColor: (theme.mode === 'light' ? theme.secondary.main : theme.success.dark) }} handleClick={handleAccount} title = {(width > 550 ? 'Signup / Login' : 'Login')} value = 'login' />
-                    </div>
-                  }
-                </Box>
-              </Toolbar>
-          }
-        </Container>
-        <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback={() => {}} />
-      </div>
-      }
-    </AppBar>
+                    <MenuList>
+                      <MenuItem onClick={handleAccount}>
+                        <MenuListIcon><AccountCircleIcon fontSize="small" /></MenuListIcon>
+                        <MenuListText primary='My account' />
+                      </MenuItem>
+                      <hr style = {{ margin: 0, borderWidth: 0, borderStyle: 'solid', borderColor: theme.text.secondary, borderBottomWidth: 'thin' }} />
+                      <MenuItem onClick={handleLogout}>
+                        <MenuListIcon>
+                          <Logout fontSize="small" />
+                        </MenuListIcon>
+                        <MenuListText primary='Logout' />
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                </div>
+                :
+                <div>
+                  {/* {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''} */}
+                  <Button buttonStyle = {{ backgroundColor: (theme.mode === 'light' ? theme.secondary.main : theme.success.dark) }} handleClick={handleAccount} title = {(width > 550 ? 'Signup / Login' : 'Login')} value = 'login' />
+                </div>
+              }
+            </div>
+          </div>
+        }
+        </div>
+      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback={() => {}} />
+    </div>
   );
 };
 

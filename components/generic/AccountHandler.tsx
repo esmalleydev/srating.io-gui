@@ -271,12 +271,12 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     setLoginCode(value || '');
   };
 
-  const boxContents: React.JSX.Element[] = [];
+  let boxContents: React.JSX.Element | null = null;
 
-  const buttons: React.JSX.Element[] = [];
+  let buttons: React.JSX.Element | null = null;
 
   if (tempLogin) {
-    boxContents.push(
+    boxContents = (
       <div>
         <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Login with temporary code</Typography>
         <TextField
@@ -308,15 +308,17 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
           fullWidth
           variant="standard"
         />
-      </div>,
+      </div>
     );
 
-    buttons.push(
-      <Button handleClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />,
-      <Button handleClick = {useLoginCode} title = {'Sign in'} value = 'sign-in' />,
+    buttons = (
+      <>
+        <Button handleClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />
+        <Button handleClick = {useLoginCode} title = {'Sign in'} value = 'sign-in' />
+      </>
     );
   } else if (forgotPassword) {
-    boxContents.push(
+    boxContents = (
       <div style = {{ minWidth: 320 }}>
         <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Send a Forgot Password email</Typography>
         <TextField
@@ -333,15 +335,17 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
           fullWidth
           variant="standard"
         />
-      </div>,
+      </div>
     );
 
-    buttons.push(
-      <Button handleClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />,
-      <Button handleClick = {sendLoginCode} title = {'Send temporary code'} value = 'temp-code' />,
+    buttons = (
+      <>
+        <Button handleClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />
+        <Button handleClick = {sendLoginCode} title = {'Send temporary code'} value = 'temp-code' />
+      </>
     );
   } else if (register) {
-    boxContents.push(
+    boxContents = (
       <div>
         <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Create an account</Typography>
         <TextField
@@ -382,14 +386,14 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
           variant="standard"
         />
         <Typography type = 'body2' style = {{ color: theme.text.secondary, marginTop: 10 }}>Have an account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { setRegister(false); }}>Sign in</a></Typography>
-      </div>,
+      </div>
     );
 
-    buttons.push(
-      <Button handleClick = {handleRegister} title = {'Create account'} value = 'create' />,
+    buttons = (
+      <Button handleClick = {handleRegister} title = {'Create account'} value = 'create' />
     );
   } else {
-    boxContents.push(
+    boxContents = (
       <div>
         <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Sign in to your account</Typography>
         <TextField
@@ -419,16 +423,16 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
           variant="standard"
         />
         <div style = {{ marginTop: 10 }}>
-          <Typography type = 'a'><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { setForgotPassword(true); }}>Forgot Password?</a></Typography>
+          <Typography type = 'a' onClick = {(e) => { setForgotPassword(true); }}>Forgot Password?</Typography>
         </div>
         <div style = {{ marginTop: 10 }}>
           <Typography type = 'body1' style = {{ color: theme.text.secondary }}>No account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { setRegister(true); }}>Create account</a></Typography>
         </div>
-      </div>,
+      </div>
     );
 
-    buttons.push(
-      <Button handleClick = {handleLogin} title = {'Sign in'} value = 'sign-in' />,
+    buttons = (
+      <Button handleClick = {handleLogin} title = {'Sign in'} value = 'sign-in' />
     );
   }
 

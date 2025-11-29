@@ -1,10 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
-import { useTheme, styled } from '@mui/material/styles';
 
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
@@ -14,17 +11,13 @@ import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
 import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
-import Paper from '../ux/container/Paper';
-import Navigation from '../helpers/Navigation';
+import Paper from '@/components/ux/container/Paper';
+import Navigation from '@/components/helpers/Navigation';
 import { usePathname } from 'next/navigation';
+import Style from '@/components/utils/Style';
+import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
 
-
-const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
-  color: theme.palette.mode === 'light' ? '#fff' : theme.palette.text.primary,
-  '&.Mui-selected': {
-    color: theme.palette.mode === 'light' ? theme.palette.warning.light : theme.palette.success.dark,
-  },
-}));
 
 export const footerNavigationHeight = 56;
 
@@ -38,7 +31,7 @@ const FooterNavigation = () => {
   const viewingSport = Organization.getPath({ organizations, organization_id });
   let viewingPage: string | null = null;
 
-  // todo when you remove nextjs / thing function, when the location changes, this code runs before it is updated, so there is nothing retriggering this
+  // todo when you remove nextjs / this function, when the location changes, this code runs before it is updated, so there is nothing retriggering this
   // probably need a useEffect or something
   const pathName = usePathname();
 
@@ -106,18 +99,70 @@ const FooterNavigation = () => {
     hightlightValue = pages.indexOf(viewingPage);
   }
 
+  const footerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    height: 56,
+    // zIndex: Style.getZIndex().appBar,
+    backgroundColor: theme.mode === 'dark' ? theme.grey[900] : theme.blue[700],
+    color: '#fff',
+  };
+
+  const buttonStyle = {
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // position: 'relative',
+    // backgroundColor: 'transparent',
+    cursor: 'pointer',
+    // verticalAlign: 'middle',
+    minWidth: '80px',
+    maxWidth: '160px',
+    flexDirection: 'column',
+    // color: 'rgb(255, 255, 255)',
+    // margin: '0px',
+    // borderRadius: '0px',
+    transition: 'color 250ms cubic-bezier(0.4, 0, 0.2, 1), padding-top 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+    padding: '0px 12px',
+    flex: '1 1 0%',
+    '&.selected_footer': {
+      color: theme.mode === 'light' ? theme.warning.light : theme.success.dark,
+    },
+  };
+
+
+  const getClassName = (type) => {
+    return `${Style.getStyleClassName(buttonStyle)} ${(type === viewingPage ? 'selected_footer' : '')}`;
+  };
+
+
   return (
     <div>
-    {/* {viewingSport ?  */}
       <Paper style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4 }}>
-        <BottomNavigation style = {{ backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : '#1976d2' }} showLabels value={hightlightValue}>
-          <StyledBottomNavigationAction color = 'secondary' onClick = {handleHome} label="Home" icon={<HomeIcon />} />
-          <StyledBottomNavigationAction color = 'secondary' onClick = {handleRanking} label="Ranking" icon={<RankingIcon />} />
-          <StyledBottomNavigationAction color = 'secondary' onClick = {handleScores} label="Scores" icon={<ScoresIcon />} />
-          <StyledBottomNavigationAction color = 'secondary' onClick = {handlePicks} label="Picks" icon={<PicksIcon />} />
-        </BottomNavigation>
+        <div className = {Style.getStyleClassName(footerStyle)}>
+
+          <div onClick = {handleHome} className = {getClassName('home')}>
+            <div style = {{ height: 24 }}><HomeIcon /></div>
+            <Typography type = 'body2' style = {{ color: 'inherit' }}>Home</Typography>
+          </div>
+
+          <div onClick = {handleRanking} className = {getClassName('ranking')}>
+            <div style = {{ height: 24 }}><RankingIcon /></div>
+            <Typography type = 'body2' style = {{ color: 'inherit' }} >Ranking</Typography>
+          </div>
+
+          <div onClick = {handleScores} className = {getClassName('games')}>
+            <div style = {{ height: 24 }}><ScoresIcon /></div>
+            <Typography type = 'body2' style = {{ color: 'inherit' }} >Scores</Typography>
+          </div>
+
+          <div key = {`${getClassName('picks')}.picks`} onClick = {handlePicks} className = {getClassName('picks')}>
+            <div style = {{ height: 24 }}><PicksIcon /></div>
+            <Typography type = 'body2' style = {{ color: 'inherit' }} >Picks</Typography>
+          </div>
+
+        </div>
       </Paper>
-      {/* : ''} */}
     </div>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-bitwise */
 
 
@@ -92,9 +93,13 @@ class Style {
   /**
    * Call this to add css as a style-sheet, so you can do css selectors like hover td {} etc
    */
-  public static getStyleClassName(cssString: string | object) {
+  public static getStyleClassName(cssString: string | object, debug = false) {
+    if (debug) {
+      console.log('getStyleClassName', cssString);
+    }
     // console.time('getStyleClassName')
-    const className = `css-${this.hashCSS(cssString)}`;
+    const className = `css-${this.hashCSS(cssString, debug)}`;
+
     this.injectStyle(className, cssString);
     // console.timeEnd('getStyleClassName')
     return className;
@@ -116,18 +121,47 @@ class Style {
 
   private static cssMap: CSSMap = new Map(); // key: className, value: finalCSS
 
-  private static hashCSS(css: string | object) {
+  private static hashCSS(css: string | object, debug = false) {
+    const canonicalize = (obj: object): object => {
+      if (typeof obj !== 'object' || obj === null) {
+        // Return primitives as is
+        return obj;
+      }
+
+      if (Array.isArray(obj)) {
+        // Recursively canonicalize array elements
+        return obj.map(canonicalize);
+      }
+
+      // 1. Get and sort the keys of the current object level
+      const sortedKeys = Object.keys(obj).sort();
+      const canonical: { [key: string]: unknown } = {};
+
+      // 2. Build a new object using the sorted keys, and recursively process values
+      for (const key of sortedKeys) {
+        canonical[key] = canonicalize(obj[key]);
+      }
+
+      return canonical;
+    };
+
     const normalize = (val: string | object): string => {
       if (typeof val === 'string') {
         return val;
       }
       if (typeof val === 'object' && val !== null) {
-        return JSON.stringify(val, Object.keys(val).sort());
+        const canonicalObject = canonicalize(val);
+        // Step B: Stringify the canonical object without a replacer
+        return JSON.stringify(canonicalObject);
       }
       return String(val);
     };
 
     const normalizedInput = normalize(css);
+
+    if (debug) {
+      console.log('normalizedInput', normalizedInput);
+    }
 
     // Example hash using a simple DJB2 hash (or use a stronger hash like SHA-1/MD5 if needed)
     let hash = 5381;
