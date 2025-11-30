@@ -33,7 +33,7 @@ const NavBar = () => {
 
   const [isPending, startTransition] = useTransition();
 
-  const backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.primary.light;
+  const backgroundColor = theme.header.main;
 
   const handleTabClick = (e, value) => {
     const newView = value;

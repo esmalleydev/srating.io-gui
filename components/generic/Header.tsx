@@ -159,7 +159,7 @@ const Header = () => {
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: theme.mode === 'dark' ? theme.grey[900] : theme.blue[700],
+    backgroundColor: theme.header.main,
     color: '#fff',
   };
 

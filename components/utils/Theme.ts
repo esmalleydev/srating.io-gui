@@ -27,6 +27,9 @@ class Theme {
       background: {
         main: '#121212',
       },
+      header: {
+        main: this.getGrey()[900],
+      },
       primary: {
         main: '#90caf9',
         light: '#e3f2fd',
@@ -105,6 +108,9 @@ class Theme {
       background: {
         main: '#efefef',
         light: '#fff',
+      },
+      header: {
+        main: this.getBlue()[700],
       },
       primary: {
         main: '#1976d2',
