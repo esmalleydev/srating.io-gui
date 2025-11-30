@@ -145,23 +145,23 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       oddsTexts.push(`O${overUnderToUse}`);
     }
 
-    const predictedSpreadContainer: React.JSX.Element[] = [];
+    let predictedSpreadContainer: React.JSX.Element | null = null;
 
     if (isLoadingWinPercentage) {
-      predictedSpreadContainer.push(<Skeleton key = {1} width={25} />);
+      predictedSpreadContainer = <Skeleton key = {1} width={25} />;
     } else if (!hasAccessToPercentages) {
-      predictedSpreadContainer.push(
+      predictedSpreadContainer = (
         <Tooltip onClickRemove text = {'Predicted spread and over'}>
           <div><Locked iconFontSize={'20px'} key = {1} /></div>
-        </Tooltip>,
+        </Tooltip>
       );
     } else if (game.prediction.home_score && game.prediction.away_score) {
       const spread = +(game.prediction.home_score - game.prediction.away_score).toFixed(0);
       const over = (game.prediction.home_score + game.prediction.away_score).toFixed(0);
-      predictedSpreadContainer.push(
+      predictedSpreadContainer = (
         <Tooltip onClickRemove text = {'Predicted spread and over'}>
           <Typography key = {'predicted_spread'} type = 'overline' style = {{ color: theme.info.main, marginLeft: 10, fontSize: '11px' }}>{`${spread < 0 ? Game.getTeamNameShort('away') : Game.getTeamNameShort('home')} ${(spread > 0 ? spread * -1 : spread)} | O${over}`}</Typography>
-        </Tooltip>,
+        </Tooltip>
       );
     }
 

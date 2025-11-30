@@ -103,8 +103,11 @@ const DateBar = (
   };
 
   const height = getDateBarHeight();
-  const backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.primary.light;
-  const selectedColor = theme.secondary.dark;
+
+  const backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.primary.main;
+  const selectedColor = theme.mode === 'light' ? theme.purple[300] : theme.secondary.main;
+  const selectedTextColor = theme.mode === 'light' ? '#fff' : theme.info.main;
+  const borderBottomSize = theme.mode === 'light' ? '3px' : '2px';
 
   const dateContainers: React.JSX.Element[] = [];
   for (let i = 0; i < dates.length; i++) {
@@ -123,6 +126,7 @@ const DateBar = (
 
     const dateStyle = {
       fontSize: '12px',
+      color: Color.getTextColor('#ffffff', backgroundColor),
       width: 60,
       minWidth: 60,
       cursor: 'pointer',
@@ -130,7 +134,7 @@ const DateBar = (
       verticalAlign: 'middle',
       display: 'flex',
       alignItems: 'center',
-      borderBottom: `2px ${backgroundColor} solid`,
+      borderBottom: `${borderBottomSize} ${backgroundColor} solid`,
       '&:hover': {
         backgroundColor: Color.alphaColor('#fff', 0.25),
       },
@@ -139,7 +143,8 @@ const DateBar = (
     let dateBarRef: RefObject<HTMLDivElement> | null = null;
     if (dates[i] === date) {
       dateBarRef = scrollRefDate as RefObject<HTMLDivElement>;
-      dateStyle.borderBottom = `2px ${selectedColor} solid`;
+      dateStyle.borderBottom = `${borderBottomSize} ${selectedColor} solid`;
+      dateStyle.color = selectedTextColor;
     }
 
     // todo make the inner an a tag with the link
@@ -187,10 +192,10 @@ const DateBar = (
 
 
   return (
-    <div style = {({ display: 'flex', position: 'fixed', width: '100%', zIndex: 1100, height, backgroundColor: theme.mode === 'dark' ? theme.grey[900] : theme.primary.light })}>
+    <div style = {({ display: 'flex', position: 'fixed', width: '100%', zIndex: 1100, height, backgroundColor, color: Color.getTextColor('#ffffff', backgroundColor) })}>
       <div style = {{ display: 'inline-flex' }}>
         <IconButton onClick={scrollLeft}>
-          <KeyboardArrowLeftIcon />
+          <KeyboardArrowLeftIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />
         </IconButton>
       </div>
       <div ref = {scrollRefDateBar} style = {{ display: 'inline-flex', overflowX: 'scroll', overflowY: 'hidden', scrollbarWidth: 'none', height: '100%', textAlign: 'center', alignItems: 'center' }}>
@@ -198,7 +203,7 @@ const DateBar = (
       </div>
       <div style = {{ display: 'inline-flex', paddingRight: 8 }}>
         <IconButton onClick={scrollRight}>
-          <KeyboardArrowRightIcon />
+          <KeyboardArrowRightIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />
         </IconButton>
         <IconButton sx = {{ padding: 0 }} onClick={toggleCalendar} color="inherit">
           <CalendarIcon />

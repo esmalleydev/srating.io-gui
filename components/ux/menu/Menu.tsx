@@ -7,6 +7,7 @@ import Style from '@/components/utils/Style';
 import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import CloseIcon from '@mui/icons-material/Close';
+import Plane from '../overlay/Plane';
 
 const getOffsetTop = (rect, vertical) => {
   let offset = 36;
@@ -445,6 +446,17 @@ const Menu = (
     </div>,
     menuRootRef.current,
   );
+
+  // return (
+  //   <Plane open = {open} onClose={onClose} anchor = {anchor}>
+  //     <div className={Style.getStyleClassName(overlayStyle)} {...props}>
+  //       <Paper style={paperStyle} ref = {menuContentRef} tranparency={0.95}>
+  //         {showCloseButton ? closeContainer : ''}
+  //         {children}
+  //       </Paper>
+  //     </div>
+  //   </Plane>
+  // );
 };
 
 export default Menu;

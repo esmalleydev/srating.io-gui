@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 /* eslint-disable no-bitwise */
 
 import { useTheme } from '../hooks/useTheme';
@@ -64,11 +65,8 @@ class Color {
 
   /**
    * Get a color that will look readable based on a background color
-   * @param {string} color
-   * @param {string} backgroundColor
-   * @return {string} adjusted color hex
    */
-  public static getTextColor(color: string, backgroundColor: string) {
+  public static getTextColor(color: string, backgroundColor: string, debug = false) {
     // Convert hex colors to RGB
     /*
     let [r1, g1, b1] = Color.hexToRgb(color);
@@ -110,6 +108,10 @@ class Color {
     const [br, bg, bb] = Color.hexToRgb(backgroundColor);
     const contrastTarget = 4.5;
 
+    if (debug) {
+      console.log('Color.getContrastRatio([r, g, b], [br, bg, bb])', Color.getContrastRatio([r, g, b], [br, bg, bb]));
+    }
+
     if (Color.getContrastRatio([r, g, b], [br, bg, bb]) >= contrastTarget) {
       return Color.rgbToHex(r, g, b);
     }
@@ -120,6 +122,13 @@ class Color {
     const direction: 'lighter' | 'darker' =
       contrastToWhite > contrastToBlack ? 'lighter' : 'darker';
 
+
+    if (debug) {
+      console.log('contrastToBlack', contrastToBlack);
+      console.log('contrastToWhite', contrastToWhite);
+      console.log('direction', direction);
+    }
+
     const adjust = (c: number, lighter: boolean) => {
       return lighter ? Math.min(255, c + 10) : Math.max(0, c - 10);
     };
@@ -128,6 +137,10 @@ class Color {
       r = adjust(r, direction === 'lighter');
       g = adjust(g, direction === 'lighter');
       b = adjust(b, direction === 'lighter');
+
+      if (debug) {
+        console.log('Color.getContrastRatio([r, g, b], [br, bg, bb]) 2', Color.getContrastRatio([r, g, b], [br, bg, bb]));
+      }
 
       if (Color.getContrastRatio([r, g, b], [br, bg, bb]) >= contrastTarget) {
         break;

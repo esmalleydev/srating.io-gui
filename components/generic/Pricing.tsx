@@ -174,7 +174,7 @@ const Pricing = ({ view }: { view: string | null; }) => {
 
   const getPriceCard = (option: priceOption) => {
     const trial = (option.code === 'api_trial');
-    const buttonColor = (option.disabled ? theme.grey[500] : theme.info.main);
+    const buttonColor = (option.disabled ? theme.grey[500] : theme.blue[700]);
     const textColor = Color.getTextColor('#ffffff', buttonColor);
     return (
       <Grid key={option.code} size = {{ xs: 12, sm: 5, md: 3 }}>
