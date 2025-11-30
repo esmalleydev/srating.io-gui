@@ -1,21 +1,21 @@
 'use client';
 
-import {
-  TableContainer, Table, TableHead, TableRow, TableSortLabel, Box, TableBody, TableCell,
-  SortDirection,
-  TableFooter,
-} from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
+
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { useEffect, useState } from 'react';
 import Sorter from '../utils/Sorter';
 import RankSpan from './RankSpan';
 import { useTheme } from '../hooks/useTheme';
-import Style from '../utils/Style';
-import Paper from '../ux/container/Paper';
 import { TableColumnsType } from '../helpers/TableColumns';
 import Tooltip from '../ux/hover/Tooltip';
 import Objector from '../utils/Objector';
+import Table from '../ux/table/Table';
+import Thead from '../ux/table/Thead';
+import Tr from '../ux/table/Tr';
+import Td from '../ux/table/Td';
+import Th from '../ux/table/Th';
+import Tbody from '../ux/table/Tbody';
+import Tfoot from '../ux/table/Tfoot';
 
 
 type defaultSortOrderType = 'asc' | 'desc';
@@ -205,22 +205,22 @@ const RankTable = (
       }
 
       tableCells.push(
-        <TableCell key = {i} sx = {cellStyle}>{row[displayColumns[i]] || defaultEmpty}{secondarySpan}</TableCell>,
+        <Td key = {i} style = {cellStyle}>{row[displayColumns[i]] || defaultEmpty}{secondarySpan}</Td>,
       );
     }
 
-    const TableRowCSS = Style.getStyleClassName(`
-      &:hover td: {
-        backgroundColor: ${theme.mode === 'light' ? theme.info.light : theme.info.dark},
+    const TableRowCSS = {
+      '&:hover td': {
+        backgroundColor: (theme.mode === 'light' ? theme.info.light : theme.info.dark),
       },
-      &:hover: {
+      '&:hover': {
         cursor: 'pointer',
       },
-    `);
+    };
 
     return (
-      <TableRow
-        className={TableRowCSS}
+      <Tr
+        style={TableRowCSS}
         key={row[rowKey]}
         onClick={() => {
           if (handleRowClick) {
@@ -229,199 +229,185 @@ const RankTable = (
         }}
       >
         {tableCells}
-      </TableRow>
+      </Tr>
     );
   });
   return (
-    <div style = {{ overflow: 'scroll' }} >
-      <TableContainer component={Paper}>
-        <Table size="small" aria-label="data-table" style={{ borderCollapse: 'separate' }}>
-          <TableHead>
-            <TableRow>
-              {displayColumns.map((column, i) => {
-                const headCell = columns[column];
-                if (!headCell) {
-                  console.warn('missing headCell: ', column);
-                  return <></>;
+    <Table>
+      <Thead>
+        <Tr>
+          {displayColumns.map((column, i) => {
+            const headCell = columns[column];
+            if (!headCell) {
+              console.warn('missing headCell: ', column);
+              return <></>;
+            }
+            const tdStyle: React.CSSProperties = {
+              padding: '4px 5px',
+              border: 0,
+              backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
+            };
+
+            let tdWidth: number | null = null;
+            const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+
+            if ('widths' in headCell && headCell.widths) {
+              tdWidth = headCell.widths.default;
+
+              let lastBreakpoint: number | null = null;
+              for (const bp in headCell.widths) {
+                if (
+                  bp !== 'default' &&
+                  width <= Number(bp) &&
+                  (
+                    !lastBreakpoint ||
+                    lastBreakpoint > width
+                  )
+                ) {
+                  lastBreakpoint = Number(bp);
+                  tdWidth = headCell.widths[bp];
                 }
-                const tdStyle: React.CSSProperties = {
-                  padding: '4px 5px',
-                  border: 0,
-                  backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
-                };
+              }
+            }
 
-                let tdWidth: number | null = null;
-                const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+            if (tdWidth) {
+              tdStyle.width = tdWidth;
+              tdStyle.minWidth = tdWidth;
+              tdStyle.maxWidth = tdWidth;
+            }
 
-                if ('widths' in headCell && headCell.widths) {
-                  tdWidth = headCell.widths.default;
 
-                  let lastBreakpoint: number | null = null;
-                  for (const bp in headCell.widths) {
-                    if (
-                      bp !== 'default' &&
-                      width <= Number(bp) &&
-                      (
-                        !lastBreakpoint ||
-                        lastBreakpoint > width
-                      )
-                    ) {
-                      lastBreakpoint = Number(bp);
-                      tdWidth = headCell.widths[bp];
-                    }
+            if (width <= breakPoint) {
+              tdStyle.fontSize = '13px';
+            }
+
+            if (headCell.sticky) {
+              tdStyle.position = 'sticky';
+              tdStyle.zIndex = 3;
+              tdStyle.left = tdLeft;
+
+              if (!(i in i_x_left)) {
+                i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
+              }
+            } else {
+              tdStyle.whiteSpace = 'nowrap';
+            }
+
+            if (i + 1 === numberOfStickyColumns) {
+              tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
+            }
+
+            let label = headCell.getLabel ? headCell.getLabel() : headCell.label;
+
+            if (useAlternateLabel && (headCell.getAltLabel || headCell.alt_label)) {
+              label = headCell.getAltLabel ? headCell.getAltLabel() : headCell.alt_label as string;
+            }
+
+
+            return (
+              <Tooltip key={headCell.id} position = 'top' text={headCell.getTooltip ? headCell.getTooltip() : headCell.tooltip}>
+                <Th
+                  style = {tdStyle}
+                  key={headCell.id}
+                  onClick={() => { handleSort(headCell.id); }}
+                  sortable = {true}
+                  sortDirection={orderBy === headCell.id ? order : false}
+                >
+                  {label}
+                </Th>
+              </Tooltip>
+            );
+          })}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {row_containers}
+      </Tbody>
+      {
+        footerRow !== null ?
+        <Tfoot>
+          <Tr>
+            {displayColumns.map((column, i) => {
+              const headCell = columns[column];
+
+              const tdColor = theme.mode === 'light' ? theme.grey[300] : theme.grey[900];
+
+              const tdStyle: React.CSSProperties = {
+                padding: '4px 5px',
+                border: 0,
+                backgroundColor: tdColor,
+              };
+
+              let tdWidth: number | null = null;
+              const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+
+              if ('widths' in headCell && headCell.widths) {
+                tdWidth = headCell.widths.default;
+
+                let lastBreakpoint: number | null = null;
+                for (const bp in headCell.widths) {
+                  if (
+                    bp !== 'default' &&
+                    width <= Number(bp) &&
+                    (
+                      !lastBreakpoint ||
+                      lastBreakpoint > width
+                    )
+                  ) {
+                    lastBreakpoint = Number(bp);
+                    tdWidth = headCell.widths[bp];
                   }
                 }
+              }
 
-                if (tdWidth) {
-                  tdStyle.width = tdWidth;
-                  tdStyle.minWidth = tdWidth;
-                  tdStyle.maxWidth = tdWidth;
+              if (tdWidth) {
+                tdStyle.width = tdWidth;
+                tdStyle.minWidth = tdWidth;
+                tdStyle.maxWidth = tdWidth;
+              }
+
+
+              if (width <= breakPoint) {
+                tdStyle.fontSize = '13px';
+              }
+
+              if (headCell.sticky) {
+                tdStyle.position = 'sticky';
+                tdStyle.zIndex = 3;
+                tdStyle.left = tdLeft;
+
+                if (!(i in i_x_left)) {
+                  i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
                 }
+              } else {
+                tdStyle.whiteSpace = 'nowrap';
+              }
 
+              if (i + 1 === numberOfStickyColumns) {
+                tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
+              }
 
-                if (width <= breakPoint) {
-                  tdStyle.fontSize = '13px';
+              if (column in footerRow) {
+                let secondarySpan: string | React.JSX.Element = '';
+
+                if (secondaryKey && footerRow[`${column}_${secondaryKey}`]) {
+                  secondarySpan = (
+                    <span style = {{ color: theme.grey[500] }}> {footerRow[`${column}_${secondaryKey}`]}</span>
+                  );
                 }
-
-                if (headCell.sticky) {
-                  tdStyle.position = 'sticky';
-                  tdStyle.zIndex = 3;
-                  tdStyle.left = tdLeft;
-
-                  if (!(i in i_x_left)) {
-                    i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
-                  }
-                } else {
-                  tdStyle.whiteSpace = 'nowrap';
-                }
-
-                if (i + 1 === numberOfStickyColumns) {
-                  tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
-                }
-
-                let label = headCell.getLabel ? headCell.getLabel() : headCell.label;
-
-                if (useAlternateLabel && (headCell.getAltLabel || headCell.alt_label)) {
-                  label = headCell.getAltLabel ? headCell.getAltLabel() : headCell.alt_label as string;
-                }
-
 
                 return (
-                  <Tooltip key={headCell.id} position = 'top' text={headCell.getTooltip ? headCell.getTooltip() : headCell.tooltip}>
-                    <TableCell
-                      sx = {tdStyle}
-                      key={headCell.id}
-                      align={'left'}
-                      sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
-                    >
-                      <TableSortLabel
-                        active={orderBy === headCell.id}
-                        direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
-                        onClick={() => { handleSort(headCell.id); }}
-                      >
-                        {label}
-                        {orderBy === headCell.id ? (
-                          <Box component="span" sx={visuallyHidden}>
-                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                          </Box>
-                        ) : null}
-                      </TableSortLabel>
-                    </TableCell>
-                  </Tooltip>
+                  <Td key = {column} style = {tdStyle}>{footerRow[column]}{secondarySpan}</Td>
                 );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {row_containers}
-          </TableBody>
-          {
-            footerRow !== null ?
-            <TableFooter>
-              <TableRow>
-                {displayColumns.map((column, i) => {
-                  const headCell = columns[column];
+              }
 
-                  const tdColor = theme.mode === 'light' ? theme.grey[300] : theme.grey[900];
-
-                  const tdStyle: React.CSSProperties = {
-                    padding: '4px 5px',
-                    border: 0,
-                    backgroundColor: tdColor,
-                  };
-
-                  let tdWidth: number | null = null;
-                  const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
-
-                  if ('widths' in headCell && headCell.widths) {
-                    tdWidth = headCell.widths.default;
-
-                    let lastBreakpoint: number | null = null;
-                    for (const bp in headCell.widths) {
-                      if (
-                        bp !== 'default' &&
-                        width <= Number(bp) &&
-                        (
-                          !lastBreakpoint ||
-                          lastBreakpoint > width
-                        )
-                      ) {
-                        lastBreakpoint = Number(bp);
-                        tdWidth = headCell.widths[bp];
-                      }
-                    }
-                  }
-
-                  if (tdWidth) {
-                    tdStyle.width = tdWidth;
-                    tdStyle.minWidth = tdWidth;
-                    tdStyle.maxWidth = tdWidth;
-                  }
-
-
-                  if (width <= breakPoint) {
-                    tdStyle.fontSize = '13px';
-                  }
-
-                  if (headCell.sticky) {
-                    tdStyle.position = 'sticky';
-                    tdStyle.zIndex = 3;
-                    tdStyle.left = tdLeft;
-
-                    if (!(i in i_x_left)) {
-                      i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
-                    }
-                  } else {
-                    tdStyle.whiteSpace = 'nowrap';
-                  }
-
-                  if (i + 1 === numberOfStickyColumns) {
-                    tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
-                  }
-
-                  if (column in footerRow) {
-                    let secondarySpan: string | React.JSX.Element = '';
-
-                    if (secondaryKey && footerRow[`${column}_${secondaryKey}`]) {
-                      secondarySpan = (
-                        <span style = {{ color: theme.grey[500] }}> {footerRow[`${column}_${secondaryKey}`]}</span>
-                      );
-                    }
-
-                    return (
-                      <TableCell key = {column} sx = {tdStyle}>{footerRow[column]}{secondarySpan}</TableCell>
-                    );
-                  }
-
-                  return null;
-                })}
-              </TableRow>
-            </TableFooter>
-              : ''
-          }
-        </Table>
-      </TableContainer>
-    </div>
+              return null;
+            })}
+          </Tr>
+        </Tfoot>
+          : ''
+      }
+    </Table>
   );
 };
 

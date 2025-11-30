@@ -7,6 +7,8 @@ import Paper from '@/components/ux/container/Paper';
 
 // todo on hover might need an if width < 500 to disable if hover amount is longer than x seconds, gets buggy while scrolling
 
+// tip, if the tooltip is not showing up, the react tsx file is probably not appending the ...props stuff
+
 const Tooltip = <T extends HTMLElement>(
   {
     text,

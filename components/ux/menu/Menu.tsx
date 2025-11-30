@@ -54,8 +54,9 @@ const Menu = (
       horizontal: 'left',
     },
     showCloseButton = false,
-    style = {},
+    // style = {},
     children,
+    ...props
   }:
   {
     open: boolean;
@@ -63,7 +64,7 @@ const Menu = (
     onClose: () => void;
     anchorOrigin?: anchorOrigin;
     showCloseButton?: boolean;
-    style?: React.CSSProperties;
+    // style?: React.CSSProperties;
     children: React.ReactNode;
   },
 ) => {
@@ -436,7 +437,7 @@ const Menu = (
   );
 
   return ReactDOM.createPortal(
-    <div className={Style.getStyleClassName(overlayStyle)}>
+    <div className={Style.getStyleClassName(overlayStyle)} {...props}>
       <Paper style={paperStyle} ref = {menuContentRef} tranparency={0.95}>
         {showCloseButton ? closeContainer : ''}
         {children}
