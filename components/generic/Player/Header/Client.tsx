@@ -163,11 +163,9 @@ const Client = (
       <PrimaryLine>
         <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {(width < breakPoint ? 'h6' : 'h5')}>
           {playerRank ? <span style = {supStyle}>{playerRank} </span> : ''}
-          <div style = {{ display: 'inline-flex', alignItems: 'center' }}>
-            {playerHelper.getName()}
-            {player_team_season && player_team_season.class_year ? <ClassSpan class_year={player_team_season.class_year} /> : ''}
-          </div>
+          {playerHelper.getName()}
         </Typography>
+        {player_team_season && player_team_season.class_year ? <div style = {{ display: 'inline-flex', alignItems: 'center' }}><ClassSpan class_year={player_team_season.class_year} /></div> : ''}
         <FavoritePicker player_id = {player?.player_id} />
         <OptionPicker buttonName = {season.toString()} options = {seasonOptions} selected = {[season.toString()]} actionHandler = {handleSeason} isRadio = {true} />
       </PrimaryLine>
