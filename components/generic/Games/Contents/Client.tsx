@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import {
-  LinearProgress, Skeleton,
+  Skeleton,
 } from '@mui/material';
 import { useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
@@ -13,8 +13,6 @@ import { getDateBarHeight } from '../../DateBar';
 import Typography from '@/components/ux/text/Typography';
 import ConferenceChips from '../../ConferenceChips';
 import Paper from '@/components/ux/container/Paper';
-
-// todo move the StatsLoader into the page, just make it slower so I dont need to do the ClientSkeletonUnknown if top 25
 
 const Contents = ({ children, childStyle = {} }) => {
   const gameContainerStyle: React.CSSProperties = {
@@ -59,6 +57,8 @@ const ClientSkeleton = ({ games }) => {
   );
 };
 
+/*
+Not needed, the regular skeleton just looks better even if the # of them change
 const ClientSkeletonUnknown = () => {
   const heightToRemove = 400;
   return (
@@ -73,6 +73,7 @@ const ClientSkeletonUnknown = () => {
     </Contents>
   );
 };
+*/
 
 const Client = ({ games, date }) => {
   const skip_sort_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_game_ids);
@@ -303,9 +304,9 @@ const Client = ({ games, date }) => {
     gameContainers.push(<Tile key={i} game={sortedGame} isLoadingWinPercentage = {!datesChecked[date]} />);
   }
 
-  if (gamesFilter === 'top_25' && gameStatsLoading) {
+  if ((gamesFilter === 'top_25' || gamesFilter === 'top_50') && gameStatsLoading) {
     return (
-      <ClientSkeletonUnknown />
+      <ClientSkeleton games={games} />
     );
   }
 
