@@ -812,7 +812,7 @@ const Client = (
       for (const key in row) {
         let value;
 
-        if (key === 'minutes_played') {
+        if (row[key] && key === 'minutes_played') {
           const splat = row[key].toString().split('.');
           const seconds = (+splat[1] || 0) + +splat[0] * 60;
 
