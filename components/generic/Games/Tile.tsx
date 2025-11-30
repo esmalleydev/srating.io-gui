@@ -174,7 +174,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
             <div><Typography style={{ display: 'inline-block', fontSize: '11px', color: theme.text.secondary }} type = 'overline'>{oddsTexts.join(' | ')}</Typography></div>
             : ''
         }
-        {predictedSpreadContainer}
+        {hideOdds !== 1 ? predictedSpreadContainer : ''}
         <Pin game_id = {game.game_id} />
       </div>
     );
