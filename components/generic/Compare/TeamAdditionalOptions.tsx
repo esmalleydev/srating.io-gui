@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react';
 
-import { IconButton } from '@mui/material';
 import TripleDotsIcon from '@mui/icons-material/MoreVert';
 import CheckIcon from '@mui/icons-material/Check';
 import LuggageIcon from '@mui/icons-material/Luggage';
@@ -14,6 +13,7 @@ import MenuList from '@/components/ux/menu/MenuList';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 
 const TeamAdditionalOptions = () => {
@@ -58,28 +58,24 @@ const TeamAdditionalOptions = () => {
   return (
     <div>
       <IconButton
-          id="team-additional-options"
-          aria-controls={open ? 'long-menu' : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-haspopup="true"
-          onClick={handleOpen}
-        >
-          <TripleDotsIcon />
-        </IconButton>
+        value="team-additional-options"
+        onClick={handleOpen}
+        icon = {<TripleDotsIcon />}
+      />
         <Menu
-          anchor={anchor}
-          open={open}
-          onClose={handleClose}
-        >
-          <MenuList>
-            <MenuItem key='neutral-site-display' onClick={handleNeutral}>
-            <MenuListIcon>
-              {+neutral_site ? <CheckIcon fontSize='small' /> : <LuggageIcon fontSize='small' />}
-            </MenuListIcon>
-            <MenuListText primary='Neutral site game' />
-          </MenuItem>
-          </MenuList>
-        </Menu>
+        anchor={anchor}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuList>
+          <MenuItem key='neutral-site-display' onClick={handleNeutral}>
+          <MenuListIcon>
+            {+neutral_site ? <CheckIcon fontSize='small' /> : <LuggageIcon fontSize='small' />}
+          </MenuListIcon>
+          <MenuListText primary='Neutral site game' />
+        </MenuItem>
+        </MenuList>
+      </Menu>
     </div>
   );
 };

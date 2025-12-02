@@ -17,6 +17,7 @@ export type InitialState = {
   trendsBoxscoreLine: boolean,
   trendsColumn: string | null,
   trendsSeasons: number[],
+  showPerGameStats: boolean,
 };
 
 export type InitialStateKeys = keyof InitialState;
@@ -42,6 +43,7 @@ stateController.set_url_param_type_x_keys({
   ],
   boolean: [
     'trendsBoxscoreLine',
+    'showPerGameStats',
   ],
 });
 
@@ -59,6 +61,7 @@ stateController.setInitialState({
   trendsBoxscoreLine: true,
   trendsColumn: null,
   trendsSeasons: [],
+  showPerGameStats: false,
 });
 
 /*

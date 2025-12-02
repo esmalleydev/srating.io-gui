@@ -4,7 +4,6 @@ import React, {
   RefObject, useLayoutEffect, useRef, useState, useTransition,
 } from 'react';
 
-import IconButton from '@mui/material/IconButton';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import CalendarIcon from '@mui/icons-material/Event';
@@ -22,6 +21,7 @@ import Color from '@/components/utils/Color';
 import Style from '@/components/utils/Style';
 import Calendar from '@/components/ux/calendar/Calendar';
 import Plane from '@/components/ux/overlay/Plane';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const getBreakPoint: () => number = () => {
   return 600;
@@ -194,20 +194,14 @@ const DateBar = (
   return (
     <div style = {({ display: 'flex', position: 'fixed', width: '100%', zIndex: 1100, height, backgroundColor, color: Color.getTextColor('#ffffff', backgroundColor) })}>
       <div style = {{ display: 'inline-flex' }}>
-        <IconButton onClick={scrollLeft}>
-          <KeyboardArrowLeftIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />
-        </IconButton>
+        <IconButton onClick={scrollLeft} value = 'scroll-left' icon = {<KeyboardArrowLeftIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
       </div>
       <div ref = {scrollRefDateBar} style = {{ display: 'inline-flex', overflowX: 'scroll', overflowY: 'hidden', scrollbarWidth: 'none', height: '100%', textAlign: 'center', alignItems: 'center' }}>
         {dateContainers}
       </div>
       <div style = {{ display: 'inline-flex', paddingRight: 8 }}>
-        <IconButton onClick={scrollRight}>
-          <KeyboardArrowRightIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />
-        </IconButton>
-        <IconButton sx = {{ padding: 0 }} onClick={toggleCalendar} color="inherit">
-          <CalendarIcon />
-        </IconButton>
+        <IconButton onClick={scrollRight} value = 'scroll-right' icon = {<KeyboardArrowRightIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
+        <IconButton onClick={toggleCalendar} value = 'calendar' icon = {<CalendarIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
         <Plane
           open={calendarOpen}
           onClose={toggleCalendar}

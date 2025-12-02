@@ -152,7 +152,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     } else if (!hasAccessToPercentages) {
       predictedSpreadContainer = (
         <Tooltip onClickRemove text = {'Predicted spread and over'}>
-          <div><Locked iconFontSize={'20px'} key = {1} /></div>
+          <div style = {{ display: 'flex' }}><Locked iconFontSize={'20px'} key = {1} /></div>
         </Tooltip>
       );
     } else if (game.prediction.home_score && game.prediction.away_score) {
@@ -189,12 +189,12 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   } else if (!hasAccessToPercentages) {
     awayWinPercentageContainer.push(
       <Tooltip key = {1} onClickRemove text = {'Predicted win %'}>
-        <div><Locked iconFontSize={'20px'} /></div>
+        <div style = {{ display: 'flex' }}><Locked iconFontSize={'20px'} /></div>
       </Tooltip>,
     );
     homeWinPercentageContainer.push(
       <Tooltip key = {2} onClickRemove text = {'Predicted win %'}>
-        <div><Locked iconFontSize={'20px'} /></div>
+        <div style = {{ display: 'flex' }}><Locked iconFontSize={'20px'} /></div>
       </Tooltip>,
     );
   } else {

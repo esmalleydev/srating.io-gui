@@ -8,7 +8,7 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 import HelperGame from '@/components/helpers/Game';
 
 import {
-  Card, Skeleton, IconButton,
+  Card, Skeleton,
 } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
@@ -24,6 +24,7 @@ import Typography from '@/components/ux/text/Typography';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import Dates from '@/components/utils/Dates';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 
 const Tile = ({ game, team }) => {
@@ -181,14 +182,13 @@ const Tile = ({ game, team }) => {
           </div>
           {
             Game.isFinal() ?
-            <div>
+            <div style = {{ lineHeight: 'initial' }}>
               <Tooltip text = {'Toggle historical chart'} position="top">
                 <IconButton
-                  id = 'differential-button'
+                  value = 'differential-button'
                   onClick = {() => dispatch(updateDataKey({ key: 'visibleScheduleDifferentials', value: game.game_id }))}
-                >
-                  <LegendToggleIcon style = {{ fontSize: (width < 475 ? '22px' : '24px') }} color = {isScheduleDiffVisible ? 'success' : 'primary'} />
-                </IconButton>
+                  icon = {<LegendToggleIcon style = {{ fontSize: (width < 475 ? '22px' : '24px') }} color = {isScheduleDiffVisible ? 'success' : 'primary'} />}
+                />
               </Tooltip>
             </div>
               : ''

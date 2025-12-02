@@ -1,13 +1,13 @@
 'use client';
 
 import CloseIcon from '@mui/icons-material/Close';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import { FormControlLabel, FormGroup, IconButton, Switch } from '@mui/material';
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/ranking-slice';
+import Modal from '@/components/ux/container/Modal';
+import Typography from '@/components/ux/text/Typography';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const ConferenceFilterOptions = ({ open, onClose }) => {
   const dispatch = useAppDispatch();
@@ -31,21 +31,21 @@ const ConferenceFilterOptions = ({ open, onClose }) => {
 
   return (
     <>
-      <Dialog
+      <Modal
         open={open}
         onClose={onClose}
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Conference filter options'}
-          {<IconButton aria-label="close" onClick={onClose}><CloseIcon /></IconButton>}
-        </DialogTitle>
-        <DialogContent>
+        <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography type = 'h6'>{'Conference filter options'}</Typography>
+          <IconButton value = 'close' onClick={onClose} icon = {<CloseIcon />} />
+        </div>
+        <div>
           <FormGroup>
             <FormControlLabel control={<Switch checked = {filterOriginalConf} onChange={handleOrginalConfSwitch} />} label = 'Include Previous team' />
             <FormControlLabel control={<Switch checked = {filterCommittedConf} onChange={handleCommittedConfSwitch} />} label = 'Include New team' />
           </FormGroup>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </Modal>
     </>
   );
 };

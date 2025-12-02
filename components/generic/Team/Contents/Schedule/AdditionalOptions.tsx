@@ -7,8 +7,6 @@ import CheckIcon from '@mui/icons-material/Check';
 // import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 
-import IconButton from '@mui/material/IconButton';
-
 // import ViewListIcon from '@mui/icons-material/ViewList';
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -19,6 +17,7 @@ import MenuList from '@/components/ux/menu/MenuList';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -74,14 +73,10 @@ const AdditionalOptions = () => {
     <div>
       <Tooltip onClickRemove text = {'Additional options'}>
         <IconButton
-            id="additional-options"
-            aria-controls={open ? 'long-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
-            aria-haspopup="true"
-            onClick={handleOpen}
-          >
-            <SettingsIcon />
-        </IconButton>
+          value="additional-options"
+          onClick={handleOpen}
+          icon = {<SettingsIcon />}
+        />
       </Tooltip>
       <Menu
         anchor={anchor}

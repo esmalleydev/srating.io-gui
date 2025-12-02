@@ -36,6 +36,7 @@
     "cluster": "cross-env NODE_ENV=production node server.js",
     "standalone": "node ./starter.js",
     "build-live": "node ./builder.js",
+    "analyze": "cross-env ANALYZE=true next build",
     "test": "jest"
   },
   "eslintConfig": {

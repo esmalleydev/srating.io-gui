@@ -1,10 +1,10 @@
 'use client';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { IconButton } from '@mui/material';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
+import IconButton from '../ux/buttons/IconButton';
 
 
 const BackButton = () => {
@@ -17,9 +17,7 @@ const BackButton = () => {
   return (
     <>
       <Tooltip onClickRemove text = {'Back'}>
-        <IconButton color='primary' onClick = {handleClick}>
-          <ArrowBackIcon fontSize = 'small' />
-        </IconButton>
+        <IconButton onClick = {handleClick} value = 'back' icon = {<ArrowBackIcon fontSize = 'small' />} />
       </Tooltip>
     </>
   );

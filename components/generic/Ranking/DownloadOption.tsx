@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useClientAPI } from '@/components/clientAPI';
 import CSV from '@/components/utils/CSV';
@@ -13,6 +12,7 @@ import Modal from '@/components/ux/container/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/hooks/useTheme';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const DownloadOption = ({ view, organization_id, division_id, season }) => {
   const theme = useTheme();
@@ -65,18 +65,13 @@ const DownloadOption = ({ view, organization_id, division_id, season }) => {
 
 
   return (
-    <div>
+    <div style = {{ lineHeight: 'initial' }}>
       <Tooltip text = {'Download CSV'}>
         <IconButton
-          color='primary'
-          id="download-csv"
-          aria-controls={open ? 'dialog' : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-haspopup="true"
+          value="download-csv"
           onClick={handleDownload}
-        >
-            <DownloadIcon />
-        </IconButton>
+          icon = {<DownloadIcon />}
+        />
       </Tooltip>
       <Modal
         open={openDialog}

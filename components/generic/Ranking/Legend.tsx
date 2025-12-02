@@ -1,12 +1,12 @@
 'use client';
 
-import { IconButton } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import TableColumns from '@/components/helpers/TableColumns';
 import Modal from '@/components/ux/container/Modal';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const Legend = ({ open, onClose, columns, view, organization_id }) => {
   const headers = TableColumns.getColumns({ organization_id, view });
@@ -20,7 +20,7 @@ const Legend = ({ open, onClose, columns, view, organization_id }) => {
       >
         <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography type = 'h6'>Column legend</Typography>
-          <IconButton aria-label="close" onClick={onClose}><CloseIcon /></IconButton>
+          <IconButton value = 'close' onClick={onClose} icon = {<CloseIcon />} />
         </div>
         <div>
           {

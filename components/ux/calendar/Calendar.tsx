@@ -8,9 +8,12 @@ import Dates from '@/components/utils/Dates';
 import Style from '@/components/utils/Style';
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import Paper from '../container/Paper';
-import { IconButton } from '@mui/material';
 import Color from '@/components/utils/Color';
 import Typography from '../text/Typography';
+import IconButton from '../buttons/IconButton';
+
+// todo somday update left and right buttons to be disabled based on any games eligible on next screen
+// for example in Nov, but trying to go back to Oct, if there are 0 games in Oct, then it should be disabled?
 
 
 const MonthPicker = (
@@ -429,9 +432,7 @@ const Calendar = (
     <>
       <Paper style = {{ width: 320, padding: '8px' }}>
         <div className={Style.getStyleClassName(containerHeaderStyle)}>
-          <IconButton onClick={goToPrevious} disabled={viewMode !== 'day' && viewMode !== 'month'}>
-            <KeyboardArrowLeftIcon />
-          </IconButton>
+          <IconButton value = 'left' onClick={goToPrevious} disabled={viewMode !== 'day' && viewMode !== 'month'} icon = {<KeyboardArrowLeftIcon />} />
           <div className={Style.getStyleClassName(headerTitleStyle)}>
             <div
               className={Style.getStyleClassName(headerSegStyle)}
@@ -446,9 +447,7 @@ const Calendar = (
               {Dates.format(currentMonth, 'Y')}
             </div>
           </div>
-          <IconButton onClick={goToNext} disabled={viewMode !== 'day' && viewMode !== 'month'}>
-            <KeyboardArrowRightIcon />
-          </IconButton>
+          <IconButton value = 'right' onClick={goToNext} disabled={viewMode !== 'day' && viewMode !== 'month'} icon = {<KeyboardArrowRightIcon />} />
         </div>
         {getContents()}
       </Paper>

@@ -145,14 +145,14 @@ const Base = (
               {Organization.getCFBID() === organization_id && view === 'coach' ? <Typography type = 'body1' style = {{ fontStyle: 'italic', color: theme.text.secondary }}>Games since Aug '00</Typography> : ''}
               <LastUpdated view = {view} handleLegend={handleLegend} />
               <ColumnChipPicker view = {view} organization_id={organization_id} />
-              <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'baseline' }}>
+              <div style = {{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   {view === 'player' || view === 'transfer' ? <AdditionalOptions view = {view} /> : ''}
                   {view !== 'conference' ? <ConferencePicker /> : ''}
                   {view === 'player' || view === 'transfer' ? <PositionPicker selected = {positions} isRadio = {Organization.getCFBID() === organization_id} /> : ''}
                   {(view === 'player' || view === 'transfer') && width > 700 ? <ClassYearPicker selected = {class_years} /> : ''}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Search view = {view} />
                   {width >= 385 ? <DownloadOption view={view} organization_id={organization_id} division_id={division_id} season={season} /> : ''}
                 </div>

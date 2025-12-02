@@ -2,9 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  IconButton,
-} from '@mui/material';
+
 import LockIcon from '@mui/icons-material/Lock';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
@@ -12,9 +10,10 @@ import Organization from '@/components/helpers/Organization';
 import Modal from '@/components/ux/container/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 
-const Locked = ({ iconFontSize, iconPadding = 8 }) => {
+const Locked = ({ iconFontSize }) => {
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const router = useRouter();
@@ -74,7 +73,7 @@ const Locked = ({ iconFontSize, iconPadding = 8 }) => {
 
   return (
     <>
-      <IconButton style = {{ padding: iconPadding }} onClick={handleClick}><LockIcon style={{ fontSize: iconFontSize || '24px' }} color='error' /></IconButton>
+      <IconButton onClick={handleClick} value= 'locked' icon = {<LockIcon style={{ fontSize: iconFontSize || '24px' }} color='error' />} />
       <Modal
         open = {openDialog}
         onClose = {handleClose}

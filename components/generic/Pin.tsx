@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 import PinIcon from '@mui/icons-material/PushPin';
-import { IconButton } from '@mui/material';
 // import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
@@ -10,6 +8,8 @@ import AccountHandler from '@/components/generic/AccountHandler';
 import { updateGameIds, updateGameSort } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import Tooltip from '../ux/hover/Tooltip';
+import { useTheme } from '../hooks/useTheme';
+import IconButton from '../ux/buttons/IconButton';
 
 // const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 //   props,
@@ -96,15 +96,13 @@ const Pin = ({ game_id }: { game_id: string; }) => {
   const pinStyle: React.CSSProperties = {};
 
   if (selected) {
-    pinStyle.color = theme.palette.warning.light;
+    pinStyle.color = theme.warning.light;
   }
 
   return (
     <>
       <Tooltip onClickRemove text = {'Pin game'}>
-        <IconButton color='primary' onClick = {handleFavorite}>
-          <PinIcon sx = {pinStyle} fontSize = 'small' />
-        </IconButton>
+        <IconButton onClick = {handleFavorite} value = 'pin' icon = {<PinIcon sx = {pinStyle} fontSize = 'small' />} />
       </Tooltip>
       <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {() => {}} />
       {/* <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>

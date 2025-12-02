@@ -7,8 +7,6 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-import IconButton from '@mui/material/IconButton';
-
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
 import Menu from '@/components/ux/menu/Menu';
@@ -17,6 +15,7 @@ import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -59,17 +58,13 @@ const AdditionalOptions = () => {
 
 
   return (
-    <div>
+    <div style = {{ lineHeight: 'initial' }}>
       <Tooltip onClickRemove text = {'Additional filters'}>
         <IconButton
-            id="additional-filters"
-            aria-controls={open ? 'long-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
-            aria-haspopup="true"
-            onClick={handleOpen}
-          >
-            <SettingsIcon />
-        </IconButton>
+          value="additional-filters"
+          onClick={handleOpen}
+          icon = {<SettingsIcon />}
+        />
       </Tooltip>
       <Menu
         anchor={anchor}

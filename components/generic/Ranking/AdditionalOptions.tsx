@@ -6,8 +6,6 @@ import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
-import IconButton from '@mui/material/IconButton';
-
 import { Divider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
@@ -20,6 +18,7 @@ import MenuListText from '@/components/ux/menu/MenuListText';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { ClassYearPickerDialog } from './ClassYearPicker';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const AdditionalOptions = ({ view }: {view: string}) => {
   const { width } = useWindowDimensions() as Dimensions;
@@ -130,17 +129,13 @@ const AdditionalOptions = ({ view }: {view: string}) => {
 
 
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
       <Tooltip onClickRemove text = {'Additional filters'}>
         <IconButton
-            id="additional-filters"
-            aria-controls={open ? 'long-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
-            aria-haspopup="true"
-            onClick={handleOpen}
-          >
-            <SettingsIcon />
-        </IconButton>
+          value="additional-filters"
+          onClick={handleOpen}
+          icon = {<SettingsIcon />}
+        />
       </Tooltip>
       <Menu
         anchor={anchor}

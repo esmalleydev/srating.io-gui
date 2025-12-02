@@ -1,9 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { IconButton } from '@mui/material';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
@@ -11,6 +9,8 @@ import AccountHandler from '@/components/generic/AccountHandler';
 import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import Tooltip from '../ux/hover/Tooltip';
+import { useTheme } from '../hooks/useTheme';
+import IconButton from '../ux/buttons/IconButton';
 
 const FavoritePicker = (
   { team_id = null, player_id = null }:
@@ -90,15 +90,13 @@ const FavoritePicker = (
   const favoriteStyle: React.CSSProperties = {};
 
   if (selected) {
-    favoriteStyle.color = theme.palette.warning.light;
+    favoriteStyle.color = theme.warning.light;
   }
 
   return (
     <>
       <Tooltip onClickRemove text = {'Save favorite'}>
-        <IconButton color='primary' onClick = {handleFavorite}>
-          <FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />
-        </IconButton>
+        <IconButton onClick = {handleFavorite} value = 'favorite' icon = {<FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />} />
       </Tooltip>
       <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {() => {}} />
     </>

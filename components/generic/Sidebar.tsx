@@ -32,7 +32,14 @@ import Organization from '../helpers/Organization';
 
 // todo spin does nothing here, I think I need to use redux for a global spin and decorate it in another place
 
-const Sidebar = () => {
+const Sidebar = (
+  {
+    onClick,
+  }:
+  {
+    onClick: () => void,
+  },
+) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -53,6 +60,7 @@ const Sidebar = () => {
   */
 
   const handleRanking = () => {
+    onClick();
     const newPathName = `/${path}/ranking`;
 
     if (newPathName !== pathName) {
@@ -64,6 +72,7 @@ const Sidebar = () => {
   };
 
   const handleScores = () => {
+    onClick();
     const newPathName = `/${path}/games`;
 
     if (newPathName !== pathName) {
@@ -76,6 +85,7 @@ const Sidebar = () => {
   };
 
   const handlePicks = () => {
+    onClick();
     const newPathName = `/${path}/picks`;
 
     if (newPathName !== pathName) {
@@ -87,6 +97,7 @@ const Sidebar = () => {
   };
 
   const handleCompareTool = () => {
+    onClick();
     const newPathName = `/${path}/compare`;
 
     if (newPathName !== pathName) {
@@ -158,7 +169,7 @@ const Sidebar = () => {
               : ''
           }
 
-          <ListItem key={'pricing'} disablePadding onClick = {() => { router.push('/pricing'); }}>
+          <ListItem key={'pricing'} disablePadding onClick = {() => { onClick(); router.push('/pricing'); }}>
             <ListItemButton>
               <ListItemIcon>
                 <ShoppingCartIcon />
@@ -187,7 +198,7 @@ const Sidebar = () => {
             </ListItemButton>
           </ListItem>
 
-          <ListItem key={'blog'} disablePadding onClick = {() => { router.push('/blog'); }}>
+          <ListItem key={'blog'} disablePadding onClick = {() => { onClick(); router.push('/blog'); }}>
             <ListItemButton>
               <ListItemIcon>
                 <RSSFeedIcon />

@@ -8,7 +8,7 @@ import { getBreakPoint } from '@/components/generic/Compare/Header/ClientWrapper
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
-import { IconButton, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -19,6 +19,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Organization from '@/components/helpers/Organization';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 
 const Client = () => {
@@ -120,11 +121,10 @@ const Client = () => {
         <div>
           <Tooltip onClickRemove text = {'Remove team'}>
             <IconButton
-              id = 'remove-button'
+              value = 'remove-button'
               onClick = {() => { handleRemove(team_id); }}
-            >
-              <HighlightOffIcon color = {'error'} />
-            </IconButton>
+              icon = {<HighlightOffIcon color = {'error'} />}
+            />
           </Tooltip>
         </div>
       );
@@ -187,11 +187,10 @@ const Client = () => {
         home_team_id && away_team_id ?
           <Tooltip onClickRemove text = {'Swap teams'}>
             <IconButton
-              id = 'swap-button'
+              value = 'swap-button'
               onClick = {handleSwap}
-            >
-              <SwapHorizIcon color = {'primary'} />
-            </IconButton>
+              icon = {<SwapHorizIcon />}
+            />
           </Tooltip>
           : ''
         }

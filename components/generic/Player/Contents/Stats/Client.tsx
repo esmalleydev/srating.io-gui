@@ -11,6 +11,8 @@ import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankSpan from '@/components/generic/RankSpan';
 import TableColumns from '@/components/helpers/TableColumns';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import AdditionalOptions from '../../AdditionalOptions';
+import { useAppSelector } from '@/redux/hooks';
 
 /**
  * The main wrapper div for all the contents
@@ -48,6 +50,8 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
 
   const maxPlayers = player_statistic_ranking.max;
 
+  const showPerGameStats = useAppSelector((state) => state.playerReducer.showPerGameStats);
+
   const columns = TableColumns.getColumns({ organization_id, view: 'player' });
 
   const getSections = () => {
@@ -70,34 +74,34 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
         {
           name: 'Passing',
           keys: [
-            'passing_attempts',
-            'passing_completions',
-            'passing_yards',
+            `passing_attempts${showPerGameStats ? '_per_game' : ''}`,
+            `passing_completions${showPerGameStats ? '_per_game' : ''}`,
+            `passing_yards${showPerGameStats ? '_per_game' : ''}`,
             'passing_completion_percentage',
-            'passing_yards_per_attempt',
+            'passing_yards_per_attemp',
             'passing_yards_per_completion',
-            'passing_touchdowns',
-            'passing_interceptions',
+            `passing_touchdowns${showPerGameStats ? '_per_game' : ''}`,
+            `passing_interceptions${showPerGameStats ? '_per_game' : ''}`,
             'passing_long',
           ],
         },
         {
           name: 'Rushing',
           keys: [
-            'rushing_attempts',
-            'rushing_yards',
+            `rushing_attempts${showPerGameStats ? '_per_game' : ''}`,
+            `rushing_yards${showPerGameStats ? '_per_game' : ''}`,
             'rushing_yards_per_attempt',
-            'rushing_touchdowns',
+            `rushing_touchdowns${showPerGameStats ? '_per_game' : ''}`,
             'rushing_long',
           ],
         },
         {
           name: 'Receiving',
           keys: [
-            'receptions',
-            'receiving_yards',
+            `receptions${showPerGameStats ? '_per_game' : ''}`,
+            `receiving_yards${showPerGameStats ? '_per_game' : ''}`,
             'receiving_yards_per_reception',
-            'receiving_touchdowns',
+            `receiving_touchdowns${showPerGameStats ? '_per_game' : ''}`,
             'receiving_long',
           ],
         },
@@ -125,30 +129,30 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
       {
         name: 'Offense',
         keys: [
-          'field_goal',
-          'field_goal_attempts',
+          `field_goal${showPerGameStats ? '_per_game' : ''}`,
+          `field_goal_attempts${showPerGameStats ? '_per_game' : ''}`,
           'field_goal_percentage',
-          'two_point_field_goal',
-          'two_point_field_goal_attempts',
+          `two_point_field_goal${showPerGameStats ? '_per_game' : ''}`,
+          `two_point_field_goal_attempts${showPerGameStats ? '_per_game' : ''}`,
           'two_point_field_goal_percentage',
-          'three_point_field_goal',
-          'three_point_field_goal_attempts',
+          `three_point_field_goal${showPerGameStats ? '_per_game' : ''}`,
+          `three_point_field_goal_attempts${showPerGameStats ? '_per_game' : ''}`,
           'three_point_field_goal_percentage',
-          'free_throws',
-          'free_throw_attempts',
+          `free_throws${showPerGameStats ? '_per_game' : ''}`,
+          `free_throw_attempts${showPerGameStats ? '_per_game' : ''}`,
           'free_throw_percentage',
         ],
       },
       {
         name: 'Special',
         keys: [
-          'offensive_rebounds',
-          'defensive_rebounds',
-          'assists',
-          'steals',
-          'blocks',
-          'turnovers',
-          'fouls',
+          `offensive_rebounds${showPerGameStats ? '_per_game' : ''}`,
+          `defensive_rebounds${showPerGameStats ? '_per_game' : ''}`,
+          `assists${showPerGameStats ? '_per_game' : ''}`,
+          `steals${showPerGameStats ? '_per_game' : ''}`,
+          `blocks${showPerGameStats ? '_per_game' : ''}`,
+          `turnovers${showPerGameStats ? '_per_game' : ''}`,
+          `fouls${showPerGameStats ? '_per_game' : ''}`,
         ],
       },
       {
@@ -190,6 +194,7 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
 
   return (
     <Contents>
+      <AdditionalOptions />
       <div style = {{ padding: '0px 5px' }}>
         {sections.map(({ name, keys }, sectionIndex) => {
           return (

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-import { IconButton } from '@mui/material';
 import TripleDotsIcon from '@mui/icons-material/MoreVert';
 import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -13,6 +12,7 @@ import MenuList from '@/components/ux/menu/MenuList';
 import MenuItem from '@/components/ux/menu/MenuItem';
 import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import MenuListText from '@/components/ux/menu/MenuListText';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const PlayerAdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -33,14 +33,10 @@ const PlayerAdditionalOptions = () => {
   return (
     <div>
       <IconButton
-          id="player-additional-options"
-          aria-controls={open ? 'long-menu' : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-haspopup="true"
+          value="player-additional-options"
           onClick={handleOpen}
-        >
-          <TripleDotsIcon />
-        </IconButton>
+          icon = {<TripleDotsIcon />}
+        />
         <Menu
           anchor={anchor}
           open={open}

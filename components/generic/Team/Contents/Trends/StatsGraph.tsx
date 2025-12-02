@@ -332,7 +332,7 @@ const StatsGraph = (
 
   return (
     <>
-      <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+      <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div><AdditionalOptions /></div>
         <div style = {{ display: 'flex', textAlign: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           {statsCompareChips}

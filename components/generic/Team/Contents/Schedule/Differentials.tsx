@@ -35,8 +35,8 @@ const Differentials = ({ game, team_id }) => {
       },
       {
         label: 'SR',
-        code: 'elo_rank',
-        type: 'rank',
+        code: 'elo',
+        type: 'stat',
       },
       {
         label: 'aEM',
@@ -70,8 +70,8 @@ const Differentials = ({ game, team_id }) => {
       },
       {
         label: 'SR',
-        code: 'elo_rank',
-        type: 'rank',
+        code: 'elo',
+        type: 'stat',
       },
       {
         label: 'QBR',

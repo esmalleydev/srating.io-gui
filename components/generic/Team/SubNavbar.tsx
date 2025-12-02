@@ -1,9 +1,6 @@
 'use client';
 
 import { useTransition } from 'react';
-import {
-  IconButton,
-} from '@mui/material';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -16,6 +13,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Tab from '@/components/ux/buttons/Tab';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const getSubNavHeaderHeight = () => 42;
 
@@ -80,22 +78,21 @@ const SubNavBar = ({ view }) => {
       leftButtons.push(
         <Tooltip key = {'toggle-all-historical-charts-tooltip'} text = {'Toggle all historical charts'}>
           <IconButton
-            id = 'differential-button'
+            value = 'differential-button'
             onClick = {() => dispatch(setDataKey({ key: 'showScheduleDifferentials', value: !showScheduleDifferentials }))}
-          >
-            <LegendToggleIcon color = {showScheduleDifferentials ? 'success' : 'primary'} />
-          </IconButton>
+            icon = {<LegendToggleIcon color = {showScheduleDifferentials ? 'success' : 'primary'} />}
+          />
         </Tooltip>,
       );
 
       leftButtons.push(
         <Tooltip key = {'toggle-all-historical-ranking-tooltip'} text = {showScheduleHistoricalRankRecord ? 'Show current record / rank' : 'Show historical record / rank at time of game'}>
           <IconButton
-            id = 'historical-button'
+            containerStyle={{ marginLeft: 5 }}
+            value = 'historical-button'
             onClick = {() => dispatch(setDataKey({ key: 'showScheduleHistoricalRankRecord', value: !showScheduleHistoricalRankRecord }))}
-          >
-            <HistoryIcon color = {showScheduleHistoricalRankRecord ? 'success' : 'primary'} />
-          </IconButton>
+            icon = {<HistoryIcon color = {showScheduleHistoricalRankRecord ? 'success' : 'primary'} />}
+          />
         </Tooltip>,
       );
     }

@@ -91,7 +91,7 @@ const Search = ({ view }: {view: string}) => {
   const inputWidth = width > 425 ? '150px' : '125px';
 
   const containerStyle = {
-    marginBottom: '5px',
+    // marginBottom: '5px',
     width: inputWidth,
     position: 'relative',
     borderRadius: '4px',

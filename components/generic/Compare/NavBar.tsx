@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useTransition } from 'react';
-import { IconButton } from '@mui/material';
 import { getBreakPoint, getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -21,6 +20,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Tab from '@/components/ux/buttons/Tab';
 import Tooltip from '@/components/ux/hover/Tooltip';
+import IconButton from '@/components/ux/buttons/IconButton';
 // import GroupsIcon from '@mui/icons-material/Groups';
 // import StadiumIcon from '@mui/icons-material/Stadium';
 // import LocalAirportIcon from '@mui/icons-material/LocalAirport';
@@ -218,11 +218,10 @@ const NavBar = () => {
     leftButtons.push(
       <Tooltip onClickRemove key = {'table-button'} text = {subview === 'table' ? 'View compare mode' : 'View table mode'}>
         <IconButton
-          id = 'table-card-button'
+          value = 'table-card-button'
           onClick = {(e) => handleSubView(e, subview === 'table' ? null : 'table')}
-        >
-          <CalendarViewMonthIcon color = {subview === 'table' ? 'success' : 'primary'} />
-        </IconButton>
+          icon = {<CalendarViewMonthIcon color = {subview === 'table' ? 'success' : 'primary'} />}
+        />
       </Tooltip>,
     );
   } else if (view === 'player') {
@@ -232,11 +231,10 @@ const NavBar = () => {
       leftButtons.push(
         <Tooltip onClickRemove key = {'top-player-button'} text = {topPlayersOnly ? 'Show all players' : 'View top MPG players'}>
           <IconButton
-            id = 'top-players-button'
+            value = 'top-players-button'
             onClick = {() => { dispatch(setDataKey({ key: 'topPlayersOnly', value: !topPlayersOnly })); }}
-          >
-            <SensorOccupiedIcon color = {topPlayersOnly ? 'success' : 'primary'} />
-          </IconButton>
+            icon = {<SensorOccupiedIcon color = {topPlayersOnly ? 'success' : 'primary'} />}
+          />
         </Tooltip>,
       );
     }

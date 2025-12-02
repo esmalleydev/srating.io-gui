@@ -6,7 +6,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import IconButton from '@mui/material/IconButton';
 import Drawer from '@mui/material/Drawer';
 
 // Icons
@@ -41,6 +40,7 @@ import Button from '../ux/buttons/Button';
 import { useTheme } from '../hooks/useTheme';
 import Style from '../utils/Style';
 import Objector from '../utils/Objector';
+import IconButton from '../ux/buttons/IconButton';
 
 
 // todo hook up settings with router
@@ -180,23 +180,19 @@ const Header = () => {
       {
         fullSearch ?
           <div className = {Style.getStyleClassName(toolBarStyle)}>
-            <IconButton onClick = {() => { setFullSearch(false); }} size="large" edge="start" color="inherit" aria-label="menu">
-              <ArrowBackIcon />
-            </IconButton>
+            <IconButton onClick = {() => { setFullSearch(false); }} value = 'back' icon = {<ArrowBackIcon />} />
             <div style={{ flexGrow: 1, display: 'flex' }}>
               <Search onRouter = {() => { setFullSearch(false); }} focus = {true} />
             </div>
           </div> :
           <div className = {Style.getStyleClassName(toolBarStyle)}>
-            <IconButton onClick = {toggleDrawer} size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-              <MenuIcon />
-              <Drawer
-                open={drawerOpen}
-                onClose={toggleDrawer}
-              >
-                <Sidebar />
-              </Drawer>
-            </IconButton>
+            <IconButton onClick = {toggleDrawer} containerStyle = {{ marginRight: 16 }} buttonStyle={{ color: '#fff' }} value = 'sidebar' icon = {<MenuIcon />} />
+            <Drawer
+              open={drawerOpen}
+              onClose={toggleDrawer}
+            >
+              <Sidebar onClick = {toggleDrawer} />
+            </Drawer>
             <div style = {Objector.extender({ display: 'flex', marginRight: 5, alignItems: 'center' }, logoStyle)} onClick = {handleHome}>
               {width > 425 ? <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} /> : ''}
               <><span style = {{ color: (theme.mode === 'dark' ? logoPrimaryColor : '#fff') }}>S</span><span style = {{ color: (theme.mode === 'dark' ? logoSecondaryColor : '#31ff00') }}>R{shrinkName ? '' : 'ATING'}</span></>
@@ -206,17 +202,15 @@ const Header = () => {
             </div>
             <div style={{ flexGrow: 1, display: 'flex' }}>
             </div>
-            <div style={{ flexGrow: 0 }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} color = 'inherit'><QueryStatsIcon /></IconButton></Tooltip> : ''}</div>
-            <div style={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px') }}>
-              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} color="inherit"><SearchIcon /></IconButton> : <Search focus={false} />}
+            <div style={{ flexGrow: 0, lineHeight: 'initial' }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} value = 'compare' icon = {<QueryStatsIcon />} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} /></Tooltip> : ''}</div>
+            <div style={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px'), lineHeight: 'initial' }}>
+              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} value = 'search' icon = {<SearchIcon />} /> : <Search focus={false} />}
             </div>
-            <div style={{ flexGrow: 0 }}>
+            <div style={{ flexGrow: 0, lineHeight: 'initial' }}>
               {
               validSession ?
-                <div>
-                  <IconButton onClick={handleMenu} color="inherit">
-                    <AccountCircle />
-                  </IconButton>
+                <>
+                  <IconButton onClick={handleMenu} value = 'account' icon = {<AccountCircle />} buttonStyle={{ color: '#fff' }} />
                   <Menu
                     anchor={anchorEl}
                     open={Boolean(anchorEl)}
@@ -236,7 +230,7 @@ const Header = () => {
                       </MenuItem>
                     </MenuList>
                   </Menu>
-                </div>
+                </>
                 :
                 <div>
                   {/* {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''} */}

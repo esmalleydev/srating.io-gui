@@ -8,7 +8,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 
-import IconButton from '@mui/material/IconButton';
 
 import RankPicker from '@/components/generic/RankPicker';
 import { Divider } from '@mui/material';
@@ -21,6 +20,7 @@ import MenuListText from '@/components/ux/menu/MenuListText';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/display-slice';
 import CardPicker from './CardPicker';
+import IconButton from '@/components/ux/buttons/IconButton';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);
@@ -88,14 +88,10 @@ const AdditionalOptions = () => {
     <div>
       <Tooltip onClickRemove text = {'Additional options'}>
         <IconButton
-            id="additional-options"
-            aria-controls={open ? 'long-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
-            aria-haspopup="true"
-            onClick={handleOpen}
-          >
-            <SettingsIcon />
-        </IconButton>
+          value="additional-options"
+          onClick={handleOpen}
+          icon = {<SettingsIcon />}
+        />
       </Tooltip>
       <Menu
         anchor={anchor}
