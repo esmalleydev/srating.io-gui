@@ -309,6 +309,7 @@ export interface Odds {
   spread_home: number;
   over: number;
   under: number;
+  json_bookmakers: Bookmakers | null;
   date_of_entry: string;
   live: number;
   current: number;
@@ -317,6 +318,19 @@ export interface Odds {
 }
 
 export type Oddsz = {[odds_id: string]: Odds};
+
+export interface Bookmaker {
+  title: string;
+  key: string;
+  money_line_away: number;
+  money_line_home: number;
+  spread_away: number;
+  spread_home: number;
+  over: number;
+  under: number;
+}
+
+export type Bookmakers = {[key: string]: Bookmaker};
 
 export interface CoachStatisticRanking {
   coach_statistic_ranking_id: string;

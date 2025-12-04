@@ -1,11 +1,12 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import Paper from '@/components/ux/container/Paper';
 
 import Locked from '@/components/generic/Billing/Locked';
@@ -27,6 +28,8 @@ import Style from '@/components/utils/Style';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/games-slice';
+import IconButton from '@/components/ux/buttons/IconButton';
+import Modal from '@/components/ux/container/Modal';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {
@@ -62,6 +65,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const hideOdds = useAppSelector((state) => state.displayReducer.hideOdds);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });
+  const [vegasModalOpen, setVegasModalOpen] = useState(false);
 
 
   const dispatch = useAppDispatch();
@@ -74,6 +78,17 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const spreadToUseHome = (Game.isInProgress() ? Game.getLiveSpread('home') : Game.getPreSpread('home'));
   const spreadToUseAway = (Game.isInProgress() ? Game.getLiveSpread('away') : Game.getPreSpread('away'));
   const overUnderToUse = (Game.isInProgress() ? Game.getLiveOver() : Game.getPreOver());
+
+  const bookmakers = Game.getBookMakers();
+
+  const bookmakersKeysToShow = [
+    'betmgm',
+    'fanduel',
+    'williamhill_us',
+    'draftkings',
+  ];
+
+  // console.log(bookmakers)
 
   const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.away_percentage === null));
 
@@ -165,15 +180,70 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       );
     }
 
+    const handleOpenVegas = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.nativeEvent.preventDefault();
+      e.nativeEvent.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+      setVegasModalOpen(true);
+    };
+
 
     return (
       <div style = {flexContainer} >
         <div style = {timeStyle}><Typography style = {{ display: 'inline-block', color: (Game.isInProgress() ? theme.info.dark : theme.text.secondary) }} type = 'overline'>{Game.getTime()}</Typography>{network}</div>
         {
           displayCardView === 'compact' && !Game.isFinal() && oddsTexts.length && hideOdds !== 1 ?
-            <div><Typography style={{ display: 'inline-block', fontSize: '11px', color: theme.text.secondary }} type = 'overline'>{oddsTexts.join(' | ')}</Typography></div>
+            <div><Tooltip text='Vegas'><IconButton value = 'vegas' onClick={handleOpenVegas} icon = {<AccountBalanceIcon style = {{ fontSize: 16, color: theme.amber[500] }} />} /></Tooltip></div>
             : ''
         }
+        <Modal open = {vegasModalOpen} onClose={() => setVegasModalOpen(false)}>
+          <Typography type = 'h6'>Vegas odds</Typography>
+          {getOddsLine()}
+          {
+            (bookmakers && Object.keys(bookmakers).length) ?
+              (
+                <>
+                  <Typography type = 'h6'>Bookmakers</Typography>
+                  {Object.entries(bookmakers).map(([key, value]) => {
+                    if (!bookmakersKeysToShow.includes(key)) {
+                      return null;
+                    }
+
+
+                    let name = Game.getTeamNameShort('away');
+                    let moneyLine = value.money_line_away || '-';
+                    let spread = value.spread_away ? `${value.spread_away}` : '-';
+                    const over = value.over ? `O${value.over}` : '-';
+
+                    if (value.spread_home < value.spread_away) {
+                      name = Game.getTeamNameShort('home');
+                      moneyLine = value.money_line_home || '-';
+                      spread = value.spread_home ? `${value.spread_home}` : '-';
+                    }
+
+                    return (
+                      <>
+                        <div><Typography type = 'body1' style = {{ color: theme.info.main }}>{value.title}:</Typography></div>
+                        <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
+                          <Typography type = 'body2' style = {{ color: theme.text.secondary, minWidth: 30, textAlign: 'center' }}>{name}</Typography>
+                          <Typography type = 'body2' style = {{ color: theme.text.secondary, minWidth: 30, textAlign: 'center' }}>{moneyLine}</Typography>
+                          <Typography type = 'body2' style = {{ color: theme.text.secondary, minWidth: 30, textAlign: 'center' }}>{spread}</Typography>
+                          <Typography type = 'body2' style = {{ color: theme.text.secondary, minWidth: 30, textAlign: 'center' }}>{over}</Typography>
+                        </div>
+                      </>
+                    );
+                  })}
+                </>
+              ) : ''
+          }
+        </Modal>
+        {/* {
+          displayCardView === 'compact' && !Game.isFinal() && oddsTexts.length && hideOdds !== 1 ?
+            <div><Typography style={{ display: 'inline-block', fontSize: '11px', color: theme.text.secondary }} type = 'overline'>{oddsTexts.join(' | ')}</Typography></div>
+            : ''
+        } */}
         {hideOdds !== 1 ? predictedSpreadContainer : ''}
         <Pin game_id = {game.game_id} />
       </div>
@@ -267,8 +337,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
         <thead>
           <tr>
             <th style = {{ textAlign: 'left' }}><Typography type = 'caption'>-</Typography></th>
-            <th><Typography type = 'caption'>SPREAD</Typography></th>
             <th><Typography type = 'caption'>ML</Typography></th>
+            <th><Typography type = 'caption'>SPREAD</Typography></th>
             <th><Typography type = 'caption'>O/U</Typography></th>
             <th style = {{ textAlign: 'right' }}><Typography type = 'caption'>%</Typography></th>
           </tr>
@@ -276,15 +346,15 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
         <tbody>
           <tr>
             <td style = {{ textAlign: 'left' }}><Typography type = 'caption'>{Game.getTeamNameShort('away')}</Typography></td>
-            <td title = {tdAwaySpreadTitle}><Typography type = 'caption' style = {awaySpreadCoverStyle}>{Game.getPreSpread('away')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('away')}` : ''}</Typography></td>
             <td title = {tdAwayMLTitle} style = {({ color: Game.oddsReversal('away') ? theme.warning.main : theme.text.primary, ...awayMLStyle })}><Typography type = 'caption'>{Game.getPreML('away')}{Game.isInProgress() ? ` / ${Game.getLiveML('away')}` : ''}</Typography></td>
+            <td title = {tdAwaySpreadTitle}><Typography type = 'caption' style = {awaySpreadCoverStyle}>{Game.getPreSpread('away')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('away')}` : ''}</Typography></td>
             <td title = {tdOverTitle}><Typography type = 'caption' style = {overStyle}>{Game.getPreOver() !== '-' ? `O ${Game.getPreOver()}` : '-'}{Game.isInProgress() ? ` / ${Game.getLiveOver()}` : ''}</Typography></td>
             <td style = {{ textAlign: 'right' }}>{awayWinPercentageContainer}</td>
           </tr>
           <tr>
             <td style = {{ textAlign: 'left' }}><Typography type = 'caption'>{Game.getTeamNameShort('home')}</Typography></td>
-            <td title = {tdHomeSpreadTitle}><Typography type = 'caption' style = {homeSpreadCoverStyle}>{Game.getPreSpread('home')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('home')}` : ''}</Typography></td>
             <td title = {tdHomeMLTitle} style = {({ color: Game.oddsReversal('home') ? theme.warning.main : theme.text.primary, ...homeMLStyle })}><Typography type = 'caption'>{Game.getPreML('home')}{Game.isInProgress() ? ` / ${Game.getLiveML('home')}` : ''}</Typography></td>
+            <td title = {tdHomeSpreadTitle}><Typography type = 'caption' style = {homeSpreadCoverStyle}>{Game.getPreSpread('home')}{Game.isInProgress() ? ` / ${Game.getLiveSpread('home')}` : ''}</Typography></td>
             <td title = {tdUnderTitle}><Typography type = 'caption' style = {underStyle}>{Game.getPreUnder() !== '-' ? `U ${Game.getPreUnder()}` : '-'}{Game.isInProgress() ? ` / ${Game.getLiveUnder()}` : ''}</Typography></td>
             <td style = {{ textAlign: 'right' }}>{homeWinPercentageContainer}</td>
           </tr>

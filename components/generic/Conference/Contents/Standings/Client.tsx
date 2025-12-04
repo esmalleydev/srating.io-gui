@@ -109,8 +109,8 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
         confRecordContainer = <Skeleton width={40} key = {2} />;
       } else if (!stats.hasAccess) {
         filledContainers = true;
-        recordContainer = <Locked iconPadding={0} iconFontSize={'20px'} key = {1} />;
-        confRecordContainer = <Locked iconPadding={0} iconFontSize={'20px'} key = {2} />;
+        recordContainer = <Locked iconFontSize={'20px'} key = {1} />;
+        confRecordContainer = <Locked iconFontSize={'20px'} key = {2} />;
       }
     } else {
       row = Objector.deepClone(stats) as StatsRows;

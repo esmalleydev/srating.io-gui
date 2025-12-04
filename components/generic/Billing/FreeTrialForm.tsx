@@ -112,7 +112,7 @@ const FreeTrialForm = () => {
         variant="standard"
       />
       {errorMessage && <div id="payment-message" style = {{ color: theme.error.main }}>{errorMessage}</div>}
-      <Button handleClick={handleSubmit} containerStyle={{ width: '100%' }} buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.info.main }} disabled = {isLoading} title = {'Get free trial'} value = 'trial' />
+      <Button handleClick={handleSubmit} containerStyle={{ width: '100%' }} buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.blue[700] }} disabled = {isLoading} title = {'Get free trial'} value = 'trial' />
     </form>
   );
 };

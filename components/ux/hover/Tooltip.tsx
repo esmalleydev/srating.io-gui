@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect, Profiler } from 'react';
+import React, { useRef, useState, useEffect, Profiler, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Paper from '@/components/ux/container/Paper';
 // import useIsTouchDevice from '@/components/hooks/useIsTouchDevice';
@@ -45,6 +45,7 @@ const Tooltip = <T extends HTMLElement>(
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const containerRef = useRef<T>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   // Stable refs for timers so they can be cleared reliably across renders
   const showTimeoutRef = useRef<number | null>(null);
@@ -85,30 +86,12 @@ const Tooltip = <T extends HTMLElement>(
     };
   }, [isVisible]);
 
-  useEffect(() => {
-    if (isVisible && containerRef.current) {
+  useLayoutEffect(() => {
+    if (isVisible && containerRef.current && tooltipRef.current) {
       const targetRect = containerRef.current.getBoundingClientRect();
+      const tooltipRect = tooltipRef.current.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-
-      const tooltipStyles = {
-        padding: '6px 12px',
-        fontSize: '14px',
-        minWidth: 'max-content',
-        textAlign: 'center',
-      };
-
-      const tempTooltip = document.createElement('div');
-      tempTooltip.style.visibility = 'hidden';
-      tempTooltip.style.position = 'absolute';
-      tempTooltip.style.top = '-9999px';
-      Object.assign(tempTooltip.style, tooltipStyles);
-      tempTooltip.innerText = text;
-      document.body.appendChild(tempTooltip);
-
-      const tooltipWidth = tempTooltip.offsetWidth;
-      const tooltipHeight = tempTooltip.offsetHeight;
-      document.body.removeChild(tempTooltip);
 
       let newTop = 0;
       let newLeft = 0;
@@ -116,20 +99,20 @@ const Tooltip = <T extends HTMLElement>(
       switch (position) {
         case 'bottom':
           newTop = targetRect.bottom + 8;
-          newLeft = targetRect.left + targetRect.width / 2 - tooltipWidth / 2;
+          newLeft = targetRect.left + targetRect.width / 2 - tooltipRect.width / 2;
           break;
         case 'left':
-          newTop = targetRect.top + targetRect.height / 2 - tooltipHeight / 2;
-          newLeft = targetRect.left - tooltipWidth - 8;
+          newTop = targetRect.top + targetRect.height / 2 - tooltipRect.height / 2;
+          newLeft = targetRect.left - tooltipRect.width - 8;
           break;
         case 'right':
-          newTop = targetRect.top + targetRect.height / 2 - tooltipHeight / 2;
+          newTop = targetRect.top + targetRect.height / 2 - tooltipRect.height / 2;
           newLeft = targetRect.right + 8;
           break;
         case 'top':
         default:
-          newTop = targetRect.top - tooltipHeight - 8;
-          newLeft = targetRect.left + targetRect.width / 2 - tooltipWidth / 2;
+          newTop = targetRect.top - tooltipRect.height;
+          newLeft = targetRect.left + targetRect.width / 2 - tooltipRect.width / 2;
           break;
       }
 
@@ -137,19 +120,20 @@ const Tooltip = <T extends HTMLElement>(
       if (newTop < 0) {
         newTop = 8;
       }
-      if (newTop + tooltipHeight > viewportHeight) {
-        newTop = viewportHeight - tooltipHeight - 8;
+      if (newTop + tooltipRect.height > viewportHeight) {
+        newTop = viewportHeight - tooltipRect.height - 8;
       }
       if (newLeft < 0) {
         newLeft = 8;
       }
-      if (newLeft + tooltipWidth > viewportWidth) {
-        newLeft = viewportWidth - tooltipWidth - 8;
+      if (newLeft + tooltipRect.width > viewportWidth) {
+        newLeft = viewportWidth - tooltipRect.width - 8;
       }
 
       setCoords({ top: newTop + window.scrollY, left: newLeft + window.scrollX });
     }
   }, [isVisible, position, text]);
+
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -166,7 +150,7 @@ const Tooltip = <T extends HTMLElement>(
   }, []);
 
   const log = (...args) => {
-    // console.log(...args);
+    console.log(...args);
   };
 
   const handleShow = (overrideDelay: number | null = null) => {
@@ -361,7 +345,7 @@ const Tooltip = <T extends HTMLElement>(
       }}>
       {childWithProps}
       {isVisible && createPortal(
-        <Paper style ={baseStyles}>
+        <Paper style ={baseStyles} ref = {tooltipRef}>
           {text}
         </Paper>,
         document.body,

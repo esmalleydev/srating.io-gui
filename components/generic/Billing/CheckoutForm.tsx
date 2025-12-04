@@ -186,7 +186,7 @@ const CheckoutForm = ({ pricing }) => {
       <Button
         handleClick={handleSubmit}
         containerStyle={{ width: '100%' }}
-        buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.info.dark }}
+        buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.blue[700] }}
         disabled={isLoading || !stripe || !elements}
         title = {`Pay $${pricing.price}`} value = 'pay'
       />

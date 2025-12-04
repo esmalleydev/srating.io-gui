@@ -467,28 +467,26 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
           }
 
           return (
-            <Tooltip key={headCell.id} position = 'top' text={headCell.tooltip}>
-              <TableCell
-                style = {tdStyle}
-                key={headCell.id}
-                align={'left'}
-                sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
+            <TableCell
+              style = {tdStyle}
+              key={headCell.id}
+              align={'left'}
+              sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
+            >
+              <TableSortLabel
+                active={orderBy === headCell.id && showSortArrow}
+                hideSortIcon = {!showSortArrow}
+                direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
+                onClick={() => { handleSort(headCell.id); }}
               >
-                <TableSortLabel
-                  active={orderBy === headCell.id && showSortArrow}
-                  hideSortIcon = {!showSortArrow}
-                  direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
-                  onClick={() => { handleSort(headCell.id); }}
-                >
-                  {headCell.label}
-                  {orderBy === headCell.id ? (
-                    <Box component="span" sx={visuallyHidden}>
-                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                    </Box>
-                  ) : null}
-                </TableSortLabel>
-              </TableCell>
-            </Tooltip>
+                <Tooltip key={headCell.id} position = 'top' text={headCell.tooltip}><span>{headCell.label}</span></Tooltip>
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
           );
         })}
       </TableRow>

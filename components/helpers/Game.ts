@@ -5,6 +5,7 @@ import Team from './Team';
 import Organization from './Organization';
 import { useTheme } from '../hooks/useTheme';
 import Dates from '../utils/Dates';
+import { Bookmakers } from '@/types/general';
 
 
 /**
@@ -247,6 +248,30 @@ class Game {
 
   //   return name;
   // }
+
+
+  /**
+   * Get the bookmakers lines object
+   */
+  getBookMakers(): Bookmakers | null {
+    if (
+      this.getGame().odds &&
+      this.getGame().odds.live &&
+      this.getGame().odds.live.json_bookmakers
+    ) {
+      return this.getGame().odds.live.json_bookmakers;
+    }
+
+    if (
+      this.getGame().odds &&
+      this.getGame().odds.pre &&
+      this.getGame().odds.pre.json_bookmakers
+    ) {
+      return this.getGame().odds.pre.json_bookmakers;
+    }
+
+    return null;
+  }
 
 
   /**
