@@ -20,7 +20,7 @@ const Locked = (
     ...props
   }:
   {
-    iconFontSize: string;
+    iconFontSize: string | null;
   },
 ) => {
   const theme = useTheme();
