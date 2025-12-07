@@ -167,7 +167,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     } else if (!hasAccessToPercentages) {
       predictedSpreadContainer = (
         <Tooltip onClickRemove text = {'Predicted spread and over'}>
-          <div style = {{ display: 'flex' }}><Locked iconFontSize={'20px'} key = {1} /></div>
+          <Locked iconFontSize={'20px'} key = {`${game.game_id}-predicted-spread-and-over-locked`} />
         </Tooltip>
       );
     } else if (game.prediction.home_score && game.prediction.away_score) {
@@ -195,7 +195,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
         <div style = {timeStyle}><Typography style = {{ display: 'inline-block', color: (Game.isInProgress() ? theme.info.dark : theme.text.secondary) }} type = 'overline'>{Game.getTime()}</Typography>{network}</div>
         {
           displayCardView === 'compact' && !Game.isFinal() && oddsTexts.length && hideOdds !== 1 ?
-            <div><Tooltip text='Vegas'><IconButton value = 'vegas' onClick={handleOpenVegas} icon = {<AccountBalanceIcon style = {{ fontSize: 16, color: theme.amber[500] }} />} /></Tooltip></div>
+            <div><Tooltip onClickRemove text='Vegas'><IconButton value = 'vegas' onClick={handleOpenVegas} icon = {<AccountBalanceIcon style = {{ fontSize: 16, color: theme.amber[500] }} />} /></Tooltip></div>
             : ''
         }
         <Modal open = {vegasModalOpen} onClose={() => setVegasModalOpen(false)}>
@@ -250,36 +250,40 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     );
   };
 
-  const awayWinPercentageContainer: React.JSX.Element[] = [];
-  const homeWinPercentageContainer: React.JSX.Element[] = [];
+  let awayWinPercentageContainer: React.JSX.Element;
+  let homeWinPercentageContainer: React.JSX.Element;
 
   if (isLoadingWinPercentage) {
-    awayWinPercentageContainer.push(<Skeleton key = {1} />);
-    homeWinPercentageContainer.push(<Skeleton key = {2} />);
+    awayWinPercentageContainer = <Skeleton key = {1} />;
+    homeWinPercentageContainer = <Skeleton key = {2} />;
   } else if (!hasAccessToPercentages) {
-    awayWinPercentageContainer.push(
-      <Tooltip key = {1} onClickRemove text = {'Predicted win %'}>
-        <div style = {{ display: 'flex' }}><Locked iconFontSize={'20px'} /></div>
-      </Tooltip>,
+    awayWinPercentageContainer = (
+      <div style = {{ display: 'flex' }}>
+        <Tooltip key = {1} onClickRemove text = {'Predicted win %'}>
+          <Locked iconFontSize={'20px'} />
+        </Tooltip>
+      </div>
     );
-    homeWinPercentageContainer.push(
-      <Tooltip key = {2} onClickRemove text = {'Predicted win %'}>
-        <div style = {{ display: 'flex' }}><Locked iconFontSize={'20px'} /></div>
-      </Tooltip>,
+    homeWinPercentageContainer = (
+      <div style = {{ display: 'flex' }}>
+        <Tooltip key = {2} onClickRemove text = {'Predicted win %'}>
+          <Locked iconFontSize={'20px'} />
+        </Tooltip>
+      </div>
     );
   } else {
     const awayPercentage = +(game.prediction.away_percentage * 100).toFixed(0);
     const homePercentage = +(game.prediction.home_percentage * 100).toFixed(0);
 
-    awayWinPercentageContainer.push(
+    awayWinPercentageContainer = (
       <Tooltip key = {1} text = {'Predicted win %'}>
         <Typography key = {'away_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.away_percentage) }}>{awayPercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>
-      </Tooltip>,
+      </Tooltip>
     );
-    homeWinPercentageContainer.push(
+    homeWinPercentageContainer = (
       <Tooltip key = {2} text = {'Predicted win %'}>
         <Typography key = {'home_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, game.prediction.home_percentage) }}>{homePercentage}{(displayCardView === 'compact' ? '%' : '')}</Typography>
-      </Tooltip>,
+      </Tooltip>
     );
   }
 

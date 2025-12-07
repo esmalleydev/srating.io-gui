@@ -11,9 +11,19 @@ import Modal from '@/components/ux/container/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
 import IconButton from '@/components/ux/buttons/IconButton';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
-const Locked = ({ iconFontSize }) => {
+const Locked = (
+  {
+    iconFontSize,
+    ...props
+  }:
+  {
+    iconFontSize: string;
+  },
+) => {
+  const theme = useTheme();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const router = useRouter();
@@ -73,7 +83,7 @@ const Locked = ({ iconFontSize }) => {
 
   return (
     <>
-      <IconButton onClick={handleClick} value= 'locked' icon = {<LockIcon style={{ fontSize: iconFontSize || '24px' }} color='error' />} />
+      <IconButton {...props} onClick={handleClick} value= 'locked' icon = {<LockIcon style={{ fontSize: iconFontSize || '24px', color: theme.error.main }} />} />
       <Modal
         open = {openDialog}
         onClose = {handleClose}

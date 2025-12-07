@@ -20,6 +20,7 @@ const Tooltip = <T extends HTMLElement>(
     onClickRemove = false,
     style = {},
     children,
+    debug = false,
   }:
   {
     text: string;
@@ -39,6 +40,7 @@ const Tooltip = <T extends HTMLElement>(
       onFocus?: () => void;
       onBlur?: () => void;
     }>;
+    debug?: boolean;
   },
 ) => {
   // const isTouchDevice = useIsTouchDevice();
@@ -150,7 +152,9 @@ const Tooltip = <T extends HTMLElement>(
   }, []);
 
   const log = (...args) => {
-    console.log(...args);
+    if (debug) {
+      console.log(...args);
+    }
   };
 
   const handleShow = (overrideDelay: number | null = null) => {
