@@ -257,11 +257,24 @@ const Client = ({ organization_id, gamelogs }) => {
     }
 
     for (const key in row) {
-      if (!(key in footerRow)) {
-        footerRow[key] = row[key];
+      let value;
+
+      if (row[key] && key === 'minutes_played') {
+        const splat = row[key].toString().split('.');
+        const seconds = (+splat[1] || 0) + +splat[0] * 60;
+
+        if (!(key in footerRow)) {
+          value = seconds / 60;
+        } else {
+          value = +(+(footerRow[key] || 0) + (seconds / 60)).toFixed(2);
+        }
+      } else if (!(key in footerRow)) {
+        value = row[key];
       } else {
-        footerRow[key] = +(+footerRow[key] + +row[key]).toFixed(2);
+        value = +(+footerRow[key] + +row[key]).toFixed(2);
       }
+
+      footerRow[key] = value;
     }
 
     playerRows.push(formattedRow);
