@@ -204,7 +204,7 @@ const Header = () => {
             </div>
             <div style={{ flexGrow: 0, lineHeight: 'initial' }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} value = 'compare' icon = {<QueryStatsIcon />} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} /></Tooltip> : ''}</div>
             <div style={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px'), lineHeight: 'initial' }}>
-              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} value = 'search' icon = {<SearchIcon />} /> : <Search focus={false} />}
+              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} value = 'search' icon = {<SearchIcon />} /> : <Search focus={false} />}
             </div>
             <div style={{ flexGrow: 0, lineHeight: 'initial' }}>
               {
