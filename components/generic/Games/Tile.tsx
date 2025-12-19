@@ -224,7 +224,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
                     }
 
                     return (
-                      <>
+                      <div key = {key}>
                         <div><Typography type = 'body1' style = {{ color: theme.info.main }}>{value.title}:</Typography></div>
                         <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
                           <Typography type = 'body2' style = {{ color: theme.text.secondary, minWidth: 30, textAlign: 'center' }}>{name}</Typography>
@@ -232,7 +232,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
                           <Typography type = 'body2' style = {{ color: theme.text.secondary, minWidth: 30, textAlign: 'center' }}>{spread}</Typography>
                           <Typography type = 'body2' style = {{ color: theme.text.secondary, minWidth: 30, textAlign: 'center' }}>{over}</Typography>
                         </div>
-                      </>
+                      </div>
                     );
                   })}
                 </>
