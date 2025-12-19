@@ -14,7 +14,7 @@ const Plane = (
   }:
   {
     open: boolean;
-    onClose: (e: React.SyntheticEvent) => void;
+    onClose: (e: MouseEvent) => void;
     anchor: HTMLElement | null;
     children: React.ReactNode;
   },
@@ -48,11 +48,22 @@ const Plane = (
       }
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+      if (contentRef.current && !contentRef.current.contains(event.target as Node)) {
+        setIsVisible(false);
+        onClose(event);
+      }
+    };
+
     if (open) {
       window.addEventListener('keydown', handleEsc);
+      document.addEventListener('mousedown', handleClickOutside);
     }
 
-    return () => window.removeEventListener('keydown', handleEsc);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [open, onClose]);
 
 
@@ -144,8 +155,8 @@ const Plane = (
     zIndex,
     backgroundColor: 'transparent',
     transition: 'opacity 0.2s',
-    opacity: open ? 1 : 0,
-    pointerEvents: open ? 'auto' : 'none', // Prevent clicks while fading out
+    // opacity: open ? 1 : 0,
+    // pointerEvents: open ? 'auto' : 'none', // Prevent clicks while fading out
   };
 
   const containerStyle = {
@@ -180,10 +191,18 @@ const Plane = (
     // },
   };
 
+  const handleClick = (e) => {
+    console.log('handle click', e);
+
+    // todo is this needed anymore?
+
+    onClose(e);
+  };
+
 
   // We render this into the document.body using a Portal
   return ReactDOM.createPortal(
-    <div className = {Style.getStyleClassName(backdropStyle)} onClick={onClose}>
+    <div className = {Style.getStyleClassName(backdropStyle)} onClick={handleClick}>
       <div
         className = {Style.getStyleClassName(containerStyle)}
         onClick = {(e) => {

@@ -1,0 +1,323 @@
+'use client';
+
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+
+import { useTheme } from '@/components/hooks/useTheme';
+import Style from '@/components/utils/Style';
+import Typography from '../text/Typography';
+import Paper from '../container/Paper';
+import Objector from '@/components/utils/Objector';
+
+export type SelectOption = {
+  label: string;
+  value: string | number;
+};
+
+type SelectVariant = 'standard' | 'outlined' | 'filled';
+
+interface SelectProps {
+  label: string;
+  options: SelectOption[];
+  value?: string | number | null; // Controlled value
+  defaultValue?: string | number | null; // Uncontrolled default
+  onChange?: (value: string | number) => void;
+  variant?: SelectVariant;
+  style?: React.CSSProperties;
+  placeholder?: string;
+  required?: boolean;
+  error?: boolean; // External error control
+  errorMessage?: string; // External error message
+}
+
+const Select: React.FC<SelectProps> = ({
+  label,
+  options,
+  value: valueProp,
+  defaultValue,
+  onChange,
+  variant = 'outlined',
+  style = {},
+  placeholder = '',
+  required = false,
+  error: externalError = false,
+  errorMessage: externalErrorMessage,
+}) => {
+  const theme = useTheme();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // --- State ---
+  const [isOpen, setIsOpen] = useState(false);
+  const [internalValue, setInternalValue] = useState(defaultValue || null);
+  const [validationError, setValidationError] = useState(false); // Internal validation state
+
+  // Determine current value (Controlled vs Uncontrolled)
+  const value = valueProp !== undefined ? valueProp : internalValue;
+
+  // Find the selected option object to display its label
+  const selectedOption = useMemo(() => options.find((o) => o.value === value), [options, value]);
+
+  const errorColor = theme.error.main;
+  const hasError = externalError || !!externalErrorMessage || validationError;
+
+  // Determine Error Message to Display
+  const displayedErrorMessage = externalErrorMessage || (validationError ? 'This field is required' : null);
+
+  // --- Handlers ---
+
+  const handleSelect = (optionValue: string | number) => {
+    if (valueProp === undefined) {
+      setInternalValue(optionValue);
+    }
+    if (onChange) {
+      onChange(optionValue);
+    }
+    setIsOpen(false);
+
+    // Clear validation error when a selection is made
+    if (required && optionValue) {
+      setValidationError(false);
+    }
+  };
+
+  // Custom click handler to toggle dropdown
+  const handleToggle = () => {
+    // If opening, ensure no validation error state is immediately visible unless required
+    if (!isOpen) {
+      setValidationError(false);
+    }
+    setIsOpen(!isOpen);
+
+    // Perform blur/validation check when closing
+    if (isOpen && required) {
+      if (!value) {
+        setValidationError(true);
+      }
+    }
+  };
+
+  // Click outside to close
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        // Validation check on outside click/blur
+        if (required && !value) {
+          setValidationError(true);
+        } else {
+          setValidationError(false);
+        }
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [required, value]);
+
+  // --- Styling Logic (Matches Text.tsx) ---
+
+  const isFocused = isOpen;
+  const isLabelActive = isFocused || !!value || !!selectedOption;
+
+  const textColor = theme.text.primary;
+  let borderColor = theme.mode === 'dark' ? theme.grey[400] : theme.grey[600];
+
+  if (hasError) {
+    borderColor = errorColor;
+  } else if (isFocused) {
+    borderColor = theme.mode === 'dark' ? theme.info.light : theme.info.dark;
+  }
+
+  const height = 46;
+
+  // Base styling for the "Input" box
+  const triggerStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '100%',
+    height,
+    boxSizing: 'border-box',
+    color: textColor,
+    outline: 'none',
+    transition: 'all 0.3s ease',
+    backgroundColor: 'transparent',
+    borderRadius: variant === 'outlined' ? 4 : 0,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    userSelect: 'none',
+  };
+
+  // Variant specifics
+  if (variant === 'filled') {
+    triggerStyle.backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.grey[300];
+    triggerStyle.padding = '25px 36px 8px 12px'; // Extra right padding for arrow
+    triggerStyle.border = 'none';
+    triggerStyle.borderBottom = 'none';
+  } else if (variant === 'standard') {
+    triggerStyle.padding = '8px 24px 8px 0';
+    triggerStyle.border = 'none';
+    triggerStyle.borderBottom = `2px solid ${borderColor}`;
+  } else if (variant === 'outlined') {
+    triggerStyle.padding = '14px 36px 14px 12px';
+    triggerStyle.border = `1px solid ${borderColor}`;
+  }
+
+  const containerStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '100%',
+    margin: variant === 'standard' ? '16px 0 4px 0' : '8px 0',
+  };
+
+  Objector.extender(triggerStyle, style);
+
+  // Label Positioning Logic
+  let labelTop = 12;
+  let labelLeft = 12;
+  if (variant === 'standard') {
+    labelTop = 8;
+    labelLeft = 0;
+  }
+
+  const labelStyle: React.CSSProperties = {
+    position: 'absolute',
+    pointerEvents: 'none',
+    color: isFocused ? borderColor : theme.text.secondary,
+    transition: 'all 0.3s ease-out',
+    transformOrigin: 'top left',
+    top: labelTop,
+    left: labelLeft,
+
+    // Floating animation
+    transform: isLabelActive
+      ? 'translate(0, -50%) scale(0.75)'
+      : 'translate(0, 0) scale(1)',
+
+    // Outlined background masking
+    ...(variant === 'outlined' && isLabelActive ? {
+      top: 4,
+      left: 10,
+      padding: '0 4px',
+      backgroundColor: theme.background.main,
+      zIndex: 1,
+    } : {}),
+
+    fontSize: isLabelActive ? '13px' : '14px',
+  };
+
+  const arrowIconStyle: React.CSSProperties = {
+    position: 'absolute',
+    right: variant === 'standard' ? 0 : 12,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    color: theme.text.secondary,
+    pointerEvents: 'none', // Allow clicking through the icon
+  };
+
+  const errorTextStyle: React.CSSProperties = {
+    color: errorColor,
+    marginTop: '4px',
+    marginLeft: variant === 'standard' ? '0px' : '4px',
+    fontSize: '12px',
+    minHeight: displayedErrorMessage ? '20px' : '0px',
+  };
+
+  const menuStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    width: '100%',
+    maxHeight: '200px',
+    overflowY: 'auto',
+    zIndex: 1000,
+    marginTop: '4px',
+    backgroundColor: theme.background.main, // Ensure solid background
+  };
+
+  const optionStyle: React.CSSProperties = {
+    padding: '10px 16px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    transition: 'background-color 0.2s',
+    color: theme.text.primary,
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className={Style.getStyleClassName(containerStyle)}
+    >
+      <div style={{ position: 'relative', width: '100%' }}>
+        {/* Label */}
+        <Typography type="caption" className={Style.getStyleClassName(labelStyle)}>
+          {label}
+        </Typography>
+
+        {/* Trigger Box (Looks like Input) */}
+        <div
+          className={Style.getStyleClassName(triggerStyle)}
+          onClick={handleToggle}
+        >
+          <Typography type="body1" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {selectedOption ? selectedOption.label : placeholder}
+          </Typography>
+
+          <div style={arrowIconStyle}>
+              {isOpen ? <KeyboardArrowUpIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
+          </div>
+        </div>
+
+        {/* Dropdown Menu */}
+        {isOpen && (
+          <Paper elevation={5} style={menuStyle}>
+            {options.map((option) => {
+              const isSelected = option.value === value;
+
+              // Hover/Selection Styles
+              const itemStyle = {
+                ...optionStyle,
+                backgroundColor: isSelected ? theme.action.selected : 'transparent',
+                fontWeight: isSelected ? 600 : 400,
+              };
+
+              return (
+                <div
+                  key={option.value}
+                  className={Style.getStyleClassName(itemStyle)}
+                  onClick={() => handleSelect(option.value)}
+                  // Add simple hover effect via style tag injection or class if available,
+                  // typically managed via CSS modules or styled-components,
+                  // but here is a simple inline hover simulation logic if needed.
+                  onMouseEnter={(e) => {
+                    if (!isSelected) e.currentTarget.style.backgroundColor = theme.action.hover;
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                >
+                  <Typography type="body1">
+                    {option.label}
+                  </Typography>
+                </div>
+              );
+            })}
+            {options.length === 0 && (
+              <div style={{ ...optionStyle, color: theme.text.disabled, cursor: 'default' }}>
+                <Typography type="caption">No options</Typography>
+              </div>
+            )}
+          </Paper>
+        )}
+      </div>
+      {/* Error Message Display */}
+      {displayedErrorMessage && (
+        <Typography type="caption" style={errorTextStyle}>
+          {displayedErrorMessage}
+        </Typography>
+      )}
+    </div>
+  );
+};
+
+export default Select;
