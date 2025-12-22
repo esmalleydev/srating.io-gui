@@ -40,8 +40,15 @@ const TextInput: React.FC<TextInputProps> = ({
   const theme = useTheme();
 
   const [isFocused, setIsFocused] = useState(false);
-  const [internalValue, setInternalValue] = useState(valueProp || props.defaultValue || '');
+  const [internalValue, setInternalValue] = useState(valueProp || props.defaultValue || undefined);
   const [validationError, setValidationError] = useState(false);
+  const [validationErrorMessage, setValidationErrorMessage] = useState(externalErrorMessage || undefined);
+
+  // console.log('valueProp', valueProp);
+  // console.log('typeof valueProp', typeof valueProp)
+  // console.log('internalValue', internalValue)
+  // console.log('props.defaultValue', props.defaultValue)
+
 
   // Sync internal value if prop changes (for controlled inputs)
   useEffect(() => {
@@ -85,7 +92,8 @@ const TextInput: React.FC<TextInputProps> = ({
     inputStyle.border = 'none';
     inputStyle.borderBottom = 'none';
   } else if (variant === 'standard') {
-    inputStyle.padding = '8px 0 8px 0';
+    // inputStyle.fontSize = '14px';
+    inputStyle.padding = '26px 0 8px 0';
     inputStyle.border = 'none';
     inputStyle.borderBottom = `2px solid ${borderColor}`;
   } else if (variant === 'outlined') {
@@ -102,12 +110,20 @@ const TextInput: React.FC<TextInputProps> = ({
 
   Objector.extender(inputStyle, style);
 
-  const isLabelActive = isFocused || !!value;
+  const isLabelActive = isFocused || (
+    value !== undefined && value !== ''
+  );
+
+  // console.log('value', value)
+  // console.log('typeof value', typeof value)
+  // console.log('isFocused', isFocused)
+  // console.log('!!value', !!value)
+  // console.log('isLabelActive', isLabelActive)
 
   let labelTop = 12;
   let labelLeft = 12;
   if (variant === 'standard') {
-    labelTop = 8;
+    labelTop = 16;
     labelLeft = 0;
   }
   const labelStyle: React.CSSProperties = {
@@ -201,12 +217,30 @@ const TextInput: React.FC<TextInputProps> = ({
     let { value: nextValue } = e.target;
     // --- Formatters (Input Masking) ---
 
+    if (nextValue) {
+      setValidationError(false);
+      setValidationErrorMessage(undefined);
+    }
+
     if (formatter === 'number') {
       // Remove non-digits
-      nextValue = nextValue.replace(/[^0-9]/g, '');
+      const newValue = nextValue.replace(/[^0-9]/g, '');
+
+      if (newValue !== nextValue) {
+        setValidationError(true);
+        setValidationErrorMessage('Can only enter numbers');
+      }
+      nextValue = newValue;
     } else if (formatter === 'money') {
       // Allow digits and one dot
-      nextValue = nextValue.replace(/[^0-9.]/g, '');
+      const newValue = nextValue.replace(/[^0-9.]/g, '');
+
+      if (newValue !== nextValue) {
+        setValidationError(true);
+        setValidationErrorMessage('Can only enter numbers');
+      }
+
+      nextValue = newValue;
 
       // Prevent multiple dots
       const dots = nextValue.match(/\./g);
@@ -225,12 +259,9 @@ const TextInput: React.FC<TextInputProps> = ({
 
     // --- Max Length (Redundant safety check alongside native attribute) ---
     if (maxLength && nextValue.length > maxLength) {
+      setValidationError(true);
+      setValidationErrorMessage(`Max charcters allowed: ${maxLength}`);
       return;
-    }
-
-    // Clear error if user starts typing (and it wasn't an external error)
-    if (required && nextValue) {
-      setValidationError(false);
     }
 
     // Update Internal State (Uncontrolled)
@@ -248,7 +279,7 @@ const TextInput: React.FC<TextInputProps> = ({
 
   // --- Determine Error Message to Display ---
   // Priority: 1. External Message, 2. Internal Required Message
-  const displayedErrorMessage = externalErrorMessage || (validationError ? 'This field is required' : null);
+  const displayedErrorMessage = validationErrorMessage || externalErrorMessage || (validationError ? 'This field is required' : null);
 
   // todo show maxLength on bottom right of input / how many characters I have reached
 
