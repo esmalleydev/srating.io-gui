@@ -24,6 +24,8 @@ interface SwitchProps {
   labelPlacement?: 'start' | 'end';
 }
 
+// todo make keyboard tab work on this component
+
 const Switch: React.FC<SwitchProps> = ({
   label,
   checked: checkedProp,

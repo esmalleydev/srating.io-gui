@@ -20,6 +20,8 @@ const Paper = (
     tranparency = 0,
     hover = false,
     onClick,
+    onKeyDown,
+    tabIndex,
   }:
   {
     elevation?: number;
@@ -28,7 +30,9 @@ const Paper = (
     tranparency?: number;
     ref?: RefObject<HTMLDivElement | null>;
     hover?: boolean;
-    onClick?: (e: React.SyntheticEvent) => void
+    onClick?: (e: React.SyntheticEvent) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void; // Type definition
+    tabIndex?: number;
   },
 ) => {
   const theme = useTheme();
@@ -57,14 +61,26 @@ const Paper = (
     };
   }
 
-  const handleClick = (e) => {
+  const handleClick = (e: React.SyntheticEvent) => {
     if (onClick) {
       onClick(e);
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (onKeyDown) {
+      onKeyDown(e);
+    }
+  };
+
   return (
-    <div className={Style.getStyleClassName(cStyle)} ref={ref} onClick={handleClick}>
+    <div
+      className={Style.getStyleClassName(cStyle)}
+      ref={ref}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={tabIndex}
+    >
       {children}
     </div>
   );
