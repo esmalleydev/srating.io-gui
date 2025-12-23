@@ -3,7 +3,7 @@
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
-import { useCallback, useEffect, useState } from 'react';
+import { RefObject, useCallback, useEffect, useState } from 'react';
 import Objector from '@/components/utils/Objector';
 
 type TextInputVariant = 'standard' | 'outlined' | 'filled';
@@ -11,6 +11,7 @@ type TextInputFormatter = 'text' | 'number' | 'money';
 
 
 interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
+  ref?: RefObject<HTMLInputElement | null>;
   // Optional custom styles to merge
   style?: React.CSSProperties;
   // Optional label to display above the input
@@ -23,6 +24,7 @@ interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
 }
 
 const TextInput: React.FC<TextInputProps> = ({
+  ref = null,
   style = {},
   label,
   variant = 'outlined',
@@ -44,10 +46,6 @@ const TextInput: React.FC<TextInputProps> = ({
   const [validationError, setValidationError] = useState(false);
   const [validationErrorMessage, setValidationErrorMessage] = useState(externalErrorMessage || undefined);
 
-  // console.log('valueProp', valueProp);
-  // console.log('typeof valueProp', typeof valueProp)
-  // console.log('internalValue', internalValue)
-  // console.log('props.defaultValue', props.defaultValue)
 
 
   // Sync internal value if prop changes (for controlled inputs)
@@ -160,7 +158,63 @@ const TextInput: React.FC<TextInputProps> = ({
     minHeight: '20px', // Prevents layout jumping if you want consistent spacing
   };
 
+
+  const handleValidation = (val) => {
+    let nextValue = val;
+    if (nextValue) {
+      setValidationError(false);
+      setValidationErrorMessage(undefined);
+    }
+
+    if (nextValue && formatter === 'number') {
+      // Remove non-digits
+      const newValue = nextValue.replace(/[^0-9]/g, '');
+
+      if (newValue !== nextValue) {
+        setValidationError(true);
+        setValidationErrorMessage('Can only enter numbers');
+      }
+      nextValue = newValue;
+    } else if (nextValue && formatter === 'money') {
+      // Allow digits and one dot
+      const newValue = nextValue.replace(/[^0-9.]/g, '');
+
+      if (newValue !== nextValue) {
+        setValidationError(true);
+        setValidationErrorMessage('Can only enter numbers');
+      }
+
+      nextValue = newValue;
+
+      // Prevent multiple dots
+      const dots = nextValue.match(/\./g);
+      if (dots && dots.length > 1) {
+        return undefined; // Ignore input
+      }
+
+      // Limit to 2 decimal places
+      if (nextValue.includes('.')) {
+        const [int, dec] = nextValue.split('.');
+        if (dec && dec.length > 2) {
+          return undefined; // Ignore input
+        }
+      }
+    }
+
+    if (maxLength && nextValue && nextValue.length > maxLength) {
+      setValidationError(true);
+      setValidationErrorMessage(`Max charcters allowed: ${maxLength}`);
+      return undefined;
+    }
+
+    return nextValue;
+  };
+
   // --- Logic Helpers ---
+
+  useEffect(() => {
+    handleValidation(valueProp);
+  }, [valueProp]);
 
   const formatMoneyOnBlur = (val: string) => {
     if (!val) {
@@ -222,45 +276,9 @@ const TextInput: React.FC<TextInputProps> = ({
       setValidationErrorMessage(undefined);
     }
 
-    if (formatter === 'number') {
-      // Remove non-digits
-      const newValue = nextValue.replace(/[^0-9]/g, '');
+    nextValue = handleValidation(nextValue);
 
-      if (newValue !== nextValue) {
-        setValidationError(true);
-        setValidationErrorMessage('Can only enter numbers');
-      }
-      nextValue = newValue;
-    } else if (formatter === 'money') {
-      // Allow digits and one dot
-      const newValue = nextValue.replace(/[^0-9.]/g, '');
-
-      if (newValue !== nextValue) {
-        setValidationError(true);
-        setValidationErrorMessage('Can only enter numbers');
-      }
-
-      nextValue = newValue;
-
-      // Prevent multiple dots
-      const dots = nextValue.match(/\./g);
-      if (dots && dots.length > 1) {
-        return; // Ignore input
-      }
-
-      // Limit to 2 decimal places
-      if (nextValue.includes('.')) {
-        const [int, dec] = nextValue.split('.');
-        if (dec && dec.length > 2) {
-          return; // Ignore input
-        }
-      }
-    }
-
-    // --- Max Length (Redundant safety check alongside native attribute) ---
-    if (maxLength && nextValue.length > maxLength) {
-      setValidationError(true);
-      setValidationErrorMessage(`Max charcters allowed: ${maxLength}`);
+    if (nextValue === undefined) {
       return;
     }
 
@@ -288,10 +306,11 @@ const TextInput: React.FC<TextInputProps> = ({
       <div style={{ position: 'relative', width: '100%' }}>
         <Typography type = 'caption' className = {Style.getStyleClassName(labelStyle)}>{label}</Typography>
         <input
+          ref = {ref}
           type="text"
           className={Style.getStyleClassName(inputStyle)}
           value={value}
-          maxLength={maxLength}
+          // maxLength={maxLength} use internval validation
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}

@@ -207,6 +207,7 @@ const Calendar = (
     minDate,
     maxDate,
     shouldDisableDate,
+    // ref,
   }:
   {
     value: string | null | undefined;
@@ -214,6 +215,7 @@ const Calendar = (
     minDate: string;
     maxDate: string;
     shouldDisableDate: (date: Date) => boolean;
+    // ref?: RefObject<HTMLDivElement | null>;
   },
 ) => {
   const theme = useTheme();

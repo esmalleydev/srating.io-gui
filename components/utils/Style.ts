@@ -22,6 +22,7 @@ class Style {
       appBar: 1100,
       drawer: 1200,
       fab: 1050,
+      calendar: 1000,
       mobileStepper: 1000,
       modal: 1300,
       snackbar: 1400,
@@ -100,7 +101,7 @@ class Style {
     // console.time('getStyleClassName')
     const className = `css-${this.hashCSS(cssString, debug)}`;
 
-    this.injectStyle(className, cssString);
+    this.injectStyle(className, cssString, debug);
     // console.timeEnd('getStyleClassName')
     return className;
   }
@@ -171,14 +172,14 @@ class Style {
     return (hash >>> 0).toString(36); // base36 for short string
   }
 
-  private static injectStyle(className: string, css: string | object): void {
+  private static injectStyle(className: string, css: string | object, debug = false): void {
     if (
       this.styleCache.has(className)
     ) {
       return;
     }
 
-    const finalCSS = this.processCSS(className, css);
+    const finalCSS = this.processCSS(className, css, false, debug);
 
     // If on server, store it only
     if (typeof window === 'undefined') {
@@ -193,7 +194,7 @@ class Style {
     this.cssMap.set(className, finalCSS);
   }
 
-  private static processCSS(className: string, css: string | object): string {
+  private static processCSS(className: string, css: string | object, isRecursive = false, debug = false): string {
     // Helper: remove trailing colon from selectors (e.g. 'td:' -> 'td')
     const cleanSelector = (sel:string): string => {
       return sel.replace(/:$/g, '');
@@ -202,6 +203,28 @@ class Style {
     // Convert camelCase to kebab-case for property names
     const toKebabCase = (str: string): string => {
       return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+    };
+
+    // Helper: Remove the specific '}' that closed the block from the accumulated lines
+    // so we don't duplicate it when wrapping the result in new braces.
+    const removeLastBrace = (lines: string[]) => {
+      if (lines.length === 0) return;
+      const lastIdx = lines.length - 1;
+      const lastLine = lines[lastIdx];
+
+      const braceIdx = lastLine.lastIndexOf('}');
+      if (braceIdx !== -1) {
+        // Remove the brace
+        const newLine = lastLine.substring(0, braceIdx) + lastLine.substring(braceIdx + 1);
+
+        // If the line is now empty (or just whitespace), remove it entirely
+        if (!newLine.trim()) {
+          lines.pop();
+        } else {
+          // eslint-disable-next-line no-param-reassign
+          lines[lastIdx] = newLine;
+        }
+      }
     };
 
     const requiresQuotes = new Set([
@@ -222,6 +245,13 @@ class Style {
       'font-size', 'border-width', 'border-radius', 'gap', 'column-gap', 'row-gap',
       'min-width', 'min-height', 'max-width', 'max-height',
     ]);
+
+    const NON_RECURSIVE_AT_RULES = [
+      '@keyframes',
+      '@-webkit-keyframes',
+      '@font-face',
+      '@counter-style',
+    ];
 
     const normalizeValue = (property: string, value: string | number): string | number => {
       if (!lengthProps.has(property)) {
@@ -299,7 +329,9 @@ class Style {
           lines.push(...nested);
           lines.push('}');
         } else {
-          lines.push(`${key}: ${JSON.stringify(value)},`);
+          // Don't stringify strings, to avoid double-escaping quotes (e.g. content: '"*"')
+          const finalValue = typeof value === 'string' ? value : JSON.stringify(value);
+          lines.push(`${key}: ${finalValue},`);
         }
       }
 
@@ -325,6 +357,10 @@ class Style {
     let atRuleLines: string[] = [];
     let atRuleBraceCount = 0;
 
+    // if (debug) {
+    //   console.log('lines', lines)
+    // }
+
     // eslint-disable-next-line no-restricted-syntax
     for (const line of lines) {
       // PRIORITY 1: If we are actively collecting an At-Rule (@media), we consume EVERYTHING
@@ -340,9 +376,23 @@ class Style {
 
         // When we've closed all braces, the at-rule is complete
         if (atRuleBraceCount === 0) {
+          removeLastBrace(atRuleLines);
+          // if (debug) console.log(currentAtRule)
+          // if (debug) console.log(NON_RECURSIVE_AT_RULES.includes(currentAtRule))
           // Recursively process the content inside the media query
-          const innerCSS = this.processCSS(className, atRuleLines.join('\n'));
-          atRules.push(`${currentAtRule} { ${innerCSS} }`);
+          if (currentAtRule && NON_RECURSIVE_AT_RULES.includes(currentAtRule)) {
+            // if (debug) {
+            //   console.log('atRuleLines', atRuleLines)
+            //   console.log('atRuleLines push', `${currentAtRule} {\n${atRuleLines.join('\n')}\n}`)
+            // }
+            atRules.push(`${currentAtRule} {\n${atRuleLines.join('\n')}\n}`);
+          } else {
+            const innerCSS = this.processCSS(className, atRuleLines.join('\n'), true, debug);
+            // if (debug) {
+            //   console.log('innerCSS', innerCSS)
+            // }
+            atRules.push(`${currentAtRule} { ${innerCSS} }`);
+          }
           currentAtRule = null;
           insideAtRule = false;
           atRuleLines = [];
@@ -356,11 +406,17 @@ class Style {
           // end nested block
           insideNestedBlock = false;
           const beforeBrace = line.split('}')[0].trim();
+          // if (debug) {
+          //   console.log('beforeBrace', beforeBrace)
+          // }
           if (beforeBrace) {
             nestedBlockLines.push(normalizeCSSLine(beforeBrace));
           }
 
           if (currentNestedSelector) {
+            // if (debug) {
+            //   console.log('nestedBlockLines', nestedBlockLines)
+            // }
             nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
           }
 
@@ -394,9 +450,25 @@ class Style {
             atRuleBraceCount -= (afterBrace.match(/}/g) || []).length;
 
             if (atRuleBraceCount === 0) {
+              removeLastBrace(atRuleLines);
               // Recursively process the content inside the media query
-              const innerCSS = this.processCSS(className, atRuleLines.join('\n'));
-              atRules.push(`${currentAtRule} { ${innerCSS} }`);
+
+              if (NON_RECURSIVE_AT_RULES.includes(currentAtRule)) {
+                if (debug) {
+                  console.log('atRuleLines 2', atRuleLines);
+                  console.log('atRuleLines push 2', `${currentAtRule} {\n${atRuleLines.join('\n')}\n}`);
+                }
+
+                // const body = atRuleLines.join('\n').replace(/\}\s*$/, ''); // remove trailing }
+                atRules.push(`${currentAtRule} {\n${atRuleLines.join('\n')}\n}`);
+              } else {
+                // Pass isRecursive=false to wrap inner properties with the classname
+                const innerCSS = this.processCSS(className, atRuleLines.join('\n'), false, debug);
+                if (debug) {
+                  console.log('innerCSS 2', innerCSS);
+                }
+                atRules.push(`${currentAtRule} { ${innerCSS} }`);
+              }
               currentAtRule = null;
               insideAtRule = false;
               atRuleLines = [];
@@ -435,17 +507,34 @@ class Style {
 
     // Close any remaining nested block
     if (insideNestedBlock && currentNestedSelector && nestedBlockLines.length) {
+      // if (debug) {
+      //   console.log('nestedBlockLines', nestedBlockLines)
+      // }
+      // if (debug) console.log('zzzzz2', `${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`)
       nestedRules.push(`${cleanSelector(currentNestedSelector)} { ${nestedBlockLines.join(' ')} }`);
     }
 
     // Handle edge case where atRule is unfinished (though valid CSS usually isn't)
     if (currentAtRule && atRuleLines.length) {
-      const innerCSS = this.processCSS(className, atRuleLines.join('\n'));
+      const innerCSS = this.processCSS(className, atRuleLines.join('\n'), true, debug);
+      // if (debug) {
+      //   console.log('innerCSS 3', innerCSS);
+      // }
       atRules.push(`${currentAtRule} { ${innerCSS} }`);
     }
 
+    // if (debug) {
+    //   console.log('topLevelRules', topLevelRules)
+    // }
+
     // Compose final CSS:
-    const topLevelCSS = `.${className} { ${topLevelRules.join(' ')} }`;
+    // Only generate top-level block if it's not recursive AND has actual rules
+    // (If isRecursive is true, we just return the unwrapped rules, expecting the caller to wrap them if needed.
+    // But our recursive calls for media queries now use isRecursive=false, so this logic mostly affects the very root call.)
+    const topLevelCSS = (!isRecursive && topLevelRules.length > 0)
+      ? `.${className} { ${topLevelRules.join(' ')} }`
+      : topLevelRules.join(' '); // If recursive, return raw properties
+
     // Replace & in nested rules with .classname
     const nestedCSS = nestedRules.map((rule) => rule.replace(/&/g, `.${className}`)).join(' ');
 
@@ -454,7 +543,11 @@ class Style {
     // So we just join them.
     const atCSS = atRules.join(' ');
 
-    const finalCSS = `${topLevelCSS} ${nestedCSS} ${atCSS}`;
+    // if (debug) {
+    //   console.log('atRules', atRules);
+    // }
+
+    const finalCSS = `${topLevelCSS} ${nestedCSS} ${atCSS}`.trim();
 
     return finalCSS;
   }

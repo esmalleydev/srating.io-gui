@@ -36,6 +36,9 @@ const Plane = (
     if (open) {
       setIsVisible(true);
     }
+    //  else {
+    //   setIsVisible(false);
+    // }
     // Note: We DO NOT set isVisible(false) here.
     // We wait for onAnimationEnd to do that.
   }, [open]);
@@ -192,10 +195,7 @@ const Plane = (
   };
 
   const handleClick = (e) => {
-    console.log('handle click', e);
-
     // todo is this needed anymore?
-
     onClose(e);
   };
 
