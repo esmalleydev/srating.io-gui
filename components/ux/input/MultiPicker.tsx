@@ -176,7 +176,7 @@ const MultiPicker = ({
 
       {/* Error Message */}
       {showError && errorMessage && (
-        <Typography type="caption" style={{ color: 'red', marginTop: 4 }}>
+        <Typography type="caption" style={{ color: theme.error.main, marginTop: 4 }}>
           {errorMessage}
         </Typography>
       )}

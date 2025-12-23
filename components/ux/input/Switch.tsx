@@ -113,6 +113,14 @@ const Switch: React.FC<SwitchProps> = ({
     ...style, // Allow overrides
   };
 
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent scrolling when pressing Space
+      handleToggle();
+    }
+  };
+
   return (
     <div className={Style.getStyleClassName(containerStyle)} onClick={handleToggle}>
       {label && (
@@ -128,7 +136,7 @@ const Switch: React.FC<SwitchProps> = ({
         </Typography>
       )}
       {/* The Switch Graphic */}
-      <div className={Style.getStyleClassName(trackStyle)}>
+      <div className={Style.getStyleClassName(trackStyle)} tabIndex={0} onKeyDown={handleKeyDown}>
         <div className={Style.getStyleClassName(thumbStyle)} />
       </div>
     </div>

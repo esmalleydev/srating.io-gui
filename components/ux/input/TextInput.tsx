@@ -77,7 +77,7 @@ const TextInput: React.FC<TextInputProps> = ({
     width: '100%',
     height,
     boxSizing: 'border-box',
-    color: textColor,
+    color: hasError ? errorColor : textColor,
     outline: 'none',
     transition: 'all 0.3s ease',
     backgroundColor: 'transparent',
@@ -124,10 +124,16 @@ const TextInput: React.FC<TextInputProps> = ({
     labelTop = 16;
     labelLeft = 0;
   }
+  let labelColor = theme.text.secondary;
+  if (isFocused) {
+    labelColor = borderColor;
+  } else if (hasError) {
+    labelColor = errorColor;
+  }
   const labelStyle: React.CSSProperties = {
     position: 'absolute',
     pointerEvents: 'none',
-    color: isFocused ? borderColor : theme.text.secondary,
+    color: labelColor,
     transition: 'all 0.3s ease-out',
     transformOrigin: 'top left',
     top: labelTop,
