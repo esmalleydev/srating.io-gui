@@ -104,6 +104,17 @@ describe('Style Class CSS Generation', () => {
     expect(output).toContain('content: "hello";');
   });
 
+  it('should preserve quotes for font names with spaces but strip them for single words', () => {
+    const css = {
+      fontFamily: '"Segoe UI", Arial, sans-serif',
+    };
+    const className = Style.getStyleClassName(css);
+    const output = Style.getCSS();
+
+    // "Segoe UI" should keep quotes, Arial doesn't need them (though keeping them is technically valid CSS)
+    expect(output).toContain('font-family: "Segoe UI", Arial, sans-serif;');
+  });
+
   // ==========================================
   // 2. Nested Selectors & Pseudo-classes
   // ==========================================
@@ -353,4 +364,63 @@ describe('Style Class CSS Generation', () => {
     const expectedMedia = `@media (min-width:600px) { .${className} { width: 200px; } .${className}:focus { width: 250px; } }`;
     expect(output).toContain(expectedMedia);
   });
+
+  it('should handle complex pseudo-selectors and combinators', () => {
+    const css = {
+      '&:hover': { color: 'red' },
+      '& > div': { margin: 10 },
+      '&:nth-child(even)': { background: '#eee' },
+      '&::before': { content: '""', display: 'block' }
+    };
+    const className = Style.getStyleClassName(css);
+    const output = Style.getCSS();
+    
+    expect(output).toContain(`.${className}:hover { color: red; }`);
+    expect(output).toContain(`.${className} > div { margin: 10px; }`);
+    expect(output).toContain(`.${className}:nth-child(even) { background: #eee; }`);
+  });
+
+  it('should not incorrectly append "px" to non-length values', () => {
+    const css = {
+      width: 'calc(100% - 20px)',
+      flex: 1,
+      opacity: 0.5,
+      lineHeight: 1.5,
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      zIndex: 100
+    };
+    const className = Style.getStyleClassName(css);
+    const output = Style.getCSS();
+
+    expect(output).toContain('width: calc(100% - 20px);');
+    expect(output).toContain('flex: 1;'); // flex is usually unitless
+    expect(output).toContain('opacity: 0.5;');
+    expect(output).toContain('line-height: 1.5;');
+    expect(output).toContain('z-index: 100;');
+  });
+
+  it('should normalize property values inside keyframes', () => {
+    const css = {
+      '@keyframes slide': {
+        from: { top: 0 },
+        to: { top: 100 }
+      }
+    };
+    Style.getStyleClassName(css);
+    const output = normalize(Style.getCSS());
+
+    expect(output).toContain('from { top: 0px; }');
+    expect(output).toContain('to { top: 100px; }');
+  });
+
+  it('should produce the same hash regardless of object key order', () => {
+    const cssA = { color: 'red', margin: 10 };
+    const cssB = { margin: 10, color: 'red' };
+
+    const classA = Style.getStyleClassName(cssA);
+    const classB = Style.getStyleClassName(cssB);
+
+    expect(classA).toBe(classB);
+  });
+
 });

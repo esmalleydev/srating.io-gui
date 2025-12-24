@@ -229,7 +229,6 @@ class Style {
 
     const requiresQuotes = new Set([
       'content',
-      'font-family',
       'quotes',
       'cue',
       'cue-before',
@@ -246,12 +245,16 @@ class Style {
       'min-width', 'min-height', 'max-width', 'max-height',
     ]);
 
-    const NON_RECURSIVE_AT_RULES = [
+    const non_recursive_at_rules = [
       '@keyframes',
       '@-webkit-keyframes',
       '@font-face',
       '@counter-style',
     ];
+
+    const isNonRecursiveRule = (ruleName: string) => {
+      return non_recursive_at_rules.some((prefix) => ruleName.startsWith(prefix));
+    };
 
     const normalizeValue = (property: string, value: string | number): string | number => {
       if (!lengthProps.has(property)) {
@@ -287,23 +290,25 @@ class Style {
       }
 
       const rawProperty = line.slice(0, colonIndex).trim();
-      const rawValue = line.slice(colonIndex + 1).trim();
+      let value: string | number = line.slice(colonIndex + 1).trim();
 
       const property = toKebabCase(rawProperty);
-
-      let value: string | number = rawValue;
 
       // Remove trailing comma
       if (value.endsWith(',')) {
         value = value.slice(0, -1).trim();
       }
 
-      // Remove surrounding quotes if property does not require them
-      if (
-        !requiresQuotes.has(property) &&
-        ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))
-      ) {
-        value = value.slice(1, -1);
+      // Only strip quotes if it's NOT a property like 'content'
+      if (!requiresQuotes.has(property)) {
+        // Strip leading/trailing double or single quotes
+        // This handles: "Arial" -> Arial or 'Arial' -> Arial
+        if (
+          (value.startsWith('"') && value.endsWith('"')) || 
+          (value.startsWith("'") && value.endsWith("'"))
+        ) {
+          value = value.slice(1, -1);
+        }
       }
 
       value = normalizeValue(property, value);
@@ -329,8 +334,10 @@ class Style {
           lines.push(...nested);
           lines.push('}');
         } else {
-          // Don't stringify strings, to avoid double-escaping quotes (e.g. content: '"*"')
-          const finalValue = typeof value === 'string' ? value : JSON.stringify(value);
+          // Note:
+          // - We add a comma here to support object syntax, normalizeCSSLine will handle removing it and adding semicolons later.
+          // - Don't stringify strings, to avoid double-escaping quotes (e.g. content: '"*"')
+          const finalValue = typeof value === 'string' ? value : String(value);
           lines.push(`${key}: ${finalValue},`);
         }
       }
@@ -377,17 +384,12 @@ class Style {
         // When we've closed all braces, the at-rule is complete
         if (atRuleBraceCount === 0) {
           removeLastBrace(atRuleLines);
-          // if (debug) console.log(currentAtRule)
-          // if (debug) console.log(NON_RECURSIVE_AT_RULES.includes(currentAtRule))
           // Recursively process the content inside the media query
-          if (currentAtRule && NON_RECURSIVE_AT_RULES.includes(currentAtRule)) {
-            // if (debug) {
-            //   console.log('atRuleLines', atRuleLines)
-            //   console.log('atRuleLines push', `${currentAtRule} {\n${atRuleLines.join('\n')}\n}`)
-            // }
-            atRules.push(`${currentAtRule} {\n${atRuleLines.join('\n')}\n}`);
+          if (currentAtRule && isNonRecursiveRule(currentAtRule)) {
+            const normalizedBlock = atRuleLines.map((l) => normalizeCSSLine(l)).join('\n');
+            atRules.push(`${currentAtRule} {\n${normalizedBlock}\n}`);
           } else {
-            const innerCSS = this.processCSS(className, atRuleLines.join('\n'), true, debug);
+            const innerCSS = this.processCSS(className, atRuleLines.join('\n'), false, debug);
             // if (debug) {
             //   console.log('innerCSS', innerCSS)
             // }
@@ -453,14 +455,9 @@ class Style {
               removeLastBrace(atRuleLines);
               // Recursively process the content inside the media query
 
-              if (NON_RECURSIVE_AT_RULES.includes(currentAtRule)) {
-                if (debug) {
-                  console.log('atRuleLines 2', atRuleLines);
-                  console.log('atRuleLines push 2', `${currentAtRule} {\n${atRuleLines.join('\n')}\n}`);
-                }
-
-                // const body = atRuleLines.join('\n').replace(/\}\s*$/, ''); // remove trailing }
-                atRules.push(`${currentAtRule} {\n${atRuleLines.join('\n')}\n}`);
+              if (isNonRecursiveRule(currentAtRule)) {
+                const normalizedBlock = atRuleLines.map((l) => normalizeCSSLine(l)).join('\n');
+                atRules.push(`${currentAtRule} {\n${normalizedBlock}\n}`);
               } else {
                 // Pass isRecursive=false to wrap inner properties with the classname
                 const innerCSS = this.processCSS(className, atRuleLines.join('\n'), false, debug);
@@ -516,11 +513,13 @@ class Style {
 
     // Handle edge case where atRule is unfinished (though valid CSS usually isn't)
     if (currentAtRule && atRuleLines.length) {
-      const innerCSS = this.processCSS(className, atRuleLines.join('\n'), true, debug);
-      // if (debug) {
-      //   console.log('innerCSS 3', innerCSS);
-      // }
-      atRules.push(`${currentAtRule} { ${innerCSS} }`);
+      if (isNonRecursiveRule(currentAtRule)) {
+        const normalizedBlock = atRuleLines.map((l) => normalizeCSSLine(l)).join('\n');
+        atRules.push(`${currentAtRule} {\n${normalizedBlock}\n}`);
+      } else {
+        const innerCSS = this.processCSS(className, atRuleLines.join('\n'), false, debug);
+        atRules.push(`${currentAtRule} { ${innerCSS} }`);
+      }
     }
 
     // if (debug) {
