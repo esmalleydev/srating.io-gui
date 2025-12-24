@@ -31,6 +31,7 @@ interface DatePickerProps {
   error?: boolean; // External error control
   errorMessage?: string;
   required?: boolean;
+  triggerValidation?: boolean;
 }
 
 const DateInput: React.FC<DatePickerProps> = ({
@@ -43,11 +44,13 @@ const DateInput: React.FC<DatePickerProps> = ({
   error: externalError = false,
   errorMessage: externalErrorMessage,
   required = false,
+  triggerValidation = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // --- State ---
   const [isOpen, setIsOpen] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
 
   // Parse initial value
   const initialDate = value ? new Date(value) : null;
@@ -74,8 +77,8 @@ const DateInput: React.FC<DatePickerProps> = ({
 
 
   // Handle Input Typing (Masking & Validation)
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let text = e.target.value;
+  const handleInputChange = (val) => {
+    let text = val;
 
     // Simple Input Masking: Auto-add slashes for MM/DD/YYYY
     // Only add slash if deleting is not happening (simplistic check)
@@ -131,6 +134,7 @@ const DateInput: React.FC<DatePickerProps> = ({
       skipOpenRef.current = false; // Reset the flag
       return; // Do nothing
     }
+    // setIsTouched(true);
     setIsOpen(true);
     setCalAncor(e.currentTarget);
   };
@@ -234,6 +238,7 @@ const DateInput: React.FC<DatePickerProps> = ({
         error = {externalError}
         errorMessage = {externalErrorMessage}
         required = {required}
+        triggerValidation = {triggerValidation}
       />
       <Plane
         open={isOpen}

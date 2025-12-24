@@ -18,12 +18,13 @@ interface MultiPickerProps {
   options: MultiPickerOption[];
   selected: (string | number)[];
   label?: string;
-  onChange?: (value: (string | number)[] | string | number) => void;
+  onChange?: (value: (string | number)[] | string | number | null) => void;
   style?: React.CSSProperties;
   isRadio?: boolean;
   required?: boolean;
   error?: boolean; // External error control
   errorMessage?: string; // External error message
+  triggerValidation?: boolean;
 }
 
 export const getTerminologyOptions = (type: string) => {
@@ -56,6 +57,7 @@ const MultiPicker = ({
   error: externalError = false,
   errorMessage = 'Selection is required',
   style,
+  triggerValidation = false,
 }: MultiPickerProps) => {
   const theme = useTheme();
 
@@ -71,13 +73,17 @@ const MultiPicker = ({
   }, [selected]);
 
 
-  const showError = externalError || (required && isTouched && internalSelected.length === 0);
+  const showError = externalError || (required && (isTouched || triggerValidation) && internalSelected.length === 0);
 
   const handleSelection = (value: string | number) => {
     let newSelection: (string | number)[] = [];
 
     if (isRadio) {
-      newSelection = [value];
+      if (internalSelected.includes(value)) {
+        newSelection = [];
+      } else {
+        newSelection = [value];
+      }
     } else {
       // Logic: Multi-select toggle
       if (internalSelected.includes(value)) {
@@ -96,7 +102,7 @@ const MultiPicker = ({
     if (onChange) {
       // If radio, usually parents expect a single value, if multi, an array.
       // We pass the structure based on the mode.
-      onChange(isRadio ? value : newSelection);
+      onChange(isRadio ? newSelection[0] || null : newSelection);
     }
   };
 

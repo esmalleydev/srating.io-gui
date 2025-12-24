@@ -10,7 +10,7 @@ type TextInputVariant = 'standard' | 'outlined' | 'filled';
 type TextInputFormatter = 'text' | 'number' | 'money';
 
 
-interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
+interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange'> {
   ref?: RefObject<HTMLInputElement | null>;
   // Optional custom styles to merge
   style?: React.CSSProperties;
@@ -21,6 +21,8 @@ interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   error?: boolean; // External error control
   errorMessage?: string;
   required?: boolean;
+  onChange?: (value: string | number) => void;
+  triggerValidation?: boolean;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -37,6 +39,7 @@ const TextInput: React.FC<TextInputProps> = ({
   onBlur: onBlurProp,
   onChange: onChangeProp,
   value: valueProp,
+  triggerValidation = false,
   ...props
 }) => {
   const theme = useTheme();
@@ -45,7 +48,7 @@ const TextInput: React.FC<TextInputProps> = ({
   const [internalValue, setInternalValue] = useState(valueProp || props.defaultValue || undefined);
   const [validationError, setValidationError] = useState(false);
   const [validationErrorMessage, setValidationErrorMessage] = useState(externalErrorMessage || undefined);
-
+  const [isTouched, setIsTouched] = useState(false);
 
 
   // Sync internal value if prop changes (for controlled inputs)
@@ -112,11 +115,6 @@ const TextInput: React.FC<TextInputProps> = ({
     value !== undefined && value !== ''
   );
 
-  // console.log('value', value)
-  // console.log('typeof value', typeof value)
-  // console.log('isFocused', isFocused)
-  // console.log('!!value', !!value)
-  // console.log('isLabelActive', isLabelActive)
 
   let labelTop = 12;
   let labelLeft = 12;
@@ -172,7 +170,7 @@ const TextInput: React.FC<TextInputProps> = ({
       setValidationErrorMessage(undefined);
     }
 
-    if (nextValue && formatter === 'number') {
+    if (nextValue && formatter === 'number' && typeof nextValue !== 'number') {
       // Remove non-digits
       const newValue = nextValue.replace(/[^0-9]/g, '');
 
@@ -213,6 +211,17 @@ const TextInput: React.FC<TextInputProps> = ({
       return undefined;
     }
 
+    if (
+      required &&
+      !nextValue &&
+      (
+        isTouched ||
+        triggerValidation
+      )
+    ) {
+      setValidationError(true);
+    }
+
     return nextValue;
   };
 
@@ -220,7 +229,7 @@ const TextInput: React.FC<TextInputProps> = ({
 
   useEffect(() => {
     handleValidation(valueProp);
-  }, [valueProp]);
+  }, [valueProp, triggerValidation]);
 
   const formatMoneyOnBlur = (val: string) => {
     if (!val) {
@@ -237,6 +246,7 @@ const TextInput: React.FC<TextInputProps> = ({
 
   const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(true);
+    setIsTouched(true);
     if (onFocusProp) {
       onFocusProp(e);
     }
@@ -257,21 +267,17 @@ const TextInput: React.FC<TextInputProps> = ({
 
       // Artificial event to ensure parent gets the formatted value
       if (valueProp !== undefined && onChangeProp) {
-        const syntheticEvent = { ...e, target: { ...e.target, value: finalValue } } as React.FocusEvent<HTMLInputElement>;
-        onChangeProp(syntheticEvent);
+        // const syntheticEvent = { ...e, target: { ...e.target, value: finalValue } } as React.FocusEvent<HTMLInputElement>;
+        onChangeProp(finalValue);
       }
     }
 
-    // 2. Handle Required Validation
-    if (required && !finalValue) {
-      setValidationError(true);
-    } else {
-      setValidationError(false);
-    }
+    handleValidation(finalValue);
+
     if (onBlurProp) {
       onBlurProp(e);
     }
-  }, [onBlurProp, formatter, required, valueProp, onChangeProp]);
+  }, [onBlurProp, formatter, required, valueProp, onChangeProp, isTouched]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     let { value: nextValue } = e.target;
@@ -296,10 +302,10 @@ const TextInput: React.FC<TextInputProps> = ({
     // Trigger Parent Change
     if (onChangeProp) {
       // Create a new event with the formatted value
-      e.target.value = nextValue;
-      onChangeProp(e);
+      // e.target.value = nextValue;
+      onChangeProp(nextValue);
     }
-  }, [valueProp, onChangeProp, formatter, maxLength, required]);
+  }, [valueProp, onChangeProp, formatter, maxLength, required, isTouched]);
 
   // --- Determine Error Message to Display ---
   // Priority: 1. External Message, 2. Internal Required Message
@@ -313,7 +319,7 @@ const TextInput: React.FC<TextInputProps> = ({
         <Typography type = 'caption' className = {Style.getStyleClassName(labelStyle)}>{label}</Typography>
         <input
           ref = {ref}
-          type="text"
+          type='text'
           className={Style.getStyleClassName(inputStyle)}
           value={value}
           // maxLength={maxLength} use internval validation
@@ -325,7 +331,7 @@ const TextInput: React.FC<TextInputProps> = ({
       </div>
 
       {displayedErrorMessage && (
-        <Typography type="caption" style={errorTextStyle}>
+        <Typography type='caption' style={errorTextStyle}>
           {displayedErrorMessage}
         </Typography>
       )}

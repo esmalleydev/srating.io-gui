@@ -5,6 +5,8 @@ import Style from '@/components/utils/Style';
 import Calendar from '../calendar/Calendar';
 import TextInput from './TextInput';
 
+// deprecated, dont use
+
 // Helper to format Date -> MM/DD/YYYY
 const formatDateToString = (date: Date | null): string => {
   if (!date) return '';
@@ -144,7 +146,7 @@ const DateInputWithoutPlane: React.FC<DatePickerProps> = ({
 
   return (
     <div ref={containerRef} className={Style.getStyleClassName(wrapperStyle)}>
-      <TextInput
+      {/* <TextInput
         label={label}
         value={inputValue}
         onChange={handleInputChange}
@@ -162,7 +164,7 @@ const DateInputWithoutPlane: React.FC<DatePickerProps> = ({
           shouldDisableDate={() => false} // Add custom logic if needed
         />
       </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -29,6 +29,7 @@ interface SelectProps {
   required?: boolean;
   error?: boolean; // External error control
   errorMessage?: string; // External error message
+  triggerValidation?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -43,12 +44,14 @@ const Select: React.FC<SelectProps> = ({
   required = false,
   error: externalError = false,
   errorMessage: externalErrorMessage,
+  triggerValidation = false,
 }) => {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
 
   // --- State ---
   const [isOpen, setIsOpen] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || null);
   const [validationError, setValidationError] = useState(false); // Internal validation state
 
@@ -59,7 +62,7 @@ const Select: React.FC<SelectProps> = ({
   const selectedOption = useMemo(() => options.find((o) => o.value === value), [options, value]);
 
   const errorColor = theme.error.main;
-  const hasError = externalError || !!externalErrorMessage || validationError;
+  const hasError = (externalError || !!externalErrorMessage || validationError);
 
   // Determine Error Message to Display
   const displayedErrorMessage = externalErrorMessage || (validationError ? 'This field is required' : null);
@@ -83,6 +86,7 @@ const Select: React.FC<SelectProps> = ({
 
   // Custom click handler to toggle dropdown
   const handleToggle = () => {
+    setIsTouched(true);
     // If opening, ensure no validation error state is immediately visible unless required
     if (!isOpen) {
       setValidationError(false);
@@ -178,10 +182,17 @@ const Select: React.FC<SelectProps> = ({
     labelLeft = 0;
   }
 
+  let labelColor = theme.text.secondary;
+  if (isFocused) {
+    labelColor = borderColor;
+  } else if (hasError) {
+    labelColor = errorColor;
+  }
+
   const labelStyle: React.CSSProperties = {
     position: 'absolute',
     pointerEvents: 'none',
-    color: isFocused ? borderColor : theme.text.secondary,
+    color: labelColor,
     transition: 'all 0.3s ease-out',
     transformOrigin: 'top left',
     top: labelTop,
@@ -209,7 +220,7 @@ const Select: React.FC<SelectProps> = ({
     right: variant === 'standard' ? 0 : 12,
     top: '50%',
     transform: 'translateY(-50%)',
-    color: theme.text.secondary,
+    color: labelColor,
     pointerEvents: 'none', // Allow clicking through the icon
   };
 
@@ -230,7 +241,6 @@ const Select: React.FC<SelectProps> = ({
     overflowY: 'auto',
     zIndex: 1000,
     marginTop: '4px',
-    backgroundColor: theme.background.main, // Ensure solid background
   };
 
   const optionStyle: React.CSSProperties = {
@@ -270,7 +280,7 @@ const Select: React.FC<SelectProps> = ({
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <Paper elevation={5} style={menuStyle}>
+          <Paper elevation={3} style={menuStyle}>
             {options.map((option) => {
               const isSelected = option.value === value;
 
@@ -311,7 +321,7 @@ const Select: React.FC<SelectProps> = ({
         )}
       </div>
       {/* Error Message Display */}
-      {displayedErrorMessage && (
+      {displayedErrorMessage && (isTouched || triggerValidation) && (
         <Typography type="caption" style={errorTextStyle}>
           {displayedErrorMessage}
         </Typography>
