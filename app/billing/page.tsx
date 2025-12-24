@@ -1,6 +1,5 @@
 
 
-import Script from 'next/script';
 import BillingPage from './billing-page';
 import { Metadata, ResolvingMetadata } from 'next';
 
@@ -33,21 +32,6 @@ export async function generateMetadata(
 export default async function Page() {
   return (
     <>
-    <Script id="google-analytics" strategy="afterInteractive">
-      {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-
-        gtag('event', 'conversion', {'send_to': 'AW-11331182972/mmDvCKu5sIMaEPzCkJsq'});
-      `}
-    </Script>
-    <Script id="twitter-conversion" strategy="afterInteractive">
-      {`
-        twq('event', 'tw-qltj2-qltj3', {
-        conversion_id: 'twitter' 
-      });
-      `}
-    </Script>
     <BillingPage />
     </>
   );

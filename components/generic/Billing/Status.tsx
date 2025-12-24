@@ -15,6 +15,7 @@ import Paper from '@/components/ux/container/Paper';
 import Footer from '../Footer';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
+import Conversions from './Conversions';
 
 
 const Status = () => {
@@ -26,6 +27,7 @@ const Status = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [reference, setReference] = useState<string | null>(null);
   const [amount, setAmount] = useState(0);
+  const [triggerConversion, setTriggerConversion] = useState(false);
 
 
   // Retrieve the "payment_intent_client_secret" query parameter appended to
@@ -49,6 +51,7 @@ const Status = () => {
 
       if (paymentIntent && paymentIntent.status === 'succeeded') {
         setMessage('Success! Payment received.');
+        setTriggerConversion(true);
       } else if (paymentIntent && paymentIntent.status === 'processing') {
         setMessage("Payment processing. We'll update you when payment is received.");
       } else if (paymentIntent && paymentIntent.status === 'requires_payment_method') {
@@ -95,6 +98,7 @@ const Status = () => {
 
   return (
     <div>
+      {triggerConversion ? <Conversions /> : ''}
       {
         !status ? <div style = {{ textAlign: 'center' }}><CircularProgress color="inherit" /></div> :
         <div style = {{ padding: 20 }}>
