@@ -170,7 +170,7 @@ const MultiPicker = ({
       )}
 
       {/* Option Containers */}
-      <Columns> 
+      <Columns style = {{ gap: 10 }}> 
         {options.map((option) => getOptionContainer(option))}
       </Columns>
 

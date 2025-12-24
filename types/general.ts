@@ -22,6 +22,34 @@ export interface Division {
 
 export type Divisions = {[division_id: string]: Division};
 
+export interface FantasyPayoutRule {
+  fantasy_payout_rule_id: string;
+  code: string;
+  name: string;
+  description: string;
+  json_payout_structure: object;
+  ordinal: number;
+  custom: number;
+  guid: string;
+  inactive: number;
+  deleted: number;
+}
+
+export type FantasyPayoutRules = {[fantasy_payout_rule_id: string]: FantasyPayoutRule};
+
+export interface Terminology {
+  terminology_id: string;
+  code: string;
+  name: string;
+  description: string;
+  type: string;
+  guid: string;
+  inactive: number;
+  deleted: number;
+}
+
+export type Terminologies = {[terminology_id: string]: Terminology};
+
 export interface Subscription {
   subscription_id: string;
   user_id: string;
