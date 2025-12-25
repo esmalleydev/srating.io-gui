@@ -37,6 +37,10 @@ export const getTerminologyOptions = (type: string) => {
   for (const terminology_id in terminologies) {
     const row = terminologies[terminology_id];
 
+    if (row.inactive) {
+      continue;
+    }
+
     if (row.type === type) {
       options.push({
         label: row.name,

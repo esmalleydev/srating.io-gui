@@ -23,6 +23,8 @@ interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   required?: boolean;
   onChange?: (value: string | number) => void;
   triggerValidation?: boolean;
+  min?: number; // for number or money formats
+  max?: number; // for number or money formats
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -40,6 +42,8 @@ const TextInput: React.FC<TextInputProps> = ({
   onChange: onChangeProp,
   value: valueProp,
   triggerValidation = false,
+  min = null,
+  max = null,
   ...props
 }) => {
   const theme = useTheme();
@@ -171,8 +175,8 @@ const TextInput: React.FC<TextInputProps> = ({
     }
 
     if (nextValue && formatter === 'number' && typeof nextValue !== 'number') {
-      // Remove non-digits
-      const newValue = nextValue.replace(/[^0-9]/g, '');
+      // Remove non-digits, allows for negative and decimals
+      const newValue = nextValue.replace(/(?!^-)[^0-9.]/g, '');
 
       if (newValue !== nextValue) {
         setValidationError(true);
@@ -203,6 +207,34 @@ const TextInput: React.FC<TextInputProps> = ({
           return undefined; // Ignore input
         }
       }
+    }
+
+    if (
+      min !== null &&
+      nextValue &&
+      (
+        formatter === 'number' ||
+        formatter === 'money'
+      ) &&
+      nextValue < min
+    ) {
+      setValidationError(true);
+      setValidationErrorMessage(`Must be greater than min (${min})`);
+      return undefined;
+    }
+
+    if (
+      max !== null &&
+      nextValue &&
+      (
+        formatter === 'number' ||
+        formatter === 'money'
+      ) &&
+      nextValue > max
+    ) {
+      setValidationError(true);
+      setValidationErrorMessage(`Must be less than max (${max})`);
+      return undefined;
     }
 
     if (maxLength && nextValue && nextValue.length > maxLength) {
