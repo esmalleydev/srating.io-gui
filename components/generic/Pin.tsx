@@ -104,7 +104,7 @@ const Pin = ({ game_id }: { game_id: string; }) => {
       <Tooltip onClickRemove text = {'Pin game'}>
         <IconButton onClick = {handleFavorite} value = 'pin' icon = {<PinIcon sx = {pinStyle} fontSize = 'small' />} />
       </Tooltip>
-      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {() => {}} />
+      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
       {/* <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
         <Alert onClose={handleAlertClose} severity = {selected ? 'success' : 'info'} sx={{ width: '100%' }}>
           {selected ? 'Pinned game to top' : 'Removed pin'}

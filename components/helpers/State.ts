@@ -14,6 +14,10 @@ type key_x_local_storage_keyType = {
   [key:string]: string;
 }
 
+type key_x_is_push_state = {
+  [key:string]: boolean;
+}
+
 type constructorParams = {
   type: string;
 }
@@ -35,6 +39,8 @@ class State<T extends object> {
   private url_param_type_x_keys: url_param_type_x_keysType;
 
   private key_x_local_storage_key: key_x_local_storage_keyType;
+
+  private key_x_is_push_state: key_x_is_push_state;
 
   private initialState: T;
 
@@ -66,6 +72,14 @@ class State<T extends object> {
 
   public get_key_x_local_storage_key(): key_x_local_storage_keyType {
     return this.key_x_local_storage_key || {};
+  }
+
+  public get_key_x_is_push_state(): key_x_is_push_state {
+    return this.key_x_is_push_state || {};
+  }
+
+  public set_key_x_is_push_state(key_x_is_push_state: key_x_is_push_state) {
+    this.key_x_is_push_state = key_x_is_push_state;
   }
 
   public getInitialState(): T {
@@ -117,24 +131,37 @@ class State<T extends object> {
           const value = urlParams.get(key);
           if (value !== null) {
             state[key] = value;
+          } else if (key in this.getDefaultState()) {
+            state[key] = this.getDefaultState()[key];
           }
         }
         if (type === 'boolean') {
           const value = urlParams.get(key);
           if (value !== null) {
             state[key] = (+value === 1);
+          } else if (key in this.getDefaultState()) {
+            state[key] = this.getDefaultState()[key];
           }
         }
         if (type === 'array') {
           const value = urlParams.getAll(key);
           if (value !== null) {
             state[key] = [...new Set([...this.getInitialState()[key], ...value])];
+          } else if (key in this.getDefaultState()) {
+            state[key] = this.getDefaultState()[key];
           }
         }
 
         this.setLocalStorage(key, state[key]);
       }
     }
+  }
+
+  public isKeyPushState(key: string) {
+    return (
+      key in this.get_key_x_is_push_state() &&
+      this.get_key_x_is_push_state()[key as string] === true
+    );
   }
 
   public updateURL<K extends keyof T>(key: K, value: T[K] | null) {
@@ -154,6 +181,8 @@ class State<T extends object> {
         }
       }
     }
+
+    const isPushState = this.isKeyPushState(key as string);
 
     if (key_is_url_param) {
       // Order here is kinda important, set url before the state
@@ -179,12 +208,12 @@ class State<T extends object> {
         current.delete(key as string);
       }
 
-      // console.log('current', current.toString())
-
-      window.history.replaceState(null, '', `?${current.toString()}`);
-
-      // use pushState if we want to add to back button history
-      // window.history.pushState(null, '', `?${current.toString()}`);
+      if (isPushState) {
+        // use pushState if we want to add to back button history
+        window.history.pushState(null, '', `?${current.toString()}`);
+      } else {
+        window.history.replaceState(null, '', `?${current.toString()}`);
+      }
     }
   }
 

@@ -1,11 +1,12 @@
 'use client';
 
-import { useTransition } from 'react';
+import React, { useTransition } from 'react';
 
 
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
 import PicksIcon from '@mui/icons-material/Casino';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import HomeIcon from '@mui/icons-material/Home';
 // import NewspaperIcon from '@mui/icons-material/Newspaper';
@@ -43,6 +44,10 @@ const FooterNavigation = () => {
     'games',
     'picks',
   ];
+
+  if (organization_id === Organization.getCBBID()) {
+    pages.push('fantasy');
+  }
 
   if (pathName) {
     const splat = pathName.split('/');
@@ -93,10 +98,54 @@ const FooterNavigation = () => {
     }
   };
 
-  let hightlightValue = -1;
+  const handleFantasy = () => {
+    const newPathName = `/${viewingSport.toLowerCase()}/fantasy`;
 
-  if (viewingPage) {
-    hightlightValue = pages.indexOf(viewingPage);
+    if (newPathName !== pathName) {
+      navigation.fantasy(newPathName);
+    }
+  };
+
+
+  const options: {
+    value: string;
+    label: string;
+    icon: React.JSX.Element;
+    handler: () => void;
+  }[] = [
+    // {
+    //   value: 'home',
+    //   label: 'Home',
+    //   icon: <HomeIcon />,
+    //   handler: handleHome,
+    // },
+    {
+      value: 'ranking',
+      label: 'Ranking',
+      icon: <RankingIcon />,
+      handler: handleRanking,
+    },
+    {
+      value: 'games',
+      label: 'Scores',
+      icon: <ScoresIcon />,
+      handler: handleScores,
+    },
+    {
+      value: 'picks',
+      label: 'Picks',
+      icon: <PicksIcon />,
+      handler: handlePicks,
+    },
+  ];
+
+  if (organization_id === Organization.getCBBID()) {
+    options.splice(1, 0, {
+      value: 'fantasy',
+      label: 'Fantasy',
+      icon: <SportsEsportsIcon />,
+      handler: handleFantasy,
+    });
   }
 
   const footerStyle = {
@@ -140,27 +189,14 @@ const FooterNavigation = () => {
     <div>
       <Paper style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 4 }}>
         <div className = {Style.getStyleClassName(footerStyle)}>
-
-          <div onClick = {handleHome} className = {getClassName('home')}>
-            <div style = {{ height: 24 }}><HomeIcon /></div>
-            <Typography type = 'body2' style = {{ color: 'inherit' }}>Home</Typography>
-          </div>
-
-          <div onClick = {handleRanking} className = {getClassName('ranking')}>
-            <div style = {{ height: 24 }}><RankingIcon /></div>
-            <Typography type = 'body2' style = {{ color: 'inherit' }} >Ranking</Typography>
-          </div>
-
-          <div onClick = {handleScores} className = {getClassName('games')}>
-            <div style = {{ height: 24 }}><ScoresIcon /></div>
-            <Typography type = 'body2' style = {{ color: 'inherit' }} >Scores</Typography>
-          </div>
-
-          <div key = {`${getClassName('picks')}.picks`} onClick = {handlePicks} className = {getClassName('picks')}>
-            <div style = {{ height: 24 }}><PicksIcon /></div>
-            <Typography type = 'body2' style = {{ color: 'inherit' }} >Picks</Typography>
-          </div>
-
+          {options.map((r) => {
+            return (
+              <div key = {r.value} onClick = {r.handler} className = {getClassName(r.value)}>
+                <div style = {{ height: 24 }}>{r.icon}</div>
+                <Typography type = 'body2' style = {{ color: 'inherit' }}>{r.label}</Typography>
+              </div>
+            );
+          })}
         </div>
       </Paper>
     </div>

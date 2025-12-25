@@ -17,6 +17,9 @@ import gameReducer from './features/game-slice';
 import playerReducer from './features/player-slice';
 import loadingReducer from './features/loading-slice';
 import cacheReducer from './features/cache-slice';
+import fantasyReducer from './features/fantasy-slice';
+
+// IF YOU ADD MORE SLICES HERE, MAKE SURE TO UPDATE LayoutWrapper useEffect for back / forward buttons!
 
 
 export const makeStore = () => configureStore({
@@ -38,6 +41,7 @@ export const makeStore = () => configureStore({
     playerReducer,
     loadingReducer,
     cacheReducer,
+    fantasyReducer,
   },
 });
 

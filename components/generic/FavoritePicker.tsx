@@ -98,7 +98,7 @@ const FavoritePicker = (
       <Tooltip onClickRemove text = {'Save favorite'}>
         <IconButton onClick = {handleFavorite} value = 'favorite' icon = {<FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />} />
       </Tooltip>
-      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback = {() => {}} />
+      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
     </>
   );
 };

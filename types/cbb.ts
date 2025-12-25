@@ -115,6 +115,7 @@ export interface StatisticRanking {
   season: number;
   team_id: string;
   max: number;
+  rating: number;
   rank: number;
   rank_delta_one: number;
   rank_delta_seven: number;
@@ -289,6 +290,7 @@ export interface PlayerStatisticRanking {
   team_id: string;
   player_id: string;
   player_team_season_id: string;
+  rating: number;
   max: number;
   rank: number;
   rank_delta_one: number;
@@ -405,6 +407,7 @@ export interface ConferenceStatisticRanking {
   sport_conference_statistic_id: string;
   season: number;
   conference_id: string;
+  rating: number;
   rank: number;
   rank_delta_one: number;
   rank_delta_seven: number;
@@ -564,6 +567,7 @@ export interface LeagueStatisticRanking {
   division_id: string;
   sport_league_statistic_id: string;
   season: number;
+  rating: number;
   elo: number;
   games: number;
   wins: number;
@@ -653,6 +657,9 @@ export interface LeaguePlayerStatisticRanking {
   sport_league_player_statistic_id: string;
   season: number;
   date_of_rank: string;
+  rating: number;
+  elo: number;
+  games: number;
   minutes_played: number;
   field_goal: number;
   field_goal_attempts: number;

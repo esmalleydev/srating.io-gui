@@ -367,6 +367,7 @@ export interface CoachStatisticRanking {
   coach_statistic_id: string;
   season: number;
   coach_id: string;
+  rating: number;
   rank: number;
   rank_delta_one: number;
   rank_delta_seven: number;

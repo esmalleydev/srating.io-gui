@@ -15,6 +15,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { TransitionStartFunction, useTransition } from 'react';
 import { resetDataKey as resetDataKeyRanking, reset as resetRanking, setDataKey as setDataKeyRanking } from '@/redux/features/ranking-slice';
 import { setLoading } from '@/redux/features/loading-slice';
+import { reset as resetFantasy, setDataKey as setDataKeyFantasy, InitialStateKeys as InitialStateKeysFantasy, InitialState as InitialStateFantasy, stateController as FantasyStateController } from '@/redux/features/fantasy-slice';
 
 // todo remove nextjs router :D
 
@@ -239,7 +240,7 @@ class Navigation {
   }
 
   /**
-   * Navigate to something on a player view. Must already be on player view
+   * Navigate to something on a picks view. Must already be on picks view
    */
   public picksView<K extends InitialStateKeysPicks>(args: Pick<InitialStatePicks, K>, onRouter: null | undefined | (() => void) = null) {
     if (!this.pathName.includes('picks')) {
@@ -266,6 +267,66 @@ class Navigation {
 
     this.startTransition(() => {
       this.router.replace(`${this.pathName}${query}`);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+
+
+  /**
+   * Navigate to a fantasy page,
+   * reset the state to be fresh beforehand
+   */
+  public fantasy(path: string, onRouter: null | undefined | (() => void) = null) {
+    this.dispatch(setLoading(true));
+    // this.dispatch(stateThunk({ router: this.getRouter() }));
+    this.dispatch(resetFantasy(false));
+    this.startTransition(() => {
+      this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+
+  /**
+   * Navigate to something on a fantasy view. Must already be on fantasy view
+   */
+  public fantasyView<K extends InitialStateKeysFantasy>(args: Pick<InitialStateFantasy, K>, onRouter: null | undefined | (() => void) = null) {
+    if (!this.pathName.includes('fantasy')) {
+      throw new Error('fantasyView only usable when already navigated to fantasy');
+    }
+
+    let pushState = false;
+
+    const stateController = FantasyStateController;
+
+    for (const key in args) {
+      this.dispatch(setDataKeyFantasy({ key, value: args[key] }));
+      if (!pushState) {
+        pushState = stateController.isKeyPushState(key);
+      }
+    }
+
+
+    // these MUST always be set this way if the view changes
+    if ('view' in args) {
+      // nothing here yet
+    }
+
+    this.dispatch(setDataKeyFantasy({ key: 'loadingView', value: true }));
+
+
+    // picks slice handles this now, but just refetch it here for stupid nextjs router
+    const current = new URLSearchParams(window.location.search);
+    const search = current.toString();
+    const query = search ? `?${search}` : '';
+
+    this.startTransition(() => {
+      this.router[(pushState ? 'push' : 'replace')](`${this.pathName}${query}`);
       if (onRouter) {
         onRouter();
       }

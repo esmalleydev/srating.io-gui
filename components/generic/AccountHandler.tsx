@@ -16,7 +16,22 @@ import Button from '@/components/ux/buttons/Button';
 import { TextField } from '@mui/material';
 
 
-const AccountHandler = ({ open, closeHandler, loginCallback }) => {
+const AccountHandler = (
+  {
+    open,
+    closeHandler,
+    loginCallback,
+    message,
+    title,
+  } :
+  {
+    open: boolean;
+    closeHandler: (e) => void;
+    loginCallback?: (e) => void;
+    message?: string;
+    title?: string;
+  },
+) => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -78,10 +93,15 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
         dispatch(setSession(session_id));
         dispatch(setValidSession(true));
         dispatch(setDataKey({ key: 'dates_checked', value: {} }));
-        closeHandler();
-        window.location.reload();
+        closeHandler(e);
+
+        if (loginCallback) {
+          loginCallback(e);
+        } else {
+          window.location.reload();
+        }
       }
-    }).catch((e) => {
+    }).catch((err) => {
       setPasswordError('Incorrect password');
     });
   };
@@ -139,10 +159,15 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
         // sessionStorage.clear();
         dispatch(setSession(response));
         dispatch(setValidSession(true));
-        closeHandler();
-        startTransition(() => {
-          router.push('/account');
-        });
+        closeHandler(e);
+
+        if (loginCallback) {
+          loginCallback(e);
+        } else {
+          startTransition(() => {
+            router.push('/account');
+          });
+        }
       }
     }).catch((e) => {
       dispatch(setLoading(false));
@@ -226,7 +251,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
         dispatch(setValidSession(true));
         localStorage.setItem('session_id', response);
         // sessionStorage.clear();
-        closeHandler();
+        closeHandler(e);
         startTransition(() => {
           router.push('/account?view=settings');
         });
@@ -395,7 +420,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   } else {
     boxContents = (
       <div>
-        <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Sign in to your account</Typography>
+        <Typography type = 'caption' style = {{ color: theme.text.secondary }}>{(message || 'Sign in to your account')}</Typography>
         <TextField
           autoFocus
           required
@@ -441,7 +466,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
       open={open}
       onClose={closeHandler}
     >
-      <Typography type = 'h6'>Account</Typography>
+      <Typography type = 'h6'>{title || 'Account'}</Typography>
       {boxContents}
       <div style = {{ textAlign: 'right', marginTop: 10 }}>
         {buttons}

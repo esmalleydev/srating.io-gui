@@ -11,11 +11,13 @@ import { updateFromURL as F } from '@/redux/features/coach-slice';
 import { updateFromURL as G } from '@/redux/features/conference-slice';
 import { updateFromURL as H } from '@/redux/features/game-slice';
 import { updateFromURL as I } from '@/redux/features/player-slice';
+import { updateFromURL as J } from '@/redux/features/fantasy-slice';
 
 
 const LayoutWrapper = ({ children }) => {
   useEffect(() => {
     const handlePopState = (event) => {
+      // console.log('handlePopState', event)
       const store = getStore();
 
       // this is dumb but needed until I remove redux
@@ -32,6 +34,7 @@ const LayoutWrapper = ({ children }) => {
       store.dispatch(G());
       store.dispatch(H());
       store.dispatch(I());
+      store.dispatch(J());
     };
 
     // Add the event listener when the component mounts

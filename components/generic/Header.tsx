@@ -241,7 +241,7 @@ const Header = () => {
           </div>
         }
         </div>
-      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback={() => {}} />
+      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
     </div>
   );
 };
