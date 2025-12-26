@@ -79,7 +79,6 @@ const Client = ({ }) => {
 
   const [triggerValidation, setTriggerValidation] = useState(false);
 
-
   const payoutOptions = Object.values(fantasy_payout_rules)
     .sort((a, b) => {
       return a.ordinal - b.ordinal;
@@ -96,8 +95,6 @@ const Client = ({ }) => {
       [column]: value
     }));
   };
-
-
   
 
   const stepBasicInfo = {
@@ -202,11 +199,11 @@ const Client = ({ }) => {
         </div>
 
         <div style={{ marginBottom: 20 }}>
-            <Typography type='caption' style={{ color: theme.text.secondary }}>When does the league start and end?</Typography>
-            <Columns>
+          <Typography type='caption' style={{ color: theme.text.secondary }}>When does the league start and end?</Typography>
+          <Columns>
             <DateInput required label='Start date' onChange={(val) => onChange('start_date', val)} triggerValidation={triggerValidation} />
             <DateInput required label='End date' onChange={(val) => onChange('end_date', val)} triggerValidation={triggerValidation} />
-            </Columns>
+          </Columns>
         </div>
       </>
     )
@@ -220,46 +217,46 @@ const Client = ({ }) => {
       <>
         <Typography type='caption' style={{ color: theme.text.secondary }}>Is the group publically available?</Typography>
         <div style={{ maxWidth: 150, marginBottom: 20 }}>
-            <Switch
+          <Switch
             label="Public"
             labelPlacement='start'
             checked={!formData.private}
             onChange={(val) => onChange('private', !val)}
-            />
+          />
         </div>
 
         <div style={{ display: 'flex', marginBottom: 20 }}>
-            <Columns breakPoint={575} numberOfColumns={3}>
+          <Columns breakPoint={575} numberOfColumns={3}>
             <div style={{ alignContent: 'end' }}>
-                <Typography type='caption' style={{ color: theme.text.secondary }}>How many people can join?</Typography>
-                <TextInput
+              <Typography type='caption' style={{ color: theme.text.secondary }}>How many people can join?</Typography>
+              <TextInput
                 label='# of Entries'
                 onChange={(val) => onChange('entries', val)}
                 formatter='number'
                 min={1}
-                />
+              />
             </div>
             <div style={{ alignContent: 'end' }}>
-                <Typography type='caption' style={{ color: theme.text.secondary }}>Total entries allowed?</Typography>
-                <TextInput
+              <Typography type='caption' style={{ color: theme.text.secondary }}>Total entries allowed?</Typography>
+              <TextInput
                 label='Max entries in league'
                 onChange={(val) => onChange('cap', val)}
                 formatter='number'
                 min={1}
-                />
+              />
             </div>
             <div style={{ alignContent: 'end' }}>
-                <Typography type='caption' style={{ color: theme.text.secondary }}>Entries per user?</Typography>
-                <TextInput
+              <Typography type='caption' style={{ color: theme.text.secondary }}>Entries per user?</Typography>
+              <TextInput
                 label='Max entries per user'
                 onChange={(val) => onChange('entries_per_user', val)}
                 formatter='number'
                 value={formData.entries_per_user}
                 required
                 triggerValidation={triggerValidation}
-                />
+              />
             </div>
-            </Columns>
+          </Columns>
         </div>
       </>
     )
@@ -270,18 +267,18 @@ const Client = ({ }) => {
     id: 'financials',
     isValid: () => formData.free ? true : (!!formData.entry_fee && !!formData.fantasy_payout_rule_id),
     content: (
-        <>
+      <>
         <Typography type='caption' style={{ color: theme.text.secondary }}>Does the group have an entry fee?</Typography>
         <div style={{ maxWidth: 150, marginBottom: 20 }}>
-            <Switch
-            label="Entry fee"
-            labelPlacement='start'
-            checked={!formData.free}
-            onChange={(val) => onChange('free', !val)}
-            />
+          <Switch
+          label="Entry fee"
+          labelPlacement='start'
+          checked={!formData.free}
+          onChange={(val) => onChange('free', !val)}
+          />
         </div>
         {!formData.free && (
-            <div style={{ display: 'flex', marginBottom: 20 }}>
+          <div style={{ display: 'flex', marginBottom: 20 }}>
             <Columns breakPoint={500}>
                 <div>
                 <Typography type='caption' style={{ color: theme.text.secondary }}>How much is the entry fee?</Typography>
@@ -306,9 +303,9 @@ const Client = ({ }) => {
                 />
                 </div>
             </Columns>
-            </div>
+          </div>
         )}
-        </>
+      </>
     )
   };
 
