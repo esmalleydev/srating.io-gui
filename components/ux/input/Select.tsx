@@ -9,6 +9,7 @@ import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
 import Paper from '../container/Paper';
 import Objector from '@/components/utils/Objector';
+import Menu from '../menu/Menu';
 
 export type SelectOption = {
   label: string;
@@ -46,6 +47,7 @@ const Select: React.FC<SelectProps> = ({
   errorMessage: externalErrorMessage,
   triggerValidation = false,
 }) => {
+  console.log('Select')
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,6 +56,7 @@ const Select: React.FC<SelectProps> = ({
   const [isTouched, setIsTouched] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || null);
   const [validationError, setValidationError] = useState(false); // Internal validation state
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // Determine current value (Controlled vs Uncontrolled)
   const value = valueProp !== undefined ? valueProp : internalValue;
@@ -237,7 +240,7 @@ const Select: React.FC<SelectProps> = ({
     top: '100%',
     left: 0,
     width: '100%',
-    maxHeight: '200px',
+    // maxHeight: '200px',
     overflowY: 'auto',
     zIndex: 1000,
     marginTop: '4px',
@@ -252,6 +255,8 @@ const Select: React.FC<SelectProps> = ({
     transition: 'background-color 0.2s',
     color: theme.text.primary,
   };
+
+  throw new Error('start here, todo implement the menu')
 
   return (
     <div
@@ -277,48 +282,49 @@ const Select: React.FC<SelectProps> = ({
               {isOpen ? <KeyboardArrowUpIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
           </div>
         </div>
+        <Menu
+          open = {isOpen}
+          anchor={anchorEl}
+        >
+        </Menu>
+          {/* // <Paper elevation={3} style={menuStyle}>
+          //   {options.map((option) => {
+          //     const isSelected = option.value === value;
 
-        {/* Dropdown Menu */}
-        {isOpen && (
-          <Paper elevation={3} style={menuStyle}>
-            {options.map((option) => {
-              const isSelected = option.value === value;
+          //     // Hover/Selection Styles
+          //     const itemStyle = {
+          //       ...optionStyle,
+          //       backgroundColor: isSelected ? theme.action.selected : 'transparent',
+          //       fontWeight: isSelected ? 600 : 400,
+          //     };
 
-              // Hover/Selection Styles
-              const itemStyle = {
-                ...optionStyle,
-                backgroundColor: isSelected ? theme.action.selected : 'transparent',
-                fontWeight: isSelected ? 600 : 400,
-              };
-
-              return (
-                <div
-                  key={option.value}
-                  className={Style.getStyleClassName(itemStyle)}
-                  onClick={() => handleSelect(option.value)}
-                  // Add simple hover effect via style tag injection or class if available,
-                  // typically managed via CSS modules or styled-components,
-                  // but here is a simple inline hover simulation logic if needed.
-                  onMouseEnter={(e) => {
-                    if (!isSelected) e.currentTarget.style.backgroundColor = theme.action.hover;
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent';
-                  }}
-                >
-                  <Typography type="body1">
-                    {option.label}
-                  </Typography>
-                </div>
-              );
-            })}
-            {options.length === 0 && (
-              <div style={{ ...optionStyle, color: theme.text.disabled, cursor: 'default' }}>
-                <Typography type="caption">No options</Typography>
-              </div>
-            )}
-          </Paper>
-        )}
+          //     return (
+          //       <div
+          //         key={option.value}
+          //         className={Style.getStyleClassName(itemStyle)}
+          //         onClick={() => handleSelect(option.value)}
+          //         // Add simple hover effect via style tag injection or class if available,
+          //         // typically managed via CSS modules or styled-components,
+          //         // but here is a simple inline hover simulation logic if needed.
+          //         onMouseEnter={(e) => {
+          //           if (!isSelected) e.currentTarget.style.backgroundColor = theme.action.hover;
+          //         }}
+          //         onMouseLeave={(e) => {
+          //           if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent';
+          //         }}
+          //       >
+          //         <Typography type="body1">
+          //           {option.label}
+          //         </Typography>
+          //       </div>
+          //     );
+          //   })}
+          //   {options.length === 0 && (
+          //     <div style={{ ...optionStyle, color: theme.text.disabled, cursor: 'default' }}>
+          //       <Typography type="caption">No options</Typography>
+          //     </div>
+          //   )}
+          // </Paper> */}
       </div>
       {/* Error Message Display */}
       <div style={{ height: 20, marginTop: 4 }}>

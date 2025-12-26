@@ -247,7 +247,7 @@ const Client = ({ }) => {
         </div>
 
         <div style={{ display: 'flex', marginBottom: 20 }}>
-          <Columns breakPoint={575} numberOfColumns={3}>
+          <Columns breakPoint={575} numberOfColumns={2}>
             <div style={{ alignContent: 'end' }}>
               <Typography type='caption' style={{ color: theme.text.secondary }}>How many people can join?</Typography>
               <TextInput
@@ -258,7 +258,7 @@ const Client = ({ }) => {
                 min={1}
               />
             </div>
-            <div style={{ alignContent: 'end' }}>
+            {/* <div style={{ alignContent: 'end' }}>
               <Typography type='caption' style={{ color: theme.text.secondary }}>Total entries allowed?</Typography>
               <TextInput
                 label='Max entries in league'
@@ -267,7 +267,7 @@ const Client = ({ }) => {
                 value = {formData.cap || undefined}
                 min={1}
               />
-            </div>
+            </div> */}
             <div style={{ alignContent: 'end' }}>
               <Typography type='caption' style={{ color: theme.text.secondary }}>Entries per user?</Typography>
               <TextInput
@@ -284,6 +284,8 @@ const Client = ({ }) => {
       </>
     )
   };
+
+  console.log(payoutOptions)
 
   const stepFinancials = {
     title: "Fees & Payouts",
@@ -363,7 +365,7 @@ const Client = ({ }) => {
     <Contents>
       <Wizard 
         steps={activeSteps} 
-        validationTrigger = {(valid) => {setTriggerValidation(valid)}}
+        validationTrigger = {(valid) => { console.log('validation triggered',valid); setTriggerValidation(valid)}}
         onSave={handleSave}
         saveButtonText = 'Create League'
       />
