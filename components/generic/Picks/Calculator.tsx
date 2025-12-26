@@ -15,7 +15,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import TextField from '@mui/material/TextField';
 import { visuallyHidden } from '@mui/utils';
 
 
@@ -37,6 +36,8 @@ import Dates from '@/components/utils/Dates';
 import { setLoading } from '@/redux/features/loading-slice';
 import Button from '@/components/ux/buttons/Button';
 import Typography from '@/components/ux/text/Typography';
+import TextInput from '@/components/ux/input/TextInput';
+import Columns from '@/components/ux/layout/Columns';
 const Arrayifer = new utilsArrayifer();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -647,17 +648,23 @@ const Calculator = ({ games, date }) => {
 
   const betting_contents: React.JSX.Element[] = [];
 
-  const bettingInput = <TextField style = {{ margin: 10 }} id="bet" label="Bet" variant="standard" value={inputBet} onChange = {(e) => { setBet(e.target.value); }} />;
-  const oddsMinInput = <TextField style = {{ margin: 10 }} id="oddsMin" label="Odd Min" variant="standard" value={inputOddsMin} onChange = {(e) => { setOddsMin(e.target.value); }} />;
-  const oddsMaxInput = <TextField style = {{ margin: 10 }} id="oddsmax" label="Odds Max" variant="standard" value={inputOddsMax} onChange = {(e) => { setOddsMax(e.target.value); }} />;
-  const percentageInput = <TextField style = {{ margin: 10 }} id="precentage" label="Win chance %" variant="standard" value={inputPercentage} onChange = {(e) => { setPercentage(e.target.value); }} />;
-  const roundRobinInput = <TextField style = {{ margin: 10 }} id="roundRobin" label="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(e) => { setRoundRobin(e.target.value); }} />;
 
+  const bettingInput = <TextInput style = {{ display: 'inline-flex' }} id="bet" formatter='number' label="Bet" variant="standard" value={inputBet} onChange = {(e) => { setBet(e.target.value); }} />;
+  const oddsMinInput = <TextInput style = {{ display: 'inline-flex' }} id="oddsMin" formatter='number' label="Odd Min" variant="standard" value={inputOddsMin} onChange = {(e) => { setOddsMin(e.target.value); }} />;
+  const oddsMaxInput = <TextInput style = {{ display: 'inline-flex' }} id="oddsmax" formatter='number' label="Odds Max" variant="standard" value={inputOddsMax} onChange = {(e) => { setOddsMax(e.target.value); }} />;
+  const percentageInput = <TextInput style = {{ display: 'inline-flex' }} id="precentage" formatter='number' label="Win chance %" variant="standard" value={inputPercentage} onChange = {(e) => { setPercentage(e.target.value); }} />;
+  const roundRobinInput = <TextInput style = {{ display: 'inline-flex' }} id="roundRobin" formatter='number' label="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(e) => { setRoundRobin(e.target.value); }} />;
+
+  const inputs = (
+    <Columns numberOfColumns={4} breakPoint={600}>
+      {bettingInput}
+      {oddsMinInput}
+      {oddsMaxInput}
+      {percentageInput}
+    </Columns>
+  );
   if (total_bet || date < now) {
-    betting_contents.push(bettingInput);
-    betting_contents.push(oddsMinInput);
-    betting_contents.push(oddsMaxInput);
-    betting_contents.push(percentageInput);
+    betting_contents.push(inputs);
     betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>Hypothetical pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
 
     if (total_bet) {
@@ -674,10 +681,7 @@ const Calculator = ({ games, date }) => {
       betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((roundRobinWonTotal - roundRobinBetTotal).toString()).toFixed(2)} ({roundRobinBetTotal > 0 ? parseFloat((((roundRobinWonTotal - roundRobinBetTotal) / roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
   } else if (date === now) {
-    betting_contents.push(bettingInput);
-    betting_contents.push(oddsMinInput);
-    betting_contents.push(oddsMaxInput);
-    betting_contents.push(percentageInput);
+    betting_contents.push(inputs);
     betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>Future pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
 
     if (future_total_bet) {
@@ -748,7 +752,7 @@ const Calculator = ({ games, date }) => {
 
 
   return (
-    <div style = {{ padding: '0px 5px'}}>
+    <div style = {{ padding: '0px 5px' }}>
       {
         picksLoading ?
           <Paper elevation = {3} style = {{ padding: 10 }}>
