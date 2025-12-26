@@ -126,7 +126,7 @@ const Button = (
 
   return (
     <div ref = {ref} className = {Style.getStyleClassName(cStyle)} onClick={(e) => { handleClick(e, value); }}>
-      <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled}>
+      <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled} tabIndex={0}>
         {title}
         {endIconInternal || ''}
       </button>
