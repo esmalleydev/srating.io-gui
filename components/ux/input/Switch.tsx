@@ -11,11 +11,11 @@ interface SwitchProps {
   // Label to display next to the switch
   label?: string;
   // Controlled state
-  checked?: boolean;
+  value?: boolean;
   // Uncontrolled initial state
   defaultChecked?: boolean;
   // Callback when changed
-  onChange?: (checked: boolean) => void;
+  onChange?: (value: boolean) => void;
   // Disable interaction
   disabled?: boolean;
   // Custom styles for the container
@@ -28,7 +28,7 @@ interface SwitchProps {
 
 const Switch: React.FC<SwitchProps> = ({
   label,
-  checked: checkedProp,
+  value: valueProp,
   defaultChecked,
   onChange,
   disabled = false,
@@ -39,7 +39,7 @@ const Switch: React.FC<SwitchProps> = ({
 
   // --- State Management (Controlled vs Uncontrolled) ---
   const [internalChecked, setInternalChecked] = useState(defaultChecked || false);
-  const isChecked = checkedProp !== undefined ? checkedProp : internalChecked;
+  const isChecked = valueProp !== undefined ? valueProp : internalChecked;
 
   // --- Handlers ---
   const handleToggle = () => {
@@ -48,7 +48,7 @@ const Switch: React.FC<SwitchProps> = ({
     const newValue = !isChecked;
 
     // Update internal state if uncontrolled
-    if (checkedProp === undefined) {
+    if (valueProp === undefined) {
       setInternalChecked(newValue);
     }
 
