@@ -361,12 +361,13 @@ const TextInput: React.FC<TextInputProps> = ({
           {...props}
         />
       </div>
-
-      {displayedErrorMessage && (
-        <Typography type='caption' style={errorTextStyle}>
-          {displayedErrorMessage}
-        </Typography>
-      )}
+      <div style={{ height: 20, marginTop: 4 }}>
+        {displayedErrorMessage && (
+          <Typography type='caption' style={errorTextStyle}>
+            {displayedErrorMessage}
+          </Typography>
+        )}
+      </div>
     </div>
   );
 };

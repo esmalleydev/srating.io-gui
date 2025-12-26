@@ -184,12 +184,14 @@ const MultiPicker = ({
         {options.map((option) => getOptionContainer(option))}
       </Columns>
 
-      {/* Error Message */}
-      {showError && errorMessage && (
-        <Typography type="caption" style={{ color: theme.error.main, marginTop: 4 }}>
-          {errorMessage}
-        </Typography>
-      )}
+      {/* Error Message -- keep space so screen does not bounce */}
+      <div style={{ height: 20, marginTop: 4 }}>
+        {showError && errorMessage && (
+          <Typography type="caption" style={{ color: theme.error.main }}>
+            {errorMessage}
+          </Typography>
+        )}
+      </div>
     </div>
   );
 };

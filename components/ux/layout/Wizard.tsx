@@ -179,11 +179,9 @@ const Wizard = (
         <Typography type="h5" style={{ marginBottom: 20 }}>{step.title}</Typography>
         {step.content}
         <div style={{ 
-            marginTop: 40, 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            borderTop: `1px solid '#eee'}`,
-            paddingTop: 20,
+          marginTop: 20, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
         }}>
           <div>
             {currentStep > 0 && (
