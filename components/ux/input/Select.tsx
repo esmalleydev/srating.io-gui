@@ -321,11 +321,13 @@ const Select: React.FC<SelectProps> = ({
         )}
       </div>
       {/* Error Message Display */}
-      {displayedErrorMessage && (isTouched || triggerValidation) && (
-        <Typography type="caption" style={errorTextStyle}>
-          {displayedErrorMessage}
-        </Typography>
-      )}
+      <div style={{ height: 20, marginTop: 4 }}>
+        {displayedErrorMessage && (isTouched || triggerValidation) && (
+          <Typography type="caption" style={errorTextStyle}>
+            {displayedErrorMessage}
+          </Typography>
+        )}
+      </div>
     </div>
   );
 };
