@@ -1,17 +1,11 @@
 'use client';
 
 import { useState, useRef, RefObject } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 
 import Footer from '../components/generic/Footer';
 
 import Pricing from '@/components/generic/Pricing';
 import { getLogoColorPrimary, getLogoColorSecondary } from '@/components/utils/Color';
-import { CardActionArea, Paper } from '@mui/material';
 
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -22,6 +16,7 @@ import ToolsExample from '@/components/generic/Home/ToolsExample';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
+import Paper from '@/components/ux/container/Paper';
 
 const Home = () => {
   const [selectedHero, setSelectedHero] = useState('trends');
@@ -87,66 +82,54 @@ const Home = () => {
     );
   };
 
-  let cardWidth = 300;
-  const breakPoint = 425;
+  let cardWidth = width <= 900 ? 250 : 300;
+  const breakPoint = 475;
 
   const hitBreakPoint = (width <= breakPoint);
 
   if (hitBreakPoint) {
-    cardWidth = 105;
+    cardWidth = 120;
   }
 
   return (
     <div>
       <main>
-        <Box
-          sx={{
-            pt: 2,
-          }}
-        >
-          <Container maxWidth="sm">
-            <Typography
-              type="h2"
-              style = {{ textAlign: 'center', color: theme.text.primary, fontWeight: 600, fontStyle: 'italic', marginBottom: 16 }}
-            >
-              {<><span style = {{ color: getLogoColorPrimary() }}>s</span><span style = {{ color: getLogoColorSecondary() }}>Rating</span></>}
-            </Typography>
-            <Typography type="h5" style = {{ textAlign: 'center', color: theme.text.secondary, marginBottom: 16 }}>
-              Analysis tools, picks for 🏀 & 🏈, <br /> no ads, <a style = {{ color: theme.link.primary }} href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</a>
-            </Typography>
-          </Container>
-        </Box>
-        <div style = {{ padding: '0px 5px  5px 5px', display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div style = {{ padding: 8 }}>
+          <Typography
+            type="h2"
+            style = {{ textAlign: 'center', color: theme.text.primary, fontWeight: 600, fontStyle: 'italic', marginBottom: 16 }}
+          >
+            {<><span style = {{ color: getLogoColorPrimary() }}>s</span><span style = {{ color: getLogoColorSecondary() }}>Rating</span></>}
+          </Typography>
+          <Typography type="h5" style = {{ textAlign: 'center', color: theme.text.secondary, marginBottom: 16 }}>
+            Analysis tools, picks for 🏀 & 🏈, <br /> no ads, <a style = {{ color: theme.link.primary }} href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</a>
+          </Typography>
+        </div>
+        <div style = {{ padding: '0px 5px 5px 5px', display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
           {cards.map((card) => {
             const cardStyle: React.CSSProperties = {
               maxWidth: cardWidth,
               minWidth: cardWidth,
               margin: '5px',
               border: `2px solid ${card.id === selectedHero ? theme.info.dark : 'transparent'}`,
+              padding: 8,
+              cursor: 'pointer',
             };
 
-            const cardContentStyle: React.CSSProperties = {
-
-            };
-
-            if (hitBreakPoint) {
-              cardContentStyle.padding = 8;
-            }
 
             return (
-              <Card key = {card.id} sx={cardStyle}>
-                <CardActionArea style={{ height: '100%' }} onClick={() => setSelectedHero(card.id)}>
-                  <CardContent style = {cardContentStyle}>
-                    <div style = {{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography type={(hitBreakPoint ? 'body1' : 'h6')} style = {{ display: 'inline-block' }}>{card.name}</Typography>{card.icon}</div>
-                    {
-                    hitBreakPoint ? '' :
-                    <Typography type="body2" style={{ color: theme.text.secondary }}>
-                      {card.description}
-                    </Typography>
-                    }
-                  </CardContent>
-                </CardActionArea>
-              </Card>
+              <Paper key = {card.id} hover onClick={() => setSelectedHero(card.id)} style={cardStyle}>
+                <div style = {{ display: 'flex', alignItems: 'center' }}>
+                  <span style = {{ display: 'flex', marginRight: 10 }}>{card.icon}</span>
+                  <Typography type={(hitBreakPoint ? 'body1' : 'h6')} style = {{ display: 'inline-block' }}>{card.name}</Typography>
+                </div>
+                {
+                hitBreakPoint ? '' :
+                <Typography type="body2" style={{ color: theme.text.secondary }}>
+                  {card.description}
+                </Typography>
+                }
+              </Paper>
             );
           })}
         </div>
