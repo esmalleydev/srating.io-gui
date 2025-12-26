@@ -26,7 +26,7 @@ const Wizard = (
   }:
   {
     steps: Step[];
-    validationTrigger: Dispatch<SetStateAction<boolean>>;
+    validationTrigger: (valid: boolean) => void;
     onSave: () => void;
     onBack?: () => void;
     saveButtonText?: string;
@@ -50,10 +50,6 @@ const Wizard = (
   const isLastStep = steps.length - 1 === currentStep;
 
   const tranistionMS = 500;
-
-  console.log('currentStep',currentStep)
-  console.log('nextStep',nextStep)
-  console.log('steps.length',steps.length)
 
   useEffect(() => {
     // Detect step change
@@ -98,10 +94,6 @@ const Wizard = (
   const handleNext = () => {
     const currentStepObj = steps[currentStep];
 
-    console.log('handle next', currentStep)
-    const wtf = currentStep + 1;
-    console.log('wtf', wtf)
-
     // Check validity logic defined in step object
     if (currentStepObj.isValid && !currentStepObj.isValid()) {
       validationTrigger(true);
@@ -111,9 +103,7 @@ const Wizard = (
     // If valid, move on
     if (currentStep < steps.length - 1) {
       validationTrigger(false);
-      // setTriggerValidation(false); // Reset trigger for next step
-      // setCurrentStep(prev => prev + 1);
-      setNextStep(wtf)
+      setNextStep( currentStep + 1)
     } else {
       onSave();
     }
