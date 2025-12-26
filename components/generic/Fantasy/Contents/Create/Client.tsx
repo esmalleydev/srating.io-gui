@@ -16,6 +16,8 @@ import { useAppSelector } from '@/redux/hooks';
 import Columns from '@/components/ux/layout/Columns';
 import MultiPicker, { getTerminologyOptions } from '@/components/ux/input/MultiPicker';
 import Wizard from '@/components/ux/layout/Wizard';
+import InfoIcon from '@mui/icons-material/Info';
+// import InfoOutlineIcon from '@mui/icons-material/InfoOutline'; need to upgrade MUI for this icon... >.>
 
 /**
  * The main wrapper div for all the contents
@@ -156,7 +158,10 @@ const Client = ({ }) => {
             triggerValidation={triggerValidation}
           />
           {formData.draft_type_terminology_id && formData.draft_type_terminology_id in terminology ? (
-            <Typography type='caption' style={{ color: theme.text.secondary }}>{terminology[formData.draft_type_terminology_id].description}</Typography>
+            <div style = {{ display: 'flex', alignItems: 'center' }}>
+              <InfoIcon style = {{ color: theme.info.main, marginRight: 10 }} />
+              <Typography type='caption' style={{ color: theme.text.secondary }}>{terminology[formData.draft_type_terminology_id].description}</Typography>
+            </div>
           ) : ''}
         </div>
 
@@ -175,6 +180,7 @@ const Client = ({ }) => {
                   onChange={(val) => onChange('draft_time_per_user_in_seconds', (+val * 60))}
                   triggerValidation={triggerValidation}
                   formatter={'number'}
+                  value = {formData.draft_time_per_user_in_seconds ? formData.draft_time_per_user_in_seconds / 60 : undefined}
                   min={0.1}
                   max={60 * 5} // todo make this the draft start date - start date / players ?
                 />
@@ -194,15 +200,30 @@ const Client = ({ }) => {
             triggerValidation={triggerValidation}
           />
           {formData.draft_scoring_terminology_id && formData.draft_scoring_terminology_id in terminology ? (
-            <Typography type='caption' style={{ color: theme.text.secondary, marginTop: 10 }}>{terminology[formData.draft_scoring_terminology_id].description}</Typography>
+            <div style = {{ display: 'flex', alignItems: 'center', marginTop: 10  }}>
+              <InfoIcon style = {{ color: theme.info.main, marginRight: 10 }} />
+              <Typography type='caption' style={{ color: theme.text.secondary }}>{terminology[formData.draft_scoring_terminology_id].description}</Typography>
+            </div>
           ) : ''}
         </div>
 
         <div style={{ marginBottom: 20 }}>
           <Typography type='caption' style={{ color: theme.text.secondary }}>When does the league start and end?</Typography>
           <Columns>
-            <DateInput required label='Start date' onChange={(val) => onChange('start_date', val)} triggerValidation={triggerValidation} />
-            <DateInput required label='End date' onChange={(val) => onChange('end_date', val)} triggerValidation={triggerValidation} />
+            <DateInput
+              required
+              label='Start date'
+              onChange={(val) => onChange('start_date', val)}
+              triggerValidation={triggerValidation}
+              value = {formData.start_date || undefined}
+            />
+            <DateInput
+              required
+              label='End date'
+              onChange={(val) => onChange('end_date', val)}
+              triggerValidation={triggerValidation}
+              value = {formData.end_date || undefined}
+            />
           </Columns>
         </div>
       </>
@@ -220,7 +241,7 @@ const Client = ({ }) => {
           <Switch
             label="Public"
             labelPlacement='start'
-            checked={!formData.private}
+            value={!formData.private}
             onChange={(val) => onChange('private', !val)}
           />
         </div>
@@ -233,6 +254,7 @@ const Client = ({ }) => {
                 label='# of Entries'
                 onChange={(val) => onChange('entries', val)}
                 formatter='number'
+                value = {formData.entries || undefined}
                 min={1}
               />
             </div>
@@ -242,6 +264,7 @@ const Client = ({ }) => {
                 label='Max entries in league'
                 onChange={(val) => onChange('cap', val)}
                 formatter='number'
+                value = {formData.cap || undefined}
                 min={1}
               />
             </div>
@@ -273,7 +296,7 @@ const Client = ({ }) => {
           <Switch
           label="Entry fee"
           labelPlacement='start'
-          checked={!formData.free}
+          value={!formData.free}
           onChange={(val) => onChange('free', !val)}
           />
         </div>
@@ -283,23 +306,24 @@ const Client = ({ }) => {
                 <div>
                 <Typography type='caption' style={{ color: theme.text.secondary }}>How much is the entry fee?</Typography>
                 <TextInput 
-                    label='$ Entry fee' 
-                    onChange={(val) => onChange('entry_fee', val)} 
-                    required 
-                    formatter={'money'} 
-                    triggerValidation={triggerValidation} 
-                />
+                  label='$ Entry fee' 
+                  onChange={(val) => onChange('entry_fee', val)} 
+                  required 
+                  formatter={'money'} 
+                  triggerValidation={triggerValidation}
+                  value = {formData.entry_fee || undefined}
+                  />
                 </div>
                 <div>
                 <Typography type='caption' style={{ color: theme.text.secondary }}>Payout distribution?</Typography>
                 <Select
-                    label="Payout structure"
-                    options={payoutOptions}
-                    required
-                    value={formData.fantasy_payout_rule_id}
-                    onChange={(val) => onChange('fantasy_payout_rule_id', val)}
-                    variant="outlined"
-                    triggerValidation={triggerValidation}
+                  label="Payout structure"
+                  options={payoutOptions}
+                  required
+                  value={formData.fantasy_payout_rule_id}
+                  onChange={(val) => onChange('fantasy_payout_rule_id', val)}
+                  variant="outlined"
+                  triggerValidation={triggerValidation}
                 />
                 </div>
             </Columns>
