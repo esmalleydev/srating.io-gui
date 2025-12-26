@@ -213,9 +213,9 @@ const Client = ({ }) => {
   };
 
   const stepSchedule = {
-    title: "Schedule & Capacity",
+    title: "Participants & Capacity",
     id: 'schedule',
-    isValid: () => !!formData.start_date && !!formData.end_date && !!formData.entries_per_user,
+    isValid: () => !!formData.entries_per_user,
     content: (
       <>
         <Typography type='caption' style={{ color: theme.text.secondary }}>Is the group publically available?</Typography>
@@ -342,7 +342,7 @@ const Client = ({ }) => {
     <Contents>
       <Wizard 
         steps={activeSteps} 
-        validationTrigger = {setTriggerValidation}
+        validationTrigger = {(valid) => {setTriggerValidation(valid)}}
         onSave={handleSave}
         saveButtonText = 'Create League'
       />
