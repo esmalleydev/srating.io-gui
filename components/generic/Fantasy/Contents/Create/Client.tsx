@@ -305,7 +305,7 @@ const Client = ({ }) => {
         {!formData.free && (
           <div style={{ display: 'flex', marginBottom: 20 }}>
             <Columns breakPoint={500}>
-                <div>
+              <div>
                 <Typography type='caption' style={{ color: theme.text.secondary }}>How much is the entry fee?</Typography>
                 <TextInput 
                   label='$ Entry fee' 
@@ -314,9 +314,9 @@ const Client = ({ }) => {
                   formatter={'money'} 
                   triggerValidation={triggerValidation}
                   value = {formData.entry_fee || undefined}
-                  />
-                </div>
-                <div>
+                />
+              </div>
+              <div>
                 <Typography type='caption' style={{ color: theme.text.secondary }}>Payout distribution?</Typography>
                 <Select
                   label="Payout structure"
@@ -327,7 +327,7 @@ const Client = ({ }) => {
                   variant="outlined"
                   triggerValidation={triggerValidation}
                 />
-                </div>
+              </div>
             </Columns>
           </div>
         )}

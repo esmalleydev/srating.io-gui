@@ -10,6 +10,9 @@ import Typography from '../text/Typography';
 import Paper from '../container/Paper';
 import Objector from '@/components/utils/Objector';
 import Menu from '../menu/Menu';
+import MenuList from '../menu/MenuList';
+import MenuItem from '../menu/MenuItem';
+import MenuListText from '../menu/MenuListText';
 
 export type SelectOption = {
   label: string;
@@ -47,16 +50,19 @@ const Select: React.FC<SelectProps> = ({
   errorMessage: externalErrorMessage,
   triggerValidation = false,
 }) => {
-  console.log('Select')
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
 
   // --- State ---
   const [isOpen, setIsOpen] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || null);
   const [validationError, setValidationError] = useState(false); // Internal validation state
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(-1); // For keyboard navigation
+
+  const [width, setWidth] = useState(0);
 
   // Determine current value (Controlled vs Uncontrolled)
   const value = valueProp !== undefined ? valueProp : internalValue;
@@ -69,6 +75,23 @@ const Select: React.FC<SelectProps> = ({
 
   // Determine Error Message to Display
   const displayedErrorMessage = externalErrorMessage || (validationError ? 'This field is required' : null);
+
+
+  useEffect(() => {
+    if (inputRef && inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+
+      setWidth(rect.width);
+    }
+  }, [inputRef]);
+
+  // useEffect(() => {
+  //   if (containerRef && containerRef.current) {
+  //     setAnchorEl(containerRef.current);
+  //   } else {
+  //     setAnchorEl(null);
+  //   }
+  // }, [containerRef]);
 
   // --- Handlers ---
 
@@ -88,7 +111,8 @@ const Select: React.FC<SelectProps> = ({
   };
 
   // Custom click handler to toggle dropdown
-  const handleToggle = () => {
+  const handleToggle = (e) => {
+    setAnchorEl(e.currentTarget);
     setIsTouched(true);
     // If opening, ensure no validation error state is immediately visible unless required
     if (!isOpen) {
@@ -104,22 +128,54 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  // Click outside to close
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+  console.log('todo move this to menu component')
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Tab' && isOpen) {
         setIsOpen(false);
-        // Validation check on outside click/blur
-        if (required && !value) {
-          setValidationError(true);
-        } else {
-          setValidationError(false);
-        }
+        return;
+    }
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (!isOpen) {
+        setIsOpen(true);
+      } else if (options[activeIndex]) {
+        handleSelect(options[activeIndex].value);
       }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [required, value]);
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!isOpen) setIsOpen(true);
+      setActiveIndex((prev) => (prev < options.length - 1 ? prev + 1 : prev));
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    }
+
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
+  // Click outside to close
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+  //       setIsOpen(false);
+  //       // Validation check on outside click/blur
+  //       if (required && !value) {
+  //         setValidationError(true);
+  //       } else {
+  //         setValidationError(false);
+  //       }
+  //     }
+  //   };
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   return () => document.removeEventListener('mousedown', handleClickOutside);
+  // }, [required, value]);
 
   // --- Styling Logic (Matches Text.tsx) ---
 
@@ -235,33 +291,44 @@ const Select: React.FC<SelectProps> = ({
     minHeight: displayedErrorMessage ? '20px' : '0px',
   };
 
-  const menuStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    width: '100%',
-    // maxHeight: '200px',
-    overflowY: 'auto',
-    zIndex: 1000,
-    marginTop: '4px',
-  };
+  // const menuStyle: React.CSSProperties = {
+  //   position: 'absolute',
+  //   top: '100%',
+  //   left: 0,
+  //   width: '100%',
+  //   // maxHeight: '200px',
+  //   overflowY: 'auto',
+  //   zIndex: 1000,
+  //   marginTop: '4px',
+  //   height: '100%',
+  // };
 
-  const optionStyle: React.CSSProperties = {
-    padding: '10px 16px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    transition: 'background-color 0.2s',
-    color: theme.text.primary,
-  };
+  // const optionStyle: React.CSSProperties = {
+  //   padding: '10px 16px',
+  //   cursor: 'pointer',
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   justifyContent: 'flex-start',
+  //   transition: 'background-color 0.2s',
+  //   color: theme.text.primary,
+  // };
 
-  throw new Error('start here, todo implement the menu')
+  const menuStyle: React.CSSProperties = {};
+
+  if (width) {
+    menuStyle.width = width;
+  }
+
+
+  // throw new Error('start here, update Menu component to allow customization with width etc')
+
 
   return (
     <div
       ref={containerRef}
       className={Style.getStyleClassName(containerStyle)}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
     >
       <div style={{ position: 'relative', width: '100%' }}>
         {/* Label */}
@@ -271,8 +338,10 @@ const Select: React.FC<SelectProps> = ({
 
         {/* Trigger Box (Looks like Input) */}
         <div
+          ref = {inputRef}
           className={Style.getStyleClassName(triggerStyle)}
           onClick={handleToggle}
+          // tabIndex={0}
         >
           <Typography type="body1" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {selectedOption ? selectedOption.label : placeholder}
@@ -285,46 +354,73 @@ const Select: React.FC<SelectProps> = ({
         <Menu
           open = {isOpen}
           anchor={anchorEl}
+          onClose = {() => {
+            console.log('onClose')
+            setIsOpen(false);
+            setAnchorEl(null);
+          }}
+          style = {menuStyle}
         >
+          <MenuList>
+            {
+              options.map((option) => {
+                // const isSelected = option.value === value;
+
+                // Hover/Selection Styles
+                // const itemStyle = {
+                //   ...optionStyle,
+                //   backgroundColor: isSelected ? theme.action.selected : 'transparent',
+                //   fontWeight: isSelected ? 600 : 400,
+                // };
+                return (
+                  <MenuItem onClick={() => handleSelect(option.value)}>
+                    <MenuListText primary = {option.label} />
+                  </MenuItem>
+                );
+              })
+            }
+          </MenuList>
         </Menu>
-          {/* // <Paper elevation={3} style={menuStyle}>
-          //   {options.map((option) => {
-          //     const isSelected = option.value === value;
+        {/* {isOpen && (
+        <Paper elevation={3} style={menuStyle}>
+          {options.map((option) => {
+            const isSelected = option.value === value;
 
-          //     // Hover/Selection Styles
-          //     const itemStyle = {
-          //       ...optionStyle,
-          //       backgroundColor: isSelected ? theme.action.selected : 'transparent',
-          //       fontWeight: isSelected ? 600 : 400,
-          //     };
+            // Hover/Selection Styles
+            const itemStyle = {
+              ...optionStyle,
+              backgroundColor: isSelected ? theme.action.selected : 'transparent',
+              fontWeight: isSelected ? 600 : 400,
+            };
 
-          //     return (
-          //       <div
-          //         key={option.value}
-          //         className={Style.getStyleClassName(itemStyle)}
-          //         onClick={() => handleSelect(option.value)}
-          //         // Add simple hover effect via style tag injection or class if available,
-          //         // typically managed via CSS modules or styled-components,
-          //         // but here is a simple inline hover simulation logic if needed.
-          //         onMouseEnter={(e) => {
-          //           if (!isSelected) e.currentTarget.style.backgroundColor = theme.action.hover;
-          //         }}
-          //         onMouseLeave={(e) => {
-          //           if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent';
-          //         }}
-          //       >
-          //         <Typography type="body1">
-          //           {option.label}
-          //         </Typography>
-          //       </div>
-          //     );
-          //   })}
-          //   {options.length === 0 && (
-          //     <div style={{ ...optionStyle, color: theme.text.disabled, cursor: 'default' }}>
-          //       <Typography type="caption">No options</Typography>
-          //     </div>
-          //   )}
-          // </Paper> */}
+            return (
+              <div
+                key={option.value}
+                className={Style.getStyleClassName(itemStyle)}
+                onClick={() => handleSelect(option.value)}
+                // Add simple hover effect via style tag injection or class if available,
+                // typically managed via CSS modules or styled-components,
+                // but here is a simple inline hover simulation logic if needed.
+                onMouseEnter={(e) => {
+                  if (!isSelected) e.currentTarget.style.backgroundColor = theme.action.hover;
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+              >
+                <Typography type="body1">
+                  {option.label}
+                </Typography>
+              </div>
+            );
+          })}
+          {options.length === 0 && (
+            <div style={{ ...optionStyle, color: theme.text.disabled, cursor: 'default' }}>
+              <Typography type="caption">No options</Typography>
+            </div>
+          )}
+        </Paper>
+        )} */}
       </div>
       {/* Error Message Display */}
       <div style={{ height: 20, marginTop: 4 }}>

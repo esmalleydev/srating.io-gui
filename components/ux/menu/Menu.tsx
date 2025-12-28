@@ -8,6 +8,7 @@ import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import CloseIcon from '@mui/icons-material/Close';
 import Plane from '../overlay/Plane';
+import Objector from '@/components/utils/Objector';
 
 const getOffsetTop = (rect, vertical) => {
   let offset = 36;
@@ -55,7 +56,7 @@ const Menu = (
       horizontal: 'left',
     },
     showCloseButton = false,
-    // style = {},
+    style = {},
     children,
     ...props
   }:
@@ -65,7 +66,7 @@ const Menu = (
     onClose: () => void;
     anchorOrigin?: anchorOrigin;
     showCloseButton?: boolean;
-    // style?: React.CSSProperties;
+    style?: React.CSSProperties;
     children: React.ReactNode;
   },
 ) => {
@@ -96,7 +97,7 @@ const Menu = (
   };
 
 
-  const paperStyle: React.CSSProperties = {
+  const paperStyle: React.CSSProperties = Objector.extender({
     display: 'none',
     position: 'absolute',
     overflowY: 'auto',
@@ -111,7 +112,9 @@ const Menu = (
     // opacity: _isVisible ? 1 : 0,
     // transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
     // scrollbarGutter: 'stable',
-  };
+  },
+    style
+  );
 
 
   if (finalPosition && open && finalDimensions) {
