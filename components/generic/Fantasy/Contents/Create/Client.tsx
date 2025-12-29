@@ -118,15 +118,15 @@ const Client = ({ }) => {
           />
         </div>
         <div style={{ marginBottom: 20 }}>
-          <Typography type='caption' style={{ color: theme.text.secondary }}>What is the name of the league?</Typography>
           <TextInput
-            label='League name'
+            label = 'What is the name of the league?'
+            placeholder='League name'
             onChange={(val) => onChange('name', val)}
             maxLength={255}
             value={formData.name}
             required
             triggerValidation={triggerValidation}
-          />
+            />
         </div>
       </>
     )
@@ -169,14 +169,19 @@ const Client = ({ }) => {
           <div style={{ marginBottom: 20 }}>
             <Columns>
               <div>
-                <Typography type='caption' style={{ color: theme.text.secondary }}>When does the draft start?</Typography>
-                <DateInput required label='Draft start date' onChange={(val) => onChange('draft_start_date', val)} triggerValidation={triggerValidation} />
+                <DateInput
+                  required
+                  placeholder='Draft start date'
+                  label = 'When does the draft start?'
+                  onChange={(val) => onChange('draft_start_date', val)}
+                  triggerValidation={triggerValidation}
+                />
               </div>
               <div>
-                <Typography type='caption' style={{ color: theme.text.secondary }}>How long does each person have to draft?</Typography>
                 <TextInput
                   required
-                  label='Draft time (minutes)'
+                  label = 'How long does each person have to draft?'
+                  placeholder='Draft time (minutes)'
                   onChange={(val) => onChange('draft_time_per_user_in_seconds', (+val * 60))}
                   triggerValidation={triggerValidation}
                   formatter={'number'}
@@ -208,18 +213,19 @@ const Client = ({ }) => {
         </div>
 
         <div style={{ marginBottom: 20 }}>
-          <Typography type='caption' style={{ color: theme.text.secondary }}>When does the league start and end?</Typography>
           <Columns>
             <DateInput
               required
-              label='Start date'
+              label = 'When does the league start?'
+              placeholder='Start date'
               onChange={(val) => onChange('start_date', val)}
               triggerValidation={triggerValidation}
               value = {formData.start_date || undefined}
-            />
+              />
             <DateInput
               required
-              label='End date'
+              label = 'When does the league end?'
+              placeholder='End date'
               onChange={(val) => onChange('end_date', val)}
               triggerValidation={triggerValidation}
               value = {formData.end_date || undefined}
@@ -249,9 +255,9 @@ const Client = ({ }) => {
         <div style={{ display: 'flex', marginBottom: 20 }}>
           <Columns breakPoint={575} numberOfColumns={2}>
             <div style={{ alignContent: 'end' }}>
-              <Typography type='caption' style={{ color: theme.text.secondary }}>How many people can join?</Typography>
               <TextInput
-                label='# of Entries'
+                label = 'How many people can join?'
+                placeholder='# of Entries'
                 onChange={(val) => onChange('entries', val)}
                 formatter='number'
                 value = {formData.entries || undefined}
@@ -269,9 +275,9 @@ const Client = ({ }) => {
               />
             </div> */}
             <div style={{ alignContent: 'end' }}>
-              <Typography type='caption' style={{ color: theme.text.secondary }}>Entries per user?</Typography>
               <TextInput
-                label='Max entries per user'
+                label='Entries per user?'
+                placeholder='Max entries per user'
                 onChange={(val) => onChange('entries_per_user', val)}
                 formatter='number'
                 value={formData.entries_per_user}
@@ -285,7 +291,6 @@ const Client = ({ }) => {
     )
   };
 
-  console.log(payoutOptions)
 
   const stepFinancials = {
     title: "Fees & Payouts",
@@ -306,9 +311,9 @@ const Client = ({ }) => {
           <div style={{ display: 'flex', marginBottom: 20 }}>
             <Columns breakPoint={500}>
               <div>
-                <Typography type='caption' style={{ color: theme.text.secondary }}>How much is the entry fee?</Typography>
-                <TextInput 
-                  label='$ Entry fee' 
+                <TextInput
+                  label = 'How much is the entry fee?'
+                  placeholder='$ Entry fee' 
                   onChange={(val) => onChange('entry_fee', val)} 
                   required 
                   formatter={'money'} 
@@ -317,9 +322,9 @@ const Client = ({ }) => {
                 />
               </div>
               <div>
-                <Typography type='caption' style={{ color: theme.text.secondary }}>Payout distribution?</Typography>
                 <Select
-                  label="Payout structure"
+                  label = 'Payout distribution?'
+                  placeholder="Payout structure"
                   options={payoutOptions}
                   required
                   value={formData.fantasy_payout_rule_id}

@@ -12,10 +12,9 @@ type TextInputFormatter = 'text' | 'number' | 'money';
 
 interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange'> {
   ref?: RefObject<HTMLInputElement | null>;
-  // Optional custom styles to merge
   style?: React.CSSProperties;
-  // Optional label to display above the input
-  label: string;
+  placeholder: string;
+  label?: string;
   variant?: TextInputVariant;
   formatter?: TextInputFormatter;
   error?: boolean; // External error control
@@ -30,6 +29,7 @@ interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
 const TextInput: React.FC<TextInputProps> = ({
   ref = null,
   style = {},
+  placeholder,
   label,
   variant = 'outlined',
   formatter = 'text',
@@ -132,7 +132,7 @@ const TextInput: React.FC<TextInputProps> = ({
   } else if (hasError) {
     labelColor = errorColor;
   }
-  const labelStyle: React.CSSProperties = {
+  const placeholderStyle: React.CSSProperties = {
     position: 'absolute',
     pointerEvents: 'none',
     color: labelColor,
@@ -347,8 +347,9 @@ const TextInput: React.FC<TextInputProps> = ({
 
   return (
     <div className={Style.getStyleClassName(containerStyle)}>
+      {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
       <div style={{ position: 'relative', width: '100%' }}>
-        <Typography type = 'caption' className = {Style.getStyleClassName(labelStyle)}>{label}</Typography>
+        <Typography type = 'caption' className = {Style.getStyleClassName(placeholderStyle)}>{placeholder}</Typography>
         <input
           ref = {ref}
           type='text'

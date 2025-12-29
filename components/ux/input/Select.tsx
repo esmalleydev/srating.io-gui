@@ -19,14 +19,14 @@ export type SelectOption = {
 type SelectVariant = 'standard' | 'outlined' | 'filled';
 
 interface SelectProps {
-  label: string;
+  placeholder?: string;
+  label?: string;
   options: SelectOption[];
   value?: string | number | null; // Controlled value
   defaultValue?: string | number | null; // Uncontrolled default
   onChange?: (value: string | number) => void;
   variant?: SelectVariant;
   style?: React.CSSProperties;
-  placeholder?: string;
   required?: boolean;
   error?: boolean; // External error control
   errorMessage?: string; // External error message
@@ -127,36 +127,8 @@ const Select: React.FC<SelectProps> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Tab' && isOpen) {
-      console.log('key down select shit')
       handleToggle(e);
-      return;
     }
-
-    // if (e.key === 'Enter' || e.key === ' ') {
-    //   e.preventDefault();
-    //   if (!isOpen) {
-    //     setIsOpen(true);
-    //   } else if (options[activeIndex]) {
-    //     handleSelect(options[activeIndex].value);
-    //   }
-    // }
-
-    // if (e.key === 'ArrowDown') {
-    //   e.preventDefault();
-    //   if (!isOpen) {
-    //     setIsOpen(true);
-    //   }
-    //   setActiveIndex((prev) => (prev < options.length - 1 ? prev + 1 : prev));
-    // }
-
-    // if (e.key === 'ArrowUp') {
-    //   e.preventDefault();
-    //   setActiveIndex((prev) => (prev > 0 ? prev - 1 : prev));
-    // }
-
-    // if (e.key === 'Escape') {
-    //   setIsOpen(false);
-    // }
   };
 
 
@@ -318,10 +290,11 @@ const Select: React.FC<SelectProps> = ({
       }}
       tabIndex={0}
     >
+      {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
       <div style={{ position: 'relative', width: '100%' }}>
         {/* Label */}
         <Typography type="caption" className={Style.getStyleClassName(labelStyle)}>
-          {label}
+          {placeholder}
         </Typography>
 
         {/* Trigger Box (Looks like Input) */}
@@ -332,7 +305,7 @@ const Select: React.FC<SelectProps> = ({
           // tabIndex={0}
         >
           <Typography type="body1" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {selectedOption ? selectedOption.label : placeholder}
+            {selectedOption ? selectedOption.label : ''}
           </Typography>
 
           <div style={arrowIconStyle}>

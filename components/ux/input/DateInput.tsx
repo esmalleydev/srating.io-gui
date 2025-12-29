@@ -22,7 +22,8 @@ const isValidDate = (d: Date | null) => {
 };
 
 interface DatePickerProps {
-  label: string;
+  placeholder: string;
+  label?: string;
   value?: string | Date; // Can accept string (ISO) or Date object
   onChange: (date: Date) => void;
   minDate?: string;
@@ -35,6 +36,7 @@ interface DatePickerProps {
 }
 
 const DateInput: React.FC<DatePickerProps> = ({
+  placeholder,
   label,
   value,
   onChange,
@@ -227,6 +229,7 @@ const DateInput: React.FC<DatePickerProps> = ({
     <div ref={containerRef} className={Style.getStyleClassName(wrapperStyle)}>
       <TextInput
         ref = {textRef}
+        placeholder={placeholder}
         label={label}
         value={inputValue}
         onChange={handleInputChange}
