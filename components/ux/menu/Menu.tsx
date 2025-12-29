@@ -380,6 +380,8 @@ const Menu = (
     </div>
   );
 
+  console.log('paperStyle', paperStyle)
+
   return ReactDOM.createPortal(
     <div className={Style.getStyleClassName(overlayStyle)} {...props}>
       <Paper style={paperStyle} ref = {menuContentRef} tranparency={0.95}>

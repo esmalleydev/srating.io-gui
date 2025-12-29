@@ -265,7 +265,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const menuStyle: React.CSSProperties = {
-    marginTop: 10,
+    marginTop: 35, // todo this is sketchy, I think it is half of the height of this box, but probably should calc it...
   };
 
   if (width) {
@@ -317,7 +317,6 @@ const Select: React.FC<SelectProps> = ({
           options = {menuOptions}
           anchor={anchorEl}
           onClose = {() => {
-            console.log('onClose')
             setIsOpen(false);
             setAnchorEl(null);
           }}
