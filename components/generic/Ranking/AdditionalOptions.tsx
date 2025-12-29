@@ -6,15 +6,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
-import { Divider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import ConferenceFilterOptions from './ConferenceFilterOptions';
-import Menu from '@/components/ux/menu/Menu';
-import MenuList from '@/components/ux/menu/MenuList';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
-import MenuListText from '@/components/ux/menu/MenuListText';
+import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { ClassYearPickerDialog } from './ClassYearPicker';
@@ -67,64 +62,56 @@ const AdditionalOptions = ({ view }: {view: string}) => {
     setClassPickerDialogOpen(true);
   };
 
-  const getMenuItems = () => {
-    const menuItems: React.JSX.Element[] = [];
+  const getMenuOptions = () => {
+    const menuOptions: MenuOption[] = [];
 
     if (view === 'transfer') {
-      menuItems.push(
-        <MenuItem key='hide-committed-display' onClick={() => {
-          handleCommitted();
-        }}>
-          <MenuListIcon>
-            {hideCommitted ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-          </MenuListIcon>
-          <MenuListText primary ='Hide committed' />
-        </MenuItem>,
-      );
+      menuOptions.push({
+        value: 'hide-committed-display',
+        label: 'Hide committed',
+        selectable: true,
+        onSelect: handleCommitted,
+        icon: hideCommitted ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+      });
     }
 
     if (view === 'transfer' || view === 'player') {
       if (width < 700) {
-        menuItems.push(
-          <MenuItem key='class-year-display' onClick={() => {
-            handleClassYearFilter();
-          }}>
-            <MenuListIcon>
-              <FilterAltIcon fontSize='small' />
-            </MenuListIcon>
-            <MenuListText primary ='Class filter' />
-          </MenuItem>,
-        );
+        menuOptions.push({
+          value: 'class-year-display',
+          label: 'Class filter',
+          selectable: true,
+          onSelect: handleClassYearFilter,
+          icon: <FilterAltIcon fontSize='small' />
+        });
       }
 
-      menuItems.push(
-        <MenuItem key='hide-small-mins-display' onClick={() => {
-          handleUnderTwo();
-        }}>
-          <MenuListIcon>
-            {hideUnderTwoMPG ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-          </MenuListIcon>
-          <MenuListText primary ='Hide under 2 MPG' />
-        </MenuItem>,
-      );
+      menuOptions.push({
+        value: 'hide-small-mins-display',
+        label: 'Hide under 2 MPG',
+        selectable: true,
+        onSelect: handleUnderTwo,
+        icon: hideUnderTwoMPG ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+      });
     }
 
     if (view === 'transfer') {
-      menuItems.push(<Divider key = {'transfer-divider'} />);
+      menuOptions.push({
+        value: null,
+        selectable: false,
+        customLabel: <MenuDivider />
+      },);
 
-      menuItems.push(
-        <MenuItem key='conf-picker-options' onClick={() => {
-          handleConferenceFilter();
-        }}>
-          <MenuListIcon>
-            <SettingsIcon fontSize='small' />
-          </MenuListIcon>
-          <MenuListText primary ='Conference filter' />
-        </MenuItem>,
-      );
+      menuOptions.push({
+        value: 'conf-picker-options',
+        label: 'Conference filter',
+        selectable: true,
+        onSelect: handleConferenceFilter,
+        icon: <SettingsIcon fontSize='small' />
+      });
     }
 
-    return menuItems;
+    return menuOptions;
   };
 
 
@@ -141,11 +128,8 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         anchor={anchor}
         open={open}
         onClose={handleClose}
-      >
-        <MenuList>
-          {getMenuItems()}
-        </MenuList>
-      </Menu>
+        options = {getMenuOptions()}
+      />
       <ConferenceFilterOptions open={confOptionsOpen} onClose = {() => setConfOptionsOpen(false)} />
       <ClassYearPickerDialog open = {classPickerDialogOpen} selected={class_years} openHandler={handleClassYearFilter} closeHandler={() => setClassPickerDialogOpen(false)} />
     </div>

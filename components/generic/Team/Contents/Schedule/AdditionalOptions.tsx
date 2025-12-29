@@ -11,11 +11,7 @@ import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import Menu from '@/components/ux/menu/Menu';
-import MenuList from '@/components/ux/menu/MenuList';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
-import MenuListText from '@/components/ux/menu/MenuListText';
+import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 
@@ -40,34 +36,22 @@ const AdditionalOptions = () => {
     setAnchor(null);
   };
 
-  const getMenuItems = () => {
-    const menuItems: React.JSX.Element[] = [];
-
-    menuItems.push(
-      <MenuItem key='schedule-display-default' onClick={() => {
-        handleView('default');
-      }}>
-         <MenuListIcon>
-           {scheduleView === 'default' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />}
-         </MenuListIcon>
-        <MenuListText primary = 'View card mode' />
-      </MenuItem>,
-    );
-
-    menuItems.push(
-      <MenuItem key='schedule-display-table' onClick={() => {
-        handleView('table');
-      }}>
-         <MenuListIcon>
-           {scheduleView === 'table' ? <CheckIcon fontSize='small' /> : <CalendarViewMonthIcon fontSize='small' />}
-         </MenuListIcon>
-        <MenuListText primary = 'View table mode' />
-      </MenuItem>,
-    );
-
-    return menuItems;
-  };
-
+  const menuOptions: MenuOption[] = [
+    {
+      value: 'default',
+      label: 'View card mode',
+      selectable: true,
+      onSelect: handleView,
+      icon: scheduleView === 'default' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />
+    },
+    {
+      value: 'table',
+      label: 'View table mode',
+      selectable: true,
+      onSelect: handleView,
+      icon: scheduleView === 'table' ? <CheckIcon fontSize='small' /> : <CalendarViewMonthIcon fontSize='small' />
+    },
+  ];
 
   return (
     <div>
@@ -82,11 +66,8 @@ const AdditionalOptions = () => {
         anchor={anchor}
         open={open}
         onClose={handleClose}
-      >
-        <MenuList>
-          {getMenuItems()}
-        </MenuList>
-      </Menu>
+        options = {menuOptions}
+      />
     </div>
   );
 };

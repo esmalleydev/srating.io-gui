@@ -6,18 +6,21 @@ import Style from '@/components/utils/Style';
 const MenuItem = (
   {
     disabled = false,
+    active = false,
     onClick,
     style = {},
     children,
   }:
   {
     disabled?: boolean,
+    active?: boolean,
     onClick?: () => void,
     style?: React.CSSProperties;
     children: React.ReactNode;
   },
 ) => {
   const theme = useTheme();
+  const activeColor = theme.mode === 'light' ? theme.grey[100] : theme.grey[800];
   const liStyle: React.CSSProperties = {
     backgroundColor: 'transparent',
     border: 0,
@@ -37,6 +40,10 @@ const MenuItem = (
     ...style,
   };
 
+  if (active) {
+    liStyle.backgroundColor = activeColor;
+  }
+
   if (disabled) {
     liStyle.pointerEvents = 'none';
     liStyle.opacity = 0.3;
@@ -50,7 +57,7 @@ const MenuItem = (
 
   const hoverCSS = Style.getStyleClassName(`
     &:hover: {
-      backgroundColor: ${theme.mode === 'light' ? theme.grey[100] : theme.grey[800]},
+      backgroundColor: ${activeColor},
     },
   `);
 

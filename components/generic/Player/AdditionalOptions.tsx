@@ -5,12 +5,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
-import Menu from '@/components/ux/menu/Menu';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import MenuListText from '@/components/ux/menu/MenuListText';
+import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import IconButton from '@/components/ux/buttons/IconButton';
-import MenuList from '@/components/ux/menu/MenuList';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/player-slice';
 
@@ -35,6 +31,16 @@ const AdditionalOptions = () => {
     handleClose();
   };
 
+  const menuOptions: MenuOption[] = [
+    {
+      value: 'show_per_game_stats',
+      label: 'Show per game stats',
+      selectable: true,
+      onSelect: handlePerGameToggle,
+      icon: showPerGameStats ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+    },
+  ];
+
 
   return (
     <div>
@@ -47,18 +53,8 @@ const AdditionalOptions = () => {
         anchor={anchor}
         open={open}
         onClose={handleClose}
-      >
-        <MenuList>
-          <MenuItem key='show-per-game-stats' onClick={() => {
-            handlePerGameToggle();
-          }}>
-            <MenuListIcon>
-              {showPerGameStats ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-            </MenuListIcon>
-            <MenuListText primary = {'Show per game stats'} />
-          </MenuItem>
-        </MenuList>
-      </Menu>
+        options={menuOptions}
+      />
     </div>
   );
 };

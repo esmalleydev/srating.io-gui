@@ -9,11 +9,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
-import Menu from '@/components/ux/menu/Menu';
-import MenuList from '@/components/ux/menu/MenuList';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
-import MenuListText from '@/components/ux/menu/MenuListText';
+import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 
@@ -39,22 +35,15 @@ const AdditionalOptions = () => {
     handleClose();
   };
 
-  const getMenuItems = () => {
-    const menuItems: React.JSX.Element[] = [];
-
-    menuItems.push(
-      <MenuItem key='show-boxscore-line' onClick={() => {
-        handleTrendsBoxscore();
-      }}>
-        <MenuListIcon>
-          {trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />}
-        </MenuListIcon>
-        <MenuListText primary='Show boxscore data' />
-      </MenuItem>,
-    );
-
-    return menuItems;
-  };
+  const menuOptions: MenuOption[] = [
+    {
+      value: 'show-boxscore-line',
+      label: 'Show boxscore data',
+      selectable: true,
+      onSelect: handleTrendsBoxscore,
+      icon: trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+    },
+  ];
 
 
   return (
@@ -70,11 +59,8 @@ const AdditionalOptions = () => {
         anchor={anchor}
         open={open}
         onClose={handleClose}
-      >
-        <MenuList>
-          {getMenuItems()}
-        </MenuList>
-      </Menu>
+        options = {menuOptions}
+      />
     </div>
   );
 };

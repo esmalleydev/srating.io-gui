@@ -29,11 +29,7 @@ import { reset } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/loading-slice';
 import OrganizationPicker from './OrganizationPicker';
-import Menu from '@/components/ux/menu/Menu';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
-import MenuListText from '@/components/ux/menu/MenuListText';
-import MenuList from '@/components/ux/menu/MenuList';
+import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
 import Organization from '../helpers/Organization';
 import Tooltip from '../ux/hover/Tooltip';
 import Button from '../ux/buttons/Button';
@@ -173,6 +169,28 @@ const Header = () => {
     },
   };
 
+  const menuOptions: MenuOption[] = [
+    {
+      value: 'account',
+      selectable: true,
+      label: 'My account',
+      onSelect: handleAccount,
+      icon: <AccountCircleIcon fontSize="small" />,
+    },
+    {
+      value: null,
+      selectable: false,
+      customLabel: <MenuDivider />
+    },
+    {
+      value: 'logout',
+      selectable: true,
+      label: 'Logout',
+      onSelect: handleLogout,
+      icon: <Logout fontSize="small" />,
+    }
+  ];
+    
 
   return (
     <div className={Style.getStyleClassName(headerStyle)}>
@@ -215,21 +233,8 @@ const Header = () => {
                     anchor={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
-                  >
-                    <MenuList>
-                      <MenuItem onClick={handleAccount}>
-                        <MenuListIcon><AccountCircleIcon fontSize="small" /></MenuListIcon>
-                        <MenuListText primary='My account' />
-                      </MenuItem>
-                      <hr style = {{ margin: 0, borderWidth: 0, borderStyle: 'solid', borderColor: theme.text.secondary, borderBottomWidth: 'thin' }} />
-                      <MenuItem onClick={handleLogout}>
-                        <MenuListIcon>
-                          <Logout fontSize="small" />
-                        </MenuListIcon>
-                        <MenuListText primary='Logout' />
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
+                    options={menuOptions}
+                  />
                 </>
                 :
                 <div>

@@ -5,12 +5,9 @@ import { useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import Menu from '@/components/ux/menu/Menu';
-import MenuList from '@/components/ux/menu/MenuList';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
-import MenuListText from '@/components/ux/menu/MenuListText';
+import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import Button from '@/components/ux/buttons/Button';
+import { useTheme } from '../hooks/useTheme';
 
 export type optionType = {
   value: string | null;
@@ -50,6 +47,7 @@ const OptionPicker = (
   },
 ) => {
   // console.time('OptionPicker')
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -81,9 +79,23 @@ const OptionPicker = (
 
   const uncheckedIcon = (
     isRadio ?
-    <RadioButtonUncheckedIcon color = 'primary' fontSize='small' /> :
-    <CheckBoxOutlineBlankIcon color = 'primary' fontSize='small' />
+    <RadioButtonUncheckedIcon style = {{ color: theme.primary.main }} fontSize='small' /> :
+    <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />
   );
+
+  // convert to MenuOption
+  const menuOptions: MenuOption[] = options.map((option) => {
+    const isSelected = selected.includes(option.value);
+    return {
+      value: option.value,
+      label: option.label,
+      secondaryLabel: option.sublabel,
+      selectable: true,
+      disabled: option.disabled,
+      onSelect: handleAction,
+      icon: isSelected ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> :  uncheckedIcon,
+    };
+  });
 
   return (
     <div>
@@ -103,25 +115,8 @@ const OptionPicker = (
         open={open}
         onClose={handleClose}
         showCloseButton = {showMenuCloseButton}
-      >
-          <MenuList>
-            {options.map((option, index) => {
-              const isSelected = selected.includes(option.value);
-              return (
-                <MenuItem disabled = {option.disabled} key = {index} onClick = {() => handleAction(option.value)}>
-                  <MenuListIcon>
-                    {
-                      isSelected ?
-                      <CheckIcon color = 'success' fontSize='small' /> :
-                        uncheckedIcon
-                    }
-                  </MenuListIcon>
-                  <MenuListText primary={option.label} secondary={option?.sublabel} />
-                </MenuItem>
-              );
-            })}
-          </MenuList>
-      </Menu>
+        options={menuOptions}
+      />
     </div>
   );
 };
