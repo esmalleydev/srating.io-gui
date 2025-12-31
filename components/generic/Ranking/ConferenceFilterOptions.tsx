@@ -5,7 +5,7 @@ import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/ranking-slice';
-import Modal from '@/components/ux/container/Modal';
+import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import IconButton from '@/components/ux/buttons/IconButton';
 

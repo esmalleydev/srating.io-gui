@@ -433,3 +433,41 @@ export interface RankingColumns {
   }
 }
 
+export interface FantasyGroupUser {
+  fantasy_group_user_id: string;
+	fantasy_group_id: string;
+	user_id: string;
+	guid: string;
+  deleted: number;
+}
+
+export type FantasyGroupUsers = {[fantasy_group_user_id: string]: FantasyGroupUser};
+
+
+export interface FantasyGroup {
+	fantasy_group_id: string;
+	organization_id: string;
+  division_id: string;
+  season: number;
+  name: string,
+  fantasy_payout_rule_id: string | null,
+  fantasy_group_type_terminology_id: string | null,
+  draft_type_terminology_id: string | null,
+  draft_scoring_terminology_id: string | null,
+	start_date: string | null,
+	end_date: string | null,
+	cap: number,
+	entries: number | null,
+	entries_per_user: number,
+	free: number,
+	entry_fee: number | null,
+	private: number,
+  draft_start_date: string | null,
+	draft_time_per_user_in_seconds: number | null,
+	guid: string;
+  deleted: number;
+}
+
+export type FantasyGroups = {[fantasy_group_id: string]: FantasyGroup};
+
+ 

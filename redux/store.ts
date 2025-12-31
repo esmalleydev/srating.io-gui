@@ -18,6 +18,7 @@ import playerReducer from './features/player-slice';
 import loadingReducer from './features/loading-slice';
 import cacheReducer from './features/cache-slice';
 import fantasyReducer from './features/fantasy-slice';
+import fantasyGroupReducer from './features/fantasy_group-slice';
 
 // IF YOU ADD MORE SLICES HERE, MAKE SURE TO UPDATE LayoutWrapper useEffect for back / forward buttons!
 
@@ -42,6 +43,7 @@ export const makeStore = () => configureStore({
     loadingReducer,
     cacheReducer,
     fantasyReducer,
+    fantasyGroupReducer,
   },
 });
 

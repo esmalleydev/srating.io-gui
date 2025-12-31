@@ -12,6 +12,7 @@ import { updateFromURL as G } from '@/redux/features/conference-slice';
 import { updateFromURL as H } from '@/redux/features/game-slice';
 import { updateFromURL as I } from '@/redux/features/player-slice';
 import { updateFromURL as J } from '@/redux/features/fantasy-slice';
+import { updateFromURL as K } from '@/redux/features/fantasy_group-slice';
 
 
 const LayoutWrapper = ({ children }) => {
@@ -35,6 +36,7 @@ const LayoutWrapper = ({ children }) => {
       store.dispatch(H());
       store.dispatch(I());
       store.dispatch(J());
+      store.dispatch(K());
     };
 
     // Add the event listener when the component mounts

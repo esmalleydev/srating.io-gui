@@ -43,15 +43,15 @@ class Fantasy extends Surface {
 
     return {
       title: `Fantasy ${sportText}`,
-      description: `Fantasy team games for ${sportText}`,
+      description: `Fantasy leagues for ${sportText}`,
       openGraph: {
         title: `Fantasy ${sportText}`,
-        description: `Fantasy team games for ${sportText}`,
+        description: `Fantasy leagues for ${sportText}`,
       },
       twitter: {
         card: 'summary',
         title: `Fantasy ${sportText}`,
-        description: `Fantasy team games for ${sportText}`,
+        description: `Fantasy leagues for ${sportText}`,
       },
     };
   }

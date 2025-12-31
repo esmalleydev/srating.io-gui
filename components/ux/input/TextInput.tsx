@@ -3,14 +3,16 @@
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
-import { RefObject, useCallback, useEffect, useState } from 'react';
+import { RefObject, useCallback, useEffect, useMemo, useState } from 'react';
 import Objector from '@/components/utils/Objector';
+import Inputs from '@/components/helpers/Inputs';
 
 type TextInputVariant = 'standard' | 'outlined' | 'filled';
 type TextInputFormatter = 'text' | 'number' | 'money';
 
 
 interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange'> {
+  inputHandler: Inputs;
   ref?: RefObject<HTMLInputElement | null>;
   style?: React.CSSProperties;
   placeholder: string;
@@ -20,13 +22,14 @@ interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   error?: boolean; // External error control
   errorMessage?: string;
   required?: boolean;
-  onChange?: (value: string | number) => void;
+  onChange?: (value: string) => void;
   triggerValidation?: boolean;
   min?: number; // for number or money formats
   max?: number; // for number or money formats
 }
 
 const TextInput: React.FC<TextInputProps> = ({
+  inputHandler,
   ref = null,
   style = {},
   placeholder,
@@ -47,6 +50,7 @@ const TextInput: React.FC<TextInputProps> = ({
   ...props
 }) => {
   const theme = useTheme();
+  const instanceId = useMemo(() => crypto.randomUUID(), []);
 
   const [isFocused, setIsFocused] = useState(false);
   const [internalValue, setInternalValue] = useState(valueProp || props.defaultValue || undefined);
@@ -64,11 +68,29 @@ const TextInput: React.FC<TextInputProps> = ({
 
   // Use the prop value if provided, otherwise use internal state
   const value = valueProp !== undefined ? valueProp : internalValue;
+  const hasError = externalError || validationError;
+
+  const errorCallback = () => {
+    return {
+      validationError: hasError || (!value && required),
+      validationErrorMessage: validationErrorMessage || (!value && required ? 'This field is required' : undefined),
+    };
+  };
+
+  useEffect(() => {
+    if (inputHandler) {
+      inputHandler.register(instanceId, errorCallback);
+    }
+
+    return () => {
+      if (inputHandler) {
+        inputHandler.unregister(instanceId);
+      }
+    };
+  }, [inputHandler, instanceId, errorCallback]);
 
   const errorColor = theme.error.main;
   const textColor = theme.text.primary;
-
-  const hasError = externalError || validationError;
 
   let borderColor = theme.mode === 'dark' ? theme.grey[400] : theme.grey[600];
 
@@ -167,8 +189,9 @@ const TextInput: React.FC<TextInputProps> = ({
   };
 
 
-  const handleValidation = (val) => {
+  const handleValidation = (val): void => {
     let nextValue = val;
+  
     if (nextValue) {
       setValidationError(false);
       setValidationErrorMessage(undefined);
@@ -176,36 +199,23 @@ const TextInput: React.FC<TextInputProps> = ({
 
     if (nextValue && formatter === 'number' && typeof nextValue !== 'number') {
       // Remove non-digits, allows for negative and decimals
-      const newValue = nextValue.replace(/(?!^-)[^0-9.]/g, '');
-
-      if (newValue !== nextValue) {
+      const valueToCheck = nextValue.replace(/(?!^-)[^0-9.]/g, '');
+      
+      if (valueToCheck !== nextValue) {
         setValidationError(true);
         setValidationErrorMessage('Can only enter numbers');
+        return;
       }
-      nextValue = newValue;
-    } else if (nextValue && formatter === 'money') {
-      // Allow digits and one dot
-      const newValue = nextValue.replace(/[^0-9.]/g, '');
-
-      if (newValue !== nextValue) {
+    } else if (nextValue && formatter === 'money' && typeof nextValue !== 'number') {
+      // console.log('money', nextValue)
+      // console.log('money', typeof nextValue)
+      const valueToCheck = nextValue.replace(/[^0-9.]/g, '');
+      // console.log('money valueToCheck', valueToCheck)
+      // console.log('money after replace', nextValue)
+      if (valueToCheck !== nextValue) {
         setValidationError(true);
         setValidationErrorMessage('Can only enter numbers');
-      }
-
-      nextValue = newValue;
-
-      // Prevent multiple dots
-      const dots = nextValue.match(/\./g);
-      if (dots && dots.length > 1) {
-        return undefined; // Ignore input
-      }
-
-      // Limit to 2 decimal places
-      if (nextValue.includes('.')) {
-        const [int, dec] = nextValue.split('.');
-        if (dec && dec.length > 2) {
-          return undefined; // Ignore input
-        }
+        return;
       }
     }
 
@@ -219,10 +229,10 @@ const TextInput: React.FC<TextInputProps> = ({
       nextValue < min
     ) {
       setValidationError(true);
-      setValidationErrorMessage(`Must be greater than min (${min})`);
-      return undefined;
+      setValidationErrorMessage(`Must be greater than or equal to min (${min})`);
+      return;
     }
-
+    
     if (
       max !== null &&
       nextValue &&
@@ -233,15 +243,16 @@ const TextInput: React.FC<TextInputProps> = ({
       nextValue > max
     ) {
       setValidationError(true);
-      setValidationErrorMessage(`Must be less than max (${max})`);
-      return undefined;
+      setValidationErrorMessage(`Must be less than or equal to max (${max})`);
+      return;
     }
 
-    if (maxLength && nextValue && nextValue.length > maxLength) {
+    if (maxLength && nextValue && nextValue.toString().length > maxLength) {
       setValidationError(true);
-      setValidationErrorMessage(`Max charcters allowed: ${maxLength}`);
-      return undefined;
+      setValidationErrorMessage(`Max charcters allowed: ${maxLength}. Using ${nextValue.toString().length}`);
+      return;
     }
+
 
     if (
       required &&
@@ -252,9 +263,9 @@ const TextInput: React.FC<TextInputProps> = ({
       )
     ) {
       setValidationError(true);
+      setValidationErrorMessage('This field is required');
+      return;
     }
-
-    return nextValue;
   };
 
   // --- Logic Helpers ---
@@ -287,24 +298,24 @@ const TextInput: React.FC<TextInputProps> = ({
   const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(false);
 
-    let finalValue = e.target.value;
+    let finalValue: string = e.target.value;
 
-    // 1. Handle Formatting on Blur (Money)
-    if (formatter === 'money' && finalValue) {
-      finalValue = formatMoneyOnBlur(finalValue);
-      // We need to update the internal state to show the formatted value (e.g. 5 -> 5.00)
-      // If controlled, this depends on the parent updating props via onChange,
-      // but for uncontrolled we set it here.
-      setInternalValue(finalValue);
 
-      // Artificial event to ensure parent gets the formatted value
-      if (valueProp !== undefined && onChangeProp) {
-        // const syntheticEvent = { ...e, target: { ...e.target, value: finalValue } } as React.FocusEvent<HTMLInputElement>;
-        onChangeProp(finalValue);
-      }
+    if (finalValue && formatter === 'number' && typeof finalValue !== 'number') {
+      // Remove non-digits, allows for negative and decimals
+      const newValue = finalValue.replace(/(?!^-)[^0-9.]/g, '');
+      finalValue = newValue;
+    } else if (finalValue && formatter === 'money') {
+      // Allow digits and one dot
+      const newValue = finalValue.replace(/[^0-9.]/g, '');
+      finalValue = formatMoneyOnBlur(newValue);
     }
 
-    handleValidation(finalValue);
+    setInternalValue(finalValue);
+
+    if (valueProp !== undefined && onChangeProp) {
+      onChangeProp(finalValue);
+    }
 
     if (onBlurProp) {
       onBlurProp(e);
@@ -313,28 +324,18 @@ const TextInput: React.FC<TextInputProps> = ({
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     let { value: nextValue } = e.target;
-    // --- Formatters (Input Masking) ---
 
-    if (nextValue) {
-      setValidationError(false);
-      setValidationErrorMessage(undefined);
-    }
+    handleValidation(nextValue);
 
-    nextValue = handleValidation(nextValue);
+    // console.log('after handleValidation', nextValue)
 
-    if (nextValue === undefined) {
-      return;
-    }
-
-    // Update Internal State (Uncontrolled)
     if (valueProp === undefined) {
       setInternalValue(nextValue);
     }
 
-    // Trigger Parent Change
     if (onChangeProp) {
-      // Create a new event with the formatted value
-      // e.target.value = nextValue;
+      // console.log('onChange in handleChange', nextValue)
+      // console.log('onChange in handleChange type', typeof nextValue)
       onChangeProp(nextValue);
     }
   }, [valueProp, onChangeProp, formatter, maxLength, required, isTouched]);
@@ -344,7 +345,6 @@ const TextInput: React.FC<TextInputProps> = ({
   const displayedErrorMessage = validationErrorMessage || externalErrorMessage || (validationError ? 'This field is required' : null);
 
   // todo show maxLength on bottom right of input / how many characters I have reached
-
   return (
     <div className={Style.getStyleClassName(containerStyle)}>
       {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}

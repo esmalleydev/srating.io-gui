@@ -2,7 +2,7 @@
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { setKryptos, setNewUpdate } from '@/redux/features/user-slice';
-import Modal from '@/components/ux/container/Modal';
+import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
 

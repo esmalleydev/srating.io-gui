@@ -11,7 +11,7 @@ import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Dates from '@/components/utils/Dates';
-import Modal from '@/components/ux/container/Modal';
+import Modal from '@/components/ux/modal/Modal';
 import Button from '@/components/ux/buttons/Button';
 
 

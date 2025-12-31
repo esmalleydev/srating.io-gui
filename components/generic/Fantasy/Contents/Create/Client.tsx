@@ -12,12 +12,22 @@ import Switch from '@/components/ux/input/Switch';
 import Typography from '@/components/ux/text/Typography';
 import DateInput from '@/components/ux/input/DateInput';
 import Select from '@/components/ux/input/Select';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Columns from '@/components/ux/layout/Columns';
 import MultiPicker, { getTerminologyOptions } from '@/components/ux/input/MultiPicker';
 import Wizard from '@/components/ux/layout/Wizard';
 import InfoIcon from '@mui/icons-material/Info';
+import { useClientAPI } from '@/components/clientAPI';
+import ErrorModal from '@/components/ux/modal/ErrorModal';
+import { setLoading } from '@/redux/features/loading-slice';
+import Organization from '@/components/helpers/Organization';
+import { FantasyGroup } from '@/types/general';
+import Dates from '@/components/utils/Dates';
+import Inputs from '@/components/helpers/Inputs';
 // import InfoOutlineIcon from '@mui/icons-material/InfoOutline'; need to upgrade MUI for this icon... >.>
+
+
+// todo somehow connect the textinput min / max to the isValid functions
 
 /**
  * The main wrapper div for all the contents
@@ -54,14 +64,28 @@ const Client = ({ }) => {
   const navigation = new Navigation();
   const theme = useTheme();
 
-  // const player = useAppSelector((state) => state.playerReducer.player);
+  const [isSaving, setIsSaving] = useState(false);
+  const [errorModalMessage, setErrorModalMessage] = useState<string | null>(null);
+
+  const dispatch = useAppDispatch();
   const fantasy_payout_rules = useAppSelector((state) => state.dictionaryReducer.fantasy_payout_rule);
   const terminology = useAppSelector((state) => state.dictionaryReducer.terminology);
-  // const path = Organization.getPath({ organizations, organization_id });
-  // const season = useAppSelector((state) => state.playerReducer.season);
-  // const subview = useAppSelector((state) => state.playerReducer.subview);
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const division_id = useAppSelector((state) => state.organizationReducer.division_id);
+  const season = useAppSelector((state) => state.organizationReducer.season);
+  const loading = useAppSelector((state) => state.loadingReducer.loading);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const path = Organization.getPath({ organizations, organization_id });
 
-  const [formData, setFormData] = useState({
+  const basicInputHandler = new Inputs();
+  const draftInputHandler = new Inputs();
+  const peopleInputHandler = new Inputs();
+  const financialInputHandler = new Inputs();
+
+  const initialFormData = Object.freeze({
+    organization_id,
+    division_id,
+    season,
     name: '',
     fantasy_payout_rule_id: null,
     fantasy_group_type_terminology_id: null,
@@ -69,7 +93,7 @@ const Client = ({ }) => {
     draft_scoring_terminology_id: null,
 	  start_date: null,
 	  end_date: null,
-	  cap: null,
+	  cap: 0,
 	  entries: null,
 	  entries_per_user: 1,
 	  free: 1,
@@ -78,6 +102,17 @@ const Client = ({ }) => {
     draft_start_date: null,
 	  draft_time_per_user_in_seconds: null,
   });
+
+  // the inputs return strings, but internally they are formatted as a number, so just overwrite to allow string in a few of these columns
+  type FantasyGroupForm = Omit<
+    FantasyGroup,
+    'fantasy_group_id' | 'guid' | 'deleted' | 'entry_fee' | 'entries_per_user'
+  > & {
+    entry_fee: string | number | null;
+    entries_per_user: string | number;
+  };
+
+  const [formData, setFormData] = useState<FantasyGroupForm>(initialFormData);
 
   const [triggerValidation, setTriggerValidation] = useState(false);
 
@@ -90,8 +125,7 @@ const Client = ({ }) => {
     });
   
   
-  const onChange = (column: string, value: any) => {
-    console.log('onChange', column, value)
+  const onChange = <K extends keyof FantasyGroupForm>(column: K, value: FantasyGroupForm[K]) => {
     setFormData((prev) => ({
       ...prev,
       [column]: value
@@ -102,14 +136,31 @@ const Client = ({ }) => {
   const stepBasicInfo = {
     title: 'League setup',
     id: 'basic',
-    isValid: () => !!formData.fantasy_group_type_terminology_id && !!formData.name,
+    isValid: () => {
+      const errors = basicInputHandler.getErrors();
+
+      if (errors.length) {
+        return false;
+      }
+
+      // In theory this SHOULD NOT be needed anymore, the inputs as all the control now! :)
+      // if (
+      //   !formData.fantasy_group_type_terminology_id ||
+      //   !formData.name
+      // ) {
+        // return false;
+      // }
+
+      return true;
+    },
     content: (
       <>
         <Typography type = 'body1' style = {{ color: theme.text.secondary }}>Just need a few details about this league...we will guide you through setting it up!</Typography>
         <div style={{ marginBottom: 20, marginTop: 10 }}>
           <MultiPicker
+            inputHandler = {basicInputHandler}
             label='What type of league is this?'
-            onChange={(val) => onChange('fantasy_group_type_terminology_id', val)}
+            onChange={(val) => onChange('fantasy_group_type_terminology_id', val as string)}
             required
             options={getTerminologyOptions('fantasy_group_type')}
             selected={formData.fantasy_group_type_terminology_id ? [formData.fantasy_group_type_terminology_id] : []}
@@ -119,6 +170,7 @@ const Client = ({ }) => {
         </div>
         <div style={{ marginBottom: 20 }}>
           <TextInput
+            inputHandler = {basicInputHandler}
             label = 'What is the name of the league?'
             placeholder='League name'
             onChange={(val) => onChange('name', val)}
@@ -137,20 +189,71 @@ const Client = ({ }) => {
     id: 'draft',
     // Logic: If draft type is selected, and if it's the specific draft type that requires date/time, ensure those are filled
     isValid: () => {
-      if (!formData.draft_type_terminology_id || !formData.draft_scoring_terminology_id) {
+      const errors = draftInputHandler.getErrors();
+      
+      if (errors.length) {
         return false;
       }
-      if (formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93') {
-        return !!formData.draft_start_date && !!formData.draft_time_per_user_in_seconds;
+
+      if (
+        !formData.draft_type_terminology_id ||
+        !formData.draft_scoring_terminology_id ||
+        !formData.start_date ||
+        !formData.end_date
+      ) {
+        return false;
+      }
+      if (
+        formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93' &&
+        (
+          !formData.draft_start_date ||
+          !formData.draft_time_per_user_in_seconds
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        formData.start_date &&
+        formData.end_date &&
+        formData.start_date > formData.end_date
+      ) {
+        setErrorModalMessage('League start date can not be after end date.');
+        return false;
+      }
+
+      if (
+        formData.draft_start_date &&
+        formData.start_date &&
+        formData.draft_start_date > formData.start_date
+      ) {
+        setErrorModalMessage('Draft start date can not be after league start date.');
+        return false;
       }
       return true;
+    },
+    onBack: () => {
+      setFormData((prev) => ({
+        ...prev,
+        draft_type_terminology_id: initialFormData.draft_type_terminology_id,
+        draft_start_date: initialFormData.draft_start_date,
+        draft_time_per_user_in_seconds: initialFormData.draft_time_per_user_in_seconds,
+        draft_scoring_terminology_id: initialFormData.draft_scoring_terminology_id,
+        start_date: initialFormData.start_date,
+        end_date: initialFormData.end_date,
+      }));
     },
     content: (
       <>
         <div style={{ marginBottom: 20 }}>
           <MultiPicker
+            inputHandler={draftInputHandler}
             label='How will the player draft work?'
-            onChange={(val) => onChange('draft_type_terminology_id', val)}
+            onChange={(val) => {
+              onChange('draft_type_terminology_id', val as string);
+              onChange('draft_start_date', initialFormData.draft_start_date);
+              onChange('draft_time_per_user_in_seconds', initialFormData.draft_time_per_user_in_seconds);
+            }}
             required
             options={getTerminologyOptions('draft_type')}
             selected={formData.draft_type_terminology_id ? [formData.draft_type_terminology_id] : []}
@@ -170,15 +273,20 @@ const Client = ({ }) => {
             <Columns>
               <div>
                 <DateInput
+                  inputHandler={draftInputHandler}
                   required
                   placeholder='Draft start date'
                   label = 'When does the draft start?'
-                  onChange={(val) => onChange('draft_start_date', val)}
+                  onChange={(val) => {
+                    onChange('draft_start_date', val ? Dates.format(val, 'Y-m-d') : null)
+                  }}
                   triggerValidation={triggerValidation}
+                  value = {formData.draft_start_date || undefined}
                 />
               </div>
               <div>
                 <TextInput
+                  inputHandler={draftInputHandler}
                   required
                   label = 'How long does each person have to draft?'
                   placeholder='Draft time (minutes)'
@@ -196,8 +304,9 @@ const Client = ({ }) => {
 
         <div style={{ marginBottom: 20 }}>
           <MultiPicker
+            inputHandler={draftInputHandler}
             label='How will scoring work?'
-            onChange={(val) => onChange('draft_scoring_terminology_id', val)}
+            onChange={(val) => onChange('draft_scoring_terminology_id', val as string)}
             required
             options={getTerminologyOptions('draft_scoring')}
             selected={formData.draft_scoring_terminology_id ? [formData.draft_scoring_terminology_id] : []}
@@ -215,18 +324,20 @@ const Client = ({ }) => {
         <div style={{ marginBottom: 20 }}>
           <Columns>
             <DateInput
+              inputHandler={draftInputHandler}
               required
               label = 'When does the league start?'
               placeholder='Start date'
-              onChange={(val) => onChange('start_date', val)}
+              onChange={(val) => onChange('start_date', val ? Dates.format(val, 'Y-m-d') : null )}
               triggerValidation={triggerValidation}
               value = {formData.start_date || undefined}
               />
             <DateInput
+              inputHandler={draftInputHandler}
               required
               label = 'When does the league end?'
               placeholder='End date'
-              onChange={(val) => onChange('end_date', val)}
+              onChange={(val) => onChange('end_date', val ? Dates.format(val, 'Y-m-d') : null)}
               triggerValidation={triggerValidation}
               value = {formData.end_date || undefined}
             />
@@ -236,10 +347,34 @@ const Client = ({ }) => {
     )
   };
 
-  const stepSchedule = {
+  const stepPeople = {
     title: "Participants & Capacity",
     id: 'schedule',
-    isValid: () => !!formData.entries_per_user,
+    isValid: () => {
+      const errors = peopleInputHandler.getErrors();
+      
+      if (errors.length) {
+        return false;
+      }
+
+      if (!formData.entries_per_user || +formData.entries_per_user < 1) {
+        return false;
+      }
+
+      if (formData.cap && !formData.entries) {
+        return false;
+      }
+
+      return true;
+    },
+    onBack: () => {
+      setFormData((prev) => ({
+        ...prev,
+        private: initialFormData.private,
+        entries: initialFormData.entries,
+        entries_per_user: initialFormData.entries_per_user,
+      }));
+    },
     content: (
       <>
         <Typography type='caption' style={{ color: theme.text.secondary }}>Is the group publically available?</Typography>
@@ -248,34 +383,15 @@ const Client = ({ }) => {
             label="Public"
             labelPlacement='start'
             value={!formData.private}
-            onChange={(val) => onChange('private', !val)}
+            onChange={(val) => onChange('private', +!val)}
           />
         </div>
 
         <div style={{ display: 'flex', marginBottom: 20 }}>
-          <Columns breakPoint={575} numberOfColumns={2}>
+          <Columns breakPoint={425} numberOfColumns={2}>
             <div style={{ alignContent: 'end' }}>
               <TextInput
-                label = 'How many people can join?'
-                placeholder='# of Entries'
-                onChange={(val) => onChange('entries', val)}
-                formatter='number'
-                value = {formData.entries || undefined}
-                min={1}
-              />
-            </div>
-            {/* <div style={{ alignContent: 'end' }}>
-              <Typography type='caption' style={{ color: theme.text.secondary }}>Total entries allowed?</Typography>
-              <TextInput
-                label='Max entries in league'
-                onChange={(val) => onChange('cap', val)}
-                formatter='number'
-                value = {formData.cap || undefined}
-                min={1}
-              />
-            </div> */}
-            <div style={{ alignContent: 'end' }}>
-              <TextInput
+                inputHandler={peopleInputHandler}
                 label='Entries per user?'
                 placeholder='Max entries per user'
                 onChange={(val) => onChange('entries_per_user', val)}
@@ -283,10 +399,41 @@ const Client = ({ }) => {
                 value={formData.entries_per_user}
                 required
                 triggerValidation={triggerValidation}
+                min = {1}
               />
             </div>
           </Columns>
         </div>
+
+        <div style={{ maxWidth: 320, marginBottom: 20 }}>
+          <Switch
+            label="Is there a limit to # of participants?"
+            labelPlacement='start'
+            value={Boolean(formData.cap)}
+            onChange={(val) => onChange('cap', +val)}
+          />
+        </div>
+        {
+          formData.cap ?
+          <Columns breakPoint={425} numberOfColumns={2}>
+            <div style={{ alignContent: 'end' }}>
+              <TextInput
+                inputHandler={peopleInputHandler}
+                label = 'How many people can join?'
+                placeholder='# of Entries'
+                onChange={(val) => onChange('entries', +val)}
+                required
+                triggerValidation={triggerValidation}
+                formatter='number'
+                value = {formData.entries || undefined}
+                min={1}
+              />
+            </div>
+          </Columns>
+          
+          : ''
+        }
+            
       </>
     )
   };
@@ -295,16 +442,52 @@ const Client = ({ }) => {
   const stepFinancials = {
     title: "Fees & Payouts",
     id: 'financials',
-    isValid: () => formData.free ? true : (!!formData.entry_fee && !!formData.fantasy_payout_rule_id),
+    isValid: () => {
+      const errors = financialInputHandler.getErrors();
+      
+      if (errors.length) {
+        return false;
+      }
+
+      if (
+        !formData.free &&
+        (
+          !formData.entry_fee ||
+          !formData.fantasy_payout_rule_id
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        formData.entry_fee &&
+        (
+          +formData.entry_fee < 5 ||
+          +formData.entry_fee > 1000
+        )
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    onBack: () => {
+      setFormData((prev) => ({
+        ...prev,
+        free: initialFormData.free,
+        entry_fee: initialFormData.entry_fee,
+        fantasy_payout_rule_id: initialFormData.fantasy_payout_rule_id,
+      }));
+    },
     content: (
       <>
         <Typography type='caption' style={{ color: theme.text.secondary }}>Does the group have an entry fee?</Typography>
         <div style={{ maxWidth: 150, marginBottom: 20 }}>
           <Switch
-          label="Entry fee"
-          labelPlacement='start'
-          value={!formData.free}
-          onChange={(val) => onChange('free', !val)}
+            label="Entry fee"
+            labelPlacement='start'
+            value={!formData.free}
+            onChange={(val) => onChange('free', +!val)}
           />
         </div>
         {!formData.free && (
@@ -312,23 +495,27 @@ const Client = ({ }) => {
             <Columns breakPoint={500}>
               <div>
                 <TextInput
+                  inputHandler={financialInputHandler}
                   label = 'How much is the entry fee?'
                   placeholder='$ Entry fee' 
-                  onChange={(val) => onChange('entry_fee', val)} 
+                  onChange={(val) => onChange('entry_fee', +val)} 
                   required 
                   formatter={'money'} 
                   triggerValidation={triggerValidation}
                   value = {formData.entry_fee || undefined}
+                  min = {5}
+                  max = {1000}
                 />
               </div>
               <div>
                 <Select
+                  inputHandler = {financialInputHandler}
                   label = 'Payout distribution?'
                   placeholder="Payout structure"
                   options={payoutOptions}
                   required
                   value={formData.fantasy_payout_rule_id}
-                  onChange={(val) => onChange('fantasy_payout_rule_id', val)}
+                  onChange={(val) => onChange('fantasy_payout_rule_id', val as string)}
                   variant="outlined"
                   triggerValidation={triggerValidation}
                 />
@@ -342,7 +529,30 @@ const Client = ({ }) => {
 
 
   const handleSave = () => {
-    console.log(formData);
+    if (isSaving || loading) {
+      return;
+    }
+    dispatch(setLoading(true));
+    setIsSaving(true);
+
+    useClientAPI({
+      'class': 'fantasy_group',
+      'function': 'createGroup',
+      'arguments': formData,
+    }).then((response) => {
+      if (response && response.error) {
+        dispatch(setLoading(false));
+        setErrorModalMessage(response.error);
+        return;
+      }
+
+      navigation.fantasy_group(`/${path}/fantasy_group/${response.fantasy_group_id}`);
+    }).catch((e) => {
+      console.log(e);
+      dispatch(setLoading(false));
+      setErrorModalMessage(e);
+      return;
+    });
   }
 
   // --- Dynamic Step Calculation ---
@@ -355,7 +565,7 @@ const Client = ({ }) => {
       steps.push(stepDraft);
     }
     
-    steps.push(stepSchedule);
+    steps.push(stepPeople);
     steps.push(stepFinancials);
     
     return steps;
@@ -370,9 +580,16 @@ const Client = ({ }) => {
     <Contents>
       <Wizard 
         steps={activeSteps} 
-        validationTrigger = {(valid) => { console.log('validation triggered',valid); setTriggerValidation(valid)}}
+        validationTrigger = {setTriggerValidation}
         onSave={handleSave}
         saveButtonText = 'Create League'
+      />
+      <ErrorModal
+        open = {errorModalMessage !== null}
+        message = {errorModalMessage || 'Error'}
+        confirm={() => {
+          setErrorModalMessage(null);
+        }}
       />
     </Contents>
     </Profiler>

@@ -380,7 +380,6 @@ const Menu = (
     </div>
   );
 
-  console.log('paperStyle', paperStyle)
 
   return ReactDOM.createPortal(
     <div className={Style.getStyleClassName(overlayStyle)} {...props}>
@@ -402,7 +401,7 @@ const Menu = (
               );
             }
             return (
-              <MenuItem onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
+              <MenuItem key = {option.value} onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
                 {option.icon ? <MenuListIcon>{option.icon}</MenuListIcon> : ''}
                 <MenuListText primary={option.label || 'Unknown'} secondary={option.secondaryLabel || undefined} />
               </MenuItem>

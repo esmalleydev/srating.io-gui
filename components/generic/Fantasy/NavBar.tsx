@@ -61,11 +61,13 @@ const NavBar = () => {
     return null;
   };
 
+  const show_back = (view !== 'home' && view !== 'create');
+
 
   return (
     <>
       <div className={Style.getStyleClassName(divStyle)}>
-        <div style = {{ display: 'flex' }}>{view !== 'home' ? <BackButton /> : ''}</div>
+        <div style = {{ display: 'flex' }}>{show_back ? <BackButton /> : ''}</div>
         <div>{getHeaderText() ? <Typography type = 'h5'>{getHeaderText()}</Typography> : ''}</div>
         <div>{view === 'home' ? <Button title = 'Create fantasy group' value = 'create' handleClick = {handleCreate} /> : ''}</div>
       </div>

@@ -10,6 +10,7 @@ import Typography from '../text/Typography';
 import Paper from '../container/Paper';
 import Objector from '@/components/utils/Objector';
 import Menu, { MenuOption } from '../menu/Menu';
+import Inputs from '@/components/helpers/Inputs';
 
 export type SelectOption = {
   label: string;
@@ -19,6 +20,7 @@ export type SelectOption = {
 type SelectVariant = 'standard' | 'outlined' | 'filled';
 
 interface SelectProps {
+  inputHandler: Inputs;
   placeholder?: string;
   label?: string;
   options: SelectOption[];
@@ -34,6 +36,7 @@ interface SelectProps {
 }
 
 const Select: React.FC<SelectProps> = ({
+  inputHandler,
   label,
   options,
   value: valueProp,
@@ -48,6 +51,7 @@ const Select: React.FC<SelectProps> = ({
   triggerValidation = false,
 }) => {
   const theme = useTheme();
+  const instanceId = useMemo(() => crypto.randomUUID(), []);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
 
@@ -67,10 +71,30 @@ const Select: React.FC<SelectProps> = ({
   const selectedOption = useMemo(() => options.find((o) => o.value === value), [options, value]);
 
   const errorColor = theme.error.main;
-  const hasError = (externalError || !!externalErrorMessage || validationError);
+  const hasError = (externalError || !!externalErrorMessage || validationError || (required && (isTouched || triggerValidation) && !value));
 
   // Determine Error Message to Display
-  const displayedErrorMessage = externalErrorMessage || (validationError ? 'This field is required' : null);
+  const displayedErrorMessage = externalErrorMessage || (!value && required ? 'This field is required' : null);
+
+
+  const errorCallback = () => {
+    return {
+      validationError: hasError || (!value && required),
+      validationErrorMessage: displayedErrorMessage || (!value && required ? 'This field is required' : undefined),
+    };
+  };
+
+  useEffect(() => {
+    if (inputHandler) {
+      inputHandler.register(instanceId, errorCallback);
+    }
+
+    return () => {
+      if (inputHandler) {
+        inputHandler.unregister(instanceId);
+      }
+    };
+  }, [inputHandler, instanceId, errorCallback]);
 
 
   useEffect(() => {
@@ -301,8 +325,7 @@ const Select: React.FC<SelectProps> = ({
         <div
           ref = {inputRef}
           className={Style.getStyleClassName(triggerStyle)}
-          onClick={(e) => {console.log('trigger box on click'); handleToggle(e)}}
-          // tabIndex={0}
+          onClick={handleToggle}
         >
           <Typography type="body1" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {selectedOption ? selectedOption.label : ''}

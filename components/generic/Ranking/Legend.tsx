@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import TableColumns from '@/components/helpers/TableColumns';
-import Modal from '@/components/ux/container/Modal';
+import Modal from '@/components/ux/modal/Modal';
 import IconButton from '@/components/ux/buttons/IconButton';
 
 const Legend = ({ open, onClose, columns, view, organization_id }) => {

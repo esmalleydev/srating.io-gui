@@ -649,11 +649,11 @@ const Calculator = ({ games, date }) => {
   const betting_contents: React.JSX.Element[] = [];
 
 
-  const bettingInput = <TextInput style = {{ display: 'inline-flex' }} id="bet" formatter='number' label="Bet" variant="standard" value={inputBet} onChange = {(val) => { setBet(val); }} />;
-  const oddsMinInput = <TextInput style = {{ display: 'inline-flex' }} id="oddsMin" formatter='number' label="Odd Min" variant="standard" value={inputOddsMin} onChange = {(val) => { setOddsMin(val); }} />;
-  const oddsMaxInput = <TextInput style = {{ display: 'inline-flex' }} id="oddsmax" formatter='number' label="Odds Max" variant="standard" value={inputOddsMax} onChange = {(val) => { setOddsMax(val); }} />;
-  const percentageInput = <TextInput style = {{ display: 'inline-flex' }} id="precentage" formatter='number' label="Win chance %" variant="standard" value={inputPercentage} onChange = {(val) => { setPercentage(val); }} />;
-  const roundRobinInput = <TextInput style = {{ display: 'inline-flex' }} id="roundRobin" formatter='number' label="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(val) => { setRoundRobin(val); }} />;
+  const bettingInput = <TextInput style = {{ display: 'inline-flex' }} id="bet" formatter='number' placeholder="Bet" variant="standard" value={inputBet} onChange = {(val) => { setBet(val); }} />;
+  const oddsMinInput = <TextInput style = {{ display: 'inline-flex' }} id="oddsMin" formatter='number' placeholder="Odd Min" variant="standard" value={inputOddsMin} onChange = {(val) => { setOddsMin(val); }} />;
+  const oddsMaxInput = <TextInput style = {{ display: 'inline-flex' }} id="oddsmax" formatter='number' placeholder="Odds Max" variant="standard" value={inputOddsMax} onChange = {(val) => { setOddsMax(val); }} />;
+  const percentageInput = <TextInput style = {{ display: 'inline-flex' }} id="precentage" formatter='number' placeholder="Win chance %" variant="standard" value={inputPercentage} onChange = {(val) => { setPercentage(val); }} />;
+  const roundRobinInput = <TextInput style = {{ display: 'inline-flex' }} id="roundRobin" formatter='number' placeholder="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(val) => { setRoundRobin(val); }} />;
 
   const inputs = (
     <Columns numberOfColumns={4} breakPoint={600}>

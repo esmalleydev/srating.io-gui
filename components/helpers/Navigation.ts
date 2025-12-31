@@ -276,7 +276,7 @@ class Navigation {
 
 
   /**
-   * Navigate to a fantasy page,
+   * Navigate to the fantasy page,
    * reset the state to be fresh beforehand
    */
   public fantasy(path: string, onRouter: null | undefined | (() => void) = null) {
@@ -327,6 +327,22 @@ class Navigation {
 
     this.startTransition(() => {
       this.router[(pushState ? 'push' : 'replace')](`${this.pathName}${query}`);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+  /**
+   * Navigate to the fantasy page,
+   * reset the state to be fresh beforehand
+   */
+  public fantasy_group(path: string, onRouter: null | undefined | (() => void) = null) {
+    this.dispatch(setLoading(true));
+    console.log('reset fantasy_group redux')
+    // this.dispatch(resetFantasy(false));
+    this.startTransition(() => {
+      this.router.push(path);
       if (onRouter) {
         onRouter();
       }

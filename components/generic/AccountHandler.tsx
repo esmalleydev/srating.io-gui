@@ -11,7 +11,7 @@ import { setLoading } from '@/redux/features/loading-slice';
 import { useTheme } from '@/components/hooks/useTheme';
 import { setDataKey } from '@/redux/features/games-slice';
 import Typography from '@/components/ux/text/Typography';
-import Modal from '@/components/ux/container/Modal';
+import Modal from '@/components/ux/modal/Modal';
 import Button from '@/components/ux/buttons/Button';
 import { TextField } from '@mui/material';
 

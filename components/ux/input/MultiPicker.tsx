@@ -6,7 +6,8 @@ import Columns from '../layout/Columns';
 import Typography from '../text/Typography';
 import Paper from '../container/Paper';
 import { getStore } from '@/app/StoreProvider';
-import { FocusEvent, useEffect, useState } from 'react';
+import { FocusEvent, useEffect, useMemo, useState } from 'react';
+import Inputs from '@/components/helpers/Inputs';
 
 export type MultiPickerOption = {
   label: string;
@@ -15,6 +16,7 @@ export type MultiPickerOption = {
 
 
 interface MultiPickerProps {
+  inputHandler: Inputs;
   options: MultiPickerOption[];
   selected: (string | number)[];
   label?: string;
@@ -52,6 +54,7 @@ export const getTerminologyOptions = (type: string) => {
   return options;
 };
 const MultiPicker = ({
+  inputHandler,
   label,
   options,
   selected,
@@ -64,10 +67,32 @@ const MultiPicker = ({
   triggerValidation = false,
 }: MultiPickerProps) => {
   const theme = useTheme();
+  const instanceId = useMemo(() => crypto.randomUUID(), []);
 
   // Initialize state, but keep it synced with props
   const [internalSelected, setInternalSelected] = useState<(string | number)[]>(selected || []);
   const [isTouched, setIsTouched] = useState(false);
+
+  const showError = externalError || (required && (isTouched || triggerValidation) && internalSelected.length === 0);
+
+  const errorCallback = () => {
+    return {
+      validationError: showError || (internalSelected.length === 0 && required),
+      validationErrorMessage: errorMessage || (internalSelected.length === 0 && required ? 'Selection is required' : undefined),
+    };
+  };
+
+  useEffect(() => {
+    if (inputHandler) {
+      inputHandler.register(instanceId, errorCallback);
+    }
+
+    return () => {
+      if (inputHandler) {
+        inputHandler.unregister(instanceId);
+      }
+    };
+  }, [inputHandler, instanceId, errorCallback]);
 
   // Effect to sync internal state if parent props change
   useEffect(() => {
@@ -76,8 +101,6 @@ const MultiPicker = ({
     }
   }, [selected]);
 
-
-  const showError = externalError || (required && (isTouched || triggerValidation) && internalSelected.length === 0);
 
   const handleSelection = (value: string | number) => {
     let newSelection: (string | number)[] = [];
