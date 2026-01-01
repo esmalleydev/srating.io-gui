@@ -98,15 +98,15 @@ const Client = ({ }) => {
 	  entries_per_user: 1,
 	  free: 1,
 	  entry_fee: null,
+	  open_invites: 1,
 	  private: 0,
-    draft_start_date: null,
 	  draft_time_per_user_in_seconds: null,
   });
 
   // the inputs return strings, but internally they are formatted as a number, so just overwrite to allow string in a few of these columns
   type FantasyGroupForm = Omit<
     FantasyGroup,
-    'fantasy_group_id' | 'guid' | 'deleted' | 'entry_fee' | 'entries_per_user'
+    'fantasy_group_id' | 'guid' | 'deleted' | 'locked' | 'entry_fee' | 'entries_per_user'
   > & {
     entry_fee: string | number | null;
     entries_per_user: string | number;
@@ -205,10 +205,7 @@ const Client = ({ }) => {
       }
       if (
         formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93' &&
-        (
-          !formData.draft_start_date ||
-          !formData.draft_time_per_user_in_seconds
-        )
+        !formData.draft_time_per_user_in_seconds
       ) {
         return false;
       }
@@ -222,21 +219,12 @@ const Client = ({ }) => {
         return false;
       }
 
-      if (
-        formData.draft_start_date &&
-        formData.start_date &&
-        formData.draft_start_date > formData.start_date
-      ) {
-        setErrorModalMessage('Draft start date can not be after league start date.');
-        return false;
-      }
       return true;
     },
     onBack: () => {
       setFormData((prev) => ({
         ...prev,
         draft_type_terminology_id: initialFormData.draft_type_terminology_id,
-        draft_start_date: initialFormData.draft_start_date,
         draft_time_per_user_in_seconds: initialFormData.draft_time_per_user_in_seconds,
         draft_scoring_terminology_id: initialFormData.draft_scoring_terminology_id,
         start_date: initialFormData.start_date,
@@ -251,7 +239,6 @@ const Client = ({ }) => {
             label='How will the player draft work?'
             onChange={(val) => {
               onChange('draft_type_terminology_id', val as string);
-              onChange('draft_start_date', initialFormData.draft_start_date);
               onChange('draft_time_per_user_in_seconds', initialFormData.draft_time_per_user_in_seconds);
             }}
             required
@@ -270,20 +257,7 @@ const Client = ({ }) => {
 
         {formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93' && (
           <div style={{ marginBottom: 20 }}>
-            <Columns>
-              <div>
-                <DateInput
-                  inputHandler={draftInputHandler}
-                  required
-                  placeholder='Draft start date'
-                  label = 'When does the draft start?'
-                  onChange={(val) => {
-                    onChange('draft_start_date', val ? Dates.format(val, 'Y-m-d') : null)
-                  }}
-                  triggerValidation={triggerValidation}
-                  value = {formData.draft_start_date || undefined}
-                />
-              </div>
+            <Columns numberOfColumns={2}>
               <div>
                 <TextInput
                   inputHandler={draftInputHandler}
@@ -295,7 +269,7 @@ const Client = ({ }) => {
                   formatter={'number'}
                   value = {formData.draft_time_per_user_in_seconds ? formData.draft_time_per_user_in_seconds / 60 : undefined}
                   min={0.1}
-                  max={60 * 5} // todo make this the draft start date - start date / players ?
+                  max={60 * 5}
                 />
               </div>
             </Columns>
@@ -370,6 +344,7 @@ const Client = ({ }) => {
     onBack: () => {
       setFormData((prev) => ({
         ...prev,
+        open_invites: initialFormData.open_invites,
         private: initialFormData.private,
         entries: initialFormData.entries,
         entries_per_user: initialFormData.entries_per_user,
@@ -377,14 +352,31 @@ const Client = ({ }) => {
     },
     content: (
       <>
-        <Typography type='caption' style={{ color: theme.text.secondary }}>Is the group publically available?</Typography>
-        <div style={{ maxWidth: 150, marginBottom: 20 }}>
-          <Switch
-            label="Public"
-            labelPlacement='start'
-            value={!formData.private}
-            onChange={(val) => onChange('private', +!val)}
-          />
+        <div style={{ marginBottom: 20 }}>
+          <Columns>
+          <div>
+            <Typography type='caption' style={{ color: theme.text.secondary }}>Is the group publically available?</Typography>
+            <Switch
+              label="Public"
+              labelPlacement='start'
+              value={!formData.private}
+              onChange={(val) => onChange('private', +!val)}
+            />
+          </div>
+            {
+              formData.private ?
+              <div>
+                <Typography type='caption' style={{ color: theme.text.secondary }}>Can anyone invite other people?</Typography>
+                <Switch
+                  label="Open invite"
+                  labelPlacement='start'
+                  value={Boolean(formData.open_invites)}
+                  onChange={(val) => onChange('open_invites', +val)}
+                />
+              </div>
+              : ''
+            }
+          </Columns>
         </div>
 
         <div style={{ display: 'flex', marginBottom: 20 }}>

@@ -433,6 +433,18 @@ export interface RankingColumns {
   }
 }
 
+export interface FantasyGroupInvite {
+  fantasy_group_invite_id: string;
+	fantasy_group_id: string;
+  email: string;
+	code?: string; // stripped
+	expires: string;
+	guid: string;
+  deleted: number;
+}
+
+export type FantasyGroupInvites = {[fantasy_group_invite_id: string]: FantasyGroupInvite};
+
 export interface FantasyGroupUser {
   fantasy_group_user_id: string;
 	fantasy_group_id: string;
@@ -461,8 +473,9 @@ export interface FantasyGroup {
 	entries_per_user: number,
 	free: number,
 	entry_fee: number | null,
+	open_invites: number,
+	locked: number,
 	private: number,
-  draft_start_date: string | null,
 	draft_time_per_user_in_seconds: number | null,
 	guid: string;
   deleted: number;

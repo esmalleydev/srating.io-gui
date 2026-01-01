@@ -3,7 +3,7 @@
 import { useTheme } from '@/components/hooks/useTheme';
 import Color from '@/components/utils/Color';
 import Style from '@/components/utils/Style';
-import { RefObject } from 'react';
+import React, { RefObject } from 'react';
 
 
 /**
@@ -22,6 +22,7 @@ const Paper = (
     onClick,
     onKeyDown,
     tabIndex,
+    buttons = [],
   }:
   {
     elevation?: number;
@@ -33,6 +34,7 @@ const Paper = (
     onClick?: (e: React.SyntheticEvent) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void; // Type definition
     tabIndex?: number;
+    buttons?: React.JSX.Element[];
   },
 ) => {
   const theme = useTheme();
@@ -48,6 +50,7 @@ const Paper = (
   }
 
   const cStyle = {
+    position: 'relative',
     borderRadius: '4px',
     boxShadow: Style.getShadow(elevation),
     backgroundColor,
@@ -73,6 +76,8 @@ const Paper = (
     }
   };
 
+  // the top offset assumes all the buttons will be 40px in height
+
   return (
     <div
       className={Style.getStyleClassName(cStyle)}
@@ -81,6 +86,15 @@ const Paper = (
       onKeyDown={handleKeyDown}
       tabIndex={tabIndex}
     >
+      <div style = {{ position: 'absolute', right: 0, top: -20, marginRight: 20  }}>
+        {buttons.map((button) => {
+          return (
+            <div style = {{ margin: '0px 5px', display: 'inline-flex'}}>
+              {button}
+            </div>
+          );
+        })}
+      </div>
       {children}
     </div>
   );

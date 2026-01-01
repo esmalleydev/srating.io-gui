@@ -1,12 +1,13 @@
 
 import State from '@/components/helpers/State';
-import { FantasyGroupUser } from '@/types/general';
+import { FantasyGroup, FantasyGroupInvites, FantasyGroupUser } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type InitialState = {
   // view: string;
-  fantasy_group: object,
+  fantasy_group: FantasyGroup,
   fantasy_group_user: FantasyGroupUser | null,
+  fantasy_group_invites: FantasyGroupInvites,
   loadingView: boolean,
 };
 
@@ -37,7 +38,8 @@ stateController.set_url_param_type_x_keys({
 
 stateController.setInitialState({
   // view: 'home',
-  fantasy_group: {},
+  fantasy_group: {} as FantasyGroup,
+  fantasy_group_invites: {} as FantasyGroupInvites,
   fantasy_group_user: null,
   loadingView: true,
 });
