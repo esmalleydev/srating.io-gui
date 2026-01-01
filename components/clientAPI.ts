@@ -84,7 +84,7 @@ export async function useClientAPI(args, optional_fetch_args = {}): Promise<any>
 
   let store = getStore();
 
-  const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || store.getState().userReducer.secret_id || null;
+  const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || store.getState().userReducer.session_id || null;
   let secret = (typeof window !== 'undefined' && sessionStorage.getItem('secret')) || store.getState().userReducer.secret_id || null;
   const kryptos = (typeof window !== 'undefined' && sessionStorage.getItem('kryptos')) || store.getState().userReducer.kryptos || null;
 
