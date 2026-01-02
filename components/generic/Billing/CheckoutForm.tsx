@@ -15,9 +15,9 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
-import { setSession } from '@/redux/features/user-slice';
 import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/hooks/useTheme';
+import { setDataKey } from '@/redux/features/user-slice';
 
 
 const CheckoutForm = ({ pricing }) => {
@@ -101,8 +101,8 @@ const CheckoutForm = ({ pricing }) => {
     });
 
     if (subscription.session_id) {
-      localStorage.setItem('session_id', subscription.session_id);
-      dispatch(setSession(subscription.session_id));
+      dispatch(setDataKey({ key: 'session_id', value: subscription.session_id }));
+      dispatch(setDataKey({ key: 'isValidSession', value: true }));
     }
 
     const { clientSecret } = subscription;

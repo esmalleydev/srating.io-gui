@@ -101,6 +101,7 @@ export type ApiKeys = {[api_key_id: string]: ApiKey};
 export interface User {
   user_id: string;
   username: string;
+  display_name: string | null;
   stripe_customer: string;
   date_of_entry: string;
   updated_at: string;
@@ -449,6 +450,8 @@ export interface FantasyGroupUser {
   fantasy_group_user_id: string;
 	fantasy_group_id: string;
 	user_id: string;
+  email?: string;
+  name?: string;
 	guid: string;
   deleted: number;
 }

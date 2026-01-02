@@ -7,15 +7,18 @@ import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
+import Columns from '@/components/ux/layout/Columns';
+import { useAppSelector } from '@/redux/hooks';
 
 
-const Subscriptions = (
-  { subscriptions, pricing, api_keys = {} }:
-  { subscriptions: SubscriptionsType | undefined, pricing: Pricings | undefined; api_keys: ApiKeys | undefined },
-) => {
+const Subscriptions = () => {
   const theme = useTheme();
   const router = useRouter();
   const subscriptionsContainer: React.JSX.Element[] = [];
+
+  const subscriptions = useAppSelector((state) => state.userReducer.subscription);
+  const api_keys = useAppSelector((state) => state.userReducer.api_key);
+  const pricing = useAppSelector((state) => state.userReducer.pricing);
 
   if (subscriptions) {
     const subscription_id_x_api_key = {};
@@ -53,10 +56,17 @@ const Subscriptions = (
     );
   }
 
+  const numberOfColumns = subscriptionsContainer.length < 5 ? subscriptionsContainer.length : 4;
+
+  // todo dynamic columns sometime
+  // looks like crap if you have a ton of columns, mobile doesnt cut off right etc
+
 
   return (
     <>
+    {/* <Columns numberOfColumns={numberOfColumns} breakPoint={640}> */}
       {subscriptionsContainer}
+    {/* </Columns> */}
     </>
   );
 };

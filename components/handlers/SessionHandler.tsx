@@ -3,8 +3,8 @@
 
 import { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
-import { setSession, setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
+import { setDataKey } from '@/redux/features/user-slice';
 
 
 
@@ -19,9 +19,9 @@ const SessionHandler = () => {
 
 
   if (validSession === true && !session_id) {
-    dispatch(setValidSession(false));
+    dispatch(setDataKey({ key: 'isValidSession', value: false }));
   }
-
+  
   if (!requestedSession && session_id && storedKryptos) {
     setRequestedSession(true);
     useClientAPI({
@@ -32,18 +32,17 @@ const SessionHandler = () => {
       },
     }).then((valid) => {
       if (valid) {
-        dispatch(setValidSession(true));
+        dispatch(setDataKey({ key: 'isValidSession', value: true }));
       } else {
-        localStorage.removeItem('session_id');
-        dispatch(setSession(null));
+        dispatch(setDataKey({ key: 'session_id', value: null }));
       }
     }).catch((e) => {
     });
   }
-
+  
   const loginCallback = () => {
     sessionStorage.clear();
-    dispatch(setValidSession(true));
+    dispatch(setDataKey({ key: 'isValidSession', value: true }));
   };
 
 

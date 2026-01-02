@@ -1,7 +1,7 @@
 'use client';
 
 import { getStore } from '@/app/StoreProvider';
-import { setNewUpdate, setSecret } from '@/redux/features/user-slice';
+import { setDataKey, setSecret } from '@/redux/features/user-slice';
 import Objector from './utils/Objector';
 import { setLoading } from '@/redux/features/loading-slice';
 import { refresh } from './generic/actions';
@@ -36,7 +36,7 @@ function handleResponse(json: ApiResponse, isRetry: boolean = false): object {
 
     switch (json.code) {
       case 105: // New update available
-        store.dispatch(setNewUpdate(true));
+        store.dispatch(setDataKey({key: 'newUpdate', value: true }));
         break;
       case 103: // Secret expired
         // On first failure, we dispatch to clear the secret.

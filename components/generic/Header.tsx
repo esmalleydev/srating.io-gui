@@ -24,7 +24,6 @@ import Sidebar from './Sidebar';
 import Search from './Search';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setSession, setValidSession } from '../../redux/features/user-slice';
 import { reset } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/loading-slice';
@@ -37,6 +36,7 @@ import { useTheme } from '../hooks/useTheme';
 import Style from '../utils/Style';
 import Objector from '../utils/Objector';
 import IconButton from '../ux/buttons/IconButton';
+import { setDataKey } from '@/redux/features/user-slice';
 
 
 // todo hook up settings with router
@@ -126,10 +126,8 @@ const Header = () => {
 
   const handleLogout = () => {
     handleClose();
-    localStorage.removeItem('session_id');
-    // sessionStorage.clear();
-    dispatch(setValidSession(false));
-    dispatch(setSession(null));
+    dispatch(setDataKey({ key: 'session_id', value: null }));
+    dispatch(setDataKey({ key: 'isValidSession', value: false }));
     startTransition(() => {
       router.push('/');
     });

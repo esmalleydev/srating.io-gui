@@ -16,6 +16,7 @@ import { TransitionStartFunction, useTransition } from 'react';
 import { resetDataKey as resetDataKeyRanking, reset as resetRanking, setDataKey as setDataKeyRanking } from '@/redux/features/ranking-slice';
 import { setLoading } from '@/redux/features/loading-slice';
 import { reset as resetFantasy, setDataKey as setDataKeyFantasy, InitialStateKeys as InitialStateKeysFantasy, InitialState as InitialStateFantasy, stateController as FantasyStateController } from '@/redux/features/fantasy-slice';
+import { setDataKey as setDataKeyUser, InitialStateKeys as InitialStateKeysUser, InitialState as InitialStateUser, stateController as UserStateController } from '@/redux/features/user-slice';
 
 // todo remove nextjs router :D
 
@@ -343,6 +344,55 @@ class Navigation {
     // this.dispatch(resetFantasy(false));
     this.startTransition(() => {
       this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+
+  /**
+   * Navigate to the account user page,
+   * DO NOT reset the user state before hand
+   */
+  public user(path: string, onRouter: null | undefined | (() => void) = null) {
+    this.dispatch(setLoading(true));
+    this.startTransition(() => {
+      this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+  /**
+   * Navigate to something on a user view. Must already be on user view
+   */
+  public userView<K extends InitialStateKeysUser>(args: Pick<InitialStateUser, K>, onRouter: null | undefined | (() => void) = null) {
+    if (!this.pathName.includes('account')) {
+      throw new Error('userView only usable when already navigated to player');
+    }
+
+    for (const key in args) {
+      this.dispatch(setDataKeyUser({ key, value: args[key] }));
+    }
+
+
+    // these MUST always be set this way if the view changes
+    if ('view' in args) {
+      // nothing atm
+    }
+
+
+    this.dispatch(setDataKeyUser({ key: 'loadingView', value: true }));
+
+    // user slice handles this now, but just refetch it here for stupid nextjs router
+    const current = new URLSearchParams(window.location.search);
+    const search = current.toString();
+    const query = search ? `?${search}` : '';
+
+    this.startTransition(() => {
+      this.router.replace(`${this.pathName}${query}`);
       if (onRouter) {
         onRouter();
       }

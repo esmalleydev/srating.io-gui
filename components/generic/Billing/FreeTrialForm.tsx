@@ -8,9 +8,9 @@ import TextField from '@mui/material/TextField';
 
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
-import { setSession } from '@/redux/features/user-slice';
 import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/hooks/useTheme';
+import { setDataKey } from '@/redux/features/user-slice';
 
 const FreeTrialForm = () => {
   const theme = useTheme();
@@ -83,8 +83,8 @@ const FreeTrialForm = () => {
     }
 
     if (session.session_id) {
-      localStorage.setItem('session_id', session.session_id);
-      dispatch(setSession(session.session_id));
+      dispatch(setDataKey({ key: 'session_id', value:  session.session_id }));
+      dispatch(setDataKey({ key: 'isValidSession', value: true }));
     }
 
     router.push('/account');

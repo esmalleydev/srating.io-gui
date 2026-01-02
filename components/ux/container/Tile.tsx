@@ -18,6 +18,7 @@ const Tile = (
     secondary,
     style = {},
     iconStyle = {},
+    buttons = [],
   }:
   {
     icon: React.JSX.Element;
@@ -25,6 +26,7 @@ const Tile = (
     secondary?: string;
     style?: React.CSSProperties;
     iconStyle?: React.CSSProperties;
+    buttons?: React.JSX.Element[];
   },
 ) => {
   const theme = useTheme();
@@ -38,20 +40,31 @@ const Tile = (
 
   const iconContainerStyle = Objector.extender(
     {
+      display: 'flex',
       color: theme.success.main,
       marginRight: 10
     },
     iconStyle
   );
 
+  const subContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+  };
+
 
   return (
     <div className = {Style.getStyleClassName(containerStyle)}>
-      <div style = {{ display: 'flex', alignItems: 'center' }}>
-        <div className = {Style.getStyleClassName(iconContainerStyle)}>{icon}</div>
-        <div>
-          <div><Typography type = 'body1'>{primary}</Typography></div>
-          {secondary ? <div><Typography type = 'caption' style = {{ color: theme.text.secondary, fontStyle: 'italic' }}>{secondary}</Typography></div> : ''}
+      <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className = {Style.getStyleClassName(subContainerStyle)}>
+          <div className = {Style.getStyleClassName(iconContainerStyle)}>{icon}</div>
+          <div>
+            <div><Typography type = 'body1'>{primary}</Typography></div>
+            {secondary ? <div><Typography type = 'caption' style = {{ color: theme.text.secondary, fontStyle: 'italic' }}>{secondary}</Typography></div> : ''}
+          </div>
+        </div>
+        <div className = {Style.getStyleClassName(subContainerStyle)}>
+          {buttons}
         </div>
       </div>
     </div>

@@ -18,6 +18,7 @@ interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   placeholder: string;
   label?: string;
   variant?: TextInputVariant;
+  disabled?: boolean;
   formatter?: TextInputFormatter;
   error?: boolean; // External error control
   errorMessage?: string;
@@ -26,6 +27,7 @@ interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   triggerValidation?: boolean;
   min?: number; // for number or money formats
   max?: number; // for number or money formats
+  // reset?: boolean;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -35,6 +37,7 @@ const TextInput: React.FC<TextInputProps> = ({
   placeholder,
   label,
   variant = 'outlined',
+  disabled = false,
   formatter = 'text',
   error: externalError = false,
   errorMessage: externalErrorMessage,
@@ -47,6 +50,7 @@ const TextInput: React.FC<TextInputProps> = ({
   triggerValidation = false,
   min = null,
   max = null,
+  // reset = false,
   ...props
 }) => {
   const theme = useTheme();
@@ -57,6 +61,20 @@ const TextInput: React.FC<TextInputProps> = ({
   const [validationError, setValidationError] = useState(false);
   const [validationErrorMessage, setValidationErrorMessage] = useState(externalErrorMessage || undefined);
   const [isTouched, setIsTouched] = useState(false);
+
+  if (
+    formatter === 'text' &&
+    max !== null
+  ) {
+    console.warn('TextInput: You are using max instead of maxLength for text inputs!!');
+  }
+
+  // useEffect(() => {
+  //   if (reset) {
+  //     setIsTouched(false);
+  //     setValidationError(false);
+  //   }
+  // }, [reset]);
 
 
   // Sync internal value if prop changes (for controlled inputs)
@@ -90,7 +108,7 @@ const TextInput: React.FC<TextInputProps> = ({
   }, [inputHandler, instanceId, errorCallback]);
 
   const errorColor = theme.error.main;
-  const textColor = theme.text.primary;
+  let textColor = theme.text.primary;
 
   let borderColor = theme.mode === 'dark' ? theme.grey[400] : theme.grey[600];
 
@@ -99,6 +117,11 @@ const TextInput: React.FC<TextInputProps> = ({
   } else if (isFocused) {
     borderColor = theme.mode === 'dark' ? theme.info.light : theme.info.dark;
   }
+
+  if (disabled) {
+    textColor = theme.text.disabled;
+  }
+
   const height = 46;
 
   const inputStyle: React.CSSProperties = {
@@ -131,7 +154,7 @@ const TextInput: React.FC<TextInputProps> = ({
   const containerStyle: React.CSSProperties = {
     position: 'relative',
     width: '100%',
-    margin: variant === 'standard' ? '16px 0 4px 0' : '8px 0',
+    // margin: variant === 'standard' ? '16px 0 4px 0' : '8px 0',
   };
 
 
@@ -300,7 +323,6 @@ const TextInput: React.FC<TextInputProps> = ({
 
     let finalValue: string = e.target.value;
 
-
     if (finalValue && formatter === 'number' && typeof finalValue !== 'number') {
       // Remove non-digits, allows for negative and decimals
       const newValue = finalValue.replace(/(?!^-)[^0-9.]/g, '');
@@ -338,13 +360,12 @@ const TextInput: React.FC<TextInputProps> = ({
       // console.log('onChange in handleChange type', typeof nextValue)
       onChangeProp(nextValue);
     }
-  }, [valueProp, onChangeProp, formatter, maxLength, required, isTouched]);
+  }, [valueProp, onChangeProp, formatter, maxLength, max, min, required, isTouched]);
 
   // --- Determine Error Message to Display ---
   // Priority: 1. External Message, 2. Internal Required Message
   const displayedErrorMessage = validationErrorMessage || externalErrorMessage || (validationError ? 'This field is required' : null);
 
-  // todo show maxLength on bottom right of input / how many characters I have reached
   return (
     <div className={Style.getStyleClassName(containerStyle)}>
       {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
@@ -355,6 +376,7 @@ const TextInput: React.FC<TextInputProps> = ({
           type='text'
           className={Style.getStyleClassName(inputStyle)}
           value={value}
+          disabled = {disabled}
           // maxLength={maxLength} use internval validation
           onChange={handleChange}
           onFocus={handleFocus}

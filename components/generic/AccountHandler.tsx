@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 
 
 import { useAppDispatch } from '@/redux/hooks';
-import { setSession, setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useTheme } from '@/components/hooks/useTheme';
-import { setDataKey } from '@/redux/features/games-slice';
+import { setDataKey as setDataKeyUser } from '@/redux/features/user-slice';
+import { setDataKey as setDataKeyGames } from '@/redux/features/games-slice';
 import Typography from '@/components/ux/text/Typography';
 import Modal from '@/components/ux/modal/Modal';
 import Button from '@/components/ux/buttons/Button';
@@ -88,11 +88,9 @@ const AccountHandler = (
       } else if (session_id && session_id.error) {
         setPasswordError('Something went wrong, try again later');
       } else {
-        localStorage.setItem('session_id', session_id);
-        // sessionStorage.clear();
-        dispatch(setSession(session_id));
-        dispatch(setValidSession(true));
-        dispatch(setDataKey({ key: 'dates_checked', value: {} }));
+        dispatch(setDataKeyUser({ key: 'session_id', value: session_id }));
+        dispatch(setDataKeyUser({ key: 'isValidSession', value: true }));
+        dispatch(setDataKeyGames({ key: 'dates_checked', value: {} }));
         closeHandler(e);
 
         if (loginCallback) {
@@ -155,10 +153,8 @@ const AccountHandler = (
         dispatch(setLoading(false));
         setEmailError(response.error);
       } else if (response) {
-        localStorage.setItem('session_id', response);
-        // sessionStorage.clear();
-        dispatch(setSession(response));
-        dispatch(setValidSession(true));
+        dispatch(setDataKeyUser({ key: 'session_id', value: response }));
+        dispatch(setDataKeyUser({ key: 'isValidSession', value: true }));
         closeHandler(e);
 
         if (loginCallback) {
@@ -247,9 +243,8 @@ const AccountHandler = (
       } else {
         setForgotPassword(false);
         setTempLogin(false);
-        dispatch(setSession(response));
-        dispatch(setValidSession(true));
-        localStorage.setItem('session_id', response);
+        dispatch(setDataKeyUser({ key: 'session_id', value: response }));
+        dispatch(setDataKeyUser({ key: 'isValidSession', value: true }));
         // sessionStorage.clear();
         closeHandler(e);
         startTransition(() => {

@@ -1,12 +1,9 @@
 'use client';
 
-import { useTransition } from 'react';
-import {
-  Box, Tab, Tabs,
-} from '@mui/material';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useAppDispatch } from '@/redux/hooks';
-import { setLoading } from '@/redux/features/loading-slice';
+import { useAppSelector } from '@/redux/hooks';
+import Tab from '@/components/ux/buttons/Tab';
+import Navigation from '@/components/helpers/Navigation';
+import Style from '@/components/utils/Style';
 
 const getNavHeaderHeight = () => {
   return 48;
@@ -14,49 +11,45 @@ const getNavHeaderHeight = () => {
 
 export { getNavHeaderHeight };
 
-const NavBar = ({ view }) => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const pathName = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
-  const tabOrder = ['subscriptions', 'settings'];
+const NavBar = () => {
+  const navigation = new Navigation();
+
+  const view = useAppSelector((state) => state.userReducer.view) || 'subscriptions';
+  const tabOrder = ['subscriptions', 'fantasy', 'settings'];
 
   const tabOptions = {
     subscriptions: 'Subscriptions',
+    fantasy: 'Fantasy',
     settings: 'Settings',
   };
 
+  const handleTabClick = (e, value) => {
+    const newView = value;
+
+    if (newView !== view) {
+      navigation.userView({ view: newView });
+    }
+  };
 
   const tabs: React.JSX.Element[] = [];
 
   for (let i = 0; i < tabOrder.length; i++) {
-    tabs.push(<Tab key = {tabOrder[i]} label = {(<span style = {{ fontSize: '12px' }}>{tabOptions[tabOrder[i]]}</span>)} />);
+    tabs.push(
+      <Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]}  handleClick = {handleTabClick} />,
+    );
   }
 
-
-  const handleTabClick = (e, value) => {
-    const newView = tabOrder[value];
-
-    if (searchParams) {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      current.set('view', newView);
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-
-      dispatch(setLoading(true));
-      startTransition(() => {
-        router.replace(`${pathName}${query}`);
-      });
-    }
-  };
+  const divStyle = Style.getStyleClassName({
+    ...Style.getNavBar(),
+    // top: getMarginTop() + getHeaderHeight(),
+  });
 
   return (
-    <Box display="flex" justifyContent="center">
-      <Tabs variant="scrollable" scrollButtons="auto" value={tabOrder.indexOf(view)} onChange={handleTabClick} indicatorColor="secondary" textColor="inherit">
+    <>
+      <div className={divStyle}>
         {tabs}
-      </Tabs>
-    </Box>
+      </div>
+    </>
   );
 };
 
