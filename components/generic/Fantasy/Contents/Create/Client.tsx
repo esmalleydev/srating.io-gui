@@ -121,6 +121,10 @@ const Client = () => {
 
   const [triggerValidation, setTriggerValidation] = useState(false);
 
+  // hardcoded for cbb, todo make this dynamic per org + season
+  const minDate = formData.start_date || `${season - 1}-11-01`;
+  const maxDate = `${season}-04-10`;
+
   const payoutOptions = Object.values(fantasy_payout_rules)
     .sort((a, b) => {
       return a.ordinal - b.ordinal;
@@ -179,6 +183,11 @@ const Client = () => {
             label = 'What is the name of the league?'
             placeholder='League name'
             onChange={(val) => onChange('name', val)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                // todo dispatch an event for the Wizard to listen to to hit next button
+              }
+            }}
             maxLength={255}
             value={formData.name}
             required
@@ -302,9 +311,14 @@ const Client = () => {
               required
               label = 'When does the league start?'
               placeholder='Start date'
-              onChange={(val) => onChange('start_date', val ? Dates.format(val, 'Y-m-d') : null)}
+              onChange={(val) => {
+                console.log('onChange', val);
+                onChange('start_date', val ? Dates.format(val, 'Y-m-d') : null)
+              }}
               triggerValidation={triggerValidation}
               value = {formData.start_date || undefined}
+              minDate = {minDate}
+              maxDate = {maxDate}
               />
             <DateInput
               inputHandler={draftInputHandler}
@@ -314,6 +328,8 @@ const Client = () => {
               onChange={(val) => onChange('end_date', val ? Dates.format(val, 'Y-m-d') : null)}
               triggerValidation={triggerValidation}
               value = {formData.end_date || undefined}
+              minDate = {minDate}
+              maxDate = {maxDate}
             />
           </Columns>
         </div>

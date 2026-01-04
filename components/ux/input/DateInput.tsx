@@ -66,6 +66,7 @@ const DateInput: React.FC<DatePickerProps> = ({
   // If parent updates prop 'value', sync local state
   useEffect(() => {
     if (value) {
+      console.log('useEffect', value)
       const d = Dates.parse(value);
       if (isValidDate(d)) {
         setSelectedDate(d);
@@ -133,6 +134,7 @@ const DateInput: React.FC<DatePickerProps> = ({
 
   // Handle Calendar Selection
   const handleCalendarChange = (date: Date) => {
+    console.log('handleCalendarChange', date)
     setSelectedDate(date);
     setInputValue(Dates.format(date, 'm/d/Y'));
     onChange(date);
@@ -162,17 +164,8 @@ const DateInput: React.FC<DatePickerProps> = ({
   };
 
   const handleOnBlur = (e: React.FocusEvent) => {
-    // e.relatedTarget is the element that is GAINING focus
-    const target = e.relatedTarget as Node;
-
-    // If the user clicked or tabbed into something NOT inside our container, close it
-    if (containerRef.current && !containerRef.current.contains(target)) {
-      // Check if it's also not inside the calendar (in case of a Portal)
-      if (calendarRef.current && !calendarRef.current.contains(target)) {
-        setIsOpen(false);
-        setCalAncor(null);
-      }
-    }
+    // we dont need this to close the calendar anymore, the Plane component handles it
+    // keeping this here in case we want to do something else on blur of input
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
