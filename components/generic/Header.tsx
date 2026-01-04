@@ -37,6 +37,7 @@ import Style from '../utils/Style';
 import Objector from '../utils/Objector';
 import IconButton from '../ux/buttons/IconButton';
 import { setDataKey } from '@/redux/features/user-slice';
+import Navigation from '../helpers/Navigation';
 
 
 // todo hook up settings with router
@@ -44,6 +45,7 @@ import { setDataKey } from '@/redux/features/user-slice';
 export const headerBarHeight = 64;
 
 const Header = () => {
+  const navigation = new Navigation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const validSession = useAppSelector((state) => state.userReducer.isValidSession);
@@ -101,10 +103,7 @@ const Header = () => {
     handleClose();
     if (validSession) {
       if (pathName !== '/account') {
-        dispatch(setLoading(true));
-        startTransition(() => {
-          router.push('/account');
-        });
+        navigation.user('/account');
       }
 
       return;
@@ -178,7 +177,7 @@ const Header = () => {
     {
       value: null,
       selectable: false,
-      customLabel: <MenuDivider />
+      customLabel: <MenuDivider />,
     },
     {
       value: 'logout',
@@ -186,9 +185,8 @@ const Header = () => {
       label: 'Logout',
       onSelect: handleLogout,
       icon: <Logout fontSize="small" />,
-    }
+    },
   ];
-    
 
   return (
     <div className={Style.getStyleClassName(headerStyle)}>

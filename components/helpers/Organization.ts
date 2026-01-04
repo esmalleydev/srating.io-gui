@@ -27,6 +27,19 @@ class Organization {
     return DEFAULT_ORGANIZATION_ID;
   }
 
+  public static getEmoji({ organization_id }) {
+    let emoji = '';
+
+    if (organization_id === Organization.getCFBID()) {
+      emoji = '🏈';
+    }
+    if (organization_id === Organization.getCBBID()) {
+      emoji = '🏀';
+    }
+
+    return emoji;
+  }
+
   /**
    * Is the current organization college football?
    * Becareful using this, if you conditonally use it, the hooks between renders will be off and error out react

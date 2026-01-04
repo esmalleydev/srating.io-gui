@@ -21,7 +21,7 @@ const Tile = (
     buttons = [],
   }:
   {
-    icon: React.JSX.Element;
+    icon?: React.JSX.Element;
     primary: string;
     secondary?: string;
     style?: React.CSSProperties;
@@ -57,7 +57,7 @@ const Tile = (
     <div className = {Style.getStyleClassName(containerStyle)}>
       <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
         <div className = {Style.getStyleClassName(subContainerStyle)}>
-          <div className = {Style.getStyleClassName(iconContainerStyle)}>{icon}</div>
+          {icon ? <div className = {Style.getStyleClassName(iconContainerStyle)}>{icon}</div> : ''}
           <div>
             <div><Typography type = 'body1'>{primary}</Typography></div>
             {secondary ? <div><Typography type = 'caption' style = {{ color: theme.text.secondary, fontStyle: 'italic' }}>{secondary}</Typography></div> : ''}

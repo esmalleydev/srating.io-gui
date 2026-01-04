@@ -104,18 +104,11 @@ const OrganizationPicker = () => {
       selectable: true,
       label: `${organizations[id].code} (${organizations[id].name})`,
       onSelect: handleOrganization,
-      icon: (isSelected ? <CheckCircleIcon style = {{ color: theme.success.main }} fontSize='small' /> : <RadioButtonUncheckedIcon style = {{ color: theme.primary.main }} fontSize='small' />)
+      icon: (isSelected ? <CheckCircleIcon style = {{ color: theme.success.main }} fontSize='small' /> : <RadioButtonUncheckedIcon style = {{ color: theme.primary.main }} fontSize='small' />),
     });
   }
 
-  let emoji = '';
-
-  if (width > 375 && organization_id === Organization.getCFBID()) {
-    emoji = '🏈 ';
-  }
-  if (width > 375 && organization_id === Organization.getCBBID()) {
-    emoji = '🏀 ';
-  }
+  const emoji = width > 375 ? `${Organization.getEmoji({ organization_id })} ` : '';
 
   const title = selected in organizations ? `${emoji}${organizations[selected].code}` : 'Loading...';
 

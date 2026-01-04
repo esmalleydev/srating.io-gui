@@ -7,7 +7,6 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
-import Paper from '../container/Paper';
 import Objector from '@/components/utils/Objector';
 import Menu, { MenuOption } from '../menu/Menu';
 import Inputs from '@/components/helpers/Inputs';
@@ -225,7 +224,7 @@ const Select: React.FC<SelectProps> = ({
   const containerStyle: React.CSSProperties = {
     position: 'relative',
     width: '100%',
-    margin: variant === 'standard' ? '16px 0 4px 0' : '8px 0',
+    margin: variant === 'standard' ? '16px 0 4px 0' : '0px',
   };
 
   Objector.extender(triggerStyle, style);

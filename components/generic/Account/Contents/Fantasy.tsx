@@ -18,7 +18,6 @@ const Fantasy = () => {
   const theme = useTheme();
   const fantasy_groups = useAppSelector((state) => state.userReducer.fantasy_group);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
-  
 
   const handleTileClick = (e, fantasy_group_id) => {
     const fantasy_group = fantasy_groups[fantasy_group_id];
@@ -26,7 +25,7 @@ const Fantasy = () => {
     navigation.fantasy_group(`/${path}/fantasy_group/${fantasy_group.fantasy_group_id}`);
   };
 
-  const tiles = Object.values(fantasy_groups).map((fantasy_group) => {
+  const tiles = fantasy_groups ? Object.values(fantasy_groups).map((fantasy_group) => {
     const organization = organizations[fantasy_group.organization_id];
     return (
       <Tile
@@ -38,7 +37,7 @@ const Fantasy = () => {
         ]}
       />
     );
-  });
+  }) : [];
 
   const getContents = () => {
     if (tiles.length) {

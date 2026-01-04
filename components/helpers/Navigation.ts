@@ -16,7 +16,7 @@ import { TransitionStartFunction, useTransition } from 'react';
 import { resetDataKey as resetDataKeyRanking, reset as resetRanking, setDataKey as setDataKeyRanking } from '@/redux/features/ranking-slice';
 import { setLoading } from '@/redux/features/loading-slice';
 import { reset as resetFantasy, setDataKey as setDataKeyFantasy, InitialStateKeys as InitialStateKeysFantasy, InitialState as InitialStateFantasy, stateController as FantasyStateController } from '@/redux/features/fantasy-slice';
-import { setDataKey as setDataKeyUser, InitialStateKeys as InitialStateKeysUser, InitialState as InitialStateUser, stateController as UserStateController } from '@/redux/features/user-slice';
+import { resetDataKey as resetDataKeyUser, setDataKey as setDataKeyUser, InitialStateKeys as InitialStateKeysUser, InitialState as InitialStateUser, stateController as UserStateController } from '@/redux/features/user-slice';
 
 // todo remove nextjs router :D
 
@@ -353,10 +353,12 @@ class Navigation {
 
   /**
    * Navigate to the account user page,
-   * DO NOT reset the user state before hand
+   * DO NOT reset the user state before hand, only the account loaded part
    */
   public user(path: string, onRouter: null | undefined | (() => void) = null) {
     this.dispatch(setLoading(true));
+    this.dispatch(setDataKeyUser({ key: 'loadedAccount', value: false }));
+    // this.dispatch(resetDataKeyUser({ key: 'fa', value: false }));
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {

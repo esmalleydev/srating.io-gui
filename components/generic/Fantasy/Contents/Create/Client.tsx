@@ -60,7 +60,7 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = ({ }) => {
+const Client = () => {
   const navigation = new Navigation();
   const theme = useTheme();
 
@@ -91,16 +91,16 @@ const Client = ({ }) => {
     fantasy_group_type_terminology_id: null,
     draft_type_terminology_id: null,
     draft_scoring_terminology_id: null,
-	  start_date: null,
-	  end_date: null,
-	  cap: 0,
-	  entries: null,
-	  entries_per_user: 1,
-	  free: 1,
-	  entry_fee: null,
-	  open_invites: 1,
-	  private: 0,
-	  draft_time_per_user_in_seconds: null,
+    start_date: null,
+    end_date: null,
+    cap: 0,
+    entries: null,
+    entries_per_user: 1,
+    free: 1,
+    entry_fee: null,
+    open_invites: 1,
+    private: 0,
+    draft_time_per_user_in_seconds: null,
   });
 
   // the inputs return strings, but internally they are formatted as a number, so just overwrite to allow string in a few of these columns
@@ -114,6 +114,11 @@ const Client = ({ }) => {
 
   const [formData, setFormData] = useState<FantasyGroupForm>(initialFormData);
 
+  // this is beacuse DB stores in seconds, I need to convert the input value, but cant do it after onChange, because it retriggers the input with its set value = {...}
+  // this breaks when you type "1.", + cast removes the decimal. set resets inputs value before next key stroke
+  const initialDraftMinutes = formData.draft_time_per_user_in_seconds ? (formData.draft_time_per_user_in_seconds / 60).toFixed(2) : '';
+  const [draftMinutes, setDraftMinutes] = useState<string>(initialDraftMinutes);
+
   const [triggerValidation, setTriggerValidation] = useState(false);
 
   const payoutOptions = Object.values(fantasy_payout_rules)
@@ -123,15 +128,15 @@ const Client = ({ }) => {
     .map((r) => {
       return { label: r.name, value: r.fantasy_payout_rule_id };
     });
-  
-  
+
+
   const onChange = <K extends keyof FantasyGroupForm>(column: K, value: FantasyGroupForm[K]) => {
     setFormData((prev) => ({
       ...prev,
-      [column]: value
+      [column]: value,
     }));
   };
-  
+
 
   const stepBasicInfo = {
     title: 'League setup',
@@ -148,7 +153,7 @@ const Client = ({ }) => {
       //   !formData.fantasy_group_type_terminology_id ||
       //   !formData.name
       // ) {
-        // return false;
+      // return false;
       // }
 
       return true;
@@ -181,16 +186,16 @@ const Client = ({ }) => {
             />
         </div>
       </>
-    )
+    ),
   };
 
   const stepDraft = {
-    title: "Draft Configuration",
+    title: 'Draft Configuration',
     id: 'draft',
     // Logic: If draft type is selected, and if it's the specific draft type that requires date/time, ensure those are filled
     isValid: () => {
       const errors = draftInputHandler.getErrors();
-      
+
       if (errors.length) {
         return false;
       }
@@ -200,12 +205,6 @@ const Client = ({ }) => {
         !formData.draft_scoring_terminology_id ||
         !formData.start_date ||
         !formData.end_date
-      ) {
-        return false;
-      }
-      if (
-        formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93' &&
-        !formData.draft_time_per_user_in_seconds
       ) {
         return false;
       }
@@ -230,6 +229,7 @@ const Client = ({ }) => {
         start_date: initialFormData.start_date,
         end_date: initialFormData.end_date,
       }));
+      setDraftMinutes(initialDraftMinutes);
     },
     content: (
       <>
@@ -239,7 +239,7 @@ const Client = ({ }) => {
             label='How will the player draft work?'
             onChange={(val) => {
               onChange('draft_type_terminology_id', val as string);
-              onChange('draft_time_per_user_in_seconds', initialFormData.draft_time_per_user_in_seconds);
+              setDraftMinutes(initialDraftMinutes);
             }}
             required
             options={getTerminologyOptions('draft_type')}
@@ -262,14 +262,14 @@ const Client = ({ }) => {
                 <TextInput
                   inputHandler={draftInputHandler}
                   required
-                  label = 'How long does each person have to draft?'
+                  label = 'How many minutes does each person have to draft?'
                   placeholder='Draft time (minutes)'
-                  onChange={(val) => onChange('draft_time_per_user_in_seconds', (+val * 60))}
+                  onChange={(val) => setDraftMinutes(val)}
                   triggerValidation={triggerValidation}
                   formatter={'number'}
-                  value = {formData.draft_time_per_user_in_seconds ? formData.draft_time_per_user_in_seconds / 60 : undefined}
-                  min={0.1}
-                  max={60 * 5}
+                  value = {draftMinutes}
+                  min={1}
+                  max={60}
                 />
               </div>
             </Columns>
@@ -288,7 +288,7 @@ const Client = ({ }) => {
             triggerValidation={triggerValidation}
           />
           {formData.draft_scoring_terminology_id && formData.draft_scoring_terminology_id in terminology ? (
-            <div style = {{ display: 'flex', alignItems: 'center', marginTop: 10  }}>
+            <div style = {{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
               <InfoIcon style = {{ color: theme.info.main, marginRight: 10 }} />
               <Typography type='caption' style={{ color: theme.text.secondary }}>{terminology[formData.draft_scoring_terminology_id].description}</Typography>
             </div>
@@ -302,7 +302,7 @@ const Client = ({ }) => {
               required
               label = 'When does the league start?'
               placeholder='Start date'
-              onChange={(val) => onChange('start_date', val ? Dates.format(val, 'Y-m-d') : null )}
+              onChange={(val) => onChange('start_date', val ? Dates.format(val, 'Y-m-d') : null)}
               triggerValidation={triggerValidation}
               value = {formData.start_date || undefined}
               />
@@ -318,15 +318,15 @@ const Client = ({ }) => {
           </Columns>
         </div>
       </>
-    )
+    ),
   };
 
   const stepPeople = {
-    title: "Participants & Capacity",
+    title: 'Participants & Capacity',
     id: 'schedule',
     isValid: () => {
       const errors = peopleInputHandler.getErrors();
-      
+
       if (errors.length) {
         return false;
       }
@@ -374,7 +374,7 @@ const Client = ({ }) => {
                   onChange={(val) => onChange('open_invites', +val)}
                 />
               </div>
-              : ''
+                : ''
             }
           </Columns>
         </div>
@@ -422,21 +422,21 @@ const Client = ({ }) => {
               />
             </div>
           </Columns>
-          
-          : ''
+
+            : ''
         }
-            
+
       </>
-    )
+    ),
   };
 
 
   const stepFinancials = {
-    title: "Fees & Payouts",
+    title: 'Fees & Payouts',
     id: 'financials',
     isValid: () => {
       const errors = financialInputHandler.getErrors();
-      
+
       if (errors.length) {
         return false;
       }
@@ -489,10 +489,10 @@ const Client = ({ }) => {
                 <TextInput
                   inputHandler={financialInputHandler}
                   label = 'How much is the entry fee?'
-                  placeholder='$ Entry fee' 
-                  onChange={(val) => onChange('entry_fee', +val)} 
-                  required 
-                  formatter={'money'} 
+                  placeholder='$ Entry fee'
+                  onChange={(val) => onChange('entry_fee', +val)}
+                  required
+                  formatter={'money'}
                   triggerValidation={triggerValidation}
                   value = {formData.entry_fee || undefined}
                   min = {5}
@@ -516,7 +516,7 @@ const Client = ({ }) => {
           </div>
         )}
       </>
-    )
+    ),
   };
 
 
@@ -524,13 +524,20 @@ const Client = ({ }) => {
     if (isSaving || loading) {
       return;
     }
+
+    // manually convert the draft seconds here
+    if (formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93') {
+      formData.draft_time_per_user_in_seconds = +(+draftMinutes * 60).toFixed(2);
+    }
+
+
     dispatch(setLoading(true));
     setIsSaving(true);
 
     useClientAPI({
-      'class': 'fantasy_group',
-      'function': 'createGroup',
-      'arguments': formData,
+      class: 'fantasy_group',
+      function: 'createGroup',
+      arguments: formData,
     }).then((response) => {
       if (response && response.error) {
         dispatch(setLoading(false));
@@ -543,23 +550,22 @@ const Client = ({ }) => {
       console.log(e);
       dispatch(setLoading(false));
       setErrorModalMessage(e);
-      return;
     });
-  }
+  };
 
   // --- Dynamic Step Calculation ---
   // We use useMemo to recalculate the array of steps based on form choices
   const activeSteps = useMemo(() => {
     const steps = [stepBasicInfo];
-    
+
     // Only show Draft step if specific terminology ID is selected
     if (formData.fantasy_group_type_terminology_id === '7ca1ccce-e033-11f0-bc34-529c3ffdbb93') {
       steps.push(stepDraft);
     }
-    
+
     steps.push(stepPeople);
     steps.push(stepFinancials);
-    
+
     return steps;
   }, [formData.fantasy_group_type_terminology_id, formData.draft_type_terminology_id, formData.free, triggerValidation, formData, theme]);
 
@@ -570,8 +576,8 @@ const Client = ({ }) => {
       console.log(id, phase, actualDuration);
     }}>
     <Contents>
-      <Wizard 
-        steps={activeSteps} 
+      <Wizard
+        steps={activeSteps}
         validationTrigger = {setTriggerValidation}
         onSave={handleSave}
         saveButtonText = 'Create League'
