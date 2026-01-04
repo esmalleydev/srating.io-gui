@@ -4,6 +4,7 @@ import { useAppSelector } from '@/redux/hooks';
 import Tab from '@/components/ux/buttons/Tab';
 import Navigation from '@/components/helpers/Navigation';
 import Style from '@/components/utils/Style';
+import { useTheme } from '@/components/hooks/useTheme';
 
 const getNavHeaderHeight = () => {
   return 48;
@@ -12,6 +13,7 @@ const getNavHeaderHeight = () => {
 export { getNavHeaderHeight };
 
 const NavBar = () => {
+  const theme = useTheme();
   const navigation = new Navigation();
 
   const view = useAppSelector((state) => state.userReducer.view) || 'subscriptions';
@@ -42,6 +44,7 @@ const NavBar = () => {
   const divStyle = Style.getStyleClassName({
     ...Style.getNavBar(),
     // top: getMarginTop() + getHeaderHeight(),
+    backgroundColor: theme.background.main,
   });
 
   return (

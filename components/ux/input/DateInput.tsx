@@ -66,7 +66,6 @@ const DateInput: React.FC<DatePickerProps> = ({
   // If parent updates prop 'value', sync local state
   useEffect(() => {
     if (value) {
-      console.log('useEffect', value)
       const d = Dates.parse(value);
       if (isValidDate(d)) {
         setSelectedDate(d);
