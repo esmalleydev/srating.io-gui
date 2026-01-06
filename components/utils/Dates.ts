@@ -1,28 +1,119 @@
+/* eslint-disable one-var-declaration-per-line */
+/* eslint-disable one-var */
 
 
 class Dates {
   // constructor() {
   // }
 
-  public static parse(str?: Date | string | number | undefined | null): Date {
+  /*
+   * Robust Date Parsing
+   * Handles:
+   * - Date Objects / Numbers (Timestamps)
+   * - ISO Strings (2025-01-01) -> Forces Local Midnight
+   * - US Formats (01/05/2026)
+   * - Mixed Time Formats (23:00 pm, 5:00pm, 14:30:00)
+   */
+  public static parse(
+    str?: Date | string | number | undefined | null,
+    utc = false,
+  ): Date {
+    // 1. Handle Null / Undefined -> Return Now
     if (!str) {
       return new Date();
     }
 
+    // 2. Handle Existing Date Objects -> Return Copy
     if (str instanceof Date) {
-      return new Date(str.getTime()); // Return copy
+      return new Date(str.getTime());
     }
 
-    if (typeof str === 'string') {
-      // Fix: "2025-11-03" is parsed as UTC midnight by JS, which is Nov 2nd 7pm in EST.
-      // We force it to be Local Midnight by appending time if missing.
-      if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-        return new Date(`${str}T00:00:00`);
-      }
+    // 3. Handle Timestamps (Numbers)
+    if (typeof str === 'number') {
       return new Date(str);
     }
 
-    return new Date(str);
+    // 4. Handle Strings
+    if (typeof str === 'string') {
+      const input = str.trim();
+
+      // CASE A: Strict ISO Date "YYYY-MM-DD"
+      // Native JS parses this as UTC Midnight, which often shows as
+      // previous day 7pm EST. We force "T00:00:00" to make it Local Midnight.
+      if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
+        return new Date(`${input}T00:00:00`);
+      }
+
+      // CASE B: Manual Parsing for Complex Strings
+      // This handles "2026-01-05 23:03:19 pm", "01/05/2026", etc.
+
+      // Step 1: Extract Date Part (YYYY-MM-DD or MM/DD/YYYY)
+      // Regex looks for: (Group 1: Year/Month) -or/ (Group 2: Month/Day) -or/ (Group 3: Day/Year)
+      let year, month, day, timePart = '';
+
+      // Match YYYY-MM-DD or YYYY/MM/DD
+      const isoMatch = input.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})(.*)$/);
+
+      // Match MM/DD/YYYY or MM-DD-YYYY
+      const usMatch = input.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})(.*)$/);
+
+      if (isoMatch) {
+        year = parseInt(isoMatch[1], 10);
+        month = parseInt(isoMatch[2], 10) - 1; // JS Months are 0-11
+        day = parseInt(isoMatch[3], 10);
+        timePart = isoMatch[4];
+      } else if (usMatch) {
+        year = parseInt(usMatch[3], 10);
+        month = parseInt(usMatch[1], 10) - 1;
+        day = parseInt(usMatch[2], 10);
+        timePart = usMatch[4];
+      } else {
+        // Fallback: Let the browser try its best if our regex fails
+        const d = new Date(input);
+        return isNaN(d.getTime()) ? new Date() : d;
+      }
+
+      // Step 2: Extract Time Part
+      let hours = 0;
+      let minutes = 0;
+      let seconds = 0;
+
+      // Look for HH:MM(:SS) and optional AM/PM in the remaining string
+      if (timePart && timePart.trim().length > 0) {
+        // Matches: 23:03, 23:03:19, 5:00pm, 5:00 pm
+        const timeMatch = timePart.match(/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s*(am|pm|AM|PM)?/);
+
+        if (timeMatch) {
+          hours = parseInt(timeMatch[1], 10);
+          minutes = parseInt(timeMatch[2], 10);
+          seconds = timeMatch[3] ? parseInt(timeMatch[3], 10) : 0;
+          const meridiem = timeMatch[4] ? timeMatch[4].toLowerCase() : null;
+
+          // Step 3: Normalize Hours (12h to 24h)
+          if (meridiem === 'pm' && hours < 12) {
+            hours += 12;
+          }
+          if (meridiem === 'am' && hours === 12) {
+            hours = 0;
+          }
+          // Note: If input is "23:00 pm", we ignore the 'pm' because 23 > 12.
+        }
+      }
+
+      if (utc) {
+        return new Date(Date.UTC(year, month, day, hours, minutes, seconds));
+      }
+
+      // Step 4: Construct Date in Local Time
+      return new Date(year, month, day, hours, minutes, seconds);
+    }
+
+    return new Date();
+  }
+
+  public static utc(date: Date | string | number): Date {
+    const d = this.parse(date);
+    return new Date(d.getTime() + (d.getTimezoneOffset() * 60000));
   }
 
   public static getMonthsShort(): string[] {

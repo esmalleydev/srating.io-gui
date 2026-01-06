@@ -436,11 +436,12 @@ export interface RankingColumns {
 
 export interface FantasyGroupInvite {
   fantasy_group_invite_id: string;
-	fantasy_group_id: string;
+  fantasy_group_id: string;
   email: string;
-	code?: string; // stripped
-	expires: string;
-	guid: string;
+  code?: string; // stripped
+  expires: string;
+  date_of_entry: string;
+  guid: string;
   deleted: number;
 }
 
@@ -448,20 +449,34 @@ export type FantasyGroupInvites = {[fantasy_group_invite_id: string]: FantasyGro
 
 export interface FantasyGroupUser {
   fantasy_group_user_id: string;
-	fantasy_group_id: string;
-	user_id: string;
+  fantasy_group_id: string;
+  user_id: string;
   email?: string;
   name?: string;
-	guid: string;
+  date_of_entry: string;
+  guid: string;
   deleted: number;
 }
 
 export type FantasyGroupUsers = {[fantasy_group_user_id: string]: FantasyGroupUser};
 
+export interface FantasyGroupComment {
+  fantasy_group_comment_id: string;
+  fantasy_group_id: string;
+  comment_type_terminology_id: string;
+  user_id: string;
+  comment: string;
+  date_of_entry: string;
+  guid: string;
+  deleted: number;
+}
+
+export type FantasyGroupComments = {[fantasy_group_comment_id: string]: FantasyGroupComment};
+
 
 export interface FantasyGroup {
-	fantasy_group_id: string;
-	organization_id: string;
+  fantasy_group_id: string;
+  organization_id: string;
   division_id: string;
   season: number;
   name: string,
@@ -469,21 +484,23 @@ export interface FantasyGroup {
   fantasy_group_type_terminology_id: string | null,
   draft_type_terminology_id: string | null,
   draft_scoring_terminology_id: string | null,
-	start_date: string | null,
-	end_date: string | null,
-	cap: number,
-	entries: number | null,
-	entries_per_user: number,
-	free: number,
-	entry_fee: number | null,
-	open_invites: number,
-	locked: number,
-	private: number,
-	draft_time_per_user_in_seconds: number | null,
-	guid: string;
+  start_date: string | null,
+  end_date: string | null,
+  draft_start_datetime: string | null,
+  cap: number,
+  entries: number | null,
+  entries_per_user: number,
+  free: number,
+  entry_fee: number | null,
+  open_invites: number,
+  locked: number,
+  private: number,
+  draft_time_per_user_in_seconds: number | null,
+  date_of_entry: string;
+  guid: string;
   deleted: number;
 }
 
 export type FantasyGroups = {[fantasy_group_id: string]: FantasyGroup};
 
- 
+

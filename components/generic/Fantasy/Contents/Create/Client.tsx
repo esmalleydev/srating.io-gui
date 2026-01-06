@@ -93,6 +93,7 @@ const Client = () => {
     draft_scoring_terminology_id: null,
     start_date: null,
     end_date: null,
+    draft_start_datetime: null,
     cap: 0,
     entries: null,
     entries_per_user: 1,
@@ -106,7 +107,7 @@ const Client = () => {
   // the inputs return strings, but internally they are formatted as a number, so just overwrite to allow string in a few of these columns
   type FantasyGroupForm = Omit<
     FantasyGroup,
-    'fantasy_group_id' | 'guid' | 'deleted' | 'locked' | 'entry_fee' | 'entries_per_user'
+    'fantasy_group_id' | 'guid' | 'deleted' | 'locked' | 'entry_fee' | 'entries_per_user' | 'date_of_entry'
   > & {
     entry_fee: string | number | null;
     entries_per_user: string | number;
@@ -122,7 +123,7 @@ const Client = () => {
   const [triggerValidation, setTriggerValidation] = useState(false);
 
   // hardcoded for cbb, todo make this dynamic per org + season
-  const minDate = formData.start_date || `${season - 1}-11-01`;
+  const minDate = `${season - 1}-11-01`;
   const maxDate = `${season}-04-10`;
 
   const payoutOptions = Object.values(fantasy_payout_rules)
@@ -237,6 +238,7 @@ const Client = () => {
         draft_scoring_terminology_id: initialFormData.draft_scoring_terminology_id,
         start_date: initialFormData.start_date,
         end_date: initialFormData.end_date,
+        draft_start_datetime: initialFormData.draft_start_datetime,
       }));
       setDraftMinutes(initialDraftMinutes);
     },
@@ -248,6 +250,7 @@ const Client = () => {
             label='How will the player draft work?'
             onChange={(val) => {
               onChange('draft_type_terminology_id', val as string);
+              onChange('draft_start_datetime', initialFormData.draft_start_datetime);
               setDraftMinutes(initialDraftMinutes);
             }}
             required
@@ -264,26 +267,43 @@ const Client = () => {
           ) : ''}
         </div>
 
-        {formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93' && (
-          <div style={{ marginBottom: 20 }}>
-            <Columns numberOfColumns={2}>
-              <div>
-                <TextInput
-                  inputHandler={draftInputHandler}
-                  required
-                  label = 'How many minutes does each person have to draft?'
-                  placeholder='Draft time (minutes)'
-                  onChange={(val) => setDraftMinutes(val)}
-                  triggerValidation={triggerValidation}
-                  formatter={'number'}
-                  value = {draftMinutes}
-                  min={1}
-                  max={60}
-                />
-              </div>
-            </Columns>
-          </div>
-        )}
+        <div style={{ marginBottom: 20 }}>
+          <Columns numberOfColumns={2}>
+            <div>
+              <DateInput
+                inputHandler={draftInputHandler}
+                required
+                label = 'When does the draft start?'
+                placeholder='Draft start date and time'
+                onChange={(val) => {
+                  onChange('draft_start_datetime', val ? Dates.format(Dates.utc(val), 'Y-m-d H:i:s') : null);
+                }}
+                triggerValidation={triggerValidation}
+                value = {formData.draft_start_datetime ? Dates.format(Dates.parse(formData.draft_start_datetime, true), 'Y-m-d H:i:s') : undefined}
+                maxDate = {formData.start_date ? Dates.format(Dates.subtract(Dates.parse(formData.start_date), 1, 'days'), 'Y-m-d') : undefined}
+                enableTime
+              />
+            </div>
+            {
+              formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93' ?
+                <div>
+                  <TextInput
+                    inputHandler={draftInputHandler}
+                    required
+                    label = 'How many minutes does each person have to draft?'
+                    placeholder='Draft time (minutes)'
+                    onChange={(val) => setDraftMinutes(val)}
+                    triggerValidation={triggerValidation}
+                    formatter={'number'}
+                    value = {draftMinutes}
+                    min={1}
+                    max={60}
+                  />
+                </div>
+                : ''
+            }
+          </Columns>
+        </div>
 
         <div style={{ marginBottom: 20 }}>
           <MultiPicker
@@ -311,10 +331,7 @@ const Client = () => {
               required
               label = 'When does the league start?'
               placeholder='Start date'
-              onChange={(val) => {
-                console.log('onChange', val);
-                onChange('start_date', val ? Dates.format(val, 'Y-m-d') : null)
-              }}
+              onChange={(val) => onChange('start_date', val ? Dates.format(val, 'Y-m-d') : null)}
               triggerValidation={triggerValidation}
               value = {formData.start_date || undefined}
               minDate = {minDate}
@@ -332,6 +349,10 @@ const Client = () => {
               maxDate = {maxDate}
             />
           </Columns>
+          <div style = {{ display: 'flex', alignItems: 'center' }}>
+            <InfoIcon style = {{ color: theme.info.main, marginRight: 10 }} />
+            <Typography type='caption' style={{ color: theme.text.secondary, lineHeight: 'initial' }}>Scoring will begin on this date and conclude at the end date. Final results will be available the next day after end.</Typography>
+          </div>
         </div>
       </>
     ),

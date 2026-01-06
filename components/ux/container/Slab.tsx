@@ -60,9 +60,9 @@ const Slab = (
 
   if (info) {
     infoButton = (
-      <div style = {{ display: 'flex' }} onClick={() => setShowInfo(!showInfo)}>
+      <span style = {{ display: 'flex' }} onClick={() => setShowInfo(!showInfo)}>
         <HelpIcon style = {{ color: theme.info.main, cursor: 'pointer', marginLeft: 5, fontSize: 20 }} />
-      </div>
+      </span>
     );
   }
 
