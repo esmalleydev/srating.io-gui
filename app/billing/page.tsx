@@ -1,14 +1,18 @@
 
+export const dynamic = 'force-dynamic';
 
-import BillingPage from './billing-page';
 import { Metadata, ResolvingMetadata } from 'next';
 
+import Contents from '@/components/generic/Billing/Contents';
+
+// todo deprecate this and move into payment_router?
+
+
 type Props = {
-  params: Promise<{ sport: string }>;
-  searchParams: Promise<{ [key: string]: string | undefined }>;
+  params: Promise<{ }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(
   { params, searchParams }: Props,
@@ -16,23 +20,24 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   return {
     title: 'sRating | Billing',
-    description: 'API / Picks',
+    description: 'Billing information',
     openGraph: {
-      title: 'sRating.io | Billing',
-      description: 'API / Picks',
+      title: 'sRating.io billing',
+      description: 'Billing information',
     },
     twitter: {
       card: 'summary',
-      title: 'API / Picks',
+      title: 'Billing information',
     },
   };
 }
 
+export default async function Page({ searchParams }: Props) {
+  // const searchParameters = await searchParams;
 
-export default async function Page() {
   return (
     <>
-    <BillingPage />
+      <Contents />
     </>
   );
 }

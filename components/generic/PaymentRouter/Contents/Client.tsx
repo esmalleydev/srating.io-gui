@@ -12,23 +12,25 @@ import WarningIcon from '@mui/icons-material/Warning';
 import ErrorIcon from '@mui/icons-material/Error';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
-import Footer from '../Footer';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
-import Conversions from './Conversions';
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';
+import { useAppSelector } from '@/redux/hooks';
+import Navigation from '@/components/helpers/Navigation';
 
 
-const Status = () => {
+const Client = () => {
+  const navigation = new Navigation();
   const theme = useTheme();
   const stripe = useStripe();
   const router = useRouter();
+
+  const payment_router = useAppSelector((state) => state.paymentRouterReducer.payment_router);
 
   const [status, setStatus] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [reference, setReference] = useState<string | null>(null);
   const [amount, setAmount] = useState(0);
-  const [triggerConversion, setTriggerConversion] = useState(false);
 
   const getStatusMessage = (status: string, isSetup: boolean) => {
     const messages: Record<string, string> = {
@@ -58,10 +60,6 @@ const Status = () => {
       setAmount('amount' in intent ? intent.amount : 0);
       setReference(intent.id);
       setMessage(getStatusMessage(intent.status, isSetup));
-
-      if (intent.status === 'succeeded') {
-        setTriggerConversion(true);
-      }
     };
 
     if (piSecret) {
@@ -70,6 +68,7 @@ const Status = () => {
       stripe.retrieveSetupIntent(siSecret).then(({ setupIntent }) => handleResult(setupIntent, true));
     }
   }, [stripe]); // Only runs when stripe instance is ready
+
 
   /**
    * Get an icon based on the status
@@ -87,14 +86,27 @@ const Status = () => {
     return <ErrorIcon fontSize='medium' color='error' />;
   };
 
+  const getButton = () => {
+    if (payment_router.table === 'fantasy_entry') {
+      return <Button ink handleClick={() => { navigation.fantasy_entry(`/fantasy_entry/${payment_router.id}`); }} title = {'View entry'} value = 'view-entry' />;
+    }
+
+    return <Button ink handleClick={() => { router.push('/account'); }} title = {'View account'} value = 'view-account' />;
+  };
+
+  let title = 'Subscription details';
+
+  if (payment_router.table === 'fantasy_entry') {
+    title = 'Fantasy league entry fee';
+  }
+
   return (
     <div>
-      {triggerConversion ? <Conversions /> : ''}
       {
         !status ? <div style = {{ textAlign: 'center' }}><CircularProgress color="inherit" /></div> :
         <div style = {{ padding: 20 }}>
           <div style = {{ textAlign: 'center' }}>
-            <Typography type='h6'>Subscription details</Typography>
+            <Typography type='h6'>{title}</Typography>
           </div>
           <Paper elevation={3} style = {{ padding: 16, maxWidth: 500, margin: '0 auto' }}>
             <div style = {{ display: 'flex', justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
@@ -111,14 +123,13 @@ const Status = () => {
               <Typography type='body2'>{reference}</Typography>
             </div>
             <div style = {{ textAlign: 'right' }}>
-              <Button ink handleClick={() => { router.push('/account'); }} title = {'View account'} value = 'view-account' />
+              {getButton()}
             </div>
           </Paper>
         </div>
       }
-      <Footer />
     </div>
   );
 };
 
-export default Status;
+export default Client;

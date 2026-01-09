@@ -65,6 +65,20 @@ export interface Subscription {
 
 export type Subscriptions = {[subscription_id: string]: Subscription};
 
+export interface PaymentRouter {
+  payment_router_id: string;
+  stripe_object: string;
+  stripe_id: string;
+  table: string;
+  id: string;
+  date_of_entry: string;
+  handled: number;
+  guid: string;
+  deleted: number;
+}
+
+export type PaymentRouters = {[payment_router_id: string]: PaymentRouter};
+
 export interface Pricing {
   pricing_id: string;
   stripe_pricing_id: string;
@@ -502,5 +516,19 @@ export interface FantasyGroup {
 }
 
 export type FantasyGroups = {[fantasy_group_id: string]: FantasyGroup};
+
+
+export interface FantasyEntry {
+  fantasy_entry_id: string;
+  fantasy_group_id: string;
+  user_id: string;
+  name: string;
+  paid: number;
+  date_of_entry: string;
+  guid: string;
+  deleted: number;
+}
+
+export type FantasyEntrys = {[fantasy_entry_id: string]: FantasyEntry};
 
 

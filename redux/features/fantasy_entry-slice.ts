@@ -1,16 +1,11 @@
 
 import State from '@/components/helpers/State';
-import { FantasyEntrys, FantasyGroup, FantasyGroupComments, FantasyGroupInvites, FantasyGroupUser, FantasyGroupUsers } from '@/types/general';
+import { FantasyEntry, FantasyGroup } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type InitialState = {
-  // view: string;
+  fantasy_entry: FantasyEntry;
   fantasy_group: FantasyGroup;
-  fantasy_group_user: FantasyGroupUser | null;
-  fantasy_group_users: FantasyGroupUsers;
-  fantasy_group_invites: FantasyGroupInvites;
-  fantasy_group_comments: FantasyGroupComments;
-  fantasy_entrys: FantasyEntrys;
   loadingView: boolean;
 };
 
@@ -22,7 +17,7 @@ type ActionPayload<K extends InitialStateKeys> = {
 };
 
 export const stateController = new State<InitialState>({
-  type: 'fantasy_group',
+  type: 'fantasy_entry',
 });
 
 stateController.set_url_param_type_x_keys({
@@ -40,19 +35,14 @@ stateController.set_url_param_type_x_keys({
 // });
 
 stateController.setInitialState({
-  // view: 'home',
+  fantasy_entry: {} as FantasyEntry,
   fantasy_group: {} as FantasyGroup,
-  fantasy_group_invites: {} as FantasyGroupInvites,
-  fantasy_group_users: {} as FantasyGroupUsers,
-  fantasy_group_comments: {} as FantasyGroupComments,
-  fantasy_group_user: null,
-  fantasy_entrys: {} as FantasyEntrys,
   loadingView: true,
 });
 
 
-export const fantasy_group = createSlice({
-  name: 'fantasy_group',
+export const fantasy_entry = createSlice({
+  name: 'fantasy_entry',
   initialState: stateController.getInitialState(),
   reducers: {
     updateFromURL: (state) => {
@@ -77,7 +67,7 @@ export const fantasy_group = createSlice({
 
 export const {
   setDataKey, resetDataKey, reset, updateFromURL,
-} = fantasy_group.actions;
-export default fantasy_group.reducer;
+} = fantasy_entry.actions;
+export default fantasy_entry.reducer;
 
 stateController.updateStateFromUrlParams(stateController.getInitialState());

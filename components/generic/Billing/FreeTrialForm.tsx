@@ -83,7 +83,7 @@ const FreeTrialForm = () => {
     }
 
     if (session.session_id) {
-      dispatch(setDataKey({ key: 'session_id', value:  session.session_id }));
+      dispatch(setDataKey({ key: 'session_id', value: session.session_id }));
       dispatch(setDataKey({ key: 'isValidSession', value: true }));
     }
 

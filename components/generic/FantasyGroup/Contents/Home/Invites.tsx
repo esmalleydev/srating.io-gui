@@ -105,7 +105,7 @@ const Invites = ({ isOwner }) => {
 
     if (canInvite && inviteRows.length === 0) {
       return (
-        <div style = {{ padding: 16, textAlign: 'center' }}>
+        <div style = {{ textAlign: 'center' }}>
           <Button title = 'Invite people' value = 'invite' handleClick = {handleInvite} />
         </div>
       );

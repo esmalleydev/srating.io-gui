@@ -3,6 +3,8 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
+import { FantasyGroup } from '@/types/general';
+import { updateDivisionID, updateOrganizationID } from '@/redux/features/organization-slice';
 
 const ReduxWrapper = (
   {
@@ -11,17 +13,14 @@ const ReduxWrapper = (
   }:
   {
     children: React.ReactNode;
-    fantasy_group: object;
+    fantasy_group: FantasyGroup;
   },
 ) => {
   const dispatch = useAppDispatch();
 
-  console.log('redux');
-  console.log(fantasy_group);
-
   useEffect(() => {
-    console.log('use', fantasy_group);
-    // this should not be needed, the player navigation will reset back to the default view
+    dispatch(updateOrganizationID(fantasy_group.organization_id));
+    dispatch(updateDivisionID(fantasy_group.division_id));
     dispatch(setDataKey({ key: 'fantasy_group', value: fantasy_group }));
   }, [dispatch, fantasy_group]);
 

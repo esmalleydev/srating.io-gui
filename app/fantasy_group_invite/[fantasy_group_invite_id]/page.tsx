@@ -4,7 +4,7 @@ import { Metadata, ResolvingMetadata } from 'next';
 import FantasyGroupInvite from 'Surface/FantasyGroupInvite';
 
 type Props = {
-  params: Promise<{ sport: string; fantasy_group_invite_id: string; }>;
+  params: Promise<{ fantasy_group_invite_id: string; }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
@@ -13,10 +13,16 @@ export async function generateMetadata(
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const parameters = await params;
+  const { fantasy_group_invite_id } = parameters;
 
-  const Surface = new FantasyGroupInvite({
-    sport: parameters.sport,
-  });
+  const Surface = new FantasyGroupInvite();
+
+  const { fantasy_group } = await Surface.getData({ fantasy_group_invite_id });
+
+  if (fantasy_group) {
+    Surface.setOrganizationID(fantasy_group.organization_id);
+    Surface.setDivisionID(fantasy_group.division_id);
+  }
 
   return Surface.getMetaData();
 }
@@ -29,9 +35,14 @@ export default async function Page({ params, searchParams }: Props) {
   const { fantasy_group_invite_id } = parameters;
   const code = searchParameters?.code;
 
-  const Surface = new FantasyGroupInvite({
-    sport: parameters.sport,
-  });
+  const Surface = new FantasyGroupInvite();
+
+  const { fantasy_group } = await Surface.getData({ fantasy_group_invite_id });
+
+  if (fantasy_group) {
+    Surface.setOrganizationID(fantasy_group.organization_id);
+    Surface.setDivisionID(fantasy_group.division_id);
+  }
 
   return Surface.getDecorate({
     fantasy_group_invite_id,

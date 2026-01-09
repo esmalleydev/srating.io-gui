@@ -74,6 +74,7 @@ const Members = () => {
       <Typography type = 'h6'>Members</Typography>
       <Paper style={{ padding: 20 }}>
         {getContents()}
+        <div style = {{ textAlign: 'right' }}>{buttons}</div>
       </Paper>
     </div>
   );

@@ -74,8 +74,6 @@ const Client = () => {
   const division_id = useAppSelector((state) => state.organizationReducer.division_id);
   const season = useAppSelector((state) => state.organizationReducer.season);
   const loading = useAppSelector((state) => state.loadingReducer.loading);
-  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
-  const path = Organization.getPath({ organizations, organization_id });
 
   const basicInputHandler = new Inputs();
   const draftInputHandler = new Inputs();
@@ -582,7 +580,7 @@ const Client = () => {
         return;
       }
 
-      navigation.fantasy_group(`/${path}/fantasy_group/${response.fantasy_group_id}`);
+      navigation.fantasy_group(`/fantasy_group/${response.fantasy_group_id}`);
     }).catch((e) => {
       console.log(e);
       dispatch(setLoading(false));

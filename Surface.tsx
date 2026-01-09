@@ -6,20 +6,57 @@ import CFB from './components/helpers/CFB';
 import Division from './components/helpers/Division';
 import Organization from './components/helpers/Organization';
 
+type SurfaceArguments = {
+  sport?: string;
+  organization_id?: string;
+  division_id?: string;
+}
+
 class Surface {
-  constructor(args) {
-    if (args.sport) {
+  constructor(args?: SurfaceArguments) {
+    if (args && args.sport) {
       this.sport = args.sport;
+    }
+
+    // if we are not getting the sport from the url, then it was probably passed in from a different object
+    if (args && args.organization_id) {
+      this.setOrganizationID(args.organization_id);
+    }
+
+    if (args && args.division_id) {
+      this.setDivisionID(args.division_id);
     }
   }
 
   private sport: string | null = null;
+
+  private organization_id: string;
+
+  private division_id: string;
+
+  public setOrganizationID(organization_id: string) {
+    this.organization_id = organization_id;
+    if (this.organization_id === Organization.getCBBID()) {
+      this.sport = 'cbb';
+    }
+    if (this.organization_id === Organization.getCFBID()) {
+      this.sport = 'cfb';
+    }
+  }
+
+  public setDivisionID(division_id: string) {
+    this.division_id = division_id;
+  }
 
   getSport() {
     return this.sport;
   }
 
   getOrganizationID(): string {
+    if (this.organization_id) {
+      return this.organization_id;
+    }
+
     if (this.getSport() === 'cbb') {
       return Organization.getCBBID();
     }
@@ -33,6 +70,10 @@ class Surface {
   }
 
   getDivisionID(): string {
+    if (this.division_id) {
+      return this.division_id;
+    }
+
     if (this.getSport() === 'cbb') {
       return Division.getD1();
     }

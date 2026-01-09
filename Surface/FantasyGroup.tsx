@@ -12,6 +12,7 @@ import { useServerAPI } from '@/components/serverAPI';
 
 import HomeClientWrapper from '@/components/generic/FantasyGroup/Contents/Home/ClientWrapper';
 import { Client as HomeClient } from '@/components/generic/FantasyGroup/Contents/Home/Client';
+import { FantasyGroup as FantasyGroupType } from '@/types/general';
 
 export type getDecorateFantasyGroup = {
   fantasy_group_id: string;
@@ -27,18 +28,27 @@ class FantasyGroup extends Surface {
   //   super();
   // }
 
+  async getData({ fantasy_group_id }) {
+    const revalidateSeconds = 5 * 60;
+
+    const fantasy_group: FantasyGroupType = await useServerAPI({
+      class: 'fantasy_group',
+      function: 'get',
+      arguments: {
+        fantasy_group_id,
+      },
+      cache: revalidateSeconds,
+    });
+
+
+    return { fantasy_group };
+  }
+
 
   async getMetaData({ fantasy_group_id }) {
     const organization_id = this.getOrganizationID();
 
-    const fantasy_group = await useServerAPI({
-      'class': 'fantasy_group',
-      'function': 'get',
-      'arguments': {
-        'fantasy_group_id': fantasy_group_id,
-      }
-    });
-
+    const { fantasy_group } = await this.getData({ fantasy_group_id });
 
     let sportText = '';
 
@@ -72,13 +82,7 @@ class FantasyGroup extends Surface {
     }:
     getDecorateFantasyGroup,
   ) {
-    const fantasy_group = await useServerAPI({
-      'class': 'fantasy_group',
-      'function': 'get',
-      'arguments': {
-        'fantasy_group_id': fantasy_group_id,
-      }
-    });
+    const { fantasy_group } = await this.getData({ fantasy_group_id });
 
     if (!fantasy_group || !fantasy_group.fantasy_group_id) {
       return notFound();
@@ -86,15 +90,15 @@ class FantasyGroup extends Surface {
 
     const getContents = () => {
       if (view === 'foo') {
-        return <></>
+        return <></>;
       }
 
       return (
         <HomeClientWrapper>
           <HomeClient fantasy_group_id={fantasy_group_id} />
         </HomeClientWrapper>
-      )
-    }
+      );
+    };
 
 
     return (

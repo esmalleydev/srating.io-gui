@@ -1,17 +1,11 @@
 
 import State from '@/components/helpers/State';
-import { FantasyEntrys, FantasyGroup, FantasyGroupComments, FantasyGroupInvites, FantasyGroupUser, FantasyGroupUsers } from '@/types/general';
+import { PaymentRouter } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type InitialState = {
-  // view: string;
-  fantasy_group: FantasyGroup;
-  fantasy_group_user: FantasyGroupUser | null;
-  fantasy_group_users: FantasyGroupUsers;
-  fantasy_group_invites: FantasyGroupInvites;
-  fantasy_group_comments: FantasyGroupComments;
-  fantasy_entrys: FantasyEntrys;
-  loadingView: boolean;
+  loadingView: boolean,
+  payment_router: PaymentRouter;
 };
 
 export type InitialStateKeys = keyof InitialState;
@@ -21,13 +15,12 @@ type ActionPayload<K extends InitialStateKeys> = {
   value: InitialState[K];
 };
 
-export const stateController = new State<InitialState>({
-  type: 'fantasy_group',
+const stateController = new State<InitialState>({
+  type: 'payment_router',
 });
 
 stateController.set_url_param_type_x_keys({
   string: [
-    // 'view',
   ],
   array: [
   ],
@@ -35,24 +28,14 @@ stateController.set_url_param_type_x_keys({
   ],
 });
 
-// stateController.set_key_x_is_push_state({
-//   view: true,
-// });
-
 stateController.setInitialState({
-  // view: 'home',
-  fantasy_group: {} as FantasyGroup,
-  fantasy_group_invites: {} as FantasyGroupInvites,
-  fantasy_group_users: {} as FantasyGroupUsers,
-  fantasy_group_comments: {} as FantasyGroupComments,
-  fantasy_group_user: null,
-  fantasy_entrys: {} as FantasyEntrys,
   loadingView: true,
+  payment_router: {} as PaymentRouter,
 });
 
 
-export const fantasy_group = createSlice({
-  name: 'fantasy_group',
+export const payment_router = createSlice({
+  name: 'payment_router',
   initialState: stateController.getInitialState(),
   reducers: {
     updateFromURL: (state) => {
@@ -77,7 +60,7 @@ export const fantasy_group = createSlice({
 
 export const {
   setDataKey, resetDataKey, reset, updateFromURL,
-} = fantasy_group.actions;
-export default fantasy_group.reducer;
+} = payment_router.actions;
+export default payment_router.reducer;
 
 stateController.updateStateFromUrlParams(stateController.getInitialState());

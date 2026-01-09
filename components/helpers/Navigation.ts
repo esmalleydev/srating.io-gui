@@ -17,6 +17,8 @@ import { resetDataKey as resetDataKeyRanking, reset as resetRanking, setDataKey 
 import { setLoading } from '@/redux/features/loading-slice';
 import { reset as resetFantasy, setDataKey as setDataKeyFantasy, InitialStateKeys as InitialStateKeysFantasy, InitialState as InitialStateFantasy, stateController as FantasyStateController } from '@/redux/features/fantasy-slice';
 import { resetDataKey as resetDataKeyUser, setDataKey as setDataKeyUser, InitialStateKeys as InitialStateKeysUser, InitialState as InitialStateUser, stateController as UserStateController } from '@/redux/features/user-slice';
+import { reset as resetFantasyGroup } from '@/redux/features/fantasy_group-slice';
+import { reset as resetFantasyEntry } from '@/redux/features/fantasy_entry-slice';
 
 // todo remove nextjs router :D
 
@@ -340,8 +342,22 @@ class Navigation {
    */
   public fantasy_group(path: string, onRouter: null | undefined | (() => void) = null) {
     this.dispatch(setLoading(true));
-    console.log('reset fantasy_group redux')
-    // this.dispatch(resetFantasy(false));
+    this.dispatch(resetFantasyGroup(false));
+    this.startTransition(() => {
+      this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
+  }
+
+  /**
+   * Navigate to the fantasy entry page,
+   * reset the state to be fresh beforehand
+   */
+  public fantasy_entry(path: string, onRouter: null | undefined | (() => void) = null) {
+    this.dispatch(setLoading(true));
+    this.dispatch(resetFantasyEntry(false));
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
