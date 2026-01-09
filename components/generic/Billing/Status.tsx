@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStripe } from '@stripe/react-stripe-js';
 
@@ -16,6 +16,7 @@ import Footer from '../Footer';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import Conversions from './Conversions';
+import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';
 
 
 const Status = () => {
@@ -29,56 +30,46 @@ const Status = () => {
   const [amount, setAmount] = useState(0);
   const [triggerConversion, setTriggerConversion] = useState(false);
 
+  const getStatusMessage = (status: string, isSetup: boolean) => {
+    const messages: Record<string, string> = {
+      succeeded: isSetup ? 'Success! Subscription set up.' : 'Success! Payment received.',
+      processing: "Payment processing. We'll update you when payment is received.",
+      requires_payment_method: 'Payment failed. Please try another method.',
+      default: 'An error occurred. Please try again later.',
+    };
+    return messages[status] || messages.default;
+  };
 
-  // Retrieve the "payment_intent_client_secret" query parameter appended to
-  // your return_url by Stripe.js
-  const clientSecret = new URLSearchParams(window.location.search).get(
-    'payment_intent_client_secret',
-  );
+  useEffect(() => {
+    if (!stripe) {
+      return;
+    }
 
-  const setupClientSecret = new URLSearchParams(window.location.search).get(
-    'setup_intent_client_secret',
-  );
+    const params = new URLSearchParams(window.location.search);
+    const piSecret = params.get('payment_intent_client_secret');
+    const siSecret = params.get('setup_intent_client_secret');
 
-  if (stripe && clientSecret) {
-    // Retrieve the PaymentIntent
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      if (paymentIntent) {
-        setStatus(paymentIntent.status || 'error');
-        setAmount(paymentIntent.amount);
-        setReference(paymentIntent.id);
+    const handleResult = (intent: PaymentIntent | SetupIntent | undefined, isSetup = false) => {
+      if (!intent) {
+        return;
       }
 
-      if (paymentIntent && paymentIntent.status === 'succeeded') {
-        setMessage('Success! Payment received.');
+      setStatus(intent.status || 'error');
+      setAmount('amount' in intent ? intent.amount : 0);
+      setReference(intent.id);
+      setMessage(getStatusMessage(intent.status, isSetup));
+
+      if (intent.status === 'succeeded') {
         setTriggerConversion(true);
-      } else if (paymentIntent && paymentIntent.status === 'processing') {
-        setMessage("Payment processing. We'll update you when payment is received.");
-      } else if (paymentIntent && paymentIntent.status === 'requires_payment_method') {
-        setMessage('Payment failed. Please try another payment method.');
-      } else {
-        setMessage('An error occured. Please try again later');
       }
-    });
-  } else if (stripe && setupClientSecret) {
-    // Retrieve the PaymentIntent
-    stripe.retrieveSetupIntent(setupClientSecret).then(({ setupIntent }) => {
-      if (setupIntent) {
-        setStatus(setupIntent.status || 'error');
-        setReference(setupIntent.id);
-      }
+    };
 
-      if (setupIntent && setupIntent.status === 'succeeded') {
-        setMessage('Success! Payment intent set up. Your subscription will start when payment is received.');
-      } else if (setupIntent && setupIntent.status === 'processing') {
-        setMessage("Payment processing. We'll update you when payment is received.");
-      } else if (setupIntent && setupIntent.status === 'requires_payment_method') {
-        setMessage('Payment failed. Please try another payment method.');
-      } else {
-        setMessage('An error occured. Please try again later');
-      }
-    });
-  }
+    if (piSecret) {
+      stripe.retrievePaymentIntent(piSecret).then(({ paymentIntent }) => handleResult(paymentIntent));
+    } else if (siSecret) {
+      stripe.retrieveSetupIntent(siSecret).then(({ setupIntent }) => handleResult(setupIntent, true));
+    }
+  }, [stripe]); // Only runs when stripe instance is ready
 
   /**
    * Get an icon based on the status
