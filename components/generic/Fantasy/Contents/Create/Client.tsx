@@ -283,7 +283,7 @@ const Client = () => {
               />
             </div>
             {
-              formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93' ?
+              formData.draft_type_terminology_id !== '782f9c90-e11f-11f0-bc34-529c3ffdbb93' ?
                 <div>
                   <TextInput
                     inputHandler={draftInputHandler}
@@ -561,7 +561,10 @@ const Client = () => {
     }
 
     // manually convert the draft seconds here
-    if (formData.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93') {
+    if (
+      formData.fantasy_group_type_terminology_id === '7ca1ccce-e033-11f0-bc34-529c3ffdbb93' &&
+      formData.draft_type_terminology_id !== '782f9c90-e11f-11f0-bc34-529c3ffdbb93'
+    ) {
       formData.draft_time_per_user_in_seconds = +(+draftMinutes * 60).toFixed(2);
     }
 
@@ -616,6 +619,7 @@ const Client = () => {
         validationTrigger = {setTriggerValidation}
         onSave={handleSave}
         saveButtonText = 'Create League'
+        showProgress
       />
       <ErrorModal
         open = {errorModalMessage !== null}

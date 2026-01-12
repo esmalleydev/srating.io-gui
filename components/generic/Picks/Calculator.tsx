@@ -38,6 +38,7 @@ import Button from '@/components/ux/buttons/Button';
 import Typography from '@/components/ux/text/Typography';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
+import Inputs from '@/components/helpers/Inputs';
 const Arrayifer = new utilsArrayifer();
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -644,16 +645,16 @@ const Calculator = ({ games, date }) => {
   };
 
 
-
+  const inputHandler = new Inputs();
 
   const betting_contents: React.JSX.Element[] = [];
 
 
-  const bettingInput = <TextInput style = {{ display: 'inline-flex' }} id="bet" formatter='number' placeholder="Bet" variant="standard" value={inputBet} onChange = {(val) => { setBet(val); }} />;
-  const oddsMinInput = <TextInput style = {{ display: 'inline-flex' }} id="oddsMin" formatter='number' placeholder="Odd Min" variant="standard" value={inputOddsMin} onChange = {(val) => { setOddsMin(val); }} />;
-  const oddsMaxInput = <TextInput style = {{ display: 'inline-flex' }} id="oddsmax" formatter='number' placeholder="Odds Max" variant="standard" value={inputOddsMax} onChange = {(val) => { setOddsMax(val); }} />;
-  const percentageInput = <TextInput style = {{ display: 'inline-flex' }} id="precentage" formatter='number' placeholder="Win chance %" variant="standard" value={inputPercentage} onChange = {(val) => { setPercentage(val); }} />;
-  const roundRobinInput = <TextInput style = {{ display: 'inline-flex' }} id="roundRobin" formatter='number' placeholder="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(val) => { setRoundRobin(val); }} />;
+  const bettingInput = <TextInput style = {{ display: 'inline-flex' }} inputHandler = {inputHandler} id="bet" formatter='number' placeholder="Bet" variant="standard" value={inputBet} onChange = {(val) => { setBet(val); }} />;
+  const oddsMinInput = <TextInput style = {{ display: 'inline-flex' }} inputHandler = {inputHandler} id="oddsMin" formatter='number' placeholder="Odd Min" variant="standard" value={inputOddsMin} onChange = {(val) => { setOddsMin(val); }} />;
+  const oddsMaxInput = <TextInput style = {{ display: 'inline-flex' }} inputHandler = {inputHandler} id="oddsmax" formatter='number' placeholder="Odds Max" variant="standard" value={inputOddsMax} onChange = {(val) => { setOddsMax(val); }} />;
+  const percentageInput = <TextInput style = {{ display: 'inline-flex' }} inputHandler = {inputHandler} id="precentage" formatter='number' placeholder="Win chance %" variant="standard" value={inputPercentage} onChange = {(val) => { setPercentage(val); }} />;
+  const roundRobinInput = <TextInput style = {{ display: 'inline-flex' }} inputHandler = {inputHandler} id="roundRobin" formatter='number' placeholder="Round robin parlay" variant="standard" value={inputRoundRobin} onChange = {(val) => { setRoundRobin(val); }} />;
 
   const inputs = (
     <Columns numberOfColumns={4} breakPoint={600}>

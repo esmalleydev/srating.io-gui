@@ -8,7 +8,7 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import Columns from '@/components/ux/layout/Columns';
 import Members from './Members';
-import { FantasyEntrys, FantasyGroup, FantasyGroupComments, FantasyGroupInvites, FantasyGroupUsers } from '@/types/general';
+import { FantasyDraftOrders, FantasyEntrys, FantasyGroup, FantasyGroupComments, FantasyGroupInvites, FantasyGroupUsers } from '@/types/general';
 import Invites from './Invites';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
 import Entries from './Entries';
@@ -18,13 +18,14 @@ import MyEntries from './MyEntries';
 import LeagueManagement from './LeagueManagement';
 
 
-interface Data {
+export interface FantasyGroupLoadData {
   isOwner: boolean;
   fantasy_group: FantasyGroup;
   fantasy_group_users: FantasyGroupUsers;
   fantasy_group_invites: FantasyGroupInvites;
   fantasy_group_comments: FantasyGroupComments;
   fantasy_entrys: FantasyEntrys;
+  fantasy_draft_orders: FantasyDraftOrders;
   fantasy_rankings: {}, // todo
 }
 
@@ -65,7 +66,9 @@ const Client = ({ fantasy_group_id }) => {
 
   const [request, setRequest] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [data, setData] = useState<Data | null>(null);
+  const [data, setData] = useState<FantasyGroupLoadData | null>(null);
+
+  console.log('todo check if you are a prt of this group, else show join screen')
 
 
   const load = () => {
@@ -76,12 +79,14 @@ const Client = ({ fantasy_group_id }) => {
       arguments: {
         fantasy_group_id,
       },
-    }).then((fantasyData: Data) => {
+    }).then((fantasyData: FantasyGroupLoadData) => {
       setLoaded(true);
+      dispatch(setDataKey({ key: 'isOwner', value: fantasyData.isOwner }));
       dispatch(setDataKey({ key: 'fantasy_group_users', value: fantasyData.fantasy_group_users }));
       dispatch(setDataKey({ key: 'fantasy_group_invites', value: fantasyData.fantasy_group_invites }));
       dispatch(setDataKey({ key: 'fantasy_group_comments', value: fantasyData.fantasy_group_comments }));
       dispatch(setDataKey({ key: 'fantasy_entrys', value: fantasyData.fantasy_entrys }));
+      dispatch(setDataKey({ key: 'fantasy_draft_orders', value: fantasyData.fantasy_draft_orders }));
       setData(fantasyData);
     }).catch((err) => {
       // nothing for now
@@ -107,11 +112,11 @@ const Client = ({ fantasy_group_id }) => {
         <MyEntries />
       </div>
       <div style = {{ marginBottom: 20 }}>
-        <LeagueManagement isOwner = {data && data.isOwner} />
+        <LeagueManagement />
       </div>
       <Columns numberOfColumns={2} style = {{ marginBottom: 20 }}>
         <Members />
-        <Invites isOwner = {data && data.isOwner} />
+        <Invites />
       </Columns>
       <Columns numberOfColumns={2}>
         <Entries />

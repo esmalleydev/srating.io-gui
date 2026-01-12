@@ -110,7 +110,10 @@ class FantasyEntry extends Surface {
 
 
       return (
+        <>
+        <div>{JSON.stringify(fantasy_group)}</div>
         <div>{JSON.stringify(fantasy_entry)}</div>
+        </>
         // <HomeClientWrapper>
         //   <HomeClient fantasy_group_id={fantasy_group_id} />
         // </HomeClientWrapper>

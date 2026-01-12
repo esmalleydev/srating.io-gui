@@ -532,3 +532,20 @@ export interface FantasyEntry {
 export type FantasyEntrys = {[fantasy_entry_id: string]: FantasyEntry};
 
 
+export interface FantasyDraftOrder {
+  fantasy_draft_order_id: string;
+  fantasy_entry_id: string;
+  fantasy_group_id: string;
+  round: number;
+  pick: number;
+  eligible: string;
+  expires: string;
+  notified: number;
+  picked: number;
+  guid: string;
+  deleted: number;
+}
+
+export type FantasyDraftOrders = {[fantasy_draft_order_id: string]: FantasyDraftOrder};
+
+

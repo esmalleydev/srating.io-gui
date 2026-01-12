@@ -795,7 +795,7 @@ export default [
 
       // Prefer destructuring from arrays and objects
       // https://eslint.org/docs/rules/prefer-destructuring
-      'prefer-destructuring': ['warning', {
+      'prefer-destructuring': ['warn', {
         VariableDeclarator: {
           array: false,
           object: true,

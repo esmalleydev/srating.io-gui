@@ -13,6 +13,7 @@ import { useServerAPI } from '@/components/serverAPI';
 import HomeClientWrapper from '@/components/generic/FantasyGroup/Contents/Home/ClientWrapper';
 import { Client as HomeClient } from '@/components/generic/FantasyGroup/Contents/Home/Client';
 import { FantasyGroup as FantasyGroupType } from '@/types/general';
+import NavBar from '@/components/generic/FantasyGroup/NavBar';
 
 export type getDecorateFantasyGroup = {
   fantasy_group_id: string;
@@ -103,6 +104,7 @@ class FantasyGroup extends Surface {
 
     return (
       <ReduxWrapper fantasy_group = {fantasy_group}>
+        <NavBar />
         <ContentsWrapper>
           {getContents()}
         </ContentsWrapper>

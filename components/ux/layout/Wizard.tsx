@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable consistent-return */
+
 import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
 import Button from '../buttons/Button';
@@ -7,8 +9,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@/components/hooks/useTheme';
 
 import CheckIcon from '@mui/icons-material/Check';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import IconButton from '../buttons/IconButton';
 
-type Step = {
+export type WizardStep = {
   title: string;
   id: string;
   isValid: () => boolean;
@@ -24,16 +29,20 @@ const Wizard = (
     onSave,
     onBack,
     saveButtonText = 'Save',
+    showProgress = false,
+    useArrowButton = false,
     isLoading,
     style = {},
     // children,
   }:
   {
-    steps: Step[];
-    validationTrigger: (valid: boolean) => void;
-    onSave: () => void;
+    steps: WizardStep[];
+    validationTrigger?: (valid: boolean) => void;
+    onSave?: () => void;
     onBack?: () => void;
     saveButtonText?: string;
+    showProgress?: boolean;
+    useArrowButton?: boolean;
     isLoading?: boolean;
     style?: React.CSSProperties;
     // children: React.ReactNode;
@@ -61,10 +70,10 @@ const Wizard = (
     if (prevStepRef.current !== nextStep) {
       const isMovingForward = nextStep > prevStepRef.current;
       setDirection(isMovingForward ? 'forward' : 'backward');
-      
+
       setIsAnimating(true);
       setIsExiting(true);
-      
+
 
       const timer = setTimeout(() => {
         setIsAnimating(false);
@@ -79,12 +88,12 @@ const Wizard = (
     if (prevStepRef.current !== currentStep) {
       const isMovingForward = currentStep > prevStepRef.current;
       setDirection(isMovingForward ? 'forward' : 'backward');
-      
+
       setIsAnimating(true);
       setIsEntering(true);
       setIsExiting(false);
       setDisplaySteps([null, currentStep]);
-      
+
       const timer = setTimeout(() => {
         setIsEntering(false);
         setDisplaySteps([prevStepRef.current, currentStep]);
@@ -101,28 +110,32 @@ const Wizard = (
 
     // Check validity logic defined in step object
     if (currentStepObj.isValid && !currentStepObj.isValid()) {
-      validationTrigger(true);
-      return; 
+      if (validationTrigger) {
+        validationTrigger(true);
+      }
+      return;
     }
-    
+
     // If valid, move on
     if (currentStep < steps.length - 1) {
-      validationTrigger(false);
-      setNextStep( currentStep + 1)
-    } else {
+      if (validationTrigger) {
+        validationTrigger(false);
+      }
+      setNextStep(currentStep + 1);
+    } else if (onSave) {
       onSave();
     }
   };
 
   const handleBack = () => {
     const currentStepObj = steps[currentStep];
-  
+
     if (currentStepObj.onBack) {
       currentStepObj.onBack();
     }
 
     if (currentStep > 0) {
-      setNextStep(prev => prev - 1);
+      setNextStep((prev) => prev - 1);
     }
 
     if (onBack) {
@@ -140,9 +153,9 @@ const Wizard = (
       );
     }
     return (
-      <span style={{ 
-        color: isCurrent ? 'white' : 'black', 
-        fontSize: '12px' 
+      <span style={{
+        color: isCurrent ? 'white' : 'black',
+        fontSize: '12px',
       }}>
         {index + 1}
       </span>
@@ -169,14 +182,14 @@ const Wizard = (
     // transition: `transform ${tranistionMS}ms cubic-bezier(0.4, 0.0, 0.2, 1), opacity ${tranistionMS}ms`,
     animation,
     opacity: isExiting ? 0 : 1,
-    // transform: isExiting 
+    // transform: isExiting
     //   ? `translateX(${direction === 'forward' ? '-100%' : '100%'})` // Exit
-    //   : isAnimating 
+    //   : isAnimating
     //     ? `translateX(0%)` // Target (handled by CSS animation trick usually, but here relies on entering state)
-    //     : `translateX(0%)`, 
+    //     : `translateX(0%)`,
     // We need an animation for the entering slide to start FROM offscreen
-    // animation: isEntering && isAnimating 
-    //   ? `${direction === 'forward' ? 'slideInRight' : 'slideInLeft'} ${tranistionMS}ms forwards` 
+    // animation: isEntering && isAnimating
+    //   ? `${direction === 'forward' ? 'slideInRight' : 'slideInLeft'} ${tranistionMS}ms forwards`
     //   : 'none',
     pointerEvents: isExiting ? 'none' : 'auto',
     padding: 10,
@@ -185,24 +198,77 @@ const Wizard = (
 
   const keyframesStyle = {
     '@keyframes slideInRight': {
-      'from': { transform: 'translateX(100%)', opacity: 0 },
-      'to': { transform: 'translateX(0)', opacity: 1 },
+      from: { transform: 'translateX(100%)', opacity: 0 },
+      to: { transform: 'translateX(0)', opacity: 1 },
     },
     '@keyframes slideInLeft': {
-      'from': { transform: 'translateX(-100%)', opacity: 0 },
-      'to': { transform: 'translateX(0)', opacity: 1 },
+      from: { transform: 'translateX(-100%)', opacity: 0 },
+      to: { transform: 'translateX(0)', opacity: 1 },
     },
     '@keyframes slideOutLeft': {
-      'from': { transform: 'translateX(0)', opacity: 1 },
-      'to': { transform: 'translateX(-100%)', opacity: 0 },
+      from: { transform: 'translateX(0)', opacity: 1 },
+      to: { transform: 'translateX(-100%)', opacity: 0 },
     },
     '@keyframes slideOutRight': {
-      'from': { transform: 'translateX(0)', opacity: 1 },
-      'to': { transform: 'translateX(100%)', opacity: 0 },
+      from: { transform: 'translateX(0)', opacity: 1 },
+      to: { transform: 'translateX(100%)', opacity: 0 },
     },
-  }
+  };
 
   let display: React.JSX.Element | null = null;
+
+  const getBackButton = () => {
+    if (currentStep === 0) {
+      return null;
+    }
+
+    if (useArrowButton) {
+      return (
+        <IconButton
+          icon = {<KeyboardArrowLeftIcon />}
+          value = 'back'
+          onClick = {handleBack}
+          disabled = {isAnimating}
+        />
+      );
+    }
+
+    return (
+      <Button
+        title="Back"
+        value = 'back'
+        ink
+        handleClick={handleBack}
+        disabled={isAnimating}
+      />
+    );
+  };
+
+  const getNextButton = () => {
+    if (currentStep === steps.length - 1 && !onSave) {
+      return null;
+    }
+    if (useArrowButton) {
+      return (
+        <IconButton
+          icon = {<KeyboardArrowRightIcon />}
+          value = 'next'
+          onClick = {handleNext}
+          disabled = {isAnimating}
+        />
+      );
+    }
+
+    return (
+      <Button
+        title={isLastStep ? saveButtonText : 'Next'}
+        value = 'next'
+        handleClick={handleNext}
+        // isLoading={isLoading}
+        disabled={isAnimating}
+      />
+    );
+  };
 
   if (steps.length && steps[currentStep]) {
     const step = steps[currentStep];
@@ -210,30 +276,16 @@ const Wizard = (
       <div className = {`${Style.getStyleClassName(wizardStyle)} ${Style.getStyleClassName(keyframesStyle)}`}>
         <Typography type="h5" style={{ marginBottom: 20 }}>{step.title}</Typography>
         {step.content}
-        <div style={{ 
-          marginTop: 20, 
-          display: 'flex', 
-          justifyContent: 'space-between', 
+        <div style={{
+          marginTop: 20,
+          display: 'flex',
+          justifyContent: 'space-between',
         }}>
           <div>
-            {currentStep > 0 && (
-              <Button 
-                title="Back" 
-                value = 'back'
-                ink
-                handleClick={handleBack}
-                disabled={isAnimating}
-              />
-            )}
+            {getBackButton()}
           </div>
           <div>
-            <Button 
-              title={isLastStep ? saveButtonText : 'Next'}
-              value = 'next'
-              handleClick={handleNext} 
-              // isLoading={isLoading}
-              disabled={isAnimating}
-            />
+            {getNextButton()}
           </div>
         </div>
       </div>
@@ -242,52 +294,56 @@ const Wizard = (
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto', overflow: 'hidden' }}>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-      }}>
-        {steps.map((step, index) => {
-          const isCompleted = index < currentStep;
-          const isCurrent = index === currentStep;
-          const isLast = index === steps.length - 1;
-          const color = theme.mode === 'dark' ? theme.info.dark: theme.info.main;
-          const backgroundColor = theme.grey[400];
+      {
+        showProgress ?
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            {steps.map((step, index) => {
+              const isCompleted = index < currentStep;
+              const isCurrent = index === currentStep;
+              const isLast = index === steps.length - 1;
+              const color = theme.mode === 'dark' ? theme.info.dark : theme.info.main;
+              const backgroundColor = theme.grey[400];
 
-          return (
-            <React.Fragment key={step.id}>
-              {/* Step Circle */}
-              <div style={{
-                width: 30,
-                height: 30,
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: isCompleted || isCurrent ? color : backgroundColor,
-                border: isCurrent ? `2px solid ${color}` : 'none',
-                transition: 'all 0.3s ease',
-                flexShrink: 0,
-                zIndex: 2,
-              }}>
-                {getStepIcon(index)}
-              </div>
+              return (
+                <React.Fragment key={step.id}>
+                  {/* Step Circle */}
+                  <div style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: isCompleted || isCurrent ? color : backgroundColor,
+                    border: isCurrent ? `2px solid ${color}` : 'none',
+                    transition: 'all 0.3s ease',
+                    flexShrink: 0,
+                    zIndex: 2,
+                  }}>
+                    {getStepIcon(index)}
+                  </div>
 
-              {/* Connecting Line */}
-              {!isLast && (
-                <div style={{
-                  flex: 1,
-                  height: 2,
-                  backgroundColor: isCompleted ? color : backgroundColor,
-                  transition: 'background-color 0.3s ease',
-                  margin: '0 -2px', // Slight overlap to prevent gaps
-                  zIndex: 1
-                }} />
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
+                  {/* Connecting Line */}
+                  {!isLast && (
+                    <div style={{
+                      flex: 1,
+                      height: 2,
+                      backgroundColor: isCompleted ? color : backgroundColor,
+                      transition: 'background-color 0.3s ease',
+                      margin: '0 -2px', // Slight overlap to prevent gaps
+                      zIndex: 1,
+                    }} />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+          : ''
+      }
       <div style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
         {display}
       </div>

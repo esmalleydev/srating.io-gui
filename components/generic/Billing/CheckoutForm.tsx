@@ -31,7 +31,7 @@ const CheckoutForm = ({ pricing }) => {
   const [email, setEmail] = useState(null);
   const [emailError, setEmailError] = useState<string | null>(null);
 
-  const [errorMessage, setErrorMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -54,6 +54,7 @@ const CheckoutForm = ({ pricing }) => {
     });
   }
 
+  // todo deprecate this and just manually do it
   const handleError = (error) => {
     setIsLoading(false);
     dispatch(setLoading(false));
@@ -99,6 +100,17 @@ const CheckoutForm = ({ pricing }) => {
         priceId: pricing.priceId,
       },
     });
+
+    if (!subscription || subscription.error) {
+      setIsLoading(false);
+      dispatch(setLoading(false));
+      if (!subscription) {
+        setErrorMessage('Something went wrong, please try again later.');
+      } else {
+        setErrorMessage(subscription.error.message ? subscription.error.message : subscription.error);
+      }
+      return;
+    }
 
     if (subscription.session_id) {
       dispatch(setDataKey({ key: 'session_id', value: subscription.session_id }));

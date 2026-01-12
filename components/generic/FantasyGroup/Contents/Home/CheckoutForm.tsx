@@ -71,7 +71,11 @@ const CheckoutForm = ({ entryName }) => {
 
     if (!billingData || billingData.error) {
       dispatch(setLoading(false));
-      setPaymentError(billingData.error.message ? billingData.error.message : billingData.error);
+      if (!billingData) {
+        setPaymentError('Something went wrong, please try again later.');
+      } else {
+        setPaymentError(billingData.error.message ? billingData.error.message : billingData.error);
+      }
       return;
     }
 

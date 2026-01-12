@@ -36,7 +36,7 @@ function handleResponse(json: ApiResponse, isRetry: boolean = false): object {
 
     switch (json.code) {
       case 105: // New update available
-        store.dispatch(setDataKey({key: 'newUpdate', value: true }));
+        store.dispatch(setDataKey({ key: 'newUpdate', value: true }));
         break;
       case 103: // Secret expired
         // On first failure, we dispatch to clear the secret.
@@ -75,6 +75,9 @@ async function executeFetch(url: string, fetchArgs: RequestInit, isRetry: boolea
     return {};
   }
 }
+
+
+// todo this needs to be a hook / functional component, so when the store.getState() stuff changes it is refreshed with the correct values?
 
 export async function useClientAPI(args, optional_fetch_args = {}): Promise<any> {
   let url: string = `${protocol}://${hostname}:${port}`;

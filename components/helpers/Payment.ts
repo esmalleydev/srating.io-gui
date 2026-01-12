@@ -12,6 +12,9 @@ class Payment {
   public static srating_percentage = 0.03;
 
   public static get_amount_after_fees(amount: number) {
+    if (amount === 0) {
+      return 0;
+    }
     let pennies = amount * 100;
 
     pennies = pennies - (pennies * (this.stripe_percentage)) - this.stripe_transaction_cents;

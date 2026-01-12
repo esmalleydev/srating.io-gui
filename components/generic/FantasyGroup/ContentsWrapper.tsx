@@ -6,6 +6,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
 import { useEffect } from 'react';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
+import { getNavHeaderHeight } from './NavBar';
 
 
 const ContentsWrapper = (
@@ -16,7 +17,7 @@ const ContentsWrapper = (
 
   const loadingView = useAppSelector((state) => state.fantasyGroupReducer.loadingView);
 
-  const paddingTop = 0;
+  const paddingTop = getNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
 

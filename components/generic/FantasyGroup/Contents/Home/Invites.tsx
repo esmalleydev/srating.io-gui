@@ -22,10 +22,11 @@ import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import Dates from '@/components/utils/Dates';
 import Tile from '@/components/ux/container/Tile';
 
-const Invites = ({ isOwner }) => {
+const Invites = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const session_id = useAppSelector((state) => state.userReducer.session_id);
+  const isOwner = useAppSelector((state) => state.fantasyGroupReducer.isOwner);
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
   const fantasy_group_invites = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group_invites);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);

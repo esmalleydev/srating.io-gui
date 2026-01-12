@@ -12,7 +12,7 @@ import DraftSettings from '../../Card/DraftSettings';
 import BracketInfo from '../../Card/BracketInfo';
 import PayoutInfo from '../../Card/PayoutInfo';
 
-const LeagueManagement = ({ isOwner }) => {
+const LeagueManagement = () => {
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
   const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
 

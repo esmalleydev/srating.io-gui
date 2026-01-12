@@ -35,8 +35,8 @@ const PlayerAdditionalOptions = () => {
         dispatch(setDataKey({ key: 'hideLowerBench', value: !hideLowerBench }));
         handleClose();
       },
-      icon: hideLowerBench ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
-    }
+      icon: hideLowerBench ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
+    },
   ];
 
   return (
