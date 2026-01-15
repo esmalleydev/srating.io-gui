@@ -4,7 +4,7 @@ import { FantasyDraftOrders, FantasyEntrys, FantasyGroup, FantasyGroupComments, 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type InitialState = {
-  // view: string;
+  view: string;
   isOwner: boolean;
   fantasy_group: FantasyGroup;
   fantasy_group_user: FantasyGroupUser | null;
@@ -29,7 +29,7 @@ export const stateController = new State<InitialState>({
 
 stateController.set_url_param_type_x_keys({
   string: [
-    // 'view',
+    'view',
   ],
   array: [
   ],
@@ -37,12 +37,12 @@ stateController.set_url_param_type_x_keys({
   ],
 });
 
-// stateController.set_key_x_is_push_state({
-//   view: true,
-// });
+stateController.set_key_x_is_push_state({
+  view: true,
+});
 
 stateController.setInitialState({
-  // view: 'home',
+  view: 'home',
   isOwner: false,
   fantasy_group: {} as FantasyGroup,
   fantasy_group_invites: {} as FantasyGroupInvites,

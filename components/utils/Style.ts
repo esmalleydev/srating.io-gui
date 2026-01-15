@@ -25,7 +25,7 @@ class Style {
       calendar: 1000,
       mobileStepper: 1000,
       modal: 1300,
-      snackbar: 1400,
+      toast: 1400,
       speedDial: 1050,
       tooltip: 1500,
     };
@@ -304,7 +304,7 @@ class Style {
         // Strip leading/trailing double or single quotes
         // This handles: "Arial" -> Arial or 'Arial' -> Arial
         if (
-          (value.startsWith('"') && value.endsWith('"')) || 
+          (value.startsWith('"') && value.endsWith('"')) ||
           (value.startsWith("'") && value.endsWith("'"))
         ) {
           value = value.slice(1, -1);

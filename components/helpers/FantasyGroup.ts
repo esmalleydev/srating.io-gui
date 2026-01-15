@@ -55,6 +55,13 @@ class FantasyGroup {
       fantasy_draft_orders?: FantasyDraftOrders;
     },
   ) {
+    type Data = {
+      fantasy_group_id: string;
+      fantasy_entry_id: string;
+      pick: number;
+      round: number;
+      eligible?: string;
+    }
     if (!fantasy_draft_orders && !fantasy_entrys) {
       return [];
     }
@@ -64,20 +71,20 @@ class FantasyGroup {
     // if we already created the draft order, just sort the rows and return it
     if (fantasy_draft_orders && Object.values(fantasy_draft_orders).length) {
       return Object.values(fantasy_draft_orders).sort((a, b) => {
-        if (a.round > b.round) {
+        if (a.round < b.round) {
           return -1;
         }
 
-        if (a.round < b.round) {
+        if (a.round > b.round) {
           return 1;
         }
 
         // same round
-        if (a.pick > b.pick) {
+        if (a.pick < b.pick) {
           return -1;
         }
 
-        if (b.pick < a.pick) {
+        if (b.pick > a.pick) {
           return 1;
         }
 
@@ -87,12 +94,7 @@ class FantasyGroup {
 
     // the draft order is not finalized yet, return a preview
     if (fantasy_entrys && Object.values(fantasy_entrys).length) {
-      const preview_draft_order: {
-        fantasy_group_id: string;
-        fantasy_entry_id: string;
-        pick: number;
-        round: number;
-      }[] = [];
+      const preview_draft_order: Data[] = [];
       const sorted_entries = Object.values(fantasy_entrys).sort((a, b) => {
         return a.date_of_entry > b.date_of_entry ? 1 : -1;
       });

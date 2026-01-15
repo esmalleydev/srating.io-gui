@@ -41,13 +41,13 @@ const DraftSettings = (
     for (let d = 0; d < draft_order.length; d++) {
       if (current_round !== draft_order[d].round) {
         current_round++;
-        elements.push(<Typography type = 'subtitle1' style = {{ color: theme.info.main }}>Round {current_round}</Typography>);
+        elements.push(<Typography key = {`round-${current_round}`} type = 'subtitle1' style = {{ color: theme.info.main }}>Round {current_round}</Typography>);
       }
 
       const name = (draft_order[d].fantasy_entry_id in fantasy_entrys) ? fantasy_entrys[draft_order[d].fantasy_entry_id].name : draft_order[d].fantasy_entry_id;
 
       elements.push(
-        <Typography type = 'caption'># {draft_order[d].pick} - {name}</Typography>,
+        <Typography key = {d} type = 'caption'># {draft_order[d].pick} - {name} {draft_order[d].eligible ? Dates.format(Dates.parse(draft_order[d].eligible, true), 'M jS g:i a') : ''}</Typography>,
       );
     }
     return elements;
@@ -95,7 +95,7 @@ const DraftSettings = (
       open = {openModal}
       onClose={() => setOpenModal(false)}
     >
-      <Typography type = 'h6'>Draft order</Typography>
+      <Typography type = 'h6'>{fantasy_group.locked ? 'Draft order' : 'Preview draft order'}</Typography>
       <div style = {{ maxHeight: 500, overflowY: 'scroll' }}>
         {decorateDraftOrder()}
       </div>

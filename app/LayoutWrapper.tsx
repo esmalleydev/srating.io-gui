@@ -15,6 +15,7 @@ import { updateFromURL as J } from '@/redux/features/fantasy-slice';
 import { updateFromURL as K } from '@/redux/features/fantasy_group-slice';
 import { updateFromURL as L } from '@/redux/features/payment_router-slice';
 import { updateFromURL as M } from '@/redux/features/fantasy_entry-slice';
+import { toast } from '@/components/utils/Toaster';
 
 
 const LayoutWrapper = ({ children }) => {
@@ -43,12 +44,25 @@ const LayoutWrapper = ({ children }) => {
       store.dispatch(M());
     };
 
+    const handleOnline = () => {
+      toast.success('Connected');
+    };
+
+    const handleOffline = () => {
+      toast.error('Lost connection');
+    };
+
     // Add the event listener when the component mounts
     window.addEventListener('popstate', handlePopState);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
     // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, []);
 

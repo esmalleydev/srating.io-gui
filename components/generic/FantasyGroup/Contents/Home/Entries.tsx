@@ -30,11 +30,12 @@ const Entries = () => {
     }
     return (
       <Tile
+        key = {row.fantasy_entry_id}
         icon={<StadiumIcon style = {{ color: theme.deepOrange[500] }} />}
         primary={row.name}
         // secondary={row.email}
         buttons = {[
-          <Button title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
+          <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
         ]}
       />
     );

@@ -74,6 +74,7 @@ const AccountHandler = (
     }
     setPasswordError(null);
 
+    dispatch(setLoading(true));
 
     useClientAPI({
       class: 'user',
@@ -84,8 +85,10 @@ const AccountHandler = (
       },
     }).then((session_id) => {
       if (!session_id) {
+        dispatch(setLoading(false));
         setPasswordError('Incorrect password');
       } else if (session_id && session_id.error) {
+        dispatch(setLoading(false));
         setPasswordError('Something went wrong, try again later');
       } else {
         dispatch(setDataKeyUser({ key: 'session_id', value: session_id }));
@@ -94,12 +97,16 @@ const AccountHandler = (
         closeHandler(e);
 
         if (loginCallback) {
+          dispatch(setLoading(false));
           loginCallback(e);
         } else {
-          window.location.reload();
+          // this fires too fast for local store to get updated sometimes... >.>
+          // just wait a second then reload I guess lol
+          setTimeout(() => window.location.reload(), 1000);
         }
       }
     }).catch((err) => {
+      dispatch(setLoading(false));
       setPasswordError('Incorrect password');
     });
   };

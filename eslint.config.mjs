@@ -370,10 +370,6 @@ export default [
       }, {
         property: '__defineSetter__',
         message: 'Please use Object.defineProperty instead.',
-      }, {
-        object: 'Math',
-        property: 'pow',
-        message: 'Use the exponentiation operator (**) instead.',
       }],
 
       // disallow use of assignment in return statement
@@ -1300,10 +1296,6 @@ export default [
       // Require or disallow padding lines between statements
       // https://eslint.org/docs/rules/padding-line-between-statements
       'padding-line-between-statements': 'off',
-
-      // Disallow the use of Math.pow in favor of the ** operator
-      // https://eslint.org/docs/rules/prefer-exponentiation-operator
-      'prefer-exponentiation-operator': 'error',
 
       // Prefer use of an object spread over Object.assign
       // https://eslint.org/docs/rules/prefer-object-spread

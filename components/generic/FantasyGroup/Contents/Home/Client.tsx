@@ -8,26 +8,17 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import Columns from '@/components/ux/layout/Columns';
 import Members from './Members';
-import { FantasyDraftOrders, FantasyEntrys, FantasyGroup, FantasyGroupComments, FantasyGroupInvites, FantasyGroupUsers } from '@/types/general';
 import Invites from './Invites';
-import { setDataKey } from '@/redux/features/fantasy_group-slice';
 import Entries from './Entries';
 import Ranking from './Ranking';
 import Comments from './Comments';
 import MyEntries from './MyEntries';
 import LeagueManagement from './LeagueManagement';
+import { FantasyGroupLoadData, handleLoad } from '../../ReduxWrapper';
+import DraftOrBracketCountdown from './DraftOrBracketCountdown';
+import Typography from '@/components/ux/text/Typography';
 
 
-export interface FantasyGroupLoadData {
-  isOwner: boolean;
-  fantasy_group: FantasyGroup;
-  fantasy_group_users: FantasyGroupUsers;
-  fantasy_group_invites: FantasyGroupInvites;
-  fantasy_group_comments: FantasyGroupComments;
-  fantasy_entrys: FantasyEntrys;
-  fantasy_draft_orders: FantasyDraftOrders;
-  fantasy_rankings: {}, // todo
-}
 
 /**
  * The main wrapper div for all the contents
@@ -62,13 +53,10 @@ const ClientSkeleton = () => {
 
 const Client = ({ fantasy_group_id }) => {
   const dispatch = useAppDispatch();
-  // const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
 
   const [request, setRequest] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [data, setData] = useState<FantasyGroupLoadData | null>(null);
-
-  console.log('todo check if you are a prt of this group, else show join screen')
+  const [canView, setCanView] = useState(true);
 
 
   const load = () => {
@@ -81,13 +69,14 @@ const Client = ({ fantasy_group_id }) => {
       },
     }).then((fantasyData: FantasyGroupLoadData) => {
       setLoaded(true);
-      dispatch(setDataKey({ key: 'isOwner', value: fantasyData.isOwner }));
-      dispatch(setDataKey({ key: 'fantasy_group_users', value: fantasyData.fantasy_group_users }));
-      dispatch(setDataKey({ key: 'fantasy_group_invites', value: fantasyData.fantasy_group_invites }));
-      dispatch(setDataKey({ key: 'fantasy_group_comments', value: fantasyData.fantasy_group_comments }));
-      dispatch(setDataKey({ key: 'fantasy_entrys', value: fantasyData.fantasy_entrys }));
-      dispatch(setDataKey({ key: 'fantasy_draft_orders', value: fantasyData.fantasy_draft_orders }));
-      setData(fantasyData);
+      if (!fantasyData || fantasyData.error) {
+        setCanView(false);
+      } else {
+        handleLoad({
+          dispatch,
+          data: fantasyData,
+        });
+      }
     }).catch((err) => {
       // nothing for now
     });
@@ -101,16 +90,23 @@ const Client = ({ fantasy_group_id }) => {
     return <ClientSkeleton />;
   }
 
-
+  if (!canView) {
+    return (
+      <Contents>
+        <Typography style = {{ textAlign: 'center' }} type = 'h5'>You do not have permission to view this group!</Typography>
+      </Contents>
+    );
+  }
 
   return (
     <Profiler id="FantasyGroup.Contents.Home.Client" onRender={(id, phase, actualDuration) => {
       console.log(id, phase, actualDuration);
     }}>
     <Contents>
-      <div style = {{ marginBottom: 20 }}>
+      <Columns numberOfColumns={2} style = {{ marginBottom: 20 }}>
         <MyEntries />
-      </div>
+        <DraftOrBracketCountdown />
+      </Columns>
       <div style = {{ marginBottom: 20 }}>
         <LeagueManagement />
       </div>

@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable no-nested-ternary */
+
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import IconButton from '@/components/ux/buttons/IconButton';
@@ -14,7 +16,7 @@ import CreateEntry from './CreateEntry';
 import Tile from '@/components/ux/container/Tile';
 import StadiumIcon from '@mui/icons-material/Stadium';
 import Navigation from '@/components/helpers/Navigation';
-import Columns from '@/components/ux/layout/Columns';
+import FantasyGroup from '@/components/helpers/FantasyGroup';
 
 const MyEntries = () => {
   const theme = useTheme();
@@ -22,6 +24,8 @@ const MyEntries = () => {
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
   const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
   const user = useAppSelector((state) => state.userReducer.user);
+
+  const fantasyHelper = new FantasyGroup({ fantasy_group });
 
   const [joining, setJoining] = useState(false);
 
@@ -43,11 +47,12 @@ const MyEntries = () => {
   const rows = my_fantasy_entrys.map((row, index) => {
     return (
       <Tile
+        key = {row.fantasy_entry_id}
         icon={<StadiumIcon style = {{ color: theme.deepOrange[500] }} />}
         primary={row.name}
-        // secondary={row.email}
+        secondary={`${fantasy_group.entry_fee ? (row.paid ? 'Paid' : 'Pending payment') : 'Free'} ${fantasyHelper.isDraft() ? 'draft entry' : 'bracket entry'}`}
         buttons = {[
-          <Button title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
+          <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
         ]}
       />
     );
@@ -78,9 +83,7 @@ const MyEntries = () => {
   const getContents = () => {
     if (rows.length) {
       return (
-        <Columns>
-          <div>{rows}</div>
-        </Columns>
+        <div>{rows}</div>
       );
     }
 

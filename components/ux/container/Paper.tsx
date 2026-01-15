@@ -26,7 +26,7 @@ const Paper = (
   }:
   {
     elevation?: number;
-    style?: React.CSSProperties;
+    style?: React.CSSProperties | object;
     children: React.ReactNode;
     tranparency?: number;
     ref?: RefObject<HTMLDivElement | null>;
@@ -86,10 +86,10 @@ const Paper = (
       onKeyDown={handleKeyDown}
       tabIndex={tabIndex}
     >
-      <div style = {{ position: 'absolute', right: 0, top: -20, marginRight: 20  }}>
-        {buttons.map((button) => {
+      <div style = {{ position: 'absolute', right: 0, top: -20, marginRight: 20 }}>
+        {buttons.map((button, index) => {
           return (
-            <div style = {{ margin: '0px 5px', display: 'inline-flex'}}>
+            <div key = {index} style = {{ margin: '0px 5px', display: 'inline-flex' }}>
               {button}
             </div>
           );

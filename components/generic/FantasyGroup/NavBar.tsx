@@ -15,11 +15,11 @@ import Button from '@/components/ux/buttons/Button';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
 import { useClientAPI } from '@/components/clientAPI';
-import { FantasyDraftOrders, FantasyGroup, FantasyGroupUsers } from '@/types/general';
+import { FantasyDraftOrders, FantasyGroup } from '@/types/general';
 import LockIcon from '@mui/icons-material/Lock';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { FantasyGroupLoadData } from './Contents/Home/Client';
+import { FantasyGroupLoadData, handleLoad } from './ReduxWrapper';
 
 
 const getNavHeaderHeight = () => {
@@ -119,8 +119,10 @@ const NavBar = () => {
     }).then((data: FantasyGroupLoadData) => {
       setIsLoading(false);
       dispatch(setLoading(false));
-      console.log(data);
-      dispatch(setDataKey({ key: 'fantasy_group_users', value: data.fantasy_group_users }));
+      handleLoad({
+        dispatch,
+        data,
+      });
       setModalOpen(false);
     }).catch((err) => {
       // nothing for now
@@ -142,7 +144,7 @@ const NavBar = () => {
       arguments: {
         fantasy_group_id: fantasy_group.fantasy_group_id,
       },
-    }).then((data: LeaveResponse) => {
+    }).then((data: FantasyGroupLoadData) => {
       setIsLoading(false);
       dispatch(setLoading(false));
       console.log(data);
@@ -175,7 +177,7 @@ const NavBar = () => {
     });
   }
 
-  if (isOwner && false) {
+  if (isOwner && !Object.values(fantasy_entrys).length) {
     options.push({
       value: 'del',
       label: 'Delete group',
@@ -186,7 +188,7 @@ const NavBar = () => {
           title: 'Delete group?',
           message: 'Group and all related data will be deleted. This action can not be undone. Are you sure?',
           button: 'Confirm',
-          action: handleLeaveGroup,
+          action: handleDeleteGroup,
         });
         handleClose();
       },
@@ -218,17 +220,25 @@ const NavBar = () => {
     <>
       <div className={Style.getStyleClassName(divStyle)}>
         <div><BackButton /></div>
-        <IconButton
-          value = 'settings'
-          onClick={handleOpen}
-          icon = {<SettingsIcon />}
-        />
-        <Menu
-          anchor={anchor}
-          open={open}
-          onClose={handleClose}
-          options = {options}
-        />
+        <div>
+          {
+            options.length ?
+            <>
+              <IconButton
+                value = 'settings'
+                onClick={handleOpen}
+                icon = {<SettingsIcon />}
+              />
+              <Menu
+                anchor={anchor}
+                open={open}
+                onClose={handleClose}
+                options = {options}
+              />
+            </>
+            : ''
+          }
+        </div>
       </div>
       <Modal
         open = {modalOpen}

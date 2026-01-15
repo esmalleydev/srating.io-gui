@@ -41,9 +41,10 @@ const Invites = () => {
 
   const inputHandler = new Inputs();
 
-  const inviteRows = Object.values(fantasy_group_invites || {}).map((row) => {
+  const inviteRows = Object.values(fantasy_group_invites || {}).map((row, index) => {
     return (
       <Tile
+        key = {row.fantasy_group_invite_id}
         icon={<MarkEmailReadIcon />}
         primary={row.email}
         secondary={`Expires: ${Dates.format(row.expires, 'M jS Y')}`}

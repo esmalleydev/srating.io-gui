@@ -40,6 +40,10 @@ Prerequisites: typescript, nodejs, npm.
     NEXT_PUBLIC_CLIENT_USE_ORIGIN=false
     NEXT_PUBLIC_CLIENT_PATH=''
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=foo
+
+    NEXT_PUBLIC_WS_HOST=localhost
+    NEXT_PUBLIC_WS_PORT=8080
+    NEXT_PUBLIC_WS_PATH='ws'
     ```
 
 4. Run the web client with webpack for local development.

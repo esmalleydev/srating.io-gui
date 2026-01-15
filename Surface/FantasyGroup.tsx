@@ -6,14 +6,15 @@ import { notFound } from 'next/navigation';
 import ReduxWrapper from '@/components/generic/FantasyGroup/ReduxWrapper';
 import Organization from '@/components/helpers/Organization';
 import ContentsWrapper from '@/components/generic/FantasyGroup/ContentsWrapper';
-
-
+import { FantasyGroup as FantasyGroupType } from '@/types/general';
+import NavBar from '@/components/generic/FantasyGroup/NavBar';
 import { useServerAPI } from '@/components/serverAPI';
 
 import HomeClientWrapper from '@/components/generic/FantasyGroup/Contents/Home/ClientWrapper';
 import { Client as HomeClient } from '@/components/generic/FantasyGroup/Contents/Home/Client';
-import { FantasyGroup as FantasyGroupType } from '@/types/general';
-import NavBar from '@/components/generic/FantasyGroup/NavBar';
+
+import DraftClientWrapper from '@/components/generic/FantasyGroup/Contents/Draft/ClientWrapper';
+import { Client as DraftClient } from '@/components/generic/FantasyGroup/Contents/Draft/Client';
 
 export type getDecorateFantasyGroup = {
   fantasy_group_id: string;
@@ -90,8 +91,12 @@ class FantasyGroup extends Surface {
     }
 
     const getContents = () => {
-      if (view === 'foo') {
-        return <></>;
+      if (view === 'draft') {
+        return (
+          <DraftClientWrapper>
+            <DraftClient fantasy_group_id={fantasy_group_id} />
+          </DraftClientWrapper>
+        );
       }
 
       return (

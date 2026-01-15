@@ -25,6 +25,7 @@ const Members = () => {
     }
     return (
       <Tile
+        key = {row.fantasy_group_user_id}
         icon={<PersonIcon />}
         primary={row.name || row.user_id}
         secondary={row.email}
