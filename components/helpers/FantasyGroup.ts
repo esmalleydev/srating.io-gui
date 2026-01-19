@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 
-import { FantasyDraftOrders, FantasyEntrys, FantasyGroup as FantasyGroupType } from '@/types/general';
+import { getStore } from '@/app/StoreProvider';
+import { FantasyDraftOrders, FantasyEntrys, FantasyGroup as FantasyGroupType, FantasyGroupUsers } from '@/types/general';
 
 
 /**
@@ -42,6 +43,29 @@ class FantasyGroup {
       return true;
     }
 
+    return false;
+  }
+
+  isMember(
+    {
+      fantasy_group_users,
+    }:
+    {
+      fantasy_group_users: FantasyGroupUsers
+    }
+  ): boolean {
+    // todo the problem with this is it might be stale if the comppnent uses this does not re-render updating the store
+    const store = getStore();
+
+    const { user_id } = store.getState().userReducer.user;
+
+    for (const fantasy_group_user_id in fantasy_group_users) {
+      const row = fantasy_group_users[fantasy_group_user_id];
+
+      if (row.user_id === user_id) {
+        return true;
+      }
+    }
     return false;
   }
 

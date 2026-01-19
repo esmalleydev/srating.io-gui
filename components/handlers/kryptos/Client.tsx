@@ -55,8 +55,8 @@ const Client = ({ kryptos, secret }) => {
 
   useEffect(() => {
     dispatch(setKryptos(kryptos));
-    dispatch(setSecret(secret.secret_id));
-    setExpires(secret.expires);
+    dispatch(setSecret(secret ? secret.secret_id : null));
+    setExpires(secret ? secret.expires : null);
   }, [kryptos, secret]);
 
   useIdleTimer({
