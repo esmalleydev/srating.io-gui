@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import generalReducer from './features/general-slice';
 import themeReducer from './features/theme-slice';
 import userReducer from './features/user-slice';
 import favoriteReducer from './features/favorite-slice';
@@ -27,6 +28,7 @@ import paymentRouterReducer from './features/payment_router-slice';
 
 export const makeStore = () => configureStore({
   reducer: {
+    generalReducer,
     themeReducer,
     userReducer,
     favoriteReducer,

@@ -15,10 +15,13 @@ import { updateFromURL as J } from '@/redux/features/fantasy-slice';
 import { updateFromURL as K } from '@/redux/features/fantasy_group-slice';
 import { updateFromURL as L } from '@/redux/features/payment_router-slice';
 import { updateFromURL as M } from '@/redux/features/fantasy_entry-slice';
+import { updateFromURL as N, setDataKey as setDataKeyGeneral } from '@/redux/features/general-slice';
 import { toast } from '@/components/utils/Toaster';
+import { useAppDispatch } from '@/redux/hooks';
 
 
 const LayoutWrapper = ({ children }) => {
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const handlePopState = (event) => {
       // console.log('handlePopState', event)
@@ -42,14 +45,17 @@ const LayoutWrapper = ({ children }) => {
       store.dispatch(K());
       store.dispatch(L());
       store.dispatch(M());
+      store.dispatch(N());
     };
 
     const handleOnline = () => {
       toast.success('Connected');
+      dispatch(setDataKeyGeneral({ key: 'online', value: true }));
     };
 
     const handleOffline = () => {
       toast.error('Lost connection');
+      dispatch(setDataKeyGeneral({ key: 'online', value: false }));
     };
 
     // Add the event listener when the component mounts

@@ -12,7 +12,7 @@ let intervalRefresher: NodeJS.Timeout;
 const Client = ({ kryptos, secret }) => {
   // console.log('kryptos client')
   const dispatch = useAppDispatch();
-
+  const online = useAppSelector((state) => state.generalReducer.online);
   const storedKryptos = useAppSelector((state) => state.userReducer.kryptos);
   const newUpdate = useAppSelector((state) => state.userReducer.newUpdate);
   const secret_id = useAppSelector((state) => state.userReducer.secret_id);
@@ -54,6 +54,12 @@ const Client = ({ kryptos, secret }) => {
   };
 
   useEffect(() => {
+    if (online) {
+      triggerRefresh();
+    }
+  }, [online]);
+
+  useEffect(() => {
     dispatch(setKryptos(kryptos));
     dispatch(setSecret(secret ? secret.secret_id : null));
     setExpires(secret ? secret.expires : null);
@@ -83,7 +89,7 @@ const Client = ({ kryptos, secret }) => {
   });
 
 
-  if (!requested && !newUpdate && storedKryptos) {
+  if (!requested && !newUpdate && storedKryptos && online) {
     setRequested(true);
     useClientAPI({
       class: 'secret',
