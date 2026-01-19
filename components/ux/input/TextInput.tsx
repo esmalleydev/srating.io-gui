@@ -11,6 +11,9 @@ type TextInputVariant = 'standard' | 'outlined' | 'filled';
 type TextInputFormatter = 'text' | 'number' | 'money';
 
 
+// todo update this to use useInputLogic hook
+
+
 interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange'> {
   inputHandler: Inputs;
   ref?: RefObject<HTMLInputElement | null>;
@@ -213,8 +216,8 @@ const TextInput: React.FC<TextInputProps> = ({
 
 
   const handleValidation = (val): void => {
-    let nextValue = val;
-  
+    const nextValue = val;
+
     if (nextValue) {
       setValidationError(false);
       setValidationErrorMessage(undefined);
@@ -223,7 +226,7 @@ const TextInput: React.FC<TextInputProps> = ({
     if (nextValue && formatter === 'number' && typeof nextValue !== 'number') {
       // Remove non-digits, allows for negative and decimals
       const valueToCheck = nextValue.replace(/(?!^-)[^0-9.]/g, '');
-      
+
       if (valueToCheck !== nextValue) {
         setValidationError(true);
         setValidationErrorMessage('Can only enter numbers');
@@ -255,7 +258,7 @@ const TextInput: React.FC<TextInputProps> = ({
       setValidationErrorMessage(`Must be greater than or equal to min (${min})`);
       return;
     }
-    
+
     if (
       max !== null &&
       nextValue &&
@@ -287,7 +290,7 @@ const TextInput: React.FC<TextInputProps> = ({
     ) {
       setValidationError(true);
       setValidationErrorMessage('This field is required');
-      return;
+      // return;
     }
   };
 
@@ -345,7 +348,7 @@ const TextInput: React.FC<TextInputProps> = ({
   }, [onBlurProp, formatter, required, valueProp, onChangeProp, isTouched]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    let { value: nextValue } = e.target;
+    const { value: nextValue } = e.target;
 
     handleValidation(nextValue);
 
