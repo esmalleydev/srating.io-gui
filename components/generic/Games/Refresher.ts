@@ -13,6 +13,7 @@ import Objector from '@/components/utils/Objector';
 
 
 const Refresher = ({ date, games }) => {
+  const online = useAppSelector((state) => state.generalReducer.online);
   const refreshEnabled = useAppSelector((state) => state.gamesReducer.refreshEnabled);
   const refreshRate = useAppSelector((state) => state.gamesReducer.refreshRate);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
@@ -21,6 +22,13 @@ const Refresher = ({ date, games }) => {
 
   const [loading, setLoading] = useState(false);
   const [lastDate, setLastDate] = useState(null);
+
+  // get the data when coming back online
+  useEffect(() => {
+    if (online) {
+      getData();
+    }
+  }, [online]);
 
   let finalCount = 0;
   let total = 0;
@@ -93,7 +101,7 @@ const Refresher = ({ date, games }) => {
     let intervalRefresher: NodeJS.Timeout;
     let intervalCountdown: NodeJS.Timeout;
 
-    if (!isFinal && refreshEnabled) {
+    if (!isFinal && refreshEnabled && online) {
       intervalRefresher = setInterval(() => {
         getData();
       }, refreshRate * 1000);
