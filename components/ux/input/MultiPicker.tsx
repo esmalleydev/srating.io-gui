@@ -162,7 +162,7 @@ const MultiPicker = ({
       cursor: 'pointer',
       transition: 'all 0.2s ease',
       border: 'none',
-      ...style
+      ...style,
     };
 
     // Styling logic for Selection
@@ -203,7 +203,7 @@ const MultiPicker = ({
       )}
 
       {/* Option Containers */}
-      <Columns style = {{ gap: 10 }}> 
+      <Columns style = {{ gap: 10 }}>
         {options.map((option) => getOptionContainer(option))}
       </Columns>
 

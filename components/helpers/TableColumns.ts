@@ -362,7 +362,7 @@ class TableColumns {
         precision: 2,
         showDifference: true,
         getDisplayValue: (row: CompareStatisticRow) => {
-          return `${'field_goal_percentage' in row ? row.field_goal_percentage : 0}%`;
+          return `${'field_goal_percentage' in row && row.field_goal_percentage !== null ? row.field_goal_percentage : 0}%`;
         },
       },
       two_point_field_goal: {
@@ -425,7 +425,7 @@ class TableColumns {
         precision: 2,
         showDifference: true,
         getDisplayValue: (row: CompareStatisticRow) => {
-          return `${'two_point_field_goal_percentage' in row ? row.two_point_field_goal_percentage : 0}%`;
+          return `${'two_point_field_goal_percentage' in row && row.two_point_field_goal_percentage !== null ? row.two_point_field_goal_percentage : 0}%`;
         },
       },
       three_point_field_goal: {
@@ -488,7 +488,7 @@ class TableColumns {
         precision: 2,
         showDifference: true,
         getDisplayValue: (row: CompareStatisticRow) => {
-          return `${'three_point_field_goal_percentage' in row ? row.three_point_field_goal_percentage : 0}%`;
+          return `${'three_point_field_goal_percentage' in row && row.three_point_field_goal_percentage !== null ? row.three_point_field_goal_percentage : 0}%`;
         },
       },
       free_throws: {
@@ -551,7 +551,7 @@ class TableColumns {
         precision: 2,
         showDifference: true,
         getDisplayValue: (row: CompareStatisticRow) => {
-          return `${'free_throw_percentage' in row ? row.free_throw_percentage : 0}%`;
+          return `${'free_throw_percentage' in row && row.free_throw_percentage !== null ? row.free_throw_percentage : 0}%`;
         },
       },
       fg: {

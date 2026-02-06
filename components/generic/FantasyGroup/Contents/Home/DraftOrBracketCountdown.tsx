@@ -2,7 +2,7 @@
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import Navigation from '@/components/helpers/Navigation';
-import { useTheme } from '@/components/hooks/useTheme';
+import Dates from '@/components/utils/Dates';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
@@ -10,7 +10,6 @@ import { useAppSelector } from '@/redux/hooks';
 import { useCallback, useEffect, useState } from 'react';
 
 const DraftOrBracketCountdown = () => {
-  const theme = useTheme();
   const navigation = new Navigation();
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
 
@@ -27,7 +26,11 @@ const DraftOrBracketCountdown = () => {
   const calculateTimeLeft = useCallback(() => {
     if (!targetDateString) return 'TBD';
 
-    const difference = +new Date(targetDateString) - +new Date();
+    if (fantasy_group.drafted) {
+      return 'Draft is over';
+    }
+
+    const difference = Dates.parse(targetDateString, true).getTime() - new Date().getTime();
 
     if (difference <= 0) {
       return 'Started';
@@ -39,7 +42,7 @@ const DraftOrBracketCountdown = () => {
     const seconds = Math.floor((difference / 1000) % 60);
 
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-  }, [targetDateString]);
+  }, [targetDateString, fantasy_group.drafted]);
 
   // 3. Effect to update the countdown every second
   useEffect(() => {

@@ -6,6 +6,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
 import { useEffect } from 'react';
 import { setDataKey } from '@/redux/features/fantasy_entry-slice';
+import { getNavHeaderHeight } from './NavBar';
 
 
 const ContentsWrapper = (
@@ -16,7 +17,7 @@ const ContentsWrapper = (
 
   const loadingView = useAppSelector((state) => state.fantasyEntryReducer.loadingView);
 
-  const paddingTop = 0;
+  const paddingTop = getNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
 
@@ -26,7 +27,7 @@ const ContentsWrapper = (
 
 
   return (
-    <div style = {{ paddingTop, maxWidth: 1200, margin: 'auto' }}>
+    <div style = {{ paddingTop, margin: 'auto' }}>
       {
       loadingView ?
         <div style = {{

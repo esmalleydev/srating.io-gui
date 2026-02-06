@@ -1,11 +1,18 @@
 
 import State from '@/components/helpers/State';
-import { FantasyEntry, FantasyGroup } from '@/types/general';
+import { BracketTeams, FantasyBracketSlots, FantasyEntry, FantasyEntryPlayers, FantasyGroup, Games, Players, PlayerTeamSeasons, Teams } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type InitialState = {
   fantasy_entry: FantasyEntry;
   fantasy_group: FantasyGroup;
+  fantasy_entry_players: FantasyEntryPlayers;
+  player_team_seasons: PlayerTeamSeasons;
+  players: Players;
+  fantasy_bracket_slots: FantasyBracketSlots;
+  bracket_teams: BracketTeams;
+  teams: Teams;
+  games: Games;
   loadingView: boolean;
 };
 
@@ -37,6 +44,13 @@ stateController.set_url_param_type_x_keys({
 stateController.setInitialState({
   fantasy_entry: {} as FantasyEntry,
   fantasy_group: {} as FantasyGroup,
+  fantasy_entry_players: {} as FantasyEntryPlayers,
+  player_team_seasons: {} as PlayerTeamSeasons,
+  players: {} as Players,
+  fantasy_bracket_slots: {} as FantasyBracketSlots,
+  bracket_teams: {} as BracketTeams,
+  teams: {} as Teams,
+  games: {} as Games,
   loadingView: true,
 });
 

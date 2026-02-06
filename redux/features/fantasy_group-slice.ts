@@ -1,6 +1,17 @@
 
 import State from '@/components/helpers/State';
-import { FantasyDraftOrders, FantasyEntrys, FantasyGroup, FantasyGroupComments, FantasyGroupInvites, FantasyGroupUser, FantasyGroupUsers } from '@/types/general';
+import {
+  FantasyDraftOrders,
+  FantasyEntryPlayers,
+  FantasyEntrys,
+  FantasyGroup,
+  FantasyGroupComments,
+  FantasyGroupInvites,
+  FantasyGroupUser,
+  FantasyGroupUsers,
+  Players,
+  PlayerTeamSeasons,
+} from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type InitialState = {
@@ -13,6 +24,9 @@ export type InitialState = {
   fantasy_group_comments: FantasyGroupComments;
   fantasy_entrys: FantasyEntrys;
   fantasy_draft_orders: FantasyDraftOrders;
+  fantasy_entry_players: FantasyEntryPlayers;
+  player_team_seasons: PlayerTeamSeasons;
+  players: Players;
   loadingView: boolean;
 };
 
@@ -51,6 +65,9 @@ stateController.setInitialState({
   fantasy_group_user: null,
   fantasy_entrys: {} as FantasyEntrys,
   fantasy_draft_orders: {} as FantasyDraftOrders,
+  fantasy_entry_players: {} as FantasyEntryPlayers,
+  player_team_seasons: {} as PlayerTeamSeasons,
+  players: {} as Players,
   loadingView: true,
 });
 

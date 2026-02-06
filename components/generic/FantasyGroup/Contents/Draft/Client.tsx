@@ -1,12 +1,16 @@
 'use client';
 
-import { Profiler, useEffect, useState } from 'react';
+import { Profiler } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
-import { useClientAPI } from '@/components/clientAPI';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useSocket } from '@/contexts/socketContext';
+import { useAppSelector } from '@/redux/hooks';
+import Columns from '@/components/ux/layout/Columns';
+import Title from './Title';
+import DraftBoard from './DraftBoard';
+import DraftZone from './DraftZone';
+import Loader from '@/components/generic/Ranking/Contents/Loader';
+import MyPicks from './MyPicks';
 
 
 
@@ -42,29 +46,38 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ fantasy_group_id }) => {
-  const dispatch = useAppDispatch();
-  // const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
+  const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
 
-  const [request, setRequest] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const getContents = () => {
+    if (fantasy_group.drafted) {
+      return (
+        <>
+          <Title />
+          <Columns>
+            <MyPicks />
+            <DraftBoard />
+          </Columns>
+        </>
+      );
+    }
 
-  // const { connect, disconnect, message, lastMessage } = useSocket();
-  // const session_id = useAppSelector((state) => state.userReducer.session_id);
-
-  useEffect(() => {
-
-    useClientAPI({
-      class: 'fantasy_draft_order',
-      function: 'test',
-      arguments: {
-        fantasy_group_id,
-      },
-    }).then((r) => {
-      console.log(r)
-    }).catch((err) => {
-      // nothing for now
-    });
-  }, []);
+    return (
+      <>
+        {
+          fantasy_group &&
+          fantasy_group.fantasy_group_id ?
+          <Loader organization_id={fantasy_group.organization_id} division_id={fantasy_group.division_id} season = {fantasy_group.season} view = 'player' />
+            : ''
+        }
+        <Title />
+        <Columns>
+          <MyPicks />
+          <DraftBoard />
+        </Columns>
+        <DraftZone />
+      </>
+    );
+  };
 
 
   return (
@@ -72,7 +85,7 @@ const Client = ({ fantasy_group_id }) => {
       console.log(id, phase, actualDuration);
     }}>
     <Contents>
-      <div>hello world</div>
+      {getContents()}
     </Contents>
     </Profiler>
   );

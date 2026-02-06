@@ -17,6 +17,8 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 // import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 
 import sratingLogo from '../../public/favicon-32x32.png';
 
@@ -103,7 +105,37 @@ const Header = () => {
     handleClose();
     if (validSession) {
       if (pathName !== '/account') {
-        navigation.user('/account');
+        navigation.user('/account?view=settings');
+      } else if (pathName === '/account') {
+        navigation.userView({ view: 'settings' });
+      }
+
+      return;
+    }
+    setAccountOpen(true);
+  };
+
+  const handleAccountSubscriptions = () => {
+    handleClose();
+    if (validSession) {
+      if (pathName !== '/account') {
+        navigation.user('/account?view=subscriptions');
+      } else if (pathName === '/account') {
+        navigation.userView({ view: 'subscriptions' });
+      }
+
+      return;
+    }
+    setAccountOpen(true);
+  };
+
+  const handleAccountFantasy = () => {
+    handleClose();
+    if (validSession) {
+      if (pathName !== '/account') {
+        navigation.user('/account?view=fantasy');
+      } else if (pathName === '/account') {
+        navigation.userView({ view: 'fantasy' });
       }
 
       return;
@@ -173,6 +205,20 @@ const Header = () => {
       label: 'My account',
       onSelect: handleAccount,
       icon: <AccountCircleIcon fontSize="small" />,
+    },
+    {
+      value: 'subscriptions',
+      selectable: true,
+      label: 'My subscriptions',
+      onSelect: handleAccountSubscriptions,
+      icon: <ShoppingCartIcon fontSize="small" />,
+    },
+    {
+      value: 'fantasy',
+      selectable: true,
+      label: 'My fantasy legaues',
+      onSelect: handleAccountFantasy,
+      icon: <SportsEsportsIcon fontSize="small" />,
     },
     {
       value: null,

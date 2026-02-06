@@ -5,17 +5,19 @@ import { useTheme } from '@/components/hooks/useTheme';
 import TextInput from '@/components/ux/input/TextInput';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
-import { Appearance, loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
+import { Appearance, StripeElementsOptions } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
 import { useState } from 'react';
 import CheckoutForm from './CheckoutForm';
-
-// Make sure to call loadStripe outside of a component’s render to avoid
-// recreating the Stripe object on every render.
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+import Button from '@/components/ux/buttons/Button';
+import { setLoading } from '@/redux/features/loading-slice';
+import { useClientAPI } from '@/components/clientAPI';
+import { setDataKey } from '@/redux/features/fantasy_group-slice';
+import Objector from '@/components/utils/Objector';
+import { stripePromise } from '@/lib/stripe-client';
 
 const CreateEntry = (
   {
@@ -29,10 +31,14 @@ const CreateEntry = (
 ) => {
   const theme = useTheme();
 
+  const dispatch = useAppDispatch();
   const [entryName, setEntryName] = useState('');
+  const [sending, setSending] = useState(false);
   const [triggerValidation, setTriggerValidation] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
+  const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
 
   const { entry_fee } = fantasy_group;
 
@@ -59,9 +65,54 @@ const CreateEntry = (
   const options: StripeElementsOptions = {
     // clientSecret,
     mode: 'payment',
-    amount: fantasy_group.entry_fee || 0,
+    amount: fantasy_group.entry_fee ? (fantasy_group.entry_fee * 100) : 0, // stripe uses pennies here
     currency: 'usd',
     appearance,
+  };
+
+  const createFreeEntry = () => {
+    if (sending) {
+      return;
+    }
+
+    const errors = inputHandler.getErrors();
+
+    setTriggerValidation(false);
+
+    if (errors.length) {
+      setTriggerValidation(true);
+      return;
+    }
+
+
+    setSending(true);
+    dispatch(setLoading(true));
+
+    useClientAPI({
+      class: 'fantasy_entry',
+      function: 'createEntry',
+      arguments: {
+        fantasy_group_id: fantasy_group.fantasy_group_id,
+        name: entryName,
+      },
+    })
+      .then((response) => {
+        setSending(false);
+        dispatch(setLoading(false));
+
+        if (response.error) {
+          setErrorMessage(response.error);
+        } else {
+          dispatch(setDataKey({ key: 'fantasy_entrys', value: Objector.extender({}, fantasy_entrys, response.fantasy_entrys) }));
+          closeHandler();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setSending(false);
+        dispatch(setLoading(false));
+        closeHandler();
+      });
   };
 
 
@@ -72,7 +123,7 @@ const CreateEntry = (
       onClose={closeHandler}
       paperStyle={{ maxWidth: 550 }}
     >
-      <Typography type = 'h5' >Create league entry</Typography>
+      <Typography type = 'h5'>Create league entry</Typography>
       <div>
         <TextInput
           inputHandler={inputHandler}
@@ -82,8 +133,8 @@ const CreateEntry = (
           required
           onChange={(val) => setEntryName(val)}
           triggerValidation = {triggerValidation}
+          errorMessage={errorMessage}
         />
-
         {
           entry_fee ?
             <div>
@@ -94,8 +145,8 @@ const CreateEntry = (
               </div>
             </div>
             :
-            <div>
-              todo reg button
+            <div style = {{ textAlign: 'right' }}>
+              <Button ink title='Create entry' value = 'create' handleClick={createFreeEntry} />
             </div>
         }
       </div>

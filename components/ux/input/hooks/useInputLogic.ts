@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { useTheme } from '@/components/hooks/useTheme';
 import Inputs from '@/components/helpers/Inputs';
 
 export type InputVariant = 'standard' | 'outlined' | 'filled';

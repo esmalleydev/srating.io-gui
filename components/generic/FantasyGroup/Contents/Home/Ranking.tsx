@@ -33,7 +33,7 @@ const Ranking = () => {
 
   return (
     <div>
-      <Typography type = 'h6'>Ranking</Typography>
+      <Typography type = 'h6'>Leaderboard</Typography>
       <Paper style={{ padding: 16 }}>
         {getContents()}
       </Paper>

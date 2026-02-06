@@ -26,6 +26,7 @@ export type MenuOption = {
   secondaryLabel?: string;
   icon?: React.JSX.Element;
   customLabel?: React.JSX.Element;
+  style?: object;
 }
 
 const getOffsetTop = (rect, vertical) => {
@@ -122,23 +123,24 @@ const Menu = (
   };
 
 
-  const paperStyle: React.CSSProperties = Objector.extender({
-    display: 'none',
-    position: 'absolute',
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    minWidth: 16,
-    minHeight: 16,
-    width: 'auto',
-    maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
-    maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
-    outline: 0,
-    opacity: 0,
-    // opacity: _isVisible ? 1 : 0,
-    // transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    // scrollbarGutter: 'stable',
-  },
-    style
+  const paperStyle: React.CSSProperties = Objector.extender(
+    {
+      display: 'none',
+      position: 'absolute',
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      minWidth: 16,
+      minHeight: 16,
+      width: 'auto',
+      maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
+      maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
+      outline: 0,
+      opacity: 0,
+      // opacity: _isVisible ? 1 : 0,
+      // transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
+      // scrollbarGutter: 'stable',
+    },
+    style,
   );
 
 
@@ -169,7 +171,6 @@ const Menu = (
       anchor &&
       !anchor.contains(event.target as Node)
     ) {
-      console.log('click outside')
       handleClose();
     }
   };
@@ -272,7 +273,7 @@ const Menu = (
   }, [open, onClose, menuRootRef]);
 
   const getNextIndex = (current: number) => {
-    let nextIndex = current + 1;
+    const nextIndex = current + 1;
     if (!options[nextIndex]) {
       return current;
     }
@@ -285,7 +286,7 @@ const Menu = (
   };
 
   const getPrevIndex = (current: number) => {
-    let prevIndex = current - 1;
+    const prevIndex = current - 1;
     if (!options[prevIndex]) {
       return current;
     }
@@ -307,7 +308,7 @@ const Menu = (
       }
     }
 
-    if (e.key === 'ArrowUp') {  
+    if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (activeIndex > 0) {
         setActiveIndex(getPrevIndex(activeIndex));
@@ -331,6 +332,7 @@ const Menu = (
     }
 
     window.addEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line consistent-return
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [open, activeIndex]);
 
@@ -401,7 +403,7 @@ const Menu = (
               );
             }
             return (
-              <MenuItem key = {option.value} onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
+              <MenuItem key = {option.value} style = {option.style || {}} onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
                 {option.icon ? <MenuListIcon>{option.icon}</MenuListIcon> : ''}
                 <MenuListText primary={option.label || 'Unknown'} secondary={option.secondaryLabel || undefined} />
               </MenuItem>

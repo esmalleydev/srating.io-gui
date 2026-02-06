@@ -9,6 +9,11 @@ import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import PayoutMethod from './Fantasy/PayoutMethod';
+
+import { Elements } from '@stripe/react-stripe-js';
+import { stripePromise } from '@/lib/stripe-client';
+import { Appearance, StripeElementsOptions } from '@stripe/stripe-js';
 
 
 
@@ -50,6 +55,32 @@ const Fantasy = () => {
     );
   };
 
+  const appearance: Appearance = {
+    theme: (theme.mode === 'dark' ? 'night' : 'stripe'),
+    labels: 'floating',
+    variables: {
+      colorBackground: theme.mode === 'dark' ? '#383838' : theme.background.main,
+    },
+    rules: {
+      '.Input': {
+        padding: '5px',
+        // 'boxShadow': 'none',
+        // 'border': 'none'
+      },
+      '.Tab': {
+        padding: '5px',
+      },
+    },
+  };
+
+  const options: StripeElementsOptions = {
+    // clientSecret,
+    // mode: 'subscription',
+    // amount: pricing.price * 100,
+    currency: 'usd',
+    appearance,
+  };
+
 
   return (
     <div style = {{ maxWidth: 800, margin: 'auto' }}>
@@ -57,6 +88,10 @@ const Fantasy = () => {
       <Paper style = {{ padding: 16 }}>
         {getContents()}
       </Paper>
+
+      <Elements stripe={stripePromise} options={options}>
+        <PayoutMethod />
+      </Elements>
     </div>
   );
 };

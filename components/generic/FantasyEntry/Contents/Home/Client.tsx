@@ -5,14 +5,11 @@ import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
 import Columns from '@/components/ux/layout/Columns';
-import Members from './Members';
-import Invites from './Invites';
-import Entries from './Entries';
-import Ranking from './Ranking';
-import Comments from './Comments';
-import MyEntries from './MyEntries';
-import LeagueManagement from './LeagueManagement';
-import DraftOrBracketCountdown from './DraftOrBracketCountdown';
+import { useAppSelector } from '@/redux/hooks';
+import FantasyGroup from '@/components/helpers/FantasyGroup';
+import MyTeam from './MyTeam';
+import Bracket from './Bracket';
+import { useClientAPI } from '@/components/clientAPI';
 
 
 
@@ -21,7 +18,7 @@ import DraftOrBracketCountdown from './DraftOrBracketCountdown';
  */
 const Contents = ({ children }): React.JSX.Element => {
   return (
-    <div style = {{ padding: 5 }}>
+    <div>
       {children}
     </div>
   );
@@ -47,28 +44,27 @@ const ClientSkeleton = () => {
   );
 };
 
-const Client = () => {
+const Client = ({ fantasy_entry_id }) => {
+  const fantasy_group = useAppSelector((state) => state.fantasyEntryReducer.fantasy_group);
+  const fantasy_entry = useAppSelector((state) => state.fantasyEntryReducer.fantasy_entry);
+
+  const fantasyHelper = new FantasyGroup({ fantasy_group });
+
   return (
-    <Profiler id="FantasyGroup.Contents.Home.Client" onRender={(id, phase, actualDuration) => {
+    <Profiler id="FantasyEntry.Contents.Home.Client" onRender={(id, phase, actualDuration) => {
       console.log(id, phase, actualDuration);
     }}>
     <Contents>
-      <Columns numberOfColumns={2} style = {{ marginBottom: 20 }}>
-        <MyEntries />
-        <DraftOrBracketCountdown />
-      </Columns>
-      <div style = {{ marginBottom: 20 }}>
-        <LeagueManagement />
-      </div>
-      <Columns numberOfColumns={2} style = {{ marginBottom: 20 }}>
-        <Members />
-        <Invites />
-      </Columns>
-      <Columns numberOfColumns={2}>
-        <Entries />
-        <Ranking />
-        <Comments />
-      </Columns>
+      {
+        fantasyHelper.isDraft() ?
+          <div style = {{ padding: 5 }}><MyTeam /></div>
+          : ''
+      }
+      {
+        fantasyHelper.isNCAABracket() ?
+          <Bracket />
+          : ''
+      }
     </Contents>
     </Profiler>
   );

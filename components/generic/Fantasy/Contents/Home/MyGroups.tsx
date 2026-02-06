@@ -36,11 +36,12 @@ const MyGroups = (
     }
     return (
       <Tile
+        key = {row.fantasy_group_id}
         icon={<SportsEsportsIcon style = {{ color: theme.success.main }} />}
         primary={row.name}
         // secondary={row.email}
         buttons = {[
-          <Button title = 'View' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
+          <Button key = {`view- ${row.fantasy_group_id}`} title = 'View' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
         ]}
       />
     );
@@ -51,6 +52,7 @@ const MyGroups = (
   if (rows.length > limit) {
     buttons.push(
       <Button
+        key = {'view-all'}
         value = 'view-all'
         title = {`View all (${rows.length})`}
         ink
@@ -60,6 +62,7 @@ const MyGroups = (
   } else if (limit === Infinity) {
     buttons.push(
       <Button
+        key = {'hide-extra'}
         value = 'hide-extra'
         title = {'Show less'}
         ink

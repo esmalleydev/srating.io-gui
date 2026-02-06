@@ -15,10 +15,18 @@ const Entries = () => {
   const theme = useTheme();
   const navigation = new Navigation();
   const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
+  const fantasy_group_users = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group_users);
   const initialLimit = 10;
   const [limit, setLimit] = useState(initialLimit);
 
   const entries = Object.values(fantasy_entrys || {});
+
+  const user_id_x_fantasy_group_user = {};
+  for (const fantasy_group_user_id in fantasy_group_users) {
+    const row = fantasy_group_users[fantasy_group_user_id];
+
+    user_id_x_fantasy_group_user[row.user_id] = row;
+  }
 
   const handleTileClick = (e, fantasy_entry_id) => {
     navigation.fantasy_entry(`/fantasy_entry/${fantasy_entry_id}`);
@@ -28,12 +36,16 @@ const Entries = () => {
     if (index > limit) {
       return null;
     }
+    let secondary = row.user_id;
+    if (row.user_id in user_id_x_fantasy_group_user) {
+      secondary = user_id_x_fantasy_group_user[row.user_id].name || user_id_x_fantasy_group_user[row.user_id].email;
+    }
     return (
       <Tile
         key = {row.fantasy_entry_id}
         icon={<StadiumIcon style = {{ color: theme.deepOrange[500] }} />}
         primary={row.name}
-        // secondary={row.email}
+        secondary={secondary}
         buttons = {[
           <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
         ]}

@@ -35,16 +35,16 @@ const Tile = (
     {
       margin: '5px 0px',
     },
-    style
+    style,
   );
 
   const iconContainerStyle = Objector.extender(
     {
       display: 'flex',
       color: theme.success.main,
-      marginRight: 10
+      marginRight: 10,
     },
-    iconStyle
+    iconStyle,
   );
 
   const subContainerStyle = {

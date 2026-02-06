@@ -101,7 +101,7 @@ class FantasyGroup extends Surface {
 
       return (
         <HomeClientWrapper>
-          <HomeClient fantasy_group_id={fantasy_group_id} />
+          <HomeClient />
         </HomeClientWrapper>
       );
     };

@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useAppDispatch } from '@/redux/hooks';
+import { setDataKey } from '@/redux/features/user-slice';
 
 const ReduxWrapper = (
   {
@@ -17,9 +18,7 @@ const ReduxWrapper = (
 
 
   useEffect(() => {
-    // this should not be needed, the user navigation will reset back to the default view
-    // dispatch(setDataKey({ key: 'view', value: view }));
-    
+    dispatch(setDataKey({ key: 'view', value: view }));
   }, [dispatch, view]);
 
 

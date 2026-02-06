@@ -63,11 +63,12 @@ const PublicDraftGroups = (
     }
     return (
       <Tile
+        key = {row.fantasy_group_id}
         icon={<SportsEsportsIcon style = {{ color: theme.blue[500] }} />}
         primary={row.name}
         secondary={`Free entry; Draft begins ${Dates.format(Dates.parse(row.draft_start_datetime), 'M jS @ g:i a')}`}
         buttons = {[
-          <Button title = 'Join' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
+          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
         ]}
       />
     );
@@ -78,6 +79,7 @@ const PublicDraftGroups = (
   if (free_rows.length > freeLimit) {
     free_rows_buttons.push(
       <Button
+        key = {'view-all'}
         value = 'view-all'
         title = {`View all (${free_rows.length})`}
         ink
@@ -87,6 +89,7 @@ const PublicDraftGroups = (
   } else if (freeLimit === Infinity) {
     free_rows_buttons.push(
       <Button
+        key = {'hide-extra'}
         value = 'hide-extra'
         title = {'Show less'}
         ink
@@ -102,11 +105,12 @@ const PublicDraftGroups = (
     const fantasy_entrys = fantasy_group_id_x_fantasy_entrys[row.fantasy_group_id] || {};
     return (
       <Tile
+        key = {row.fantasy_group_id}
         icon={<SportsEsportsIcon style = {{ color: theme.purple[500] }} />}
         primary={row.name}
         secondary={`$${row.entry_fee} entry fee; ${Object.keys(fantasy_entrys).length} entries; Draft begins ${Dates.format(Dates.parse(row.draft_start_datetime), 'M jS @ g:i a')}`}
         buttons = {[
-          <Button title = 'Join' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
+          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
         ]}
       />
     );

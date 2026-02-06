@@ -8,6 +8,10 @@ import { useEffect, useState } from 'react';
 import { getStore } from '@/app/StoreProvider';
 import Objector from '@/components/utils/Objector';
 
+export const getCachedDataKey = ({ organization_id, division_id, season, view }) => {
+  return `${organization_id}${division_id}${season}${view}_ranking_data`;
+};
+
 const Loader = ({ organization_id, division_id, season, view }) => {
   const dispatch = useAppDispatch();
 
@@ -55,7 +59,7 @@ const Loader = ({ organization_id, division_id, season, view }) => {
 
     const one_hour_ms = 60 * 60 * 1000;
     const requestTime = new Date().getTime();
-    const cachedDataKey = `${organization_id}${division_id}${season}${view}_ranking_data`;
+    const cachedDataKey = getCachedDataKey({ organization_id, division_id, season, view });
 
     const { rankingData } = store.getState().cacheReducer;
 

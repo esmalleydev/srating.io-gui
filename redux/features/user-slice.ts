@@ -1,5 +1,5 @@
 import State from '@/components/helpers/State';
-import { ApiKeys, FantasyGroups, FantasyGroupUsers, Pricings, Subscriptions, User } from '@/types/general';
+import { ApiKeys, FantasyGroups, FantasyGroupUsers, Pricings, Subscriptions, User, UserPaymentTokens } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
@@ -22,6 +22,7 @@ export type InitialState = {
   api_key: ApiKeys;
   fantasy_group_user: FantasyGroupUsers;
   fantasy_group: FantasyGroups;
+  user_payment_token: UserPaymentTokens;
 };
 
 
@@ -66,6 +67,7 @@ stateController.setInitialState({
   api_key: {} as ApiKeys,
   fantasy_group_user: {} as FantasyGroupUsers,
   fantasy_group: {} as FantasyGroups,
+  user_payment_token: {} as UserPaymentTokens,
 });
 
 export const user = createSlice({

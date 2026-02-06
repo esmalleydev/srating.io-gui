@@ -1,23 +1,11 @@
 'use client';
 
-import React, { ForwardRefExoticComponent, MutableRefObject, Profiler, RefAttributes, useEffect, useRef, useState } from 'react';
+import React, { MutableRefObject, Profiler, useEffect, useRef, useState } from 'react';
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { LinearProgress } from '@mui/material';
-import { TableVirtuoso } from 'react-virtuoso';
 
-
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { SortDirection } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Paper from '@mui/material/Paper';
-import { visuallyHidden } from '@mui/utils';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { setDataKey } from '@/redux/features/ranking-slice';
@@ -29,14 +17,17 @@ import Typography from '@/components/ux/text/Typography';
 import { getConferenceChips } from '../../ConferenceChips';
 import TableColumns from '@/components/helpers/TableColumns';
 import Color from '@/components/utils/Color';
-import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import Arithmetic from '@/components/utils/Arithmetic';
 import Navigation from '@/components/helpers/Navigation';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import ClassSpan from '../../ClassSpan';
+import VirtualTable, { CustomDecorateHeaderRow, CustomDecorateRows, defaultSortOrderType } from '@/components/ux/table/VirtualTable';
+import Objector from '@/components/utils/Objector';
+import Td from '@/components/ux/table/Td';
+import Tr from '@/components/ux/table/Tr';
+import Th from '@/components/ux/table/Th';
 
 
 
@@ -69,35 +60,398 @@ const ClientSkeleton = () => {
   );
 };
 
+export const decorateRows = <T extends (CBBRankingTable | CFBRankingTable), >(
+  {
+    rows,
+    startIndex,
+    theme,
+    width,
+    breakPoint,
+    rowHeight,
+    displayColumns,
+    columns,
+    handleRowClick,
+    rowKey,
+  }:
+  CustomDecorateRows<T>,
+) => {
+  let minDelta = -1;
+  let maxDelta = 1;
+
+  if (rows && rows.length) {
+    for (let i = 0; i < rows.length; i++) {
+      let delta = 0;
+      if (rows[i].rank_delta_one) {
+        delta = rows[i].rank_delta_one;
+      }
+
+      if (
+        rows[i].rank_delta_seven &&
+        (
+          (delta > 0 && delta < rows[i].rank_delta_seven) ||
+          (delta < 0 && delta > rows[i].rank_delta_seven)
+        )
+      ) {
+        delta = rows[i].rank_delta_seven;
+      }
+
+      if (delta > 0 && delta > maxDelta) {
+        maxDelta = delta;
+      }
+
+      if (delta < 0 && delta < minDelta) {
+        minDelta = delta;
+      }
+    }
+  }
+
+  let numberOfStickyColumns = 0;
+  for (let i = 0; i < displayColumns.length; i++) {
+    if (
+      displayColumns[i] in columns &&
+      'sticky' in columns[displayColumns[i]] &&
+      columns[displayColumns[i]].sticky === true
+    ) {
+      numberOfStickyColumns++;
+    }
+  }
+
+  const i_x_left = {};
+
+  const elements: React.JSX.Element[] = rows.map((row, index) => {
+    const actualIndex = startIndex + index;
+    const isEven = actualIndex % 2 === 0;
+    let tdColor = isEven ? theme.grey[800] : theme.grey[900];
+
+    if (theme.mode === 'light') {
+      tdColor = isEven ? theme.grey[200] : theme.grey[300];
+    }
+
+    const tdStyle: React.CSSProperties = {
+      padding: '4px 5px',
+      backgroundColor: tdColor,
+      border: 0,
+      borderTop: 0,
+      borderLeft: 0,
+      borderBottom: 0,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      height: rowHeight,
+      maxHeight: rowHeight,
+      minHeight: rowHeight,
+    };
+
+    if (width <= breakPoint) {
+      tdStyle.fontSize = '12px';
+    }
+
+    const tableCells: React.JSX.Element[] = [];
+
+    for (let i = 0; i < displayColumns.length; i++) {
+      const headCell = columns[displayColumns[i]];
+      if (!headCell) {
+        console.warn('missing headcell for: ', displayColumns[i]);
+        continue;
+      }
+      const cellStyle = Objector.extender({}, tdStyle, headCell.style || {});
+
+      let tdWidth: number | null = null;
+      const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+
+      if (headCell.id === 'rank') {
+        cellStyle.textAlign = 'center';
+      }
+
+      if ('widths' in headCell && headCell.widths) {
+        tdWidth = headCell.widths.default;
+
+        let lastBreakpoint: number | null = null;
+        for (const bp in headCell.widths) {
+          if (
+            bp !== 'default' &&
+            width <= Number(bp) &&
+            (
+              !lastBreakpoint ||
+              lastBreakpoint > width
+            )
+          ) {
+            lastBreakpoint = Number(bp);
+            tdWidth = headCell.widths[bp];
+          }
+        }
+      }
+
+
+
+      if (tdWidth) {
+        cellStyle.width = tdWidth;
+        cellStyle.minWidth = tdWidth;
+        cellStyle.maxWidth = tdWidth;
+      }
+
+      if (headCell.sticky) {
+        cellStyle.position = 'sticky';
+        cellStyle.overflow = 'hidden';
+        cellStyle.whiteSpace = 'nowrap';
+        cellStyle.textOverflow = 'ellipsis';
+        cellStyle.zIndex = 3;
+        cellStyle.left = tdLeft;
+
+        if (!(i in i_x_left)) {
+          i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
+        }
+      }
+
+      if (i + 1 === numberOfStickyColumns) {
+        cellStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
+      }
+
+      if (displayColumns[i].includes('_delta_')) {
+        const value = row[displayColumns[i]] !== null ? row[displayColumns[i]] : '-';
+
+        if (displayColumns[i] === 'rank_delta_combo') {
+          let rank_delta_one = value.split('/')[0];
+          let rank_delta_seven = value.split('/')[1];
+
+          const deltaOneSpanStyle: React.CSSProperties = {};
+          const deltaSevenSpanStyle: React.CSSProperties = {};
+          if (rank_delta_one !== '-') {
+            if (+rank_delta_one > 0) {
+              const normalizedNumber = Arithmetic.clamp(Math.abs(+rank_delta_one) / (maxDelta * 0.8), 0, 1);
+              deltaOneSpanStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
+            } else {
+              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+rank_delta_one) / (minDelta * 0.8), -1, 0));
+              deltaOneSpanStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
+            }
+          }
+          if (rank_delta_seven !== '-') {
+            if (+rank_delta_seven > 0) {
+              const normalizedNumber = Arithmetic.clamp(Math.abs(+rank_delta_seven) / (maxDelta * 0.8), 0, 1);
+              deltaSevenSpanStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
+            } else {
+              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+rank_delta_seven) / (minDelta * 0.8), -1, 0));
+              deltaSevenSpanStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
+            }
+          }
+
+          if (rank_delta_one > 0) {
+            rank_delta_one = `+${rank_delta_one}`;
+          }
+          if (rank_delta_seven > 0) {
+            rank_delta_seven = `+${rank_delta_seven}`;
+          }
+
+          tableCells.push(
+            <Td key = {i} style = {cellStyle}><span style={deltaOneSpanStyle}>{rank_delta_one}</span>/<span style = {deltaSevenSpanStyle}>{rank_delta_seven}</span></Td>,
+          );
+        } else {
+          const deltaStyle: React.CSSProperties = {};
+          if (row[displayColumns[i]]) {
+            if (+row[displayColumns[i]] > 0) {
+              const normalizedNumber = Arithmetic.clamp(Math.abs(+row[displayColumns[i]]) / (maxDelta * 0.8), 0, 1);
+              deltaStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
+            } else {
+              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+row[displayColumns[i]]) / (minDelta * 0.8), -1, 0));
+              deltaStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
+            }
+          }
+
+          tableCells.push(<Td key = {i} style = {{ ...cellStyle, ...deltaStyle }}>{(value > 0 ? '+' : '') + value}</Td>);
+        }
+      } else if (displayColumns[i] === 'committed') {
+        tableCells.push(<Td key = {i} style = {cellStyle}>{row[displayColumns[i]] === 1 ? <CheckIcon fontSize='small' color = 'success' /> : '-'}</Td>);
+      } else if (displayColumns[i] === 'name' && ('player_id' in row)) {
+        let classSpan: string | React.JSX.Element = '';
+
+        if ('class_year' in row && row.class_year) {
+          classSpan = <ClassSpan class_year = {row.class_year as string}/>;
+        }
+
+        tableCells.push(
+          <Td key = {i} style = {cellStyle}>{classSpan}{row[displayColumns[i]]}</Td>,
+        );
+      } else {
+
+        // if (headCell.id === 'rank') {
+        //   cellStyle.width = 300;
+        //   cellStyle.minWidth = 300;
+        // }
+
+        let text = '-';
+        let rankSpan: string | React.JSX.Element = '';
+
+        if (row[displayColumns[i]] !== null) {
+          // text = `${row[displayColumns[i]]}${displayColumns[i] === 'rank' ? ' (' + (row.rating || '?') + ')' : ''}`;
+          text = `${row[displayColumns[i]]}`;
+        }
+
+        if (row[`${displayColumns[i]}_rank`] && row[displayColumns[i]] !== null) {
+          let max = rows.length;
+          if ('max' in row) {
+            max = row.max;
+          }
+          rankSpan = <RankSpan rank = {row[`${displayColumns[i]}_rank`]} useOrdinal = {!('player_id' in row)} max = {max} />;
+        }
+
+        tableCells.push(
+          <Td key = {i} style = {cellStyle}>{text}{rankSpan}</Td>,
+        );
+      }
+    }
+
+    const TableRowCSS = {
+      '&:hover td': {
+        backgroundColor: (theme.mode === 'light' ? theme.info.light : theme.info.dark),
+      },
+      '&:hover': {
+        cursor: 'pointer',
+      },
+    };
+
+    return (
+      <Tr
+        style = {TableRowCSS} // the TR component will convert this to a class
+        key={row[rowKey]}
+        onClick={() => {
+          if (handleRowClick) {
+            handleRowClick(row);
+          }
+        }}
+      >
+        {tableCells}
+      </Tr>
+    );
+  });
+
+  return elements;
+};
+
+export const decorateHeaderRow = (
+  {
+    displayColumns,
+    columns,
+    theme,
+    width,
+    breakPoint,
+    order,
+    orderBy,
+    handleSort,
+    useAlternateLabel,
+  }:
+  CustomDecorateHeaderRow,
+) => {
+  const i_x_left = {};
+  let numberOfStickyColumns = 0;
+  for (let i = 0; i < displayColumns.length; i++) {
+    if (
+      displayColumns[i] in columns &&
+      'sticky' in columns[displayColumns[i]] &&
+      columns[displayColumns[i]].sticky === true
+    ) {
+      numberOfStickyColumns++;
+    }
+  }
+  return (
+    <Tr>
+      {displayColumns.map((column, i) => {
+        if (!(column in columns)) {
+          return null;
+        }
+        const headCell = columns[column];
+
+        const tdStyle: React.CSSProperties = {
+          padding: '4px 5px',
+          border: 0,
+          backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
+          whiteSpace: 'nowrap',
+          textAlign: 'left',
+          position: 'sticky',
+          top: 0,
+        };
+
+        let tdWidth: number | null = null;
+        const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
+
+        if (headCell.widths) {
+          tdWidth = headCell.widths.default;
+
+          let lastBreakpoint: number | null = null;
+          for (const bp in headCell.widths) {
+            if (
+              bp !== 'default' &&
+              width <= Number(bp) &&
+              (
+                !lastBreakpoint ||
+                lastBreakpoint > width
+              )
+            ) {
+              lastBreakpoint = Number(bp);
+              tdWidth = headCell.widths[bp];
+            }
+          }
+        }
+
+        if (tdWidth) {
+          tdStyle.width = tdWidth;
+          tdStyle.minWidth = tdWidth;
+          tdStyle.maxWidth = tdWidth;
+        }
+
+        if (headCell.sticky) {
+          tdStyle.zIndex = 4;
+          tdStyle.left = tdLeft;
+
+          if (!(i in i_x_left)) {
+            i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
+          }
+        }
+
+        if (i + 1 === numberOfStickyColumns) {
+          tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
+        }
+
+        if (width <= breakPoint) {
+          tdStyle.fontSize = '13px';
+        }
+
+        if (headCell.id === 'conf_record' || headCell.id === 'record') {
+          tdStyle.minWidth = 41;
+        }
+
+        let showSortArrow = true;
+        if (width <= breakPoint && (headCell.id === 'rank' || headCell.id === 'record' || headCell.id === 'conf_record' || headCell.id === 'rank_delta_combo')) {
+          showSortArrow = false;
+        }
+
+        let label = headCell.getLabel ? headCell.getLabel() : headCell.label;
+
+        if (useAlternateLabel && (headCell.getAltLabel || headCell.alt_label)) {
+          label = headCell.getAltLabel ? headCell.getAltLabel() : headCell.alt_label as string;
+        }
+
+        return (
+          <Tooltip key={headCell.id} position = 'top' text={headCell.getTooltip ? headCell.getTooltip() : headCell.tooltip}>
+            <Th
+              style = {tdStyle}
+              key={headCell.id}
+              onClick={() => { handleSort(headCell.id); }}
+              sortable = {true}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              {label}
+            </Th>
+          </Tooltip>
+        );
+      })}
+    </Tr>
+  );
+};
+
 const Client = ({ generated, organization_id, division_id, season, view }) => {
-  // console.time('Ranking.Contents.Client')
-  // console.time('Ranking.Contents.Client.logic')
-  interface ItemType {
-    player_id?: number;
-    team_id?: number;
-    conference_id?: number;
-    coach_id?: number;
-  }
-
-  interface TableComponentsType {
-    Scroller: ForwardRefExoticComponent<React.HTMLAttributes<HTMLDivElement> & RefAttributes<HTMLDivElement>>;
-    Table: React.ComponentType<React.TableHTMLAttributes<HTMLTableElement>>;
-    TableHead: React.ComponentType<React.HTMLAttributes<HTMLTableSectionElement>>;
-    TableRow: ForwardRefExoticComponent<React.HTMLAttributes<HTMLTableRowElement> & { item: ItemType } & RefAttributes<HTMLTableRowElement>>;
-    TableBody: ForwardRefExoticComponent<React.HTMLAttributes<HTMLTableSectionElement> & RefAttributes<HTMLTableSectionElement>>;
-    FillerRow: React.ComponentType<{ height: number }>;
-  }
-
-  interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
-    item: ItemType;
-  }
-
-  // console.time('headers')
-  const theme = useTheme();
   const navigation = new Navigation();
   const { height, width } = useWindowDimensions() as Dimensions;
 
-  const breakPoint = 425;
 
   const dispatch = useAppDispatch();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
@@ -108,9 +462,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
   const positions = useAppSelector((state) => state.displayReducer.positions);
 
-  // console.time('getRows')
   const allRows = getRows({ view });
-  // console.timeEnd('getRows')
 
   const filteredRows = useAppSelector((state) => state.rankingReducer.filteredRows);
   const columnView = useAppSelector((state) => state.rankingReducer.columnView);
@@ -120,23 +472,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const currentPath = Organization.getPath({ organizations, organization_id });
   const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
   const tableRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
-  // console.timeEnd('headers')
 
-  // useEffect(() => {
-  //   console.timeEnd('Ranking.Contents.Client')
-  // })
-
-
-  const scrollerRef = React.useCallback(
-    (element) => {
-      if (element) {
-        tableRef.current = element;
-      } else {
-        tableRef.current = null;
-      }
-    },
-    [],
-  );
 
   useEffect(() => {
     if (tableRef.current) {
@@ -148,23 +484,10 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
 
   const headCells = TableColumns.getColumns({ organization_id, view });
 
-  let numberOfStickyColumns = 0;
-  for (let i = 0; i < tableColumns.length; i++) {
-    if (
-      tableColumns[i] in headCells &&
-      'sticky' in headCells[tableColumns[i]] &&
-      headCells[tableColumns[i]].sticky === true
-    ) {
-      numberOfStickyColumns++;
-    }
-  }
-
   if (data === null) {
     return <ClientSkeleton />;
   }
 
-  // todo deprecate this after `max` column is fully populated
-  const dataLength = (view === 'transfer' ? 5300 : Object.keys(data).length);
 
   let rows: (CFBRankingTable | CBBRankingTable)[] = allRows;
 
@@ -286,96 +609,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
       : (a, b) => -descendingComparator(a, b, orderBy);
   };
 
-  let minDelta = -1;
-  let maxDelta = 1;
 
-  if (rows && rows.length) {
-    // console.time('sorter')
-    rows.sort(getComparator(order, orderBy));
-    // console.timeEnd('sorter')
-
-    for (let i = 0; i < rows.length; i++) {
-      let delta = 0;
-      if (rows[i].rank_delta_one) {
-        delta = rows[i].rank_delta_one;
-      }
-
-      if (
-        rows[i].rank_delta_seven &&
-        (
-          (delta > 0 && delta < rows[i].rank_delta_seven) ||
-          (delta < 0 && delta > rows[i].rank_delta_seven)
-        )
-      ) {
-        delta = rows[i].rank_delta_seven;
-      }
-
-      if (delta > 0 && delta > maxDelta) {
-        maxDelta = delta;
-      }
-
-      if (delta < 0 && delta < minDelta) {
-        minDelta = delta;
-      }
-    }
-  }
-
-
-  const TableRowCSS = Style.getStyleClassName(`
-    &:hover td {
-      background-color: ${theme.mode === 'light' ? theme.info.light : theme.info.dark};
-    },
-    border: 0;
-    &:hover {
-      cursor: pointer;
-    }
-  `);
-
-
-  const TableComponents = {
-  // const TableComponents: TableComponentsType = {
-    Scroller: React.forwardRef<HTMLDivElement>((props, ref) => {
-      return (
-        <TableContainer component={Paper} {...props} ref={ref} />
-      );
-    }),
-    Table: (props) => <Table {...props} style={{
-      borderCollapse: 'separate',
-      // tableLayout: 'fixed',
-    }} />,
-    TableHead,
-    TableRow: React.forwardRef<HTMLTableRowElement, TableRowProps>((props, ref) => {
-      return (
-        <TableRow {...props} ref={ref} className={TableRowCSS} onClick={() => {
-          const { item } = props;
-          if ((view === 'player' || view === 'transfer') && item.player_id) {
-            handlePlayer(item.player_id);
-          } else if (view === 'team' && item.team_id) {
-            handleTeam(item.team_id);
-          } else if (view === 'conference' && item.conference_id) {
-            handleConference(item.conference_id);
-          } else if (view === 'coach' && item.coach_id) {
-            handleCoach(item.coach_id);
-          }
-        }} />
-      );
-    }),
-    TableBody: React.forwardRef<HTMLTableSectionElement>((props, ref) => <TableBody {...props} ref={ref} />),
-    // https://github.com/petyosi/react-virtuoso/issues/609
-    // set the colspan below to the amount of columns you have.
-    FillerRow: ({ height }) => {
-      return (
-        <TableRow>
-          <TableCell
-            colSpan={tableColumns.length}
-            style={{ height, padding: 0, border: 0 }}
-          ></TableCell>
-        </TableRow>
-      );
-    },
-  };
-
-  const i_x_left = {};
 
   let confHeightModifier = 0;
   if (confChipsLength) {
@@ -396,260 +630,17 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     tableStyle.height = 250;
   }
 
-  const getTableHeader = () => {
-    return (
-      <TableRow>
-        {tableColumns.map((column, i) => {
-          if (!(column in headCells)) {
-            return null;
-          }
-          const headCell = headCells[column];
-          const tdStyle: React.CSSProperties = {
-            padding: '4px 5px',
-            border: 0,
-            backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
-            whiteSpace: 'nowrap',
-          };
-
-          let tdWidth: number | null = null;
-          const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
-
-          if (headCell.widths) {
-            tdWidth = headCell.widths.default;
-
-            let lastBreakpoint: number | null = null;
-            for (const bp in headCell.widths) {
-              if (
-                bp !== 'default' &&
-                width <= Number(bp) &&
-                (
-                  !lastBreakpoint ||
-                  lastBreakpoint > width
-                )
-              ) {
-                lastBreakpoint = Number(bp);
-                tdWidth = headCell.widths[bp];
-              }
-            }
-          }
-
-          if (tdWidth) {
-            tdStyle.width = tdWidth;
-            tdStyle.minWidth = tdWidth;
-            tdStyle.maxWidth = tdWidth;
-          }
-
-          if (headCell.sticky) {
-            tdStyle.position = 'sticky';
-            tdStyle.zIndex = 3;
-            tdStyle.left = tdLeft;
-
-            if (!(i in i_x_left)) {
-              i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
-            }
-          }
-
-          if (i + 1 === numberOfStickyColumns) {
-            tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
-          }
-
-          if (width <= breakPoint) {
-            tdStyle.fontSize = '13px';
-          }
-
-          if (headCell.id === 'conf_record' || headCell.id === 'record') {
-            tdStyle.minWidth = 41;
-          }
-
-          let showSortArrow = true;
-          if (width <= breakPoint && (headCell.id === 'rank' || headCell.id === 'record' || headCell.id === 'conf_record' || headCell.id === 'rank_delta_combo')) {
-            showSortArrow = false;
-          }
-
-          return (
-            <TableCell
-              style = {tdStyle}
-              key={headCell.id}
-              align={'left'}
-              sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
-            >
-              <TableSortLabel
-                active={orderBy === headCell.id && showSortArrow}
-                hideSortIcon = {!showSortArrow}
-                direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
-                onClick={() => { handleSort(headCell.id); }}
-              >
-                <Tooltip key={headCell.id} position = 'top' text={headCell.tooltip}><span>{headCell.label}</span></Tooltip>
-                {orderBy === headCell.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>
-          );
-        })}
-      </TableRow>
-    );
-  };
 
 
-  const getTableContents = (index, row) => {
-    // console.time('getTableContents')
-    const columns = tableColumns;
 
-    let bgColor = (index % 2 === 0 ? theme.grey[800] : theme.grey[900]);
-    if (theme.mode === 'light') {
-      bgColor = index % 2 === 0 ? theme.grey[200] : theme.grey[300];
-    }
-
-
-    const tableCells: React.JSX.Element[] = [];
-
-    for (let i = 0; i < columns.length; i++) {
-      if (!(columns[i] in headCells)) {
-        continue;
-      }
-      const headCell = headCells[columns[i]];
-
-      const tdStyle: React.CSSProperties = {
-        padding: '4px 5px',
-        backgroundColor: bgColor,
-        border: 0,
-        borderTop: 0,
-        borderLeft: 0,
-        borderBottom: 0,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-      };
-
-      if (headCell.id === 'rank') {
-        tdStyle.textAlign = 'center';
-      }
-
-      if (width <= breakPoint) {
-        tdStyle.fontSize = '12px';
-      }
-
-      let tdWidth: number | null = null;
-      const tdLeft: number = (i - 1 in i_x_left ? i_x_left[i - 1] : 0);
-
-      if (headCell.widths) {
-        tdWidth = headCell.widths.default;
-
-        let lastBreakpoint: number | null = null;
-        for (const bp in headCell.widths) {
-          if (
-            bp !== 'default' &&
-            width <= Number(bp) &&
-            (
-              !lastBreakpoint ||
-              lastBreakpoint > width
-            )
-          ) {
-            lastBreakpoint = Number(bp);
-            tdWidth = headCell.widths[bp];
-          }
-        }
-      }
-
-      if (tdWidth) {
-        tdStyle.width = tdWidth;
-        tdStyle.minWidth = tdWidth;
-        tdStyle.maxWidth = tdWidth;
-      }
-
-      if (headCell.sticky) {
-        tdStyle.position = 'sticky';
-        tdStyle.left = tdLeft;
-
-        if (!(i in i_x_left)) {
-          i_x_left[i] = (tdWidth || 0) + (tdLeft || 0);
-        }
-      }
-
-      if (i + 1 === numberOfStickyColumns) {
-        tdStyle.borderRight = `3px solid ${theme.mode === 'light' ? theme.info.light : theme.info.dark}`;
-      }
-
-      if (columns[i].includes('_delta_')) {
-        const value = row[columns[i]] !== null ? row[columns[i]] : '-';
-
-        if (columns[i] === 'rank_delta_combo') {
-          let rank_delta_one = value.split('/')[0];
-          let rank_delta_seven = value.split('/')[1];
-
-          const deltaOneSpanStyle: React.CSSProperties = {};
-          const deltaSevenSpanStyle: React.CSSProperties = {};
-          if (rank_delta_one !== '-') {
-            if (+rank_delta_one > 0) {
-              const normalizedNumber = Arithmetic.clamp(Math.abs(+rank_delta_one) / (maxDelta * 0.8), 0, 1);
-              deltaOneSpanStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
-            } else {
-              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+rank_delta_one) / (minDelta * 0.8), -1, 0));
-              deltaOneSpanStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
-            }
-          }
-          if (rank_delta_seven !== '-') {
-            if (+rank_delta_seven > 0) {
-              const normalizedNumber = Arithmetic.clamp(Math.abs(+rank_delta_seven) / (maxDelta * 0.8), 0, 1);
-              deltaSevenSpanStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
-            } else {
-              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+rank_delta_seven) / (minDelta * 0.8), -1, 0));
-              deltaSevenSpanStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
-            }
-          }
-
-          if (rank_delta_one > 0) {
-            rank_delta_one = `+${rank_delta_one}`;
-          }
-          if (rank_delta_seven > 0) {
-            rank_delta_seven = `+${rank_delta_seven}`;
-          }
-
-          tableCells.push(
-            <TableCell key = {i} sx = {tdStyle}>
-              <span style={deltaOneSpanStyle}>{rank_delta_one}</span>/<span style = {deltaSevenSpanStyle}>{rank_delta_seven}</span>
-            </TableCell>,
-          );
-        } else {
-          const deltaStyle: React.CSSProperties = {};
-          if (row[columns[i]]) {
-            if (+row[columns[i]] > 0) {
-              const normalizedNumber = Arithmetic.clamp(Math.abs(+row[columns[i]]) / (maxDelta * 0.8), 0, 1);
-              deltaStyle.color = Color.lerpColor(theme.success.light, theme.success.main, normalizedNumber);
-            } else {
-              const normalizedNumber = Math.abs(Arithmetic.clamp(Math.abs(+row[columns[i]]) / (minDelta * 0.8), -1, 0));
-              deltaStyle.color = Color.lerpColor(theme.error.main, theme.error.dark, normalizedNumber);
-            }
-          }
-
-          tableCells.push(<TableCell key = {i} sx = {{ ...tdStyle, ...deltaStyle }}>{(value > 0 ? '+' : '') + value}</TableCell>);
-        }
-      } else if (columns[i] === 'committed') {
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] === 1 ? <CheckIcon fontSize='small' color = 'success' /> : '-'}</TableCell>);
-      } else if (columns[i] === 'name' && (view === 'player' || view === 'transfer')) {
-        let classSpan: string | React.JSX.Element = '';
-
-        if (row.class_year) {
-          classSpan = <ClassSpan class_year = {row.class_year}/>;
-        }
-
-        tableCells.push(
-          <TableCell key = {i} sx = {tdStyle}>{classSpan}{row[columns[i]]}</TableCell>,
-        );
-      } else {
-        tableCells.push(<TableCell key = {i} sx = {tdStyle}>{row[columns[i]] !== null ? row[columns[i]] : '-'}{row[`${columns[i]}_rank`] && row[columns[i]] !== null ? <RankSpan rank = {row[`${columns[i]}_rank`]} useOrdinal = {(view !== 'player')} max = {row.max || dataLength} /> : ''}</TableCell>);
-      }
-    }
-    // console.timeEnd('getTableContents')
-    return (
-      <React.Fragment>
-        {tableCells}
-      </React.Fragment>
-    );
-  };
+  let rowKey = 'team_id';
+  if (view === 'player' || view === 'transfer') {
+    rowKey = 'player_id';
+  } else if (view === 'conference') {
+    rowKey = 'conference_id';
+  } else if (view === 'coach') {
+    rowKey = 'coach_id';
+  }
 
   return (
     <Profiler id="Ranking.Base.Contents.Client" onRender={(id, phase, actualDuration) => {
@@ -657,7 +648,46 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     }}>
     <Contents>
       <div style = {{ padding: width < 600 ? `${tableFullscreen ? '10px' : '0px'} 10px 0px 10px` : `${tableFullscreen ? '10px' : '0px'} 20px 0px 20px` }}>
-        {rows.length ? <TableVirtuoso key = {generated} scrollerRef={scrollerRef} initialScrollTop={tableScrollTop} style={tableStyle} data={rows} components={TableComponents} fixedHeaderContent={getTableHeader} itemContent={getTableContents} /> : <div><Typography type='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>}
+        {
+          rows.length ?
+            <VirtualTable
+              rows = {rows}
+              columns={headCells}
+              displayColumns={tableColumns}
+              rowKey = {rowKey}
+              height={tableStyle.height}
+              handleRowClick={(row) => {
+                if (view === 'team' && 'team_id' in row) {
+                  handleTeam(row.team_id);
+                }
+                if (
+                  (view === 'player' || view === 'transfer') &&
+                  'player_id' in row
+                ) {
+                  handlePlayer(row.player_id);
+                }
+                if (
+                  view === 'conference' &&
+                  'conference_id' in row
+                ) {
+                  handleConference(row.conference_id);
+                }
+                if (
+                  view === 'coach' &&
+                  'coach_id' in row
+                ) {
+                  handleCoach(row.coach_id);
+                }
+              }}
+              decorateRows={decorateRows}
+              decorateHeaderRow={decorateHeaderRow}
+              customHandleSort = {handleSort}
+              customSortComparator={getComparator}
+              defaultSortOrder = {order as defaultSortOrderType} // todo
+              defaultSortOrderBy = {orderBy}
+            />
+            : <div><Typography type='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>
+        }
       </div>
     </Contents>
     </Profiler>

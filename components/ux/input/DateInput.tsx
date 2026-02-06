@@ -69,6 +69,8 @@ interface DatePickerProps {
   enableTime?: boolean;
 }
 
+// todo update min and max date to also support time
+
 const DateInput: React.FC<DatePickerProps> = ({
   inputHandler,
   placeholder,

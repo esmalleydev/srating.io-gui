@@ -117,6 +117,7 @@ export interface User {
   username: string;
   display_name: string | null;
   stripe_customer: string;
+  default_user_payment_token_id: string | null;
   date_of_entry: string;
   updated_at: string;
   guid: string;
@@ -124,6 +125,20 @@ export interface User {
 }
 
 export type Users = {[user_id: string]: User};
+
+
+export interface UserPaymentToken {
+  user_payment_token_id: string;
+  user_id: string;
+  token: string;
+  type: string;
+  json_data: object;
+  date_of_entry: string;
+  guid: string;
+  deleted: number;
+}
+
+export type UserPaymentTokens = {[user_payment_token_id: string]: UserPaymentToken};
 
 export interface Conference {
   conference_id: string;
@@ -509,6 +524,10 @@ export interface FantasyGroup {
   open_invites: number,
   locked: number,
   private: number,
+  started: number,
+  drafted: number,
+  notified_24_hours: number,
+  notified_15_mins: number,
   draft_time_per_user_in_seconds: number | null,
   date_of_entry: string;
   guid: string;
@@ -536,6 +555,7 @@ export interface FantasyDraftOrder {
   fantasy_draft_order_id: string;
   fantasy_entry_id: string;
   fantasy_group_id: string;
+  fantasy_entry_player_id: string;
   round: number;
   pick: number;
   eligible: string;
@@ -547,5 +567,64 @@ export interface FantasyDraftOrder {
 }
 
 export type FantasyDraftOrders = {[fantasy_draft_order_id: string]: FantasyDraftOrder};
+
+
+export interface FantasyEntryPlayer {
+  fantasy_entry_player_id: string;
+  fantasy_group_id: string;
+  fantasy_entry_id: string;
+  player_team_season_id: string;
+  date_of_entry: string;
+  guid: string;
+  deleted: number;
+}
+
+export type FantasyEntryPlayers = {[fantasy_entry_player_id: string]: FantasyEntryPlayer};
+
+
+export interface FantasyBracketSlot {
+  fantasy_bracket_slot_id: string;
+  first_parent_fantasy_bracket_slot_id: string;
+  second_parent_fantasy_bracket_slot_id: string;
+  child_fantasy_bracket_slot_id: string;
+  fantasy_group_id: string;
+  fantasy_entry_id: string;
+  actual_first_team_id: string | null;
+  actual_second_team_id: string | null;
+  third_team_id: string | null;
+  picked_first_team_id: string | null;
+  picked_second_team_id: string | null;
+  picked_winner_team_id: string | null;
+  game_id: string | null;
+  region: string;
+  round: number;
+  slot: number;
+  locked: number;
+  picked: number;
+  date_of_entry: string;
+  guid: string;
+  deleted: number;
+}
+
+export type FantasyBracketSlots = {[fantasy_bracket_slot_id: string]: FantasyBracketSlot};
+
+
+export interface BracketTeam {
+  bracket_team_id: string;
+  organization_id: string;
+  division_id: string;
+  season: number;
+  team_id: string;
+  region: string;
+  round: number;
+  seed: number;
+  current: number;
+  predicted: number;
+  date_of_entry: string;
+  guid: string;
+  deleted: number;
+}
+
+export type BracketTeams = {[bracket_team_id: string]: BracketTeam};
 
 

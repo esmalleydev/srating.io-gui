@@ -46,13 +46,40 @@ class FantasyGroup {
     return false;
   }
 
+  getCurrentPick(
+    {
+      fantasy_draft_orders,
+    }:
+    {
+      fantasy_draft_orders: FantasyDraftOrders;
+    },
+  ) {
+    const draft_order = this.getDraftOrder({ fantasy_draft_orders });
+
+    for (let i = 0; i < draft_order.length; i++) {
+      const row = draft_order[i];
+
+      if (
+        !row.fantasy_entry_player_id &&
+        !row.picked
+      ) {
+        return row;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Is the current user a member of this fantasy_group?
+   */
   isMember(
     {
       fantasy_group_users,
     }:
     {
       fantasy_group_users: FantasyGroupUsers
-    }
+    },
   ): boolean {
     // todo the problem with this is it might be stale if the comppnent uses this does not re-render updating the store
     const store = getStore();
@@ -80,11 +107,15 @@ class FantasyGroup {
     },
   ) {
     type Data = {
+      fantasy_draft_order_id?: string;
       fantasy_group_id: string;
       fantasy_entry_id: string;
       pick: number;
       round: number;
       eligible?: string;
+      expires?: string;
+      picked?: number;
+      fantasy_entry_player_id?: string;
     }
     if (!fantasy_draft_orders && !fantasy_entrys) {
       return [];

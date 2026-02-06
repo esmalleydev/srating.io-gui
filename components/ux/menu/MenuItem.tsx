@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
+import Objector from '@/components/utils/Objector';
 import Style from '@/components/utils/Style';
 
 const MenuItem = (
@@ -37,7 +38,6 @@ const MenuItem = (
     minHeight: 48,
     whiteSpace: 'nowrap',
     textDecoration: 'none',
-    ...style,
   };
 
   if (active) {
@@ -48,6 +48,8 @@ const MenuItem = (
     liStyle.pointerEvents = 'none';
     liStyle.opacity = 0.3;
   }
+
+  Objector.extender(liStyle, style);
 
   const handleClick = () => {
     if (onClick) {

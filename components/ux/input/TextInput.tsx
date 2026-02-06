@@ -3,112 +3,52 @@
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
-import { RefObject, useCallback, useEffect, useMemo, useState } from 'react';
+import { RefObject } from 'react';
 import Objector from '@/components/utils/Objector';
-import Inputs from '@/components/helpers/Inputs';
-
-type TextInputVariant = 'standard' | 'outlined' | 'filled';
-type TextInputFormatter = 'text' | 'number' | 'money';
-
-
-// todo update this to use useInputLogic hook
+import { BaseInputProps, useInputLogic } from './hooks/useInputLogic';
+import Color from '@/components/utils/Color';
+import CancelIcon from '@mui/icons-material/Cancel';
+import IconButton from '../buttons/IconButton';
 
 
-interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange'> {
-  inputHandler: Inputs;
+interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange' | 'onFocus' | 'onBlur' | 'max' | 'min' | 'maxLength'>, BaseInputProps {
   ref?: RefObject<HTMLInputElement | null>;
   style?: React.CSSProperties;
-  placeholder: string;
-  label?: string;
-  variant?: TextInputVariant;
-  disabled?: boolean;
-  formatter?: TextInputFormatter;
-  error?: boolean; // External error control
-  errorMessage?: string;
-  required?: boolean;
-  onChange?: (value: string) => void;
-  triggerValidation?: boolean;
-  min?: number; // for number or money formats
-  max?: number; // for number or money formats
-  // reset?: boolean;
+  icon?: React.JSX.Element;
+  clear?: boolean;
 }
 
-const TextInput: React.FC<TextInputProps> = ({
-  inputHandler,
-  ref = null,
-  style = {},
-  placeholder,
-  label,
-  variant = 'outlined',
-  disabled = false,
-  formatter = 'text',
-  error: externalError = false,
-  errorMessage: externalErrorMessage,
-  required = false,
-  maxLength, // Native prop pulled out for clarity
-  onFocus: onFocusProp,
-  onBlur: onBlurProp,
-  onChange: onChangeProp,
-  value: valueProp,
-  triggerValidation = false,
-  min = null,
-  max = null,
-  // reset = false,
-  ...props
-}) => {
+const TextInput: React.FC<TextInputProps> = (props) => {
+  const {
+    inputHandler,
+    ref = null,
+    style = {},
+    placeholder,
+    label,
+    variant = 'outlined',
+    disabled = false,
+    formatter = 'text',
+    error: externalError = false,
+    errorMessage: externalErrorMessage,
+    required = false,
+    maxLength, // Native prop pulled out for clarity
+    onFocus,
+    onBlur,
+    onChange,
+    value: valueProp,
+    triggerValidation = false,
+    min = null,
+    max = null,
+    icon = null,
+    clear = false,
+    // reset = false,
+    ...domProps
+  } = props;
+
   const theme = useTheme();
-  const instanceId = useMemo(() => crypto.randomUUID(), []);
 
-  const [isFocused, setIsFocused] = useState(false);
-  const [internalValue, setInternalValue] = useState(valueProp || props.defaultValue || undefined);
-  const [validationError, setValidationError] = useState(false);
-  const [validationErrorMessage, setValidationErrorMessage] = useState(externalErrorMessage || undefined);
-  const [isTouched, setIsTouched] = useState(false);
-
-  if (
-    formatter === 'text' &&
-    max !== null
-  ) {
-    console.warn('TextInput: You are using max instead of maxLength for text inputs!!');
-  }
-
-  // useEffect(() => {
-  //   if (reset) {
-  //     setIsTouched(false);
-  //     setValidationError(false);
-  //   }
-  // }, [reset]);
-
-
-  // Sync internal value if prop changes (for controlled inputs)
-  useEffect(() => {
-    if (valueProp !== undefined) {
-      setInternalValue(valueProp);
-    }
-  }, [valueProp]);
-
-  // Use the prop value if provided, otherwise use internal state
-  const value = valueProp !== undefined ? valueProp : internalValue;
-  const hasError = externalError || validationError;
-
-  const errorCallback = () => {
-    return {
-      validationError: hasError || (!value && required),
-      validationErrorMessage: validationErrorMessage || (!value && required ? 'This field is required' : undefined),
-    };
-  };
-
-  useEffect(() => {
-    if (inputHandler) {
-      inputHandler.register(instanceId, errorCallback);
-    }
-
-    return () => {
-      if (inputHandler) {
-        inputHandler.unregister(instanceId);
-      }
-    };
-  }, [inputHandler, instanceId, errorCallback]);
+  // Use the shared logic
+  const { value, isFocused, hasError, displayedErrorMessage, handlers } = useInputLogic(props);
 
   const errorColor = theme.error.main;
   let textColor = theme.text.primary;
@@ -127,6 +67,9 @@ const TextInput: React.FC<TextInputProps> = ({
 
   const height = 46;
 
+  let paddingLeft = (icon ? 24 : 0);
+  const iconLeft = icon ? 10 : 0;
+
   const inputStyle: React.CSSProperties = {
     // Structure & Position
     width: '100%',
@@ -141,16 +84,21 @@ const TextInput: React.FC<TextInputProps> = ({
 
   if (variant === 'filled') {
     inputStyle.backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.grey[300];
-    inputStyle.padding = '25px 12px 8px 12px'; // Taller to accommodate space for the label
+    paddingLeft += 12 + iconLeft;
+    inputStyle.padding = `25px 12px 8px ${paddingLeft}px`; // Taller to accommodate space for the label
     inputStyle.border = 'none';
     inputStyle.borderBottom = 'none';
+    inputStyle['&:hover'] = {
+      backgroundColor: Color.alphaColor('#fff', 0.25),
+    };
   } else if (variant === 'standard') {
     // inputStyle.fontSize = '14px';
-    inputStyle.padding = '26px 0 8px 0';
+    inputStyle.padding = `26px 0 8px ${paddingLeft + iconLeft}px`;
     inputStyle.border = 'none';
     inputStyle.borderBottom = `2px solid ${borderColor}`;
   } else if (variant === 'outlined') {
-    inputStyle.padding = '14px 12px';
+    paddingLeft += 12 + iconLeft;
+    inputStyle.padding = `14px 12px 14px ${paddingLeft}px`;
     inputStyle.border = `1px solid ${borderColor}`;
   }
 
@@ -187,7 +135,7 @@ const TextInput: React.FC<TextInputProps> = ({
     transition: 'all 0.3s ease-out',
     transformOrigin: 'top left',
     top: labelTop,
-    left: labelLeft,
+    left: icon && !isLabelActive ? 0 : labelLeft,
 
     // Floating (active) position
     transform: isLabelActive
@@ -206,6 +154,10 @@ const TextInput: React.FC<TextInputProps> = ({
     fontSize: isLabelActive ? '13px' : '14px', // Shrink font when floating
   };
 
+  if (icon) {
+    placeholderStyle.paddingLeft = paddingLeft;
+  }
+
   const errorTextStyle: React.CSSProperties = {
     color: errorColor,
     marginTop: '4px',
@@ -214,165 +166,11 @@ const TextInput: React.FC<TextInputProps> = ({
     minHeight: '20px', // Prevents layout jumping if you want consistent spacing
   };
 
-
-  const handleValidation = (val): void => {
-    const nextValue = val;
-
-    if (nextValue) {
-      setValidationError(false);
-      setValidationErrorMessage(undefined);
-    }
-
-    if (nextValue && formatter === 'number' && typeof nextValue !== 'number') {
-      // Remove non-digits, allows for negative and decimals
-      const valueToCheck = nextValue.replace(/(?!^-)[^0-9.]/g, '');
-
-      if (valueToCheck !== nextValue) {
-        setValidationError(true);
-        setValidationErrorMessage('Can only enter numbers');
-        return;
-      }
-    } else if (nextValue && formatter === 'money' && typeof nextValue !== 'number') {
-      // console.log('money', nextValue)
-      // console.log('money', typeof nextValue)
-      const valueToCheck = nextValue.replace(/[^0-9.]/g, '');
-      // console.log('money valueToCheck', valueToCheck)
-      // console.log('money after replace', nextValue)
-      if (valueToCheck !== nextValue) {
-        setValidationError(true);
-        setValidationErrorMessage('Can only enter numbers');
-        return;
-      }
-    }
-
-    if (
-      min !== null &&
-      nextValue &&
-      (
-        formatter === 'number' ||
-        formatter === 'money'
-      ) &&
-      nextValue < min
-    ) {
-      setValidationError(true);
-      setValidationErrorMessage(`Must be greater than or equal to min (${min})`);
-      return;
-    }
-
-    if (
-      max !== null &&
-      nextValue &&
-      (
-        formatter === 'number' ||
-        formatter === 'money'
-      ) &&
-      nextValue > max
-    ) {
-      setValidationError(true);
-      setValidationErrorMessage(`Must be less than or equal to max (${max})`);
-      return;
-    }
-
-    if (maxLength && nextValue && nextValue.toString().length > maxLength) {
-      setValidationError(true);
-      setValidationErrorMessage(`Max charcters allowed: ${maxLength}. Using ${nextValue.toString().length}`);
-      return;
-    }
-
-
-    if (
-      required &&
-      !nextValue &&
-      (
-        isTouched ||
-        triggerValidation
-      )
-    ) {
-      setValidationError(true);
-      setValidationErrorMessage('This field is required');
-      // return;
-    }
-  };
-
-  // --- Logic Helpers ---
-
-  useEffect(() => {
-    handleValidation(valueProp);
-  }, [valueProp, triggerValidation]);
-
-  const formatMoneyOnBlur = (val: string) => {
-    if (!val) {
-      return '';
-    }
-    const num = parseFloat(val);
-    if (isNaN(num)) {
-      return val;
-    }
-    return num.toFixed(2);
-  };
-
-  // --- Event Handlers ---
-
-  const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(true);
-    setIsTouched(true);
-    if (onFocusProp) {
-      onFocusProp(e);
-    }
-  }, [onFocusProp]);
-
-  const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(false);
-
-    let finalValue: string = e.target.value;
-
-    if (finalValue && formatter === 'number' && typeof finalValue !== 'number') {
-      // Remove non-digits, allows for negative and decimals
-      const newValue = finalValue.replace(/(?!^-)[^0-9.]/g, '');
-      finalValue = newValue;
-    } else if (finalValue && formatter === 'money') {
-      // Allow digits and one dot
-      const newValue = finalValue.replace(/[^0-9.]/g, '');
-      finalValue = formatMoneyOnBlur(newValue);
-    }
-
-    setInternalValue(finalValue);
-
-    if (valueProp !== undefined && onChangeProp) {
-      onChangeProp(finalValue);
-    }
-
-    if (onBlurProp) {
-      onBlurProp(e);
-    }
-  }, [onBlurProp, formatter, required, valueProp, onChangeProp, isTouched]);
-
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value: nextValue } = e.target;
-
-    handleValidation(nextValue);
-
-    // console.log('after handleValidation', nextValue)
-
-    if (valueProp === undefined) {
-      setInternalValue(nextValue);
-    }
-
-    if (onChangeProp) {
-      // console.log('onChange in handleChange', nextValue)
-      // console.log('onChange in handleChange type', typeof nextValue)
-      onChangeProp(nextValue);
-    }
-  }, [valueProp, onChangeProp, formatter, maxLength, max, min, required, isTouched]);
-
-  // --- Determine Error Message to Display ---
-  // Priority: 1. External Message, 2. Internal Required Message
-  const displayedErrorMessage = validationErrorMessage || externalErrorMessage || (validationError ? 'This field is required' : null);
-
   return (
     <div className={Style.getStyleClassName(containerStyle)}>
       {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
       <div style={{ position: 'relative', width: '100%' }}>
+        {icon ? <div style = {{ position: 'absolute', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', left: iconLeft }}>{icon}</div> : ''}
         <Typography type = 'caption' className = {Style.getStyleClassName(placeholderStyle)}>{placeholder}</Typography>
         <input
           ref = {ref}
@@ -381,11 +179,25 @@ const TextInput: React.FC<TextInputProps> = ({
           value={value}
           disabled = {disabled}
           // maxLength={maxLength} use internval validation
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          {...props}
+          onChange={handlers.handleChange}
+          onFocus={handlers.handleFocus}
+          onBlur={handlers.handleBlur}
+          {...domProps}
         />
+        {
+        clear && value ?
+          <div style = {{ position: 'absolute', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', right: 0, top: 0 }}>
+            <IconButton icon = {<CancelIcon style = {{ color: theme.error.main }} />} value = 'clear' onClick={() => {
+              // Create a synthetic-like object to match React.ChangeEvent structure
+              const syntheticEvent = {
+                target: { value: '' },
+                currentTarget: { value: '' },
+              } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+              handlers.handleChange(syntheticEvent);
+            }} />
+          </div> : ''
+        }
       </div>
       <div style={{ height: 20, marginTop: 4 }}>
         {displayedErrorMessage && (

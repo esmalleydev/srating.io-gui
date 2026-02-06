@@ -37,7 +37,7 @@ const Invites = () => {
   const canInvite = (
     isOwner ||
     fantasy_group.open_invites
-  ) && session_id;
+  ) && session_id && !fantasy_group.locked;
 
   const inputHandler = new Inputs();
 
@@ -109,6 +109,14 @@ const Invites = () => {
       return (
         <div style = {{ textAlign: 'center' }}>
           <Button title = 'Invite people' value = 'invite' handleClick = {handleInvite} />
+        </div>
+      );
+    }
+
+    if (fantasy_group.locked) {
+      return (
+        <div style = {{ padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', fontStyle: 'italic', color: theme.text.secondary }}>
+          <Typography type = 'body1' style = {{ color: theme.text.secondary }}>League is locked!</Typography>
         </div>
       );
     }

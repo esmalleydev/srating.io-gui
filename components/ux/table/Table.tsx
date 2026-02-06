@@ -5,15 +5,20 @@ import Style from '@/components/utils/Style';
 import Paper from '../container/Paper';
 
 
+
 const Table = (
   {
     style = {},
+    overlayStyle = {},
     children,
+    ref,
     ...props
   }:
   {
     style?: object;
+    overlayStyle?: object;
     children: React.ReactNode;
+    ref?: React.Ref<HTMLTableElement>;
   },
 ) => {
   const tableStyle = Objector.extender(
@@ -28,10 +33,17 @@ const Table = (
     style,
   );
 
+  const oStyle = Objector.extender(
+    {
+      overflow: 'overlay',
+    },
+    overlayStyle,
+  );
+
   return (
     <Paper style = {{ overflow: 'hidden' }}>
-      <div style = {{ overflow: 'overlay' }}>
-        <table className = {Style.getStyleClassName(tableStyle)} {...props}>
+      <div className = {Style.getStyleClassName(oStyle)}>
+        <table ref = {ref} className = {Style.getStyleClassName(tableStyle)} {...props}>
           {children}
         </table>
       </div>

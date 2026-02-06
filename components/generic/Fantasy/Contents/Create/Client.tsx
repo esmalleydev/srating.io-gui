@@ -105,7 +105,7 @@ const Client = () => {
   // the inputs return strings, but internally they are formatted as a number, so just overwrite to allow string in a few of these columns
   type FantasyGroupForm = Omit<
     FantasyGroup,
-    'fantasy_group_id' | 'guid' | 'deleted' | 'locked' | 'entry_fee' | 'entries_per_user' | 'date_of_entry'
+    'fantasy_group_id' | 'guid' | 'deleted' | 'locked' | 'entry_fee' | 'entries_per_user' | 'date_of_entry' | 'started' | 'notified_24_hours' | 'notified_15_mins' | 'drafted'
   > & {
     entry_fee: string | number | null;
     entries_per_user: string | number;
@@ -226,6 +226,24 @@ const Client = () => {
         return false;
       }
 
+      const now = new Date().getTime();
+
+      if (
+        formData.start_date &&
+        Dates.parse(formData.start_date).getTime() < now
+      ) {
+        setErrorModalMessage('Start can not be in the past');
+        return false;
+      }
+
+      if (
+        formData.draft_start_datetime &&
+        Dates.parse(formData.draft_start_datetime).getTime() < now
+      ) {
+        setErrorModalMessage('Draft start can not be in the past');
+        return false;
+      }
+
       return true;
     },
     onBack: () => {
@@ -294,7 +312,7 @@ const Client = () => {
                     triggerValidation={triggerValidation}
                     formatter={'number'}
                     value = {draftMinutes}
-                    min={1}
+                    min={0.5}
                     max={60}
                   />
                 </div>

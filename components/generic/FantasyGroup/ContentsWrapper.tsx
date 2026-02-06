@@ -4,13 +4,27 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
-import { useEffect } from 'react';
-import { setDataKey } from '@/redux/features/fantasy_group-slice';
+import { useEffect, useState } from 'react';
+import { InitialState, setDataKey } from '@/redux/features/fantasy_group-slice';
 import { getNavHeaderHeight } from './NavBar';
 import { socket } from '@/components/utils/Kontororu/Socket';
 import { getStore } from '@/app/StoreProvider';
 import Objector from '@/components/utils/Objector';
+import { useClientAPI } from '@/components/clientAPI';
+import { FantasyGroupLoadData, handleLoad } from './ReduxWrapper';
+import Typography from '@/components/ux/text/Typography';
 
+/**
+ * The main wrapper div for all the contents
+ */
+const Contents = ({ children }): React.JSX.Element => {
+  const paddingTop = getNavHeaderHeight();
+  return (
+    <div style = {{ paddingTop, maxWidth: 1200, margin: 'auto' }}>
+      {children}
+    </div>
+  );
+};
 
 const ContentsWrapper = (
   { children }:
@@ -18,9 +32,14 @@ const ContentsWrapper = (
 ) => {
   const dispatch = useAppDispatch();
 
+  const online = useAppSelector((state) => state.generalReducer.online);
   const session_id = useAppSelector((state) => state.userReducer.session_id);
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
   const loadingView = useAppSelector((state) => state.fantasyGroupReducer.loadingView);
+
+  const [request, setRequest] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [canView, setCanView] = useState(true);
 
   const paddingTop = getNavHeaderHeight();
 
@@ -48,7 +67,7 @@ const ContentsWrapper = (
           if (key in store.getState().fantasyGroupReducer) {
             value = Objector.extender({}, store.getState().fantasyGroupReducer[key], value);
           }
-          dispatch(setDataKey({ key, value }));
+          dispatch(setDataKey({ key: key as keyof InitialState, value }));
         }
       }
     };
@@ -69,13 +88,59 @@ const ContentsWrapper = (
       }
       socket.removeEventListener('message', messageHandler);
     };
-  }, [session_id, fantasy_group.fantasy_group_id]);
+  }, [session_id, fantasy_group.fantasy_group_id, online]);
 
+  useEffect(() => {
+    if (online && fantasy_group.fantasy_group_id) {
+      setRequest(false);
+      load();
+    }
+  }, [online]);
+
+
+  const load = () => {
+    if (request) {
+      return;
+    }
+    setRequest(true);
+    useClientAPI({
+      class: 'fantasy_group',
+      function: 'load',
+      arguments: {
+        fantasy_group_id: fantasy_group.fantasy_group_id,
+      },
+    }).then((fantasyData: FantasyGroupLoadData) => {
+      console.log(fantasyData)
+      setLoaded(true);
+      if (!fantasyData || fantasyData.error) {
+        setCanView(false);
+      } else {
+        handleLoad({
+          dispatch,
+          data: fantasyData,
+        });
+      }
+    }).catch((err) => {
+      // nothing for now
+    });
+  };
+
+  if (!request && fantasy_group.fantasy_group_id) {
+    load();
+  }
+
+  if (!canView) {
+    return (
+      <Contents>
+        <Typography style = {{ textAlign: 'center' }} type = 'h5'>You do not have permission to view this group!</Typography>
+      </Contents>
+    );
+  }
 
   return (
-    <div style = {{ paddingTop, maxWidth: 1200, margin: 'auto' }}>
+    <Contents>
       {
-      loadingView ?
+      loadingView || !loaded ?
         <div style = {{
           display: 'flex',
           flexDirection: 'column',
@@ -87,7 +152,7 @@ const ContentsWrapper = (
         </div>
         : children
       }
-    </div>
+    </Contents>
   );
 };
 
