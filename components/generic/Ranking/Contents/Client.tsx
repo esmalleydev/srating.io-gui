@@ -1,6 +1,6 @@
 'use client';
 
-import React, { MutableRefObject, Profiler, useEffect, useRef, useState } from 'react';
+import React, { Profiler, useEffect, useRef, useState } from 'react';
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -471,7 +471,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
   const confChipsLength = getConferenceChips().length;
   const currentPath = Organization.getPath({ organizations, organization_id });
   const [tableHorizontalScroll, setTableHorizontalScroll] = useState(0);
-  const tableRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
+  const tableRef: React.RefObject<HTMLTableElement | null> = useRef(null);
 
 
   useEffect(() => {
@@ -498,38 +498,38 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
 
   const handleSort = (id) => {
     const isAsc = orderBy === id && order === 'asc';
-    if (tableRef && tableRef.current) {
-      setTableHorizontalScroll(tableRef.current.scrollLeft);
+    if (tableRef && tableRef.current?.parentElement) {
+      setTableHorizontalScroll(tableRef.current?.parentElement.scrollLeft);
     }
     dispatch(setDataKey({ key: 'order', value: (isAsc ? 'desc' : 'asc') }));
     dispatch(setDataKey({ key: 'orderBy', value: id }));
   };
 
   const handleTeam = (team_id) => {
-    if (tableRef && tableRef.current) {
-      dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
+    if (tableRef && tableRef.current?.parentElement) {
+      dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current?.parentElement.scrollTop }));
     }
     navigation.team(`/${currentPath}/team/${team_id}?season=${season}`);
   };
 
   const handlePlayer = (player_id) => {
-    if (tableRef && tableRef.current) {
-      dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
+    if (tableRef && tableRef.current?.parentElement) {
+      dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current?.parentElement.scrollTop }));
     }
 
     navigation.player(`/${currentPath}/player/${player_id}?season=${season}`);
   };
 
   const handleConference = (conference_id) => {
-    if (tableRef && tableRef.current) {
-      dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
+    if (tableRef && tableRef.current?.parentElement) {
+      dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current?.parentElement.scrollTop }));
     }
     navigation.conference(`/${currentPath}/conference/${conference_id}?season=${season}`);
   };
 
   const handleCoach = (coach_id) => {
-    if (tableRef && tableRef.current) {
-      dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current.scrollTop }));
+    if (tableRef && tableRef.current?.parentElement) {
+      dispatch(setDataKey({ key: 'tableScrollTop', value: tableRef.current?.parentElement.scrollTop }));
     }
     navigation.coach(`/${currentPath}/coach/${coach_id}?season=${season}`);
   };
@@ -651,6 +651,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
         {
           rows.length ?
             <VirtualTable
+              ref = {tableRef}
               rows = {rows}
               columns={headCells}
               displayColumns={tableColumns}
@@ -685,6 +686,7 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
               customSortComparator={getComparator}
               defaultSortOrder = {order as defaultSortOrderType} // todo
               defaultSortOrderBy = {orderBy}
+              initialScrollTop={tableScrollTop}
             />
             : <div><Typography type='h6' style = {{ textAlign: 'center' }}>No results :(</Typography></div>
         }

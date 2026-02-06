@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Table from './Table';
 import Thead from './Thead';
 import Tbody from './Tbody';
@@ -47,6 +47,7 @@ export type CustomDecorateHeaderRow = {
 }
 
 interface VirtualTableProps<T> {
+  ref?: React.RefObject<HTMLTableElement | null>;
   rows: T[];
   columns: TableColumnsType,
   displayColumns: string[],
@@ -57,6 +58,7 @@ interface VirtualTableProps<T> {
   handleRowClick?: (row: T) => void;
   defaultSortOrder: defaultSortOrderType,
   defaultSortOrderBy: string,
+  initialScrollTop?: number,
   defaultEmpty?: string | number,
   sessionStorageKey?: string,
   secondaryKey?: string,
@@ -97,6 +99,7 @@ interface VirtualTableProps<T> {
 
 
 const VirtualTable = <T extends object>({
+  ref,
   rows,
   columns,
   displayColumns,
@@ -107,6 +110,7 @@ const VirtualTable = <T extends object>({
   handleRowClick,
   defaultSortOrder,
   defaultSortOrderBy,
+  initialScrollTop = 0,
   defaultEmpty = 0,
   sessionStorageKey,
   secondaryKey,
@@ -124,11 +128,11 @@ const VirtualTable = <T extends object>({
   const sessionOrder = sessionStorageKey ? sessionStorage.getItem(`${sessionStorageKey}.ORDER`) : null;
   const sessionOrderBy = sessionStorageKey ? sessionStorage.getItem(`${sessionStorageKey}.ORDERBY`) : null;
 
-  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollTop, setScrollTop] = useState(initialScrollTop);
   const [order, setOrder] = useState<string>(sessionOrder || defaultSortOrder);
   const [orderBy, setOrderBy] = useState<string>(sessionOrderBy || defaultSortOrderBy);
   // Ref to the <table> element to find the scrollable parent
-  const tableRef = useRef<HTMLTableElement | null>(null);
+  const tableRef = ref || useRef<HTMLTableElement | null>(null);
 
 
   const sortedRows = useMemo(() => {
@@ -154,10 +158,32 @@ const VirtualTable = <T extends object>({
       });
     };
 
+    // todo doesnt work
+    // This stops the browser from fighting your code when the user clicks "Back"
+    // if ('scrollRestoration' in window.history) {
+    //   window.history.scrollRestoration = 'manual';
+    // }
+
     scrollContainer.addEventListener('scroll', onScroll, { passive: true });
     // eslint-disable-next-line consistent-return
-    return () => scrollContainer.removeEventListener('scroll', onScroll);
+    return () => {
+      scrollContainer.removeEventListener('scroll', onScroll);
+
+      // todo doesnt work
+      // Re-enable auto restoration when unmounting
+      // if ('scrollRestoration' in window.history) {
+      //   window.history.scrollRestoration = 'auto';
+      // }
+    };
   }, [height, tableRef.current]);
+
+  // this resets the actual dom scrollTop position when remounting this component when i have an initialScrollTop set
+  useLayoutEffect(() => {
+    const scrollContainer = tableRef.current?.parentElement;
+    if (scrollContainer && initialScrollTop > 0) {
+      scrollContainer.scrollTop = initialScrollTop;
+    }
+  }, [initialScrollTop]);
 
 
   // Virtualization calculations
