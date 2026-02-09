@@ -9,6 +9,7 @@ import {
   FantasyGroupInvites,
   FantasyGroupUser,
   FantasyGroupUsers,
+  FantasyRankings,
   Players,
   PlayerTeamSeasons,
 } from '@/types/general';
@@ -27,6 +28,7 @@ export type InitialState = {
   fantasy_entry_players: FantasyEntryPlayers;
   player_team_seasons: PlayerTeamSeasons;
   players: Players;
+  fantasy_rankings: FantasyRankings;
   loadingView: boolean;
 };
 
@@ -68,6 +70,7 @@ stateController.setInitialState({
   fantasy_entry_players: {} as FantasyEntryPlayers,
   player_team_seasons: {} as PlayerTeamSeasons,
   players: {} as Players,
+  fantasy_rankings: {} as FantasyRankings,
   loadingView: true,
 });
 

@@ -3,7 +3,18 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch } from '@/redux/hooks';
 import { InitialState, setDataKey } from '@/redux/features/fantasy_group-slice';
-import { FantasyDraftOrders, FantasyEntryPlayers, FantasyEntrys, FantasyGroup, FantasyGroupComments, FantasyGroupInvites, FantasyGroupUsers, Players, PlayerTeamSeasons } from '@/types/general';
+import {
+  FantasyDraftOrders,
+  FantasyEntryPlayers,
+  FantasyEntrys,
+  FantasyGroup,
+  FantasyGroupComments,
+  FantasyGroupInvites,
+  FantasyGroupUsers,
+  FantasyRankings,
+  Players,
+  PlayerTeamSeasons,
+} from '@/types/general';
 import { updateDivisionID, updateOrganizationID } from '@/redux/features/organization-slice';
 import { AppDispatch } from '@/redux/store';
 import { getStore } from '@/app/StoreProvider';
@@ -20,7 +31,7 @@ export interface FantasyGroupLoadData {
   fantasy_entry_players: FantasyEntryPlayers;
   player_team_seasons: PlayerTeamSeasons;
   players: Players;
-  fantasy_rankings: {}, // todo
+  fantasy_rankings: FantasyRankings;
   error?: string;
 }
 
@@ -64,6 +75,7 @@ export const handleLoad = (
   dispatch(setDataKey({ key: 'fantasy_entry_players', value: data.fantasy_entry_players }));
   dispatch(setDataKey({ key: 'player_team_seasons', value: data.player_team_seasons }));
   dispatch(setDataKey({ key: 'players', value: data.players }));
+  dispatch(setDataKey({ key: 'fantasy_rankings', value: data.fantasy_rankings }));
 };
 
 const ReduxWrapper = (

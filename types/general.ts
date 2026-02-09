@@ -609,6 +609,27 @@ export interface FantasyBracketSlot {
 export type FantasyBracketSlots = {[fantasy_bracket_slot_id: string]: FantasyBracketSlot};
 
 
+export interface FantasyRanking {
+  fantasy_ranking_id: string;
+  parent_fantasy_ranking_id: string;
+  fantasy_group_id: string;
+  fantasy_entry_id: string;
+  date_of_rank: string;
+  max: number;
+  rank: number;
+  rank_delta_one: number;
+  rank_delta_seven: number;
+  points: number;
+  date_of_entry: string;
+  updated_at: string;
+  current: number;
+  guid: string;
+  deleted: number;
+}
+
+export type FantasyRankings = {[fantasy_ranking_id: string]: FantasyRanking};
+
+
 export interface BracketTeam {
   bracket_team_id: string;
   organization_id: string;

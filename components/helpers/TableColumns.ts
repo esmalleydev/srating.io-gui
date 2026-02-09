@@ -58,6 +58,7 @@ class TableColumns {
     const otherViews = [
       'matchup',
       'roster',
+      'fantasy',
     ];
 
     const allViews = [...rankingViews, ...boxscoreViews, ...otherViews];
@@ -84,6 +85,15 @@ class TableColumns {
         getValue: (row: object) => {
           return 'rank' in row ? row.rank : Infinity;
         },
+        getTooltip: () => {
+          if (
+            view === 'fantasy'
+          ) {
+            return 'Rank';
+          }
+
+          return 'srating.io Rank';
+        },
         showDifference: true,
         precision: 0,
       },
@@ -102,6 +112,9 @@ class TableColumns {
           425: (view === 'player' || view === 'transfer' ? 100 : 85),
         },
         getLabel: () => {
+          if (view === 'fantasy') {
+            return 'Entry';
+          }
           if (
             view === 'player_boxscore' ||
             view === 'player' ||
@@ -120,6 +133,9 @@ class TableColumns {
           return 'Team';
         },
         getTooltip: () => {
+          if (view === 'fantasy') {
+            return 'Entry name';
+          }
           if (
             view === 'player_boxscore' ||
             view === 'player' ||
