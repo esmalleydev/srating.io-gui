@@ -233,6 +233,10 @@ class TableColumns {
         precision: 0,
         showDifference: true,
         getTooltip: () => {
+          if (view === 'fantasy') {
+            return 'Points';
+          }
+
           if (boxscoreViews.includes(view)) {
             return 'Points';
           }

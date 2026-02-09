@@ -150,6 +150,7 @@ const VirtualTable = <T extends object>({
     }
 
     scrollContainer.style.overflowAnchor = 'none';
+    // scrollContainer.style.scrollBehavior = 'auto'; // Force instant jump
 
     const onScroll = (e: Event) => {
       const target = e.target as HTMLElement;
@@ -181,7 +182,29 @@ const VirtualTable = <T extends object>({
   useLayoutEffect(() => {
     const scrollContainer = tableRef.current?.parentElement;
     if (scrollContainer && initialScrollTop > 0) {
-      scrollContainer.scrollTop = initialScrollTop;
+      // Tell Safari: "Finish painting the table height first, THEN jump"
+      window.requestAnimationFrame(() => {
+        scrollContainer.scrollTop = initialScrollTop;
+      });
+
+      // setTimeout(() => {
+      //   scrollContainer.scrollTop = initialScrollTop;
+      // }, 10); // 0 might work, 10 is safer
+
+
+      // 1. Temporarily disable smooth scrolling (blocks interference)
+      // const originalScrollBehavior = scrollContainer.style.scrollBehavior;
+      // scrollContainer.style.scrollBehavior = 'auto';
+
+      // // 2. Force a Reflow (Crucial: makes browser accept the new height immediately)
+      // // Reading this property forces the browser to calculate layout synchronously
+      // void scrollContainer.offsetHeight;
+
+      // // 3. Set the position
+      // scrollContainer.scrollTop = initialScrollTop;
+
+      // // 4. Restore scroll behavior (optional, usually safe to leave auto)
+      // scrollContainer.style.scrollBehavior = originalScrollBehavior;
     }
   }, [initialScrollTop]);
 
@@ -371,27 +394,33 @@ const VirtualTable = <T extends object>({
       </Thead>
       <Tbody>
         {paddingTop > 0 && (
-          <tr style={{ height: paddingTop }}>
+          <tr>
             <td colSpan={displayColumns.length} style={{
               padding: 0,
               border: 0,
               borderTop: 0,
               borderLeft: 0,
               borderBottom: 0,
-            }} />
+            }}>
+              {/* Safari Fix: Put height on a DIV, not the TR */}
+              <div style={{ height: paddingTop }} />
+            </td>
           </tr>
         )}
         {row_containers}
 
         {paddingBottom > 0 && (
-          <tr style={{ height: paddingBottom }}>
+          <tr>
             <td colSpan={displayColumns.length} style={{
               padding: 0,
               border: 0,
               borderTop: 0,
               borderLeft: 0,
               borderBottom: 0,
-            }} />
+            }}>
+              {/* Safari Fix: Put height on a DIV, not the TR */}
+              <div style={{ height: paddingBottom }} />
+            </td>
           </tr>
         )}
       </Tbody>
