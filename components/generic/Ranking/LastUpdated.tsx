@@ -17,7 +17,7 @@ const LastUpdated = ({ view, handleLegend }) => {
       return '';
     }
 
-    return Dates.format(lastUpdated, 'F jS Y g:i a');
+    return Dates.format(Dates.parse(lastUpdated, true), 'F jS Y g:i a');
   };
 
   const spanStyle = {
