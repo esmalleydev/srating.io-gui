@@ -686,7 +686,7 @@ const Bracket = () => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: 5 }}>
-          <div>
+          <div style = {{ marginRight: 20 }}>
             {getRegionTitle('West', 'left')}
             <BracketSlot
               fantasy_bracket_slot_id={roots.West}

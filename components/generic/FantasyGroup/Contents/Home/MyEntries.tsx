@@ -109,7 +109,13 @@ const MyEntries = () => {
     <div>
       <CreateEntry
         open = {joining}
-        closeHandler = {() => setJoining(false)}
+        closeHandler = {(fantasy_entry_id) => {
+          setJoining(false);
+
+          if (fantasyHelper.isNCAABracket() && fantasy_entry_id) {
+            handleTileClick(null, fantasy_entry_id);
+          }
+        }}
       />
       <Typography type = 'h6'>My Entries</Typography>
       <Paper style={{ padding: 16 }} buttons={paperButtons}>

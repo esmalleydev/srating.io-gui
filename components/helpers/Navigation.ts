@@ -282,12 +282,12 @@ class Navigation {
    * Navigate to the fantasy page,
    * reset the state to be fresh beforehand
    */
-  public fantasy(path: string, onRouter: null | undefined | (() => void) = null) {
+  public fantasy(path: string, onRouter: null | undefined | (() => void) = null, pushState = true) {
     this.dispatch(setLoading(true));
     // this.dispatch(stateThunk({ router: this.getRouter() }));
     this.dispatch(resetFantasy(false));
     this.startTransition(() => {
-      this.router.push(path);
+      this.router[pushState ? 'push' : 'replace'](path);
       if (onRouter) {
         onRouter();
       }
@@ -340,11 +340,11 @@ class Navigation {
    * Navigate to the fantasy page,
    * reset the state to be fresh beforehand
    */
-  public fantasy_group(path: string, onRouter: null | undefined | (() => void) = null) {
+  public fantasy_group(path: string, onRouter: null | undefined | (() => void) = null, pushState = true) {
     this.dispatch(setLoading(true));
     this.dispatch(resetFantasyGroup(false));
     this.startTransition(() => {
-      this.router.push(path);
+      this.router[pushState ? 'push' : 'replace'](path);
       if (onRouter) {
         onRouter();
       }

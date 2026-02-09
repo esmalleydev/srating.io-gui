@@ -601,7 +601,7 @@ const Client = () => {
         return;
       }
 
-      navigation.fantasy_group(`/fantasy_group/${response.fantasy_group_id}`);
+      navigation.fantasy_group(`/fantasy_group/${response.fantasy_group_id}`, null, false);
     }).catch((e) => {
       console.log(e);
       dispatch(setLoading(false));

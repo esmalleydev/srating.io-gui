@@ -20,6 +20,9 @@ import LockIcon from '@mui/icons-material/Lock';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FantasyGroupLoadData, handleLoad } from './ReduxWrapper';
+import Navigation from '@/components/helpers/Navigation';
+import FantasyGroupHelper from '@/components/helpers/FantasyGroup';
+import Organization from '@/components/helpers/Organization';
 
 
 const getNavHeaderHeight = () => {
@@ -38,10 +41,12 @@ type ModalData = {
 type LockResponse = {
   fantasy_group: FantasyGroup;
   fantasy_draft_orders: FantasyDraftOrders;
+  error?: string;
 }
 
 
 const NavBar = () => {
+  const naviation = new Navigation();
   const theme = useTheme();
 
   const [anchor, setAnchor] = useState(null);
@@ -51,9 +56,13 @@ const NavBar = () => {
 
   const dispatch = useAppDispatch();
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
-  const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
   const isOwner = useAppSelector((state) => state.fantasyGroupReducer.isOwner);
+  const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const path = Organization.getPath({ organizations, organization_id });
   const open = Boolean(anchor);
+
+  const fantasyHelper = new FantasyGroupHelper({ fantasy_group });
 
 
   const divStyle = Objector.extender(
@@ -91,10 +100,19 @@ const NavBar = () => {
     }).then((data: LockResponse) => {
       setIsLoading(false);
       dispatch(setLoading(false));
-      console.log(data);
-      dispatch(setDataKey({ key: 'fantasy_group', value: data.fantasy_group }));
-      dispatch(setDataKey({ key: 'fantasy_draft_orders', value: data.fantasy_draft_orders }));
-      setModalOpen(false);
+
+      if (data && data.error) {
+        setModalData({
+          title: 'Could not lock group',
+          message: data.error,
+          button: 'Ok',
+          action: () => setModalOpen(false),
+        });
+      } else {
+        dispatch(setDataKey({ key: 'fantasy_group', value: data.fantasy_group }));
+        dispatch(setDataKey({ key: 'fantasy_draft_orders', value: data.fantasy_draft_orders }));
+        setModalOpen(false);
+      }
     }).catch((err) => {
       // nothing for now
     });
@@ -119,11 +137,20 @@ const NavBar = () => {
     }).then((data: FantasyGroupLoadData) => {
       setIsLoading(false);
       dispatch(setLoading(false));
-      handleLoad({
-        dispatch,
-        data,
-      });
-      setModalOpen(false);
+      if (data && data.error) {
+        setModalData({
+          title: 'Could not leave group',
+          message: data.error,
+          button: 'Ok',
+          action: () => setModalOpen(false),
+        });
+      } else {
+        handleLoad({
+          dispatch,
+          data,
+        });
+        setModalOpen(false);
+      }
     }).catch((err) => {
       // nothing for now
     });
@@ -144,13 +171,23 @@ const NavBar = () => {
       arguments: {
         fantasy_group_id: fantasy_group.fantasy_group_id,
       },
-    }).then((data: FantasyGroupLoadData) => {
+    }).then((response) => {
       setIsLoading(false);
       dispatch(setLoading(false));
-      console.log(data);
-      // dispatch(setDataKey({ key: 'fantasy_group', value: data.fantasy_group }));
-      // dispatch(setDataKey({ key: 'fantasy_draft_orders', value: data.fantasy_draft_orders }));
-      setModalOpen(false);
+
+      if (response && response.error) {
+        setModalData({
+          title: 'Could not delete group',
+          message: response.error,
+          button: 'Ok',
+          action: () => setModalOpen(false),
+        });
+      }
+
+      if (response === true) {
+        setModalOpen(false);
+        naviation.fantasy(`/${path}/fantasy`, null, false);
+      }
     }).catch((err) => {
       // nothing for now
     });
@@ -158,7 +195,7 @@ const NavBar = () => {
 
   const options: MenuOption[] = [];
 
-  if (isOwner && !fantasy_group.locked) {
+  if (isOwner && !fantasy_group.locked && fantasyHelper.isDraft()) {
     options.push({
       value: 'lock',
       label: 'Lock group',
@@ -177,7 +214,7 @@ const NavBar = () => {
     });
   }
 
-  if (isOwner && !Object.values(fantasy_entrys).length) {
+  if (isOwner) {
     options.push({
       value: 'del',
       label: 'Delete group',
@@ -236,7 +273,7 @@ const NavBar = () => {
                 options = {options}
               />
             </>
-            : ''
+              : ''
           }
         </div>
       </div>

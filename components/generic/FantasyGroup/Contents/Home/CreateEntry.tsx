@@ -26,7 +26,7 @@ const CreateEntry = (
   }:
   {
     open: boolean;
-    closeHandler: () => void;
+    closeHandler: (fantasy_entry_id: string | null) => void;
   },
 ) => {
   const theme = useTheme();
@@ -104,14 +104,20 @@ const CreateEntry = (
           setErrorMessage(response.error);
         } else {
           dispatch(setDataKey({ key: 'fantasy_entrys', value: Objector.extender({}, fantasy_entrys, response.fantasy_entrys) }));
-          closeHandler();
+
+          // this will only return 1, but its in the object key format
+          let new_fantasy_entry_id: string | null = null;
+          for (const id in response.fantasy_entrys) {
+            new_fantasy_entry_id = id;
+          }
+          closeHandler(new_fantasy_entry_id);
         }
       })
       .catch((err) => {
         console.log(err);
         setSending(false);
         dispatch(setLoading(false));
-        closeHandler();
+        closeHandler(null);
       });
   };
 
@@ -120,7 +126,7 @@ const CreateEntry = (
   return (
     <Modal
       open={open}
-      onClose={closeHandler}
+      onClose={() => closeHandler(null)}
       paperStyle={{ maxWidth: 550 }}
     >
       <Typography type = 'h5'>Create league entry</Typography>
@@ -130,8 +136,14 @@ const CreateEntry = (
           label = 'Please add a name to your entry.'
           placeholder='Entry name'
           variant = 'filled'
+          autoFocus
           required
           onChange={(val) => setEntryName(val)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              createFreeEntry();
+            }
+          }}
           triggerValidation = {triggerValidation}
           errorMessage={errorMessage}
         />

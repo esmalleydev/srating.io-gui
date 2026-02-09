@@ -110,7 +110,6 @@ const ContentsWrapper = (
         fantasy_group_id: fantasy_group.fantasy_group_id,
       },
     }).then((fantasyData: FantasyGroupLoadData) => {
-      console.log(fantasyData)
       setLoaded(true);
       if (!fantasyData || fantasyData.error) {
         setCanView(false);
