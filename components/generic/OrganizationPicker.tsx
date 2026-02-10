@@ -15,11 +15,7 @@ import { reset as resetGames } from '@/redux/features/games-slice';
 import { reset as resetRanking } from '@/redux/features/ranking-slice';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
-import Menu from '@/components/ux/menu/Menu';
-import MenuList from '@/components/ux/menu/MenuList';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
-import MenuListText from '@/components/ux/menu/MenuListText';
+import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { reset } from '@/redux/features/compare-slice';
 import Tooltip from '../ux/hover/Tooltip';
 import { setLoading } from '@/redux/features/loading-slice';
@@ -48,19 +44,6 @@ const OrganizationPicker = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  type Options = {
-    value: string;
-    label: string;
-  }
-  const statusOptions: Options[] = [];
-
-  for (const id in organizations) {
-    statusOptions.push({
-      value: id,
-      label: `${organizations[id].code} (${organizations[id].name})`,
-    });
-  }
 
   const handleOrganization = (value: string) => {
     handleClose();
@@ -112,16 +95,23 @@ const OrganizationPicker = () => {
     });
   };
 
-  let emoji = '';
+  const menuOptions: MenuOption[] = [];
 
-  if (width > 375 && organization_id === Organization.getCFBID()) {
-    emoji = '🏈 ';
+  for (const id in organizations) {
+    const isSelected = selected.indexOf(id) > -1;
+    menuOptions.push({
+      value: id,
+      selectable: true,
+      label: `${organizations[id].code} (${organizations[id].name})`,
+      onSelect: handleOrganization,
+      icon: (isSelected ? <CheckCircleIcon style = {{ color: theme.success.main }} fontSize='small' /> : <RadioButtonUncheckedIcon style = {{ color: theme.primary.main }} fontSize='small' />),
+    });
   }
-  if (width > 375 && organization_id === Organization.getCBBID()) {
-    emoji = '🏀 ';
-  }
+
+  const emoji = width > 375 ? `${Organization.getEmoji({ organization_id })} ` : '';
 
   const title = selected in organizations ? `${emoji}${organizations[selected].code}` : 'Loading...';
+
 
   return (
     <div>
@@ -139,21 +129,8 @@ const OrganizationPicker = () => {
         anchor={anchorEl}
         open={open}
         onClose={handleClose}
-      >
-        <MenuList>
-          {statusOptions.map((statusOption, index) => {
-            const isSelected = selected.indexOf(statusOption.value) > -1;
-            return (
-              <MenuItem key = {index} onClick = {() => handleOrganization(statusOption.value)}>
-                <MenuListIcon>
-                  {isSelected ? <CheckCircleIcon color = 'success' fontSize='small' /> : <RadioButtonUncheckedIcon color = 'primary' fontSize='small' />}
-                </MenuListIcon>
-                <MenuListText primary={statusOption.label} />
-              </MenuItem>
-            );
-          })}
-        </MenuList>
-      </Menu>
+        options={menuOptions}
+      />
     </div>
   );
 };

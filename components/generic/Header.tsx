@@ -17,6 +17,8 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 // import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 
 import sratingLogo from '../../public/favicon-32x32.png';
 
@@ -24,16 +26,11 @@ import Sidebar from './Sidebar';
 import Search from './Search';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setSession, setValidSession } from '../../redux/features/user-slice';
 import { reset } from '@/redux/features/compare-slice';
 import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/loading-slice';
 import OrganizationPicker from './OrganizationPicker';
-import Menu from '@/components/ux/menu/Menu';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
-import MenuListText from '@/components/ux/menu/MenuListText';
-import MenuList from '@/components/ux/menu/MenuList';
+import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
 import Organization from '../helpers/Organization';
 import Tooltip from '../ux/hover/Tooltip';
 import Button from '../ux/buttons/Button';
@@ -41,6 +38,8 @@ import { useTheme } from '../hooks/useTheme';
 import Style from '../utils/Style';
 import Objector from '../utils/Objector';
 import IconButton from '../ux/buttons/IconButton';
+import { setDataKey } from '@/redux/features/user-slice';
+import Navigation from '../helpers/Navigation';
 
 
 // todo hook up settings with router
@@ -48,6 +47,7 @@ import IconButton from '../ux/buttons/IconButton';
 export const headerBarHeight = 64;
 
 const Header = () => {
+  const navigation = new Navigation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const validSession = useAppSelector((state) => state.userReducer.isValidSession);
@@ -105,10 +105,37 @@ const Header = () => {
     handleClose();
     if (validSession) {
       if (pathName !== '/account') {
-        dispatch(setLoading(true));
-        startTransition(() => {
-          router.push('/account');
-        });
+        navigation.user('/account?view=settings');
+      } else if (pathName === '/account') {
+        navigation.userView({ view: 'settings' });
+      }
+
+      return;
+    }
+    setAccountOpen(true);
+  };
+
+  const handleAccountSubscriptions = () => {
+    handleClose();
+    if (validSession) {
+      if (pathName !== '/account') {
+        navigation.user('/account?view=subscriptions');
+      } else if (pathName === '/account') {
+        navigation.userView({ view: 'subscriptions' });
+      }
+
+      return;
+    }
+    setAccountOpen(true);
+  };
+
+  const handleAccountFantasy = () => {
+    handleClose();
+    if (validSession) {
+      if (pathName !== '/account') {
+        navigation.user('/account?view=fantasy');
+      } else if (pathName === '/account') {
+        navigation.userView({ view: 'fantasy' });
       }
 
       return;
@@ -130,10 +157,8 @@ const Header = () => {
 
   const handleLogout = () => {
     handleClose();
-    localStorage.removeItem('session_id');
-    // sessionStorage.clear();
-    dispatch(setValidSession(false));
-    dispatch(setSession(null));
+    dispatch(setDataKey({ key: 'session_id', value: null }));
+    dispatch(setDataKey({ key: 'isValidSession', value: false }));
     startTransition(() => {
       router.push('/');
     });
@@ -173,6 +198,41 @@ const Header = () => {
     },
   };
 
+  const menuOptions: MenuOption[] = [
+    {
+      value: 'account',
+      selectable: true,
+      label: 'My account',
+      onSelect: handleAccount,
+      icon: <AccountCircleIcon fontSize="small" />,
+    },
+    {
+      value: 'subscriptions',
+      selectable: true,
+      label: 'My subscriptions',
+      onSelect: handleAccountSubscriptions,
+      icon: <ShoppingCartIcon fontSize="small" />,
+    },
+    {
+      value: 'fantasy',
+      selectable: true,
+      label: 'My fantasy legaues',
+      onSelect: handleAccountFantasy,
+      icon: <SportsEsportsIcon fontSize="small" />,
+    },
+    {
+      value: null,
+      selectable: false,
+      customLabel: <MenuDivider />,
+    },
+    {
+      value: 'logout',
+      selectable: true,
+      label: 'Logout',
+      onSelect: handleLogout,
+      icon: <Logout fontSize="small" />,
+    },
+  ];
 
   return (
     <div className={Style.getStyleClassName(headerStyle)}>
@@ -215,21 +275,8 @@ const Header = () => {
                     anchor={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
-                  >
-                    <MenuList>
-                      <MenuItem onClick={handleAccount}>
-                        <MenuListIcon><AccountCircleIcon fontSize="small" /></MenuListIcon>
-                        <MenuListText primary='My account' />
-                      </MenuItem>
-                      <hr style = {{ margin: 0, borderWidth: 0, borderStyle: 'solid', borderColor: theme.text.secondary, borderBottomWidth: 'thin' }} />
-                      <MenuItem onClick={handleLogout}>
-                        <MenuListIcon>
-                          <Logout fontSize="small" />
-                        </MenuListIcon>
-                        <MenuListText primary='Logout' />
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
+                    options={menuOptions}
+                  />
                 </>
                 :
                 <div>
@@ -241,7 +288,7 @@ const Header = () => {
           </div>
         }
         </div>
-      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} loginCallback={() => {}} />
+      <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
     </div>
   );
 };

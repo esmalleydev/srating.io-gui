@@ -6,6 +6,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Typography from '../text/Typography'; // Adjust path if needed
 import { useState } from 'react';
+import Color from '@/components/utils/Color';
 
 interface SwitchProps {
   // Label to display next to the switch
@@ -72,7 +73,7 @@ const Switch: React.FC<SwitchProps> = ({
   const trackStyle: React.CSSProperties = {
     width: trackWidth,
     height: trackHeight,
-    backgroundColor: disabled ? theme.grey[300] : trackColor,
+    backgroundColor: disabled ? Color.alphaColor(trackColor, 0.7) : trackColor,
     borderRadius: 999, // Pill shape
     position: 'relative',
     cursor: disabled ? 'not-allowed' : 'pointer',

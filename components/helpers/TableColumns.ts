@@ -58,6 +58,7 @@ class TableColumns {
     const otherViews = [
       'matchup',
       'roster',
+      'fantasy',
     ];
 
     const allViews = [...rankingViews, ...boxscoreViews, ...otherViews];
@@ -84,6 +85,15 @@ class TableColumns {
         getValue: (row: object) => {
           return 'rank' in row ? row.rank : Infinity;
         },
+        getTooltip: () => {
+          if (
+            view === 'fantasy'
+          ) {
+            return 'Rank';
+          }
+
+          return 'srating.io Rank';
+        },
         showDifference: true,
         precision: 0,
       },
@@ -102,6 +112,9 @@ class TableColumns {
           425: (view === 'player' || view === 'transfer' ? 100 : 85),
         },
         getLabel: () => {
+          if (view === 'fantasy') {
+            return 'Entry';
+          }
           if (
             view === 'player_boxscore' ||
             view === 'player' ||
@@ -120,6 +133,9 @@ class TableColumns {
           return 'Team';
         },
         getTooltip: () => {
+          if (view === 'fantasy') {
+            return 'Entry name';
+          }
           if (
             view === 'player_boxscore' ||
             view === 'player' ||
@@ -217,6 +233,10 @@ class TableColumns {
         precision: 0,
         showDifference: true,
         getTooltip: () => {
+          if (view === 'fantasy') {
+            return 'Points';
+          }
+
           if (boxscoreViews.includes(view)) {
             return 'Points';
           }
@@ -362,7 +382,7 @@ class TableColumns {
         precision: 2,
         showDifference: true,
         getDisplayValue: (row: CompareStatisticRow) => {
-          return `${'field_goal_percentage' in row ? row.field_goal_percentage : 0}%`;
+          return `${'field_goal_percentage' in row && row.field_goal_percentage !== null ? row.field_goal_percentage : 0}%`;
         },
       },
       two_point_field_goal: {
@@ -425,7 +445,7 @@ class TableColumns {
         precision: 2,
         showDifference: true,
         getDisplayValue: (row: CompareStatisticRow) => {
-          return `${'two_point_field_goal_percentage' in row ? row.two_point_field_goal_percentage : 0}%`;
+          return `${'two_point_field_goal_percentage' in row && row.two_point_field_goal_percentage !== null ? row.two_point_field_goal_percentage : 0}%`;
         },
       },
       three_point_field_goal: {
@@ -488,7 +508,7 @@ class TableColumns {
         precision: 2,
         showDifference: true,
         getDisplayValue: (row: CompareStatisticRow) => {
-          return `${'three_point_field_goal_percentage' in row ? row.three_point_field_goal_percentage : 0}%`;
+          return `${'three_point_field_goal_percentage' in row && row.three_point_field_goal_percentage !== null ? row.three_point_field_goal_percentage : 0}%`;
         },
       },
       free_throws: {
@@ -551,7 +571,7 @@ class TableColumns {
         precision: 2,
         showDifference: true,
         getDisplayValue: (row: CompareStatisticRow) => {
-          return `${'free_throw_percentage' in row ? row.free_throw_percentage : 0}%`;
+          return `${'free_throw_percentage' in row && row.free_throw_percentage !== null ? row.free_throw_percentage : 0}%`;
         },
       },
       fg: {

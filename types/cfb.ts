@@ -164,6 +164,7 @@ export interface StatisticRanking {
   sport_statistic_id: string;
   season: number;
   team_id: string;
+  rating: number;
   rank: number;
   rank_delta_one: number;
   rank_delta_seven: number;
@@ -506,6 +507,7 @@ export interface PlayerStatisticRanking {
   team_id: string;
   player_id: string;
   player_team_season_id: string;
+  rating: number;
   max: number;
   rank: number;
   rank_delta_one: number;
@@ -705,6 +707,7 @@ export interface ConferenceStatisticRanking {
   sport_conference_statistic_id: string;
   season: number;
   conference_id: string;
+  rating: number;
   rank: number;
   rank_delta_one: number;
   rank_delta_seven: number;

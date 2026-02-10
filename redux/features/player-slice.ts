@@ -61,7 +61,7 @@ stateController.setInitialState({
   trendsBoxscoreLine: true,
   trendsColumn: null,
   trendsSeasons: [],
-  showPerGameStats: false,
+  showPerGameStats: true,
 });
 
 /*

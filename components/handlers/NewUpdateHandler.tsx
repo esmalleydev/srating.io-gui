@@ -1,8 +1,8 @@
 'use client';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
-import { setKryptos, setNewUpdate } from '@/redux/features/user-slice';
-import Modal from '@/components/ux/container/Modal';
+import { setDataKey, setKryptos } from '@/redux/features/user-slice';
+import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
 
@@ -11,7 +11,7 @@ const NewUpdateHandler = () => {
   const newUpdate = useAppSelector((state) => state.userReducer.newUpdate);
 
   const handle = () => {
-    dispatch(setNewUpdate(false));
+    dispatch(setDataKey({ key: 'newUpdate', value: false }));
     dispatch(setKryptos(null));
     window.location.reload();
   };

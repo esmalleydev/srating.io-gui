@@ -11,6 +11,11 @@ const ReduxWrapper = (
 ) => {
   const dispatch = useAppDispatch();
 
+  // im not sure if game is the same reference if it gets updated from nextjs
+  // might need to deepClone, but gemini says it is fine
+  // they say the reference from nextjs will not be the same object reference, so the useEffect should trigger
+  // ... todo investigate later?
+
   useEffect(() => {
     dispatch(setDataKey({ key: 'view', value: view }));
     dispatch(setDataKey({ key: 'subview', value: subview }));

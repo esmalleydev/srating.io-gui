@@ -100,7 +100,7 @@ class Game extends Surface {
   async getData({ game_id }) {
     const organization_id = this.getOrganizationID();
 
-    const revalidateSeconds = 5 * 60;
+    const revalidateSeconds = 30;
     const games: Games = await useServerAPI({
       class: 'game',
       function: 'getGames',

@@ -4,8 +4,8 @@
 import Style from '@/components/utils/Style';
 import { useRef } from 'react';
 import { createPortal } from 'react-dom';
-import Paper from './Paper';
 import Objector from '@/components/utils/Objector';
+import Paper from '../container/Paper';
 
 
 const Modal = (

@@ -1,8 +1,12 @@
-import Objector from '@/components/utils/Objector';
+import State from '@/components/helpers/State';
+import { ApiKeys, FantasyGroups, FantasyGroupUsers, Pricings, Subscriptions, User, UserPaymentTokens } from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
-type InitialState = {
+// todo this should really be renamed to the account-slice to make the url of /account
+
+export type InitialState = {
+  view: string,
   session_id: string | null,
   secret_id: string | null,
   kryptos: string | null,
@@ -10,9 +14,44 @@ type InitialState = {
   isValidSession: boolean,
   loadingSecret: boolean,
   newUpdate: boolean,
+  loadingView: boolean,
+  loadedAccount: boolean,
+  user: User;
+  subscription: Subscriptions;
+  pricing: Pricings;
+  api_key: ApiKeys;
+  fantasy_group_user: FantasyGroupUsers;
+  fantasy_group: FantasyGroups;
+  user_payment_token: UserPaymentTokens;
 };
 
-const initialState = {
+
+export type InitialStateKeys = keyof InitialState;
+
+type ActionPayload<K extends keyof InitialState> = {
+  key: K;
+  value: InitialState[K];
+};
+
+
+export const stateController = new State<InitialState>({
+  type: 'account',
+});
+
+stateController.set_url_param_type_x_keys({
+  string: [
+    'view',
+  ],
+  array: [],
+  boolean: [],
+});
+
+stateController.set_key_x_local_storage_key({
+  session_id: 'session_id',
+});
+
+stateController.setInitialState({
+  view: 'subscriptions',
   session_id: (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null,
   secret_id: null,
   kryptos: null,
@@ -20,23 +59,21 @@ const initialState = {
   isValidSession: false,
   loadingSecret: false,
   newUpdate: false,
-} as InitialState;
-
-const defaultState = Object.freeze(Objector.deepClone(initialState));
+  loadingView: true,
+  loadedAccount: false,
+  user: {} as User,
+  subscription: {} as Subscriptions,
+  pricing: {} as Pricings,
+  api_key: {} as ApiKeys,
+  fantasy_group_user: {} as FantasyGroupUsers,
+  fantasy_group: {} as FantasyGroups,
+  user_payment_token: {} as UserPaymentTokens,
+});
 
 export const user = createSlice({
   name: 'user',
-  initialState,
+  initialState: stateController.getInitialState(),
   reducers: {
-    setSession: (state, action: PayloadAction<string|null>) => {
-      state.session_id = action.payload;
-    },
-    setInnerTag: (state, action: PayloadAction<string|null>) => {
-      state.innerTag = action.payload;
-    },
-    setValidSession: (state, action: PayloadAction<boolean>) => {
-      state.isValidSession = action.payload;
-    },
     setKryptos: (state, action: PayloadAction<string|null>) => {
       if (typeof window !== 'undefined') {
         if (action.payload) {
@@ -57,14 +94,39 @@ export const user = createSlice({
       }
       state.secret_id = action.payload;
     },
-    setLoadingSecret: (state, action: PayloadAction<boolean>) => {
-      state.loadingSecret = action.payload;
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
     },
-    setNewUpdate: (state, action: PayloadAction<boolean>) => {
-      state.newUpdate = action.payload;
+    reset: {
+      reducer: (state, action: PayloadAction<boolean | undefined>) => {
+        stateController.reset(state, action.payload);
+      },
+      // prepare receives optional payload and returns { payload }
+      prepare: (payload?: boolean) => ({ payload }),
+    },
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      stateController.resetDataKey(state, action.payload);
+    },
+    updateDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.updateDataKey(state, key, value);
+    },
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.setDataKey(state, key, value);
     },
   },
 });
 
-export const { setSession, setValidSession, setKryptos, setSecret, setLoadingSecret, setInnerTag, setNewUpdate } = user.actions;
+export const {
+  setKryptos,
+  setSecret,
+  updateFromURL,
+  setDataKey,
+  reset,
+  resetDataKey,
+  updateDataKey,
+} = user.actions;
 export default user.reducer;
+
+stateController.updateStateFromUrlParams(stateController.getInitialState());

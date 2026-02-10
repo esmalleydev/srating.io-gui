@@ -114,6 +114,7 @@ const Client = ({ organization_id, division_id, season, player_statistic_ranking
         name: 'Overview',
         keys: [
           'rank',
+          'elo',
           'games',
           'minutes_per_game',
           'points_per_game',

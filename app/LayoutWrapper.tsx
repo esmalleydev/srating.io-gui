@@ -11,11 +11,20 @@ import { updateFromURL as F } from '@/redux/features/coach-slice';
 import { updateFromURL as G } from '@/redux/features/conference-slice';
 import { updateFromURL as H } from '@/redux/features/game-slice';
 import { updateFromURL as I } from '@/redux/features/player-slice';
+import { updateFromURL as J } from '@/redux/features/fantasy-slice';
+import { updateFromURL as K } from '@/redux/features/fantasy_group-slice';
+import { updateFromURL as L } from '@/redux/features/payment_router-slice';
+import { updateFromURL as M } from '@/redux/features/fantasy_entry-slice';
+import { updateFromURL as N, setDataKey as setDataKeyGeneral } from '@/redux/features/general-slice';
+import { toast } from '@/components/utils/Toaster';
+import { useAppDispatch } from '@/redux/hooks';
 
 
 const LayoutWrapper = ({ children }) => {
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const handlePopState = (event) => {
+      // console.log('handlePopState', event)
       const store = getStore();
 
       // this is dumb but needed until I remove redux
@@ -32,14 +41,34 @@ const LayoutWrapper = ({ children }) => {
       store.dispatch(G());
       store.dispatch(H());
       store.dispatch(I());
+      store.dispatch(J());
+      store.dispatch(K());
+      store.dispatch(L());
+      store.dispatch(M());
+      store.dispatch(N());
+    };
+
+    const handleOnline = () => {
+      toast.success('Connected');
+      dispatch(setDataKeyGeneral({ key: 'online', value: true }));
+    };
+
+    const handleOffline = () => {
+      toast.error('Lost connection');
+      dispatch(setDataKeyGeneral({ key: 'online', value: false }));
     };
 
     // Add the event listener when the component mounts
     window.addEventListener('popstate', handlePopState);
 
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
     // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, []);
 

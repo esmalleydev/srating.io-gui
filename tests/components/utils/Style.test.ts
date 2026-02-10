@@ -1,7 +1,5 @@
 import Style from '@/components/utils/Style';
 
-// todo the first test alwayss fails, the css isnt done loading yet??
-
 
 describe('Style Class CSS Generation', () => {
   // Mock DOM elements

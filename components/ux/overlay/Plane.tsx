@@ -76,19 +76,19 @@ const Plane = (
 
       const anchorRect = anchor.getBoundingClientRect();
 
-      const popoverWidth = popoverRect.width;
-      const popoverHeight = popoverRect.height;
+      let popoverWidth = popoverRect.width;
+      let popoverHeight = popoverRect.height;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const padding = 10;
 
-      // todo this is causing issues... sometimes it needs the division, other times it does not??
+      // This SHOULD be good to go now... this was wrong before because the keyframe css was broken
       // if the left is off then look here
       if (open) {
         // This assumes the measurement is taken while it's scaled at 0.8
         // If the element is currently scaled down, calculate its true size:
-        // popoverWidth /= transformScale;
-        // popoverHeight /= transformScale;
+        popoverWidth /= transformScale;
+        popoverHeight /= transformScale;
       }
 
       // --- Defaults: Place BELOW the button, aligned to LEFT ---

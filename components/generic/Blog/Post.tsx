@@ -65,7 +65,7 @@ const options = {
   wrapper: null,
 };
 
-const Post = ({ post, sidebarPosts }) => {
+const Post = async ({ post, sidebarPosts }) => {
   const markdown = compiler(post.content, options);
 
   return (

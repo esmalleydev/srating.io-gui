@@ -12,6 +12,7 @@ const commitDate = execSync('git log -1 --format=%cd')
   .trim();
 
 const bundleAnalyzer = withBundleAnalyzer({
+  // enabled: process.env.ANALYZE === 'true',
   enabled: false,
 });
 

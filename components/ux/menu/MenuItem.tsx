@@ -1,23 +1,27 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
+import Objector from '@/components/utils/Objector';
 import Style from '@/components/utils/Style';
 
 const MenuItem = (
   {
     disabled = false,
+    active = false,
     onClick,
     style = {},
     children,
   }:
   {
     disabled?: boolean,
+    active?: boolean,
     onClick?: () => void,
     style?: React.CSSProperties;
     children: React.ReactNode;
   },
 ) => {
   const theme = useTheme();
+  const activeColor = theme.mode === 'light' ? theme.grey[100] : theme.grey[800];
   const liStyle: React.CSSProperties = {
     backgroundColor: 'transparent',
     border: 0,
@@ -34,13 +38,18 @@ const MenuItem = (
     minHeight: 48,
     whiteSpace: 'nowrap',
     textDecoration: 'none',
-    ...style,
   };
+
+  if (active) {
+    liStyle.backgroundColor = activeColor;
+  }
 
   if (disabled) {
     liStyle.pointerEvents = 'none';
     liStyle.opacity = 0.3;
   }
+
+  Objector.extender(liStyle, style);
 
   const handleClick = () => {
     if (onClick) {
@@ -50,7 +59,7 @@ const MenuItem = (
 
   const hoverCSS = Style.getStyleClassName(`
     &:hover: {
-      backgroundColor: ${theme.mode === 'light' ? theme.grey[100] : theme.grey[800]},
+      backgroundColor: ${activeColor},
     },
   `);
 

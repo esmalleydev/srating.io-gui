@@ -7,15 +7,13 @@ import { useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Menu from '@/components/ux/menu/Menu';
-import MenuList from '@/components/ux/menu/MenuList';
-import MenuItem from '@/components/ux/menu/MenuItem';
-import MenuListIcon from '@/components/ux/menu/MenuListIcon';
-import MenuListText from '@/components/ux/menu/MenuListText';
+import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { updateDataKey } from '@/redux/features/display-slice';
 import Button from '@/components/ux/buttons/Button';
+import { useTheme } from '../hooks/useTheme';
 
 const StatusPicker = () => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const statuses = useAppSelector((state) => state.displayReducer.statuses);
   // const { width } = useWindowDimensions() as Dimensions;
@@ -28,8 +26,13 @@ const StatusPicker = () => {
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleStatuses = (value: string) => {
+    dispatch(updateDataKey({ key: 'statuses', value }));
   };
 
   const code_x_label = {
@@ -38,11 +41,29 @@ const StatusPicker = () => {
     final: 'Final',
   };
 
-  const statusOptions = [{ value: 'pre', label: 'Upcoming' }, { value: 'live', label: 'Live' }, { value: 'final', label: 'Final' }];
-
-  const handleStatuses = (value: string) => {
-    dispatch(updateDataKey({ key: 'statuses', value }));
-  };
+  const statusOptions: MenuOption[] = [
+    {
+      value: 'pre',
+      label: 'Upcoming',
+      selectable: true,
+      onSelect: handleStatuses,
+      icon: selected.indexOf('pre') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />
+    },
+    {
+      value: 'live',
+      label: 'Live',
+      selectable: true,
+      onSelect: handleStatuses,
+      icon: selected.indexOf('live') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />
+    },
+    {
+      value: 'final',
+      label: 'Final',
+      selectable: true,
+      onSelect: handleStatuses,
+      icon: selected.indexOf('final') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />
+    }
+  ];
 
   let title = 'Status';
 
@@ -65,21 +86,8 @@ const StatusPicker = () => {
         anchor={anchorEl}
         open={open}
         onClose={handleClose}
-      >
-          <MenuList>
-            {statusOptions.map((statusOption, index) => {
-              const isSelected = selected.indexOf(statusOption.value) > -1;
-              return (
-                <MenuItem key = {index} onClick = {() => handleStatuses(statusOption.value)}>
-                  <MenuListIcon>
-                    {isSelected ? <CheckIcon color = 'success' fontSize='small' /> : <CheckBoxOutlineBlankIcon color = 'primary' fontSize='small' />}
-                  </MenuListIcon>
-                  <MenuListText primary={statusOption.label} />
-                </MenuItem>
-              );
-            })}
-          </MenuList>
-      </Menu>
+        options={statusOptions}
+      />
     </div>
   );
 };

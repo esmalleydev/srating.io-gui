@@ -29,7 +29,7 @@ import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/games-slice';
 import IconButton from '@/components/ux/buttons/IconButton';
-import Modal from '@/components/ux/container/Modal';
+import Modal from '@/components/ux/modal/Modal';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {

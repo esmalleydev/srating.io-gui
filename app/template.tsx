@@ -11,6 +11,7 @@ import Header from '@/components/generic/Header';
 import FooterNavigation from '@/components/generic/FooterNavigation';
 import { ScrollContainer, ScrollProvider } from '@/contexts/scrollContext';
 import Spinner from '@/components/generic/Spinner';
+import Toast from '@/components/ux/overlay/Toast';
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
@@ -57,18 +58,19 @@ const Template = ({ children }: { children: React.ReactNode }) => {
       <CssBaseline />
       {
       isMounted ?
-      <ScrollProvider>
-        <ScrollContainer>
-          <div>
-            <Spinner />
-            <Header />
-              <div style = {{ padding: `${paddingTop} 0px 56px 0px` }}>
-                {children}
-              </div>
-            <FooterNavigation />
-          </div>
-        </ScrollContainer>
-      </ScrollProvider>
+        <ScrollProvider>
+          <ScrollContainer>
+            <div>
+              <Toast />
+              <Spinner />
+              <Header />
+                <div style = {{ padding: `${paddingTop} 0px 56px 0px` }}>
+                  {children}
+                </div>
+              <FooterNavigation />
+            </div>
+          </ScrollContainer>
+        </ScrollProvider>
         : ''
       }
     </ThemeProvider>

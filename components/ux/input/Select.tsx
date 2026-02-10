@@ -7,8 +7,9 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useTheme } from '@/components/hooks/useTheme';
 import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
-import Paper from '../container/Paper';
 import Objector from '@/components/utils/Objector';
+import Menu, { MenuOption } from '../menu/Menu';
+import Inputs from '@/components/helpers/Inputs';
 
 export type SelectOption = {
   label: string;
@@ -18,14 +19,15 @@ export type SelectOption = {
 type SelectVariant = 'standard' | 'outlined' | 'filled';
 
 interface SelectProps {
-  label: string;
+  inputHandler: Inputs;
+  placeholder?: string;
+  label?: string;
   options: SelectOption[];
   value?: string | number | null; // Controlled value
   defaultValue?: string | number | null; // Uncontrolled default
   onChange?: (value: string | number) => void;
   variant?: SelectVariant;
   style?: React.CSSProperties;
-  placeholder?: string;
   required?: boolean;
   error?: boolean; // External error control
   errorMessage?: string; // External error message
@@ -33,6 +35,7 @@ interface SelectProps {
 }
 
 const Select: React.FC<SelectProps> = ({
+  inputHandler,
   label,
   options,
   value: valueProp,
@@ -47,13 +50,18 @@ const Select: React.FC<SelectProps> = ({
   triggerValidation = false,
 }) => {
   const theme = useTheme();
+  const instanceId = useMemo(() => crypto.randomUUID(), []);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
 
   // --- State ---
   const [isOpen, setIsOpen] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || null);
   const [validationError, setValidationError] = useState(false); // Internal validation state
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+
+  const [width, setWidth] = useState(0);
 
   // Determine current value (Controlled vs Uncontrolled)
   const value = valueProp !== undefined ? valueProp : internalValue;
@@ -62,10 +70,47 @@ const Select: React.FC<SelectProps> = ({
   const selectedOption = useMemo(() => options.find((o) => o.value === value), [options, value]);
 
   const errorColor = theme.error.main;
-  const hasError = (externalError || !!externalErrorMessage || validationError);
+  const hasError = (externalError || !!externalErrorMessage || validationError || (required && (isTouched || triggerValidation) && !value));
 
   // Determine Error Message to Display
-  const displayedErrorMessage = externalErrorMessage || (validationError ? 'This field is required' : null);
+  const displayedErrorMessage = externalErrorMessage || (!value && required ? 'This field is required' : null);
+
+
+  const errorCallback = () => {
+    return {
+      validationError: hasError || (!value && required),
+      validationErrorMessage: displayedErrorMessage || (!value && required ? 'This field is required' : undefined),
+    };
+  };
+
+  useEffect(() => {
+    if (inputHandler) {
+      inputHandler.register(instanceId, errorCallback);
+    }
+
+    return () => {
+      if (inputHandler) {
+        inputHandler.unregister(instanceId);
+      }
+    };
+  }, [inputHandler, instanceId, errorCallback]);
+
+
+  useEffect(() => {
+    if (inputRef && inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+
+      setWidth(rect.width);
+    }
+  }, [inputRef]);
+
+  // useEffect(() => {
+  //   if (containerRef && containerRef.current) {
+  //     setAnchorEl(containerRef.current);
+  //   } else {
+  //     setAnchorEl(null);
+  //   }
+  // }, [containerRef]);
 
   // --- Handlers ---
 
@@ -85,7 +130,8 @@ const Select: React.FC<SelectProps> = ({
   };
 
   // Custom click handler to toggle dropdown
-  const handleToggle = () => {
+  const handleToggle = (e) => {
+    setAnchorEl(e.currentTarget);
     setIsTouched(true);
     // If opening, ensure no validation error state is immediately visible unless required
     if (!isOpen) {
@@ -101,22 +147,31 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Tab' && isOpen) {
+      handleToggle(e);
+    }
+  };
+
+
+
   // Click outside to close
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        // Validation check on outside click/blur
-        if (required && !value) {
-          setValidationError(true);
-        } else {
-          setValidationError(false);
-        }
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [required, value]);
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+  //       setIsOpen(false);
+  //       // Validation check on outside click/blur
+  //       if (required && !value) {
+  //         setValidationError(true);
+  //       } else {
+  //         setValidationError(false);
+  //       }
+  //     }
+  //   };
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   return () => document.removeEventListener('mousedown', handleClickOutside);
+  // }, [required, value]);
 
   // --- Styling Logic (Matches Text.tsx) ---
 
@@ -169,7 +224,7 @@ const Select: React.FC<SelectProps> = ({
   const containerStyle: React.CSSProperties = {
     position: 'relative',
     width: '100%',
-    margin: variant === 'standard' ? '16px 0 4px 0' : '8px 0',
+    margin: variant === 'standard' ? '16px 0 4px 0' : '0px',
   };
 
   Objector.extender(triggerStyle, style);
@@ -233,92 +288,62 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const menuStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    width: '100%',
-    maxHeight: '200px',
-    overflowY: 'auto',
-    zIndex: 1000,
-    marginTop: '4px',
+    marginTop: 35, // todo this is sketchy, I think it is half of the height of this box, but probably should calc it...
   };
 
-  const optionStyle: React.CSSProperties = {
-    padding: '10px 16px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    transition: 'background-color 0.2s',
-    color: theme.text.primary,
-  };
+  if (width) {
+    menuStyle.width = width;
+  }
+
+  // convert the select option to a menu option, basically just attached the onSelect handler
+  const menuOptions: MenuOption[] = options.map((option) => {
+    return Objector.extender(option, { onSelect: handleSelect, selectable: true });
+  });
+
 
   return (
     <div
       ref={containerRef}
       className={Style.getStyleClassName(containerStyle)}
+      onKeyDown={handleKeyDown}
+      onFocus={(e) => {
+        if (!isOpen) {
+          handleToggle(e);
+        }
+      }}
+      tabIndex={0}
     >
+      {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
       <div style={{ position: 'relative', width: '100%' }}>
         {/* Label */}
         <Typography type="caption" className={Style.getStyleClassName(labelStyle)}>
-          {label}
+          {placeholder}
         </Typography>
 
         {/* Trigger Box (Looks like Input) */}
         <div
+          ref = {inputRef}
           className={Style.getStyleClassName(triggerStyle)}
           onClick={handleToggle}
         >
           <Typography type="body1" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {selectedOption ? selectedOption.label : placeholder}
+            {selectedOption ? selectedOption.label : ''}
           </Typography>
 
           <div style={arrowIconStyle}>
               {isOpen ? <KeyboardArrowUpIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
           </div>
         </div>
-
-        {/* Dropdown Menu */}
-        {isOpen && (
-          <Paper elevation={3} style={menuStyle}>
-            {options.map((option) => {
-              const isSelected = option.value === value;
-
-              // Hover/Selection Styles
-              const itemStyle = {
-                ...optionStyle,
-                backgroundColor: isSelected ? theme.action.selected : 'transparent',
-                fontWeight: isSelected ? 600 : 400,
-              };
-
-              return (
-                <div
-                  key={option.value}
-                  className={Style.getStyleClassName(itemStyle)}
-                  onClick={() => handleSelect(option.value)}
-                  // Add simple hover effect via style tag injection or class if available,
-                  // typically managed via CSS modules or styled-components,
-                  // but here is a simple inline hover simulation logic if needed.
-                  onMouseEnter={(e) => {
-                    if (!isSelected) e.currentTarget.style.backgroundColor = theme.action.hover;
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent';
-                  }}
-                >
-                  <Typography type="body1">
-                    {option.label}
-                  </Typography>
-                </div>
-              );
-            })}
-            {options.length === 0 && (
-              <div style={{ ...optionStyle, color: theme.text.disabled, cursor: 'default' }}>
-                <Typography type="caption">No options</Typography>
-              </div>
-            )}
-          </Paper>
-        )}
+        <Menu
+          open = {isOpen}
+          options = {menuOptions}
+          anchor={anchorEl}
+          onClose = {() => {
+            setIsOpen(false);
+            setAnchorEl(null);
+          }}
+          style = {menuStyle}
+        />
       </div>
       {/* Error Message Display */}
       <div style={{ height: 20, marginTop: 4 }}>

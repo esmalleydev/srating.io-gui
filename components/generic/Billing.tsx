@@ -8,7 +8,7 @@ import CheckoutForm from './Billing/CheckoutForm';
 import FreeTrialForm from './Billing/FreeTrialForm';
 import Typography from '../ux/text/Typography';
 import { useTheme } from '../hooks/useTheme';
-import Modal from '../ux/container/Modal';
+import Modal from '../ux/modal/Modal';
 
 
 

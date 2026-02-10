@@ -1,0 +1,107 @@
+
+import State from '@/components/helpers/State';
+import {
+  FantasyDraftOrders,
+  FantasyEntryPlayers,
+  FantasyEntrys,
+  FantasyGroup,
+  FantasyGroupComments,
+  FantasyGroupInvites,
+  FantasyGroupUser,
+  FantasyGroupUsers,
+  FantasyRankings,
+  Players,
+  PlayerTeamSeasons,
+} from '@/types/general';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+export type InitialState = {
+  view: string;
+  isOwner: boolean;
+  fantasy_group: FantasyGroup;
+  fantasy_group_user: FantasyGroupUser | null;
+  fantasy_group_users: FantasyGroupUsers;
+  fantasy_group_invites: FantasyGroupInvites;
+  fantasy_group_comments: FantasyGroupComments;
+  fantasy_entrys: FantasyEntrys;
+  fantasy_draft_orders: FantasyDraftOrders;
+  fantasy_entry_players: FantasyEntryPlayers;
+  player_team_seasons: PlayerTeamSeasons;
+  players: Players;
+  fantasy_rankings: FantasyRankings;
+  loadingView: boolean;
+};
+
+export type InitialStateKeys = keyof InitialState;
+
+type ActionPayload<K extends InitialStateKeys> = {
+  key: K;
+  value: InitialState[K];
+};
+
+export const stateController = new State<InitialState>({
+  type: 'fantasy_group',
+});
+
+stateController.set_url_param_type_x_keys({
+  string: [
+    'view',
+  ],
+  array: [
+  ],
+  boolean: [
+  ],
+});
+
+stateController.set_key_x_is_push_state({
+  view: true,
+});
+
+stateController.setInitialState({
+  view: 'home',
+  isOwner: false,
+  fantasy_group: {} as FantasyGroup,
+  fantasy_group_invites: {} as FantasyGroupInvites,
+  fantasy_group_users: {} as FantasyGroupUsers,
+  fantasy_group_comments: {} as FantasyGroupComments,
+  fantasy_group_user: null,
+  fantasy_entrys: {} as FantasyEntrys,
+  fantasy_draft_orders: {} as FantasyDraftOrders,
+  fantasy_entry_players: {} as FantasyEntryPlayers,
+  player_team_seasons: {} as PlayerTeamSeasons,
+  players: {} as Players,
+  fantasy_rankings: {} as FantasyRankings,
+  loadingView: true,
+});
+
+
+export const fantasy_group = createSlice({
+  name: 'fantasy_group',
+  initialState: stateController.getInitialState(),
+  reducers: {
+    updateFromURL: (state) => {
+      stateController.updateStateFromUrlParams(state);
+    },
+    reset: {
+      reducer: (state, action: PayloadAction<boolean | undefined>) => {
+        stateController.reset(state, action.payload);
+      },
+      // prepare receives optional payload and returns { payload }
+      prepare: (payload?: boolean) => ({ payload }),
+    },
+    resetDataKey: (state: InitialState, action: PayloadAction<InitialStateKeys>) => {
+      stateController.resetDataKey(state, action.payload);
+    },
+    setDataKey: <K extends keyof InitialState>(state: InitialState, action: PayloadAction<ActionPayload<K>>) => {
+      const { value, key } = action.payload;
+      stateController.setDataKey(state, key, value);
+    },
+  },
+});
+
+export const {
+  setDataKey, resetDataKey, reset, updateFromURL,
+} = fantasy_group.actions;
+export default fantasy_group.reducer;
+
+stateController.updateStateFromUrlParams(stateController.getInitialState());

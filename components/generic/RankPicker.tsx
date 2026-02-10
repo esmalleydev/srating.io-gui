@@ -10,9 +10,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { ListItemButton } from '@mui/material';
 import { setDataKey } from '@/redux/features/display-slice';
-import Modal from '../ux/container/Modal';
 import Typography from '../ux/text/Typography';
 import { useTheme } from '../hooks/useTheme';
+import Modal from '../ux/modal/Modal';
 
 
 /**

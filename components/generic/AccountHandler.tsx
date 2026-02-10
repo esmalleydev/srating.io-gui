@@ -5,18 +5,33 @@ import { useRouter } from 'next/navigation';
 
 
 import { useAppDispatch } from '@/redux/hooks';
-import { setSession, setValidSession } from '@/redux/features/user-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useTheme } from '@/components/hooks/useTheme';
-import { setDataKey } from '@/redux/features/games-slice';
+import { setDataKey as setDataKeyUser } from '@/redux/features/user-slice';
+import { setDataKey as setDataKeyGames } from '@/redux/features/games-slice';
 import Typography from '@/components/ux/text/Typography';
-import Modal from '@/components/ux/container/Modal';
+import Modal from '@/components/ux/modal/Modal';
 import Button from '@/components/ux/buttons/Button';
 import { TextField } from '@mui/material';
 
 
-const AccountHandler = ({ open, closeHandler, loginCallback }) => {
+const AccountHandler = (
+  {
+    open,
+    closeHandler,
+    loginCallback,
+    message,
+    title,
+  } :
+  {
+    open: boolean;
+    closeHandler: (e) => void;
+    loginCallback?: (e) => void;
+    message?: string;
+    title?: string;
+  },
+) => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -59,6 +74,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
     }
     setPasswordError(null);
 
+    dispatch(setLoading(true));
 
     useClientAPI({
       class: 'user',
@@ -69,19 +85,28 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
       },
     }).then((session_id) => {
       if (!session_id) {
+        dispatch(setLoading(false));
         setPasswordError('Incorrect password');
       } else if (session_id && session_id.error) {
+        dispatch(setLoading(false));
         setPasswordError('Something went wrong, try again later');
       } else {
-        localStorage.setItem('session_id', session_id);
-        // sessionStorage.clear();
-        dispatch(setSession(session_id));
-        dispatch(setValidSession(true));
-        dispatch(setDataKey({ key: 'dates_checked', value: {} }));
-        closeHandler();
-        window.location.reload();
+        dispatch(setDataKeyUser({ key: 'session_id', value: session_id }));
+        dispatch(setDataKeyUser({ key: 'isValidSession', value: true }));
+        dispatch(setDataKeyGames({ key: 'dates_checked', value: {} }));
+        closeHandler(e);
+
+        if (loginCallback) {
+          dispatch(setLoading(false));
+          loginCallback(e);
+        } else {
+          // this fires too fast for local store to get updated sometimes... >.>
+          // just wait a second then reload I guess lol
+          setTimeout(() => window.location.reload(), 1000);
+        }
       }
-    }).catch((e) => {
+    }).catch((err) => {
+      dispatch(setLoading(false));
       setPasswordError('Incorrect password');
     });
   };
@@ -135,14 +160,17 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
         dispatch(setLoading(false));
         setEmailError(response.error);
       } else if (response) {
-        localStorage.setItem('session_id', response);
-        // sessionStorage.clear();
-        dispatch(setSession(response));
-        dispatch(setValidSession(true));
-        closeHandler();
-        startTransition(() => {
-          router.push('/account');
-        });
+        dispatch(setDataKeyUser({ key: 'session_id', value: response }));
+        dispatch(setDataKeyUser({ key: 'isValidSession', value: true }));
+        closeHandler(e);
+
+        if (loginCallback) {
+          loginCallback(e);
+        } else {
+          startTransition(() => {
+            router.push('/account');
+          });
+        }
       }
     }).catch((e) => {
       dispatch(setLoading(false));
@@ -222,11 +250,10 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
       } else {
         setForgotPassword(false);
         setTempLogin(false);
-        dispatch(setSession(response));
-        dispatch(setValidSession(true));
-        localStorage.setItem('session_id', response);
+        dispatch(setDataKeyUser({ key: 'session_id', value: response }));
+        dispatch(setDataKeyUser({ key: 'isValidSession', value: true }));
         // sessionStorage.clear();
-        closeHandler();
+        closeHandler(e);
         startTransition(() => {
           router.push('/account?view=settings');
         });
@@ -395,7 +422,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
   } else {
     boxContents = (
       <div>
-        <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Sign in to your account</Typography>
+        <Typography type = 'caption' style = {{ color: theme.text.secondary }}>{(message || 'Sign in to your account')}</Typography>
         <TextField
           autoFocus
           required
@@ -441,7 +468,7 @@ const AccountHandler = ({ open, closeHandler, loginCallback }) => {
       open={open}
       onClose={closeHandler}
     >
-      <Typography type = 'h6'>Account</Typography>
+      <Typography type = 'h6'>{title || 'Account'}</Typography>
       {boxContents}
       <div style = {{ textAlign: 'right', marginTop: 10 }}>
         {buttons}

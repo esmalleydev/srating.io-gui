@@ -97,6 +97,7 @@ export const team = createSlice({
 export const {
   updateFromURL,
   setDataKey,
+  resetDataKey,
   reset,
   updateDataKey,
 } = team.actions;

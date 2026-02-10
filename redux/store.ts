@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import generalReducer from './features/general-slice';
 import themeReducer from './features/theme-slice';
 import userReducer from './features/user-slice';
 import favoriteReducer from './features/favorite-slice';
@@ -17,10 +18,17 @@ import gameReducer from './features/game-slice';
 import playerReducer from './features/player-slice';
 import loadingReducer from './features/loading-slice';
 import cacheReducer from './features/cache-slice';
+import fantasyReducer from './features/fantasy-slice';
+import fantasyGroupReducer from './features/fantasy_group-slice';
+import fantasyEntryReducer from './features/fantasy_entry-slice';
+import paymentRouterReducer from './features/payment_router-slice';
+
+// IF YOU ADD MORE SLICES HERE, MAKE SURE TO UPDATE LayoutWrapper useEffect for back / forward buttons!
 
 
 export const makeStore = () => configureStore({
   reducer: {
+    generalReducer,
     themeReducer,
     userReducer,
     favoriteReducer,
@@ -38,6 +46,10 @@ export const makeStore = () => configureStore({
     playerReducer,
     loadingReducer,
     cacheReducer,
+    fantasyReducer,
+    fantasyGroupReducer,
+    fantasyEntryReducer,
+    paymentRouterReducer,
   },
 });
 

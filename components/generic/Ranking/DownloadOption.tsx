@@ -8,7 +8,7 @@ import { setLoading } from '@/redux/features/loading-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useRouter } from 'next/navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
-import Modal from '@/components/ux/container/Modal';
+import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/hooks/useTheme';

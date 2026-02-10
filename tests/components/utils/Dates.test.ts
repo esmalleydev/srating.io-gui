@@ -4,32 +4,203 @@ import Dates from '@/components/utils/Dates';
 
 describe('Dates', () => {
   describe('parse()', () => {
-    it('parses ISO date string correctly', () => {
-      const d = Dates.parse('2025-01-15T10:30:00Z');
-      expect(d).toBeInstanceOf(Date);
-      expect(d.toISOString()).toBe('2025-01-15T10:30:00.000Z');
-    });
-
-    it('parses YYYY-MM-DD as Local Midnight (Fix for ISO assumption)', () => {
-      // Standard JS "new Date('2025-11-03')" creates UTC midnight.
-      // In EST, that is Nov 2nd. Our parse() should ensure it remains Nov 3rd Local.
-      const d = Dates.parse('2025-11-03');
-      expect(d.getHours()).toBe(0);
-      expect(d.getDate()).toBe(3);
-      expect(d.getMonth()).toBe(10); // Nov
-    });
-
-    it('handles Date objects by returning a copy', () => {
-      const original = new Date();
-      const copy = Dates.parse(original);
-      expect(copy).not.toBe(original); // Reference check
-      expect(copy.getTime()).toBe(original.getTime()); // Value check
-    });
-
-    test('undefined returns now', () => {
-      const now = new Date();
+    it('returns roughly current time when input is undefined', () => {
+      const before = new Date().getTime();
       const d = Dates.parse();
-      expect(now.getTime()).toBe(d.getTime());
+      const after = new Date().getTime();
+
+      // Allow a small buffer for execution time
+      expect(d.getTime()).toBeGreaterThanOrEqual(before);
+      expect(d.getTime()).toBeLessThanOrEqual(after);
+    });
+
+    it('returns roughly current time when input is null', () => {
+      const d = Dates.parse(null);
+      expect(d).toBeInstanceOf(Date);
+      // Basic check to ensure it's valid "now"
+      expect(Date.now() - d.getTime()).toBeLessThan(100);
+    });
+
+    it('returns a clone when input is a Date object', () => {
+      const original = new Date('2020-01-01T12:00:00');
+      const clone = Dates.parse(original);
+
+      expect(clone).not.toBe(original); // Different references
+      expect(clone.getTime()).toBe(original.getTime()); // Same value
+    });
+
+    it('parses numeric timestamps correctly', () => {
+      const timestamp = 1609459200000; // 2021-01-01 00:00:00 UTC
+      const d = Dates.parse(timestamp);
+      expect(d.getTime()).toBe(timestamp);
+    });
+
+    // --- 2. ISO Date (YYYY-MM-DD) Logic ---
+
+    it('parses YYYY-MM-DD as Local Midnight (Fix for UTC assumption)', () => {
+      // Standard JS `new Date('2025-11-03')` creates UTC midnight.
+      // In EST (UTC-5), that is Nov 2nd 7pm.
+      // Our parse() should force it to remain Nov 3rd 00:00 Local time.
+      const str = '2025-11-03';
+      const d = Dates.parse(str);
+
+      expect(d.getFullYear()).toBe(2025);
+      expect(d.getMonth()).toBe(10); // Nov is 10
+      expect(d.getDate()).toBe(3);
+      expect(d.getHours()).toBe(0);
+      expect(d.getMinutes()).toBe(0);
+    });
+
+    // --- 3. US Date Format (MM/DD/YYYY) ---
+
+    it('parses MM/DD/YYYY correctly', () => {
+      const d = Dates.parse('11/03/2025');
+      expect(d.getFullYear()).toBe(2025);
+      expect(d.getMonth()).toBe(10); // Nov
+      expect(d.getDate()).toBe(3);
+    });
+
+    it('parses M/D/YYYY (single digits) correctly', () => {
+      const d = Dates.parse('1/5/2026');
+      expect(d.getFullYear()).toBe(2026);
+      expect(d.getMonth()).toBe(0); // Jan
+      expect(d.getDate()).toBe(5);
+    });
+
+    it('parses MM-DD-YYYY (dashes) correctly', () => {
+      const d = Dates.parse('02-14-2024');
+      expect(d.getFullYear()).toBe(2024);
+      expect(d.getMonth()).toBe(1); // Feb
+      expect(d.getDate()).toBe(14);
+    });
+
+    // --- 4. Complex Time Parsing (12h vs 24h) ---
+
+    it('parses "YYYY-MM-DD HH:mm:ss" (24h format)', () => {
+      const d = Dates.parse('2025-01-15 14:30:15');
+      expect(d.getFullYear()).toBe(2025);
+      expect(d.getDate()).toBe(15);
+      expect(d.getHours()).toBe(14);
+      expect(d.getMinutes()).toBe(30);
+      expect(d.getSeconds()).toBe(15);
+    });
+
+    it('parses "MM/DD/YYYY HH:mm" (No seconds)', () => {
+      const d = Dates.parse('01/15/2025 14:30');
+      expect(d.getHours()).toBe(14);
+      expect(d.getMinutes()).toBe(30);
+      expect(d.getSeconds()).toBe(0);
+    });
+
+    it('parses "MM/DD/YYYY hh:mm am" (AM check)', () => {
+      const d = Dates.parse('01/15/2025 09:15 am');
+      expect(d.getHours()).toBe(9);
+      expect(d.getMinutes()).toBe(15);
+    });
+
+    it('parses "MM/DD/YYYY hh:mm pm" (PM conversion)', () => {
+      const d = Dates.parse('01/15/2025 02:45 pm');
+      expect(d.getHours()).toBe(14); // 2 + 12
+      expect(d.getMinutes()).toBe(45);
+    });
+
+    it('parses "12:00 pm" as Noon (12:00)', () => {
+      const d = Dates.parse('01/15/2025 12:00 pm');
+      expect(d.getHours()).toBe(12);
+    });
+
+    it('parses "12:00 am" as Midnight (00:00)', () => {
+      const d = Dates.parse('01/15/2025 12:00 am');
+      expect(d.getHours()).toBe(0);
+    });
+
+    it('parses "12:30 am" correctly (00:30)', () => {
+      const d = Dates.parse('01/15/2025 12:30 am');
+      expect(d.getHours()).toBe(0);
+      expect(d.getMinutes()).toBe(30);
+    });
+
+    // --- 5. Tricky / Mixed Scenarios ---
+
+    it('handles "23:03:19 pm" (Ignore PM because 23 > 12)', () => {
+      // User typed 24h time but included "pm".
+      // Should remain 23:03, not try to add 12 hours (invalid 35:00).
+      const d = Dates.parse('2026-01-05 23:03:19 pm');
+      expect(d.getFullYear()).toBe(2026);
+      expect(d.getDate()).toBe(5);
+      expect(d.getHours()).toBe(23);
+      expect(d.getMinutes()).toBe(3);
+      expect(d.getSeconds()).toBe(19);
+    });
+
+    it('handles "23:00 am" (Force to 23:00)', () => {
+      // Technically contradictory input, but parser should prioritize the explicit hour
+      // if it exceeds 12, treating the suffix as user error.
+      const d = Dates.parse('2026-01-05 23:00 am');
+      expect(d.getHours()).toBe(23);
+    });
+
+    it('handles mixed separators like "2025/01/05 5:00pm" (slash date + no space time)', () => {
+      const d = Dates.parse('2025/01/05 5:00pm');
+      expect(d.getFullYear()).toBe(2025);
+      expect(d.getDate()).toBe(5);
+      expect(d.getHours()).toBe(17); // 5 + 12
+    });
+
+    it('handles uppercase meridiem "5:00 PM"', () => {
+      const d = Dates.parse('01/05/2025 5:00 PM');
+      expect(d.getHours()).toBe(17);
+    });
+
+    it('handles ISO strings with timezone (fallback to native parse)', () => {
+      // The manual regex skips complex ISO strings (T, Z), so it falls back to new Date()
+      // which handles these correctly.
+      const iso = '2025-01-15T10:30:00.000Z';
+      const d = Dates.parse(iso);
+      expect(d.toISOString()).toBe(iso);
+    });
+
+    // --- 6. Edge Cases & Failures ---
+
+    it('returns "Now" for garbage strings', () => {
+      // If regex fails AND new Date() is invalid, it returns new Date() (Now)
+      const d = Dates.parse('this-is-not-a-date');
+      const now = new Date();
+      expect(Math.abs(d.getTime() - now.getTime())).toBeLessThan(100);
+    });
+  });
+
+  describe('format()', () => {
+    it('formats 12-hour time (h:i A) correctly', () => {
+      // Midnight + 5 mins -> 12:05 AM
+      const d = new Date(2025, 0, 1, 0, 5);
+      expect(Dates.format(d, 'h:i A')).toBe('12:05 AM');
+    });
+
+    it('formats 12-hour noon (h:i A) correctly', () => {
+      // Noon -> 12:00 PM
+      const d = new Date(2025, 0, 1, 12, 0);
+      expect(Dates.format(d, 'h:i A')).toBe('12:00 PM');
+    });
+
+    it('formats 24-hour time (H:i) correctly', () => {
+      // 2:05 PM -> 14:05
+      const d = new Date(2025, 0, 1, 14, 5);
+      expect(Dates.format(d, 'H:i')).toBe('14:05');
+    });
+
+    it('formats standard date string (m/d/Y)', () => {
+      const d = new Date(2025, 10, 25); // Nov 25 2025
+      expect(Dates.format(d, 'm/d/Y')).toBe('11/25/2025');
+    });
+
+    it('formats ordinal suffix (S) correctly', () => {
+      expect(Dates.format(new Date(2025, 0, 1), 'jS')).toBe('1st');
+      expect(Dates.format(new Date(2025, 0, 2), 'jS')).toBe('2nd');
+      expect(Dates.format(new Date(2025, 0, 3), 'jS')).toBe('3rd');
+      expect(Dates.format(new Date(2025, 0, 4), 'jS')).toBe('4th');
+      expect(Dates.format(new Date(2025, 0, 11), 'jS')).toBe('11th');
+      expect(Dates.format(new Date(2025, 0, 21), 'jS')).toBe('21st');
     });
   });
 

@@ -5,11 +5,14 @@ import { Metadata, ResolvingMetadata } from 'next';
 
 import NavBar from '@/components/generic/Account/NavBar';
 import Footer from '@/components/generic/Footer';
-import { ClientWrapper } from '@/components/generic/Account/ClientWrapper';
+import ReduxWrapper from '@/components/generic/Account/ReduxWrapper';
+import ContentsWrapper from '@/components/generic/Account/ContentsWrapper';
+import { Client } from '@/components/generic/Account/Contents/ClientWrapper';
+import AccountLoader from '@/components/generic/Account/AccountLoader';
 
 
 type Props = {
-  params: Promise<{ game_id: string }>;
+  params: Promise<{  }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
@@ -38,9 +41,16 @@ export default async function Page({ searchParams }: Props) {
 
   return (
     <>
-      <NavBar view = {view} />
-      <ClientWrapper view = {view} />
-      <div style = {{ padding: '20px 0px 0px 0px' }}><Footer /></div>
+      <ReduxWrapper view = {view as string}>
+        <NavBar />
+        <ContentsWrapper>
+          <>
+            <Client />
+            <div style = {{ padding: '20px 0px 0px 0px' }}><Footer /></div>
+          </>
+        </ContentsWrapper>
+        <AccountLoader />
+      </ReduxWrapper>
     </>
   );
 }
