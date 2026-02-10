@@ -29,7 +29,7 @@ class Socket extends Kontororu {
 
   private protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-  private url = `${this.protocol}//${hostname}:${port}/${path}`;
+  private url = `${this.protocol}//${hostname}${port ? ':' + port : ''}/${path}`;
 
   private session_id: string;
 
