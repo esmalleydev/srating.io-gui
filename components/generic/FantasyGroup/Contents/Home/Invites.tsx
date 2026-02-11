@@ -154,6 +154,11 @@ const Invites = () => {
           errorMessage = {errorMessage}
           value = {emails || ''}
           onChange={(val) => setEmails(val)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              sendInvites();
+            }
+          }}
         />
         <div style = {{ textAlign: 'right' }}>
           <Button value = 'send' title = 'Send' handleClick={sendInvites} />

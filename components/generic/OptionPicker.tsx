@@ -93,7 +93,7 @@ const OptionPicker = (
       selectable: true,
       disabled: option.disabled,
       onSelect: handleAction,
-      icon: isSelected ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> :  uncheckedIcon,
+      icon: isSelected ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : uncheckedIcon,
     };
   });
 
