@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "jest"],
     "lib": [
       "dom",
       "dom.iterable",
