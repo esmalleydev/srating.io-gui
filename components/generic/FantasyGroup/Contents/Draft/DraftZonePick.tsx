@@ -63,8 +63,7 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
   }
 
   useEffect(() => {
-    // Only run the timer if it's currently the user's pick
-    if (!isMyPick || !current_fantasy_draft_order.expires) {
+    if (!current_fantasy_draft_order || !current_fantasy_draft_order.expires) {
       setTimeLeft('');
       return;
     }
@@ -151,7 +150,6 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
     if (!isMyPick || !isOpen) {
       return (
         <div style = {{ textAlign: 'center' }}>
-          <Typography type = 'body1'>Waiting for your turn...</Typography>
           {isOpen ? <Typography type = 'subtitle1' style = {{ color: theme.error.main }}>{timeLeft}</Typography> : ''}
           {
             !isMyPick && isOpen &&
@@ -160,6 +158,7 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
               <Typography type = 'body1'>{user_id_x_fantasy_group_user[current_picking_user_id].name || current_picking_user_id} is currently picking!</Typography>
               : ''
           }
+          <Typography type = 'body1'>Waiting for your turn...</Typography>
         </div>
       );
     }

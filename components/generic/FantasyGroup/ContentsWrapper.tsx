@@ -14,6 +14,16 @@ import { useClientAPI } from '@/components/clientAPI';
 import { FantasyGroupLoadData, handleLoad } from './ReduxWrapper';
 import Typography from '@/components/ux/text/Typography';
 
+import { toast } from '@/components/utils/Toaster';
+
+// TODO
+// pending invites does not update from broadcast when someone joins
+// invite field input annoying on mouse up after selecting to clear input if fired outside modal it closes the modal
+// auto create first entry if free group?
+// limt players by position? only 3 of center etc?
+// select input in ios click then click out then click again, does not open
+
+
 /**
  * The main wrapper div for all the contents
  */
@@ -68,6 +78,54 @@ const ContentsWrapper = (
             value = Objector.extender({}, store.getState().fantasyGroupReducer[key], value);
           }
           dispatch(setDataKey({ key: key as keyof InitialState, value }));
+        }
+
+        if (
+          event.detail.toast &&
+          event.detail.toast.table &&
+          event.detail.toast.id
+        ) {
+          let object = event.detail.toast.table in event.detail.data && event.detail.toast.id in event.detail.data[event.detail.toast.table] ? event.detail.data[event.detail.toast.table] : null;
+          if (
+            !object &&
+            `${event.detail.toast.table}s` in event.detail.data &&
+            event.detail.toast.id in event.detail.data[`${event.detail.toast.table}s`]
+          ) {
+            object = event.detail.data[`${event.detail.toast.table}s`][event.detail.toast.id];
+          }
+
+          if (
+            event.detail.toast.table === 'fantasy_draft_order' &&
+            object !== null &&
+            object.picked === 1
+          ) {
+            const fantasy_entry = (
+              object.fantasy_entry_id in store.getState().fantasyGroupReducer.fantasy_entrys ?
+                store.getState().fantasyGroupReducer.fantasy_entrys[object.fantasy_entry_id]
+                : null
+            );
+
+            const fantasy_entry_player = (
+              object.fantasy_entry_player_id in store.getState().fantasyGroupReducer.fantasy_entry_players ?
+                store.getState().fantasyGroupReducer.fantasy_entry_players[object.fantasy_entry_player_id]
+                : null
+            );
+
+            const player_team_season = (
+              fantasy_entry_player && fantasy_entry_player.player_team_season_id in store.getState().fantasyGroupReducer.player_team_seasons ?
+                store.getState().fantasyGroupReducer.player_team_seasons[fantasy_entry_player.player_team_season_id]
+                : null
+            );
+
+            const player = (
+              player_team_season &&
+              player_team_season.player_id in store.getState().fantasyGroupReducer.players ?
+                store.getState().fantasyGroupReducer.players[player_team_season.player_id]
+                : null
+            );
+
+            toast.info(`${fantasy_entry?.name || 'UNK'} picked ${player ? `${player.first_name} ${player.last_name}` : 'UNK'}`);
+          }
         }
       }
     };
