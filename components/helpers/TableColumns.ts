@@ -109,7 +109,7 @@ class TableColumns {
         graphable: false,
         widths: {
           default: (view === 'player' || view === 'transfer' ? 150 : 125),
-          425: (view === 'player' || view === 'transfer' ? 100 : 85),
+          425: (view === 'player' || view === 'transfer' || view === 'roster' ? 100 : 85),
         },
         getLabel: () => {
           if (view === 'fantasy') {
@@ -186,7 +186,7 @@ class TableColumns {
         views: ['roster'],
         graphable: false,
         widths: {
-          default: 40,
+          default: 20,
         },
         style: {
         },
