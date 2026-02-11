@@ -21,18 +21,12 @@ const NavBar = () => {
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization) || {};
 
 
-  // const divStyle = Style.getStyleClassName({
-  //   display: 'flex',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   padding: '5px 10px',
-  // });
-
   const divStyle = Objector.extender(
     Style.getNavBar(),
     {
       justifyContent: 'space-between',
       backgroundColor: theme.background.main,
+      padding: 5,
     },
   );
 
@@ -56,7 +50,7 @@ const NavBar = () => {
     <>
       <div className={Style.getStyleClassName(divStyle)}>
         <div style = {{ display: 'flex' }}>{show_back ? <BackButton /> : ''}</div>
-        <div>{getHeaderText() ? <Typography type = 'h5'>{getHeaderText()}</Typography> : ''}</div>
+        <div>{getHeaderText() ? <Typography type = 'h6'>{getHeaderText()}</Typography> : ''}</div>
         <div></div>
       </div>
     </>
