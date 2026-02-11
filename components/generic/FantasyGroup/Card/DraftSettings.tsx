@@ -94,9 +94,10 @@ const DraftSettings = (
     <Modal
       open = {openModal}
       onClose={() => setOpenModal(false)}
+      showCloseButton
     >
       <Typography type = 'h6'>{fantasy_group.locked ? 'Draft order' : 'Preview draft order'}</Typography>
-      <div style = {{ maxHeight: 500, overflowY: 'scroll' }}>
+      <div style = {{ maxHeight: 500, overflowY: 'scroll', width: '100%' }}>
         {decorateDraftOrder()}
       </div>
     </Modal>

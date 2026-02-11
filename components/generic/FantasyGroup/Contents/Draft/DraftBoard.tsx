@@ -106,8 +106,7 @@ const DraftBoard = () => {
       return (
         <div style = {{ padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', fontStyle: 'italic', color: theme.text.secondary }}>
           <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon /></span>
-          <Typography type = 'body1' style = {{ color: theme.text.secondary }}>Waiting for draft to start!</Typography>
-          <Typography type = 'a' style = {{ marginLeft: 5 }} onClick={() => setOpenModal(true)}>Preview draft order</Typography>
+          <Typography type = 'body1' style = {{ color: theme.text.secondary }}>Waiting for draft to start!<Typography type = 'a' style = {{ marginLeft: 5 }} onClick={() => setOpenModal(true)}>Preview draft order</Typography></Typography>
         </div>
       );
     }
@@ -133,9 +132,10 @@ const DraftBoard = () => {
       <Modal
         open = {openModal}
         onClose={() => setOpenModal(false)}
+        showCloseButton
       >
         <Typography type = 'h6'>Preview draft order</Typography>
-        <div style = {{ maxHeight: 500, overflowY: 'scroll' }}>
+        <div style = {{ maxHeight: 500, overflowY: 'scroll', width: '100%' }}>
           {decorateDraftOrder()}
         </div>
       </Modal>

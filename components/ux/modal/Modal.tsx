@@ -6,6 +6,7 @@ import { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Objector from '@/components/utils/Objector';
 import Paper from '../container/Paper';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const Modal = (
@@ -13,6 +14,7 @@ const Modal = (
     open,
     onClose,
     type = 'paper',
+    showCloseButton = false,
     paperStyle = {},
     children,
   }:
@@ -20,6 +22,7 @@ const Modal = (
     open: boolean;
     onClose: (e: React.SyntheticEvent) => void;
     type?: 'paper' | 'custom';
+    showCloseButton?: boolean;
     paperStyle?: React.CSSProperties;
     // anchor: HTMLElement | null;
     children: React.ReactNode;
@@ -82,6 +85,26 @@ const Modal = (
 
   };
 
+  const closeContainerStyle: React.CSSProperties = {
+    position: 'sticky',
+    top: 0,
+    right: 0,
+    width: 40,
+    height: 50,
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    float: 'right',
+    zIndex: 9999,
+  };
+
+  const closeContainer = (
+    <div className={Style.getStyleClassName(closeContainerStyle)} onClick={onClose}>
+      <CloseIcon />
+    </div>
+  );
+
 
   if (!open) {
     return null;
@@ -123,6 +146,7 @@ const Modal = (
           // onAnimationEnd={handleAnimationEnd}
           ref={contentRef}
         >
+          {showCloseButton ? closeContainer : ''}
           {getContents()}
         </div>
       </div>
