@@ -44,6 +44,7 @@ const CompareView = ({ statistic_rankings }) => {
 
 
   const numberOfTeams = Organization.getNumberOfTeams({ organization_id, division_id, season });
+  const locked = (!('away' in predictions) && !('home' in predictions));
 
   const predictionRows: CompareStatisticRow[] = [
     {
@@ -58,7 +59,7 @@ const CompareView = ({ statistic_rankings }) => {
       graphable: false,
       showDifference: false,
       sort: 'higher',
-      locked: (!('away' in predictions) && !('home' in predictions)),
+      locked,
       loading: predictionsLoading,
       getDisplayValue: (row) => {
         return `${(('win_percentage' in row ? Number(row.win_percentage) : 0) * 100).toFixed(0)}%`;
@@ -67,11 +68,7 @@ const CompareView = ({ statistic_rankings }) => {
         return 'win_percentage' in row ? row.win_percentage : null;
       },
     },
-  ];
-
-  if (predictions.home_score && predictions.away_score) {
-    const locked = (!('away' in predictions) && !('home' in predictions));
-    predictionRows.push({
+    {
       id: 'predicted_score',
       label: 'Predicted score',
       tooltip: 'Predicted score',
@@ -89,8 +86,8 @@ const CompareView = ({ statistic_rankings }) => {
       getValue: (row) => {
         return !locked && 'score' in row ? row.score : 0;
       },
-    });
-  }
+    },
+  ];
 
   const sections = getSections();
 
