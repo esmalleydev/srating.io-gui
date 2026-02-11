@@ -66,6 +66,7 @@ const Textarea: React.FC<TextareaProps> = (props) => {
     resize: 'vertical',
     fontFamily: 'inherit', // Ensure font matches Input
     minHeight: '46px', // Match Input minimum
+    fontSize: '1rem',
   };
 
   if (variant === 'filled') {

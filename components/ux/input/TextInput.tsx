@@ -80,6 +80,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     transition: 'all 0.3s ease',
     backgroundColor: 'transparent',
     borderRadius: variant === 'outlined' ? 4 : 0,
+    fontSize: '1rem',
   };
 
   if (variant === 'filled') {
