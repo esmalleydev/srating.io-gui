@@ -84,6 +84,7 @@ const Invites = () => {
       if (!new_fantasy_group_invites || new_fantasy_group_invites.error) {
         setErrorMessage(new_fantasy_group_invites.error);
       } else {
+        setEmails('');
         setInviteModalOpen(false);
         dispatch(setDataKey({ key: 'fantasy_group_invites', value: Objector.extender({}, fantasy_group_invites, new_fantasy_group_invites) }));
       }
@@ -137,11 +138,15 @@ const Invites = () => {
       </Paper>
       <Modal
         open = {inviteModalOpen}
-        onClose={() => setInviteModalOpen(false)}
+        onClose={() => {
+          setInviteModalOpen(false);
+          setEmails('');
+        }}
       >
         <Typography type = 'h6'>Invite to league</Typography>
         <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Enter a list of emails to send an invite to below. Separate by a [space] or comma</Typography>
         <TextInput
+          autoFocus
           inputHandler={inputHandler}
           type = 'outlined'
           placeholder='Emails'
