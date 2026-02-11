@@ -78,7 +78,7 @@ const DraftSettings = (
             info={'You will recieve an email and notification when it is your turn!'}
           />
           {
-            fantasy_group.draft_type_terminology_id === 'a03bfac9-e11f-11f0-bc34-529c3ffdbb93' ? // round robin
+            fantasy_group.draft_time_per_user_in_seconds ?
               <Slab
                 label='Draft pick time limit'
                 primary={`${((fantasy_group.draft_time_per_user_in_seconds ?? 0) / 60).toFixed(2)} mins`}
