@@ -145,7 +145,7 @@ const PublicBracketsGroups = (
     <div>
       <Typography type = 'h6'>Open public bracket groups</Typography>
       <Paper style={{ padding: 16 }}>
-        <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Join one of these groups to compete in the NCAA tournamanet bracket!</Typography>
+        <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Join one of these groups to compete in the NCAA tournament bracket!</Typography>
         {
           free_rows.length ?
             <>
