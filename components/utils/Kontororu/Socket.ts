@@ -6,7 +6,7 @@ const hostname = process.env.NEXT_PUBLIC_WS_HOST;
 const port = process.env.NEXT_PUBLIC_WS_PORT;
 const path = process.env.NEXT_PUBLIC_WS_PATH;
 
-
+type ConnectionState = 'connected' | 'stale' | 'disconnected';
 
 type SocketMessage = {
   type: 'subscribe' | 'unsubscribe' | 'data' | 'heartbeat';
@@ -22,6 +22,8 @@ type SocketResponseMessage = {
 
 class Socket extends Kontororu {
   private ws?: WebSocket;
+
+  private connection_state: ConnectionState = 'connected';
 
   private protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
@@ -42,6 +44,8 @@ class Socket extends Kontororu {
   private readonly HEARTBEAT_INTERVAL_MS = 5000;
   // Calculate threshold: 2 missed beats + 1 second of network jitter buffer
   private readonly SUSPENSION_THRESHOLD_MS = (this.HEARTBEAT_INTERVAL_MS * 2) + 1000;
+  // 3 Heartbeats + 1s buffer = 16 seconds
+  private readonly DISCONNECT_THRESHOLD_MS = (this.HEARTBEAT_INTERVAL_MS * 3) + 1000;
 
   constructor() {
     super();
@@ -111,14 +115,32 @@ class Socket extends Kontororu {
   }
 
   /**
+   * Update the connection state, dispatch an event if it actually changed.
+   */
+  private update_connection_state(connection_state_: ConnectionState) {
+    if (this.connection_state !== connection_state_) {
+      this.connection_state = connection_state_;
+
+      console.warn(`[Socket] State changed to: ${this.connection_state}`);
+      this.dispatchEvent(new CustomEvent('connection_state', { detail: this.connection_state }));
+    }
+  }
+
+  /**
    * Helper to determine if we need to fetch missing data
    */
   private check_staleness(source: string) {
     const now = Date.now();
     const time_since_last = now - this.last_heartbeat_timestamp;
 
+    if (time_since_last > this.DISCONNECT_THRESHOLD_MS) {
+      this.update_connection_state('disconnected');
+      return;
+    }
+
     // If gap is larger than threshold, we missed messages
     if (time_since_last > this.SUSPENSION_THRESHOLD_MS) {
+      this.update_connection_state('stale');
       console.warn(`[Socket] Staleness detected via ${source} (${time_since_last}ms gap). Triggering refresh.`);
 
       // Update TS to prevent double-firing
@@ -130,6 +152,7 @@ class Socket extends Kontororu {
   }
 
   private handle_open(event: Event) {
+    this.update_connection_state('connected');
     // clear reconnect timeout if we connected
     if (this.reconnect_timeout) {
       clearTimeout(this.reconnect_timeout);
@@ -153,6 +176,7 @@ class Socket extends Kontororu {
   }
 
   private handle_message(event: MessageEvent) {
+    this.update_connection_state('connected');
     try {
       const data = JSON.parse(event.data);
 
@@ -180,6 +204,7 @@ class Socket extends Kontororu {
   }
 
   private handle_close(event: CloseEvent) {
+    this.update_connection_state('disconnected');
     if (this.should_reconnect) {
       const delay = Math.min(1000 * Math.pow(2, this.reconnect_attempts), 30000);
       console.log(`Connection lost. Retrying in ${delay}ms... (Attempt ${this.reconnect_attempts + 1})`);
@@ -194,6 +219,7 @@ class Socket extends Kontororu {
   }
 
   private handle_error(event: Event) {
+    this.update_connection_state('disconnected');
     console.error('WebSocket Error:', event);
     this.ws?.close();
   }

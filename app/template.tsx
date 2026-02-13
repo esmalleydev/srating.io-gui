@@ -12,10 +12,13 @@ import FooterNavigation from '@/components/generic/FooterNavigation';
 import { ScrollContainer, ScrollProvider } from '@/contexts/scrollContext';
 import Spinner from '@/components/generic/Spinner';
 import Toast from '@/components/ux/overlay/Toast';
+import { socket } from '@/components/utils/Kontororu/Socket';
+import { toast } from '@/components/utils/Toaster';
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
   const themeMode = useAppSelector((state) => state.themeReducer.mode);
+  const session_id = useAppSelector((state) => state.userReducer.session_id);
 
   const windowDimensions = useWindowDimensions() as Dimensions;
   const { width } = windowDimensions || {};
@@ -29,6 +32,27 @@ const Template = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+
+  useEffect(() => {
+    if (session_id) {
+      socket.connect(session_id);
+
+      socket.addEventListener('connection_state', (event: CustomEvent) => {
+        if (event && event.detail === 'disconnected') {
+          toast.error('Lost connection');
+        }
+
+        if (event && event.detail === 'connected') {
+          toast.success('Connected');
+        }
+
+        if (event && event.detail === 'stale') {
+          toast.info('Stale connection');
+        }
+      });
+    }
+  }, [session_id]);
 
   // todo deprecate once mui is completely removed
   const darkTheme = createTheme({

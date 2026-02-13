@@ -65,12 +65,13 @@ const ContentsWrapper = (
       if (
         event &&
         event.detail &&
+        event.detail.type === 'data' &&
         event.detail.table &&
         event.detail.id &&
         event.detail.data &&
         event.detail.table === 'fantasy_group'
       ) {
-        const d: any = event.detail.data;
+        const d: object = event.detail.data;
         const store = getStore();
         for (const key in d) {
           let value = d[key];
@@ -131,6 +132,13 @@ const ContentsWrapper = (
     };
 
     socket.addEventListener('message', messageHandler);
+
+    socket.addEventListener('refresh', () => {
+      if (online && fantasy_group.fantasy_group_id) {
+        setRequest(false);
+        load();
+      }
+    });
 
     if (session_id) {
       socket.connect(session_id);

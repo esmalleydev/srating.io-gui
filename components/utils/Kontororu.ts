@@ -7,9 +7,11 @@ class Kontororu extends EventTarget {
     this.listeners = {};
   }
 
-  private listeners: object;
+  private listeners: {
+    [type: string]: Array<(...args: unknown[]) => void>;
+  };
 
-  addEventListener(type, listener) {
+  addEventListener(type: string, listener: (...args: unknown[]) => void) {
     super.addEventListener(type, listener);
 
     if (!this.listeners[type]) {
@@ -18,7 +20,7 @@ class Kontororu extends EventTarget {
     this.listeners[type].push(listener);
   }
 
-  removeEventListener(type, listener) {
+  removeEventListener(type: string, listener: (...args: unknown[]) => void) {
     super.removeEventListener(type, listener);
 
     if (this.listeners[type]) {
@@ -26,7 +28,7 @@ class Kontororu extends EventTarget {
     }
   }
 
-  getListeners(type) {
+  getListeners(type: string) {
     return this.listeners[type] || [];
   }
 }
