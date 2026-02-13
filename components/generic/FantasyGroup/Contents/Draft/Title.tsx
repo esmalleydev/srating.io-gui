@@ -63,13 +63,21 @@ const Title = () => {
     setTitle(data.title);
     setIcon(data.icon);
 
-    const timer = setInterval(() => {
-      data = getData();
-      setTitle(data.title);
-      setIcon(data.icon);
-    }, 1000);
+    let timer: null | NodeJS.Timeout = null;
 
-    return () => clearInterval(timer);
+    if (!fantasy_group.drafted) {
+      timer = setInterval(() => {
+        data = getData();
+        setTitle(data.title);
+        setIcon(data.icon);
+      }, 1000);
+    }
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
   }, [getData]);
 
   return (

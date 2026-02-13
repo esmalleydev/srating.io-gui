@@ -9,7 +9,7 @@ const path = process.env.NEXT_PUBLIC_WS_PATH;
 
 
 type SocketMessage = {
-  type: 'subscribe' | 'unsubscribe';
+  type: 'subscribe' | 'unsubscribe' | 'data' | 'heartbeat';
   table: string;
   id: string;
 }
@@ -21,25 +21,38 @@ type SocketResponseMessage = {
 }
 
 class Socket extends Kontororu {
-  // constructor() {
-  //   super();
-  // }
-
   private ws?: WebSocket;
 
   private protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-  private url = `${this.protocol}//${hostname}${port ? ':' + port : ''}/${path}`;
+  private url = `${this.protocol}//${hostname}${port ? `:${port}` : ''}/${path}`;
 
   private session_id: string;
 
   private message_queue: SocketMessage[] = [];
 
+  // Reconnection logic
   private reconnect_attempts: number = 0;
-
   private should_reconnect = true;
-
   private reconnect_timeout: NodeJS.Timeout;
+
+  // Heartbeat / Sleep Detection Logic
+  private last_heartbeat_timestamp: number = Date.now();
+  // How often the server pings THIS specific client (5 seconds)
+  private readonly HEARTBEAT_INTERVAL_MS = 5000;
+  // Calculate threshold: 2 missed beats + 1 second of network jitter buffer
+  private readonly SUSPENSION_THRESHOLD_MS = (this.HEARTBEAT_INTERVAL_MS * 2) + 1000;
+
+  constructor() {
+    super();
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', (event) => {
+        if (document.visibilityState === 'visible') {
+          this.check_staleness('tab_switch');
+        }
+      });
+    }
+  }
 
   public connect(session_id: string) {
     if (!session_id) {
@@ -60,6 +73,9 @@ class Socket extends Kontororu {
     this.ws = new WebSocket(this.url);
 
     this.session_id = session_id;
+
+    // Reset heartbeat timer on new connection
+    this.last_heartbeat_timestamp = Date.now();
 
     this.ws.addEventListener('open', (event) => this.handle_open(event));
     this.ws.addEventListener('message', (event) => this.handle_message(event));
@@ -94,11 +110,37 @@ class Socket extends Kontororu {
     }
   }
 
+  /**
+   * Helper to determine if we need to fetch missing data
+   */
+  private check_staleness(source: string) {
+    const now = Date.now();
+    const time_since_last = now - this.last_heartbeat_timestamp;
+
+    // If gap is larger than threshold, we missed messages
+    if (time_since_last > this.SUSPENSION_THRESHOLD_MS) {
+      console.warn(`[Socket] Staleness detected via ${source} (${time_since_last}ms gap). Triggering refresh.`);
+
+      // Update TS to prevent double-firing
+      this.last_heartbeat_timestamp = now;
+
+      // Dispatch event for your UI to listen to
+      this.dispatchEvent(new CustomEvent('refresh', { bubbles: true }));
+    }
+  }
+
   private handle_open(event: Event) {
     // clear reconnect timeout if we connected
     if (this.reconnect_timeout) {
       clearTimeout(this.reconnect_timeout);
     }
+
+    // If we are reconnecting (attempts > 0), we definitely missed data.
+    if (this.reconnect_attempts > 0) {
+      console.log('[Socket] Reconnected. Triggering refresh.');
+      this.dispatchEvent(new CustomEvent('refresh', { bubbles: true }));
+    }
+
     // reset the reconnect attempts
     this.reconnect_attempts = 0;
 
@@ -112,6 +154,15 @@ class Socket extends Kontororu {
 
   private handle_message(event: MessageEvent) {
     try {
+      const data = JSON.parse(event.data);
+
+      // HEARTBEAT CHECK: Intercept heartbeat messages
+      if (data.type === 'heartbeat') {
+        this.check_staleness('heartbeat');
+        this.last_heartbeat_timestamp = Date.now();
+        return; // Do not bubble 'heartbeat' to the UI
+      }
+
       // todo not sure I like this
       const messageEvent = new CustomEvent('message', {
         detail: JSON.parse(event.data) as SocketResponseMessage,
