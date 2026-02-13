@@ -25,7 +25,7 @@ class Socket extends Kontororu {
 
   private connection_state: ConnectionState = 'connected';
 
-  private protocol = (window && window.Location && window.location.protocol && window.location.protocol === 'https:' ? 'wss:' : 'ws:');
+  private protocol = (typeof window !== 'undefined' && window.location && window.location.protocol && window.location.protocol === 'https:' ? 'wss:' : 'ws:');
 
   private url = `${this.protocol}//${hostname}${port ? `:${port}` : ''}/${path}`;
 

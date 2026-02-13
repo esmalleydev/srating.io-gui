@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -19,6 +19,7 @@ import { toast } from '@/components/utils/Toaster';
 const Template = ({ children }: { children: React.ReactNode }) => {
   const themeMode = useAppSelector((state) => state.themeReducer.mode);
   const session_id = useAppSelector((state) => state.userReducer.session_id);
+  const pendingDisconnectRef = useRef<NodeJS.Timeout | null>(null);
 
   const windowDimensions = useWindowDimensions() as Dimensions;
   const { width } = windowDimensions || {};
@@ -36,16 +37,35 @@ const Template = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const connectionHanlder = (event: CustomEvent) => {
-      console.log('connection handler', event.detail)
-      if (event && event.detail === 'disconnected') {
-        toast.error('Lost connection');
+      const status = event?.detail;
+
+      if (status === 'connected') {
+        if (pendingDisconnectRef.current) {
+          // If a disconnect was queued, this is a RECONNECTION
+          clearTimeout(pendingDisconnectRef.current);
+          pendingDisconnectRef.current = null;
+          toast.success('Reconnected');
+        } else {
+          // If nothing was queued, it's just a fresh initial connection
+          toast.success('Connected');
+        }
       }
 
-      if (event && event.detail === 'connected') {
-        toast.success('Connected');
+      if (status === 'disconnected') {
+        // Clear any existing timers to avoid double-processing
+        if (pendingDisconnectRef.current) {
+          clearTimeout(pendingDisconnectRef.current);
+        }
+
+        // Buffer the error toast to see if a 'connected' event follows
+        pendingDisconnectRef.current = setTimeout(() => {
+          toast.error('Lost connection');
+          pendingDisconnectRef.current = null;
+        }, 1000); // 1 second buffer is usually safe for tab-switching
       }
 
-      if (event && event.detail === 'stale') {
+      // 3. Stale logic (usually immediate)
+      if (status === 'stale') {
         toast.info('Stale connection');
       }
     };
@@ -58,6 +78,9 @@ const Template = ({ children }: { children: React.ReactNode }) => {
 
     return () => {
       socket.removeEventListener('connection_state', connectionHanlder);
+      if (pendingDisconnectRef.current) {
+        clearTimeout(pendingDisconnectRef.current);
+      }
     };
   }, [session_id]);
 
