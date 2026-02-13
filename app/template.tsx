@@ -35,23 +35,30 @@ const Template = ({ children }: { children: React.ReactNode }) => {
 
 
   useEffect(() => {
+    const connectionHanlder = (event: CustomEvent) => {
+      console.log('connection handler', event.detail)
+      if (event && event.detail === 'disconnected') {
+        toast.error('Lost connection');
+      }
+
+      if (event && event.detail === 'connected') {
+        toast.success('Connected');
+      }
+
+      if (event && event.detail === 'stale') {
+        toast.info('Stale connection');
+      }
+    };
+
     if (session_id) {
       socket.connect(session_id);
 
-      socket.addEventListener('connection_state', (event: CustomEvent) => {
-        if (event && event.detail === 'disconnected') {
-          toast.error('Lost connection');
-        }
-
-        if (event && event.detail === 'connected') {
-          toast.success('Connected');
-        }
-
-        if (event && event.detail === 'stale') {
-          toast.info('Stale connection');
-        }
-      });
+      socket.addEventListener('connection_state', connectionHanlder);
     }
+
+    return () => {
+      socket.removeEventListener('connection_state', connectionHanlder);
+    };
   }, [session_id]);
 
   // todo deprecate once mui is completely removed

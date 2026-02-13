@@ -75,7 +75,7 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
         setTimeLeft('Times up! Auto-picking a player...');
 
         // if I have a selected row, but didnt press the button, try to pick it for them
-        if (selectedRow) {
+        if (selectedRow && isMyPick) {
           handlePick();
         }
         return;

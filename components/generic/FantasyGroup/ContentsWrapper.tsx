@@ -131,14 +131,17 @@ const ContentsWrapper = (
       }
     };
 
-    socket.addEventListener('message', messageHandler);
-
-    socket.addEventListener('refresh', () => {
+    const refresher = () => {
       if (online && fantasy_group.fantasy_group_id) {
         setRequest(false);
         load();
+        socket.message({ type: 'subscribe', table: 'fantasy_group', id: fantasy_group.fantasy_group_id });
       }
-    });
+    };
+
+    socket.addEventListener('message', messageHandler);
+
+    socket.addEventListener('refresh', refresher);
 
     if (session_id) {
       socket.connect(session_id);
@@ -153,6 +156,7 @@ const ContentsWrapper = (
         socket.message({ type: 'unsubscribe', table: 'fantasy_group', id: fantasy_group.fantasy_group_id });
       }
       socket.removeEventListener('message', messageHandler);
+      socket.removeEventListener('refresh', refresher);
     };
   }, [session_id, fantasy_group.fantasy_group_id, online]);
 

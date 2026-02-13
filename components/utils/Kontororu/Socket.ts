@@ -25,7 +25,7 @@ class Socket extends Kontororu {
 
   private connection_state: ConnectionState = 'connected';
 
-  private protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  private protocol = (window && window.Location && window.location.protocol && window.location.protocol === 'https:' ? 'wss:' : 'ws:');
 
   private url = `${this.protocol}//${hostname}${port ? `:${port}` : ''}/${path}`;
 
@@ -119,6 +119,7 @@ class Socket extends Kontororu {
    */
   private update_connection_state(connection_state_: ConnectionState) {
     if (this.connection_state !== connection_state_) {
+      console.log('update_connection_state', connection_state_);
       this.connection_state = connection_state_;
 
       console.warn(`[Socket] State changed to: ${this.connection_state}`);
