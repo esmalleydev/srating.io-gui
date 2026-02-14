@@ -49,12 +49,12 @@ const LayoutWrapper = ({ children }) => {
     };
 
     const handleOnline = () => {
-      toast.success('Connected');
+      // toast.success('Connected');
       dispatch(setDataKeyGeneral({ key: 'online', value: true }));
     };
 
     const handleOffline = () => {
-      toast.error('Lost connection');
+      // toast.error('Lost connection');
       dispatch(setDataKeyGeneral({ key: 'online', value: false }));
     };
 

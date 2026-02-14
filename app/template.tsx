@@ -61,7 +61,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
         pendingDisconnectRef.current = setTimeout(() => {
           toast.error('Lost connection');
           pendingDisconnectRef.current = null;
-        }, 1000); // 1 second buffer is usually safe for tab-switching
+        }, 3000);
       }
 
       // 3. Stale logic (usually immediate)

@@ -78,7 +78,7 @@ const Toast = () => {
   // Use React Portal to render strictly into document.body
   return ReactDOM.createPortal(
     <div className = {Style.getStyleClassName(containerStyle)}>
-      {toasts.map((t) => {
+      {toasts.map((t, index) => {
         const tStyle = Objector.deepClone(toastStyle);
         let iconColor = theme.info.main;
         const iconStyle = { color: iconColor, marginRight: 8, fontSize: 20 };
@@ -103,7 +103,7 @@ const Toast = () => {
         }
 
         return (
-          <Paper style = {tStyle} elevation={4}>
+          <Paper key = {`toast-${index}`} style = {tStyle} elevation={4}>
             <div className = {Style.getStyleClassName(toastContainerStyle)}>
               <div className = {Style.getStyleClassName(lineStyle)}>
                 {icon}
