@@ -16,7 +16,7 @@ import { updateFromURL as K } from '@/redux/features/fantasy_group-slice';
 import { updateFromURL as L } from '@/redux/features/payment_router-slice';
 import { updateFromURL as M } from '@/redux/features/fantasy_entry-slice';
 import { updateFromURL as N, setDataKey as setDataKeyGeneral } from '@/redux/features/general-slice';
-import { toast } from '@/components/utils/Toaster';
+// import { toast } from '@/components/utils/Toaster';
 import { useAppDispatch } from '@/redux/hooks';
 
 
@@ -61,6 +61,7 @@ const LayoutWrapper = ({ children }) => {
     // Add the event listener when the component mounts
     window.addEventListener('popstate', handlePopState);
 
+    // safari is very conservative when they dispatch these events... use websocket heartbeat instead
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 

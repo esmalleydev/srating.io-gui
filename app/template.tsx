@@ -5,7 +5,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import Header from '@/components/generic/Header';
 import FooterNavigation from '@/components/generic/FooterNavigation';
@@ -14,9 +14,11 @@ import Spinner from '@/components/generic/Spinner';
 import Toast from '@/components/ux/overlay/Toast';
 import { socket } from '@/components/utils/Kontororu/Socket';
 import { toast } from '@/components/utils/Toaster';
+import { setDataKey } from '@/redux/features/general-slice';
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
+  const dispatch = useAppDispatch();
   const themeMode = useAppSelector((state) => state.themeReducer.mode);
   const session_id = useAppSelector((state) => state.userReducer.session_id);
   const pendingDisconnectRef = useRef<NodeJS.Timeout | null>(null);
@@ -40,6 +42,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
       const status = event?.detail;
 
       if (status === 'connected') {
+        dispatch(setDataKey({ key: 'online', value: true }));
         if (pendingDisconnectRef.current) {
           // If a disconnect was queued, this is a RECONNECTION
           clearTimeout(pendingDisconnectRef.current);
@@ -52,6 +55,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
       }
 
       if (status === 'disconnected') {
+        dispatch(setDataKey({ key: 'online', value: false }));
         // Clear any existing timers to avoid double-processing
         if (pendingDisconnectRef.current) {
           clearTimeout(pendingDisconnectRef.current);

@@ -20,7 +20,7 @@ type SocketResponseMessage = {
   data: object;
 }
 
-const debug = false;
+const debug = true;
 
 class Socket extends Kontororu {
   private ws?: WebSocket;
@@ -179,7 +179,11 @@ class Socket extends Kontororu {
 
     if (debug) console.log('websocket check_staleness()', source, time_since_last);
 
-    if (time_since_last > this.DISCONNECT_THRESHOLD_MS) {
+    if (
+      !this.ws ||
+      this.ws.readyState === this.ws.CLOSED ||
+      time_since_last > this.DISCONNECT_THRESHOLD_MS
+    ) {
       this.update_connection_state('disconnected');
       return;
     }
@@ -194,7 +198,13 @@ class Socket extends Kontororu {
 
   private handle_open(event: Event) {
     if (debug) console.log('websocket handle open()');
-    this.update_connection_state('connected');
+
+    if (
+      this.ws &&
+      this.ws.readyState === this.ws.OPEN
+    ) {
+      this.update_connection_state('connected');
+    }
     // clear reconnect timeout if we connected
     if (this.reconnect_timeout) {
       clearTimeout(this.reconnect_timeout);
