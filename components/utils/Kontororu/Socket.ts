@@ -20,7 +20,7 @@ type SocketResponseMessage = {
   data: object;
 }
 
-const debug = true;
+const debug = false;
 
 class Socket extends Kontororu {
   private ws?: WebSocket;

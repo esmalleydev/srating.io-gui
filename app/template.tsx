@@ -21,7 +21,8 @@ const Template = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
   const themeMode = useAppSelector((state) => state.themeReducer.mode);
   const session_id = useAppSelector((state) => state.userReducer.session_id);
-  const pendingDisconnectRef = useRef<NodeJS.Timeout | null>(null);
+  const pendingStatusRef = useRef<NodeJS.Timeout | null>(null);
+  const pendingMSWait = 1100;
 
   const windowDimensions = useWindowDimensions() as Dimensions;
   const { width } = windowDimensions || {};
@@ -43,29 +44,35 @@ const Template = ({ children }: { children: React.ReactNode }) => {
 
       if (status === 'connected') {
         dispatch(setDataKey({ key: 'online', value: true }));
-        if (pendingDisconnectRef.current) {
+        if (pendingStatusRef.current) {
           // If a disconnect was queued, this is a RECONNECTION
-          clearTimeout(pendingDisconnectRef.current);
-          pendingDisconnectRef.current = null;
-          toast.success('Reconnected');
+          clearTimeout(pendingStatusRef.current);
+          pendingStatusRef.current = null;
+
+          pendingStatusRef.current = setTimeout(() => {
+            toast.success('Reconnected');
+            pendingStatusRef.current = null;
+          }, pendingMSWait);
         } else {
-          // If nothing was queued, it's just a fresh initial connection
-          toast.success('Connected');
+          pendingStatusRef.current = setTimeout(() => {
+            toast.success('Reconnected');
+            pendingStatusRef.current = null;
+          }, pendingMSWait);
         }
       }
 
       if (status === 'disconnected') {
         dispatch(setDataKey({ key: 'online', value: false }));
         // Clear any existing timers to avoid double-processing
-        if (pendingDisconnectRef.current) {
-          clearTimeout(pendingDisconnectRef.current);
+        if (pendingStatusRef.current) {
+          clearTimeout(pendingStatusRef.current);
         }
 
         // Buffer the error toast to see if a 'connected' event follows
-        pendingDisconnectRef.current = setTimeout(() => {
+        pendingStatusRef.current = setTimeout(() => {
           toast.error('Lost connection');
-          pendingDisconnectRef.current = null;
-        }, 3000);
+          pendingStatusRef.current = null;
+        }, pendingMSWait);
       }
 
       // 3. Stale logic (usually immediate)
@@ -82,8 +89,8 @@ const Template = ({ children }: { children: React.ReactNode }) => {
 
     return () => {
       socket.removeEventListener('connection_state', connectionHanlder);
-      if (pendingDisconnectRef.current) {
-        clearTimeout(pendingDisconnectRef.current);
+      if (pendingStatusRef.current) {
+        clearTimeout(pendingStatusRef.current);
       }
     };
   }, [session_id]);
