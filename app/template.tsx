@@ -55,7 +55,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
           }, pendingMSWait);
         } else {
           pendingStatusRef.current = setTimeout(() => {
-            toast.success('Reconnected');
+            toast.success('Connected');
             pendingStatusRef.current = null;
           }, pendingMSWait);
         }
