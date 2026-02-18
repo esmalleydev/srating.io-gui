@@ -33,8 +33,8 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
     if (Organization.getCFBID() === organization_id) {
       return [
         {
-          name: 'Efficiency',
-          columns: ['points', 'passing_rating_college', 'passing_rating_pro', 'yards_per_play', 'points_per_play'],
+          name: 'Overview',
+          columns: ['elo', 'elo_sos', 'points', 'passing_rating_college', 'passing_rating_pro', 'yards_per_play', 'points_per_play'],
         },
         {
           name: 'Passing',
@@ -91,8 +91,10 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
     if (Organization.getCBBID() === organization_id) {
       return [
         {
-          name: 'Efficiency',
+          name: 'Overview',
           columns: [
+            'elo',
+            'elo_sos',
             'adjusted_efficiency_rating',
             'opponent_efficiency_rating',
             'offensive_rating',
