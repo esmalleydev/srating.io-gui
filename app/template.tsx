@@ -22,7 +22,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
   const themeMode = useAppSelector((state) => state.themeReducer.mode);
   const session_id = useAppSelector((state) => state.userReducer.session_id);
   const pendingStatusRef = useRef<NodeJS.Timeout | null>(null);
-  const pendingMSWait = 1100;
+  const pendingMSWait = 2100;
 
   const windowDimensions = useWindowDimensions() as Dimensions;
   const { width } = windowDimensions || {};

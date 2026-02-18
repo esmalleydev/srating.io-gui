@@ -5,6 +5,7 @@ export interface ToastItem {
   id: number;
   message: string;
   type: string;
+  exiting?: boolean;
 }
 
 // Define the shape of the listener function
@@ -27,6 +28,16 @@ class Toaster {
     this.listeners.forEach((listener) => listener(this.toasts));
   }
 
+  requestClose(id: number) {
+    this.toasts = this.toasts.map((t) => {
+      if (t.id === id) {
+        return { ...t, exiting: true };
+      }
+      return t;
+    });
+    this.notify();
+  }
+
   add(message: string, type = 'info') {
     const id = Date.now();
     this.toasts = [...this.toasts, { id, message, type }];
@@ -34,7 +45,7 @@ class Toaster {
 
     // Auto-remove
     setTimeout(() => {
-      this.remove(id);
+      this.requestClose(id);
     }, 4000);
   }
 

@@ -18,6 +18,8 @@ import Objector from '@/components/utils/Objector';
 const Toast = () => {
   const theme = useTheme();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  // Keep track of which IDs are currently fading out
+  const [exiting, setExiting] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     // Subscribe to state changes in the manager
@@ -27,8 +29,24 @@ const Toast = () => {
     return unsubscribe;
   }, []);
 
+  const handleClose = (id: number) => {
+    setExiting((prev) => new Set(prev).add(id));
+  };
+
+  const onAnimationEnd = (id: number, isExiting: boolean) => {
+    if (isExiting) {
+      // Once the fade-out animation finishes, remove it from the manager
+      toaster.remove(id);
+      setExiting((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
+  };
+
   // If no toasts, render nothing
-  if (toasts.length === 0) return null;
+  if (toasts.length === 0 && exiting.size === 0) return null;
 
   const containerStyle = {
     position: 'fixed',
@@ -61,6 +79,10 @@ const Toast = () => {
         opacity: 1,
       },
     },
+    '@keyframes toastFadeOut': {
+      '0%': { opacity: 1, transform: 'scale(1)' },
+      '100%': { opacity: 0, transform: 'scale(0.95)' },
+    },
   };
 
   const toastContainerStyle: React.CSSProperties = {
@@ -79,10 +101,16 @@ const Toast = () => {
   return ReactDOM.createPortal(
     <div className = {Style.getStyleClassName(containerStyle)}>
       {toasts.map((t, index) => {
+        const isExiting = t.exiting;
         const tStyle = Objector.deepClone(toastStyle);
         let iconColor = theme.info.main;
         const iconStyle = { color: iconColor, marginRight: 8, fontSize: 20 };
         let textColor = theme.text.secondary;
+
+        // Override animation if exiting
+        if (isExiting) {
+          tStyle.animation = 'toastFadeOut 0.3s ease-out forwards';
+        }
 
         let icon = <InfoIcon style = {iconStyle} />;
 
@@ -103,13 +131,23 @@ const Toast = () => {
         }
 
         return (
-          <Paper key = {`toast-${index}`} style = {tStyle} elevation={4}>
+          <Paper
+            key = {`toast-${index}`}
+            style = {tStyle}
+            elevation={4}
+            // Trigger the final removal when animation finishes
+            onAnimationEnd={() => {
+              if (isExiting) {
+                toaster.remove(t.id);
+              }
+            }}
+          >
             <div className = {Style.getStyleClassName(toastContainerStyle)}>
               <div className = {Style.getStyleClassName(lineStyle)}>
                 {icon}
                 <Typography style = {{ color: textColor, lineHeight: 'initial' }} type = 'caption'>{t.message}</Typography>
               </div>
-              <IconButton buttonStyle={{ color: iconColor }} icon = {<CloseIcon />} value = 'close' onClick={() => toaster.remove(t.id)} />
+              <IconButton buttonStyle={{ color: iconColor }} icon = {<CloseIcon />} value = 'close' onClick={() => toaster.requestClose(t.id)} />
             </div>
           </Paper>
         );

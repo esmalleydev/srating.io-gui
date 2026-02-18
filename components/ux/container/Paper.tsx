@@ -3,7 +3,7 @@
 import { useTheme } from '@/components/hooks/useTheme';
 import Color from '@/components/utils/Color';
 import Style from '@/components/utils/Style';
-import React, { RefObject } from 'react';
+import React, { AnimationEventHandler, RefObject } from 'react';
 
 
 /**
@@ -23,6 +23,7 @@ const Paper = (
     onKeyDown,
     tabIndex,
     buttons = [],
+    onAnimationEnd,
   }:
   {
     elevation?: number;
@@ -35,6 +36,7 @@ const Paper = (
     onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void; // Type definition
     tabIndex?: number;
     buttons?: React.JSX.Element[];
+    onAnimationEnd?: AnimationEventHandler<HTMLDivElement>;
   },
 ) => {
   const theme = useTheme();
@@ -85,6 +87,7 @@ const Paper = (
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       tabIndex={tabIndex}
+      onAnimationEnd={onAnimationEnd}
     >
       <div style = {{ position: 'absolute', right: 0, top: -20, marginRight: 20 }}>
         {buttons.map((button, index) => {
