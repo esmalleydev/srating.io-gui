@@ -136,14 +136,6 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
           ],
         },
         {
-          name: 'Margin',
-          columns: margin_columns,
-        },
-        {
-          name: 'Record',
-          columns: record_columns,
-        },
-        {
           name: 'Defensive',
           columns: [
             'opponent_two_point_field_goal',
@@ -160,6 +152,14 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
             'opponent_turnovers',
             'opponent_fouls',
           ],
+        },
+        {
+          name: 'Margin',
+          columns: margin_columns,
+        },
+        {
+          name: 'Record',
+          columns: record_columns,
         },
       ];
     }
