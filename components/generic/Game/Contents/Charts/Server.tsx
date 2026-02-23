@@ -1,10 +1,8 @@
 'use server';
 
-import React from 'react';
-
 import { Client } from '@/components/generic/Game/Contents/Charts/Client';
 import { useServerAPI } from '@/components/serverAPI';
-import { GamePulses, Oddsz } from '@/types/general';
+import { GamePlayers, GamePulses, Oddsz, Players } from '@/types/general';
 
 const Server = async ({ game }) => {
   const { game_id } = game;
@@ -26,9 +24,25 @@ const Server = async ({ game }) => {
     cache: revalidateSeconds,
   });
 
+  const game_players: GamePlayers = await useServerAPI({
+    class: 'game_player',
+    function: 'read',
+    arguments: { game_id },
+    cache: revalidateSeconds,
+  });
+
+  const players: Players = await useServerAPI({
+    class: 'player',
+    function: 'read',
+    arguments: {
+      player_id: Object.values(game_players).map((r) => r.player_id),
+    },
+    cache: revalidateSeconds,
+  });
+
   return (
     <>
-      <Client game = {game} game_pulses = {game_pulses} odds = {odds} />
+      <Client game = {game} game_pulses = {game_pulses} odds = {odds} game_players = {game_players} players = {players} />
     </>
   );
 };
