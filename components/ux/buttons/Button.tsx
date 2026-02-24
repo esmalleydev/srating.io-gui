@@ -25,8 +25,8 @@ const Button = (
   }:
   {
     title: string;
-    value: string|number;
-    handleClick: (e: React.SyntheticEvent, value: string | number) => void;
+    value: string|number|null|undefined;
+    handleClick: (e: React.SyntheticEvent, value: string | number | null | undefined) => void;
     type?: 'standard' | 'select',
     disabled?: boolean;
     ink?: boolean;

@@ -1,6 +1,18 @@
 
 import State from '@/components/helpers/State';
-import { BracketTeams, FantasyBracketSlots, FantasyEntry, FantasyEntryPlayers, FantasyGroup, Games, Players, PlayerTeamSeasons, Teams } from '@/types/general';
+import { PlayerBoxscores, PlayerStatisticRanking } from '@/types/cbb';
+import {
+  BracketTeams,
+  FantasyBracketSlots,
+  FantasyEntry,
+  FantasyEntryPlayers,
+  FantasyEntryPlayerStatisticRanking,
+  FantasyGroup,
+  Games,
+  Players,
+  PlayerTeamSeasons,
+  Teams,
+} from '@/types/general';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type InitialState = {
@@ -13,6 +25,10 @@ export type InitialState = {
   bracket_teams: BracketTeams;
   teams: Teams;
   games: Games;
+  fantasy_entry_player_statistic_rankings: {
+    [fantasy_entry_player_statistic_ranking_id: string]: FantasyEntryPlayerStatisticRanking & PlayerStatisticRanking
+  };
+  // player_boxscores: PlayerBoxscores;
   loadingView: boolean;
 };
 
@@ -51,6 +67,10 @@ stateController.setInitialState({
   bracket_teams: {} as BracketTeams,
   teams: {} as Teams,
   games: {} as Games,
+  // player_boxscores: {} as PlayerBoxscores,
+  fantasy_entry_player_statistic_rankings: {} as {
+    [fantasy_entry_player_statistic_ranking_id: string]: FantasyEntryPlayerStatisticRanking & PlayerStatisticRanking
+  },
   loadingView: true,
 });
 

@@ -629,6 +629,26 @@ export interface FantasyRanking {
 
 export type FantasyRankings = {[fantasy_ranking_id: string]: FantasyRanking};
 
+export interface FantasyEntryPlayerStatisticRanking {
+  fantasy_entry_player_statistic_ranking_id: string;
+  parent_fantasy_entry_player_statistic_ranking_id: string;
+  organization_id: string;
+  division_id: string;
+  season: number;
+  fantasy_group_id: string;
+  fantasy_entry_id: string;
+  fantasy_entry_player_id: string;
+  sport_player_statistic_id: string;
+  date_of_rank: string;
+  date_of_entry: string;
+  updated_at: string;
+  current: number;
+  guid: string;
+  deleted: number;
+}
+
+export type FantasyEntryPlayerStatisticRankings = {[fantasy_entry_player_statistic_ranking_id: string]: FantasyEntryPlayerStatisticRanking};
+
 
 export interface BracketTeam {
   bracket_team_id: string;

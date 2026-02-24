@@ -1,8 +1,10 @@
 
 import State from '@/components/helpers/State';
+import { PlayerStatisticRanking } from '@/types/cbb';
 import {
   FantasyDraftOrders,
   FantasyEntryPlayers,
+  FantasyEntryPlayerStatisticRanking,
   FantasyEntrys,
   FantasyGroup,
   FantasyGroupComments,
@@ -29,6 +31,9 @@ export type InitialState = {
   player_team_seasons: PlayerTeamSeasons;
   players: Players;
   fantasy_rankings: FantasyRankings;
+  fantasy_entry_player_statistic_rankings: {
+    [fantasy_entry_player_statistic_ranking_id: string]: FantasyEntryPlayerStatisticRanking & PlayerStatisticRanking
+  };
   loadingView: boolean;
 };
 
@@ -71,6 +76,9 @@ stateController.setInitialState({
   player_team_seasons: {} as PlayerTeamSeasons,
   players: {} as Players,
   fantasy_rankings: {} as FantasyRankings,
+  fantasy_entry_player_statistic_rankings: {} as {
+    [fantasy_entry_player_statistic_ranking_id: string]: FantasyEntryPlayerStatisticRanking & PlayerStatisticRanking
+  },
   loadingView: true,
 });
 

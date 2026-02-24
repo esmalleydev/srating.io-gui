@@ -221,6 +221,21 @@ class TableColumns {
         showDifference: true,
         precision: 0,
       },
+      fantasy_points: {
+        id: 'fantasy_points',
+        numeric: true,
+        label: 'FP',
+        tooltip: 'Fantasy points',
+        sort: 'higher',
+        organization_ids: [Organization.getCBBID(), Organization.getCFBID()],
+        views: ['fantasy_player_boxscore'],
+        graphable: true,
+        precision: 0,
+        showDifference: true,
+        getTooltip: () => {
+          return 'Fantasy points';
+        },
+      },
       points: {
         id: 'points',
         numeric: true,

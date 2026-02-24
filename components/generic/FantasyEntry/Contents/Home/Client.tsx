@@ -4,12 +4,10 @@ import { Profiler } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
-import Columns from '@/components/ux/layout/Columns';
 import { useAppSelector } from '@/redux/hooks';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
-import MyTeam from './MyTeam';
+import { Client as DraftClient } from '../Draft/Client';
 import Bracket from './Bracket';
-import { useClientAPI } from '@/components/clientAPI';
 
 
 
@@ -57,7 +55,7 @@ const Client = ({ fantasy_entry_id }) => {
     <Contents>
       {
         fantasyHelper.isDraft() ?
-          <div style = {{ padding: 5 }}><MyTeam /></div>
+          <DraftClient fantasy_entry_id={fantasy_entry_id} />
           : ''
       }
       {

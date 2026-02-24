@@ -8,6 +8,7 @@ import {
   FantasyBracketSlots,
   FantasyEntry,
   FantasyEntryPlayers,
+  FantasyEntryPlayerStatisticRanking,
   FantasyGroup,
   Games,
   Players,
@@ -15,31 +16,56 @@ import {
   Teams,
 } from '@/types/general';
 import { updateDivisionID, updateOrganizationID } from '@/redux/features/organization-slice';
+import { AppDispatch } from '@/redux/store';
+import { PlayerStatisticRanking } from '@/types/cbb';
+
+export interface FantasyEntryLoadData {
+  fantasy_entry_players: FantasyEntryPlayers;
+  player_team_seasons: PlayerTeamSeasons;
+  players: Players;
+  fantasy_bracket_slots: FantasyBracketSlots;
+  bracket_teams: BracketTeams;
+  teams: Teams;
+  games: Games;
+  fantasy_entry_player_statistic_rankings: {
+    [fantasy_entry_player_statistic_ranking_id: string]: FantasyEntryPlayerStatisticRanking & PlayerStatisticRanking
+  },
+  // player_boxscores: PlayerBoxscores;
+  error?: string;
+}
+
+
+export const handleLoad = (
+  {
+    dispatch,
+    data,
+  }:
+  {
+    dispatch: AppDispatch;
+    data: FantasyEntryLoadData;
+  },
+) => {
+  dispatch(setDataKey({ key: 'fantasy_entry_players', value: data.fantasy_entry_players }));
+  dispatch(setDataKey({ key: 'player_team_seasons', value: data.player_team_seasons }));
+  dispatch(setDataKey({ key: 'players', value: data.players }));
+  dispatch(setDataKey({ key: 'fantasy_bracket_slots', value: data.fantasy_bracket_slots }));
+  dispatch(setDataKey({ key: 'bracket_teams', value: data.bracket_teams }));
+  dispatch(setDataKey({ key: 'teams', value: data.teams }));
+  dispatch(setDataKey({ key: 'games', value: data.games }));
+  dispatch(setDataKey({ key: 'fantasy_entry_player_statistic_rankings', value: data.fantasy_entry_player_statistic_rankings }));
+  // dispatch(setDataKey({ key: 'player_boxscores', value: data.player_boxscores }));
+};
 
 const ReduxWrapper = (
   {
     children,
-    fantasy_group,
     fantasy_entry,
-    fantasy_entry_players,
-    player_team_seasons,
-    players,
-    fantasy_bracket_slots,
-    bracket_teams,
-    teams,
-    games,
+    fantasy_group,
   }:
   {
     children: React.ReactNode;
-    fantasy_group?: FantasyGroup;
     fantasy_entry?: FantasyEntry;
-    fantasy_entry_players?: FantasyEntryPlayers;
-    player_team_seasons?: PlayerTeamSeasons;
-    players?: Players;
-    fantasy_bracket_slots?: FantasyBracketSlots;
-    bracket_teams?: BracketTeams;
-    teams?: Teams;
-    games?: Games;
+    fantasy_group?: FantasyGroup;
   },
 ) => {
   const dispatch = useAppDispatch();
@@ -53,38 +79,10 @@ const ReduxWrapper = (
     if (fantasy_entry) {
       dispatch(setDataKey({ key: 'fantasy_entry', value: fantasy_entry }));
     }
-    if (fantasy_entry_players) {
-      dispatch(setDataKey({ key: 'fantasy_entry_players', value: fantasy_entry_players }));
-    }
-    if (player_team_seasons) {
-      dispatch(setDataKey({ key: 'player_team_seasons', value: player_team_seasons }));
-    }
-    if (players) {
-      dispatch(setDataKey({ key: 'players', value: players }));
-    }
-    if (fantasy_bracket_slots) {
-      dispatch(setDataKey({ key: 'fantasy_bracket_slots', value: fantasy_bracket_slots }));
-    }
-    if (bracket_teams) {
-      dispatch(setDataKey({ key: 'bracket_teams', value: bracket_teams }));
-    }
-    if (teams) {
-      dispatch(setDataKey({ key: 'teams', value: teams }));
-    }
-    if (games) {
-      dispatch(setDataKey({ key: 'games', value: games }));
-    }
   }, [
     dispatch,
     fantasy_group,
     fantasy_entry,
-    fantasy_entry_players,
-    player_team_seasons,
-    players,
-    fantasy_bracket_slots,
-    bracket_teams,
-    teams,
-    games,
   ]);
 
 

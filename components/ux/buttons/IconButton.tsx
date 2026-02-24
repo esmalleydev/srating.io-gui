@@ -41,6 +41,7 @@ const IconButton = (
     '&:hover'?: React.CSSProperties
   } = {
     display: 'inline-flex',
+    cursor: 'pointer',
     alignItems: 'center',
     borderRadius: 8,
     backgroundColor: 'transparent',

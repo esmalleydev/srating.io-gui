@@ -22,6 +22,9 @@ import { reset as resetFantasyEntry } from '@/redux/features/fantasy_entry-slice
 
 // todo remove nextjs router :D
 
+// if the router does not appear to be working correctly,
+// make sure the path starts with "/" , or it doesnt stupid stuff
+
 class Navigation {
   constructor() {
     this.dispatch = useAppDispatch();

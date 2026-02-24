@@ -8,7 +8,7 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 import HelperGame from '@/components/helpers/Game';
 
 import {
-  Card, Skeleton,
+  Skeleton,
 } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
 import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
@@ -25,9 +25,22 @@ import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import Dates from '@/components/utils/Dates';
 import IconButton from '@/components/ux/buttons/IconButton';
+import { Game, Team } from '@/types/general';
+import Paper from '@/components/ux/container/Paper';
 
 
-const Tile = ({ game, team }) => {
+const Tile = (
+  {
+    game,
+    team,
+    showPrediction = true,
+  }:
+  {
+    game: Game;
+    team: Team;
+    showPrediction?: boolean;
+  },
+) => {
   const myRef: RefObject<HTMLDivElement | null> = useRef(null);
   const navigation = new Navigation();
   const theme = useTheme();
@@ -47,7 +60,15 @@ const Tile = ({ game, team }) => {
   const { width } = useWindowDimensions() as Dimensions;
 
 
-  const won = (game.home_score > game.away_score && game.home_team_id === team.team_id) || (game.home_score < game.away_score && game.away_team_id === team.team_id);
+  const won = (
+    game.home_score && game.away_score &&
+    game.home_score > game.away_score &&
+    game.home_team_id === team.team_id
+  ) || (
+    game.home_score && game.away_score &&
+    game.home_score < game.away_score &&
+    game.away_team_id === team.team_id
+  );
   const otherSide = game.home_team_id === team.team_id ? 'away' : 'home';
 
   const bestColor = getBestColor();
@@ -161,13 +182,15 @@ const Tile = ({ game, team }) => {
   return (
     <div style = {{ display: 'flex', margin: '5px 0px', justifyContent: 'space-between' }}>
       <div style = {{ display: 'flex' }}>
-        <Card style = {{
+        <Paper elevation={2} style = {{
           display: 'flex', width: (width <= 475 ? 40 : 75), marginRight: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center', cursor: 'pointer',
         }} onClick={handleGameClick}>
-          <Typography type = 'caption' style = {{ color: textBackgroundColor }}>{Dates.format(`${game.start_date.split('T')[0]} 12:00:00`, (width <= 475 ? 'jS' : 'D jS'))}</Typography>
-        </Card>
+          <Typography type = 'caption' style = {{ color: textBackgroundColor }}>
+            <a style = {{ cursor: 'pointer', color: textBackgroundColor }} onClick={handleGameClick} href = {getGameHref()}>{Dates.format(`${game.start_date.split('T')[0]} 12:00:00`, (width <= 475 ? 'jS' : 'D jS'))}</a>
+          </Typography>
+        </Paper>
       </div>
-      <Card style = {{ width: '100%' }}>
+      <Paper elevation={2} style = {{ width: '100%' }}>
         <div ref = {myRef} style = {containerStyle}>
           <div style = {{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
             <div style = {{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'baseline', overflow: 'hidden' /* 'flexWrap': 'nowrap' */ }}>
@@ -194,21 +217,25 @@ const Tile = ({ game, team }) => {
               : ''
           }
         </div>
-      </Card>
-      <div style = {{ display: 'flex' }}>
-        <Card style = {{
-          display: 'flex', width: 75, marginLeft: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center', cursor: 'pointer',
-        }} onClick={handleGameClick}>
-          <Typography type = 'caption'><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick={handleGameClick} href = {getGameHref()}>{scoreLineText}</a></Typography>
-        </Card>
-        <Tooltip position = 'top' text={'Predicted win %'}>
-          <Card style = {{
-            display: 'flex', width: 50, marginLeft: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center',
-          }}>
-            {predictionContainer}
-          </Card>
-        </Tooltip>
-      </div>
+      </Paper>
+      {
+        showPrediction && (
+          <div style = {{ display: 'flex' }}>
+            <Paper elevation={2} style = {{
+              display: 'flex', width: 75, marginLeft: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center', cursor: 'pointer',
+            }} onClick={handleGameClick}>
+              <Typography type = 'caption'><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick={handleGameClick} href = {getGameHref()}>{scoreLineText}</a></Typography>
+            </Paper>
+            <Tooltip position = 'top' text={'Predicted win %'}>
+              <Paper elevation={2} style = {{
+                display: 'flex', width: 50, marginLeft: 5, alignContent: 'center', justifyContent: 'center', alignItems: 'center',
+              }}>
+                {predictionContainer}
+              </Paper>
+            </Tooltip>
+          </div>
+        )
+      }
     </div>
   );
 };

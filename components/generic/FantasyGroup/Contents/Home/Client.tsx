@@ -13,6 +13,9 @@ import Comments from './Comments';
 import MyEntries from './MyEntries';
 import LeagueManagement from './LeagueManagement';
 import DraftOrBracketCountdown from './DraftOrBracketCountdown';
+import { useAppSelector } from '@/redux/hooks';
+import FantasyGroup from '@/components/helpers/FantasyGroup';
+import Rosters from './Rosters';
 
 
 
@@ -48,6 +51,9 @@ const ClientSkeleton = () => {
 };
 
 const Client = () => {
+  const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
+
+  const fantasyHelper = new FantasyGroup({ fantasy_group });
   return (
     <Profiler id="FantasyGroup.Contents.Home.Client" onRender={(id, phase, actualDuration) => {
       console.log(id, phase, actualDuration);
@@ -55,8 +61,9 @@ const Client = () => {
     <Contents>
       <Columns numberOfColumns={2} style = {{ marginBottom: 20 }}>
         <MyEntries />
-        <DraftOrBracketCountdown />
+        {fantasy_group.started ? <Ranking /> : <DraftOrBracketCountdown />}
       </Columns>
+      {fantasyHelper.isDraft() && fantasy_group.started ? <div style = {{ marginBottom: 20 }}><Rosters /></div> : ''}
       <div style = {{ marginBottom: 20 }}>
         <LeagueManagement />
       </div>
@@ -66,7 +73,6 @@ const Client = () => {
       </Columns>
       <Columns numberOfColumns={2}>
         <Entries />
-        <Ranking />
         <Comments />
       </Columns>
     </Contents>

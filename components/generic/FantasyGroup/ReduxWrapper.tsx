@@ -6,6 +6,7 @@ import { InitialState, setDataKey } from '@/redux/features/fantasy_group-slice';
 import {
   FantasyDraftOrders,
   FantasyEntryPlayers,
+  FantasyEntryPlayerStatisticRanking,
   FantasyEntrys,
   FantasyGroup,
   FantasyGroupComments,
@@ -19,6 +20,7 @@ import { updateDivisionID, updateOrganizationID } from '@/redux/features/organiz
 import { AppDispatch } from '@/redux/store';
 import { getStore } from '@/app/StoreProvider';
 import Objector from '@/components/utils/Objector';
+import { PlayerStatisticRanking } from '@/types/cbb';
 
 export interface FantasyGroupLoadData {
   isOwner: boolean;
@@ -32,6 +34,9 @@ export interface FantasyGroupLoadData {
   player_team_seasons: PlayerTeamSeasons;
   players: Players;
   fantasy_rankings: FantasyRankings;
+  fantasy_entry_player_statistic_rankings: {
+    [fantasy_entry_player_statistic_ranking_id: string]: FantasyEntryPlayerStatisticRanking & PlayerStatisticRanking
+  },
   error?: string;
 }
 
@@ -76,6 +81,7 @@ export const handleLoad = (
   dispatch(setDataKey({ key: 'player_team_seasons', value: data.player_team_seasons }));
   dispatch(setDataKey({ key: 'players', value: data.players }));
   dispatch(setDataKey({ key: 'fantasy_rankings', value: data.fantasy_rankings }));
+  dispatch(setDataKey({ key: 'fantasy_entry_player_statistic_rankings', value: data.fantasy_entry_player_statistic_rankings }));
 };
 
 const ReduxWrapper = (
