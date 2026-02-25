@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Typography from '@mui/material/Typography';
 
 import Tile from '@/components/generic/Team/Contents/Schedule/Tile';
 import { useAppSelector } from '@/redux/hooks';
@@ -11,6 +10,7 @@ import TableView from './TableView';
 import { Skeleton } from '@mui/material';
 import { Games } from '@/types/general';
 import Dates from '@/components/utils/Dates';
+import Typography from '@/components/ux/text/Typography';
 
 
 /**
@@ -85,7 +85,7 @@ const Client = ({ games, team_id }: {games: Games, team_id: string}) => {
       if (!lastMonth || lastMonth < +Dates.format(game.start_datetime, 'n') || (lastYear && lastYear < +Dates.format(game.start_datetime, 'Y'))) {
         lastMonth = +Dates.format(game.start_datetime, 'n');
         lastYear = +Dates.format(game.start_datetime, 'Y');
-        gameContainers.push(<Typography key = {i} style = {{ marginBottom: '10px', padding: 5 }} variant = 'body1'>{Dates.format(game.start_datetime, 'F')}</Typography>);
+        gameContainers.push(<Typography key = {i} style = {{ padding: 5 }} type = 'body1'>{Dates.format(game.start_datetime, 'F')}</Typography>);
       }
 
       if (!nextUpcomingGame && (game.status === 'pre' || game.status === 'live')) {

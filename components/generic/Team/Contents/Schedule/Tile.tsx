@@ -8,6 +8,7 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 import HelperGame from '@/components/helpers/Game';
 
 import {
+  Card,
   Skeleton,
 } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
@@ -190,7 +191,7 @@ const Tile = (
           </Typography>
         </Paper>
       </div>
-      <Paper elevation={2} style = {{ width: '100%' }}>
+      <Paper elevation={2} style = {{ width: '100%', overflow: 'hidden' }}>
         <div ref = {myRef} style = {containerStyle}>
           <div style = {{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
             <div style = {{ marginLeft: '10px', display: 'flex', justifyContent: 'center', alignItems: 'baseline', overflow: 'hidden' /* 'flexWrap': 'nowrap' */ }}>
