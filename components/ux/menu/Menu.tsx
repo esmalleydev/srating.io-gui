@@ -395,7 +395,7 @@ const Menu = (
 
             if (option.customLabel) {
               return (
-                <div onClick={handleIt}>
+                <div key = {index} onClick={handleIt}>
                   {option.customLabel}
                 </div>
               );
