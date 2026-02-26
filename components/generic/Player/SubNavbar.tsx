@@ -5,10 +5,10 @@ import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
 import { useAppSelector } from '@/redux/hooks';
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import Tab from '@/components/ux/buttons/Tab';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Navigation from '@/components/helpers/Navigation';
+import { Style } from '@esmalley/ts-utils';
 
 const getSubNavHeaderHeight = () => {
   const view = useAppSelector((state) => state.playerReducer.view);

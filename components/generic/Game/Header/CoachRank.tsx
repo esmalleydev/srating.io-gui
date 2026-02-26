@@ -2,9 +2,10 @@
 
 import { useAppSelector } from '@/redux/hooks';
 import { Skeleton } from '@mui/material';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import Organization from '@/components/helpers/Organization';
 import { Game } from '@/types/general';
+import General from '@/components/helpers/General';
+import { Color } from '@esmalley/ts-utils';
 
 
 const CoachRank = (
@@ -21,8 +22,8 @@ const CoachRank = (
   const historical = (coachStats[game.game_id] && coachStats[game.game_id].historical[coach_id]) || null;
   const statistic_ranking = historical;
 
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
 
   let rank = null;
   if (statistic_ranking) {

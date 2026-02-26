@@ -12,7 +12,7 @@ import { Suspense } from 'react';
 import FloatingButtons from '@/components/generic/Games/FloatingButtons';
 import Refresher from '@/components/generic/Games/Refresher';
 import Organization from '@/components/helpers/Organization';
-import Dates from '@/components/utils/Dates';
+import { Dates } from '@esmalley/ts-utils';
 
 
 export type getDecorateGames = {

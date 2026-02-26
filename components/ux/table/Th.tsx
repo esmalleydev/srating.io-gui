@@ -1,7 +1,6 @@
 'use client';
 
-import Objector from '@/components/utils/Objector';
-import Style from '@/components/utils/Style';
+import { Objector, Style } from '@esmalley/ts-utils';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useState } from 'react';

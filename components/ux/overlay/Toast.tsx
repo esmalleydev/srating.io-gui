@@ -1,18 +1,16 @@
 'use client';
 
-import { toaster, ToastItem } from '@/components/utils/Toaster';
 import { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Paper from '../container/Paper';
 import Typography from '../text/Typography';
-import Style from '@/components/utils/Style';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '../buttons/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useTheme } from '@/components/hooks/useTheme';
-import Objector from '@/components/utils/Objector';
+import { Objector, Style, toaster, ToastItem } from '@esmalley/ts-utils';
 
 
 const Toast = () => {

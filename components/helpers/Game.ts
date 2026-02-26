@@ -1,11 +1,10 @@
 // import { Game as GameType } from '@/types/general';
 
-import Color from '@/components/utils/Color';
 import Team from './Team';
 import Organization from './Organization';
 import { useTheme } from '../hooks/useTheme';
-import Dates from '../utils/Dates';
 import { Bookmakers } from '@/types/general';
+import { Color, Dates } from '@esmalley/ts-utils';
 
 
 /**

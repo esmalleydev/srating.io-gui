@@ -4,9 +4,9 @@ import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { useAppSelector } from '@/redux/hooks';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tab from '@/components/ux/buttons/Tab';
-import Style from '@/components/utils/Style';
 import SubNavBar from './SubNavbar';
 import Navigation from '@/components/helpers/Navigation';
+import { Style } from '@esmalley/ts-utils';
 
 
 const getNavHeaderHeight = () => {

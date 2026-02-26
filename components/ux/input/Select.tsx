@@ -5,11 +5,11 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
-import Objector from '@/components/utils/Objector';
 import Menu, { MenuOption } from '../menu/Menu';
 import Inputs from '@/components/helpers/Inputs';
+
+import { Objector, Style } from '@esmalley/ts-utils';
 
 export type SelectOption = {
   label: string;

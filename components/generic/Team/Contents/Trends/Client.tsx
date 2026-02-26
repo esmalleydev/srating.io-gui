@@ -28,7 +28,7 @@ import { Boxscores as BoxscoreCFB } from '@/types/cfb';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
-import Dates from '@/components/utils/Dates';
+import { Dates } from '@esmalley/ts-utils';
 
 export interface TrendsType {
   games: Games;

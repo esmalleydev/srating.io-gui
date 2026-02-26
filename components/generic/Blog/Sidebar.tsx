@@ -2,7 +2,7 @@
 
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
-import Dates from '@/components/utils/Dates';
+import { Dates } from '@esmalley/ts-utils';
 
 
 const Sidebar = ({ sidebarPosts }) => {

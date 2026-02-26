@@ -13,12 +13,11 @@ import PublicIcon from '@mui/icons-material/Public';
 import Navigation from '@/components/helpers/Navigation';
 import Organization from '@/components/helpers/Organization';
 import Chip from '@/components/ux/container/Chip';
-import Style from '@/components/utils/Style';
 import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/fantasy_entry-slice';
-import Objector from '@/components/utils/Objector';
 
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { Objector, Style } from '@esmalley/ts-utils';
 
 const slot_height = 100;
 const slot_width = 170;
@@ -306,7 +305,7 @@ const BracketSlot = (
     })
       .then((data) => {
         if (data.error) {
-          console.log(data.error)
+          console.log(data.error);
           // return;
         }
 

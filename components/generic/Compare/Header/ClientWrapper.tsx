@@ -8,7 +8,7 @@ import BackButton from '@/components/generic/BackButton';
 import Search from './Search';
 import AdditionalOptions from '../AdditionalOptions';
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
+import { Style } from '@esmalley/ts-utils';
 
 
 // todo make mobile friendly

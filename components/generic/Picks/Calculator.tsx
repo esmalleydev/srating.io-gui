@@ -23,23 +23,20 @@ import CancelCircleIcon from '@mui/icons-material/Cancel';
 
 // import CompareStatistic from '../../CompareStatistic';
 import HelperGame from '@/components/helpers/Game';
-import utilsArrayifer from '@/components/utils/Arrayifer';
 
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
 import { CircularProgress } from '@mui/material';
-import Sorter from '@/components/utils/Sorter';
 import Organization from '@/components/helpers/Organization';
 import Navigation from '@/components/helpers/Navigation';
-import Dates from '@/components/utils/Dates';
 import { setLoading } from '@/redux/features/loading-slice';
 import Button from '@/components/ux/buttons/Button';
 import Typography from '@/components/ux/text/Typography';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
 import Inputs from '@/components/helpers/Inputs';
-const Arrayifer = new utilsArrayifer();
+import { Arrayifier, Dates, Sorter } from '@esmalley/ts-utils';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -357,7 +354,7 @@ const Calculator = ({ games, date }) => {
   let roundRobinBetCombos = 0;
   let roundRobinWins = 0;
   if (parlay_game_ids.length > 2 && roundRobinLength) {
-    const combinations = Arrayifer.getCombinations(parlay_game_ids, parlay_game_ids.length, roundRobinLength);
+    const combinations = Arrayifier.getCombinations(parlay_game_ids, parlay_game_ids.length, roundRobinLength);
 
     roundRobinBetCombos = combinations.length;
     roundRobinBetTotal = combinations.length * bet;
@@ -425,7 +422,7 @@ const Calculator = ({ games, date }) => {
     }
   }
 
-  const randomized_60 = Arrayifer.shuffle(future_parlay_game_ids);
+  const randomized_60 = Arrayifier.shuffle(future_parlay_game_ids) as string[];
 
   const future_game_id_x_loss_60 = {};
 
@@ -440,7 +437,7 @@ const Calculator = ({ games, date }) => {
     future_game_id_x_loss_60[randomized_60[i]] = true;
   }
 
-  const randomized_75 = Arrayifer.shuffle(future_parlay_game_ids);
+  const randomized_75 = Arrayifier.shuffle(future_parlay_game_ids) as string[];
   const future_game_id_x_loss_75 = {};
 
   for (let i = 0; i < randomized_75.length; i++) {
@@ -463,7 +460,7 @@ const Calculator = ({ games, date }) => {
   let future_roundRobinWins_75 = 0;
   let future_roundRobinWins_60 = 0;
   if (future_parlay_game_ids.length > 2 && roundRobinLength) {
-    const combinations = Arrayifer.getCombinations(future_parlay_game_ids, future_parlay_game_ids.length, roundRobinLength);
+    const combinations = Arrayifier.getCombinations(future_parlay_game_ids, future_parlay_game_ids.length, roundRobinLength);
 
     future_roundRobinBetCombos = combinations.length;
     future_roundRobinBetTotal = combinations.length * bet;
@@ -512,7 +509,7 @@ const Calculator = ({ games, date }) => {
 
 
   if (future_winnings_75_array.length) {
-    const randomized = Arrayifer.shuffle(future_winnings_75_array);
+    const randomized = Arrayifier.shuffle(future_winnings_75_array);
 
     for (let i = 0; i < randomized.length; i++) {
       if ((future_games_won_75 / future_games_bet) < 0.7) {
@@ -523,7 +520,7 @@ const Calculator = ({ games, date }) => {
   }
 
   if (future_winnings_60_array.length) {
-    const randomized = Arrayifer.shuffle(future_winnings_60_array);
+    const randomized = Arrayifier.shuffle(future_winnings_60_array);
 
     for (let i = 0; i < randomized.length; i++) {
       if ((future_games_won_60 / future_games_bet) < 0.6) {
@@ -580,9 +577,9 @@ const Calculator = ({ games, date }) => {
     );
   };
 
-  const pickedRowsContainer = rows_picked.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a, b)).slice().map((row: tableRow) => getStyledTableRow(row));
+  const pickedRowsContainer = rows_picked.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a as any, b as any)).slice().map((row: tableRow) => getStyledTableRow(row));
 
-  const otherRowsConatiner = rows_other.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a, b)).slice().map((row: tableRow) => getStyledTableRow(row));
+  const otherRowsConatiner = rows_other.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a as any, b as any)).slice().map((row: tableRow) => getStyledTableRow(row));
 
 
   if (date < now && games_bet > 2 && roundRobinLength) {
@@ -603,7 +600,7 @@ const Calculator = ({ games, date }) => {
     }
   }
 
-  const parleyRowsConatiner = rows_parlay.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a, b)).slice().map((row: tableRow) => getStyledTableRow(row));
+  const parleyRowsConatiner = rows_parlay.sort( (a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a as any, b as any)).slice().map((row: tableRow) => getStyledTableRow(row));
 
 
   const getTable = (rowContainers) => {

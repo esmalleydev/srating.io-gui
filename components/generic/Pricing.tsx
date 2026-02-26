@@ -26,8 +26,8 @@ import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstruct
 import Billing from './Billing';
 import ButtonSwitch from './ButtonSwitch';
 import { useTheme } from '../hooks/useTheme';
-import Color from '../utils/Color';
 import Typography from '../ux/text/Typography';
+import { Color } from '@esmalley/ts-utils';
 
 type priceOption = {
   code: string;

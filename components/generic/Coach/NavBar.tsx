@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useTheme } from '@/components/hooks/useTheme';
 import { setDataKey } from '@/redux/features/coach-slice';
 import Tab from '@/components/ux/buttons/Tab';
-import Style from '@/components/utils/Style';
+import { Style } from '@esmalley/ts-utils';
 
 
 const getNavHeaderHeight = () => {

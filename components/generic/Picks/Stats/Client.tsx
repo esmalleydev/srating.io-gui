@@ -7,11 +7,10 @@ import {
   Skeleton,
 } from '@mui/material';
 
-import Color from '@/components/utils/Color';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
-import Dates from '@/components/utils/Dates';
+import { Color, Dates } from '@esmalley/ts-utils';
 
 
 const getCardStyle = () => {

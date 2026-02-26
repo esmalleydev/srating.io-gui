@@ -12,7 +12,7 @@ import { useClientAPI } from '@/components/clientAPI';
 import { Team } from '@/types/general';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
-import Text from '@/components/utils/Text';
+import { Textor } from '@esmalley/ts-utils';
 
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -109,7 +109,7 @@ const Search = () => {
       name: team.alt_name,
     };
   }).sort((a, b) => {
-    return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
+    return Textor.levenshtein(value, a.name) - Textor.levenshtein(value, b.name);
   });
 
   const handleClick = (event, option) => {

@@ -1,7 +1,6 @@
 'use server';
 
 import Surface from 'Surface';
-import { useServerAPI } from '@/components/serverAPI';
 
 import { notFound } from 'next/navigation';
 import ReduxWrapper from '@/components/generic/Fantasy/ReduxWrapper';

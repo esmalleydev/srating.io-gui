@@ -16,8 +16,8 @@ import Button from '@/components/ux/buttons/Button';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
-import Objector from '@/components/utils/Objector';
 import { stripePromise } from '@/lib/stripe-client';
+import { Objector } from '@esmalley/ts-utils';
 
 const CreateEntry = (
   {

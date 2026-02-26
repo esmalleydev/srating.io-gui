@@ -5,14 +5,13 @@ import RankTable from '@/components/generic/RankTable';
 import Navigation from '@/components/helpers/Navigation';
 import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';
-import Objector from '@/components/utils/Objector';
-import Text from '@/components/utils/Text';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { PlayerBoxscore as CBBPlayerBoxscore, PlayerStatisticRanking } from '@/types/cbb';
 import { PlayerBoxscore as CFBPlayerBoxscore } from '@/types/cfb';
 import { FantasyEntry, FantasyEntryPlayers, FantasyEntryPlayerStatisticRanking, FantasyGroup, Players, PlayerTeamSeasons } from '@/types/general';
+import { Objector, Textor } from '@esmalley/ts-utils';
 
 import React from 'react';
 
@@ -193,7 +192,7 @@ const Roster = (
     let title = <></>;
 
     if (position) {
-      title = <Typography type = 'body1'>{Text.toSentenceCase(position)}</Typography>;
+      title = <Typography type = 'body1'>{Textor.toSentenceCase(position)}</Typography>;
     }
 
     if (!playerRows.length) {

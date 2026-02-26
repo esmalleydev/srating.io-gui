@@ -19,8 +19,8 @@ import {
 import { updateDivisionID, updateOrganizationID } from '@/redux/features/organization-slice';
 import { AppDispatch } from '@/redux/store';
 import { getStore } from '@/app/StoreProvider';
-import Objector from '@/components/utils/Objector';
 import { PlayerStatisticRanking } from '@/types/cbb';
+import { Objector } from '@esmalley/ts-utils';
 
 export interface FantasyGroupLoadData {
   isOwner: boolean;

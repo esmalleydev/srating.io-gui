@@ -1,8 +1,7 @@
 'use client';
 
-import Style from '@/components/utils/Style';
+import { Objector, Style } from '@esmalley/ts-utils';
 import BackButton from '../BackButton';
-import Objector from '@/components/utils/Objector';
 import { useTheme } from '@/components/hooks/useTheme';
 
 

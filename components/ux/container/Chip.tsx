@@ -1,8 +1,7 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
-import Color from '@/components/utils/Color';
-import Style from '@/components/utils/Style';
+import { Color, Style } from '@esmalley/ts-utils';
 import Typography from '@/components/ux/text/Typography';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useState } from 'react';

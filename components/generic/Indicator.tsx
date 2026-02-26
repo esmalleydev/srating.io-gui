@@ -1,8 +1,8 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
-import Color from '@/components/utils/Color';
 import Tooltip from '../ux/hover/Tooltip';
+import { Color } from '@esmalley/ts-utils';
 
 const Indicator = (
   { title, code, color }:

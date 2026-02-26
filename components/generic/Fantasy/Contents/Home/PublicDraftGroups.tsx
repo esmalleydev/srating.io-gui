@@ -10,10 +10,9 @@ import { FantasyEntrys, FantasyGroup, FantasyGroups } from '@/types/general';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { useState } from 'react';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import Payment from '@/components/helpers/Payment';
-import Dates from '@/components/utils/Dates';
 import { useAppSelector } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
+import { Dates } from '@esmalley/ts-utils';
 
 const PublicDraftGroups = (
   {

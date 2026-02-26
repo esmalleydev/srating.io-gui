@@ -11,14 +11,12 @@ import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import Navigation from '@/components/helpers/Navigation';
-import Text from '@/components/utils/Text';
 import { Player, Players } from '@/types/general';
-import Style from '@/components/utils/Style';
-import Objector from '@/components/utils/Objector';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import ClassSpan from '@/components/generic/ClassSpan';
+import { Objector, Style, Textor } from '@esmalley/ts-utils';
 
 
 const Roster = ({ organization_id, rosterStats, player_team_seasons, season }) => {
@@ -248,7 +246,7 @@ const Roster = ({ organization_id, rosterStats, player_team_seasons, season }) =
     let title = <></>;
 
     if (position !== 'all') {
-      title = <Typography type = 'body1'>{Text.toSentenceCase(position)}</Typography>;
+      title = <Typography type = 'body1'>{Textor.toSentenceCase(position)}</Typography>;
     }
 
     let contents = <></>;

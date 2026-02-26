@@ -1,7 +1,7 @@
 
 // todo remove redux :D
 
-import Objector from '@/components/utils/Objector';
+import { Objector } from '@esmalley/ts-utils';
 import { WritableDraft } from '@reduxjs/toolkit';
 
 type url_param_type_x_keysType = {

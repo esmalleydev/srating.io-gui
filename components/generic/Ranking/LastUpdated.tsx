@@ -5,8 +5,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import { getLastUpdated } from './DataHandler';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
-import Dates from '@/components/utils/Dates';
+import { Dates, Style } from '@esmalley/ts-utils';
 
 
 const LastUpdated = ({ view, handleLegend }) => {

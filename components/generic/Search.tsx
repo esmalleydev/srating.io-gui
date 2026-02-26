@@ -10,13 +10,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useClientAPI } from '../clientAPI';
 import { Coach, Player, Team } from '@/types/general';
 import { useAppSelector } from '@/redux/hooks';
-import Text from '../utils/Text';
 import Organization from '../helpers/Organization';
 import Division from '../helpers/Division';
-import Color from '../utils/Color';
-import Style from '../utils/Style';
 import Navigation from '../helpers/Navigation';
-import { maxWidth } from './Picks/Tile';
+import { Color, Style, Textor } from '@esmalley/ts-utils';
 
 
 
@@ -105,7 +102,7 @@ const Search = (
 
   if (value.length) {
     teamOptions.sort((a, b) => {
-      return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
+      return Textor.levenshtein(value, a.name) - Textor.levenshtein(value, b.name);
     });
   }
 
@@ -119,7 +116,7 @@ const Search = (
 
   if (value.length) {
     playerOptions.sort((a, b) => {
-      return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
+      return Textor.levenshtein(value, a.name) - Textor.levenshtein(value, b.name);
     });
   }
 
@@ -133,7 +130,7 @@ const Search = (
 
   if (value.length) {
     coachOptions.sort((a, b) => {
-      return Text.levenshtein(value, a.name) - Text.levenshtein(value, b.name);
+      return Textor.levenshtein(value, a.name) - Textor.levenshtein(value, b.name);
     });
   }
 

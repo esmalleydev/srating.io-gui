@@ -51,14 +51,14 @@ const AdditionalOptions = () => {
       label: 'Show boxscore data',
       selectable: true,
       onSelect: handleTrendsBoxscore,
-      icon: trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+      icon: trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
     },
     {
       value: 'show-all-seasons',
       label: 'Show all seasons',
       selectable: true,
       onSelect: handleTrendsSeasons,
-      icon: trendsSeasons.length ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+      icon: trendsSeasons.length ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
     },
   ];
 

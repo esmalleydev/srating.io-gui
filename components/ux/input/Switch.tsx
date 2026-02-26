@@ -3,10 +3,9 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import Typography from '../text/Typography'; // Adjust path if needed
 import { useState } from 'react';
-import Color from '@/components/utils/Color';
+import { Color, Style } from '@esmalley/ts-utils';
 
 interface SwitchProps {
   // Label to display next to the switch

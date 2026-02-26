@@ -3,8 +3,8 @@
 import { useAppSelector } from '@/redux/hooks';
 import Tab from '@/components/ux/buttons/Tab';
 import Navigation from '@/components/helpers/Navigation';
-import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
+import { Style } from '@esmalley/ts-utils';
 
 const getNavHeaderHeight = () => {
   return 48;

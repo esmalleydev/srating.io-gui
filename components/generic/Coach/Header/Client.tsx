@@ -3,7 +3,6 @@
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperTeam from '@/components/helpers/Team';
 import { useAppSelector } from '@/redux/hooks';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Coach } from '@/types/general';
 import { Skeleton } from '@mui/material';
@@ -13,6 +12,8 @@ import CFB from '@/components/helpers/CFB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Navigation from '@/components/helpers/Navigation';
+import General from '@/components/helpers/General';
+import { Color } from '@esmalley/ts-utils';
 
 
 /**
@@ -119,8 +120,8 @@ const Client = ({ organization_id, division_id, coach_statistic_rankings, season
 
   const teamHelper = new HelperTeam({ team });
 
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
 
 
   const supStyle: React.CSSProperties = {

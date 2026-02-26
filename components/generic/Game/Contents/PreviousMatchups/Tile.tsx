@@ -9,7 +9,7 @@ import Typography from '@/components/ux/text/Typography';
 import Organization from '@/components/helpers/Organization';
 import Navigation from '@/components/helpers/Navigation';
 import { useTheme } from '@/components/hooks/useTheme';
-import Dates from '@/components/utils/Dates';
+import { Dates } from '@esmalley/ts-utils';
 
 
 const Tile = ({ game }) => {

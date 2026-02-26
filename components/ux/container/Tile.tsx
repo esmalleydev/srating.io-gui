@@ -4,8 +4,8 @@
 import { useTheme } from '@/components/hooks/useTheme';
 import React from 'react';
 import Typography from '../text/Typography';
-import Objector from '@/components/utils/Objector';
-import Style from '@/components/utils/Style';
+
+import { Objector, Style } from '@esmalley/ts-utils';
 
 
 /**

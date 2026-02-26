@@ -2,11 +2,11 @@
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import Navigation from '@/components/helpers/Navigation';
-import Dates from '@/components/utils/Dates';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
+import { Dates } from '@esmalley/ts-utils';
 import { useCallback, useEffect, useState } from 'react';
 
 const DraftOrBracketCountdown = () => {

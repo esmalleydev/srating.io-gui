@@ -5,11 +5,11 @@ import { useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
 import { setDataKey } from '@/redux/features/team-slice';
 import Tab from '@/components/ux/buttons/Tab';
 import SubNavBar from './SubNavbar';
+import { Style } from '@esmalley/ts-utils';
 
 
 const getNavHeaderHeight = () => {

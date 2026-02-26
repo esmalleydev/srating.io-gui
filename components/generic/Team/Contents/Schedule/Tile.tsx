@@ -8,11 +8,9 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 import HelperGame from '@/components/helpers/Game';
 
 import {
-  Card,
   Skeleton,
 } from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
 import { setDataKey, updateDataKey } from '@/redux/features/team-slice';
@@ -24,10 +22,11 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
-import Dates from '@/components/utils/Dates';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Game, Team } from '@/types/general';
 import Paper from '@/components/ux/container/Paper';
+import General from '@/components/helpers/General';
+import { Color, Dates } from '@esmalley/ts-utils';
 
 
 const Tile = (
@@ -72,8 +71,8 @@ const Tile = (
   );
   const otherSide = game.home_team_id === team.team_id ? 'away' : 'home';
 
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
 
   const Game = new HelperGame({
     game,

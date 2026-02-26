@@ -1,7 +1,5 @@
 'use server';
 
-import React from 'react';
-
 import HeaderClient from '@/components/generic/Conference/Header/Client';
 import { useServerAPI } from '@/components/serverAPI';
 import { unstable_noStore } from 'next/cache';

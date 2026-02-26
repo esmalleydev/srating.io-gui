@@ -4,11 +4,11 @@ import RankTable from '@/components/generic/RankTable';
 import Navigation from '@/components/helpers/Navigation';
 import TableColumns from '@/components/helpers/TableColumns';
 import { useTheme } from '@/components/hooks/useTheme';
-import Objector from '@/components/utils/Objector';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { FantasyRanking } from '@/types/general';
+import { Objector } from '@esmalley/ts-utils';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 
 const Ranking = () => {

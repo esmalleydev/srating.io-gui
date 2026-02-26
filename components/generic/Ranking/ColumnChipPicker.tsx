@@ -4,9 +4,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { resetDataKey, setDataKey } from '@/redux/features/ranking-slice';
 import ColumnPicker from '../ColumnPicker';
 import Organization from '@/components/helpers/Organization';
-import Text from '@/components/utils/Text';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
+import { Textor } from '@esmalley/ts-utils';
 
 export const getAvailableChips = ({ organization_id, view }) => {
   let availableChips = ['composite'];
@@ -61,7 +61,7 @@ const ColumnChipPicker = ({ organization_id, view }) => {
 
     availableChips.forEach((value) => {
       chips.push(
-        <Chip key = {value} style = {{ margin: '5px' }} title={Text.toSentenceCase(value)} filled={(columnView === value)} value = {value} onClick={() => handleRankingView(value)} />,
+        <Chip key = {value} style = {{ margin: '5px' }} title={Textor.toSentenceCase(value)} filled={(columnView === value)} value = {value} onClick={() => handleRankingView(value)} />,
       );
     });
 

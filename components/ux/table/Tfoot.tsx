@@ -1,7 +1,6 @@
 'use client';
 
-import Objector from '@/components/utils/Objector';
-import Style from '@/components/utils/Style';
+import { Objector, Style } from '@esmalley/ts-utils';
 
 
 const Tfoot = (

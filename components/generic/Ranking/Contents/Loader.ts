@@ -6,7 +6,7 @@ import { setDataKey as setCacheDataKey } from '@/redux/features/cache-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useEffect, useState } from 'react';
 import { getStore } from '@/app/StoreProvider';
-import Objector from '@/components/utils/Objector';
+import { Objector } from '@esmalley/ts-utils';
 
 export const getCachedDataKey = ({ organization_id, division_id, season, view }) => {
   return `${organization_id}${division_id}${season}${view}_ranking_data`;

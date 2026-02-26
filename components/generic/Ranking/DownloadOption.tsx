@@ -3,7 +3,6 @@
 import { useState, useTransition } from 'react';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useClientAPI } from '@/components/clientAPI';
-import CSV from '@/components/utils/CSV';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useRouter } from 'next/navigation';
@@ -13,6 +12,7 @@ import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/hooks/useTheme';
 import IconButton from '@/components/ux/buttons/IconButton';
+import { CSV } from '@esmalley/ts-utils';
 
 const DownloadOption = ({ view, organization_id, division_id, season }) => {
   const theme = useTheme();

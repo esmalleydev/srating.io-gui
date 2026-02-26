@@ -15,9 +15,9 @@ import Organization from '@/components/helpers/Organization';
 import Paper from '@/components/ux/container/Paper';
 import Navigation from '@/components/helpers/Navigation';
 import { usePathname } from 'next/navigation';
-import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
+import { Style } from '@esmalley/ts-utils';
 
 
 export const footerNavigationHeight = 56;

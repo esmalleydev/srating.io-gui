@@ -14,7 +14,6 @@ import { Skeleton } from '@mui/material';
 import Indicator from '@/components/generic/Indicator';
 import Pin from '@/components/generic/Pin';
 
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { updateGameSort } from '@/redux/features/favorite-slice';
@@ -24,12 +23,13 @@ import Rank from './Tile/Rank';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
-import Style from '@/components/utils/Style';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/games-slice';
 import IconButton from '@/components/ux/buttons/IconButton';
 import Modal from '@/components/ux/modal/Modal';
+import General from '@/components/helpers/General';
+import { Color, Style } from '@esmalley/ts-utils';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {
@@ -59,8 +59,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const scrollRef = useScrollContext();
   const isVisible = useOnScreen(ref, scrollRef);
 
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
   const favorite_team_ids = useAppSelector((state) => state.favoriteReducer.team_ids);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const hideOdds = useAppSelector((state) => state.displayReducer.hideOdds);

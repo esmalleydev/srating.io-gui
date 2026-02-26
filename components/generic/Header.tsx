@@ -27,7 +27,6 @@ import Search from './Search';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { reset } from '@/redux/features/compare-slice';
-import { getLogoColorPrimary, getLogoColorSecondary } from '../utils/Color';
 import { setLoading } from '@/redux/features/loading-slice';
 import OrganizationPicker from './OrganizationPicker';
 import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
@@ -35,11 +34,11 @@ import Organization from '../helpers/Organization';
 import Tooltip from '../ux/hover/Tooltip';
 import Button from '../ux/buttons/Button';
 import { useTheme } from '../hooks/useTheme';
-import Style from '../utils/Style';
-import Objector from '../utils/Objector';
 import IconButton from '../ux/buttons/IconButton';
 import { setDataKey } from '@/redux/features/user-slice';
 import Navigation from '../helpers/Navigation';
+import General from '../helpers/General';
+import { Objector, Style } from '@esmalley/ts-utils';
 
 
 // todo hook up settings with router
@@ -67,8 +66,8 @@ const Header = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const logoPrimaryColor = getLogoColorPrimary();
-  const logoSecondaryColor = getLogoColorSecondary();
+  const logoPrimaryColor = General.getLogoColorPrimary();
+  const logoSecondaryColor = General.getLogoColorSecondary();
 
 
   useEffect(() => {

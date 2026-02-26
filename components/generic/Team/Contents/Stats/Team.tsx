@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-
 import RankSpan from '@/components/generic/RankSpan';
 import Organization from '@/components/helpers/Organization';
 import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
@@ -189,7 +187,7 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
     <div style = {{ padding: '0px 5px' }}>
       {sections.map(({ name, columns }, sectionIndex) => {
         return (
-          <>
+          <div key = {sectionIndex}>
             <Typography type='body1'>{name}</Typography>
             <div style = {{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
               {columns.map((column) => {
@@ -197,7 +195,7 @@ const Team = ({ organization_id, division_id, season, teamStats }: { organizatio
               })}
             </div>
             {sectionIndex < sections.length - 1 ? <hr /> : ''}
-          </>
+          </div>
         );
       })}
     </div>

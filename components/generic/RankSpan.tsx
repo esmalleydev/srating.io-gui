@@ -1,10 +1,9 @@
 'use client';
 
-import Color from '@/components/utils/Color';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tooltip from '../ux/hover/Tooltip';
-import Style from '../utils/Style';
+import { Color, Style } from '@esmalley/ts-utils';
 
 const RankSpan = (
   { rank, max, useOrdinal }:

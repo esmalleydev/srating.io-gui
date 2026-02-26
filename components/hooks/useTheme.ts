@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppSelector } from '@/redux/hooks';
-import Theme from '../utils/Theme';
+import { Theme } from '@esmalley/ts-utils';
 
 
 export const useTheme = () => {

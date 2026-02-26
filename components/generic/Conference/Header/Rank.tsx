@@ -4,14 +4,15 @@ import React from 'react';
 
 
 // import { Skeleton } from '@mui/material';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { getBreakPoint } from './ClientWrapper';
+import General from '@/components/helpers/General';
+import { Color } from '@esmalley/ts-utils';
 
 
 const Rank = ({ conference_statistic_ranking }) => {
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
 
   const { width } = useWindowDimensions() as Dimensions;
 

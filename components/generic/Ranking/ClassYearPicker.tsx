@@ -6,10 +6,10 @@ import OptionPicker, { optionType } from '../OptionPicker';
 import { updateDataKey } from '@/redux/features/ranking-slice';
 import { useEffect } from 'react';
 import { getStore } from '@/app/StoreProvider';
-import Objector from '@/components/utils/Objector';
 import { Dialog, DialogTitle, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
 import CheckIcon from '@mui/icons-material/Check';
+import { Objector } from '@esmalley/ts-utils';
 
 const options: optionType[] = [
   { value: 'all', label: 'All' },

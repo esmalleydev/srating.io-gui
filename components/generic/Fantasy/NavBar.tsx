@@ -1,11 +1,10 @@
 'use client';
 
-import Style from '@/components/utils/Style';
 import BackButton from '../BackButton';
 import { useAppSelector } from '@/redux/hooks';
 import Typography from '@/components/ux/text/Typography';
-import Objector from '@/components/utils/Objector';
 import { useTheme } from '@/components/hooks/useTheme';
+import { Objector, Style } from '@esmalley/ts-utils';
 
 
 const getNavHeaderHeight = () => {

@@ -1,8 +1,7 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
-import Color from '@/components/utils/Color';
-import Style from '@/components/utils/Style';
+import { Color, Style } from '@esmalley/ts-utils';
 import React, { AnimationEventHandler, RefObject } from 'react';
 
 

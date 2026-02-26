@@ -7,7 +7,6 @@ import HelperTeam from '@/components/helpers/Team';
 import { getBreakPoint } from '@/components/generic/Compare/Header/ClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { Skeleton } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
@@ -20,14 +19,16 @@ import Organization from '@/components/helpers/Organization';
 import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
+import General from '@/components/helpers/General';
+import { Color } from '@esmalley/ts-utils';
 
 
 const Client = () => {
   const navigation = new Navigation();
   const theme = useTheme();
   const breakPoint = getBreakPoint();
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
   const { width } = useWindowDimensions() as Dimensions;
   const router = useRouter();
   const pathName = usePathname();

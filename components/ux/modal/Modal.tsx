@@ -1,12 +1,10 @@
 'use client';
 
-// import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import { useRef } from 'react';
 import { createPortal } from 'react-dom';
-import Objector from '@/components/utils/Objector';
 import Paper from '../container/Paper';
 import CloseIcon from '@mui/icons-material/Close';
+import { Objector, Style } from '@esmalley/ts-utils';
 
 
 const Modal = (

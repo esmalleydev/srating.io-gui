@@ -8,9 +8,8 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { getRows } from './DataHandler';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
-import Color from '@/components/utils/Color';
+import { Color, Style } from '@esmalley/ts-utils';
 
 
 const Search = ({ view }: {view: string}) => {

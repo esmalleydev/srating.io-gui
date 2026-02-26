@@ -2,9 +2,9 @@
 
 import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
-import Objector from '@/components/utils/Objector';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
+import { Objector } from '@esmalley/ts-utils';
 
 const getData = ({ view }) => {
   // console.time('getData')

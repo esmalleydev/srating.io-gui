@@ -10,7 +10,7 @@ import CFB from '@/components/helpers/CFB';
 import React, { Profiler } from 'react';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
-import Objector from '@/components/utils/Objector';
+import { Objector } from '@esmalley/ts-utils';
 
 
 /**

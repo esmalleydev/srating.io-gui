@@ -1,5 +1,6 @@
-import Objector from '@/components/utils/Objector';
+
 import { Conferences, Divisions, FantasyPayoutRules, Organizations, Terminologies } from '@/types/general';
+import { Objector } from '@esmalley/ts-utils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 

@@ -1,9 +1,9 @@
 
 import Organization from '@/components/helpers/Organization';
 import Division from '@/components/helpers/Division';
-import Objector from '@/components/utils/Objector';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Initializer from '@/components/helpers/Initializer';
+import { Objector } from '@esmalley/ts-utils';
 
 
 

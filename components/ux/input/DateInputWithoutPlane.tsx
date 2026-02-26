@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Style from '@/components/utils/Style';
-import Calendar from '../calendar/Calendar';
-import TextInput from './TextInput';
+
+import { Style } from '@esmalley/ts-utils';
 
 // deprecated, dont use
 

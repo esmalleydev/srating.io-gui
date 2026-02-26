@@ -37,7 +37,7 @@ const AdditionalOptions = () => {
       label: 'Show per game stats',
       selectable: true,
       onSelect: handlePerGameToggle,
-      icon: showPerGameStats ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+      icon: showPerGameStats ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
     },
   ];
 

@@ -3,12 +3,12 @@
 import { useClientAPI } from '@/components/clientAPI';
 import Inputs from '@/components/helpers/Inputs';
 import useDebounce from '@/components/hooks/useDebounce';
-import Text from '@/components/utils/Text';
 import TextInput from '@/components/ux/input/TextInput';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { FantasyGroup, Team } from '@/types/general';
 import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
+import { Textor } from '@esmalley/ts-utils';
 
 
 const TeamSearch = (
@@ -46,7 +46,7 @@ const TeamSearch = (
 
   menuOptions.sort((a, b) => {
     if (a.label && b.label) {
-      return Text.levenshtein(teamSearchValue, a.label) - Text.levenshtein(teamSearchValue, b.label);
+      return Textor.levenshtein(teamSearchValue, a.label) - Textor.levenshtein(teamSearchValue, b.label);
     }
     return 0;
   });

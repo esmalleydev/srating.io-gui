@@ -16,18 +16,16 @@ import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
 import { getConferenceChips } from '../../ConferenceChips';
 import TableColumns from '@/components/helpers/TableColumns';
-import Color from '@/components/utils/Color';
-import Arithmetic from '@/components/utils/Arithmetic';
 import Navigation from '@/components/helpers/Navigation';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import ClassSpan from '../../ClassSpan';
 import VirtualTable, { CustomDecorateHeaderRow, CustomDecorateRows, defaultSortOrderType } from '@/components/ux/table/VirtualTable';
-import Objector from '@/components/utils/Objector';
 import Td from '@/components/ux/table/Td';
 import Tr from '@/components/ux/table/Tr';
 import Th from '@/components/ux/table/Th';
+import { Arithmetic, Color, Objector } from '@esmalley/ts-utils';
 
 
 

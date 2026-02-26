@@ -2,7 +2,6 @@
 
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
-import Color from '@/components/utils/Color';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
@@ -16,7 +15,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
 import ColumnPicker from '@/components/generic/ColumnPicker';
 import Team from '@/components/helpers/Team';
-import Dates from '@/components/utils/Dates';
+import { Color, Dates } from '@esmalley/ts-utils';
 
 /**
  * The main wrapper div for all the contents

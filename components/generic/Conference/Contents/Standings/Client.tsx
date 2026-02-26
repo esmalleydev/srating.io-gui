@@ -17,9 +17,9 @@ import Locked from '@/components/generic/Billing/Locked';
 import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
 import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import RankTable from '@/components/generic/RankTable';
-import Objector from '@/components/utils/Objector';
 import TableColumns from '@/components/helpers/TableColumns';
 import Navigation from '@/components/helpers/Navigation';
+import { Objector } from '@esmalley/ts-utils';
 
 
 

@@ -1,9 +1,9 @@
 'use client';
 
-import { useTheme } from "@/components/hooks/useTheme";
-import Button from "../buttons/Button";
-import Typography from "../text/Typography";
-import Modal from "./Modal";
+import { useTheme } from '@/components/hooks/useTheme';
+import Button from '../buttons/Button';
+import Typography from '../text/Typography';
+import Modal from './Modal';
 
 
 const ErrorModal = (

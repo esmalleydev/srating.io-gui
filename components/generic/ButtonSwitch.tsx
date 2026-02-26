@@ -2,7 +2,7 @@
 
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
-import Color from '@/components/utils/Color';
+import { Color } from '@esmalley/ts-utils';
 
 const ButtonSwitch = (
   { leftTitle, rightTitle, selected, handleClick, fontSize = '0.85rem', style = {} }:

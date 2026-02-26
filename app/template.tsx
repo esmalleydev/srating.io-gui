@@ -12,8 +12,7 @@ import FooterNavigation from '@/components/generic/FooterNavigation';
 import { ScrollContainer, ScrollProvider } from '@/contexts/scrollContext';
 import Spinner from '@/components/generic/Spinner';
 import Toast from '@/components/ux/overlay/Toast';
-import { socket } from '@/components/utils/Kontororu/Socket';
-import { toast } from '@/components/utils/Toaster';
+import { socket, toast } from '@esmalley/ts-utils';
 import { setDataKey } from '@/redux/features/general-slice';
 
 
@@ -82,7 +81,14 @@ const Template = ({ children }: { children: React.ReactNode }) => {
     };
 
     if (session_id) {
-      socket.connect(session_id);
+      socket.connect(
+        session_id,
+        {
+          hostname: process.env.NEXT_PUBLIC_WS_HOST as string,
+          port: process.env.NEXT_PUBLIC_WS_PORT,
+          path: process.env.NEXT_PUBLIC_WS_PATH as string,
+        },
+      );
 
       socket.addEventListener('connection_state', connectionHanlder);
     }

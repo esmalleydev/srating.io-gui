@@ -4,9 +4,10 @@
 import { useTheme } from '@/components/hooks/useTheme';
 import React, { useState } from 'react';
 import Typography from '../text/Typography';
-import Objector from '@/components/utils/Objector';
 import HelpIcon from '@mui/icons-material/Help';
-import InfoIcon from '@mui/icons-material/Info';
+// import InfoIcon from '@mui/icons-material/Info';
+
+import { Objector } from '@esmalley/ts-utils';
 
 
 export const getBaseLabelStyle = ({ theme }) => {

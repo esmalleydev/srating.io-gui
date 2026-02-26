@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
-import Dates from '@/components/utils/Dates';
+import { Dates } from '@esmalley/ts-utils';
 
 const Tile = (props) => {
   const self = this;

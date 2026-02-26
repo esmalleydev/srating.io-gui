@@ -11,11 +11,11 @@ import StatsLoaderServer from '@/components/generic/Picks/StatsLoader/Server';
 import Calculator from '@/components/generic/Picks/Calculator';
 import PicksLoader from '@/components/generic/Picks/PicksLoader';
 import ContentsWrapper from '@/components/generic/Picks/ContentsWrapper';
-import Dates from '@/components/utils/Dates';
 import DateBar from '@/components/generic/DateBar';
 import Games from 'Surface/Games';
 import { Suspense } from 'react';
 import ReduxWrapper from '@/components/generic/Picks/ReduxWrapper';
+import { Dates } from '@esmalley/ts-utils';
 
 
 export type getDecoratePicks = {

@@ -17,15 +17,13 @@ import RankTable from '@/components/generic/RankTable';
 import { Game, Players } from '@/types/general';
 import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
-import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
-import Objector from '@/components/utils/Objector';
 import TableColumns from '@/components/helpers/TableColumns';
-import Text from '@/components/utils/Text';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Navigation from '@/components/helpers/Navigation';
+import General from '@/components/helpers/General';
+import { Color, Objector, Style, Textor } from '@esmalley/ts-utils';
 
 
 
@@ -79,8 +77,8 @@ const Client = (
   const navigation = new Navigation();
   const theme = useTheme();
 
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
   const { width } = useWindowDimensions() as Dimensions;
 
   const numberOfTeams = Organization.getNumberOfTeams({ organization_id: game.organization_id, division_id: game.division_id, season: game.season });
@@ -858,7 +856,7 @@ const Client = (
     let title = <></>;
 
     if (position) {
-      title = <Typography type = 'body1'>{Text.toSentenceCase(position)}</Typography>;
+      title = <Typography type = 'body1'>{Textor.toSentenceCase(position)}</Typography>;
     }
 
     if (!playerRows.length) {

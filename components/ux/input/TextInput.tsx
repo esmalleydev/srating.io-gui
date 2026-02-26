@@ -1,14 +1,13 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
 import { RefObject } from 'react';
-import Objector from '@/components/utils/Objector';
 import { BaseInputProps, useInputLogic } from './hooks/useInputLogic';
-import Color from '@/components/utils/Color';
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from '../buttons/IconButton';
+
+import { Objector, Style, Color } from '@esmalley/ts-utils';
 
 
 interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange' | 'onFocus' | 'onBlur' | 'max' | 'min' | 'maxLength'>, BaseInputProps {

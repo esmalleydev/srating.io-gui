@@ -2,11 +2,11 @@
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useTheme } from '@/components/hooks/useTheme';
-import Dates from '@/components/utils/Dates';
 import Paper from '@/components/ux/container/Paper';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
+import { Dates } from '@esmalley/ts-utils';
 
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';

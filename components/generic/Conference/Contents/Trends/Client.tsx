@@ -22,13 +22,12 @@ import Organization from '@/components/helpers/Organization';
 import { useAppSelector } from '@/redux/hooks';
 import Team from '@/components/helpers/Team';
 import ColumnPickerFull from '@/components/generic/ColumnPickerFull';
-import Color from '@/components/utils/Color';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import Paper from '@/components/ux/container/Paper';
-import Dates from '@/components/utils/Dates';
+import { Color, Dates } from '@esmalley/ts-utils';
 
 export interface TrendsType {
   elos: Elos;

@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
-
+import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton, Typography } from '@mui/material';
+import { Skeleton } from '@mui/material';
 
 
 const Record = () => {
+  const theme = useTheme();
   const statistic_rankings = useAppSelector((state) => state.conferenceReducer.statistic_rankings);
 
   let totalWins = 0;
@@ -20,7 +21,7 @@ const Record = () => {
   }
 
   return (
-    <Typography variant = 'overline' color = 'text.secondary'>
+    <Typography type = 'overline' style = {{ color: theme.text.secondary }}>
       {
         false ?
           <Skeleton style={{

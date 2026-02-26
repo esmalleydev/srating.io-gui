@@ -1,9 +1,15 @@
-import HelperCBB from './CBB';
+
+
+import { Games as GamesType } from '@/types/general';
+
+import Game from './Game';
 
 class Games {
+  private games: GamesType;
+
   constructor(args) {
     this.games = args.games || {};
-  };
+  }
 
   /**
    * Get the current live games
@@ -11,20 +17,18 @@ class Games {
    */
   getLiveGames() {
     const live_games = {};
-    for (let game_id in this.games) {
+    for (const game_id in this.games) {
       const game = this.games[game_id];
 
-      const CBB = new HelperCBB({
-        'game': game
-      });
+      const GameHelper = new Game({ game });
 
-      if (CBB.isInProgress()) {
+      if (GameHelper.isInProgress()) {
         live_games[game_id] = game;
       }
     }
 
     return live_games;
-  };
+  }
 
 
   /**
@@ -34,19 +38,17 @@ class Games {
   getTopRankedGames() {
     const top_games = {};
 
-    for (let game_id in this.games) {
+    for (const game_id in this.games) {
       const game = this.games[game_id];
 
-      const CBB = new HelperCBB({
-        'game': game
-      });
+      const GameHelper = new Game({ game });
 
-      if (CBB.isFinal()) {
+      if (GameHelper.isFinal()) {
         continue;
       }
 
-      const homeRank = CBB.getTeamRank('home', 'composite_rank');
-      const awayRank = CBB.getTeamRank('away', 'composite_rank');
+      const homeRank = GameHelper.getTeamRank('home', 'composite_rank');
+      const awayRank = GameHelper.getTeamRank('away', 'composite_rank');
 
       if (
         (homeRank && homeRank <= 30) ||
@@ -54,11 +56,10 @@ class Games {
       ) {
         top_games[game_id] = game;
       }
-
     }
 
     return top_games;
-  };
+  }
 
 
   /**
@@ -68,19 +69,17 @@ class Games {
   getThrillerGames() {
     const thriller_games = {};
 
-    for (let game_id in this.games) {
+    for (const game_id in this.games) {
       const game = this.games[game_id];
 
-      const CBB = new HelperCBB({
-        'game': game
-      });
+      const GameHelper = new Game({ game });
 
-      if (CBB.isFinal()) {
+      if (GameHelper.isFinal()) {
         continue;
       }
 
-      const homeRank = CBB.getTeamRank('home', 'composite_rank');
-      const awayRank = CBB.getTeamRank('away', 'composite_rank');
+      const homeRank = GameHelper.getTeamRank('home', 'composite_rank') || 0;
+      const awayRank = GameHelper.getTeamRank('away', 'composite_rank') || 0;
 
       const difference = Math.abs(homeRank - awayRank);
 
@@ -93,11 +92,10 @@ class Games {
       ) {
         thriller_games[game_id] = game;
       }
-
     }
 
     return thriller_games;
-  };
+  }
 
 
   /**
@@ -109,7 +107,7 @@ class Games {
 
     const closeGames = {};
 
-    for (let game_id in live_games) {
+    for (const game_id in live_games) {
       const game = live_games[game_id];
 
       const difference = Math.abs(game.home_score - game.away_score);
@@ -119,16 +117,16 @@ class Games {
         game.home_score > 14 &&
         game.away_score > 14
       ) {
-        closeGames[game_id] = game
+        closeGames[game_id] = game;
       }
     }
 
     return closeGames;
-  };
+  }
 
 
   /**
-   * Get live games where the team that "should not" be winning, is winning 
+   * Get live games where the team that "should not" be winning, is winning
    * @return {object}
    */
   getUpsetAlerts() {
@@ -136,7 +134,7 @@ class Games {
 
     const upsets = {};
 
-    for (let game_id in live_games) {
+    for (const game_id in live_games) {
       const game = live_games[game_id];
 
       // todo define what an upset is
@@ -146,10 +144,7 @@ class Games {
     }
 
     return upsets;
-  };
-
-
-
-};
+  }
+}
 
 export default Games;

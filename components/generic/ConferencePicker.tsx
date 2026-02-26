@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { updateDataKey } from '@/redux/features/display-slice';
 import { getStore } from '@/app/StoreProvider';
-import Objector from '../utils/Objector';
+import { Objector } from '@esmalley/ts-utils';
 
 const ConferencePicker = () => {
   // console.time('ConferencePicker')

@@ -10,11 +10,11 @@ import {
 } from '@mui/material';
 import HelperGame from '@/components/helpers/Game';
 import Locked from '@/components/generic/Billing/Locked';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { useRouter } from 'next/navigation';
 import { setLoading } from '@/redux/features/loading-slice';
-import Style from '@/components/utils/Style';
 import { useTheme } from '@/components/hooks/useTheme';
+import General from '@/components/helpers/General';
+import { Color, Style } from '@esmalley/ts-utils';
 
 
 const TableView = ({ sorted_games, team_id }) => {
@@ -22,8 +22,8 @@ const TableView = ({ sorted_games, team_id }) => {
   const dispatch = useAppDispatch();
   const isLoadingPredictions = useAppSelector((state) => state.teamReducer.schedulePredictionsLoading);
 
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
 
 
   const router = useRouter();

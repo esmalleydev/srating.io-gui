@@ -5,12 +5,12 @@ import { getBreakPoint, getMarginTop, getDateBarHeight } from '@/components/gene
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import Modal from '@/components/ux/modal/Modal';
 import Tab from '@/components/ux/buttons/Tab';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
 import Navigation from '@/components/helpers/Navigation';
+import { Style } from '@esmalley/ts-utils';
 
 const getHeaderHeight = () => {
   return 48;

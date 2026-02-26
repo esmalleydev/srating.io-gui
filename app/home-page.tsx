@@ -5,7 +5,6 @@ import { useState, useRef, RefObject } from 'react';
 import Footer from '../components/generic/Footer';
 
 import Pricing from '@/components/generic/Pricing';
-import { getLogoColorPrimary, getLogoColorSecondary } from '@/components/utils/Color';
 
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -17,6 +16,7 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
+import General from '@/components/helpers/General';
 
 const Home = () => {
   const [selectedHero, setSelectedHero] = useState('trends');
@@ -99,7 +99,7 @@ const Home = () => {
             type="h2"
             style = {{ textAlign: 'center', color: theme.text.primary, fontWeight: 600, fontStyle: 'italic', marginBottom: 16 }}
           >
-            {<><span style = {{ color: getLogoColorPrimary() }}>s</span><span style = {{ color: getLogoColorSecondary() }}>Rating</span></>}
+            {<><span style = {{ color: General.getLogoColorPrimary() }}>s</span><span style = {{ color: General.getLogoColorSecondary() }}>Rating</span></>}
           </Typography>
           <Typography type="h5" style = {{ textAlign: 'center', color: theme.text.secondary, marginBottom: 16 }}>
             Analysis tools, picks for 🏀 & 🏈, <br /> no ads, <a style = {{ color: theme.link.primary }} href = "https://github.com/esmalleydev/srating.io-gui" target = "_blank">open-source</a>

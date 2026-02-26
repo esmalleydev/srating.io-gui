@@ -71,7 +71,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         label: 'Hide committed',
         selectable: true,
         onSelect: handleCommitted,
-        icon: hideCommitted ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+        icon: hideCommitted ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
       });
     }
 
@@ -82,7 +82,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
           label: 'Class filter',
           selectable: true,
           onSelect: handleClassYearFilter,
-          icon: <FilterAltIcon fontSize='small' />
+          icon: <FilterAltIcon fontSize='small' />,
         });
       }
 
@@ -91,7 +91,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         label: 'Hide under 2 MPG',
         selectable: true,
         onSelect: handleUnderTwo,
-        icon: hideUnderTwoMPG ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+        icon: hideUnderTwoMPG ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
       });
     }
 
@@ -99,15 +99,15 @@ const AdditionalOptions = ({ view }: {view: string}) => {
       menuOptions.push({
         value: null,
         selectable: false,
-        customLabel: <MenuDivider />
-      },);
+        customLabel: <MenuDivider />,
+      });
 
       menuOptions.push({
         value: 'conf-picker-options',
         label: 'Conference filter',
         selectable: true,
         onSelect: handleConferenceFilter,
-        icon: <SettingsIcon fontSize='small' />
+        icon: <SettingsIcon fontSize='small' />,
       });
     }
 

@@ -11,7 +11,7 @@ import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
-import Dates from '@/components/utils/Dates';
+import { Dates } from '@esmalley/ts-utils';
 
 
 const Differentials = ({ game, team_id }) => {

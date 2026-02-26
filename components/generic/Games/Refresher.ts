@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { refresh } from '../actions';
 import { getTagLabel } from '@/components/handlers/secret/shared';
 import { getStore } from '@/app/StoreProvider';
-import Objector from '@/components/utils/Objector';
+import { Objector } from '@esmalley/ts-utils';
 
 
 const Refresher = ({ date, games }) => {

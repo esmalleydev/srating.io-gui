@@ -3,7 +3,7 @@
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tooltip from '../ux/hover/Tooltip';
-import Style from '../utils/Style';
+import { Style } from '@esmalley/ts-utils';
 
 const ClassSpan = (
   { class_year }:

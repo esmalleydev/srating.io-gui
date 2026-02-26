@@ -1,12 +1,12 @@
 {
   "name": "srating.io-gui",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "private": true,
   "type": "module",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@esmalley/ts-utils": "^3.0.0",
+    "@esmalley/ts-utils": "^6.1.0",
     "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.7",
     "@next/bundle-analyzer": "^15.2.2",

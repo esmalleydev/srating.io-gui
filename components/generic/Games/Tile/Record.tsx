@@ -1,10 +1,13 @@
 'use client';
 
+import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton, Typography } from '@mui/material';
+import { Skeleton } from '@mui/material';
 
 
 const Record = ({ game, team_id }) => {
+  const theme = useTheme();
   const gameStats = useAppSelector((state) => state.gamesReducer.gameStats);
   const gameStatsLoading = useAppSelector((state) => state.gamesReducer.gameStatsLoading);
   // const showScheduleHistoricalRankRecord = useAppSelector((state) => state.gamesReducer.showScheduleHistoricalRankRecord);
@@ -19,7 +22,7 @@ const Record = ({ game, team_id }) => {
   const losses = (statistic_ranking && statistic_ranking.losses) || 0;
 
   return (
-    <Typography variant = 'overline' color = 'text.secondary'>
+    <Typography type = 'overline' style = {{ color: theme.text.secondary }}>
       {
         gameStatsLoading ?
           <Skeleton style={{

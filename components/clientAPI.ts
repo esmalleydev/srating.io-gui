@@ -2,10 +2,10 @@
 
 import { getStore } from '@/app/StoreProvider';
 import { setDataKey, setSecret } from '@/redux/features/user-slice';
-import Objector from './utils/Objector';
 import { setLoading } from '@/redux/features/loading-slice';
 import { refresh } from './generic/actions';
 import { getTagLabel } from './handlers/secret/shared';
+import { Objector } from '@esmalley/ts-utils';
 
 const protocol = process.env.NEXT_PUBLIC_CLIENT_PROTOCAL;
 const hostname = process.env.NEXT_PUBLIC_CLIENT_HOST;

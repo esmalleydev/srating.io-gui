@@ -1,6 +1,7 @@
 'use client';
 
-import Style from '@/components/utils/Style';
+import { Style } from '@esmalley/ts-utils';
+
 
 const MenuListIcon = (
   {

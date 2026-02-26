@@ -15,9 +15,9 @@ import { PlayerStatisticRanking } from '@/types/cbb';
 import Typography from '@/components/ux/text/Typography';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
-import Objector from '@/components/utils/Objector';
 import Navigation from '@/components/helpers/Navigation';
 import ClassSpan from '@/components/generic/ClassSpan';
+import { Objector } from '@esmalley/ts-utils';
 
 
 /**

@@ -1,4 +1,5 @@
-import Objector from '@/components/utils/Objector';
+
+import { Objector } from '@esmalley/ts-utils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 

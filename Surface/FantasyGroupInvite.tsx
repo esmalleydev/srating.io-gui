@@ -6,11 +6,11 @@ import Organization from '@/components/helpers/Organization';
 
 import { useServerAPI } from '@/components/serverAPI';
 
-import Dates from '@/components/utils/Dates';
 import Typography from '@/components/ux/text/Typography';
 import ContentsWrapper from '@/components/generic/FantasyGroupInvite/ContentsWrapper';
 import { Client } from '@/components/generic/FantasyGroupInvite/Client';
 import { FantasyEntrys, FantasyGroup, FantasyGroupInvite as FantasyGroupInviteType } from '@/types/general';
+import { Dates } from '@esmalley/ts-utils';
 
 export type getDecorateFantasyGroupInvite = {
   fantasy_group_invite_id: string;

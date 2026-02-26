@@ -15,8 +15,7 @@ import IconButton from '@/components/ux/buttons/IconButton';
 import { useState } from 'react';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
-import Objector from '@/components/utils/Objector';
-import Dates from '@/components/utils/Dates';
+import { Dates, Objector } from '@esmalley/ts-utils';
 
 const Comments = () => {
   const theme = useTheme();

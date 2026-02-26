@@ -1,9 +1,9 @@
 'use client';
 
-import Style from '@/components/utils/Style';
 import React from 'react';
 import Typography from '../text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import { Style } from '@esmalley/ts-utils';
 
 const MenuListText = (
   {

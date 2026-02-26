@@ -17,9 +17,8 @@ import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankTable from '@/components/generic/RankTable';
 import TableColumns, { TableColumnsType } from '@/components/helpers/TableColumns';
 import Chip from '@/components/ux/container/Chip';
-import Objector from '@/components/utils/Objector';
 import Navigation from '@/components/helpers/Navigation';
-import Dates from '@/components/utils/Dates';
+import { Dates, Objector } from '@esmalley/ts-utils';
 
 /**
  * The main wrapper div for all the contents

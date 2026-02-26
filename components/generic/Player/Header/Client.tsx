@@ -6,7 +6,6 @@ import Organization from '@/components/helpers/Organization';
 import HelperTeam from '@/components/helpers/Team';
 import HelperPlayer from '@/components/helpers/Player';
 import { useAppSelector } from '@/redux/hooks';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Player, PlayerTeamSeasons, Team, Teams } from '@/types/general';
 import { Skeleton } from '@mui/material';
@@ -17,6 +16,8 @@ import OptionPicker from '../../OptionPicker';
 import { PlayerStatisticRanking, StatisticRanking } from '@/types/cbb';
 import Navigation from '@/components/helpers/Navigation';
 import ClassSpan from '../../ClassSpan';
+import General from '@/components/helpers/General';
+import { Color } from '@esmalley/ts-utils';
 
 
 /**
@@ -103,8 +104,8 @@ const Client = (
   const teamHelper = new HelperTeam({ team });
   const playerHelper = new HelperPlayer({ player });
 
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
 
 
   const supStyle: React.CSSProperties = {

@@ -17,7 +17,7 @@ import Paper from '@/components/ux/container/Paper';
 // import LockIcon from '@mui/icons-material/Lock';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
-import Color from '@/components/utils/Color';
+import { Color } from '@esmalley/ts-utils';
 
 /**
  * The main wrapper div for all the contents

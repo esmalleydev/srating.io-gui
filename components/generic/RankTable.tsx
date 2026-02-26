@@ -3,12 +3,10 @@
 
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { useEffect, useState } from 'react';
-import Sorter from '../utils/Sorter';
 import RankSpan from './RankSpan';
 import { useTheme } from '../hooks/useTheme';
 import { TableColumnsType } from '../helpers/TableColumns';
 import Tooltip from '../ux/hover/Tooltip';
-import Objector from '../utils/Objector';
 import Table from '../ux/table/Table';
 import Thead from '../ux/table/Thead';
 import Tr from '../ux/table/Tr';
@@ -16,6 +14,7 @@ import Td from '../ux/table/Td';
 import Th from '../ux/table/Th';
 import Tbody from '../ux/table/Tbody';
 import Tfoot from '../ux/table/Tfoot';
+import { Objector, Sorter } from '@esmalley/ts-utils';
 
 
 type defaultSortOrderType = 'asc' | 'desc';

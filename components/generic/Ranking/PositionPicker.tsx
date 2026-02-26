@@ -7,7 +7,7 @@ import Organization from '@/components/helpers/Organization';
 import { updateDataKey } from '@/redux/features/display-slice';
 import { useEffect } from 'react';
 import { getStore } from '@/app/StoreProvider';
-import Objector from '@/components/utils/Objector';
+import { Objector } from '@esmalley/ts-utils';
 
 
 const PositionPicker = ({ selected, isRadio = false }: { selected: string[]; isRadio?: boolean; }) => {

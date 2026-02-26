@@ -2,7 +2,6 @@
 
 /* eslint-disable consistent-return */
 
-import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
 import Button from '../buttons/Button';
 import React, { useEffect, useRef, useState } from 'react';
@@ -12,6 +11,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import IconButton from '../buttons/IconButton';
+import { Style } from '@esmalley/ts-utils';
 
 export type WizardStep = {
   title: string;

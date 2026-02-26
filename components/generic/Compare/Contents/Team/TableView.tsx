@@ -9,10 +9,9 @@ import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
 import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
-import Objector from '@/components/utils/Objector';
 import { getAvailableChips } from '@/components/generic/Ranking/ColumnChipPicker';
-import Text from '@/components/utils/Text';
 import { useAppSelector } from '@/redux/hooks';
+import { Objector, Textor } from '@esmalley/ts-utils';
 
 
 
@@ -53,7 +52,7 @@ const TableView = ({ statistic_rankings }) => {
 
   availableChips.forEach((value) => {
     chips.push(
-      <Chip key = {value} style = {{ margin: '5px' }} title={Text.toSentenceCase(value)} filled={(view === value)} value = {value} onClick={() => handleView(value)} />,
+      <Chip key = {value} style = {{ margin: '5px' }} title={Textor.toSentenceCase(value)} filled={(view === value)} value = {value} onClick={() => handleView(value)} />,
     );
   });
 

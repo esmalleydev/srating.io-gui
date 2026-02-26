@@ -8,7 +8,7 @@ import HelperGame from '@/components/helpers/Game';
 import { setDataKey } from '@/redux/features/game-slice';
 import { startTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import Style from '@/components/utils/Style';
+import { Style } from '@esmalley/ts-utils';
 
 
 const getNavHeaderHeight = () => {

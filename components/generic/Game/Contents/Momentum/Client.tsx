@@ -17,8 +17,7 @@ import CFB from '@/components/helpers/CFB';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import TableColumns from '@/components/helpers/TableColumns';
-import Objector from '@/components/utils/Objector';
-import Dates from '@/components/utils/Dates';
+import { Dates, Objector } from '@esmalley/ts-utils';
 
 /**
  * The main wrapper div for all the contents

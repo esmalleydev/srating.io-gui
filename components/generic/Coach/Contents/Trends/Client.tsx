@@ -14,7 +14,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
-import Dates from '@/components/utils/Dates';
+import { Dates } from '@esmalley/ts-utils';
 
 
 // todo compare to 2 or more coach elos on the same graph? might be cool to see them with the time comparison. ex: and old coach vs relativiely new

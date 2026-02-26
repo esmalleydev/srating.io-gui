@@ -6,13 +6,14 @@ import HelperGame from '@/components/helpers/Game';
 import { Game, GamePulse, GamePulses, Odds, Oddsz } from '@/types/general';
 import Chart from '@/components/generic/Chart';
 import { LineProps } from 'recharts';
-import { LinearProgress, useTheme } from '@mui/material';
-import Color from '@/components/utils/Color';
+import { LinearProgress } from '@mui/material';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
+import { Color } from '@esmalley/ts-utils';
 
 /**
  * The main wrapper div for all the contents
@@ -49,7 +50,7 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
   const [selectedIntervalChip, setSelectedIntervalChip] = useState('scoring');
 
   const theme = useTheme();
-  const backgroundColor = theme.palette.background.default;
+  const backgroundColor = theme.background.main;
 
   const Game = new HelperGame({
     game,

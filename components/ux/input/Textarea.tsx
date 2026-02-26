@@ -1,11 +1,10 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import Typography from '../text/Typography';
 import { RefObject } from 'react';
-import Objector from '@/components/utils/Objector';
 import { BaseInputProps, useInputLogic } from './hooks/useInputLogic';
+import { Objector, Style } from '@esmalley/ts-utils';
 
 interface TextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'placeholder' | 'onChange' | 'onFocus' | 'onBlur'>, BaseInputProps {
   ref?: RefObject<HTMLTextAreaElement | null>;

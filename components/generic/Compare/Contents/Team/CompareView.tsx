@@ -6,8 +6,8 @@ import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { getSections } from '@/components/generic/Game/Contents/Matchup/Client';
 import TableColumns from '@/components/helpers/TableColumns';
-import Objector from '@/components/utils/Objector';
 import Typography from '@/components/ux/text/Typography';
+import { Objector } from '@esmalley/ts-utils';
 
 
 // todo for the conf recond compare, show their rank in the conference, not by total wins

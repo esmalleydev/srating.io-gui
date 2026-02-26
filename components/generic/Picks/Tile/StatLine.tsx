@@ -1,13 +1,11 @@
 'use client';
 
-import React from 'react';
-
 import { useAppSelector } from '@/redux/hooks';
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 import { getSkeleton, maxWidth } from '../Tile';
 import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';
-import Objector from '@/components/utils/Objector';
+import { Objector } from '@esmalley/ts-utils';
 
 
 const StatLine = ({ game }) => {

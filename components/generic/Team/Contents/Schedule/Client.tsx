@@ -9,8 +9,8 @@ import Differentials from './Differentials';
 import TableView from './TableView';
 import { Skeleton } from '@mui/material';
 import { Games } from '@/types/general';
-import Dates from '@/components/utils/Dates';
 import Typography from '@/components/ux/text/Typography';
+import { Dates } from '@esmalley/ts-utils';
 
 
 /**

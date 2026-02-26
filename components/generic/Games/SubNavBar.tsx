@@ -1,13 +1,13 @@
 'use client';
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { useTheme } from '@mui/material';
 import { getBreakPoint, getDateBarHeight, getMarginTop } from '@/components/generic/DateBar';
 import ConferencePicker from '@/components/generic/ConferencePicker';
 import AdditionalOptions from '@/components/generic/Games/AdditionalOptions';
 import StatusPicker from '@/components/generic/StatusPicker';
 import RefreshCounter from './RefreshCounter';
 import GamesFilterPicker from './GamesFilterPicker';
+import { useTheme } from '@/components/hooks/useTheme';
 
 const getHeaderHeight = () => {
   return 48;
@@ -32,7 +32,7 @@ const SubNavBar = () => {
   const subHeaderStyle: React.CSSProperties = {
     height: subHeaderHeight,
     position: 'fixed',
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.background.main,
     zIndex: 1100,
     display: 'flex',
     justifyContent: 'space-between',

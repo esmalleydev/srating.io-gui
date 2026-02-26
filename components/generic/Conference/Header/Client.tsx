@@ -17,8 +17,18 @@ import { ConferenceStatisticRankings } from '@/types/cbb';
 
 
 const Client = (
-  { conference_statistic_ranking, season, conference_id, seasons }:
-  { conference_statistic_ranking: ConferenceStatisticRankings, season: number, conference_id: string, seasons: number[] }
+  {
+    conference_statistic_ranking,
+    season,
+    conference_id,
+    seasons,
+  }:
+  {
+    conference_statistic_ranking: ConferenceStatisticRankings,
+    season: number,
+    conference_id: string,
+    seasons: number[],
+  },
 ) => {
   const dispatch = useAppDispatch();
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);

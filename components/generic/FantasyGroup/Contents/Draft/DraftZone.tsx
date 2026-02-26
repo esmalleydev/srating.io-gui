@@ -11,12 +11,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import { LinearProgress } from '@mui/material';
 import { useCallback, useState } from 'react';
 import VirtualTable from '@/components/ux/table/VirtualTable';
-import Objector from '@/components/utils/Objector';
 import TableColumns from '@/components/helpers/TableColumns';
 import { getCachedDataKey } from '@/components/generic/Ranking/Contents/Loader';
 import TeamSearch from './TeamSearch';
 import { decorateHeaderRow, decorateRows } from '@/components/generic/Ranking/Contents/Client';
 import DraftZonePick from './DraftZonePick';
+import { Objector } from '@esmalley/ts-utils';
 
 
 const DraftZone = () => {

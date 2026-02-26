@@ -4,9 +4,7 @@
 
 import { useTheme } from '@/components/hooks/useTheme';
 // import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import Color from '@/components/utils/Color';
-import Objector from '@/components/utils/Objector';
-import Style from '@/components/utils/Style';
+import { Color, Objector, Style } from '@esmalley/ts-utils';
 import { RefObject } from 'react';
 
 const IconButton = (

@@ -11,9 +11,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import { TableColumnsType } from '@/components/helpers/TableColumns';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Tooltip from '../hover/Tooltip';
-import Objector from '@/components/utils/Objector';
-import Sorter from '@/components/utils/Sorter';
-import Theme from '@/components/utils/Theme';
+import { Objector, Sorter, Theme } from '@esmalley/ts-utils';
 
 // --- Types ---
 
@@ -139,7 +137,7 @@ const VirtualTable = <T extends object>({
     const data = [...rows];
     return customSortComparator
       ? data.sort(customSortComparator(order, orderBy, columns[orderBy]?.sort))
-      : data.sort(Sorter.getComparator(order, orderBy, columns[orderBy]?.sort));
+      : data.sort(Sorter.getComparator(order, orderBy, columns[orderBy]?.sort) as (a: T, b: T) => number);
   }, [rows, order, orderBy, columns, customSortComparator]);
 
 

@@ -10,10 +10,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { setDataKey } from '@/redux/features/team-slice';
 import AdditionalOptions from './Contents/Schedule/AdditionalOptions';
 import { useTheme } from '@/components/hooks/useTheme';
-import Style from '@/components/utils/Style';
 import Tab from '@/components/ux/buttons/Tab';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
+import { Style } from '@esmalley/ts-utils';
 
 const getSubNavHeaderHeight = () => 42;
 

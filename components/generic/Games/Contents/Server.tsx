@@ -6,7 +6,7 @@ import { Client } from '@/components/generic/Games/Contents/Client';
 import { useServerAPI } from '@/components/serverAPI';
 import { ClientSkeleton } from '../StatsLoader/Client';
 import StatsLoaderServer from '../StatsLoader/Server';
-import Objector from '@/components/utils/Objector';
+import { Objector } from '@esmalley/ts-utils';
 
 
 const Server = async ({ games, date, organization_id, division_id, season }) => {

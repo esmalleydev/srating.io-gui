@@ -45,7 +45,7 @@ const AdditionalOptions = () => {
         setRankPickerOpen(true);
         handleClose();
       },
-      icon: <MilitaryTechIcon fontSize='small' />
+      icon: <MilitaryTechIcon fontSize='small' />,
     },
     {
       value: 'card_display',
@@ -55,12 +55,12 @@ const AdditionalOptions = () => {
         setCardPickerOpen(true);
         handleClose();
       },
-      icon: <ViewModuleIcon fontSize='small' />
+      icon: <ViewModuleIcon fontSize='small' />,
     },
     {
       value: null,
       selectable: false,
-      customLabel: <MenuDivider />
+      customLabel: <MenuDivider />,
     },
     {
       value: 'odds_display',
@@ -69,7 +69,7 @@ const AdditionalOptions = () => {
       onSelect: () => {
         dispatch(setDataKey({ key: 'hideOdds', value: (hideOdds === 1 ? 0 : 1) }));
       },
-      icon: hideOdds ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+      icon: hideOdds ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
     },
   ];
 

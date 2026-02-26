@@ -5,7 +5,6 @@ import { useTransition } from 'react';
 import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperTeam from '@/components/helpers/Team';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Color, { getBestColor, getWorstColor } from '@/components/utils/Color';
 import OptionPicker from '@/components/generic/OptionPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
@@ -17,6 +16,8 @@ import { useTheme } from '@/components/hooks/useTheme';
 import { Coach, CoachStatisticRanking, Team } from '@/types/general';
 import { ConferenceStatisticRanking } from '@/types/cbb';
 import Navigation from '@/components/helpers/Navigation';
+import General from '@/components/helpers/General';
+import { Color } from '@esmalley/ts-utils';
 
 
 /**
@@ -112,8 +113,8 @@ const Client = (
   const conferenceName = teamHelper.getConference(conferences);
   const conferenceNumber = Organization.getNumberOfConferences({ organization_id, division_id, season });
 
-  const bestColor = getBestColor();
-  const worstColor = getWorstColor();
+  const bestColor = General.getBestColor();
+  const worstColor = General.getWorstColor();
 
 
   const supStyle: React.CSSProperties = {
