@@ -38,7 +38,7 @@ const Games = ({ fantasy_entry_id }) => {
 
     const start = Dates.parse(row.start_date, true);
 
-    if (now <= start || row.status === 'live') {
+    if (now <= start || row.status === 'live' || row.status === 'pre') {
       future.push(row);
     } else {
       past.push(row);
