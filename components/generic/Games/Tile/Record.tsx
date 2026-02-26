@@ -22,7 +22,7 @@ const Record = ({ game, team_id }) => {
   const losses = (statistic_ranking && statistic_ranking.losses) || 0;
 
   return (
-    <Typography type = 'overline' style = {{ color: theme.text.secondary }}>
+    <Typography type = 'overline' style = {{ color: theme.text.secondary, display: 'inline-flex', marginLeft: 5 }}>
       {
         gameStatsLoading ?
           <Skeleton style={{
