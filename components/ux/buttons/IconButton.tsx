@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-unused-expressions */
 /* eslint-disable prefer-destructuring */
 
 'use client';
@@ -17,6 +19,7 @@ const IconButton = (
     autoFocus = false,
     containerStyle = {},
     buttonStyle = {},
+    badge = 0,
     ref = null,
     ...props
   }:
@@ -29,6 +32,7 @@ const IconButton = (
     autoFocus?: boolean;
     containerStyle?: React.CSSProperties;
     buttonStyle?: React.CSSProperties;
+    badge?: number;
     ref?: RefObject<HTMLDivElement> | null;
   },
 ) => {
@@ -38,6 +42,7 @@ const IconButton = (
   const cStyle: React.CSSProperties & {
     '&:hover'?: React.CSSProperties
   } = {
+    position: 'relative',
     display: 'inline-flex',
     cursor: 'pointer',
     alignItems: 'center',
@@ -58,9 +63,9 @@ const IconButton = (
     cStyle.height = 40;
     cStyle.width = 40;
     cStyle.textAlign = 'center';
-    cStyle.transition = 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+    cStyle.transition = 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
     cStyle['&:hover'] = {
-      backgroundColor: theme.grey[600]
+      backgroundColor: theme.grey[600],
     };
   }
 
@@ -106,11 +111,37 @@ const IconButton = (
     delete cStyle['&:hover']; // Remove hover effect
   }
 
+
+  const badgeStyle: React.CSSProperties = {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: theme.red[800],
+    color: '#fff',
+    borderRadius: '50%',
+    minWidth: 16,
+    height: 16,
+    fontSize: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // padding: '0 4px',
+    fontWeight: 'bold',
+    // pointerEvents: 'none', // Ensures clicking badge triggers button click
+    zIndex: 1,
+  };
+
   return (
     <div ref = {ref} className = {Style.getStyleClassName(cStyle)} {...props} onClick={(e) => { onClick(e, value); }}>
       <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled}>
         {icon}
       </button>
+
+      {badge > 0 && (
+        <span className={Style.getStyleClassName(badgeStyle)}>
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
     </div>
   );
 };
