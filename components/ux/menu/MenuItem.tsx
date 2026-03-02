@@ -56,10 +56,11 @@ const MenuItem = (
     }
   };
 
+  // (this isnt needed anymore but keep as an example? Can just add it to the object now since it parses :) )
   const hoverCSS = Style.getStyleClassName(`
-    &:hover: {
-      backgroundColor: ${activeColor},
-    },
+    &:hover {
+      backgroundColor: ${activeColor};
+    };
   `);
 
 
