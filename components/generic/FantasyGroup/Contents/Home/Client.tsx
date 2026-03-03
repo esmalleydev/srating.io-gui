@@ -16,6 +16,7 @@ import DraftOrBracketCountdown from './DraftOrBracketCountdown';
 import { useAppSelector } from '@/redux/hooks';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import Rosters from './Rosters';
+import Winner from './Winner';
 
 
 
@@ -59,6 +60,7 @@ const Client = () => {
       console.log(id, phase, actualDuration);
     }}>
     <Contents>
+      {fantasy_group.finished ? <Winner /> : ''}
       <Columns numberOfColumns={2} style = {{ marginBottom: 20 }}>
         <MyEntries />
         {fantasy_group.started ? <Ranking /> : <DraftOrBracketCountdown />}
