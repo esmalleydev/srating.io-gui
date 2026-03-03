@@ -13,7 +13,8 @@ import { setDataKey as setDataKeyGames } from '@/redux/features/games-slice';
 import Typography from '@/components/ux/text/Typography';
 import Modal from '@/components/ux/modal/Modal';
 import Button from '@/components/ux/buttons/Button';
-import { TextField } from '@mui/material';
+import TextInput from '../ux/input/TextInput';
+import Inputs from '../helpers/Inputs';
 
 
 const AccountHandler = (
@@ -37,23 +38,30 @@ const AccountHandler = (
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
+  const [triggerValidation, setTriggerValidation] = useState(false);
+
   const [register, setRegister] = useState<boolean>(false);
   const [requestedLogin, setRequestedLogin] = useState<boolean>(false);
 
-  const [email, setEmail] = useState<string | null>(null);
-  const [emailError, setEmailError] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [emailError, setEmailError] = useState<string | undefined>(undefined);
 
-  const [password, setPassword] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | undefined>(undefined);
+  const [passwordError, setPasswordError] = useState<string | undefined>(undefined);
 
-  const [passwordConfirm, setPasswordConfirm] = useState<string | null>(null);
-  const [passwordErrorConfirm, setPasswordErrorConfirm] = useState<string | null>(null);
+  const [passwordConfirm, setPasswordConfirm] = useState<string | undefined>(undefined);
+  const [passwordErrorConfirm, setPasswordErrorConfirm] = useState<string | undefined>(undefined);
 
   const [forgotPassword, setForgotPassword] = useState<boolean>(false);
   const [tempLogin, setTempLogin] = useState<boolean>(false);
 
-  const [loginCode, setLoginCode] = useState<string | null>(null);
-  const [loginCodeError, setLoginCodeError] = useState<string | null>(null);
+  const [loginCode, setLoginCode] = useState<string | undefined>(undefined);
+  const [loginCodeError, setLoginCodeError] = useState<string | undefined>(undefined);
+
+  const loginInputHandler = new Inputs();
+  const registerInputHandler = new Inputs();
+  const forgotInputHandler = new Inputs();
+  const tempInputHandler = new Inputs();
 
   const checkEmail = (text) => {
     const regex = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
@@ -61,18 +69,24 @@ const AccountHandler = (
   };
 
   const handleLogin = (e) => {
-    if (!email || !checkEmail(email)) {
-      setEmailError('Valid email required');
+    setTriggerValidation(false);
+
+    if (loginInputHandler.getErrors().length) {
+      setTriggerValidation(true);
       return;
     }
-    setEmailError(null);
 
+    if (!email || !checkEmail(email)) {
+      setEmailError('Valid email required');
+      // setTriggerValidation(true);
+      return;
+    }
 
     if (!password) {
       setPasswordError('Password required');
+      // setTriggerValidation(true);
       return;
     }
-    setPasswordError(null);
 
     dispatch(setLoading(true));
 
@@ -87,9 +101,11 @@ const AccountHandler = (
       if (!session_id) {
         dispatch(setLoading(false));
         setPasswordError('Incorrect password');
+        // setTriggerValidation(true);
       } else if (session_id && session_id.error) {
         dispatch(setLoading(false));
         setPasswordError('Something went wrong, try again later');
+        // setTriggerValidation(true);
       } else {
         dispatch(setDataKeyUser({ key: 'session_id', value: session_id }));
         dispatch(setDataKeyUser({ key: 'isValidSession', value: true }));
@@ -108,29 +124,34 @@ const AccountHandler = (
     }).catch((err) => {
       dispatch(setLoading(false));
       setPasswordError('Incorrect password');
+      // setTriggerValidation(true);
     });
   };
 
   const handleRegister = (e) => {
+    setTriggerValidation(false);
+
+    if (registerInputHandler.getErrors().length) {
+      setTriggerValidation(true);
+      return;
+    }
+
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
     }
-    setEmailError(null);
 
 
     if (!password) {
       setPasswordError('Password required');
       return;
     }
-    setPasswordError(null);
 
 
     if (!passwordConfirm) {
       setPasswordErrorConfirm('Password required');
       return;
     }
-    setPasswordErrorConfirm(null);
 
 
     if (password !== passwordConfirm) {
@@ -142,8 +163,6 @@ const AccountHandler = (
       setPasswordErrorConfirm('Password must be at least 7 characters');
       return;
     }
-    setPasswordError(null);
-    setPasswordErrorConfirm(null);
 
     dispatch(setLoading(true));
 
@@ -184,11 +203,18 @@ const AccountHandler = (
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
+
+    setTriggerValidation(false);
+
+    if (forgotInputHandler.getErrors().length) {
+      setTriggerValidation(true);
+      return;
+    }
+
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
     }
-    setEmailError(null);
 
     dispatch(setLoading(true));
 
@@ -219,17 +245,23 @@ const AccountHandler = (
     e.nativeEvent.preventDefault();
     e.nativeEvent.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
+
+    setTriggerValidation(false);
+
+    if (tempInputHandler.getErrors().length) {
+      setTriggerValidation(true);
+      return;
+    }
+
     if (!email || !checkEmail(email)) {
       setEmailError('Valid email required');
       return;
     }
-    setEmailError(null);
 
     if (!loginCode) {
       setLoginCodeError('Code required');
       return;
     }
-    setLoginCodeError(null);
 
     dispatch(setLoading(true));
 
@@ -264,18 +296,26 @@ const AccountHandler = (
     });
   };
 
-  const handleEmail = (e) => {
-    const { value } = e.target;
+  const handleEmail = (value) => {
+    setEmailError(undefined);
+    setPasswordError(undefined);
+    setPasswordErrorConfirm(undefined);
+    // setTriggerValidation(true)
     setEmail(value || '');
   };
 
-  const handlePassword = (e) => {
-    const { value } = e.target;
+  const handlePassword = (value) => {
+    setEmailError(undefined);
+    setPasswordError(undefined);
+    setPasswordErrorConfirm(undefined);
+    // setTriggerValidation(true)
     setPassword(value || '');
   };
 
-  const handlePasswordConfirm = (e) => {
-    const { value } = e.target;
+  const handlePasswordConfirm = (value) => {
+    setEmailError(undefined);
+    setPasswordError(undefined);
+    setPasswordErrorConfirm(undefined);
     setPasswordConfirm(value || '');
   };
 
@@ -293,8 +333,9 @@ const AccountHandler = (
     }
   };
 
-  const handleLoginCode = (e) => {
-    const { value } = e.target;
+  const handleLoginCode = (value) => {
+    setEmailError(undefined);
+    setLoginCodeError(undefined);
     setLoginCode(value || '');
   };
 
@@ -306,33 +347,34 @@ const AccountHandler = (
     boxContents = (
       <div>
         <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Login with temporary code</Typography>
-        <TextField
+        <TextInput
+          inputHandler={tempInputHandler}
+          triggerValidation={triggerValidation}
           required
           disabled
           value = {email}
           error = {!!emailError}
-          helperText = {emailError || null}
+          errorMessage = {emailError}
           onChange = {handleEmail}
           onKeyDown = {handleEnter}
-          margin="dense"
           id="name"
-          label="Email Address"
+          placeholder="Email Address"
           type="email"
-          fullWidth
           variant="standard"
         />
-        <TextField
+        <TextInput
+          inputHandler={tempInputHandler}
+          triggerValidation={triggerValidation}
           autoFocus
           required
+          value = {loginCode}
           error = {!!loginCodeError}
-          helperText = {loginCodeError || null}
+          errorMessage = {loginCodeError}
           onChange = {handleLoginCode}
           onKeyDown = {handleEnter}
-          margin="dense"
           id="login-code"
-          label="Code"
+          placeholder="Code"
           type="number"
-          fullWidth
           variant="standard"
         />
       </div>
@@ -348,18 +390,19 @@ const AccountHandler = (
     boxContents = (
       <div style = {{ minWidth: 320 }}>
         <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Send a Forgot Password email</Typography>
-        <TextField
+        <TextInput
+          inputHandler={forgotInputHandler}
+          triggerValidation={triggerValidation}
           autoFocus
           required
+          value = {email}
           error = {!!emailError}
-          helperText = {emailError || null}
+          errorMessage = {emailError}
           onChange = {handleEmail}
           onKeyDown = {handleEnter}
-          margin="dense"
           id="name"
-          label="Email Address"
+          placeholder="Email Address"
           type="email"
-          fullWidth
           variant="standard"
         />
       </div>
@@ -375,41 +418,44 @@ const AccountHandler = (
     boxContents = (
       <div>
         <Typography type = 'body1' style = {{ color: theme.text.secondary, marginTop: 10 }}>Create an account</Typography>
-        <TextField
+        <TextInput
+          inputHandler={registerInputHandler}
+          triggerValidation={triggerValidation}
           autoFocus
           required
+          value = {email}
           error = {!!emailError}
-          helperText = {emailError || null}
+          errorMessage = {emailError}
           onChange = {handleEmail}
           onKeyDown = {handleEnter}
-          margin="dense"
           id="name"
-          label="Email Address"
+          placeholder="Email Address"
           type="email"
-          fullWidth
           variant="standard"
         />
-        <TextField
+        <TextInput
+          inputHandler={registerInputHandler}
+          triggerValidation={triggerValidation}
           required
+          value = {password}
           error = {!!passwordError}
-          helperText = {passwordError || null}
+          errorMessage = {passwordError}
           onChange = {handlePassword}
-          margin="dense"
-          label="Password"
+          placeholder="Password"
           type="password"
-          fullWidth
           variant="standard"
         />
-        <TextField
+        <TextInput
+          inputHandler={registerInputHandler}
+          triggerValidation={triggerValidation}
           required
+          value = {passwordConfirm}
           error = {!!passwordErrorConfirm}
-          helperText = {passwordErrorConfirm || null}
+          errorMessage = {passwordErrorConfirm}
           onChange = {handlePasswordConfirm}
           onKeyDown = {handleEnter}
-          margin="dense"
-          label="Confirm password"
+          placeholder="Confirm password"
           type="password"
-          fullWidth
           variant="standard"
         />
         <Typography type = 'body2' style = {{ color: theme.text.secondary, marginTop: 10 }}>Have an account? <a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {(e) => { setRegister(false); }}>Sign in</a></Typography>
@@ -423,30 +469,32 @@ const AccountHandler = (
     boxContents = (
       <div>
         <Typography type = 'caption' style = {{ color: theme.text.secondary }}>{(message || 'Sign in to your account')}</Typography>
-        <TextField
+        <TextInput
+          inputHandler={loginInputHandler}
+          triggerValidation={triggerValidation}
           autoFocus
           required
+          value = {email}
           error = {!!emailError}
-          helperText = {emailError || null}
+          errorMessage = {emailError}
           onChange = {handleEmail}
-          margin="dense"
           id="name"
-          label="Email Address"
+          placeholder="Email Address"
           type="email"
-          fullWidth
           variant="standard"
-        />
-        <TextField
+          />
+        <TextInput
+          inputHandler={loginInputHandler}
+          triggerValidation={triggerValidation}
           required
+          value = {password}
           error = {!!passwordError}
-          helperText = {passwordError || null}
+          errorMessage = {passwordError}
           onChange = {handlePassword}
           onKeyDown = {handleEnter}
-          margin="dense"
-          label="Password"
+          placeholder="Password"
           type="password"
           autoComplete="current-password"
-          fullWidth
           variant="standard"
         />
         <div style = {{ marginTop: 10 }}>
