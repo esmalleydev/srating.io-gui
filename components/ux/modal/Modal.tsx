@@ -122,18 +122,30 @@ const Modal = (
 
 
   const handleClose = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.preventDefault();
-    e.nativeEvent.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
-    onClose(e);
+    if (
+      e.target === e.currentTarget ||
+      (
+        contentRef.current &&
+        !contentRef.current.contains(e.target)
+      )
+    ) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.nativeEvent.preventDefault();
+      e.nativeEvent.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+      onClose(e);
+    }
   };
 
 
 
   return createPortal(
-    <div className = {Style.getStyleClassName(backdropStyle)} onClick={handleClose}>
+    <div
+      className = {Style.getStyleClassName(backdropStyle)}
+      onMouseDown={handleClose}
+      onTouchEnd={handleClose}
+    >
       <div className = {Style.getStyleClassName(centeringStyle)}>
         <div
           className = {Style.getStyleClassName(contentStyle)}
