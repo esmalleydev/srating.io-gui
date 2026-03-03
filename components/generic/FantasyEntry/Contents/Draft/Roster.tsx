@@ -2,9 +2,9 @@
 
 import Blank from '@/components/generic/Blank';
 import RankTable from '@/components/generic/RankTable';
-import Navigation from '@/components/helpers/Navigation';
 import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';
+import { useNavigation } from '@/components/hooks/useNavigation';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
@@ -36,7 +36,7 @@ const Roster = (
     };
   },
 ) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   // const theme = useTheme();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id: fantasy_group.organization_id });
@@ -56,7 +56,7 @@ const Roster = (
 
 
   const getPlayerBoxscoreContent = (position: string | null): React.JSX.Element => {
-    if (Object.keys(fantasy_entry_player_statistic_rankings).length === 0) {
+    if (Object.keys(fantasy_entry_players).length === 0) {
       return (
         <Paper>
           <Blank text = 'No boxscore data yet!' />
@@ -102,6 +102,28 @@ const Roster = (
     const footerRow: PartialPlayerBoxscore = {
       name: 'Total',
     };
+
+    if (!Object.keys(fantasy_entry_player_statistic_rankings).length) {
+      for (const fantasy_entry_player_id in fantasy_entry_players) {
+        const fantasy_entry_player = fantasy_entry_players[fantasy_entry_player_id];
+        if (fantasy_entry_player.fantasy_entry_id !== fantasy_entry.fantasy_entry_id) {
+          continue;
+        }
+        const player_team_season = player_team_seasons[fantasy_entry_player.player_team_season_id];
+        const player = players[player_team_season.player_id];
+
+        const player_name: string = (player.first_name ? `${player.first_name.charAt(0)}. ` : '') + player.last_name;
+        const player_number: string = `#${player.number}`;
+
+
+        const formattedRow = {} as PartialPlayerBoxscore;
+
+        formattedRow.name = player_name;
+        formattedRow.name_secondary = player_number;
+
+        playerRows.push(formattedRow);
+      }
+    }
 
     for (const fantasy_entry_player_statistic_ranking_id in fantasy_entry_player_statistic_rankings) {
       const row = fantasy_entry_player_statistic_rankings[fantasy_entry_player_statistic_ranking_id];

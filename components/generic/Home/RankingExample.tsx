@@ -11,11 +11,11 @@ import { useRouter } from 'next/navigation';
 import { setLoading as setLoadingDisplay } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';
-import Navigation from '@/components/helpers/Navigation';
 import Button from '@/components/ux/buttons/Button';
 import VirtualTable, { defaultSortOrderType } from '@/components/ux/table/VirtualTable';
 import { decorateHeaderRow, decorateRows } from '../Ranking/Contents/Client';
 import { RankingTable } from '@/types/cbb';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 
@@ -32,7 +32,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const RankingExample = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 

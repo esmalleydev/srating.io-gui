@@ -1,7 +1,7 @@
 'use client';
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
-import Navigation from '@/components/helpers/Navigation';
+import { useNavigation } from '@/components/hooks/useNavigation';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
@@ -10,7 +10,7 @@ import { Dates } from '@esmalley/ts-utils';
 import { useCallback, useEffect, useState } from 'react';
 
 const DraftOrBracketCountdown = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
 
   const fantasyHelper = new FantasyGroup({ fantasy_group });

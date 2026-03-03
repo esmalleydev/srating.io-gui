@@ -1,6 +1,5 @@
 'use client';
 
-import Navigation from '@/components/helpers/Navigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
@@ -13,6 +12,7 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { useAppSelector } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { Dates } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const PublicDraftGroups = (
   {
@@ -25,7 +25,7 @@ const PublicDraftGroups = (
   },
 ) => {
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const initialLimit = 10;
   const [freeLimit, setFreeLimit] = useState(initialLimit);
   const [paidLimit, setPaidLimit] = useState(initialLimit);

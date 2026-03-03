@@ -11,11 +11,11 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/player-slice';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import Tooltip from '@/components/ux/hover/Tooltip';
-import Navigation from '@/components/helpers/Navigation';
 import IconButton from '@/components/ux/buttons/IconButton';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const AdditionalOptions = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const [anchor, setAnchor] = useState(null);
   const open = Boolean(anchor);
 

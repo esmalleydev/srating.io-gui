@@ -1,6 +1,5 @@
 'use client';
 
-import Navigation from '@/components/helpers/Navigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
@@ -13,6 +12,7 @@ import StadiumIcon from '@mui/icons-material/Stadium';
 import Payment from '@/components/helpers/Payment';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppSelector } from '@/redux/hooks';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const PublicBracketsGroups = (
   {
@@ -25,7 +25,7 @@ const PublicBracketsGroups = (
   },
 ) => {
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const initialLimit = 10;
   const [freeLimit, setFreeLimit] = useState(initialLimit);
   const [paidLimit, setPaidLimit] = useState(initialLimit);

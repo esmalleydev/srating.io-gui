@@ -1,6 +1,5 @@
 'use client';
 
-import Navigation from '@/components/helpers/Navigation';
 import Button from '@/components/ux/buttons/Button';
 import { useState } from 'react';
 import { useAppSelector } from '@/redux/hooks';
@@ -8,10 +7,11 @@ import AccountHandler from '@/components/generic/AccountHandler';
 import Wizard, { WizardStep } from '@/components/ux/layout/Wizard';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const CreateGroup = () => {
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const session_id = useAppSelector((state) => state.userReducer.session_id);
   const [showModal, setShowModal] = useState(false);
 

@@ -11,9 +11,9 @@ import CBB from '@/components/helpers/CBB';
 import CFB from '@/components/helpers/CFB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
-import Navigation from '@/components/helpers/Navigation';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 /**
@@ -67,7 +67,7 @@ const ClientSkeleton = () => {
 const Client = ({ organization_id, division_id, coach_statistic_rankings, season }) => {
   const { width } = useWindowDimensions() as Dimensions;
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const coach: Coach = useAppSelector((state) => state.coachReducer.coach);
   const coach_team_seasons = useAppSelector((state) => state.coachReducer.coach_team_seasons);
   const teams = useAppSelector((state) => state.coachReducer.teams);

@@ -7,16 +7,16 @@ import Typography from '@/components/ux/text/Typography';
 import { Game } from '@/types/general';
 import Blank from '@/components/generic/Blank';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import Navigation from '@/components/helpers/Navigation';
 import Organization from '@/components/helpers/Organization';
 import Team from '@/components/helpers/Team';
 import { Dates } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 
 
 const Games = ({ fantasy_entry_id }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const { width } = useWindowDimensions() as Dimensions;
   const theme = useTheme();
   const fantasy_group = useAppSelector((state) => state.fantasyEntryReducer.fantasy_group);

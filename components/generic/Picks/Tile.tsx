@@ -19,9 +19,9 @@ import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
-import Navigation from '@/components/helpers/Navigation';
 import Button from '@/components/ux/buttons/Button';
 import { setDataKey } from '@/redux/features/picks-slice';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 /**
@@ -42,7 +42,7 @@ export const getSkeleton = (numberOfSkeletons: number): React.JSX.Element[] => {
 export const maxWidth = 750;
 
 const Tile = ({ game }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
 
   const scrollRef = useScrollContext();

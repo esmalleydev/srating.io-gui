@@ -15,12 +15,12 @@ import { useState } from 'react';
 import CreateEntry from './CreateEntry';
 import Tile from '@/components/ux/container/Tile';
 import StadiumIcon from '@mui/icons-material/Stadium';
-import Navigation from '@/components/helpers/Navigation';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const MyEntries = () => {
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
   const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
   const user = useAppSelector((state) => state.userReducer.user);

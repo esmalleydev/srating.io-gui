@@ -12,8 +12,8 @@ import { Coach, Player, Team } from '@/types/general';
 import { useAppSelector } from '@/redux/hooks';
 import Organization from '../helpers/Organization';
 import Division from '../helpers/Division';
-import Navigation from '../helpers/Navigation';
 import { Color, Style, Textor } from '@esmalley/ts-utils';
+import { useNavigation } from '../hooks/useNavigation';
 
 
 
@@ -21,7 +21,7 @@ const Search = (
   { onRouter, focus }:
   { onRouter?: () => void; focus: boolean },
 ) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });

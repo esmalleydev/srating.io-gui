@@ -15,9 +15,9 @@ import { PlayerStatisticRanking } from '@/types/cbb';
 import Typography from '@/components/ux/text/Typography';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
-import Navigation from '@/components/helpers/Navigation';
 import ClassSpan from '@/components/generic/ClassSpan';
 import { Objector } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 /**
@@ -63,7 +63,7 @@ const Client = ({ player_statistic_rankings, players, player_team_seasons }) => 
   const hideLowerBench = useAppSelector((state) => state.compareReducer.hideLowerBench);
   const topPlayersOnly = useAppSelector((state) => state.compareReducer.topPlayersOnly);
 
-  const navigation = new Navigation();
+  const navigation = useNavigation();
 
   // useEffect(() => {
   //   console.timeEnd('Player.Client')

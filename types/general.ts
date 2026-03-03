@@ -140,6 +140,23 @@ export interface UserPaymentToken {
 
 export type UserPaymentTokens = {[user_payment_token_id: string]: UserPaymentToken};
 
+export interface Notification {
+  notification_id: string;
+  user_id: string;
+  notification_type_terminology_id: string;
+  title: string;
+  message: string;
+  table: string;
+  id: string;
+  sent: number;
+  cleared: number;
+  date_of_entry: string;
+  guid: string;
+  deleted: number;
+}
+
+export type Notifications = {[notification_id: string]: Notification};
+
 export interface Conference {
   conference_id: string;
   code: string;
@@ -526,8 +543,10 @@ export interface FantasyGroup {
   private: number,
   started: number,
   drafted: number,
+  finished: number,
   notified_24_hours: number,
   notified_15_mins: number,
+  notified_finished: number,
   draft_time_per_user_in_seconds: number | null,
   date_of_entry: string;
   guid: string;

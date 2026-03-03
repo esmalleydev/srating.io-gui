@@ -11,11 +11,11 @@ import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useTransition } from 'react';
-import Navigation from '@/components/helpers/Navigation';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const Picks = ({ games }: {games: Games}) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const [isPending, startTransition] = useTransition();
   const skip_sort_game_ids = useAppSelector((state) => state.favoriteReducer.skip_sort_game_ids);

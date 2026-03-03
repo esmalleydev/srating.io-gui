@@ -20,13 +20,13 @@ import Record from './Tile/Record';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
-import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Game, Team } from '@/types/general';
 import Paper from '@/components/ux/container/Paper';
 import General from '@/components/helpers/General';
 import { Color, Dates } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const Tile = (
@@ -42,7 +42,7 @@ const Tile = (
   },
 ) => {
   const myRef: RefObject<HTMLDivElement | null> = useRef(null);
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   // const [scrolled, setScrolled] = useState(false);
 

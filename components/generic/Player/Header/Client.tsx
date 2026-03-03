@@ -14,10 +14,10 @@ import { useTheme } from '@/components/hooks/useTheme';
 import FavoritePicker from '../../FavoritePicker';
 import OptionPicker from '../../OptionPicker';
 import { PlayerStatisticRanking, StatisticRanking } from '@/types/cbb';
-import Navigation from '@/components/helpers/Navigation';
 import ClassSpan from '../../ClassSpan';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 /**
@@ -86,7 +86,7 @@ const Client = (
   { organization_id, division_id, player_statistic_ranking, statistic_ranking, season }:
   { organization_id: string, division_id: string, player_statistic_ranking: PlayerStatisticRanking, statistic_ranking: StatisticRanking, season: number },
 ) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const player: Player = useAppSelector((state) => state.playerReducer.player);
   const team: Team | null = useAppSelector((state) => state.playerReducer.team);

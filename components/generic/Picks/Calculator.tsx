@@ -29,7 +29,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
 import { CircularProgress } from '@mui/material';
 import Organization from '@/components/helpers/Organization';
-import Navigation from '@/components/helpers/Navigation';
 import { setLoading } from '@/redux/features/loading-slice';
 import Button from '@/components/ux/buttons/Button';
 import Typography from '@/components/ux/text/Typography';
@@ -37,6 +36,7 @@ import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
 import Inputs from '@/components/helpers/Inputs';
 import { Arrayifier, Dates, Sorter } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -55,7 +55,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 // todo this somestimes triggers a double load in PicksLoader.... something with having const picksLoading = useAppSelector(state => state.picksReducer.picksLoading);, makes it double render
 
 const Calculator = ({ games, date }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const { width } = useWindowDimensions() as Dimensions;
 

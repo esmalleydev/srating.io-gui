@@ -7,13 +7,13 @@ import { useAppSelector } from '@/redux/hooks';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import Organization from '@/components/helpers/Organization';
-import Navigation from '@/components/helpers/Navigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import { Dates } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const Tile = ({ game }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });

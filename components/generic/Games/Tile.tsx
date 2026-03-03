@@ -23,13 +23,13 @@ import Rank from './Tile/Rank';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
-import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/games-slice';
 import IconButton from '@/components/ux/buttons/IconButton';
 import Modal from '@/components/ux/modal/Modal';
 import General from '@/components/helpers/General';
 import { Color, Style } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 export const getTileBaseStyle = (): React.CSSProperties => {
@@ -52,7 +52,7 @@ export const getTileBaseStyle = (): React.CSSProperties => {
 };
 
 const Tile = ({ game, isLoadingWinPercentage }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
 
   const ref = useRef<HTMLDivElement>(null);

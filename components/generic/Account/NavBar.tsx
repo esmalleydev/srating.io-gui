@@ -2,9 +2,9 @@
 
 import { useAppSelector } from '@/redux/hooks';
 import Tab from '@/components/ux/buttons/Tab';
-import Navigation from '@/components/helpers/Navigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import { Style } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const getNavHeaderHeight = () => {
   return 48;
@@ -14,7 +14,7 @@ export { getNavHeaderHeight };
 
 const NavBar = () => {
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
 
   const view = useAppSelector((state) => state.userReducer.view) || 'subscriptions';
   const tabOrder = ['subscriptions', 'fantasy', 'settings'];

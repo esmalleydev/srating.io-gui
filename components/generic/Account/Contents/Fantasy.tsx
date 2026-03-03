@@ -1,6 +1,5 @@
 'use client';
 
-import Navigation from '@/components/helpers/Navigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
@@ -14,11 +13,12 @@ import PayoutMethod from './Fantasy/PayoutMethod';
 import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise } from '@/lib/stripe-client';
 import { Appearance, StripeElementsOptions } from '@stripe/stripe-js';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 
 const Fantasy = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const fantasy_groups = useAppSelector((state) => state.userReducer.fantasy_group);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);

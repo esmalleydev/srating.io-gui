@@ -1,6 +1,5 @@
 'use client';
 
-import Navigation from '@/components/helpers/Navigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
@@ -10,6 +9,7 @@ import { FantasyGroups } from '@/types/general';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { useState } from 'react';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const MyGroups = (
   {
@@ -20,7 +20,7 @@ const MyGroups = (
   },
 ) => {
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const initialLimit = 10;
   const [limit, setLimit] = useState(initialLimit);
 

@@ -9,8 +9,8 @@ import Modal from '@/components/ux/modal/Modal';
 import Tab from '@/components/ux/buttons/Tab';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
-import Navigation from '@/components/helpers/Navigation';
 import { Style } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const getHeaderHeight = () => {
   return 48;
@@ -20,7 +20,7 @@ const getHeaderHeight = () => {
 export { getHeaderHeight };
 
 const SubNavBar = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
 

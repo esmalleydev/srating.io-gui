@@ -34,9 +34,11 @@ const SessionHandler = () => {
       if (data && data.user && data.user.user_id) {
         dispatch(setDataKey({ key: 'isValidSession', value: true }));
         dispatch(setDataKey({ key: 'user', value: data.user }));
+        dispatch(setDataKey({ key: 'notifications', value: data.notifications || {} }));
       } else {
         dispatch(setDataKey({ key: 'session_id', value: null }));
         dispatch(setDataKey({ key: 'user', value: null }));
+        dispatch(setDataKey({ key: 'notifications', value: {} }));
 
         // todo test resetting, dont think i want to reset secret or kyptos though
         // dispatch(reset());

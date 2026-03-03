@@ -1,8 +1,8 @@
 'use client';
 
 import RankTable from '@/components/generic/RankTable';
-import Navigation from '@/components/helpers/Navigation';
 import TableColumns from '@/components/helpers/TableColumns';
+import { useNavigation } from '@/components/hooks/useNavigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
@@ -12,7 +12,7 @@ import { Objector } from '@esmalley/ts-utils';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 
 const Ranking = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
   const fantasy_rankings = useAppSelector((state) => state.fantasyGroupReducer.fantasy_rankings);

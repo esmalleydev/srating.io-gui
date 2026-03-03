@@ -17,8 +17,8 @@ import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankTable from '@/components/generic/RankTable';
 import TableColumns, { TableColumnsType } from '@/components/helpers/TableColumns';
 import Chip from '@/components/ux/container/Chip';
-import Navigation from '@/components/helpers/Navigation';
 import { Dates, Objector } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 /**
  * The main wrapper div for all the contents
@@ -52,7 +52,7 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ organization_id, gamelogs }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
 
   // const player = useAppSelector((state) => state.playerReducer.player);

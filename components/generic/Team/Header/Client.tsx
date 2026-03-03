@@ -15,9 +15,9 @@ import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import { Coach, CoachStatisticRanking, Team } from '@/types/general';
 import { ConferenceStatisticRanking } from '@/types/cbb';
-import Navigation from '@/components/helpers/Navigation';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 /**
@@ -92,7 +92,7 @@ const Client = (
 ) => {
   const breakPoint = 475;
 
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathName = usePathname();

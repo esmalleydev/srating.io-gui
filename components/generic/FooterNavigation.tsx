@@ -13,17 +13,17 @@ import HomeIcon from '@mui/icons-material/Home';
 import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import Paper from '@/components/ux/container/Paper';
-import Navigation from '@/components/helpers/Navigation';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import { Style } from '@esmalley/ts-utils';
+import { useNavigation } from '../hooks/useNavigation';
 
 
 export const footerNavigationHeight = 56;
 
 const FooterNavigation = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const theme = useTheme();

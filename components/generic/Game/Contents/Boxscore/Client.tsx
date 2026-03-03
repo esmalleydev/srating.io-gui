@@ -21,9 +21,9 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import Navigation from '@/components/helpers/Navigation';
 import General from '@/components/helpers/General';
 import { Color, Objector, Style, Textor } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 
@@ -74,7 +74,7 @@ const Client = (
     players: Players;
   },
 ) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
 
   const bestColor = General.getBestColor();

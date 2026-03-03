@@ -10,7 +10,6 @@ import { BracketTeam, FantasyBracketSlots } from '@/types/general';
 import { useMemo, useState, useEffect, useRef } from 'react';
 
 import PublicIcon from '@mui/icons-material/Public';
-import Navigation from '@/components/helpers/Navigation';
 import Organization from '@/components/helpers/Organization';
 import Chip from '@/components/ux/container/Chip';
 import { useClientAPI } from '@/components/clientAPI';
@@ -18,6 +17,7 @@ import { setDataKey } from '@/redux/features/fantasy_entry-slice';
 
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { Objector, Style } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const slot_height = 100;
 const slot_width = 170;
@@ -124,7 +124,7 @@ const BracketSlot = (
 ) => {
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const teams = useAppSelector((state) => state.fantasyEntryReducer.teams);
   const games = useAppSelector((state) => state.fantasyEntryReducer.games);
   const fantasy_group = useAppSelector((state) => state.fantasyEntryReducer.fantasy_group);

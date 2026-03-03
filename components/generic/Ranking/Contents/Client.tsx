@@ -16,7 +16,6 @@ import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
 import { getConferenceChips } from '../../ConferenceChips';
 import TableColumns from '@/components/helpers/TableColumns';
-import Navigation from '@/components/helpers/Navigation';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
 import Tooltip from '@/components/ux/hover/Tooltip';
@@ -26,6 +25,7 @@ import Td from '@/components/ux/table/Td';
 import Tr from '@/components/ux/table/Tr';
 import Th from '@/components/ux/table/Th';
 import { Arithmetic, Color, Objector } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 
@@ -447,7 +447,7 @@ export const decorateHeaderRow = (
 };
 
 const Client = ({ generated, organization_id, division_id, season, view }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const { height, width } = useWindowDimensions() as Dimensions;
 
 

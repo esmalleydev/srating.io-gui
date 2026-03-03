@@ -5,7 +5,6 @@ import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
 import { useTheme } from '@/components/hooks/useTheme';
-import Navigation from '@/components/helpers/Navigation';
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import Button from '@/components/ux/buttons/Button';
@@ -21,6 +20,7 @@ import BracketInfo from '../FantasyGroup/Card/BracketInfo';
 import PayoutInfo from '../FantasyGroup/Card/PayoutInfo';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { FantasyEntrys, FantasyGroup as FantasyGroupType } from '@/types/general';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 
@@ -69,7 +69,7 @@ const Client = (
     code: string;
   },
 ) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
 

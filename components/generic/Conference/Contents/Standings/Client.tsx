@@ -18,13 +18,13 @@ import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
 import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import RankTable from '@/components/generic/RankTable';
 import TableColumns from '@/components/helpers/TableColumns';
-import Navigation from '@/components/helpers/Navigation';
 import { Objector } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 
 const Client = ({ organization_id, division_id, conference_id, season, subView }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();

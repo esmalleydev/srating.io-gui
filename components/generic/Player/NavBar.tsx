@@ -5,8 +5,8 @@ import { useAppSelector } from '@/redux/hooks';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tab from '@/components/ux/buttons/Tab';
 import SubNavBar from './SubNavbar';
-import Navigation from '@/components/helpers/Navigation';
 import { Style } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const getNavHeaderHeight = () => {
@@ -16,7 +16,7 @@ const getNavHeaderHeight = () => {
 export { getNavHeaderHeight };
 
 const NavBar = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
 
   const view = useAppSelector((state) => state.playerReducer.view) || 'stats';

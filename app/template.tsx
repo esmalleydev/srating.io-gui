@@ -12,14 +12,17 @@ import FooterNavigation from '@/components/generic/FooterNavigation';
 import { ScrollContainer, ScrollProvider } from '@/contexts/scrollContext';
 import Spinner from '@/components/generic/Spinner';
 import Toast from '@/components/ux/overlay/Toast';
-import { socket, toast } from '@esmalley/ts-utils';
-import { setDataKey } from '@/redux/features/general-slice';
+import { Objector, socket, toast } from '@esmalley/ts-utils';
+import { setDataKey as setDataKeyGeneral } from '@/redux/features/general-slice';
+import { getStore } from './StoreProvider';
+import { InitialState, setDataKey as setDataKeyUser } from '@/redux/features/user-slice';
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
   const themeMode = useAppSelector((state) => state.themeReducer.mode);
   const session_id = useAppSelector((state) => state.userReducer.session_id);
+  const user = useAppSelector((state) => state.userReducer.user);
   const pendingStatusRef = useRef<NodeJS.Timeout | null>(null);
   const pendingMSWait = 2100;
 
@@ -42,7 +45,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
       const status = event?.detail;
 
       if (status === 'connected') {
-        dispatch(setDataKey({ key: 'online', value: true }));
+        dispatch(setDataKeyGeneral({ key: 'online', value: true }));
         if (pendingStatusRef.current) {
           // If a disconnect was queued, this is a RECONNECTION
           clearTimeout(pendingStatusRef.current);
@@ -61,7 +64,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
       }
 
       if (status === 'disconnected') {
-        dispatch(setDataKey({ key: 'online', value: false }));
+        dispatch(setDataKeyGeneral({ key: 'online', value: false }));
         // Clear any existing timers to avoid double-processing
         if (pendingStatusRef.current) {
           clearTimeout(pendingStatusRef.current);
@@ -80,6 +83,36 @@ const Template = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
+    const messageHandler = (event: CustomEvent) => {
+      if (
+        event &&
+        event.detail &&
+        event.detail.type === 'data' &&
+        event.detail.table &&
+        event.detail.id &&
+        event.detail.data &&
+        event.detail.table === 'user'
+      ) {
+        const d: object = event.detail.data;
+        const store = getStore();
+        for (const key in d) {
+          let value = d[key];
+          if (key in store.getState().userReducer) {
+            value = Objector.extender({}, store.getState().userReducer[key], value);
+          }
+          dispatch(setDataKeyUser({ key: key as keyof InitialState, value }));
+        }
+      }
+    };
+
+    const refresher = () => {
+      if (session_id && user && user.user_id) {
+        // todo security on subscribing to a user which is not you, add session_id as well to check its the same user?
+        socket.message({ type: 'subscribe', table: 'user', id: user.user_id });
+      }
+    };
+
+
     if (session_id) {
       socket.connect(
         session_id,
@@ -90,16 +123,26 @@ const Template = ({ children }: { children: React.ReactNode }) => {
         },
       );
 
+      refresher();
+
       socket.addEventListener('connection_state', connectionHanlder);
+      socket.addEventListener('message', messageHandler);
+
+      socket.addEventListener('refresh', refresher);
     }
 
     return () => {
+      if (session_id && user && user.user_id) {
+        socket.message({ type: 'unsubscribe', table: 'user', id: user.user_id });
+      }
       socket.removeEventListener('connection_state', connectionHanlder);
+      socket.removeEventListener('message', messageHandler);
+      socket.removeEventListener('refresh', refresher);
       if (pendingStatusRef.current) {
         clearTimeout(pendingStatusRef.current);
       }
     };
-  }, [session_id]);
+  }, [session_id, user]);
 
   // todo deprecate once mui is completely removed
   const darkTheme = createTheme({

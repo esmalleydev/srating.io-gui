@@ -10,18 +10,18 @@ import RankTable from '@/components/generic/RankTable';
 import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
-import Navigation from '@/components/helpers/Navigation';
 import { Player, Players } from '@/types/general';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import ClassSpan from '@/components/generic/ClassSpan';
 import { Objector, Style, Textor } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const Roster = ({ organization_id, rosterStats, player_team_seasons, season }) => {
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
 
   const [view, setView] = useState<string>('composite');
 

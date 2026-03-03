@@ -5,12 +5,12 @@ import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import RankTable from '@/components/generic/RankTable';
 import TableColumns from '@/components/helpers/TableColumns';
-import Navigation from '@/components/helpers/Navigation';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 
 const Client = ({ organization_id, division_id, coach_team_seasons, teams, statistic_rankings }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
 
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const path = Organization.getPath({ organizations, organization_id });

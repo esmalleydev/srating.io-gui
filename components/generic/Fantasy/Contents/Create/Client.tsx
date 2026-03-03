@@ -6,7 +6,6 @@ import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
 import { useTheme } from '@/components/hooks/useTheme';
 import { getNavHeaderHeight } from '../../NavBar';
-import Navigation from '@/components/helpers/Navigation';
 import TextInput from '@/components/ux/input/TextInput';
 import Switch from '@/components/ux/input/Switch';
 import Typography from '@/components/ux/text/Typography';
@@ -24,6 +23,7 @@ import Organization from '@/components/helpers/Organization';
 import { FantasyGroup } from '@/types/general';
 import Inputs from '@/components/helpers/Inputs';
 import { Dates } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 // import InfoOutlineIcon from '@mui/icons-material/InfoOutline'; need to upgrade MUI for this icon... >.>
 
 
@@ -61,7 +61,7 @@ const ClientSkeleton = () => {
 };
 
 const Client = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
 
   const [isSaving, setIsSaving] = useState(false);
@@ -105,7 +105,7 @@ const Client = () => {
   // the inputs return strings, but internally they are formatted as a number, so just overwrite to allow string in a few of these columns
   type FantasyGroupForm = Omit<
     FantasyGroup,
-    'fantasy_group_id' | 'guid' | 'deleted' | 'locked' | 'entry_fee' | 'entries_per_user' | 'date_of_entry' | 'started' | 'notified_24_hours' | 'notified_15_mins' | 'drafted'
+    'fantasy_group_id' | 'guid' | 'deleted' | 'locked' | 'entry_fee' | 'entries_per_user' | 'date_of_entry' | 'started' | 'notified_24_hours' | 'notified_15_mins' | 'drafted' | 'finished' | 'notified_finished'
   > & {
     entry_fee: string | number | null;
     entries_per_user: string | number;
@@ -358,11 +358,14 @@ const Client = () => {
               required
               label = 'When does the league end?'
               placeholder='End date'
-              onChange={(val) => onChange('end_date', val ? Dates.format(val, 'Y-m-d') : null)}
               triggerValidation={triggerValidation}
-              value = {formData.end_date || undefined}
               minDate = {minDate}
               maxDate = {maxDate}
+              onChange={(val) => {
+                onChange('end_date', val ? Dates.format(Dates.utc(val), 'Y-m-d H:i:s') : null);
+              }}
+              value = {formData.end_date ? Dates.format(Dates.parse(formData.end_date, true), 'Y-m-d H:i:s') : undefined}
+              enableTime
             />
           </Columns>
           <div style = {{ display: 'flex', alignItems: 'center' }}>

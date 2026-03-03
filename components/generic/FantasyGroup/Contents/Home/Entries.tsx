@@ -1,6 +1,6 @@
 'use client';
 
-import Navigation from '@/components/helpers/Navigation';
+import { useNavigation } from '@/components/hooks/useNavigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
@@ -13,7 +13,7 @@ import { useState } from 'react';
 
 const Entries = () => {
   const theme = useTheme();
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
   const fantasy_group_users = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group_users);
   const initialLimit = 10;

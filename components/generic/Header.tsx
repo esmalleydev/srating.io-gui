@@ -19,6 +19,7 @@ import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 import sratingLogo from '../../public/favicon-32x32.png';
 
@@ -36,9 +37,10 @@ import Button from '../ux/buttons/Button';
 import { useTheme } from '../hooks/useTheme';
 import IconButton from '../ux/buttons/IconButton';
 import { setDataKey } from '@/redux/features/user-slice';
-import Navigation from '../helpers/Navigation';
 import General from '../helpers/General';
 import { Objector, Style } from '@esmalley/ts-utils';
+import Notifications from './Notifications';
+import { useNavigation } from '../hooks/useNavigation';
 
 
 // todo hook up settings with router
@@ -46,13 +48,23 @@ import { Objector, Style } from '@esmalley/ts-utils';
 export const headerBarHeight = 64;
 
 const Header = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const validSession = useAppSelector((state) => state.userReducer.isValidSession);
+  const notifications = useAppSelector((state) => state.userReducer.notifications);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const path = Organization.getPath({ organizations, organization_id });
+
+
+  const activeNotifications = Object.values(notifications || {}).filter((r) => {
+    if (r.cleared) {
+      return false;
+    }
+
+    return true;
+  });
 
   const router = useRouter();
   const pathName = usePathname();
@@ -63,6 +75,8 @@ const Header = () => {
   const [fullSearch, setFullSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
+
+  const [viewNotifications, setViewNotifications] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -163,6 +177,10 @@ const Header = () => {
     });
   };
 
+  const toggleViewNotifications = () => {
+    setViewNotifications(!viewNotifications);
+  };
+
 
   const logoStyle: React.CSSProperties = {
     // 'fontFamily': 'Consolas',
@@ -203,21 +221,21 @@ const Header = () => {
       selectable: true,
       label: 'My account',
       onSelect: handleAccount,
-      icon: <AccountCircleIcon fontSize="small" />,
+      icon: <AccountCircleIcon style = {{ fontSize: 20 }} />,
     },
     {
       value: 'subscriptions',
       selectable: true,
       label: 'My subscriptions',
       onSelect: handleAccountSubscriptions,
-      icon: <ShoppingCartIcon fontSize="small" />,
+      icon: <ShoppingCartIcon style = {{ fontSize: 20 }} />,
     },
     {
       value: 'fantasy',
       selectable: true,
       label: 'My fantasy legaues',
       onSelect: handleAccountFantasy,
-      icon: <SportsEsportsIcon fontSize="small" />,
+      icon: <SportsEsportsIcon style = {{ fontSize: 20 }} />,
     },
     {
       value: null,
@@ -225,11 +243,18 @@ const Header = () => {
       customLabel: <MenuDivider />,
     },
     {
+      value: 'notifications',
+      selectable: true,
+      label: `View ${activeNotifications.length} notification${activeNotifications.length > 1 ? 's' : ''}`,
+      onSelect: toggleViewNotifications,
+      icon: <NotificationsIcon style = {{ fontSize: 20, color: (activeNotifications.length ? theme.red[700] : theme.text.primary) }} />,
+    },
+    {
       value: 'logout',
       selectable: true,
       label: 'Logout',
       onSelect: handleLogout,
-      icon: <Logout fontSize="small" />,
+      icon: <Logout style = {{ fontSize: 20 }} />,
     },
   ];
 
@@ -269,7 +294,7 @@ const Header = () => {
               {
               validSession ?
                 <>
-                  <IconButton onClick={handleMenu} value = 'account' icon = {<AccountCircle />} buttonStyle={{ color: '#fff' }} />
+                  <IconButton onClick={handleMenu} value = 'account' icon = {<AccountCircle />} buttonStyle={{ color: '#fff' }} badge={activeNotifications.length} />
                   <Menu
                     anchor={anchorEl}
                     open={Boolean(anchorEl)}
@@ -288,6 +313,7 @@ const Header = () => {
         }
         </div>
       <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
+      <Notifications open = {viewNotifications} closeHandler={toggleViewNotifications} />
     </div>
   );
 };

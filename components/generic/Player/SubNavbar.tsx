@@ -7,8 +7,8 @@ import { useAppSelector } from '@/redux/hooks';
 import { useTheme } from '@/components/hooks/useTheme';
 import Tab from '@/components/ux/buttons/Tab';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import Navigation from '@/components/helpers/Navigation';
 import { Style } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 const getSubNavHeaderHeight = () => {
   const view = useAppSelector((state) => state.playerReducer.view);
@@ -21,7 +21,7 @@ const getSubNavHeaderHeight = () => {
 export { getSubNavHeaderHeight };
 
 const SubNavBar = ({ view }) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const { width } = useWindowDimensions() as Dimensions;
 

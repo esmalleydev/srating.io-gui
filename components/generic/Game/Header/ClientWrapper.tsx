@@ -18,7 +18,7 @@ import ConferenceRecord from './ConferenceRecord';
 import RefreshCounter from './RefreshCounter';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
-import Navigation from '@/components/helpers/Navigation';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const getBreakPoint = () => {
@@ -52,7 +52,7 @@ const ClientWrapper = (
   { game, coaches, coach_team_seasons, children }:
   { game: Game; coaches: Coaches; coach_team_seasons: CoachTeamSeasons; children: React.JSX.Element; },
 ) => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
 
   const { width } = useWindowDimensions() as Dimensions;

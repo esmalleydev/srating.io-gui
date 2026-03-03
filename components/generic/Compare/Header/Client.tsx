@@ -16,15 +16,15 @@ import CBB from '@/components/helpers/CBB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import Organization from '@/components/helpers/Organization';
-import Navigation from '@/components/helpers/Navigation';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const Client = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const breakPoint = getBreakPoint();
   const bestColor = General.getBestColor();

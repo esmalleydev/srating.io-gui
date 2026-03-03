@@ -18,10 +18,10 @@ import LockIcon from '@mui/icons-material/Lock';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FantasyGroupLoadData, handleLoad } from './ReduxWrapper';
-import Navigation from '@/components/helpers/Navigation';
 import FantasyGroupHelper from '@/components/helpers/FantasyGroup';
 import Organization from '@/components/helpers/Organization';
 import { Objector, Style } from '@esmalley/ts-utils';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const getNavHeaderHeight = () => {
@@ -45,7 +45,7 @@ type LockResponse = {
 
 
 const NavBar = () => {
-  const naviation = new Navigation();
+  const naviation = useNavigation();
   const theme = useTheme();
 
   const [anchor, setAnchor] = useState(null);

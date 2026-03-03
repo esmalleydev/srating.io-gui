@@ -8,11 +8,9 @@ import { reset as resetTeam } from '@/redux/features/team-slice';
 import { reset as resetGames } from '@/redux/features/games-slice';
 import { reset as resetGame } from '@/redux/features/game-slice';
 import { reset as resetPicks, setDataKey as setDataKeyPicks, InitialStateKeys as InitialStateKeysPicks, InitialState as InitialStatePicks } from '@/redux/features/picks-slice';
-import { useAppDispatch } from '@/redux/hooks';
 import { AppDispatch } from '@/redux/store';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { usePathname, useRouter } from 'next/navigation';
-import { TransitionStartFunction, useTransition } from 'react';
+import { TransitionStartFunction } from 'react';
 import { resetDataKey as resetDataKeyRanking, reset as resetRanking, setDataKey as setDataKeyRanking } from '@/redux/features/ranking-slice';
 import { setLoading } from '@/redux/features/loading-slice';
 import { reset as resetFantasy, setDataKey as setDataKeyFantasy, InitialStateKeys as InitialStateKeysFantasy, InitialState as InitialStateFantasy, stateController as FantasyStateController } from '@/redux/features/fantasy-slice';
@@ -22,28 +20,25 @@ import { reset as resetFantasyEntry } from '@/redux/features/fantasy_entry-slice
 
 // todo remove nextjs router :D
 
+// todo need to collapse all this into 1 or 2 functions, pass a table and id, then function does the rest. path should be determined based on the data instead
+
 // if the router does not appear to be working correctly,
-// make sure the path starts with "/" , or it doesnt stupid stuff
+// make sure the path starts with "/" , or it does stupid stuff
 
 class Navigation {
-  constructor() {
-    this.dispatch = useAppDispatch();
-    const [isPending, startTransition] = useTransition();
-    this.isPending = isPending;
+  constructor(
+    private dispatch: AppDispatch,
+    private router: AppRouterInstance,
+    private pathName: string,
+    private startTransition: TransitionStartFunction,
+    public isPending: boolean,
+  ) {
+    this.dispatch = dispatch;
+    this.router = router;
+    this.pathName = pathName;
     this.startTransition = startTransition;
-    this.router = useRouter();
-    this.pathName = usePathname();
+    this.isPending = isPending;
   }
-
-  private dispatch: AppDispatch;
-
-  private isPending: boolean;
-
-  private startTransition: TransitionStartFunction;
-
-  private router: AppRouterInstance;
-
-  private pathName: string;
 
   public getRouter() {
     return this.router;
@@ -54,9 +49,11 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public player(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    // this.dispatch(stateThunk({ router: this.getRouter() }));
-    this.dispatch(resetPlayer(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      // this.dispatch(stateThunk({ router: this.getRouter() }));
+      this.dispatch(resetPlayer(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -108,8 +105,10 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public coach(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetCoach(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetCoach(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -123,8 +122,10 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public conference(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetConference(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetConference(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -138,8 +139,10 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public team(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetTeam(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetTeam(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -153,8 +156,10 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public game(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetGame(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetGame(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -167,8 +172,10 @@ class Navigation {
    * Navigate to the ranking page
    */
   public ranking(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetRanking(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetRanking(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -220,8 +227,10 @@ class Navigation {
    * Navigate to the games (scores) page
    */
   public games(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetGames(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetGames(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -235,8 +244,10 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public picks(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetPicks(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetPicks(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -286,9 +297,11 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public fantasy(path: string, onRouter: null | undefined | (() => void) = null, pushState = true) {
-    this.dispatch(setLoading(true));
-    // this.dispatch(stateThunk({ router: this.getRouter() }));
-    this.dispatch(resetFantasy(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      // this.dispatch(stateThunk({ router: this.getRouter() }));
+      this.dispatch(resetFantasy(false));
+    }
     this.startTransition(() => {
       this.router[pushState ? 'push' : 'replace'](path);
       if (onRouter) {
@@ -344,8 +357,11 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public fantasy_group(path: string, onRouter: null | undefined | (() => void) = null, pushState = true) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetFantasyGroup(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetFantasyGroup(false));
+    }
+
     this.startTransition(() => {
       this.router[pushState ? 'push' : 'replace'](path);
       if (onRouter) {
@@ -400,8 +416,10 @@ class Navigation {
    * reset the state to be fresh beforehand
    */
   public fantasy_entry(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(resetFantasyEntry(false));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetFantasyEntry(false));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {
@@ -416,9 +434,11 @@ class Navigation {
    * DO NOT reset the user state before hand, only the account loaded part
    */
   public user(path: string, onRouter: null | undefined | (() => void) = null) {
-    this.dispatch(setLoading(true));
-    this.dispatch(setDataKeyUser({ key: 'loadedAccount', value: false }));
-    // this.dispatch(resetDataKeyUser({ key: 'fa', value: false }));
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(setDataKeyUser({ key: 'loadedAccount', value: false }));
+      // this.dispatch(resetDataKeyUser({ key: 'fa', value: false }));
+    }
     this.startTransition(() => {
       this.router.push(path);
       if (onRouter) {

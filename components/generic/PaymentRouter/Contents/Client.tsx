@@ -16,11 +16,11 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';
 import { useAppSelector } from '@/redux/hooks';
-import Navigation from '@/components/helpers/Navigation';
+import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const Client = () => {
-  const navigation = new Navigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const stripe = useStripe();
   const router = useRouter();
