@@ -11,7 +11,6 @@ import { useState } from 'react';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import Blank from '@/components/generic/Blank';
-import { ReactServerDOMWebpackStatic } from 'next/dist/server/route-modules/app-page/vendored/rsc/entrypoints';
 import { Dates } from '@esmalley/ts-utils';
 
 const MyGroups = (
