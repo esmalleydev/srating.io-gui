@@ -19,11 +19,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useClientAPI } from '@/components/clientAPI';
 import ErrorModal from '@/components/ux/modal/ErrorModal';
 import { setLoading } from '@/redux/features/loading-slice';
-import Organization from '@/components/helpers/Organization';
 import { FantasyGroup } from '@/types/general';
 import Inputs from '@/components/helpers/Inputs';
 import { Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { useKontororu } from '@/components/hooks/useKontororu';
 // import InfoOutlineIcon from '@mui/icons-material/InfoOutline'; need to upgrade MUI for this icon... >.>
 
 
@@ -63,6 +63,7 @@ const ClientSkeleton = () => {
 const Client = () => {
   const navigation = useNavigation();
   const theme = useTheme();
+  const Kontororu = useKontororu();
 
   const [isSaving, setIsSaving] = useState(false);
   const [errorModalMessage, setErrorModalMessage] = useState<string | null>(null);
@@ -184,14 +185,14 @@ const Client = () => {
             onChange={(val) => onChange('name', val)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                // todo dispatch an event for the Wizard to listen to to hit next button
+                Kontororu.dispatchEvent(new CustomEvent('next'));
               }
             }}
             maxLength={255}
             value={formData.name}
             required
             triggerValidation={triggerValidation}
-            />
+          />
         </div>
       </>
     ),
@@ -296,7 +297,8 @@ const Client = () => {
                 }}
                 triggerValidation={triggerValidation}
                 value = {formData.draft_start_datetime ? Dates.format(Dates.parse(formData.draft_start_datetime, true), 'Y-m-d H:i:s') : undefined}
-                maxDate = {formData.start_date ? Dates.format(Dates.subtract(Dates.parse(formData.start_date), 1, 'days'), 'Y-m-d') : undefined}
+                minDate = {Dates.format(Dates.add(Dates.parse(null), 30, 'minutes'), 'Y-m-d H:i:a')}
+                maxDate = {formData.start_date ? Dates.format(Dates.subtract(Dates.parse(formData.start_date), 6, 'hours'), 'Y-m-d H:i:s') : undefined}
                 enableTime
               />
             </div>
@@ -312,7 +314,7 @@ const Client = () => {
                     triggerValidation={triggerValidation}
                     formatter={'number'}
                     value = {draftMinutes}
-                    min={0.5}
+                    min={0.25}
                     max={60}
                   />
                 </div>
@@ -347,11 +349,12 @@ const Client = () => {
               required
               label = 'When does the league start?'
               placeholder='Start date'
-              onChange={(val) => onChange('start_date', val ? Dates.format(val, 'Y-m-d') : null)}
+              onChange={(val) => onChange('start_date', val ? Dates.format(Dates.utc(val), 'Y-m-d H:i:s') : null)}
               triggerValidation={triggerValidation}
-              value = {formData.start_date || undefined}
+              value = {formData.start_date ? Dates.format(Dates.parse(formData.start_date, true), 'Y-m-d H:i:s') : undefined}
               minDate = {minDate}
               maxDate = {maxDate}
+              enableTime
               />
             <DateInput
               inputHandler={draftInputHandler}
@@ -612,8 +615,9 @@ const Client = () => {
     });
   };
 
-  // --- Dynamic Step Calculation ---
-  // We use useMemo to recalculate the array of steps based on form choices
+
+  /*
+  The problem with this is you need to keep adding to the props deps or the inputs might not update etc
   const activeSteps = useMemo(() => {
     const steps = [stepBasicInfo];
 
@@ -626,7 +630,18 @@ const Client = () => {
     steps.push(stepFinancials);
 
     return steps;
-  }, [formData.fantasy_group_type_terminology_id, formData.draft_type_terminology_id, formData.free, triggerValidation, formData, theme]);
+  }, [formData.fantasy_group_type_terminology_id, formData.draft_type_terminology_id, formData.free, triggerValidation, formData, theme, draftMinutes]);
+  */
+
+  const steps = [stepBasicInfo];
+
+  // Only show Draft step if specific terminology ID is selected
+  if (formData.fantasy_group_type_terminology_id === '7ca1ccce-e033-11f0-bc34-529c3ffdbb93') {
+    steps.push(stepDraft);
+  }
+
+  steps.push(stepPeople);
+  steps.push(stepFinancials);
 
 
 
@@ -636,7 +651,7 @@ const Client = () => {
     }}>
     <Contents>
       <Wizard
-        steps={activeSteps}
+        steps={steps}
         validationTrigger = {setTriggerValidation}
         onSave={handleSave}
         saveButtonText = 'Create League'

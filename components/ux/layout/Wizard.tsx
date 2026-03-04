@@ -12,6 +12,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import IconButton from '../buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
+import { useKontororu } from '@/components/hooks/useKontororu';
 
 export type WizardStep = {
   title: string;
@@ -50,6 +51,7 @@ const Wizard = (
 ) => {
   const initialStep = 0;
   const theme = useTheme();
+  const Kontororu = useKontororu();
 
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [nextStep, setNextStep] = useState(initialStep);
@@ -104,6 +106,16 @@ const Wizard = (
       return () => clearTimeout(timer);
     }
   }, [currentStep, nextStep]);
+
+  useEffect(() => {
+    const handler = () => {
+      handleNext();
+    };
+
+    Kontororu.addEventListener('next', handler);
+
+    return () => Kontororu.removeEventListener('next', handler);
+  }, [Kontororu]);
 
   const handleNext = () => {
     const currentStepObj = steps[currentStep];

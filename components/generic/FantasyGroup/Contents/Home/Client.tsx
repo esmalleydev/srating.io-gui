@@ -17,6 +17,7 @@ import { useAppSelector } from '@/redux/hooks';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import Rosters from './Rosters';
 import Winner from './Winner';
+import { Dates } from '@esmalley/ts-utils';
 
 
 
@@ -55,6 +56,8 @@ const Client = () => {
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
 
   const fantasyHelper = new FantasyGroup({ fantasy_group });
+
+  const started = fantasy_group.started || (Dates.parse(fantasy_group.start_date, true) < Dates.utc(new Date()));
   return (
     <Profiler id="FantasyGroup.Contents.Home.Client" onRender={(id, phase, actualDuration) => {
       console.log(id, phase, actualDuration);
@@ -63,9 +66,9 @@ const Client = () => {
       {fantasy_group.finished ? <Winner /> : ''}
       <Columns numberOfColumns={2} style = {{ marginBottom: 20 }}>
         <MyEntries />
-        {fantasy_group.started ? <Ranking /> : <DraftOrBracketCountdown />}
+        {started ? <Ranking /> : <DraftOrBracketCountdown />}
       </Columns>
-      {fantasyHelper.isDraft() && fantasy_group.started ? <div style = {{ marginBottom: 20 }}><Rosters /></div> : ''}
+      {fantasyHelper.isDraft() && started ? <div style = {{ marginBottom: 20 }}><Rosters /></div> : ''}
       <div style = {{ marginBottom: 20 }}>
         <LeagueManagement />
       </div>

@@ -33,6 +33,11 @@ const TeamSearch = (
     setAnchorTeam(null);
     setTeamMenuOpen(false);
     handleSelect(team_id);
+
+    const foundTeam = teams.find((team) => team.team_id === team_id);
+    if (foundTeam) {
+      setTeamSearchValue(foundTeam.alt_name || foundTeam.name);
+    }
   };
 
   const menuOptions: MenuOption[] = teams.map((row) => {
@@ -111,7 +116,7 @@ const TeamSearch = (
         clear
         icon = {<SearchIcon />}
         style = {{ borderRadius: 5 }}
-        // value = {teamSearchValue}
+        value = {teamSearchValue}
         onClick={(e) => {
           setAnchorTeam(e.currentTarget);
           if (teamSearchValue.length) {

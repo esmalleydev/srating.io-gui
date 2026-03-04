@@ -13,7 +13,7 @@ import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { handleData } from '../../ReduxWrapper';
-import { Dates } from '@esmalley/ts-utils';
+import { Dates, toast } from '@esmalley/ts-utils';
 
 
 const DraftZonePick = ({ selectedRow, onPick }) => {
@@ -28,6 +28,7 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
   const [timeLeft, setTimeLeft] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [sending, setSending] = useState(false);
+  const [autoPicked, setAutoPicked] = useState(false);
 
   const fantasyHelper = new FantasyGroup({ fantasy_group });
 
@@ -63,6 +64,10 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
   }
 
   useEffect(() => {
+    setErrorMessage('');
+  }, [selectedRow]);
+
+  useEffect(() => {
     if (!current_fantasy_draft_order || !current_fantasy_draft_order.expires) {
       setTimeLeft('');
       return;
@@ -75,7 +80,8 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
         setTimeLeft('Times up! Auto-picking a player...');
 
         // if I have a selected row, but didnt press the button, try to pick it for them
-        if (selectedRow && isMyPick) {
+        if (selectedRow && isMyPick && !autoPicked) {
+          setAutoPicked(true);
           handlePick();
         }
         return;
@@ -96,7 +102,7 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
 
     // eslint-disable-next-line consistent-return
     return () => clearInterval(timerId);
-  }, [isMyPick, selectedRow, current_fantasy_draft_order?.expires]);
+  }, [isMyPick, selectedRow, current_fantasy_draft_order?.expires, autoPicked]);
 
 
   const handlePick = () => {
@@ -129,8 +135,11 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
 
         if (data.error) {
           setErrorMessage(data.error);
+          toast.error(data.error);
           return;
         }
+
+        setAutoPicked(false);
 
         onPick();
 

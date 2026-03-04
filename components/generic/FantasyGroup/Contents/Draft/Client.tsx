@@ -4,13 +4,19 @@ import { Profiler } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { LinearProgress } from '@mui/material';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Columns from '@/components/ux/layout/Columns';
 import Title from './Title';
 import DraftBoard from './DraftBoard';
 import DraftZone from './DraftZone';
 import Loader from '@/components/generic/Ranking/Contents/Loader';
 import MyPicks from './MyPicks';
+import Button from '@/components/ux/buttons/Button';
+import { useNavigation } from '@/components/hooks/useNavigation';
+import { useTheme } from '@/components/hooks/useTheme';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import Tab from '@/components/ux/buttons/Tab';
+import { setDataKey } from '@/redux/features/fantasy_group-slice';
 
 
 
@@ -46,13 +52,21 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ fantasy_group_id }) => {
+  const theme = useTheme();
+  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
+  const subview = useAppSelector((state) => state.fantasyGroupReducer.subview);
+  const { width } = useWindowDimensions() as Dimensions;
 
   const getContents = () => {
     if (fantasy_group.drafted) {
       return (
         <>
           <Title />
+          <div style = {{ textAlign: 'center' }}>
+            <Button value = 'view-league' title = 'View league' handleClick = {() => navigation.fantasyGroupView({ view: 'home' })} buttonStyle={{ backgroundColor: theme.info[theme.mode] }} />
+          </div>
           <Columns>
             <MyPicks />
             <DraftBoard />
@@ -69,12 +83,35 @@ const Client = ({ fantasy_group_id }) => {
           <Loader organization_id={fantasy_group.organization_id} division_id={fantasy_group.division_id} season = {fantasy_group.season} view = 'player' />
             : ''
         }
-        <Title />
-        <Columns>
-          <MyPicks />
-          <DraftBoard />
-        </Columns>
-        <DraftZone />
+        {
+          width <= 475 ?
+            <>
+              <div style = {{ textAlign: 'center' }}>
+                <Tab key = {'draft-board'} title = {'Draft board'} value = {'draft_board'} selected = {subview === 'draft_board'} handleClick={() => dispatch(setDataKey({ key: 'subview', value: 'draft_board' }))}/>
+                <Tab key = {'draft-board'} title = {'Draft zone'} value = {'draft_zone'} selected = {subview === 'draft_zone'} handleClick={() => dispatch(setDataKey({ key: 'subview', value: 'draft_zone' }))}/>
+              </div>
+              <Title />
+              {
+                subview === 'draft_board' &&
+                <Columns>
+                  <MyPicks />
+                  <DraftBoard />
+                </Columns>
+              }
+              {
+                subview === 'draft_zone' && <DraftZone />
+              }
+            </>
+            :
+            <>
+              <Title />
+              <Columns>
+                <MyPicks />
+                <DraftBoard />
+              </Columns>
+              <DraftZone />
+            </>
+        }
       </>
     );
   };

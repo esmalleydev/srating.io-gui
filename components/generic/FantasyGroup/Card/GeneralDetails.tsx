@@ -50,7 +50,7 @@ const GeneralDetails = (
             fantasy_group.start_date && fantasy_group.end_date ?
               <Slab
                 label='League duration'
-                primary={`${Dates.format(fantasy_group.start_date, 'M jS \'y')} to ${Dates.format(fantasy_group.end_date, 'M jS \'y')}`}
+                primary={`${Dates.format(Dates.parse(fantasy_group.start_date, true), 'M jS g:i a ')} to ${Dates.format(Dates.parse(fantasy_group.end_date, true), 'M jS g:i a')}`}
               />
               : ''
           }

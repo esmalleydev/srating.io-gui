@@ -68,7 +68,6 @@ interface DatePickerProps {
   enableTime?: boolean;
 }
 
-// todo update min and max date to also support time
 
 const DateInput: React.FC<DatePickerProps> = ({
   inputHandler,
@@ -112,15 +111,15 @@ const DateInput: React.FC<DatePickerProps> = ({
     if (value) {
       const d = Dates.parse(value);
       if (isValidDate(d)) {
-        if (minDate && Dates.format(d, 'Y-m-d') < minDate) {
+        if (minDate && Dates.parse(d) < Dates.parse(minDate)) {
           setInternalError(true);
-          setInternalErrorMessage(`Date must be greater than ${minDate}`);
+          setInternalErrorMessage(`Date must be greater than ${Dates.format(Dates.parse(minDate), 'm/d/Y g:i a')}`);
           return;
         }
 
-        if (maxDate && Dates.format(d, 'Y-m-d') > maxDate) {
+        if (maxDate && Dates.parse(d) > Dates.parse(maxDate)) {
           setInternalError(true);
-          setInternalErrorMessage(`Date must be less than ${maxDate}`);
+          setInternalErrorMessage(`Date must be less than ${Dates.format(Dates.parse(maxDate), 'm/d/Y g:i a')}`);
           return;
         }
 
@@ -384,7 +383,20 @@ const DateInput: React.FC<DatePickerProps> = ({
   const minutesList = Array.from({ length: 12 }, (_, i) => i * 5); // 0, 5, 10...
   const meridiemList = ['AM', 'PM'];
 
-  const { hours: curH, minutes: curM, meridiem: curMeridiem } = selectedDate ? to12HourTime(selectedDate) : { hours: 12, minutes: 0, meridiem: 'PM' };
+  // const now = Dates.parse(null);
+
+  // const rawMinutes = parseInt(Dates.format(now, 'i'), 10);
+
+  // Round to the nearest 5 (e.g., 33 becomes 35, 32 becomes 30)
+  // const roundedMinutes = Math.round(rawMinutes / 5) * 5;
+
+  // Handle the edge case where 58, 59 rounds to 60 (standardize to "0" or "00")
+  // const finalMinutes = roundedMinutes === 60 ? 0 : roundedMinutes;
+
+  // const { hours: curH, minutes: curM, meridiem: curMeridiem } = selectedDate ? to12HourTime(selectedDate) : { hours: parseInt(Dates.format(now, 'h'), 10), minutes: finalMinutes, meridiem: Dates.format(now, 'A') };
+
+  // if not selected, instead of auto filling just leave it blank since it doesnt set the value, just makes the gui look filled out
+  const { hours: curH, minutes: curM, meridiem: curMeridiem } = selectedDate ? to12HourTime(selectedDate) : { hours: -1, minutes: -1, meridiem: -1 };
 
 
   const timeSeperatorStyle = {
@@ -423,8 +435,7 @@ const DateInput: React.FC<DatePickerProps> = ({
           onKeyDown={handleCalendarKeyDown}
         >
           <Calendar
-            value={Dates.format(Dates.parse(selectedDate), 'Y-m-d H:i:s')}
-            // value={selectedDate ? selectedDate.toISOString() : undefined}
+            value={selectedDate ? Dates.format(Dates.parse(selectedDate), 'Y-m-d H:i:s') : null}
             onChange={handleCalendarChange}
             minDate={minDate}
             maxDate={maxDate}
@@ -472,14 +483,14 @@ const DateInput: React.FC<DatePickerProps> = ({
   );
 };
 
-interface TimeColumnProps {
-  items: number[] | string[];
-  selected: number | string;
-  onSelect: (val: number | string) => void;
-  format: (val: number | string) => string;
+interface TimeColumnProps<T extends number | string> {
+  items: T[];
+  selected: T;
+  onSelect: (val: T) => void;
+  format: (val: T) => string;
 }
 
-const TimeColumn: React.FC<TimeColumnProps> = ({ items, selected, onSelect, format }) => {
+const TimeColumn = <T extends number | string>({ items, selected, onSelect, format }: TimeColumnProps<T>) => {
   const listRef = useRef<HTMLUListElement>(null);
   const theme = useTheme();
 
@@ -496,34 +507,42 @@ const TimeColumn: React.FC<TimeColumnProps> = ({ items, selected, onSelect, form
     }
   }, [selected]); // Run whenever selection changes (or on mount)
 
+  const ulStyle = {
+    listStyle: 'none',
+    margin: 0,
+    padding: '5px',
+    flex: 1,
+    overflowY: 'auto',
+    textAlign: 'center',
+    // Hide scrollbar for cleaner look
+    scrollbarWidth: 'none', // Firefox
+    msOverflowStyle: 'none', // IE
+  };
+
+  const liStyle = {
+    padding: '8px 0',
+    cursor: 'pointer',
+    borderRadius: '4px',
+    fontSize: '14px',
+    transition: 'background 0.2s',
+    '&:hover': {
+      backgroundColor: theme.action.hover,
+    },
+  };
+
   return (
-    <ul ref={listRef} style={{
-      listStyle: 'none',
-      margin: 0,
-      padding: '5px',
-      flex: 1,
-      overflowY: 'auto',
-      textAlign: 'center',
-      // Hide scrollbar for cleaner look
-      scrollbarWidth: 'none', // Firefox
-      msOverflowStyle: 'none', // IE
-    }}>
+    <ul ref={listRef} className = {Style.getStyleClassName(ulStyle)}>
       {items.map((item) => {
         const isSelected = item === selected;
         return (
           <li
             key={item}
-            data-selected={isSelected}
-            style={Objector.extender(
-              {
-                padding: '8px 0',
-                cursor: 'pointer',
-                borderRadius: '4px',
-                fontSize: '14px',
-                transition: 'background 0.2s',
-              },
+            data-selected = {isSelected} // for the auto scroll
+            className={Style.getStyleClassName(Objector.extender(
+              {},
+              liStyle,
               (isSelected ? { backgroundColor: (theme.mode === 'dark' ? theme.info.dark : theme.info.main), color: '#fff' } : {}),
-            )}
+            ))}
             onMouseDown={(e) => {
               e.preventDefault(); // Prevent blur of input
               onSelect(item);

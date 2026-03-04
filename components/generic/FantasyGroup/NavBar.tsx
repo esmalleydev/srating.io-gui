@@ -25,7 +25,7 @@ import { useNavigation } from '@/components/hooks/useNavigation';
 
 
 const getNavHeaderHeight = () => {
-  return 42;
+  return 32;
 };
 
 export { getNavHeaderHeight };

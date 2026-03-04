@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useTransition } from 'react';
-import Typography from '@mui/material/Typography';
 
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  Paper, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Skeleton,
+  Skeleton,
 } from '@mui/material';
 import HelperGame from '@/components/helpers/Game';
 import Locked from '@/components/generic/Billing/Locked';
@@ -14,7 +13,13 @@ import { useRouter } from 'next/navigation';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useTheme } from '@/components/hooks/useTheme';
 import General from '@/components/helpers/General';
-import { Color, Style } from '@esmalley/ts-utils';
+import { Color, Objector } from '@esmalley/ts-utils';
+import Table from '@/components/ux/table/Table';
+import Thead from '@/components/ux/table/Thead';
+import Tr from '@/components/ux/table/Tr';
+import Td from '@/components/ux/table/Td';
+import Tbody from '@/components/ux/table/Tbody';
+import Typography from '@/components/ux/text/Typography';
 
 
 const TableView = ({ sorted_games, team_id }) => {
@@ -56,15 +61,14 @@ const TableView = ({ sorted_games, team_id }) => {
     });
   };
 
-  const TableRowCSS = Style.getStyleClassName(`
-    &:hover td: {
-      backgroundColor: ${theme.mode === 'light' ? theme.info.light : theme.info.dark},
+  const trStyle = {
+    '&:hover td': {
+      backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
     },
-    &:hover: {
+    '&:hover': {
       cursor: 'pointer',
     },
-    &:last-child td, &:last-child th: { border: 0 }
-  `);
+  };
 
   const rowContainers: React.JSX.Element[] = [];
   for (let i = 0; i < sorted_games.length; i++) {
@@ -79,13 +83,21 @@ const TableView = ({ sorted_games, team_id }) => {
 
     const tableCells: React.JSX.Element[] = [];
 
+    let tdColor = (i % 2 === 0 ? theme.grey[800] : theme.grey[900]);
+
+    if (theme.mode === 'light') {
+      tdColor = i % 2 === 0 ? theme.grey[200] : theme.grey[300];
+    }
+
+
+
     for (let j = 0; j < headCells.length; j++) {
       const column = headCells[j];
 
       if (column.id === 'start_date') {
-        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(game.game_id); }}>{`${Game.getStartDate(null)} - ${Game.getStartTime()}`}</TableCell>);
+        tableCells.push(<Td key = {j} style = {{ padding: '6px' }}>{`${Game.getStartDate(null)} - ${Game.getStartTime()}`}</Td>);
       } else if (column.id === 'team') {
-        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(game.game_id); }}>{game.home_team_id === team_id ? 'vs' : '@'} {Game.getTeamName(otherSide)}</TableCell>);
+        tableCells.push(<Td key = {j} style = {{ padding: '6px' }}>{game.home_team_id === team_id ? 'vs' : '@'} {Game.getTeamName(otherSide)}</Td>);
       } else if (column.id === 'score') {
         let scoreText = '-';
         if (Game.isFinal()) {
@@ -93,7 +105,7 @@ const TableView = ({ sorted_games, team_id }) => {
         } else if (Game.isInProgress()) {
           scoreText = 'Live';
         }
-        tableCells.push(<TableCell key = {j} style = {{ padding: '6px' }} onClick={() => { handleGameClick(game.game_id); }}>{scoreText}</TableCell>);
+        tableCells.push(<Td key = {j} style = {{ padding: '6px' }}>{scoreText}</Td>);
       } else if (column.id === 'prediction') {
         const predictionContainer: React.JSX.Element[] = [];
         const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.home_percentage === null));
@@ -104,52 +116,50 @@ const TableView = ({ sorted_games, team_id }) => {
           predictionContainer.push(<Locked iconFontSize={null} key = {1} />);
         } else {
           const winPercentage = (game.home_team_id === team_id ? +(game.prediction.home_percentage * 100).toFixed(0) : +(game.prediction.away_percentage * 100).toFixed(0));
-          predictionContainer.push(<Typography key = {'win_percent'} variant = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, winPercentage / 100) }}>{winPercentage}%</Typography>);
+          predictionContainer.push(<Typography key = {'win_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, winPercentage / 100) }}>{winPercentage}%</Typography>);
         }
-        tableCells.push(<TableCell key = {j} style = {{ padding: '6px', width: 75 }}>{predictionContainer}</TableCell>);
+        tableCells.push(<Td key = {j} style = {{ padding: '6px', width: 75 }}>{predictionContainer}</Td>);
       }
     }
 
     rowContainers.push(
-      <TableRow
-        className={TableRowCSS}
+      <Tr
+        style = {Objector.extender({}, trStyle, { backgroundColor: tdColor })}
         key={game.game_id}
+        onClick={() => { handleGameClick(game.game_id); }}
       >
         {tableCells}
-      </TableRow>,
+      </Tr>,
     );
   }
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table size="small" aria-label="player stats table">
-          <TableHead>
-            <TableRow>
-              {headCells.map((headCell) => {
-                const tdStyle = {
-                  padding: '4px 5px',
-                  whiteSpace: 'nowrap',
-                  backgroundColor: theme.mode === 'light' ? theme.grey[200] : theme.grey[900],
-                };
+      <Table>
+        <Thead>
+          <Tr>
+            {headCells.map((headCell) => {
+              const tdStyle = {
+                padding: '4px 5px',
+                whiteSpace: 'nowrap',
+                backgroundColor: theme.mode === 'light' ? theme.grey[200] : theme.grey[900],
+              };
 
-                return (
-                  <TableCell
-                    sx = {tdStyle}
-                    key={headCell.id}
-                    align={'left'}
-                  >
-                    {headCell.label}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rowContainers}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              return (
+                <Td
+                  style = {tdStyle}
+                  key={headCell.id}
+                >
+                  {headCell.label}
+                </Td>
+              );
+            })}
+          </Tr>
+        </Thead>
+        <Tbody>
+          {rowContainers}
+        </Tbody>
+      </Table>
     </>
   );
 };

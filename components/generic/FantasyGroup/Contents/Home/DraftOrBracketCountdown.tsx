@@ -2,39 +2,45 @@
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { Dates } from '@esmalley/ts-utils';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 const DraftOrBracketCountdown = () => {
+  const theme = useTheme();
   const navigation = useNavigation();
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
-
+  const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
+  const user = useAppSelector((state) => state.userReducer.user);
   const fantasyHelper = new FantasyGroup({ fantasy_group });
 
-  // 1. Determine the target date based on whether it is a draft or bracket
-  const targetDateString = fantasyHelper.isDraft()
-    ? fantasy_group?.draft_start_datetime
-    : fantasy_group?.start_date;
+  let hasEntry = false;
+  for (const fantasy_entry_id in fantasy_entrys) {
+    const row = fantasy_entrys[fantasy_entry_id];
 
-  // 2. State to hold the formatted time string
-  const [timeLeft, setTimeLeft] = useState('');
+    if (row.user_id === user.user_id) {
+      hasEntry = true;
+      break;
+    }
+  }
 
-  const calculateTimeLeft = useCallback(() => {
+  const [now, setNow] = useState(new Date());
+
+  // Update clock every second
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatCountdown = (targetDateString: string | undefined | null) => {
     if (!targetDateString) return 'TBD';
+    const difference = Dates.parse(targetDateString, true).getTime() - now.getTime();
 
-    if (fantasy_group.drafted) {
-      return 'Draft is over';
-    }
-
-    const difference = Dates.parse(targetDateString, true).getTime() - new Date().getTime();
-
-    if (difference <= 0) {
-      return 'Started';
-    }
+    if (difference <= 0) return null; // Event has passed
 
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
     const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
@@ -42,42 +48,97 @@ const DraftOrBracketCountdown = () => {
     const seconds = Math.floor((difference / 1000) % 60);
 
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-  }, [targetDateString, fantasy_group.drafted]);
+  };
 
-  // 3. Effect to update the countdown every second
-  useEffect(() => {
-    // Initial call to prevent 1s delay on mount
-    setTimeLeft(calculateTimeLeft());
+  // Define the milestones based on group type
+  const milestones = useMemo(() => {
+    const list: {
+      label: string;
+      date: string | null;
+      isComplete: boolean;
+      button: boolean | React.JSX.Element;
+    }[] = [];
 
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [calculateTimeLeft]);
-
+    if (fantasyHelper.isDraft()) {
+      // Step 1: The entry
+      list.push({
+        label: 'Create an entry',
+        date: fantasy_group?.draft_start_datetime,
+        isComplete: hasEntry,
+        button: false,
+      });
+      // Step 2: The Draft
+      list.push({
+        label: 'Draft Starts',
+        date: fantasy_group?.draft_start_datetime,
+        isComplete: !!(fantasy_group?.drafted),
+        button: <Button value='view-draft' title='Enter Draft Room' handleClick={() => handleView('draft')} />,
+      });
+      // Step 3: Season Start
+      list.push({
+        label: 'League Begins',
+        date: fantasy_group?.start_date,
+        isComplete: !!(fantasy_group?.start_date && Dates.parse(fantasy_group.start_date) < now),
+        button: false,
+      });
+    } else {
+      // Bracket mode (Single Step)
+      list.push({
+        label: 'Tournament Start',
+        date: fantasy_group?.start_date,
+        isComplete: !!(fantasy_group?.start_date && Dates.parse(fantasy_group.start_date) < now),
+        button: false,
+      });
+    }
+    return list;
+  }, [fantasy_group, now, fantasyHelper]);
 
   const handleView = (view: string) => {
     navigation.fantasyGroupView({ view });
   };
 
-
-
-
   return (
     <div>
-      <Typography type='h6'>
-        {fantasyHelper.isDraft() ? 'Draft Countdown' : 'Bracket Countdown'}
+      <Typography type='h6' style={{ marginBottom: 8 }}>
+        {fantasyHelper.isDraft() ? 'Pre-Season Checklist' : 'Tournament Countdown'}
       </Typography>
-      <Paper style={{ padding: 16, textAlign: 'center' }}>
-        <Typography type='h4' style={{ fontWeight: 'bold', fontFamily: 'monospace' }}>
-          {timeLeft}
-        </Typography>
-        {
-          fantasyHelper.isDraft() ?
-          <Button value = 'view-draft' title = 'View draft' handleClick={() => handleView('draft')} />
-            : ''
-        }
+
+      <Paper style={{ padding: 16 }}>
+        {milestones.map((step, index) => {
+          const countdownText = formatCountdown(step.date);
+          // const isNextUp = !step.isComplete && (index === 0 || milestones[index - 1].isComplete);
+
+          return (
+            <div key={index} style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginBottom: index === milestones.length - 1 ? 0 : 16,
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography type='body1'>
+                  {step.isComplete ? '✅' : '⏳'} {step.label}
+                </Typography>
+
+                {step.isComplete ? (
+                  <Typography type='body2' style={{ color: theme.success.main }}>Completed</Typography>
+                ) : (
+                  <Typography type='body2' style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>
+                    {countdownText || 'Starting...'}
+                  </Typography>
+                )}
+              </div>
+
+              {/* Show the Draft Button only for the Draft step if it's active or finished */}
+              {step.button && (
+                <div style={{ marginTop: 8 }}>
+                  {step.button}
+                </div>
+              )}
+
+              {index < milestones.length - 1 && <hr style={{ width: '100%', border: '0.5px solid #eee', marginTop: 12 }} />}
+            </div>
+          );
+        })}
       </Paper>
     </div>
   );
