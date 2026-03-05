@@ -12,7 +12,6 @@ import DarkModeIcon from '@mui/icons-material/ModeNight';
 import LightModeIcon from '@mui/icons-material/LightMode';
 // import BeerIcon from '@mui/icons-material/SportsBar';
 import SettingsIcon from '@mui/icons-material/Settings';
-import HomeIcon from '@mui/icons-material/Home';
 import RSSFeedIcon from '@mui/icons-material/RssFeed';
 import RankingIcon from '@mui/icons-material/EmojiEvents';
 import ScoresIcon from '@mui/icons-material/Scoreboard';
@@ -131,21 +130,12 @@ const Sidebar = (
 
   return (
     <div style = {{ width: 250 }}>
-      {/* <div style = {{ padding: 10, height: 48, width: '100%' }}>
-        <img src={sratingLogo.src} width = '20' height = '20' style = {{ marginRight: 5 }} />
-      </div> */}
 
       {getButtonContainer({
         onClick: () => { router.push('/'); },
         icon: <img src={sratingLogo.src} width = '24' height = '24' />,
         text: 'srating.io',
       })}
-
-      {/* {getButtonContainer({
-        onClick: () => { router.push('/'); },
-        icon: <HomeIcon style={iconStyle} />,
-        text: 'Home',
-      })} */}
 
       {validSession && getButtonContainer({
         onClick: () => {
