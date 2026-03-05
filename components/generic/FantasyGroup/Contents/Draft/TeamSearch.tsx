@@ -135,7 +135,7 @@ const TeamSearch = (
             setTeams([]);
             setTeamMenuOpen(false);
             handleTeamSelect(null);
-          } else {
+          } else if (val !== teamSearchValue) {
             setTeamMenuOpen(true);
             setLoading(true);
             debouncedRequest();
