@@ -108,7 +108,7 @@ const DraftZone = () => {
     return (
       <div>
         <DraftZonePick selectedRow = {selectedRow} onPick = {() => setSelectedRow(null)} />
-        <Columns>
+        <Columns breakPoint={320}>
           <TeamSearch
             inputHandler={inputHandler}
             fantasy_group={fantasy_group}

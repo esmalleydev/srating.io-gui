@@ -6,8 +6,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import Drawer from '@mui/material/Drawer';
-
 // Icons
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -41,6 +39,7 @@ import General from '../helpers/General';
 import { Objector, Style } from '@esmalley/ts-utils';
 import Notifications from './Notifications';
 import { useNavigation } from '../hooks/useNavigation';
+import Drawer from '../ux/overlay/Drawer';
 
 
 // todo hook up settings with router
