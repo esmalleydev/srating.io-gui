@@ -64,7 +64,7 @@ const AccountHandler = (
   const tempInputHandler = new Inputs();
 
   const checkEmail = (text) => {
-    const regex = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
+    const regex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
     return regex.test(text);
   };
 
