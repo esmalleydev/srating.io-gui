@@ -118,6 +118,7 @@ const Roster = (
 
         const formattedRow = {} as PartialPlayerBoxscore;
 
+        formattedRow.player_id = player.player_id;
         formattedRow.name = player_name;
         formattedRow.name_secondary = player_number;
 
@@ -140,6 +141,7 @@ const Roster = (
 
       const formattedRow = Objector.deepClone(row) as PartialPlayerBoxscore;
 
+      formattedRow.player_id = player.player_id;
       formattedRow.name = player_name;
       formattedRow.name_secondary = player_number;
       formattedRow.fantasy_points = row.rating;
