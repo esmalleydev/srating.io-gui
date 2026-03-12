@@ -63,6 +63,7 @@ interface DatePickerProps {
   style?: React.CSSProperties;
   error?: boolean; // External error control
   errorMessage?: string;
+  showError?: boolean;
   required?: boolean;
   triggerValidation?: boolean;
   enableTime?: boolean;
@@ -80,6 +81,7 @@ const DateInput: React.FC<DatePickerProps> = ({
   style,
   error: externalError = false,
   errorMessage: externalErrorMessage,
+  showError = true,
   required = false,
   triggerValidation = false,
   enableTime = false,
@@ -422,6 +424,7 @@ const DateInput: React.FC<DatePickerProps> = ({
         autoComplete="off"
         error = {internalError || externalError}
         errorMessage = {internalErrorMessage || externalErrorMessage}
+        showError = {showError}
         required = {required}
         triggerValidation = {triggerValidation}
       />

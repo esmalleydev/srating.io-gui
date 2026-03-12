@@ -26,6 +26,7 @@ interface MultiPickerProps {
   required?: boolean;
   error?: boolean; // External error control
   errorMessage?: string; // External error message
+  showError?: boolean;
   triggerValidation?: boolean;
 }
 
@@ -63,6 +64,7 @@ const MultiPicker = ({
   required = false,
   error: externalError = false,
   errorMessage = 'Selection is required',
+  showError = true,
   style,
   triggerValidation = false,
 }: MultiPickerProps) => {
@@ -73,11 +75,11 @@ const MultiPicker = ({
   const [internalSelected, setInternalSelected] = useState<(string | number)[]>(selected || []);
   const [isTouched, setIsTouched] = useState(false);
 
-  const showError = externalError || (required && (isTouched || triggerValidation) && internalSelected.length === 0);
+  const hasError = externalError || (required && (isTouched || triggerValidation) && internalSelected.length === 0);
 
   const errorCallback = () => {
     return {
-      validationError: showError || (internalSelected.length === 0 && required),
+      validationError: hasError || (internalSelected.length === 0 && required),
       validationErrorMessage: errorMessage || (internalSelected.length === 0 && required ? 'Selection is required' : undefined),
     };
   };
@@ -171,7 +173,7 @@ const MultiPicker = ({
     }
 
     // Styling logic for Error (Overrides default border, but maybe not selection fill)
-    if (showError && !isSelected) {
+    if (hasError && !isSelected) {
       paperStyle.color = theme.error.main;
     }
 
@@ -197,7 +199,7 @@ const MultiPicker = ({
     >
       {/* Label with Required Asterisk */}
       {label && (
-        <Typography type="caption" style={{ color: showError ? theme.error.main : theme.text.secondary }}>
+        <Typography type="caption" style={{ color: hasError ? theme.error.main : theme.text.secondary }}>
           {label} {/*required && <span style={{ color: showError ? theme.error.main : theme.text.secondary }}>*</span>*/}
         </Typography>
       )}
@@ -208,13 +210,13 @@ const MultiPicker = ({
       </Columns>
 
       {/* Error Message -- keep space so screen does not bounce */}
-      <div style={{ height: 20, marginTop: 4 }}>
-        {showError && errorMessage && (
+      {showError && <div style={{ height: 20, marginTop: 4 }}>
+        {hasError && errorMessage && (
           <Typography type="caption" style={{ color: theme.error.main }}>
             {errorMessage}
           </Typography>
         )}
-      </div>
+      </div>}
     </div>
   );
 };

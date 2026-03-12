@@ -29,6 +29,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     formatter = 'text',
     error: externalError = false,
     errorMessage: externalErrorMessage,
+    showError = true,
     required = false,
     maxLength, // Native prop pulled out for clarity
     onFocus,
@@ -199,13 +200,13 @@ const TextInput: React.FC<TextInputProps> = (props) => {
           </div> : ''
         }
       </div>
-      <div style={{ height: 20, marginTop: 4 }}>
+      {showError && <div style={{ height: 20, marginTop: 4 }}>
         {displayedErrorMessage && (
           <Typography type='caption' style={errorTextStyle}>
             {displayedErrorMessage}
           </Typography>
         )}
-      </div>
+      </div>}
     </div>
   );
 };

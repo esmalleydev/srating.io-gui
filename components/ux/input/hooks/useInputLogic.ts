@@ -15,6 +15,7 @@ export interface BaseInputProps {
   formatter?: InputFormatter;
   error?: boolean;
   errorMessage?: string;
+  showError?: boolean;
   required?: boolean;
   triggerValidation?: boolean;
   min?: number;
@@ -39,6 +40,7 @@ export const useInputLogic = <T extends HTMLInputElement | HTMLTextAreaElement>(
     inputHandler,
     error: externalError,
     errorMessage: externalErrorMessage,
+    showError = true,
     triggerValidation,
     onChange: onChangeProp,
     onFocus: onFocusProp,

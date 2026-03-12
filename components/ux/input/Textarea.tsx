@@ -28,6 +28,7 @@ const Textarea: React.FC<TextareaProps> = (props) => {
     inputHandler,
     error,
     errorMessage,
+    showError,
     triggerValidation,
     min,
     max,
@@ -153,13 +154,13 @@ const Textarea: React.FC<TextareaProps> = (props) => {
           {...domProps}
         />
       </div>
-      <div style={{ height: 20, marginTop: 4 }}>
+      {showError && <div style={{ height: 20, marginTop: 4 }}>
         {displayedErrorMessage && (
           <Typography type='caption' style={errorTextStyle}>
             {displayedErrorMessage}
           </Typography>
         )}
-      </div>
+      </div>}
     </div>
   );
 };

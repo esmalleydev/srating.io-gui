@@ -31,6 +31,7 @@ interface SelectProps {
   required?: boolean;
   error?: boolean; // External error control
   errorMessage?: string; // External error message
+  showError?: boolean;
   triggerValidation?: boolean;
 }
 
@@ -47,6 +48,7 @@ const Select: React.FC<SelectProps> = ({
   required = false,
   error: externalError = false,
   errorMessage: externalErrorMessage,
+  showError = true,
   triggerValidation = false,
 }) => {
   const theme = useTheme();
@@ -346,13 +348,13 @@ const Select: React.FC<SelectProps> = ({
         />
       </div>
       {/* Error Message Display */}
-      <div style={{ height: 20, marginTop: 4 }}>
+      {showError && <div style={{ height: 20, marginTop: 4 }}>
         {displayedErrorMessage && (isTouched || triggerValidation) && (
           <Typography type="caption" style={errorTextStyle}>
             {displayedErrorMessage}
           </Typography>
         )}
-      </div>
+      </div>}
     </div>
   );
 };
