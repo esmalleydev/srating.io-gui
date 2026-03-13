@@ -13,8 +13,10 @@ import { Objector, Style, Color } from '@esmalley/ts-utils';
 interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange' | 'onFocus' | 'onBlur' | 'max' | 'min' | 'maxLength'>, BaseInputProps {
   ref?: RefObject<HTMLInputElement | null>;
   style?: React.CSSProperties;
+  placeholderStyle?: React.CSSProperties;
   icon?: React.JSX.Element;
   clear?: boolean;
+  transformPlaceholder?: boolean;
 }
 
 const TextInput: React.FC<TextInputProps> = (props) => {
@@ -22,6 +24,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     inputHandler,
     ref = null,
     style = {},
+    placeholderStyle = {},
     placeholder,
     label,
     variant = 'outlined',
@@ -41,6 +44,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     max = null,
     icon = null,
     clear = false,
+    transformPlaceholder = true,
     // reset = false,
     ...domProps
   } = props;
@@ -49,6 +53,8 @@ const TextInput: React.FC<TextInputProps> = (props) => {
 
   // Use the shared logic
   const { value, isFocused, hasError, displayedErrorMessage, handlers } = useInputLogic(props);
+
+  const hidePlaceholder = !transformPlaceholder && (value || isFocused);
 
   const errorColor = theme.error.main;
   let textColor = theme.text.primary;
@@ -65,15 +71,14 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     textColor = theme.text.disabled;
   }
 
-  const height = 46;
 
   let paddingLeft = (icon ? 24 : 0);
-  const iconLeft = icon ? 10 : 0;
+  const iconLeft = icon ? 8 : 0;
 
   const inputStyle: React.CSSProperties = {
     // Structure & Position
     width: '100%',
-    height,
+    height: 46,
     boxSizing: 'border-box',
     color: hasError ? errorColor : textColor,
     outline: 'none',
@@ -86,15 +91,19 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   if (variant === 'filled') {
     inputStyle.backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.grey[300];
     paddingLeft += 12 + iconLeft;
-    inputStyle.padding = `25px 12px 8px ${paddingLeft}px`; // Taller to accommodate space for the label
+    inputStyle.padding = `14px 12px 8px ${paddingLeft}px`; // Taller to accommodate space for the label
     inputStyle.border = 'none';
     inputStyle.borderBottom = 'none';
-    inputStyle['&:hover'] = {
-      backgroundColor: Color.alphaColor('#fff', 0.25),
-    };
+    if (!disabled) {
+      inputStyle['&:hover'] = {
+        backgroundColor: Color.alphaColor('#fff', 0.25),
+      };
+    }
   } else if (variant === 'standard') {
-    // inputStyle.fontSize = '14px';
-    inputStyle.padding = `26px 0 8px ${paddingLeft + iconLeft}px`;
+    if (icon) {
+      paddingLeft += 12 + iconLeft;
+    }
+    inputStyle.padding = `14px 12px 8px ${paddingLeft}px`;
     inputStyle.border = 'none';
     inputStyle.borderBottom = `2px solid ${borderColor}`;
   } else if (variant === 'outlined') {
@@ -119,8 +128,13 @@ const TextInput: React.FC<TextInputProps> = (props) => {
 
   let labelTop = 12;
   let labelLeft = 12;
-  if (variant === 'standard') {
-    labelTop = 16;
+  if (variant === 'filled' && isLabelActive) {
+    labelTop = 10;
+  }
+  if (variant === 'standard' && isLabelActive) {
+    labelTop = 10;
+  }
+  if (variant === 'standard' && !icon) {
     labelLeft = 0;
   }
   let labelColor = theme.text.secondary;
@@ -129,7 +143,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   } else if (hasError) {
     labelColor = errorColor;
   }
-  const placeholderStyle: React.CSSProperties = {
+  const pStyle: React.CSSProperties = {
     position: 'absolute',
     pointerEvents: 'none',
     color: labelColor,
@@ -156,8 +170,10 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   };
 
   if (icon) {
-    placeholderStyle.paddingLeft = paddingLeft;
+    pStyle.paddingLeft = paddingLeft;
   }
+
+  Objector.extender(pStyle, placeholderStyle);
 
   const errorTextStyle: React.CSSProperties = {
     color: errorColor,
@@ -167,18 +183,25 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     minHeight: '20px', // Prevents layout jumping if you want consistent spacing
   };
 
+  let placeholderElement: React.JSX.Element | null = <Typography type = 'caption' className = {Style.getStyleClassName(pStyle)}>{placeholder}</Typography>;
+
+  if (hidePlaceholder) {
+    placeholderElement = null;
+  }
+
   return (
     <div className={Style.getStyleClassName(containerStyle)}>
       {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
       <div style={{ position: 'relative', width: '100%' }}>
         {icon ? <div style = {{ position: 'absolute', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', left: iconLeft }}>{icon}</div> : ''}
-        <Typography type = 'caption' className = {Style.getStyleClassName(placeholderStyle)}>{placeholder}</Typography>
+        {placeholderElement}
         <input
           ref = {ref}
           type='text'
           className={Style.getStyleClassName(inputStyle)}
           value={value}
           disabled = {disabled}
+          name = {domProps.name || crypto.randomUUID()}
           // maxLength={maxLength} use internval validation
           onChange={handlers.handleChange}
           onFocus={handlers.handleFocus}
