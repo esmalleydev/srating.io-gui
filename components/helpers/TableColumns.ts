@@ -1271,7 +1271,7 @@ class TableColumns {
         id: 'weighted_height_average',
         numeric: true,
         label: 'WHA',
-        tooltip: 'Weighted height average',
+        tooltip: 'Weighted height average (inches)',
         sort: 'higher',
         organization_ids: [Organization.getCBBID()],
         views: ['team'],

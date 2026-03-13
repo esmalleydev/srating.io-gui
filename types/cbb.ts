@@ -1,5 +1,5 @@
-import Player from '@/components/helpers/Player';
-import { CoachStatisticRanking, PlayerTeamSeason } from './general';
+
+import { CoachStatisticRanking, Player, PlayerTeamSeason } from './general';
 
 
 export interface Boxscore {

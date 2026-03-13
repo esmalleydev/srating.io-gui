@@ -1034,6 +1034,10 @@ export type ConferenceStatisticRankings = {[conference_statistic_ranking_id: str
 
 export type RankingTable = (StatisticRanking | PlayerStatisticRanking | ConferenceStatisticRanking | CoachStatisticRanking) & {
   name: string;
+  committed?: boolean;
+  committed_team_id?: string;
+  committed_team_name?: string;
+  committed_conference_id?: string;
   team_name?: string;
   player?: Player;
   player_team_season?: PlayerTeamSeason;
