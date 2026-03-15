@@ -640,6 +640,18 @@ const Client = ({ generated, organization_id, division_id, season, view }) => {
     rowKey = 'coach_id';
   }
 
+  // the keys should prob be the below, but the above helps me find bugs in data...
+  /*
+  let rowKey = 'statistic_ranking_id';
+  if (view === 'player' || view === 'transfer') {
+    rowKey = 'player_statistic_ranking_id';
+  } else if (view === 'conference') {
+    rowKey = 'conference_statistic_ranking_id';
+  } else if (view === 'coach') {
+    rowKey = 'coach_statistic_ranking_id';
+  }
+  */
+
   return (
     <Profiler id="Ranking.Base.Contents.Client" onRender={(id, phase, actualDuration) => {
       console.log(id, phase, actualDuration);

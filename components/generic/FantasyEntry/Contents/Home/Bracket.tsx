@@ -619,18 +619,18 @@ const Bracket = () => {
         <RoundBanner />
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: 5 }}>
           <div style = {{ marginRight: 20 }}>
-            {getRegionTitle('South', 'left')}
+            {getRegionTitle('East', 'left')}
             <BracketSlot
-              fantasy_bracket_slot_id={roots.South}
+              fantasy_bracket_slot_id={roots.East}
               fantasy_bracket_slots={fantasy_bracket_slots}
               region_x_round_x_seed_x_bracket_teams = {region_x_round_x_seed_x_bracket_teams}
               team_id_x_seed={team_id_x_seed}
             />
           </div>
           <div>
-            {getRegionTitle('East', 'right')}
+            {getRegionTitle('West', 'right')}
             <BracketSlot
-              fantasy_bracket_slot_id={roots.East}
+              fantasy_bracket_slot_id={roots.West}
               fantasy_bracket_slots={fantasy_bracket_slots}
               isRightSide={true}
               region_x_round_x_seed_x_bracket_teams = {region_x_round_x_seed_x_bracket_teams}
@@ -686,9 +686,9 @@ const Bracket = () => {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: 5 }}>
           <div style = {{ marginRight: 20 }}>
-            {getRegionTitle('West', 'left')}
+            {getRegionTitle('South', 'left')}
             <BracketSlot
-              fantasy_bracket_slot_id={roots.West}
+              fantasy_bracket_slot_id={roots.South}
               fantasy_bracket_slots={fantasy_bracket_slots}
               region_x_round_x_seed_x_bracket_teams = {region_x_round_x_seed_x_bracket_teams}
               team_id_x_seed={team_id_x_seed}
