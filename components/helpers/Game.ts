@@ -46,7 +46,7 @@ class Game {
    * Get the friendly formatted start date of the game
    */
   getStartDate(opt_format: string | null | undefined): string {
-    return Dates.format(this.getGame().start_datetime, opt_format || 'M jS');
+    return Dates.format(Dates.parse(this.getGame().start_datetime, true), opt_format || 'M jS');
   }
 
   /**

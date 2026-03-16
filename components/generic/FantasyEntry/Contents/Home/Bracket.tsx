@@ -500,7 +500,7 @@ const BracketSlot = (
           })}
         >
           <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography type = 'caption' style={{ color: theme.info.main }}>{(fantasy_bracket_slot.game_id ? `${gameHelper.getNetwork() || ''} ${gameHelper.getStartTime()}` : 'TBD')}</Typography>
+            <Typography type = 'caption' style={{ color: theme.info.main }}>{(fantasy_bracket_slot.game_id ? `${gameHelper.getNetwork() || ''} ${gameHelper.getStartDate('n/j g:i a')}` : 'TBD')}</Typography>
             {!canNavigateToGame && <div><IconButton icon = {<QueryStatsIcon style = {{ fontSize: 18 }} />} value = 'view-matchup' onClick = {() => {
               if (fantasy_bracket_slot.game_id) {
                 navigation.game(`/${path}/games/${fantasy_bracket_slot.game_id}`);
