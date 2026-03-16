@@ -29,7 +29,7 @@ const Client = ({ fantasy_entry_id }) => {
   }
 
   return (
-    <div style={{ padding: 5 }}>
+    <div style={{ padding: 5, maxWidth: 1200, margin: 'auto' }}>
       <Roster
         fantasy_entry={fantasy_entry}
         fantasy_group = {fantasy_group}

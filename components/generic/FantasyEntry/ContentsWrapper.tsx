@@ -19,7 +19,7 @@ import { FantasyEntryLoadData, handleLoad } from './ReduxWrapper';
 const Contents = ({ children }): React.JSX.Element => {
   const paddingTop = getNavHeaderHeight();
   return (
-    <div style = {{ paddingTop, maxWidth: 1200, margin: 'auto' }}>
+    <div style = {{ paddingTop, margin: 'auto' }}>
       {children}
     </div>
   );

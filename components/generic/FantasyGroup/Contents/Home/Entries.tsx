@@ -1,5 +1,6 @@
 'use client';
 
+import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
@@ -9,15 +10,18 @@ import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import StadiumIcon from '@mui/icons-material/Stadium';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const Entries = () => {
   const theme = useTheme();
   const navigation = useNavigation();
+  const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
   const fantasy_entrys = useAppSelector((state) => state.fantasyGroupReducer.fantasy_entrys);
   const fantasy_group_users = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group_users);
   const initialLimit = 10;
   const [limit, setLimit] = useState(initialLimit);
+
+  const fantasyGroupHelper = new FantasyGroup({ fantasy_group });
 
   const entries = Object.values(fantasy_entrys || {});
 
@@ -40,15 +44,24 @@ const Entries = () => {
     if (row.user_id in user_id_x_fantasy_group_user) {
       secondary = user_id_x_fantasy_group_user[row.user_id].name || user_id_x_fantasy_group_user[row.user_id].email;
     }
+
+    const buttons: React.JSX.Element[] = [];
+
+    if (
+      (fantasyGroupHelper.isNCAABracket() && fantasy_group.started) ||
+      fantasyGroupHelper.isDraft()
+    ) {
+      buttons.push(
+        <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
+      );
+    }
     return (
       <Tile
         key = {row.fantasy_entry_id}
         icon={<StadiumIcon style = {{ color: theme.deepOrange[500] }} />}
         primary={row.name}
         secondary={secondary}
-        buttons = {[
-          <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
-        ]}
+        buttons = {buttons}
       />
     );
   }).filter((r) => r !== null);

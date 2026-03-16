@@ -18,6 +18,7 @@ import { setDataKey } from '@/redux/features/fantasy_entry-slice';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { Objector, Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Game from '@/components/helpers/Game';
 
 const slot_height = 100;
 const slot_width = 170;
@@ -132,6 +133,7 @@ const BracketSlot = (
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const user = useAppSelector((state) => state.userReducer.user);
 
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [heightConnector, setHeightConnector] = useState(0);
 
@@ -149,6 +151,12 @@ const BracketSlot = (
 
   const fantasy_bracket_slot = fantasy_bracket_slots[fantasy_bracket_slot_id];
   const path = Organization.getPath({ organizations, organization_id: fantasy_group.organization_id });
+
+  const game = (fantasy_bracket_slot.game_id && games[fantasy_bracket_slot.game_id]) || null;
+
+  const gameHelper = new Game({ game });
+
+  const canNavigateToGame = (fantasy_bracket_slot.game_id && game && fantasy_group.started);
 
   const seedPairs = {
     1: [1, 16],
@@ -366,23 +374,7 @@ const BracketSlot = (
       };
     }
 
-    const getScoreBox = () => {
-      if (fantasy_bracket_slot.game_id) {
-        const game = games[fantasy_bracket_slot.game_id];
-        let score = 0;
-        if (
-          fantasy_bracket_slot[`actual_${which}_team_id`] === game.home_team_id
-        ) {
-          score = game.home_score || 0;
-        } else if (
-          fantasy_bracket_slot[`actual_${which}_team_id`] === game.away_team_id
-        ) {
-          score = game.away_score || 0;
-        }
-
-        return <div style = {{ display: 'flex', alignItems: 'center' }}>{score}</div>;
-      }
-
+    const getRadioPickBox = () => {
       if (
         fantasy_bracket_slot.picked_winner_team_id &&
         (
@@ -396,10 +388,33 @@ const BracketSlot = (
           )
         )
       ) {
-        return <div style = {{ display: 'flex', alignItems: 'center' }}><RadioButtonUncheckedIcon style = {{ color: theme.purple[500], fontSize: 20 }} /></div>;
+        return (
+          <div style = {{ display: 'flex', alignItems: 'center' }}>
+            <RadioButtonUncheckedIcon style = {{ color: theme.purple[500], fontSize: 20 }} />
+          </div>
+        );
       }
 
       return <></>;
+    };
+
+    const getScoreBox = () => {
+      let score = 0;
+      if (fantasy_bracket_slot.game_id && game) {
+        if (
+          fantasy_bracket_slot[`actual_${which}_team_id`] === game.home_team_id
+        ) {
+          score = game.home_score || 0;
+        } else if (
+          fantasy_bracket_slot[`actual_${which}_team_id`] === game.away_team_id
+        ) {
+          score = game.away_score || 0;
+        }
+      }
+
+      return (
+        <div>{score}</div>
+      );
     };
 
     return (
@@ -412,7 +427,8 @@ const BracketSlot = (
         }}
       >
         <div style = {textWrapperStyle}>{getTeam(team_ids)}</div>
-        <div style = {{ width: 20, textAlign: 'right', flexShrink: 0 }}>{getScoreBox()}</div>
+        <div style = {{ width: 20, textAlign: 'right', flexShrink: 0 }}>{getRadioPickBox()}</div>
+        {game && game.status !== 'pre' && <div style = {{ width: 20, textAlign: 'center', flexShrink: 0 }}>{getScoreBox()}</div>}
       </div>
     );
   };
@@ -468,11 +484,11 @@ const BracketSlot = (
           cursor: (fantasy_bracket_slot.game_id ? 'pointer' : 'initial'),
         }}
         onClick={() => {
-          if (fantasy_bracket_slot.game_id) {
-            navigation.game(`/${path}/game/${fantasy_bracket_slot.game_id}`);
+          if (canNavigateToGame) {
+            navigation.game(`/${path}/games/${fantasy_bracket_slot.game_id}`);
           }
         }}
-        hover = {Boolean(fantasy_bracket_slot.game_id)}
+        hover = {Boolean(canNavigateToGame)}
       >
         <div
           className = {Style.getStyleClassName({
@@ -481,7 +497,7 @@ const BracketSlot = (
             whiteSpace: 'nowrap',
           })}
         >
-          <Typography type = 'caption' style={{ color: theme.info.main }}>TBD</Typography>
+          <Typography type = 'caption' style={{ color: theme.info.main }}>{(fantasy_bracket_slot.game_id ? `${gameHelper.getNetwork() || ''} ${gameHelper.getStartTime()}` : 'TBD')}</Typography>
           {getPickContainer('first')}
           {getPickContainer('second')}
         </div>
