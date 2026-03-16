@@ -138,7 +138,14 @@ class State<T extends object> {
         if (type === 'boolean') {
           const value = urlParams.get(key);
           if (value !== null) {
-            state[key] = (+value === 1);
+            // i hate javascript
+            if (value === 'true') {
+              state[key] = true;
+            } else if (value === 'false') {
+              state[key] = false;
+            } else {
+              state[key] = (+value === 1);
+            }
           } else if (key in this.getDefaultState()) {
             state[key] = this.getDefaultState()[key];
           }

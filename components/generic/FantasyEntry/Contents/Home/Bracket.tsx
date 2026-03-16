@@ -19,6 +19,8 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { Objector, Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import Game from '@/components/helpers/Game';
+import IconButton from '@/components/ux/buttons/IconButton';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
 
 const slot_height = 100;
 const slot_width = 170;
@@ -481,7 +483,7 @@ const BracketSlot = (
           flexDirection: 'column',
           position: 'relative',
           padding: '8px',
-          cursor: (fantasy_bracket_slot.game_id ? 'pointer' : 'initial'),
+          cursor: (canNavigateToGame ? 'pointer' : 'initial'),
         }}
         onClick={() => {
           if (canNavigateToGame) {
@@ -497,7 +499,16 @@ const BracketSlot = (
             whiteSpace: 'nowrap',
           })}
         >
-          <Typography type = 'caption' style={{ color: theme.info.main }}>{(fantasy_bracket_slot.game_id ? `${gameHelper.getNetwork() || ''} ${gameHelper.getStartTime()}` : 'TBD')}</Typography>
+          <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography type = 'caption' style={{ color: theme.info.main }}>{(fantasy_bracket_slot.game_id ? `${gameHelper.getNetwork() || ''} ${gameHelper.getStartTime()}` : 'TBD')}</Typography>
+            {!canNavigateToGame && <div><IconButton icon = {<QueryStatsIcon style = {{ fontSize: 18 }} />} value = 'view-matchup' onClick = {() => {
+              if (fantasy_bracket_slot.game_id) {
+                navigation.game(`/${path}/games/${fantasy_bracket_slot.game_id}`);
+              } else if (fantasy_bracket_slot.picked_first_team_id && fantasy_bracket_slot.picked_second_team_id) {
+                navigation.compare(`/${path}/compare?home_team_id=${fantasy_bracket_slot.picked_first_team_id}&away_team_id=${fantasy_bracket_slot.picked_second_team_id}&view=team&neutral_site=true`);
+              }
+            }} /></div>}
+          </div>
           {getPickContainer('first')}
           {getPickContainer('second')}
         </div>

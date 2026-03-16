@@ -2,6 +2,7 @@
 
 import { updateDataKey as updateDataKeyDisplay } from '@/redux/features/display-slice';
 import { InitialState, InitialStateKeys, resetDataKey as resetDataKeyPlayer, reset as resetPlayer, setDataKey as setDataKeyPlayer } from '@/redux/features/player-slice';
+import { reset as resetCompare } from '@/redux/features/compare-slice';
 import { reset as resetCoach } from '@/redux/features/coach-slice';
 import { reset as resetConference } from '@/redux/features/conference-slice';
 import { reset as resetTeam } from '@/redux/features/team-slice';
@@ -42,6 +43,23 @@ class Navigation {
 
   public getRouter() {
     return this.router;
+  }
+
+  /**
+   * Navigate to a compare page,
+   * reset the state to be fresh beforehand
+   */
+  public compare(path: string, onRouter: null | undefined | (() => void) = null) {
+    if (this.pathName !== path) {
+      this.dispatch(setLoading(true));
+      this.dispatch(resetCompare(false));
+    }
+    this.startTransition(() => {
+      this.router.push(path);
+      if (onRouter) {
+        onRouter();
+      }
+    });
   }
 
   /**

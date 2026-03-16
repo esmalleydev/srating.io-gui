@@ -32,7 +32,18 @@ export default async function Page({ params, searchParams }: Props) {
   const season = searchParameters?.season;
   const view = searchParameters?.view || 'team';
   const subview = searchParameters?.subview;
-  const neutral_site: boolean = typeof searchParameters?.neutral_site === 'string' ? (parseInt(searchParameters?.neutral_site, 10) === 1) : true;
+  let neutral_site: boolean = false;
+
+  if (
+    searchParameters &&
+    searchParameters.neutral_site !== undefined &&
+    (
+      searchParameters.neutral_site === 'true' ||
+      +searchParameters.neutral_site === 1
+    )
+  ) {
+    neutral_site = true;
+  }
 
   const Surface = new Compare({
     sport: parameters.sport,
