@@ -1,13 +1,15 @@
 
 'use client';
 
+import { useTheme } from '@/components/hooks/useTheme';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 import { useAppSelector } from '@/redux/hooks';
-import { LinearProgress } from '@mui/material';
 
 const ClientWrapper = (
   { children }:
   { children: React.JSX.Element },
 ) => {
+  const theme = useTheme();
   const loadingView = useAppSelector((state) => state.rankingReducer.loadingView);
 
   const paddingTop = 0;
@@ -27,7 +29,7 @@ const ClientWrapper = (
           alignItems: 'center',
           height: `calc(100vh - ${heightToRemove}px)`,
         }}>
-          <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+          <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
         </div>
         : children
       }

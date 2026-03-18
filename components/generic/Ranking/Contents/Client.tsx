@@ -4,7 +4,6 @@ import React, { Profiler, useEffect, useRef, useState } from 'react';
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { LinearProgress } from '@mui/material';
 
 
 import CheckIcon from '@mui/icons-material/Check';
@@ -26,6 +25,8 @@ import Tr from '@/components/ux/table/Tr';
 import Th from '@/components/ux/table/Th';
 import { Arithmetic, Color, Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 
@@ -42,6 +43,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const heightToRemove = 400;
   return (
     <Contents>
@@ -52,7 +54,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

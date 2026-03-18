@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 
 import {
@@ -18,6 +17,7 @@ import { StripePaymentElementOptions } from '@stripe/stripe-js';
 import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/hooks/useTheme';
 import { setDataKey } from '@/redux/features/user-slice';
+import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 
 const CheckoutForm = ({ pricing }) => {

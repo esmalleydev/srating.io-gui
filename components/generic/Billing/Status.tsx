@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStripe } from '@stripe/react-stripe-js';
 
-import CircularProgress from '@mui/material/CircularProgress';
-
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -17,6 +15,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Button from '@/components/ux/buttons/Button';
 import Conversions from './Conversions';
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';
+import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 
 const Status = () => {
@@ -91,7 +90,7 @@ const Status = () => {
     <div>
       {triggerConversion ? <Conversions /> : ''}
       {
-        !status ? <div style = {{ textAlign: 'center' }}><CircularProgress color="inherit" /></div> :
+        !status ? <div style = {{ textAlign: 'center' }}><CircularProgress /></div> :
         <div style = {{ padding: 20 }}>
           <div style = {{ textAlign: 'center' }}>
             <Typography type='h6'>Subscription details</Typography>

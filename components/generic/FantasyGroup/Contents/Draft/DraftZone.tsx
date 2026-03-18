@@ -8,7 +8,6 @@ import { useAppSelector } from '@/redux/hooks';
 
 
 import SearchIcon from '@mui/icons-material/Search';
-import { LinearProgress } from '@mui/material';
 import { useCallback, useState } from 'react';
 import VirtualTable from '@/components/ux/table/VirtualTable';
 import TableColumns from '@/components/helpers/TableColumns';
@@ -17,9 +16,12 @@ import TeamSearch from './TeamSearch';
 import { decorateHeaderRow, decorateRows } from '@/components/generic/Ranking/Contents/Client';
 import DraftZonePick from './DraftZonePick';
 import { Objector } from '@esmalley/ts-utils';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 const DraftZone = () => {
+  const theme = useTheme();
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);
   const loadingRankingData = useAppSelector((state) => state.rankingReducer.loadingView);
   const rankingData = useAppSelector((state) => state.cacheReducer.rankingData);
@@ -102,7 +104,11 @@ const DraftZone = () => {
 
   const getContainer = () => {
     if (loadingRankingData) {
-      return <div style = {{ display: 'flex', justifyContent: 'center', height: 40, alignItems: 'center' }}><LinearProgress color = 'secondary' style={{ width: '50%' }} /></div>;
+      return (
+        <div style = {{ display: 'flex', justifyContent: 'center', height: 40, alignItems: 'center' }}>
+          <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
+        </div>
+      );
     }
 
     return (

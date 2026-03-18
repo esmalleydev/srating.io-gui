@@ -3,7 +3,6 @@
 import { Profiler } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { LinearProgress } from '@mui/material';
 import Columns from '@/components/ux/layout/Columns';
 import Members from './Members';
 import Invites from './Invites';
@@ -18,6 +17,8 @@ import FantasyGroup from '@/components/helpers/FantasyGroup';
 import Rosters from './Rosters';
 import Winner from './Winner';
 import { Dates } from '@esmalley/ts-utils';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 
@@ -34,6 +35,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = 0;
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 84;
@@ -46,7 +48,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

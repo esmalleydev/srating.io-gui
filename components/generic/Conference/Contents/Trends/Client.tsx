@@ -5,9 +5,6 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, Label, Brush,
   YAxisProps,
 } from 'recharts';
-import {
-  LinearProgress,
-} from '@mui/material';
 import LinearScaleIcon from '@mui/icons-material/LinearScale';
 
 
@@ -28,6 +25,7 @@ import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import Paper from '@/components/ux/container/Paper';
 import { Color, Dates } from '@esmalley/ts-utils';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 
 export interface TrendsType {
   elos: Elos;
@@ -50,6 +48,7 @@ const Contents = ({ children }): React.JSX.Element => {
 };
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const heightToRemove = padding + footerNavigationHeight + headerBarHeight + 190;
   return (
     <Contents>
@@ -60,7 +59,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

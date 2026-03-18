@@ -27,7 +27,6 @@ import HelperGame from '@/components/helpers/Game';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
-import { CircularProgress } from '@mui/material';
 import Organization from '@/components/helpers/Organization';
 import { setLoading } from '@/redux/features/loading-slice';
 import Button from '@/components/ux/buttons/Button';
@@ -37,6 +36,7 @@ import Columns from '@/components/ux/layout/Columns';
 import Inputs from '@/components/helpers/Inputs';
 import { Arrayifier, Dates, Sorter } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {

@@ -3,7 +3,6 @@
 import { Profiler } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { LinearProgress } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Columns from '@/components/ux/layout/Columns';
 import Title from './Title';
@@ -17,6 +16,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Tab from '@/components/ux/buttons/Tab';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 
 
 
@@ -33,6 +33,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = 0;
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 84;
@@ -45,7 +46,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

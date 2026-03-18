@@ -3,7 +3,6 @@
 import { Profiler, useMemo, useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { LinearProgress } from '@mui/material';
 import { useTheme } from '@/components/hooks/useTheme';
 import { getNavHeaderHeight } from '../../NavBar';
 import TextInput from '@/components/ux/input/TextInput';
@@ -24,6 +23,7 @@ import Inputs from '@/components/helpers/Inputs';
 import { Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import { useKontororu } from '@/components/hooks/useKontororu';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 // import InfoOutlineIcon from '@mui/icons-material/InfoOutline'; need to upgrade MUI for this icon... >.>
 
 
@@ -42,6 +42,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = getNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 84;
@@ -54,7 +55,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

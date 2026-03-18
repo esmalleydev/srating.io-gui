@@ -4,7 +4,6 @@ import HelperTeam from '@/components/helpers/Team';
 
 import PreviousMatchupTile from '@/components/generic/Game/Contents/PreviousMatchups/Tile';
 import { Game, Games } from '@/types/general';
-import { LinearProgress } from '@mui/material';
 import { getHeaderHeight } from '@/components/generic/Compare/Header/ClientWrapper';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Compare/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
@@ -12,6 +11,8 @@ import { headerBarHeight } from '@/components/generic/Header';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { useTheme } from '@/components/hooks/useTheme';
 
 /**
  * The main wrapper div for all the contents
@@ -26,6 +27,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = getHeaderHeight() + getNavHeaderHeight() + getSubNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
@@ -38,7 +40,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

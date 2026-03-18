@@ -3,13 +3,14 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { LinearProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { setDataKey } from '@/redux/features/fantasy_entry-slice';
 import { getNavHeaderHeight } from './NavBar';
 import { useClientAPI } from '@/components/clientAPI';
 import Typography from '@/components/ux/text/Typography';
 import { FantasyEntryLoadData, handleLoad } from './ReduxWrapper';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 
@@ -29,6 +30,7 @@ const ContentsWrapper = (
   { children }:
   { children: React.JSX.Element },
 ) => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
 
   const fantasy_entry = useAppSelector((state) => state.fantasyEntryReducer.fantasy_entry);
@@ -96,7 +98,7 @@ const ContentsWrapper = (
           alignItems: 'center',
           height: `calc(100vh - ${heightToRemove}px)`,
         }}>
-          <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+          <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
         </div>
         : children
       }

@@ -7,7 +7,6 @@ import CompareStatistic, { CompareStatisticRow } from '@/components/generic/Comp
 import { Boxscore as BoxscoreCBB, PlayerBoxscore as CBBPlayerBoxscore, PlayerBoxscores as CBBPlayerBoxscores, PlayerStatisticRankings as CBBPlayerStatisticRankings } from '@/types/cbb';
 import { Boxscore as BoxscoreCFB, PlayerBoxscores as CFBPlayerBoxscores, PlayerBoxscore as CFBPlayerBoxscore, PlayerStatisticRankings as CFBPlayerStatisticRankings } from '@/types/cfb';
 import { useAppSelector } from '@/redux/hooks';
-import { LinearProgress } from '@mui/material';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
@@ -24,6 +23,7 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import General from '@/components/helpers/General';
 import { Color, Objector, Style, Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 
 
 
@@ -41,6 +41,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = getNavHeaderHeight() + getSubNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
@@ -53,7 +54,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

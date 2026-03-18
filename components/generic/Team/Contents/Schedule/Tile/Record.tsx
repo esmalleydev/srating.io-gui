@@ -3,10 +3,13 @@
 import React from 'react';
 
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton, Typography } from '@mui/material';
+import { Skeleton } from '@mui/material';
+import Typography from '@/components/ux/text/Typography';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 const Record = ({ game, team_id }) => {
+  const theme = useTheme();
   const scheduleStats = useAppSelector((state) => state.teamReducer.scheduleStats);
   const scheduleStatsLoading = useAppSelector((state) => state.teamReducer.scheduleStatsLoading);
   const showScheduleHistoricalRankRecord = useAppSelector((state) => state.teamReducer.showScheduleHistoricalRankRecord);
@@ -20,7 +23,7 @@ const Record = ({ game, team_id }) => {
 
 
   return (
-    <Typography variant = 'overline' color = 'text.secondary'>
+    <Typography type = 'overline' style = {{ color: theme.text.secondary, display: 'inline-block', marginLeft: 5 }}>
       {
         scheduleStatsLoading ?
           <Skeleton style={{

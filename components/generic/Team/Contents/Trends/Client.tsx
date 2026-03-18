@@ -6,9 +6,6 @@ import {
   YAxisProps,
 } from 'recharts';
 
-import {
-  LinearProgress,
-} from '@mui/material';
 import LinearScaleIcon from '@mui/icons-material/LinearScale';
 
 
@@ -29,6 +26,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import { Dates } from '@esmalley/ts-utils';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 
 export interface TrendsType {
   games: Games;
@@ -52,6 +50,7 @@ const Contents = ({ children }): React.JSX.Element => {
 };
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const heightToRemove = padding + footerNavigationHeight + headerBarHeight + 190;
   return (
     <Contents>
@@ -62,7 +61,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

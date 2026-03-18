@@ -6,7 +6,6 @@ import HelperGame from '@/components/helpers/Game';
 import { Game, GamePulse, GamePulses, Odds, Oddsz } from '@/types/general';
 import Chart from '@/components/generic/Chart';
 import { LineProps } from 'recharts';
-import { LinearProgress } from '@mui/material';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
@@ -14,6 +13,7 @@ import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import { Color } from '@esmalley/ts-utils';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 
 /**
  * The main wrapper div for all the contents
@@ -28,6 +28,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = getNavHeaderHeight() + getSubNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
@@ -40,7 +41,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

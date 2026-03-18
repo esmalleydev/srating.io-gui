@@ -8,7 +8,12 @@ import Divider from '@/components/ux/display/Divider';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
 import Typography from '@/components/ux/text/Typography';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import CircularProgress from '@/components/ux/loading/CircularProgress';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import Button from '@/components/ux/buttons/Button';
+import Backdrop from '@/components/ux/loading/Backdrop';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 const getInput = (props) => {
   const {
@@ -31,8 +36,42 @@ const getInput = (props) => {
 
 
 const UX = () => {
+  const [progress, setProgress] = useState(0);
+  const [backdropOpen, setBackdropOpen] = useState(false);
+
+  // Simulate progress for the determinate bar
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) return 0;
+        return Math.min(oldProgress + 10, 100);
+      });
+    }, 500);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div style = {{ padding: 20 }}>
+      <Typography type = 'h5'>Loading</Typography>
+      <Typography type = 'h6' style = {{ marginBottom: 10 }}>Circle indeterminate</Typography>
+      <CircularProgress />
+      <Typography type = 'h6' style = {{ marginBottom: 10 }}>Circle determinate</Typography>
+      <CircularProgress type = 'determinate' value = {progress} />
+      <Typography type = 'h6' style = {{ marginBottom: 10 }}>Linear indeterminate</Typography>
+      <LinearProgress />
+      <Typography type = 'h6' style = {{ marginBottom: 10 }}>Linear determinate</Typography>
+      <LinearProgress type = 'determinate' value = {progress} />
+      <Typography type = 'h6' style = {{ marginBottom: 10 }}>Backdrop</Typography>
+      <Backdrop open = {backdropOpen}><CircularProgress /></Backdrop>
+      <Button value = 'back-drop' title = 'Backdrop' handleClick={() => setBackdropOpen(!!backdropOpen)} />
+      <Typography type = 'h6' style = {{ marginBottom: 10 }}>Skeleton</Typography>
+      <Skeleton type='text' animation='wave' style = {{ width: 100, height: 25 }} />
+      <Skeleton type='text' animation='pulse' style = {{ width: 100, height: 25 }} />
+      <Skeleton type='circular' animation='wave' style = {{ width: 50, height: 50 }} />
+      <Skeleton type='circular' animation='pulse' style = {{ width: 50, height: 50 }} />
+
+
+
       <Typography type = 'h5'>Text Inputs</Typography>
       <Divider />
       <Typography type = 'h6' style = {{ marginBottom: 10 }}>Standard</Typography>

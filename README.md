@@ -2,7 +2,7 @@
 ![version](https://img.shields.io/github/package-json/v/esmalleydev/srating.io-gui)
 # [srating.io](https://srating.io)
 
-This is the open-source GUI project for [srating.io](https://srating.io). This project uses [nextjs](https://nextjs.org/), [reactjs](https://reactjs.org/) and [MUI](https://mui.com/material-ui/getting-started/overview/).
+This is the open-source GUI project for [srating.io](https://srating.io). This project uses [nextjs](https://nextjs.org/), [reactjs](https://reactjs.org/).
 
 Prerequisites: typescript, nodejs, npm.
 

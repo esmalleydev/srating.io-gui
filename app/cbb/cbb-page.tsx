@@ -8,7 +8,6 @@ import HelperGames from '../../components/helpers/Games';
 
 import Teams from '../../components/generic/CBB/Favorites/Teams';
 import Players from '../../components/generic/CBB/Favorites/Players';
-import { CircularProgress } from '@mui/material';
 import RankedGames from '../../components/generic/CBB/Home/RankedGames.jsx';
 import ThrillerGames from '../../components/generic/CBB/Home/ThrillerGames.jsx';
 import CloseGames from '../../components/generic/CBB/Home/CloseGames.jsx';
@@ -17,6 +16,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { setLoading as setLoadingDisplay } from '@/redux/features/loading-slice';
 import CBB from '@/components/helpers/CBB';
 import { Dates } from '@esmalley/ts-utils';
+import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 let intervalRefresher: NodeJS.Timeout;
 

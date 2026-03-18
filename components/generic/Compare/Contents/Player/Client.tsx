@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 
 import { useAppSelector } from '@/redux/hooks';
-import { LinearProgress } from '@mui/material';
 import { getHeaderHeight } from '../../Header/ClientWrapper';
 import { getNavHeaderHeight } from '../../NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
@@ -18,6 +17,8 @@ import TableColumns from '@/components/helpers/TableColumns';
 import ClassSpan from '@/components/generic/ClassSpan';
 import { Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 /**
@@ -33,6 +34,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = getHeaderHeight() + getNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 120;
@@ -45,7 +47,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

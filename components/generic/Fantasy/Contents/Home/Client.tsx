@@ -3,7 +3,6 @@
 import { Profiler, useEffect, useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { LinearProgress } from '@mui/material';
 import { getNavHeaderHeight } from '../../NavBar';
 import { useClientAPI } from '@/components/clientAPI';
 import { FantasyEntrys, FantasyGroups, FantasyGroupUsers } from '@/types/general';
@@ -13,6 +12,8 @@ import Columns from '@/components/ux/layout/Columns';
 import PublicBracketsGroups from './PublicBracketsGroups';
 import PublicDraftGroups from './PublicDraftGroups';
 import CreateGroup from './CreateGroup';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 interface Data {
@@ -34,6 +35,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = getNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 84;
@@ -46,7 +48,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

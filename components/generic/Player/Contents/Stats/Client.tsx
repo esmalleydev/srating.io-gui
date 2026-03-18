@@ -1,6 +1,5 @@
 'use client';
 
-import { LinearProgress } from '@mui/material';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import Organization from '@/components/helpers/Organization';
@@ -13,6 +12,7 @@ import TableColumns from '@/components/helpers/TableColumns';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import AdditionalOptions from '../../AdditionalOptions';
 import { useAppSelector } from '@/redux/hooks';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 
 /**
  * The main wrapper div for all the contents
@@ -27,6 +27,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = getNavHeaderHeight() + getSubNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 84;
@@ -39,7 +40,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

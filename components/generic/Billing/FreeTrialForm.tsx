@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 
 import { useClientAPI } from '@/components/clientAPI';
@@ -11,6 +10,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/hooks/useTheme';
 import { setDataKey } from '@/redux/features/user-slice';
+import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 const FreeTrialForm = () => {
   const theme = useTheme();

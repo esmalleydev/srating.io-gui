@@ -3,7 +3,6 @@
 import { Profiler, useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { LinearProgress } from '@mui/material';
 import { useTheme } from '@/components/hooks/useTheme';
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
@@ -21,6 +20,7 @@ import PayoutInfo from '../FantasyGroup/Card/PayoutInfo';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { FantasyEntrys, FantasyGroup as FantasyGroupType } from '@/types/general';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
 
 
 
@@ -37,6 +37,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = 0;
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 84;
@@ -49,7 +50,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

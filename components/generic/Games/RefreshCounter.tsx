@@ -1,12 +1,12 @@
 'use client';
 
-import CircularProgress from '@mui/material/CircularProgress';
 import WifiOffIcon from '@mui/icons-material/WifiOff';
 
 import { useAppSelector } from '@/redux/hooks';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 /**
  * Be very careful with any logic in this, it will be running a lot! On every interval tick
@@ -31,12 +31,12 @@ const RefreshCounter = () => {
     }
 
     if (refreshLoading) {
-      return <CircularProgress size={20} color = 'success' />;
+      return <CircularProgress size={20} color = {theme.success.main} />;
     }
 
     return (
       <>
-        <CircularProgress variant = 'determinate' value = {percentage} size={20} />
+        <CircularProgress type = 'determinate' value = {percentage} size={20} />
         <div
             style={{
               top: 0,

@@ -1,6 +1,5 @@
 'use client';
 
-import { LinearProgress } from '@mui/material';
 import { getNavHeaderHeight } from '../NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
@@ -8,6 +7,8 @@ import Settings from './Settings';
 import Subscriptions from './Subscriptions';
 import { useAppSelector } from '@/redux/hooks';
 import Fantasy from './Fantasy';
+import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 
@@ -17,7 +18,7 @@ import Fantasy from './Fantasy';
  */
 const Contents = ({ children }): React.JSX.Element => {
   return (
-    <div style = {{ margin: '0px 5px'}}>
+    <div style = {{ margin: '0px 5px' }}>
       {children}
     </div>
   );
@@ -25,6 +26,7 @@ const Contents = ({ children }): React.JSX.Element => {
 
 
 const ClientSkeleton = () => {
+  const theme = useTheme();
   const paddingTop = getNavHeaderHeight();
 
   const heightToRemove = paddingTop + footerNavigationHeight + headerBarHeight + 132; // 132 is the <Footer
@@ -37,7 +39,7 @@ const ClientSkeleton = () => {
         alignItems: 'center',
         height: `calc(100vh - ${heightToRemove}px)`,
       }}>
-        <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+        <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
       </div>
     </Contents>
   );

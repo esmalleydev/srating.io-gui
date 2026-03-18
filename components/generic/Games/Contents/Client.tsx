@@ -69,7 +69,7 @@ const ClientSkeletonUnknown = () => {
       alignItems: 'center',
       height: `calc(100vh - ${heightToRemove}px)`,
     }}>
-      <LinearProgress color = 'secondary' style={{ width: '50%' }} />
+      <LinearProgress color = {theme.secondary.main} containerStyle={{ width: '50%' }} />
     </Contents>
   );
 };

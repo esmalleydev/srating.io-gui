@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStripe } from '@stripe/react-stripe-js';
 
-import CircularProgress from '@mui/material/CircularProgress';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
@@ -17,6 +16,7 @@ import Button from '@/components/ux/buttons/Button';
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';
 import { useAppSelector } from '@/redux/hooks';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 
 const Client = () => {
@@ -103,7 +103,7 @@ const Client = () => {
   return (
     <div>
       {
-        !status ? <div style = {{ textAlign: 'center' }}><CircularProgress color="inherit" /></div> :
+        !status ? <div style = {{ textAlign: 'center' }}><CircularProgress /></div> :
         <div style = {{ padding: 20 }}>
           <div style = {{ textAlign: 'center' }}>
             <Typography type='h6'>{title}</Typography>
