@@ -50,9 +50,9 @@ const RoundBanner = () => {
 
   // Left side sequence
   const leftRounds = [
-    { name: 'Round 1', label: 'R64', date: '3/19' },
-    { name: 'Round 2', label: 'R32', date: '3/21' },
-    { name: 'Sweet 16', label: 'S16', date: '3/26' },
+    { name: 'Round 1', label: 'R64', date: '3/19-20' },
+    { name: 'Round 2', label: 'R32', date: '3/21-22' },
+    { name: 'Sweet 16', label: 'S16', date: '3/26-27' },
     { name: 'Elite 8', label: 'E8', date: '3/28' },
     { name: 'Final Four', label: 'F4', date: '4/4' },
   ];
@@ -251,7 +251,7 @@ const BracketSlot = (
       fantasy_bracket_slot.slot % 2 === 0 ||
       (
         fantasy_bracket_slot.round === 4 &&
-        (fantasy_bracket_slot.region === 'West' || fantasy_bracket_slot.region === 'Midwest')
+        (fantasy_bracket_slot.region === 'Midwest' || fantasy_bracket_slot.region === 'South') // todo this changes each year based on #1 seed
       )
     ) {
       stylePosition = 'bottom';
@@ -501,13 +501,25 @@ const BracketSlot = (
         >
           <div style = {{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography type = 'caption' style={{ color: theme.info.main }}>{(fantasy_bracket_slot.game_id ? `${gameHelper.getNetwork() || ''} ${gameHelper.getStartDate('n/j g:i a')}` : 'TBD')}</Typography>
-            {!canNavigateToGame && <div><IconButton icon = {<QueryStatsIcon style = {{ fontSize: 18 }} />} value = 'view-matchup' onClick = {() => {
-              if (fantasy_bracket_slot.game_id) {
-                navigation.game(`/${path}/games/${fantasy_bracket_slot.game_id}`);
-              } else if (fantasy_bracket_slot.picked_first_team_id && fantasy_bracket_slot.picked_second_team_id) {
-                navigation.compare(`/${path}/compare?home_team_id=${fantasy_bracket_slot.picked_first_team_id}&away_team_id=${fantasy_bracket_slot.picked_second_team_id}&view=team&neutral_site=true`);
-              }
-            }} /></div>}
+            {
+            !canNavigateToGame &&
+            (
+              (fantasy_bracket_slot.picked_first_team_id && fantasy_bracket_slot.picked_second_team_id) ||
+              fantasy_bracket_slot.game_id ||
+              (fantasy_bracket_slot.actual_first_team_id && fantasy_bracket_slot.actual_second_team_id)
+            ) &&
+            <div>
+              <IconButton icon = {<QueryStatsIcon style = {{ fontSize: 18 }} />} value = 'view-matchup' onClick = {() => {
+                if (fantasy_bracket_slot.game_id) {
+                  navigation.game(`/${path}/games/${fantasy_bracket_slot.game_id}`);
+                } else if (fantasy_bracket_slot.picked_first_team_id && fantasy_bracket_slot.picked_second_team_id) {
+                  navigation.compare(`/${path}/compare?home_team_id=${fantasy_bracket_slot.picked_first_team_id}&away_team_id=${fantasy_bracket_slot.picked_second_team_id}&view=team&neutral_site=true`);
+                } else if (fantasy_bracket_slot.actual_first_team_id && fantasy_bracket_slot.actual_second_team_id) {
+                  navigation.compare(`/${path}/compare?home_team_id=${fantasy_bracket_slot.actual_first_team_id}&away_team_id=${fantasy_bracket_slot.actual_second_team_id}&view=team&neutral_site=true`);
+                }
+              }} />
+            </div>
+            }
           </div>
           {getPickContainer('first')}
           {getPickContainer('second')}
