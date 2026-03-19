@@ -173,6 +173,25 @@ const BracketSlot = (
     8: [2, 15],
   };
 
+  const team_id_x_eliminated = {};
+
+  for (const game_id in games) {
+    const game = games[game_id];
+
+    if (
+      game.status === 'final' &&
+      game.boxscore === 1
+    ) {
+      const loser_team_id = (
+        game.home_score &&
+        game.away_score &&
+        game.home_score > game.away_score
+      ) ? game.away_team_id : game.home_team_id;
+
+      team_id_x_eliminated[loser_team_id] = true;
+    }
+  }
+
 
   const directionStyle = isRightSide ? 'row-reverse' : 'row';
   const marginProp = isRightSide ? 'marginLeft' : 'marginRight';
@@ -237,8 +256,22 @@ const BracketSlot = (
 
       const seed = team_id_x_seed[team_ids[0]];
 
+      const tStyle: React.CSSProperties = {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      };
+
+      if (
+        team_ids[0] in team_id_x_eliminated &&
+        team_ids[0] !== fantasy_bracket_slot.actual_first_team_id &&
+        team_ids[0] !== fantasy_bracket_slot.actual_second_team_id
+      ) {
+        tStyle.textDecoration = 'line-through';
+        tStyle.color = theme.error.main;
+      }
+
       return (
-        <Typography type = 'body2' style = {{ overflow: 'hidden', textOverflow: 'ellipsis' }}><sup style = {{ marginRight: 5, fontSize: 10 }}>{seed}</sup>{names.join(' / ')}</Typography>
+        <Typography type = 'body2' style = {tStyle}><sup style = {{ marginRight: 5, fontSize: 10 }}>{seed}</sup>{names.join(' / ')}</Typography>
       );
     }
 
