@@ -329,6 +329,7 @@ const BracketSlot = (
   };
 
   const canPick = (
+    fantasy_group.locked === 0 &&
     fantasy_bracket_slot.locked === 0 &&
     (
       (
@@ -357,7 +358,7 @@ const BracketSlot = (
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      cursor: (can ? 'pointer' : 'initial'),
+      cursor: ((can || canNavigateToGame) ? 'pointer' : 'initial'),
       border: '2px solid transparent',
       borderRadius: '5px',
       padding: '0px 2.5px',
