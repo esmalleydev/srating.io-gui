@@ -16,6 +16,8 @@ import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/fantasy_entry-slice';
 
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { Objector, Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import Game from '@/components/helpers/Game';
@@ -378,6 +380,7 @@ const BracketSlot = (
     }
 
     const getRadioPickBox = () => {
+      let icon: React.JSX.Element | null = null;
       if (
         fantasy_bracket_slot.picked_winner_team_id &&
         (
@@ -391,9 +394,29 @@ const BracketSlot = (
           )
         )
       ) {
+        icon = <RadioButtonUncheckedIcon style = {{ color: theme.purple[500], fontSize: 20 }} />;
+
+        if (
+          fantasy_bracket_slot.picked_winner_team_id &&
+          game &&
+          game.status === 'final' &&
+          game.boxscore === 1
+        ) {
+          const winner_team_id = game.home_score && game.away_score && game.home_score > game.away_score ? game.home_team_id : game.away_team_id;
+
+          if (winner_team_id === fantasy_bracket_slot.picked_winner_team_id) {
+            icon = <CheckCircleOutlineIcon style = {{ color: theme.success.main, fontSize: 20 }} />;
+          } else {
+            icon = <CancelIcon style = {{ color: theme.error.main, fontSize: 20 }} />;
+          }
+        }
+      }
+
+
+      if (icon) {
         return (
           <div style = {{ display: 'flex', alignItems: 'center' }}>
-            <RadioButtonUncheckedIcon style = {{ color: theme.purple[500], fontSize: 20 }} />
+            {icon}
           </div>
         );
       }
@@ -429,7 +452,15 @@ const BracketSlot = (
           }
         }}
       >
-        <div style = {textWrapperStyle}>{getTeam(team_ids)}</div>
+        <div style = {textWrapperStyle}>
+          {getTeam(team_ids)}
+        </div>
+        {
+          fantasy_bracket_slot[`actual_${which}_team_id`] &&
+          fantasy_bracket_slot[`picked_${which}_team_id`] &&
+          fantasy_bracket_slot[`actual_${which}_team_id`] !== fantasy_bracket_slot[`picked_${which}_team_id`] &&
+          <div style = {textWrapperStyle}><Typography type = 'body2' style = {{ overflow: 'hidden', textOverflow: 'ellipsis', color: theme.error.main, textDecoration: 'line-through', fontSize: 12 }}><sup style = {{ marginRight: 5, fontSize: 10 }}>{team_id_x_seed[fantasy_bracket_slot[`picked_${which}_team_id`]]}</sup>{new Team({ team: teams[fantasy_bracket_slot[`picked_${which}_team_id`]] }).getName()}</Typography></div>
+        }
         <div style = {{ width: 20, textAlign: 'right', flexShrink: 0 }}>{getRadioPickBox()}</div>
         {game && game.status !== 'pre' && <div style = {{ width: 20, textAlign: 'center', flexShrink: 0 }}>{getScoreBox()}</div>}
       </div>
