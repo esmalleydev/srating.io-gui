@@ -23,6 +23,7 @@ export { getSubNavHeaderHeight };
 
 const SubNavBar = ({ view }) => {
   return null;
+  /*
   const theme = useTheme();
   const router = useRouter();
   const pathName = usePathname();
@@ -119,6 +120,7 @@ const SubNavBar = ({ view }) => {
       </div>
     </div>
   );
+  */
 };
 
 export default SubNavBar;
