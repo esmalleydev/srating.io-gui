@@ -2,7 +2,6 @@
 
 import { useTransition } from 'react';
 
-import Typography from '@mui/material/Typography';
 
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -14,6 +13,7 @@ import Rank from './Rank';
 import { getBreakPoint } from './ClientWrapper';
 import Record from './Record';
 import { ConferenceStatisticRankings } from '@/types/cbb';
+import Typography from '@/components/ux/text/Typography';
 
 
 const Client = (
@@ -66,7 +66,7 @@ const Client = (
   return (
     <div style = {{ overflow: 'hidden', paddingLeft: 5, paddingRight: 5 }}>
       <div style = {{ display: 'flex', flexWrap: 'nowrap' }}>
-        <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} variant = {(width < getBreakPoint() ? 'h6' : 'h5')}>
+        <Typography style = {{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }} type = {(width < getBreakPoint() ? 'h6' : 'h5')}>
           <Rank conference_statistic_ranking={conference_statistic_ranking} />
           {conference.name}
         </Typography>

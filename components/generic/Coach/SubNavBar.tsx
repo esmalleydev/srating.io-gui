@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Tab, Tabs, useTheme } from '@mui/material';
 import { getBreakPoint, getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 
 import { useAppDispatch } from '@/redux/hooks';

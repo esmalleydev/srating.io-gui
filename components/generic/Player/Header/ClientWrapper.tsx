@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-import { useTheme } from '@mui/material/styles';
 // import AdditionalOptions from '@/components/generic/CBB/Team/AdditionalOptions';
 import BackButton from '@/components/generic/BackButton';
+import { useTheme } from '@/components/hooks/useTheme';
 
 
 const getBreakPoint = () => {
@@ -43,7 +43,7 @@ const ClientWrapper = ({ children }) => {
     height: getHeaderHeight(),
     position: 'sticky',
     top: getMarginTop(),
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.background.main,
     zIndex: 1100,
   };
 

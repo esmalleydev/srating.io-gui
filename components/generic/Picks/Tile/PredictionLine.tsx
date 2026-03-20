@@ -61,11 +61,7 @@ const PredictionLine = ({ game }) => {
         return !locked && 'win_percentage' in row ? row.win_percentage : null;
       },
     },
-  ];
-
-
-  if (home_score && away_score) {
-    compareRows.push({
+    {
       id: 'predicted_score',
       label: 'Predicted score',
       tooltip: 'Predicted score',
@@ -83,15 +79,15 @@ const PredictionLine = ({ game }) => {
       getValue: (row) => {
         return !locked && 'score' in row ? row.score : 0;
       },
-    });
-  }
+    },
+  ];
 
 
   return (
     <>
       {
         picksLoading ?
-          getSkeleton(1) :
+          getSkeleton(2) :
           <CompareStatistic key = {game.game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} max = {numberOfTeams} />
       }
     </>

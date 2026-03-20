@@ -3,9 +3,6 @@
 import React, { useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import {
-  Skeleton,
-} from '@mui/material';
 
 import HelperTeam from '@/components/helpers/Team';
 import { useAppSelector } from '@/redux/hooks';
@@ -20,6 +17,7 @@ import RankTable from '@/components/generic/RankTable';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 
@@ -105,8 +103,8 @@ const Client = ({ organization_id, division_id, conference_id, season, subView }
     if (view === 'Predicted') {
       if (predictionsLoading) {
         filledContainers = true;
-        recordContainer = <Skeleton width={40} key = {1} />;
-        confRecordContainer = <Skeleton width={40} key = {2} />;
+        recordContainer = <Skeleton style = {{ width: 40 }} key = {1} />;
+        confRecordContainer = <Skeleton style = {{ width: 40 }} key = {2} />;
       } else if (!stats.hasAccess) {
         filledContainers = true;
         recordContainer = <Locked iconFontSize={'20px'} key = {1} />;

@@ -1,10 +1,10 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
+import Skeleton from '@/components/ux/loading/Skeleton';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
-import { Skeleton } from '@mui/material';
 
 const CoachRecord = (
   { game, coach_id }:
@@ -26,7 +26,7 @@ const CoachRecord = (
       {
         gameStatsLoading ?
           <Skeleton style={{
-            width: 25, height: 10,
+            width: 20, height: 8,
           }} />
           :
           ` (${wins}-${losses})`

@@ -2,7 +2,6 @@
 
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton } from '@mui/material';
 import PredictionLine from './PredictionLine';
 import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
@@ -11,6 +10,7 @@ import React, { Profiler } from 'react';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Objector } from '@esmalley/ts-utils';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 /**
@@ -20,8 +20,8 @@ export const getSkeleton = (numberOfSkeletons: number): React.JSX.Element[] => {
   const skeletons: React.JSX.Element[] = [];
 
   for (let i = 0; i < numberOfSkeletons; i++) {
-    skeletons.push(<Skeleton key = {i} variant="text" animation="wave" sx = {{
-      width: '100%', maxWidth, height: '30px', margin: '10px auto',
+    skeletons.push(<Skeleton key = {i} animation="wave" style = {{
+      width: '100%', maxWidth, height: 15, margin: '10px auto',
     }} />);
   }
 

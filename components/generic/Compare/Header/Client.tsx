@@ -7,7 +7,6 @@ import HelperTeam from '@/components/helpers/Team';
 import { getBreakPoint } from '@/components/generic/Compare/Header/ClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Skeleton } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -21,6 +20,7 @@ import IconButton from '@/components/ux/buttons/IconButton';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const Client = () => {

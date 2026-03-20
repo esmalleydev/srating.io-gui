@@ -3,7 +3,6 @@
 import React from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import HelperGame from '@/components/helpers/Game';
-import { Skeleton } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import RankSpan from '@/components/generic/RankSpan';
@@ -12,6 +11,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { Dates } from '@esmalley/ts-utils';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const Differentials = ({ game, team_id }) => {
@@ -115,7 +115,7 @@ const Differentials = ({ game, team_id }) => {
 
   if (isLoading) {
     return (
-      <Paper style = {{ height: 194 }}>
+      <Paper style = {{ height: 190 }}>
         <Skeleton style = {{ height: '100%', transform: 'initial' }} />
       </Paper>
     );

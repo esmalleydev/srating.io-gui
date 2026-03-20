@@ -2,8 +2,6 @@
 
 import React from 'react';
 
-
-// import { Skeleton } from '@mui/material';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { getBreakPoint } from './ClientWrapper';
 import General from '@/components/helpers/General';

@@ -4,8 +4,6 @@ import React from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import Skeleton from '@mui/material/Skeleton';
-
 import HelperGame from '@/components/helpers/Game';
 import Indicator from '@/components/generic/Indicator';
 import Pin from '@/components/generic/Pin';
@@ -22,6 +20,7 @@ import Paper from '@/components/ux/container/Paper';
 import Button from '@/components/ux/buttons/Button';
 import { setDataKey } from '@/redux/features/picks-slice';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 /**
@@ -31,7 +30,7 @@ export const getSkeleton = (numberOfSkeletons: number): React.JSX.Element[] => {
   const skeletons: React.JSX.Element[] = [];
 
   for (let i = 0; i < numberOfSkeletons; i++) {
-    skeletons.push(<Skeleton key = {i} variant="text" animation="wave" sx = {{
+    skeletons.push(<Skeleton key = {i} animation="pulse" style = {{
       width: '100%', maxWidth, height: '30px', margin: '10px 0px',
     }} />);
   }

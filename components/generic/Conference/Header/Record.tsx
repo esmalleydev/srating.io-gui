@@ -1,9 +1,9 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
+import Skeleton from '@/components/ux/loading/Skeleton';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton } from '@mui/material';
 
 
 const Record = () => {
@@ -25,7 +25,7 @@ const Record = () => {
       {
         false ?
           <Skeleton style={{
-            marginLeft: '5px', width: 50, height: 25, display: 'inline-block',
+            marginLeft: '5px', width: 50, height: 15, display: 'inline-block',
           }} />
           :
           ` (${totalWins}-${totalLosses})`

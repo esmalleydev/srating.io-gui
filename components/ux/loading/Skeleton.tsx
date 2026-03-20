@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
-import { Objector, Style } from '@esmalley/ts-utils';
+import { Color, Objector, Style } from '@esmalley/ts-utils';
 
 const Skeleton = (
   {
@@ -25,12 +25,12 @@ const Skeleton = (
   // Base inline styles for dimensions
   const baseStyle: Record<string, unknown> = {
     display: 'block',
-    backgroundColor: theme.grey[(theme.mode === 'dark' ? 900 : 500)],
+    backgroundColor: theme.grey[(theme.mode === 'dark' ? 800 : 500)],
     width: (type === 'text' ? '100%' : 'auto'),
-    height: (type === 'text' ? '1.2em' : 'auto'),
+    height: (type === 'text' ? '1em' : 'auto'),
     borderRadius,
-    marginTop: type === 'text' ? '0.2em' : 0,
-    marginBottom: type === 'text' ? '0.2em' : 0,
+    // marginTop: type === 'text' ? '0.2em' : 0,
+    // marginBottom: type === 'text' ? '0.2em' : 0,
   };
 
   if (animation === 'pulse') {
@@ -38,16 +38,17 @@ const Skeleton = (
       '0%, 100%': { opacity: 1 },
       '50%': { opacity: 0.4 },
     };
-    baseStyle.animation = 'skeleton-pulse 1.5s ease-in-out 0.5s infinite';
+    baseStyle.animation = 'skeleton-pulse 2s ease-in-out 0.5s infinite';
   }
 
   if (animation === 'wave') {
     baseStyle['@keyframes skeleton-wave'] = {
       '0%': { transform: 'translateX(-100%)' },
-      '100%': { transform: 'translateX(100%)' },
+      '50%, 100%': { transform: 'translateX(100%)' },
     };
     baseStyle.position = 'relative';
     baseStyle.overflow = 'hidden';
+    baseStyle.backgroundColor = theme.grey[(theme.mode === 'dark' ? 900 : 500)];
     baseStyle['::after'] = {
       content: "''",
       position: 'absolute',
@@ -55,9 +56,9 @@ const Skeleton = (
       left: 0,
       right: 0,
       bottom: 0,
-      background: `linear-gradient(90deg, transparent, ${theme.grey[(theme.mode === 'dark' ? 800 : 400)]}, transparent)`,
+      background: `linear-gradient(90deg, transparent, ${Color.alphaColor('#fff', 0.1)}, transparent)`,
       transform: 'translateX(-100%)',
-      animation: 'skeleton-wave 1.6s linear 0.5s infinite',
+      animation: 'skeleton-wave 2s linear 0.5s infinite',
     };
   }
 

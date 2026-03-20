@@ -8,7 +8,6 @@ import HelperPlayer from '@/components/helpers/Player';
 import { useAppSelector } from '@/redux/hooks';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Player, PlayerTeamSeasons, Team, Teams } from '@/types/general';
-import { Skeleton } from '@mui/material';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 import FavoritePicker from '../../FavoritePicker';
@@ -18,6 +17,7 @@ import ClassSpan from '../../ClassSpan';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 /**
@@ -70,13 +70,13 @@ const ClientSkeleton = () => {
   return (
     <Contents>
       <PrimaryLine>
-        <Skeleton width={320} height={30} style={{ marginBottom: 5 }} />
+        <Skeleton style = {{ width: 320, height: 35, marginBottom: 5 }} />
       </PrimaryLine>
       <SecondaryLine>
-        <Skeleton width={200} height={28} />
+        <Skeleton style = {{ width: 200, height: 26, marginBottom: 5 }} />
       </SecondaryLine>
       <TertiaryLine>
-        <Skeleton width={200} height={28} />
+        <Skeleton style = {{ width: 200, height: 26 }} />
       </TertiaryLine>
     </Contents>
   );

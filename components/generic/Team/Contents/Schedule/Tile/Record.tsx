@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
 
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton } from '@mui/material';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const Record = ({ game, team_id }) => {
@@ -27,7 +26,7 @@ const Record = ({ game, team_id }) => {
       {
         scheduleStatsLoading ?
           <Skeleton style={{
-            marginLeft: '5px', width: 25, height: 30, display: 'inline-block',
+            width: 25, height: 10, display: 'inline-block',
           }} />
           :
           ` (${wins}-${losses})`

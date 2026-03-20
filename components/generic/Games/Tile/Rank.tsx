@@ -1,10 +1,10 @@
 'use client';
 
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton } from '@mui/material';
 import Organization from '@/components/helpers/Organization';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const Rank = ({ game, team_id }) => {
@@ -37,13 +37,14 @@ const Rank = ({ game, team_id }) => {
     supRankStyle.color = Color.lerpColor(bestColor, worstColor, (+(rank / numberOfTeams)));
   }
 
-  if (gameStatsLoading) {
-    return <Skeleton style={{ width: 25, height: 20, display: 'inline-block', marginRight: 5 }} />;
-  }
 
   return (
     <sup style = {supRankStyle}>
-      {rank || ''}
+      {
+        gameStatsLoading ?
+          <Skeleton style={{ width: 15, height: 10, display: 'inline-block' }} />
+          : rank || ''
+      }
     </sup>
   );
 };

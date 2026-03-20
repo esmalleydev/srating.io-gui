@@ -7,10 +7,10 @@ import { useAppSelector } from '@/redux/hooks';
 import Differentials from './Differentials';
 // import { useScrollContext } from '@/contexts/scrollContext';
 import TableView from './TableView';
-import { Skeleton } from '@mui/material';
 import { Games } from '@/types/general';
 import Typography from '@/components/ux/text/Typography';
 import { Dates } from '@esmalley/ts-utils';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 /**

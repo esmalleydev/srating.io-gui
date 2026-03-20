@@ -5,7 +5,6 @@ import HelperTeam from '@/components/helpers/Team';
 import { useAppSelector } from '@/redux/hooks';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Coach } from '@/types/general';
-import { Skeleton } from '@mui/material';
 import Organization from '@/components/helpers/Organization';
 import CBB from '@/components/helpers/CBB';
 import CFB from '@/components/helpers/CFB';
@@ -14,6 +13,7 @@ import { useTheme } from '@/components/hooks/useTheme';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 /**
@@ -55,10 +55,10 @@ const ClientSkeleton = () => {
   return (
     <Contents>
       <PrimaryLine>
-        <Skeleton width={320} height={30} style={{ marginBottom: 5 }} />
+        <Skeleton style={{ width: 320, height: 30, marginBottom: 5 }} />
       </PrimaryLine>
       <SecondaryLine>
-        <Skeleton width={200} height={28} />
+        <Skeleton style={{ width: 200, height: 28 }} />
       </SecondaryLine>
     </Contents>
   );

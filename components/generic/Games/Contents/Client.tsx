@@ -1,9 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  Skeleton,
-} from '@mui/material';
 import { useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
 import { getHeaderHeight } from '@/components/generic/Games/SubNavBar';
@@ -13,6 +10,8 @@ import { getDateBarHeight } from '../../DateBar';
 import Typography from '@/components/ux/text/Typography';
 import ConferenceChips from '../../ConferenceChips';
 import Paper from '@/components/ux/container/Paper';
+import Skeleton from '@/components/ux/loading/Skeleton';
+import { Objector } from '@esmalley/ts-utils';
 
 const Contents = ({ children, childStyle = {} }) => {
   const gameContainerStyle: React.CSSProperties = {
@@ -40,9 +39,15 @@ const Contents = ({ children, childStyle = {} }) => {
 const ClientSkeleton = ({ games }) => {
   const tiles: React.JSX.Element[] = [];
 
-  const divStyle = getTileBaseStyle();
-
   for (const game_id in games) {
+    const game = games[game_id];
+
+    const divStyle = getTileBaseStyle();
+
+    if (game.neutral_site && divStyle.height) {
+      divStyle.height += 21;
+    }
+
     tiles.push(
       <Paper elevation={3} style = {divStyle} key = {`paper_${game_id}`}>
         <Skeleton style = {{ height: divStyle.height, transform: 'initial' }} />

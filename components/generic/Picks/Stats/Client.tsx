@@ -3,14 +3,11 @@
 import React from 'react';
 
 
-import {
-  Skeleton,
-} from '@mui/material';
-
 import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
-import { Color, Dates } from '@esmalley/ts-utils';
+import { Color, Dates, Objector } from '@esmalley/ts-utils';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const getCardStyle = () => {
@@ -32,7 +29,7 @@ const Client = ({ date, stats }) => {
   const skeletonContainers: React.JSX.Element[] = [];
 
   for (let i = 0; i < orderedBuckets.length; i++) {
-    skeletonContainers.push(<Skeleton key = {i} variant="rounded" animation="wave" height={220} sx = {getCardStyle()} />);
+    skeletonContainers.push(<Skeleton key = {i} animation="wave" style = {Objector.extender({}, getCardStyle(), { height: 185 })}/>);
   }
 
   const statContainers: React.JSX.Element[] = [];
@@ -122,23 +119,23 @@ const Client = ({ date, stats }) => {
 
         statContainers.push(
           <Paper key = {i} elevation={2} style = {getCardStyle()}>
-              <Typography style={{ fontSize: 14, textAlign: 'center', color: theme.info.dark }} type = 'h6'>{label}</Typography>
-              {
-              totalGames === 0 ? <Typography style = {({ textAlign: 'center', ...colorStyle })} type="h5">-</Typography> :
-              <>
-                <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary }} type = 'caption'>Predicted win %</Typography>
-                  <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary, textAlign: 'center' }} type = 'caption'>Accuracy</Typography>
-                  <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary, textAlign: 'right' }} type = 'caption'># games</Typography>
-                </div>
-                {subBucketContainers}
-                <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary }} type = 'caption'>Total:</Typography>
-                  <Typography style={colorStyle} type = 'caption'>{`${percentCorrect}%`}</Typography>
-                  <Typography style={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} type = 'caption'>({totalCorrect} / {totalGames})</Typography>
-                </div>
-              </>
-              }
+            <Typography style={{ fontSize: 14, textAlign: 'center', color: theme.info.dark }} type = 'h6'>{label}</Typography>
+            {
+            totalGames === 0 ? <Typography style = {({ textAlign: 'center', ...colorStyle })} type="h5">-</Typography> :
+            <>
+              <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary }} type = 'caption'>Predicted win %</Typography>
+                <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary, textAlign: 'center' }} type = 'caption'>Accuracy</Typography>
+                <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary, textAlign: 'right' }} type = 'caption'># games</Typography>
+              </div>
+              {subBucketContainers}
+              <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography style={{ fontSize: 12, minWidth: 60, color: theme.text.secondary }} type = 'caption'>Total:</Typography>
+                <Typography style={colorStyle} type = 'caption'>{`${percentCorrect}%`}</Typography>
+                <Typography style={{ fontSize: 12, minWidth: 60, textAlign: 'right' }} type = 'caption'>({totalCorrect} / {totalGames})</Typography>
+              </div>
+            </>
+            }
           </Paper>,
         );
       }

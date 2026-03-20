@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import PinIcon from '@mui/icons-material/PushPin';
-// import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 

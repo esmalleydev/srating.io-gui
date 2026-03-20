@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '@/components/generic/OptionPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { Skeleton } from '@mui/material';
 import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
@@ -18,6 +17,7 @@ import { ConferenceStatisticRanking } from '@/types/cbb';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 /**
@@ -59,10 +59,10 @@ const ClientSkeleton = () => {
   return (
     <Contents>
       <PrimaryLine>
-        <Skeleton width={320} height={30} style={{ marginBottom: 5 }} />
+        <Skeleton style={{ width: 320, height: 30, marginBottom: 5 }} />
       </PrimaryLine>
       <SecondaryLine>
-        <Skeleton width={200} height={28} />
+        <Skeleton style = {{ width: 200, height: 28 }} />
       </SecondaryLine>
     </Contents>
   );

@@ -3,10 +3,10 @@
 import React from 'react';
 
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton } from '@mui/material';
 import Organization from '@/components/helpers/Organization';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const Rank = ({ game, team_id }) => {
@@ -43,7 +43,7 @@ const Rank = ({ game, team_id }) => {
     <sup style = {supRankStyle}>
       {
         scheduleStatsLoading ?
-          <Skeleton style={{ width: 10, height: 15, display: 'inline-block' }} />
+          <Skeleton style={{ width: 10, height: 10, display: 'inline-block' }} />
           :
           rank || ''
       }

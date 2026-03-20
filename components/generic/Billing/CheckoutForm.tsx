@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-import TextField from '@mui/material/TextField';
 
 import {
   PaymentElement,
@@ -18,6 +17,8 @@ import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/hooks/useTheme';
 import { setDataKey } from '@/redux/features/user-slice';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
+import TextInput from '@/components/ux/input/TextInput';
+import Inputs from '@/components/helpers/Inputs';
 
 
 const CheckoutForm = ({ pricing }) => {
@@ -28,11 +29,13 @@ const CheckoutForm = ({ pricing }) => {
   const dispatch = useAppDispatch();
   const [spin, setSpin] = useState(false);
   const [request, setRequest] = useState(false);
-  const [email, setEmail] = useState(null);
-  const [emailError, setEmailError] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState<string>('');
 
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const inputHandler = new Inputs();
 
 
   const session_id = (typeof window !== 'undefined' && localStorage.getItem('session_id')) || null;
@@ -61,10 +64,6 @@ const CheckoutForm = ({ pricing }) => {
     setErrorMessage(error.message);
   };
 
-  const handleEmail = (e) => {
-    const { value } = e.target;
-    setEmail(value || '');
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -180,19 +179,17 @@ const CheckoutForm = ({ pricing }) => {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <TextField
-        style = {{ marginBottom: 20 }}
+      <TextInput
+        inputHandler={inputHandler}
         required
-        value = {email || ''}
+        value = {email}
         error = {!!emailError}
-        helperText = {emailError || null}
-        onChange = {handleEmail}
-        margin="dense"
+        errorMessage = {emailError}
+        onChange = {(val) => setEmail(val)}
         id="name"
-        label="Email"
+        placeholder="Email"
         type="email"
-        fullWidth
-        variant="standard"
+        variant="filled"
       />
       <PaymentElement id="payment-element" options = {paymentElementOptions} />
       <Button

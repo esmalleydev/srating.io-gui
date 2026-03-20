@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-
 import { useAppSelector } from '@/redux/hooks';
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 import { getSkeleton, maxWidth } from './Client';
@@ -67,10 +65,7 @@ const PredictionLine = ({ game }) => {
         return !locked && 'win_percentage' in row ? row.win_percentage : null;
       },
     },
-  ];
-
-  if (home_score && away_score) {
-    compareRows.push({
+    {
       id: 'predicted_score',
       label: 'Predicted score',
       tooltip: 'Predicted score',
@@ -88,15 +83,15 @@ const PredictionLine = ({ game }) => {
       getValue: (row) => {
         return !locked && 'score' in row ? row.score : 0;
       },
-    });
-  }
+    },
+  ];
 
 
   return (
     <>
       {
         gamePredictionLoading ?
-          <div style = {{ textAlign: 'center', maxWidth: 600, margin: 'auto' }}>{getSkeleton(1)}</div> :
+          <div style = {{ textAlign: 'center', maxWidth: 600, margin: 'auto' }}>{getSkeleton(2)}</div> :
           <CompareStatistic key = {game.game_id} maxWidth = {maxWidth} paper = {false} rows = {compareRows} max = {numberOfTeams} />
       }
     </>

@@ -10,7 +10,6 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import Paper from '@/components/ux/container/Paper';
 
 import Locked from '@/components/generic/Billing/Locked';
-import { Skeleton } from '@mui/material';
 import Indicator from '@/components/generic/Indicator';
 import Pin from '@/components/generic/Pin';
 
@@ -30,9 +29,16 @@ import Modal from '@/components/ux/modal/Modal';
 import General from '@/components/helpers/General';
 import { Color, Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
-export const getTileBaseStyle = (): React.CSSProperties => {
+export const getTileBaseStyle = (): {
+  width: string;
+  minHeight?: string;
+  margin: string;
+  height?: number;
+  cursor?: string;
+} => {
   const { width } = useWindowDimensions() as Dimensions;
 
   let tileWidth = '320px';
@@ -163,7 +169,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     let predictedSpreadContainer: React.JSX.Element | null = null;
 
     if (isLoadingWinPercentage) {
-      predictedSpreadContainer = <Skeleton key = {1} width={25} />;
+      predictedSpreadContainer = <Skeleton key = {1} style = {{ width: 32 }} />;
     } else if (!hasAccessToPercentages) {
       predictedSpreadContainer = (
         <Tooltip onClickRemove text = {'Predicted spread and over'}>
@@ -254,8 +260,8 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   let homeWinPercentageContainer: React.JSX.Element;
 
   if (isLoadingWinPercentage) {
-    awayWinPercentageContainer = <Skeleton key = {1} />;
-    homeWinPercentageContainer = <Skeleton key = {2} />;
+    awayWinPercentageContainer = <Skeleton key = {1} style = {{ width: 32 }} />;
+    homeWinPercentageContainer = <Skeleton key = {2} style = {{ width: 32 }} />;
   } else if (!hasAccessToPercentages) {
     awayWinPercentageContainer = (
       <div style = {{ display: 'flex' }}>

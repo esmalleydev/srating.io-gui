@@ -1,9 +1,9 @@
 'use client';
 
 import { useTheme } from '@/components/hooks/useTheme';
+import Skeleton from '@/components/ux/loading/Skeleton';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
-import { Skeleton } from '@mui/material';
 
 
 const Record = ({ game, team_id }) => {
@@ -22,11 +22,11 @@ const Record = ({ game, team_id }) => {
   const losses = (statistic_ranking && statistic_ranking.losses) || 0;
 
   return (
-    <Typography type = 'overline' style = {{ color: theme.text.secondary, display: 'inline-flex', marginLeft: 5 }}>
+    <Typography type = 'overline' style = {{ color: theme.text.secondary, display: 'inline-flex', marginLeft: 5, lineHeight: 'inital' }}>
       {
         gameStatsLoading ?
           <Skeleton style={{
-            marginLeft: '5px', width: 25, height: 30, display: 'inline-block',
+            width: 25, height: 10, display: 'inline-block',
           }} />
           :
           ` (${wins}-${losses})`

@@ -1,6 +1,5 @@
 'use client';
 
-import Box from '@mui/material/Box';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/hooks/useTheme';
 
@@ -11,7 +10,7 @@ const Footer = () => {
 
 
   return (
-    <Box component="footer">
+    <div>
       <div>
         <Typography
           type="subtitle1"
@@ -52,7 +51,7 @@ const Footer = () => {
           <a href = "mailto:contact@srating.io">contact@srating.io</a>
         </Typography>
       </div>
-    </Box>
+    </div>
   );
 };
 
