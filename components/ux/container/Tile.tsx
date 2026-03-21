@@ -19,6 +19,7 @@ const Tile = (
     style = {},
     iconStyle = {},
     buttons = [],
+    onClick,
   }:
   {
     icon?: React.JSX.Element;
@@ -27,6 +28,7 @@ const Tile = (
     style?: React.CSSProperties;
     iconStyle?: React.CSSProperties;
     buttons?: React.JSX.Element[];
+    onClick?: () => void;
   },
 ) => {
   const theme = useTheme();
@@ -52,9 +54,16 @@ const Tile = (
     alignItems: 'center',
   };
 
+  if (onClick) {
+    containerStyle.cursor = 'pointer';
+    containerStyle['&:hover'] = {
+      backgroundColor: theme.action.hover,
+    };
+  }
+
 
   return (
-    <div className = {Style.getStyleClassName(containerStyle)}>
+    <div className = {Style.getStyleClassName(containerStyle)} onClick = {onClick}>
       <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
         <div className = {Style.getStyleClassName(subContainerStyle)}>
           {icon ? <div className = {Style.getStyleClassName(iconContainerStyle)}>{icon}</div> : ''}
