@@ -1,18 +1,14 @@
 'use client';
 
-
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import List from '@mui/material/List';
-
 import CheckIcon from '@mui/icons-material/Check';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
-import { ListItemButton } from '@mui/material';
 import { setDataKey } from '@/redux/features/display-slice';
 import Typography from '../ux/text/Typography';
 import { useTheme } from '../hooks/useTheme';
 import Modal from '../ux/modal/Modal';
+import Tile from '../ux/container/Tile';
 
 
 /**
@@ -83,19 +79,18 @@ const RankPicker = (
     >
       <Typography type = 'h6'>Rank metric</Typography>
       <Typography type = 'caption' style = {{ color: theme.text.secondary }}>Pick which ranking # to display next to a team.</Typography>
-      <List>
-        {rankDisplayOptions.map((rankDisplayOption) => (
-          <ListItemButton key={rankDisplayOption.value} onClick={() => {
+      {rankDisplayOptions.map((rankDisplayOption) => (
+        <Tile
+          style = {{ padding: '5px 0px' }}
+          key={rankDisplayOption.value}
+          icon = {rankDisplayOption.value === selected ? <CheckIcon /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.info.main }} />}
+          primary = {rankDisplayOption.label}
+          onClick={() => {
             dispatch(setDataKey({ key: 'rank', value: rankDisplayOption.value }));
             handleClose();
-          }}>
-            <ListItemIcon>
-              {rankDisplayOption.value === selected ? <CheckIcon /> : ''}
-            </ListItemIcon>
-            <ListItemText primary={rankDisplayOption.label} />
-          </ListItemButton>
-        ))}
-      </List>
+          }}
+        />
+      ))}
     </Modal>
   );
 };

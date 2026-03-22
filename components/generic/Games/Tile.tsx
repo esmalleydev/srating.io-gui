@@ -377,7 +377,7 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
   const getTeamLine = (side: string) => {
     const flexContainer: React.CSSProperties = {
       display: 'flex',
-      margin: '5px 0px',
+      margin: (displayCardView === 'super_compact' ? 0 : '5px 0px'),
       alignItems: displayCardView === 'compact' ? 'center' : 'self-end',
     };
 
@@ -431,6 +431,10 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
       )
     ) {
       scoreStyle.backgroundColor = 'rgba(66, 245, 96, 0.5)';
+    }
+
+    if (displayCardView === 'super_compact') {
+      delete scoreStyle.border;
     }
 
     const team_id = game[`${side}_team_id`];
@@ -503,6 +507,11 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
     return (
       <div style = {flexContainer}>
         <div style = {teamStyle}>
+          {
+            displayCardView === 'super_compact' ?
+              <div><Typography style = {{ display: 'inline-block', lineHeight: 'initial', color: (!Game.isFinal() ? theme.info.dark : theme.text.secondary) }} type = 'overline'>{Game.getTime()}{(!Game.isFinal() && !Game.isInProgress() ? <Typography key = {Game.getNetwork()} style = {{ display: 'inline-block', lineHeight: 'initial', color: theme.text.secondary }} type = 'overline'>{Game.getNetwork()}</Typography> : '')}</Typography></div>
+              : ''
+          }
           {getTeamLine('away')}
           {getTeamLine('home')}
         </div>
@@ -516,11 +525,6 @@ const Tile = ({ game, isLoadingWinPercentage }) => {
               minHeight: 40, minWidth: 24, textAlign: 'center', lineHeight: '40px', alignContent: 'center',
             }}>{homeWinPercentageContainer}</div>
           </div>
-            : ''
-        }
-        {
-          displayCardView === 'super_compact' ?
-            <div style = {{ marginLeft: 5 }}><Typography style = {{ display: 'inline-block', color: (!Game.isFinal() ? theme.info.dark : theme.text.secondary) }} type = 'overline'>{Game.getTime()}{(!Game.isFinal() && !Game.isInProgress() ? <Typography key = {Game.getNetwork()} style = {{ display: 'inline-block', color: theme.text.secondary }} type = 'overline'>{Game.getNetwork()}</Typography> : '')}</Typography></div>
             : ''
         }
       </div>

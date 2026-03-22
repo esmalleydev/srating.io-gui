@@ -6,10 +6,14 @@ import OptionPicker, { optionType } from '../OptionPicker';
 import { updateDataKey } from '@/redux/features/ranking-slice';
 import { useEffect } from 'react';
 import { getStore } from '@/app/StoreProvider';
-import { Dialog, DialogTitle, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
 import CheckIcon from '@mui/icons-material/Check';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { Objector } from '@esmalley/ts-utils';
+import Modal from '@/components/ux/modal/Modal';
+import Typography from '@/components/ux/text/Typography';
+import Tile from '@/components/ux/container/Tile';
+import { useTheme } from '@/components/hooks/useTheme';
 
 const options: optionType[] = [
   { value: 'all', label: 'All' },
@@ -118,6 +122,7 @@ const ClassYearPickerDialog = (
     isRadio?: boolean;
   },
 ) => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
 
   const selectedOption = (selected && selected.length) ? selected : ['all'];
@@ -145,26 +150,21 @@ const ClassYearPickerDialog = (
   };
 
   return (
-    <Dialog
+    <Modal
       open={open}
-      keepMounted
       onClose={handleClose}
-      aria-describedby="alert-dialog-rank-picker-description"
     >
-      <DialogTitle>Filter by class</DialogTitle>
-      <List>
-        {options.map((option) => (
-          <ListItemButton key={option.value} onClick={() => {
-            handleClassYear(option.value as string);
-          }}>
-            <ListItemIcon>
-              {selectedOption.includes(option.value as string) ? <CheckIcon /> : ''}
-            </ListItemIcon>
-            <ListItemText primary={option.label} />
-          </ListItemButton>
-        ))}
-      </List>
-    </Dialog>
+      <Typography type = 'h6'>Filter by class</Typography>
+      {options.map((option) => (
+        <Tile
+          key = {option.value}
+          icon = {selectedOption.includes(option.value as string) ? <CheckIcon /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.info.main }} />}
+          primary = {option.label}
+          onClick = {() => handleClassYear(option.value as string)}
+          style = {{ padding: '5px 0px' }}
+        />
+      ))}
+    </Modal>
   );
 };
 

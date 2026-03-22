@@ -1,12 +1,12 @@
 'use client';
 
-import Typography from '@mui/material/Typography';
 import { PlaybyPlay, PlaybyPlays } from '@/types/cbb';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
 import { useTheme } from '@/components/hooks/useTheme';
+import Typography from '@/components/ux/text/Typography';
 
 /**
  * The main wrapper div for all the contents
@@ -41,6 +41,7 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ play_by_plays /* tag */ }) => {
+  const theme = useTheme();
   const rows: PlaybyPlays = play_by_plays;
 
   const sortedPBP: PlaybyPlay[] = Object.values(rows).sort((a, b) => {
@@ -52,14 +53,14 @@ const Client = ({ play_by_plays /* tag */ }) => {
       {
         sortedPBP.map((play_by_play) => {
           return (
-            <div key = {play_by_play.play_by_play_id} style = {{ margin: '5px 10px' }}>
-              <Typography variant = 'subtitle1'>{play_by_play.current_period}H {play_by_play.away_score}-{play_by_play.home_score} {play_by_play.clock}</Typography>
-              <Typography variant = 'body1'>{play_by_play.description}</Typography>
+            <div key = {play_by_play.play_by_play_id} style = {{ margin: '5px 0px' }}>
+              <Typography type = 'caption' style = {{ color: theme.text.secondary }}>{play_by_play.current_period}H {play_by_play.away_score}-{play_by_play.home_score} {play_by_play.clock}</Typography>
+              <Typography type = 'body1'>{play_by_play.description}</Typography>
             </div>
           );
         })
       }
-      {rows !== null && sortedPBP.length === 0 ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} variant = 'h5'>No play by play data yet...</Typography> : ''}
+      {rows !== null && sortedPBP.length === 0 ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>No play by play data yet...</Typography> : ''}
     </Contents>
   );
 };

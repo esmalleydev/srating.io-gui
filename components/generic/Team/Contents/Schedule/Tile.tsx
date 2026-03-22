@@ -7,9 +7,6 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 
 import HelperGame from '@/components/helpers/Game';
 
-import {
-  Skeleton,
-} from '@mui/material';
 import Locked from '@/components/generic/Billing/Locked';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import LegendToggleIcon from '@mui/icons-material/LegendToggle';
@@ -27,6 +24,7 @@ import Paper from '@/components/ux/container/Paper';
 import General from '@/components/helpers/General';
 import { Color, Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const Tile = (
@@ -156,7 +154,7 @@ const Tile = (
   const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.away_percentage === null));
 
   if (isLoadingPredictions) {
-    predictionContainer.push(<Skeleton style = {{ width: '100%', height: '100%', transform: 'initial' }} key = {1} />);
+    predictionContainer.push(<Skeleton style = {{ width: '100%', height: '100%' }} key = {1} />);
   } else if (!hasAccessToPercentages) {
     predictionContainer.push(<Locked key = {1} iconFontSize = {(width < 475 ? '18px' : '20px')} />);
   } else {

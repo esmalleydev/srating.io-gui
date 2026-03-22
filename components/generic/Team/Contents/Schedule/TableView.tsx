@@ -4,9 +4,6 @@ import React, { useTransition } from 'react';
 
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import {
-  Skeleton,
-} from '@mui/material';
 import HelperGame from '@/components/helpers/Game';
 import Locked from '@/components/generic/Billing/Locked';
 import { useRouter } from 'next/navigation';
@@ -20,6 +17,7 @@ import Tr from '@/components/ux/table/Tr';
 import Td from '@/components/ux/table/Td';
 import Tbody from '@/components/ux/table/Tbody';
 import Typography from '@/components/ux/text/Typography';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const TableView = ({ sorted_games, team_id }) => {
@@ -111,9 +109,9 @@ const TableView = ({ sorted_games, team_id }) => {
         const hasAccessToPercentages = !(!game.prediction || (game.prediction.home_percentage === null && game.prediction.home_percentage === null));
 
         if (isLoadingPredictions) {
-          predictionContainer.push(<Skeleton style = {{ width: '100%', height: '100%', transform: 'initial' }} key = {1} />);
+          predictionContainer.push(<Skeleton style = {{ backgroundColor: theme.grey[500] }} key = {i} />);
         } else if (!hasAccessToPercentages) {
-          predictionContainer.push(<Locked iconFontSize={null} key = {1} />);
+          predictionContainer.push(<Locked iconFontSize={null} key = {i} />);
         } else {
           const winPercentage = (game.home_team_id === team_id ? +(game.prediction.home_percentage * 100).toFixed(0) : +(game.prediction.away_percentage * 100).toFixed(0));
           predictionContainer.push(<Typography key = {'win_percent'} type = 'caption' style = {{ color: Color.lerpColor(worstColor, bestColor, winPercentage / 100) }}>{winPercentage}%</Typography>);
