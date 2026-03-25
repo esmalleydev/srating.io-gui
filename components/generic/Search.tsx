@@ -2,18 +2,18 @@
 
 import { useState } from 'react';
 import useDebounce from '@/components/hooks/useDebounce';
-
-
 import SearchIcon from '@mui/icons-material/Search';
-import Autocomplete from '@mui/material/Autocomplete';
 
 import { useClientAPI } from '../clientAPI';
 import { Coach, Player, Team } from '@/types/general';
 import { useAppSelector } from '@/redux/hooks';
 import Organization from '../helpers/Organization';
 import Division from '../helpers/Division';
-import { Color, Style, Textor } from '@esmalley/ts-utils';
+import { Color, Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '../hooks/useNavigation';
+import TextInput from '../ux/input/TextInput';
+import Inputs from '../helpers/Inputs';
+import Menu, { MenuOption } from '../ux/menu/Menu';
 
 
 
@@ -46,6 +46,16 @@ const Search = (
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   const [loading, setLoading] = useState(false);
 
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [anchorSearch, setAnchorSearch] = useState<HTMLInputElement | HTMLTextAreaElement | null>(null);
+
+  const inputHandler = new Inputs();
+
+  const menuStyle = {
+    marginTop: 10,
+    width: (anchorSearch?.clientWidth),
+  };
+
 
   const debouncedRequest = useDebounce(() => {
     useClientAPI({
@@ -70,86 +80,7 @@ const Search = (
   }, 200);
 
 
-  const onChange = (event, value, reason) => {
-    if (reason === 'clear') {
-      setValue('');
-      setTeams([]);
-      setPlayers([]);
-      setCoaches([]);
-      setLoading(false);
-    } else {
-      setValue(value || '');
-      setLoading(true);
-      debouncedRequest();
-    }
-  };
-
-  type OptionsType = {
-    group: string;
-    name: string;
-    team_id?: string;
-    player_id?: string;
-    coach_id?: string;
-  };
-
-  const teamOptions: OptionsType[] = teams.map((team) => {
-    return {
-      group: 'Teams',
-      team_id: team.team_id,
-      name: team.alt_name,
-    };
-  });
-
-  if (value.length) {
-    teamOptions.sort((a, b) => {
-      return Textor.levenshtein(value, a.name) - Textor.levenshtein(value, b.name);
-    });
-  }
-
-  const playerOptions: OptionsType[] = players.map((player) => {
-    return {
-      group: 'Players',
-      player_id: player.player_id,
-      name: `${player.first_name} ${player.last_name} (${player.begin}-${player.end})`,
-    };
-  });
-
-  if (value.length) {
-    playerOptions.sort((a, b) => {
-      return Textor.levenshtein(value, a.name) - Textor.levenshtein(value, b.name);
-    });
-  }
-
-  const coachOptions: OptionsType[] = coaches.map((coach) => {
-    return {
-      group: 'Coaches',
-      coach_id: coach.coach_id,
-      name: `${coach.first_name} ${coach.last_name} (${coach.begin}-${coach.end})`,
-    };
-  });
-
-  if (value.length) {
-    coachOptions.sort((a, b) => {
-      return Textor.levenshtein(value, a.name) - Textor.levenshtein(value, b.name);
-    });
-  }
-
-  // todo include conferences in search, but needs to be filtered in js first
-  // const conferenceOptions: OptionsType[] = Object.values(conferences).map((conference) => {
-  //   return {
-  //     group: 'Conference',
-  //     coach_id: conference.conference_id,
-  //     name: conference.name,
-  //   };
-  // });
-
-  const options: OptionsType[] = [
-    ...teamOptions,
-    ...playerOptions,
-    ...coachOptions,
-  ];
-
-  const handleClick = (event, option) => {
+  const handleClick = (option) => {
     if (!option || (!option.player_id && !option.team_id && !option.coach_id)) {
       return;
     }
@@ -160,56 +91,126 @@ const Search = (
     } else if (option && option.team_id) {
       navigation.team(`/${path}/team/${option.team_id}`, onRouter);
     }
+    setMenuOpen(false);
     setValue('');
     setTeams([]);
     setPlayers([]);
     setCoaches([]);
   };
 
+
+
+  const teamOptions: MenuOption[] = teams.map((team) => {
+    return {
+      group: 'Teams',
+      value: team.team_id,
+      selectable: true,
+      label: team.alt_name,
+      team_id: team.team_id,
+      onSelect: handleClick,
+    };
+  });
+
+  if (value.length) {
+    teamOptions.sort((a, b) => {
+      if (a.label && b.label) {
+        return Textor.levenshtein(value, a.label) - Textor.levenshtein(value, b.label);
+      }
+      return 0;
+    });
+  }
+
+  const playerOptions: MenuOption[] = players.map((player) => {
+    return {
+      group: 'Players',
+      value: player.player_id,
+      selectable: true,
+      label: `${player.first_name} ${player.last_name} (${player.begin}-${player.end})`,
+      player_id: player.player_id,
+      onSelect: handleClick,
+    };
+  });
+
+  if (value.length) {
+    playerOptions.sort((a, b) => {
+      if (a.label && b.label) {
+        return Textor.levenshtein(value, a.label) - Textor.levenshtein(value, b.label);
+      }
+      return 0;
+    });
+  }
+
+  const coachOptions: MenuOption[] = coaches.map((coach) => {
+    return {
+      group: 'Coaches',
+      value: coach.coach_id,
+      selectable: true,
+      label: `${coach.first_name} ${coach.last_name} (${coach.begin}-${coach.end})`,
+      coach_id: coach.coach_id,
+      onSelect: handleClick,
+    };
+  });
+
+  if (value.length) {
+    coachOptions.sort((a, b) => {
+      if (a.label && b.label) {
+        return Textor.levenshtein(value, a.label) - Textor.levenshtein(value, b.label);
+      }
+      return 0;
+    });
+  }
+
+  // todo include conferences in search, but needs to be filtered in js first
+  // const conferenceOptions: MenuOption[] = Object.values(conferences).map((conference) => {
+  //   return {
+  //     group: 'Conference',
+  //     coach_id: conference.conference_id,
+  //     name: conference.name,
+  //   };
+  // });
+
+  const menuOptions: MenuOption[] = [
+    ...teamOptions,
+    ...playerOptions,
+    ...coachOptions,
+  ];
+
+
+  if (!menuOptions.length && loading && value) {
+    menuOptions.push({
+      value: null,
+      selectable: false,
+      disabled: true,
+      label: 'Loading...',
+      onSelect: handleClick,
+      style: {
+        textAlign: 'center',
+        opacity: 1,
+      },
+    });
+  }
+
+  if (!menuOptions.length && !loading && value) {
+    menuOptions.push({
+      value: null,
+      selectable: false,
+      disabled: true,
+      label: 'No results...',
+      onSelect: handleClick,
+      style: {
+        textAlign: 'center',
+        opacity: 1,
+      },
+    });
+  }
+
   const containerStyle = {
-    position: 'relative',
+    height: 35,
     borderRadius: '4px',
     backgroundColor: Color.alphaColor('#fff', 0.15),
     '&:hover': {
       backgroundColor: Color.alphaColor('#fff', 0.25),
     },
-    marginLeft: 0,
-    width: '100%',
-    '@media (min-width:600px)': {
-      marginLeft: 8,
-      width: 'auto',
-    },
-  };
-
-  const iconContainerStyle = {
-    padding: '0px 16px',
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-
-  const inputStyle = {
-    minWidth: '200px',
-    backgroundColor: 'transparent',
-    background: 'none',
-    color: '#fff',
-    font: 'inherit',
-    letterSpacing: 'inherit',
-    border: 0,
-    margin: 0,
-    padding: '8px 8px 8px calc(1em + 32px)',
-    '&::placeholder': {
-      opacity: 0.7,
-      color: '#fff',
-    },
-    '&:focus-visible': {
-      outline: 'none',
-    },
-    // vertical padding + font size from searchIcon
     transition: 'width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     width: '100%',
     '@media (min-width:600px)': {
@@ -220,39 +221,56 @@ const Search = (
     },
   };
 
-
   return (
-    <div className={Style.getStyleClassName(containerStyle)}>
-      <div className={Style.getStyleClassName(iconContainerStyle)}>
-        <SearchIcon />
-      </div>
-      <Autocomplete
-        id="search-team-player-coach"
-        freeSolo
-        // clearIcon = {<IconButton onClick={handleClear}><ClearIcon fontSize='small' /></IconButton>}
-        onInputChange={onChange}
-        filterOptions={(x) => x}
-        onChange = {handleClick}
-        loading = {loading}
-        value = {null}
-        options = {options}
-        autoHighlight = {true}
-        groupBy = {(option) => option.group}
-        getOptionLabel = {(option) => { return option.name || 'Unknown'; }}
-        fullWidth = {true}
-        renderInput={(params) => {
-          return (
-            <div ref={params.InputProps.ref}>
-              <input
-                {...params.inputProps}
-                className={Style.getStyleClassName(inputStyle)}
-                placeholder = 'Search'
-                autoFocus = {focus}
-                value = {value}
-              />
-            </div>
-          );
+    <div>
+      <TextInput
+        style = {containerStyle}
+        inputHandler={inputHandler}
+        placeholder='Search'
+        variant='filled'
+        clear
+        autoFocus = {focus}
+        value = {value}
+        showError = {false}
+        transformPlaceholder = {false}
+        icon = {<SearchIcon />}
+        onClick={(e) => {
+          setAnchorSearch(e.currentTarget);
+          if (value.length) {
+            setMenuOpen(true);
+          }
         }}
+        onFocus={(e) => {
+          setAnchorSearch(e.currentTarget);
+          if (value.length) {
+            setMenuOpen(true);
+          }
+        }}
+        onChange={(val) => {
+          setValue(val);
+          if (!val) {
+            setValue('');
+            setTeams([]);
+            setPlayers([]);
+            setCoaches([]);
+            setLoading(false);
+            setMenuOpen(false);
+          } else if (val !== value) {
+            setMenuOpen(true);
+            setLoading(true);
+            debouncedRequest();
+          }
+        }}
+      />
+      <Menu
+        open = {menuOpen}
+        options={menuOptions}
+        anchor={anchorSearch}
+        onClose={() => {
+          setAnchorSearch(null);
+          setMenuOpen(false);
+        }}
+        style = {menuStyle}
       />
     </div>
   );

@@ -41,7 +41,7 @@ const AdditionalOptions = () => {
       label: 'Show boxscore data',
       selectable: true,
       onSelect: handleTrendsBoxscore,
-      icon: trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />
+      icon: trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
     },
   ];
 

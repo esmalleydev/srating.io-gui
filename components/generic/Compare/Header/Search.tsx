@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { styled, alpha } from '@mui/material/styles';
-import { InputBase, Autocomplete } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 import useDebounce from '@/components/hooks/useDebounce';
@@ -12,43 +10,10 @@ import { useClientAPI } from '@/components/clientAPI';
 import { Team } from '@/types/general';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
-import { Textor } from '@esmalley/ts-utils';
-
-const Container = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.mode === 'dark' ? alpha(theme.palette.common.white, 0.15) : alpha(theme.palette.common.black, 0.10),
-  '&:hover': {
-    backgroundColor: theme.palette.mode === 'dark' ? alpha(theme.palette.common.white, 0.25) : alpha(theme.palette.common.black, 0.20),
-  },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-  },
-}));
+import { Color, Textor } from '@esmalley/ts-utils';
+import TextInput from '@/components/ux/input/TextInput';
+import Inputs from '@/components/helpers/Inputs';
+import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 
 const Search = () => {
   const router = useRouter();
@@ -66,7 +31,15 @@ const Search = () => {
   const away_team_id = useAppSelector((state) => state.compareReducer.away_team_id); // || searchParams?.get('away_team_id') || null;
   const next_search = useAppSelector((state) => state.compareReducer.next_search);
 
-  const [blur, setBlur] = useState<boolean>(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [anchorSearch, setAnchorSearch] = useState<HTMLInputElement | HTMLTextAreaElement | null>(null);
+
+  const inputHandler = new Inputs();
+
+  const menuStyle = {
+    marginTop: 10,
+    width: (anchorSearch?.clientWidth),
+  };
 
 
   const debouncedRequest = useDebounce(() => {
@@ -89,35 +62,12 @@ const Search = () => {
     });
   }, 200);
 
-
-  const onChange = (event, value, reason) => {
-    if (reason === 'clear') {
-      setValue('');
-      setTeams([]);
-      setLoading(false);
-    } else {
-      setValue(value || '');
-      setLoading(true);
-      debouncedRequest();
-    }
-  };
-
-  const options = teams.map((team) => {
-    return {
-      group: 'Teams',
-      team_id: team.team_id,
-      name: team.alt_name,
-    };
-  }).sort((a, b) => {
-    return Textor.levenshtein(value, a.name) - Textor.levenshtein(value, b.name);
-  });
-
-  const handleClick = (event, option) => {
-    if (!option || (!option.player_id && !option.team_id)) {
+  const handleClick = (option: MenuOption) => {
+    if (!option) {
       return;
     }
 
-    const new_team_id = (option && option.team_id);
+    const new_team_id = (option && option.value);
 
     if (new_team_id) {
       let key = next_search;
@@ -147,51 +97,87 @@ const Search = () => {
         router.replace(`${pathName}${query}`);
       });
 
-      setBlur(true);
+      setMenuOpen(false);
       setValue('');
       setTeams([]);
     }
   };
 
-  const inputBaseStyle: React.CSSProperties = {
-    minWidth: '250px',
+
+  const menuOptions: MenuOption[] = teams.map((team) => {
+    return {
+      value: team.team_id,
+      selectable: true,
+      label: team.alt_name,
+      onSelect: handleClick,
+    };
+  }).sort((a, b) => {
+    if (a.label && b.label) {
+      return Textor.levenshtein(value, a.label) - Textor.levenshtein(value, b.label);
+    }
+    return 0;
+  });
+
+  const containerStyle = {
+    height: 35,
+    minWidth: 250,
+    borderRadius: '4px',
+    backgroundColor: Color.alphaColor('#fff', 0.15),
+    '&:hover': {
+      backgroundColor: Color.alphaColor('#fff', 0.25),
+    },
+    width: '100%',
   };
-  // sx={{backgroundColor: 'rgba(66, 165, 245, .5)'}}
+
   return (
-    <Container>
-      <SearchIconWrapper>
-        <SearchIcon />
-      </SearchIconWrapper>
-      <Autocomplete
-        id = 'search-team-compare'
-        freeSolo
-        filterOptions={(x) => x}
-        onChange = {handleClick}
-        onInputChange={onChange}
-        loading = {loading}
-        value = {null}
-        options = {options}
-        autoHighlight = {true}
-        getOptionLabel = {(option) => { return option.name || 'Unknown'; }}
-        fullWidth = {true}
-        blurOnSelect = {blur}
-        renderInput={(params) => {
-          const { InputLabelProps, InputProps, ...rest } = params;
-          rest.inputProps.value = value;
-          return (
-            <StyledInputBase
-              {...params.InputProps}
-              {...rest}
-              value = {value}
-              placeholder = {'Add a team'}
-              autoFocus = {true}
-              sx = {inputBaseStyle}
-              // onChange = {onChange}
-            />
-          );
+    <div>
+      <TextInput
+        style = {containerStyle}
+        inputHandler={inputHandler}
+        placeholder='Add a team'
+        variant='filled'
+        clear
+        value = {value}
+        showError = {false}
+        transformPlaceholder = {false}
+        icon = {<SearchIcon />}
+        onClick={(e) => {
+          setAnchorSearch(e.currentTarget);
+          if (value.length) {
+            setMenuOpen(true);
+          }
+        }}
+        onFocus={(e) => {
+          setAnchorSearch(e.currentTarget);
+          if (value.length) {
+            setMenuOpen(true);
+          }
+        }}
+        onChange={(val) => {
+          setValue(val);
+          if (!val) {
+            setValue('');
+            setTeams([]);
+            setLoading(false);
+            setMenuOpen(false);
+          } else if (val !== value) {
+            setMenuOpen(true);
+            setLoading(true);
+            debouncedRequest();
+          }
         }}
       />
-    </Container>
+      <Menu
+        open = {menuOpen}
+        options={menuOptions}
+        anchor={anchorSearch}
+        onClose={() => {
+          setAnchorSearch(null);
+          setMenuOpen(false);
+        }}
+        style = {menuStyle}
+      />
+    </div>
   );
 };
 

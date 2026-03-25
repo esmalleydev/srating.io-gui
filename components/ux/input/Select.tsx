@@ -116,7 +116,8 @@ const Select: React.FC<SelectProps> = ({
 
   // --- Handlers ---
 
-  const handleSelect = (optionValue: string | number) => {
+  const handleSelect = (option: MenuOption) => {
+    const optionValue = option.value as string | number;
     if (valueProp === undefined) {
       setInternalValue(optionValue);
     }

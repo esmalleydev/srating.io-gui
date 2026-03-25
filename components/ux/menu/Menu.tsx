@@ -2,7 +2,7 @@
 
 // import { useTheme } from '@/components/hooks/useTheme';
 import ReactDOM from 'react-dom';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import CloseIcon from '@mui/icons-material/Close';
@@ -12,15 +12,17 @@ import MenuListIcon from './MenuListIcon';
 import MenuListText from './MenuListText';
 import { useTheme } from '@/components/hooks/useTheme';
 import { Objector, Style } from '@esmalley/ts-utils';
+import Typography from '../text/Typography';
 
-type MenuValue = string | number | null;
+type onSelectValue = MenuOption;
 
 export type MenuOption = {
-  value: MenuValue;
+  value: string | number | null;
   selectable: boolean;
+  group?: string;
   disabled?: boolean;
   label?: string;
-  onSelect?: (value: MenuValue) => void;
+  onSelect?: (option: onSelectValue) => void;
   secondaryLabel?: string;
   icon?: React.JSX.Element;
   customLabel?: React.JSX.Element;
@@ -92,6 +94,7 @@ const Menu = (
     style?: React.CSSProperties;
   },
 ) => {
+  const theme = useTheme();
   const menuRootRef = useRef<HTMLElement | null>(null);
   const menuContentRef = useRef<HTMLDivElement | null>(null);
 
@@ -141,7 +144,6 @@ const Menu = (
     style,
   );
 
-
   if (finalPosition && open && finalDimensions) {
     paperStyle.display = 'block';
     overlayStyle.display = 'block';
@@ -172,6 +174,11 @@ const Menu = (
       handleClose();
     }
   };
+
+  // if the options change, reset the activeIndex
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [options]);
 
 
   // Effect to get the 'menu-root' DOM node once on mount
@@ -251,7 +258,7 @@ const Menu = (
       //   setFinalTransformOrigin({ x: String(finalOriginX), y: String(finalOriginY) });
       // }
     }
-  }, [open, anchor, menuRootRef, menuContentRef.current, width]);
+  }, [open, anchor, menuRootRef, menuContentRef.current, width, anchor?.clientWidth]);
 
 
   // Effect to handle clicks outside the menu content to close it
@@ -316,7 +323,7 @@ const Menu = (
     if (e.key === 'Enter') {
       e.preventDefault();
       if (options[activeIndex].onSelect) {
-        options[activeIndex].onSelect(options[activeIndex].value);
+        options[activeIndex].onSelect(options[activeIndex]);
       }
     }
 
@@ -332,7 +339,7 @@ const Menu = (
     window.addEventListener('keydown', handleKeyDown);
     // eslint-disable-next-line consistent-return
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [open, activeIndex]);
+  }, [open, activeIndex, options]);
 
 
   // Also handle Escape key press to close the menu
@@ -380,6 +387,7 @@ const Menu = (
     </div>
   );
 
+  const group_x_decorated = {};
 
   return ReactDOM.createPortal(
     <div className={Style.getStyleClassName(overlayStyle)} {...props}>
@@ -389,22 +397,36 @@ const Menu = (
           {options.map((option, index) => {
             const handleIt = () => {
               if (option.onSelect && !option.disabled) {
-                option.onSelect(option.value);
+                option.onSelect(option);
               }
             };
 
+            let groupLabel: React.JSX.Element | null = null;
+
+            if (option.group && !(option.group in group_x_decorated)) {
+              group_x_decorated[option.group] = true;
+
+              groupLabel = <div style = {{ padding: '0px 5px' }}><Typography type = 'body1' style = {{ color: theme.text.secondary }}>{option.group}</Typography></div>;
+            }
+
             if (option.customLabel) {
               return (
-                <div key = {index} onClick={handleIt}>
-                  {option.customLabel}
-                </div>
+                <>
+                  {groupLabel}
+                  <div key = {index} onClick={handleIt}>
+                    {option.customLabel}
+                  </div>
+                </>
               );
             }
             return (
-              <MenuItem key = {option.value} style = {option.style || {}} onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
-                {option.icon ? <MenuListIcon>{option.icon}</MenuListIcon> : ''}
-                <MenuListText primary={option.label || 'Unknown'} secondary={option.secondaryLabel || undefined} />
-              </MenuItem>
+              <>
+                {groupLabel}
+                <MenuItem key = {option.value} style = {option.style || {}} onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
+                  {option.icon ? <MenuListIcon>{option.icon}</MenuListIcon> : ''}
+                  <MenuListText primary={option.label || 'Unknown'} secondary={option.secondaryLabel || undefined} />
+                </MenuItem>
+              </>
             );
           })}
         </MenuList>

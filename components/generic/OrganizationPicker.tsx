@@ -45,8 +45,10 @@ const OrganizationPicker = () => {
     setAnchorEl(null);
   };
 
-  const handleOrganization = (value: string) => {
+  const handleOrganization = (option: MenuOption) => {
     handleClose();
+
+    const value = option.value as string;
 
     if (value === organization_id) {
       return;

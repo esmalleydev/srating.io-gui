@@ -307,6 +307,28 @@ const UX = () => {
         })}
       </Columns>
       <Divider />
+      <Typography type = 'h6' style = {{ marginBottom: 10 }}>Hide placeholder transform w/ icons</Typography>
+      <Columns numberOfColumns={3}>
+        {getInput({
+          icon: <SearchIcon />,
+          placeholder: 'Icon',
+          variant: 'outlined',
+          transformPlaceholder: false,
+        })}
+        {getInput({
+          icon: <SearchIcon />,
+          placeholder: 'Icon',
+          variant: 'filled',
+          transformPlaceholder: false,
+        })}
+        {getInput({
+          icon: <SearchIcon />,
+          placeholder: 'Icon',
+          variant: 'standard',
+          transformPlaceholder: false,
+        })}
+      </Columns>
+      <Divider />
     </div>
   );
 };

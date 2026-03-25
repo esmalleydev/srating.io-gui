@@ -22,7 +22,8 @@ const AdditionalOptions = () => {
   const dispatch = useAppDispatch();
   const scheduleView = useAppSelector((state) => state.teamReducer.scheduleView);
 
-  const handleView = (nextView: string) => {
+  const handleView = (option: MenuOption) => {
+    const nextView = option.value as string;
     dispatch(setDataKey({ key: 'scheduleView', value: nextView }));
     dispatch(setDataKey({ key: 'scrollTop', value: 0 }));
   };
@@ -42,14 +43,14 @@ const AdditionalOptions = () => {
       label: 'View card mode',
       selectable: true,
       onSelect: handleView,
-      icon: scheduleView === 'default' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />
+      icon: scheduleView === 'default' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />,
     },
     {
       value: 'table',
       label: 'View table mode',
       selectable: true,
       onSelect: handleView,
-      icon: scheduleView === 'table' ? <CheckIcon fontSize='small' /> : <CalendarViewMonthIcon fontSize='small' />
+      icon: scheduleView === 'table' ? <CheckIcon fontSize='small' /> : <CalendarViewMonthIcon fontSize='small' />,
     },
   ];
 

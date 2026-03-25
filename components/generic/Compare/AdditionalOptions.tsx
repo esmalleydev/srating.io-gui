@@ -31,8 +31,8 @@ const AdditionalOptions = () => {
       onSelect: () => {
         setRankPickerOpen(true);
         handleClose();
-      }
-    }
+      },
+    },
   ];
 
   return (

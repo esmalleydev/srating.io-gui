@@ -31,8 +31,8 @@ const StatusPicker = () => {
     setAnchorEl(null);
   };
 
-  const handleStatuses = (value: string) => {
-    dispatch(updateDataKey({ key: 'statuses', value }));
+  const handleStatuses = (option: MenuOption) => {
+    dispatch(updateDataKey({ key: 'statuses', value: option.value as string }));
   };
 
   const code_x_label = {
@@ -47,22 +47,22 @@ const StatusPicker = () => {
       label: 'Upcoming',
       selectable: true,
       onSelect: handleStatuses,
-      icon: selected.indexOf('pre') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />
+      icon: selected.indexOf('pre') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />,
     },
     {
       value: 'live',
       label: 'Live',
       selectable: true,
       onSelect: handleStatuses,
-      icon: selected.indexOf('live') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />
+      icon: selected.indexOf('live') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />,
     },
     {
       value: 'final',
       label: 'Final',
       selectable: true,
       onSelect: handleStatuses,
-      icon: selected.indexOf('final') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />
-    }
+      icon: selected.indexOf('final') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />,
+    },
   ];
 
   let title = 'Status';

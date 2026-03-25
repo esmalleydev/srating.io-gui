@@ -1,15 +1,13 @@
 'use client';
 
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import List from '@mui/material/List';
-
 import CheckIcon from '@mui/icons-material/Check';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { ListItemButton } from '@mui/material';
 import { setDataKey } from '@/redux/features/display-slice';
+import Modal from '@/components/ux/modal/Modal';
+import Typography from '@/components/ux/text/Typography';
+import Tile from '../ux/container/Tile';
+import { useTheme } from '../hooks/useTheme';
 
 
 /**
@@ -21,6 +19,7 @@ import { setDataKey } from '@/redux/features/display-slice';
  * @return {<Dialog>}
  */
 const SortPicker = ({ open, openHandler, closeHandler }) => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const selected = useAppSelector((state) => state.displayReducer.picksSort);
 
@@ -48,27 +47,24 @@ const SortPicker = ({ open, openHandler, closeHandler }) => {
   };
 
   return (
-    <Dialog
+    <Modal
       open={open}
-      keepMounted
       onClose={handleClose}
-      aria-describedby="alert-dialog-slide-description"
     >
-      <DialogTitle>Sort order</DialogTitle>
-      <List>
-        {options.map((option) => (
-          <ListItemButton key={option.value} onClick={() => {
+      <Typography type = 'h6'>Sort order</Typography>
+      {options.map((option) => (
+        <Tile
+          style = {{ padding: '5px 0px' }}
+          key={option.value}
+          icon = {option.value === selected ? <CheckIcon /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.info.main }} />}
+          primary = {option.label}
+          onClick={() => {
             dispatch(setDataKey({ key: 'picksSort', value: option.value }));
             handleClose();
-          }}>
-            <ListItemIcon>
-              {option.value === selected ? <CheckIcon /> : ''}
-            </ListItemIcon>
-            <ListItemText primary={option.label} />
-          </ListItemButton>
-        ))}
-      </List>
-    </Dialog>
+          }}
+        />
+      ))}
+    </Modal>
   );
 };
 

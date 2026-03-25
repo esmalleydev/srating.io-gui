@@ -12,8 +12,8 @@ import { Objector, Style, Color } from '@esmalley/ts-utils';
 
 interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange' | 'onFocus' | 'onBlur' | 'max' | 'min' | 'maxLength'>, BaseInputProps {
   ref?: RefObject<HTMLInputElement | null>;
-  style?: React.CSSProperties;
-  placeholderStyle?: React.CSSProperties;
+  style?: Record<string, unknown>;
+  placeholderStyle?: Record<string, unknown>;
   icon?: React.JSX.Element;
   clear?: boolean;
   transformPlaceholder?: boolean;
@@ -72,11 +72,14 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   }
 
 
-  let paddingLeft = (icon ? 24 : 0);
+  let paddingLeft = (icon ? 40 : 16);
   const iconLeft = icon ? 8 : 0;
 
+  if (variant === 'standard' && !icon) {
+    paddingLeft -= 8;
+  }
+
   const inputStyle: React.CSSProperties = {
-    // Structure & Position
     width: '100%',
     height: 46,
     boxSizing: 'border-box',
@@ -86,12 +89,12 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     backgroundColor: 'transparent',
     borderRadius: variant === 'outlined' ? 4 : 0,
     fontSize: '1rem',
+    paddingLeft,
+    paddingRight: paddingLeft + (clear ? 24 : 0),
   };
 
   if (variant === 'filled') {
     inputStyle.backgroundColor = theme.mode === 'dark' ? theme.grey[900] : theme.grey[300];
-    paddingLeft += 12 + iconLeft;
-    inputStyle.padding = `14px 12px 8px ${paddingLeft}px`; // Taller to accommodate space for the label
     inputStyle.border = 'none';
     inputStyle.borderBottom = 'none';
     if (!disabled) {
@@ -100,77 +103,54 @@ const TextInput: React.FC<TextInputProps> = (props) => {
       };
     }
   } else if (variant === 'standard') {
-    if (icon) {
-      paddingLeft += 12 + iconLeft;
-    }
-    inputStyle.padding = `14px 12px 8px ${paddingLeft}px`;
     inputStyle.border = 'none';
     inputStyle.borderBottom = `2px solid ${borderColor}`;
   } else if (variant === 'outlined') {
-    paddingLeft += 12 + iconLeft;
-    inputStyle.padding = `14px 12px 14px ${paddingLeft}px`;
     inputStyle.border = `1px solid ${borderColor}`;
   }
+
+  Objector.extender(inputStyle, style);
+
+  // const height = +(inputStyle.height?.toString().replace('px', '') || 0) || 0;
 
   const containerStyle: React.CSSProperties = {
     position: 'relative',
     width: '100%',
-    // margin: variant === 'standard' ? '16px 0 4px 0' : '8px 0',
+    lineHeight: 'initial',
   };
 
 
-  Objector.extender(inputStyle, style);
 
   const isLabelActive = isFocused || (
     value !== undefined && value !== ''
   );
 
 
-  let labelTop = 12;
-  let labelLeft = 12;
-  if (variant === 'filled' && isLabelActive) {
-    labelTop = 10;
-  }
-  if (variant === 'standard' && isLabelActive) {
-    labelTop = 10;
-  }
-  if (variant === 'standard' && !icon) {
-    labelLeft = 0;
-  }
   let labelColor = theme.text.secondary;
   if (isFocused) {
     labelColor = borderColor;
   } else if (hasError) {
     labelColor = errorColor;
   }
+
   const pStyle: React.CSSProperties = {
     position: 'absolute',
     pointerEvents: 'none',
     color: labelColor,
     transition: 'all 0.3s ease-out',
     transformOrigin: 'top left',
-    top: labelTop,
-    left: icon && !isLabelActive ? 0 : labelLeft,
-
-    // Floating (active) position
     transform: isLabelActive
-      ? 'translate(0, -50%) scale(0.75)' // Lift and shrink
+      ? 'translate(0, -100%) scale(0.75)' // Lift and shrink
       : 'translate(0, 0) scale(1)', // Stay put
-
-    // Additional adjustments for 'outlined' when floating
-    ...(variant === 'outlined' && isLabelActive ? {
-      top: 4,
-      left: 10,
-      padding: '0 4px',
-      backgroundColor: theme.background.main, // Background to mask the border
-      zIndex: 1, // Ensure it's on top of the border
-    } : {}),
-
-    fontSize: isLabelActive ? '13px' : '14px', // Shrink font when floating
+    margin: `0px 16px 0px ${paddingLeft}px`,
   };
 
-  if (icon) {
-    pStyle.paddingLeft = paddingLeft;
+  if (isLabelActive && variant === 'outlined') {
+    pStyle.backgroundColor = (
+      (style && style.backgroundColor) as string ||
+      (style && style['background-color']) as string ||
+      theme.background.main
+    );
   }
 
   Objector.extender(pStyle, placeholderStyle);
@@ -192,8 +172,8 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   return (
     <div className={Style.getStyleClassName(containerStyle)}>
       {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
-      <div style={{ position: 'relative', width: '100%' }}>
-        {icon ? <div style = {{ position: 'absolute', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', left: iconLeft }}>{icon}</div> : ''}
+      <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+        {icon ? <div style = {{ position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', left: iconLeft }}>{icon}</div> : ''}
         {placeholderElement}
         <input
           ref = {ref}

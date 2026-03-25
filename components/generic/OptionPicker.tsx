@@ -39,7 +39,7 @@ const OptionPicker = (
     buttonName?: string,
     renderButton?: (handleOpen: (e: React.MouseEvent<HTMLButtonElement>) => void, open: boolean) => React.ReactNode,
     // CustomButton?: React.ComponentType<CustomButtonProps>,
-    actionHandler?: (value: string | null) => void,
+    actionHandler?: (value: string | number | null) => void,
     closeHandler?: () => void,
     autoClose?: boolean,
     isRadio?: boolean,
@@ -65,10 +65,10 @@ const OptionPicker = (
     setAnchorEl(null);
   };
 
-  const handleAction = (value: string | null) => {
+  const handleAction = (option: MenuOption) => {
     // console.time('OptionPicker.handleAction')
     if (actionHandler) {
-      actionHandler(value);
+      actionHandler(option.value);
     }
 
     if (autoClose) {

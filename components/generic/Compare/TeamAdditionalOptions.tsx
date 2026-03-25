@@ -57,8 +57,8 @@ const TeamAdditionalOptions = () => {
       label: 'Neutral site game',
       selectable: true,
       onSelect: handleNeutral,
-      icon: +neutral_site ? <CheckIcon fontSize='small' /> : <LuggageIcon fontSize='small' />
-    }
+      icon: +neutral_site ? <CheckIcon fontSize='small' /> : <LuggageIcon fontSize='small' />,
+    },
   ];
 
   return (

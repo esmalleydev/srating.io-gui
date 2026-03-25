@@ -264,7 +264,7 @@ const Header = () => {
         fullSearch ?
           <div className = {Style.getStyleClassName(toolBarStyle)}>
             <IconButton onClick = {() => { setFullSearch(false); }} value = 'back' icon = {<ArrowBackIcon />} />
-            <div style={{ flexGrow: 1, display: 'flex' }}>
+            <div style={{ width: '100%' }}>
               <Search onRouter = {() => { setFullSearch(false); }} focus = {true} />
             </div>
           </div> :

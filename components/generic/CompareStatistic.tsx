@@ -2,8 +2,6 @@
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import { Skeleton } from '@mui/material';
-
 import Locked from './Billing/Locked';
 import RankSpan from './RankSpan';
 import Typography from '../ux/text/Typography';
@@ -12,6 +10,7 @@ import Paper from '../ux/container/Paper';
 import Tooltip from '../ux/hover/Tooltip';
 import React from 'react';
 import { TableColumn } from '../helpers/TableColumns';
+import Skeleton from '../ux/loading/Skeleton';
 
 export type CompareStatisticRow = {
   leftRow: object;
@@ -258,7 +257,7 @@ const CompareStatistic = (
 
 
       if (row.loading) {
-        decorated.push(<Skeleton key = {index} />);
+        decorated.push(<Skeleton key = {index} style = {{ margin: '10px 0px' }} />);
       } else {
         const leftDifference = getDifference(row, 'left');
         const rightDifference = getDifference(row, 'right');
