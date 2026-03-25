@@ -118,6 +118,34 @@ const Search = () => {
     return 0;
   });
 
+  if (!menuOptions.length && loading && value) {
+    menuOptions.push({
+      value: null,
+      selectable: false,
+      disabled: true,
+      label: 'Loading...',
+      onSelect: handleClick,
+      style: {
+        textAlign: 'center',
+        opacity: 1,
+      },
+    });
+  }
+
+  if (!menuOptions.length && !loading && value) {
+    menuOptions.push({
+      value: null,
+      selectable: false,
+      disabled: true,
+      label: 'No results...',
+      onSelect: handleClick,
+      style: {
+        textAlign: 'center',
+        opacity: 1,
+      },
+    });
+  }
+
   const containerStyle = {
     height: 35,
     minWidth: 250,
