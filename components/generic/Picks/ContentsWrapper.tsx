@@ -8,7 +8,7 @@ import { setDataKey } from '@/redux/features/picks-slice';
 import { getHeaderHeight } from './SubNavBar';
 import { getDateBarHeight } from '../DateBar';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 const ContentsWrapper = (

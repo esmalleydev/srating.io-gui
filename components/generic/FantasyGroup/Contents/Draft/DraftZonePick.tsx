@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';

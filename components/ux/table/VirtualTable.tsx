@@ -7,7 +7,7 @@ import Tbody from './Tbody';
 import Tr from './Tr';
 import Td from './Td';
 import Th from './Th';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { TableColumnsType } from '@/components/helpers/TableColumns';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Tooltip from '../hover/Tooltip';

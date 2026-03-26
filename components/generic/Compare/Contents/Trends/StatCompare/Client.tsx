@@ -6,7 +6,7 @@ import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';

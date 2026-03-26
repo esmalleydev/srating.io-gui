@@ -16,7 +16,7 @@ import RankTable from '@/components/generic/RankTable';
 import { Game, Players } from '@/types/general';
 import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '@/components/ux/container/Paper';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';

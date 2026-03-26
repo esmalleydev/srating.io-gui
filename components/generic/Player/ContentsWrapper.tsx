@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import { setDataKey } from '@/redux/features/player-slice';
 import { getSubNavHeaderHeight } from './SubNavbar';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 const ContentsWrapper = (

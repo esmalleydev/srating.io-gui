@@ -2,7 +2,7 @@
 
 import Team from './Team';
 import Organization from './Organization';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Bookmakers } from '@/types/general';
 import { Color, Dates } from '@esmalley/ts-utils';
 

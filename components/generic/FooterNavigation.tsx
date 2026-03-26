@@ -14,7 +14,7 @@ import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import Paper from '@/components/ux/container/Paper';
 import { usePathname } from 'next/navigation';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import { Style } from '@esmalley/ts-utils';
 import { useNavigation } from '../hooks/useNavigation';

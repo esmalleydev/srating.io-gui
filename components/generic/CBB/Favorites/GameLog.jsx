@@ -1,4 +1,5 @@
 'use client';
+/*
 import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
@@ -269,3 +270,4 @@ const GameLog = (props) => {
 }
 
 export default GameLog;
+*/

@@ -3,7 +3,7 @@
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Tab from '@/components/ux/buttons/Tab';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import HelperGame from '@/components/helpers/Game';
 import { setDataKey } from '@/redux/features/game-slice';
 import { startTransition } from 'react';

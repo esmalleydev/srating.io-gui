@@ -23,7 +23,7 @@ import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '../helpers/Organization';
 import Typography from '../ux/text/Typography';
 import { Style } from '@esmalley/ts-utils';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Divider from '../ux/display/Divider';
 import { useNavigation } from '../hooks/useNavigation';
 

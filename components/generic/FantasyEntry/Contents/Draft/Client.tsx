@@ -2,7 +2,7 @@
 
 import { useAppSelector } from '@/redux/hooks';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import Roster from './Roster';
 import { Games } from './Games';

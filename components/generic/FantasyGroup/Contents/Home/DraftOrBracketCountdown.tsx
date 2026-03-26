@@ -2,7 +2,7 @@
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';

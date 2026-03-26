@@ -6,7 +6,7 @@ import { ConferenceStatisticRankings, LeaguePlayerStatisticRankings, PlayerBoxsc
 import { Games } from '@/types/general';
 import StatsGraph from './StatsGraph';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 export interface TrendsType {

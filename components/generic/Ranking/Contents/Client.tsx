@@ -26,7 +26,7 @@ import Th from '@/components/ux/table/Th';
 import { Arithmetic, Color, Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 

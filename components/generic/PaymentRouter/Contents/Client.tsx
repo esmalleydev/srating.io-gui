@@ -11,7 +11,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import ErrorIcon from '@mui/icons-material/Error';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Button from '@/components/ux/buttons/Button';
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';
 import { useAppSelector } from '@/redux/hooks';

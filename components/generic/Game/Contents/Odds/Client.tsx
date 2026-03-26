@@ -14,7 +14,7 @@ import Paper from '@/components/ux/container/Paper';
 // import FunctionsIcon from '@mui/icons-material/Functions';
 // import LockOpenIcon from '@mui/icons-material/LockOpen';
 // import LockIcon from '@mui/icons-material/Lock';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import { Color } from '@esmalley/ts-utils';
 import LinearProgress from '@/components/ux/loading/LinearProgress';

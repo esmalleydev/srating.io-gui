@@ -7,7 +7,7 @@ import { setDataKey } from '@/redux/features/display-slice';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Tile from '../ux/container/Tile';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 /**

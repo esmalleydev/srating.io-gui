@@ -12,7 +12,7 @@ import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Player, Players } from '@/types/general';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import ClassSpan from '@/components/generic/ClassSpan';
 import { Objector, Style, Textor } from '@esmalley/ts-utils';

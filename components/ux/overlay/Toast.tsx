@@ -9,7 +9,7 @@ import IconButton from '../buttons/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Objector, Style, toaster, ToastItem } from '@esmalley/ts-utils';
 
 

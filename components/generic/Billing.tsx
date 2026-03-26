@@ -7,7 +7,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from './Billing/CheckoutForm';
 import FreeTrialForm from './Billing/FreeTrialForm';
 import Typography from '../ux/text/Typography';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Modal from '../ux/modal/Modal';
 
 

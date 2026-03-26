@@ -6,7 +6,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import { useEffect } from 'react';
 import { setDataKey } from '@/redux/features/payment_router-slice';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 const ContentsWrapper = (
   { children }:

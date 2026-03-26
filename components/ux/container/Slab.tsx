@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import React, { useState } from 'react';
 import Typography from '../text/Typography';
 import HelpIcon from '@mui/icons-material/Help';

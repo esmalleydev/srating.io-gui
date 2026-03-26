@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import RuleIcon from '@mui/icons-material/Rule';
 import Paper from '@/components/ux/container/Paper';
 import Slab from '@/components/ux/container/Slab';

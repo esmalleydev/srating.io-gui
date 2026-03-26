@@ -12,7 +12,7 @@ import Loader from '@/components/generic/Ranking/Contents/Loader';
 import MyPicks from './MyPicks';
 import Button from '@/components/ux/buttons/Button';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Tab from '@/components/ux/buttons/Tab';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';

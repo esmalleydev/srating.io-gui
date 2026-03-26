@@ -32,7 +32,7 @@ import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
 import Organization from '../helpers/Organization';
 import Tooltip from '../ux/hover/Tooltip';
 import Button from '../ux/buttons/Button';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import IconButton from '../ux/buttons/IconButton';
 import { setDataKey } from '@/redux/features/user-slice';
 import General from '../helpers/General';

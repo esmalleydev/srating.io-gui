@@ -9,7 +9,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import { usePathname, useRouter } from 'next/navigation';
 import { setDataKey } from '@/redux/features/team-slice';
 import AdditionalOptions from './Contents/Schedule/AdditionalOptions';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tab from '@/components/ux/buttons/Tab';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';

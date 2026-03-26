@@ -14,7 +14,7 @@ import { useNavigation } from '../hooks/useNavigation';
 import TextInput from '../ux/input/TextInput';
 import Inputs from '../helpers/Inputs';
 import Menu, { MenuOption } from '../ux/menu/Menu';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 

@@ -5,7 +5,7 @@ import Subscription from './Subscription';
 import { useRouter } from 'next/navigation';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Button from '@/components/ux/buttons/Button';
 import Columns from '@/components/ux/layout/Columns';
 import { useAppSelector } from '@/redux/hooks';

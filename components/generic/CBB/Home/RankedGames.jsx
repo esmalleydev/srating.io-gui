@@ -1,4 +1,5 @@
 'use client';
+/*
 import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
@@ -51,3 +52,4 @@ const RankedGames = (props) => {
 }
 
 export default RankedGames;
+*/

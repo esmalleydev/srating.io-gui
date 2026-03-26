@@ -1,3 +1,4 @@
+/*
 import CBBPage from './cbb-page';
 import { Metadata, ResolvingMetadata } from 'next';
 
@@ -29,3 +30,4 @@ export async function generateMetadata(
 export default async function Page() {
   return <CBBPage />;
 };
+*/

@@ -3,7 +3,7 @@
 import React from 'react';
 
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import { Color, Dates, Objector } from '@esmalley/ts-utils';

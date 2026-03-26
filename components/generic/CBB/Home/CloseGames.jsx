@@ -1,4 +1,5 @@
 'use client';
+/*
 import React, { useState, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
@@ -52,3 +53,4 @@ const CloseGames = (props) => {
 }
 
 export default CloseGames;
+*/

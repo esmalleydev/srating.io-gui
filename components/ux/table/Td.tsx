@@ -6,12 +6,14 @@ import { Objector, Style } from '@esmalley/ts-utils';
 const Td = (
   {
     // sortDirection = false,
+    onClick,
     style = {},
     children,
     ...props
   }:
   {
     // sortDirection?: 'asc' | 'desc' | false;
+    onClick?: () => void,
     style?: object;
     children: React.ReactNode;
   },
@@ -29,8 +31,14 @@ const Td = (
     style,
   );
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
-    <td className = {Style.getStyleClassName(tdStyle)} {...props}>
+    <td className = {Style.getStyleClassName(tdStyle)} onClick={handleClick} {...props}>
       {children}
     </td>
   );

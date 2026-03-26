@@ -3,7 +3,7 @@
 import BackButton from '../BackButton';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import IconButton from '@/components/ux/buttons/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from 'react';

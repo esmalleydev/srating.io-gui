@@ -13,7 +13,7 @@ import { Objector } from '@esmalley/ts-utils';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Tile from '@/components/ux/container/Tile';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 const options: optionType[] = [
   { value: 'all', label: 'All' },

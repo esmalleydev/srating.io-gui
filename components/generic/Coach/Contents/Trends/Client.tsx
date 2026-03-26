@@ -11,7 +11,7 @@ import { getNavHeaderHeight } from '@/components/generic/Coach/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '@/components/ux/container/Paper';
 import { Dates } from '@esmalley/ts-utils';
 import LinearProgress from '@/components/ux/loading/LinearProgress';

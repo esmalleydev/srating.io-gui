@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/redux/hooks';
 import { useClientAPI } from '@/components/clientAPI';
 import { setLoading } from '@/redux/features/loading-slice';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey as setDataKeyUser } from '@/redux/features/user-slice';
 import { setDataKey as setDataKeyGames } from '@/redux/features/games-slice';
 import Typography from '@/components/ux/text/Typography';

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { setDataKey } from '@/redux/features/display-slice';
 import Typography from '../ux/text/Typography';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Modal from '../ux/modal/Modal';
 import Tile from '../ux/container/Tile';
 

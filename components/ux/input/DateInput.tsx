@@ -6,7 +6,7 @@ import TextInput from './TextInput';
 import Plane from '../overlay/Plane';
 import Inputs from '@/components/helpers/Inputs';
 import Paper from '../container/Paper';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 import { Objector, Style, Dates } from '@esmalley/ts-utils';
 

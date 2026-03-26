@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 // import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Color, Objector, Style } from '@esmalley/ts-utils';
 import { RefObject } from 'react';

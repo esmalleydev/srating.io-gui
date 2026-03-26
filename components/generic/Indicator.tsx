@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tooltip from '../ux/hover/Tooltip';
 import { Color } from '@esmalley/ts-utils';
 

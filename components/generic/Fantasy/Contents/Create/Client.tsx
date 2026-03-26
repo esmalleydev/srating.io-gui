@@ -3,7 +3,7 @@
 import { Profiler, useMemo, useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { getNavHeaderHeight } from '../../NavBar';
 import TextInput from '@/components/ux/input/TextInput';
 import Switch from '@/components/ux/input/Switch';

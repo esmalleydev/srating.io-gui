@@ -15,7 +15,7 @@ import { useScrollContext } from '@/contexts/scrollContext';
 import Rank from './Tile/Rank';
 import Record from './Tile/Record';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';

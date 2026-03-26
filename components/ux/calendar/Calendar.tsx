@@ -3,7 +3,7 @@
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Color, Style, Dates } from '@esmalley/ts-utils';
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import Paper from '../container/Paper';

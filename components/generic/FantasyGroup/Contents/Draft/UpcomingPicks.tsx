@@ -1,7 +1,7 @@
 'use client';
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '@/components/ux/container/Paper';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';

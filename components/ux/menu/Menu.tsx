@@ -1,6 +1,6 @@
 'use client';
 
-// import { useTheme } from '@/components/hooks/useTheme';
+// import { useTheme } from '@/components/ux/contexts/themeContext';
 import ReactDOM from 'react-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Paper from '@/components/ux/container/Paper';
@@ -10,7 +10,7 @@ import MenuList from './MenuList';
 import MenuItem from './MenuItem';
 import MenuListIcon from './MenuListIcon';
 import MenuListText from './MenuListText';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Objector, Style } from '@esmalley/ts-utils';
 import Typography from '../text/Typography';
 

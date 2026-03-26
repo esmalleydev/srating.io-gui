@@ -9,7 +9,7 @@ import { setLoading } from '@/redux/features/loading-slice';
 import { ApiKey, Pricing, Subscription as SubscriptionType } from '@/types/general';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Modal from '@/components/ux/modal/Modal';
 import Button from '@/components/ux/buttons/Button';
 import { Dates } from '@esmalley/ts-utils';

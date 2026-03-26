@@ -2,7 +2,7 @@
 
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tab from '@/components/ux/buttons/Tab';
 import SubNavBar from './SubNavbar';
 import { Style } from '@esmalley/ts-utils';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import Modal from '@/components/ux/modal/Modal';
 import Button from '@/components/ux/buttons/Button';

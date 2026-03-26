@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Typography from '../text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Style } from '@esmalley/ts-utils';
 
 const MenuListText = (

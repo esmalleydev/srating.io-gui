@@ -10,7 +10,7 @@ import Tooltip from '@/components/ux/hover/Tooltip';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { CSV } from '@esmalley/ts-utils';
 

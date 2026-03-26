@@ -7,7 +7,7 @@ import AccountHandler from '@/components/generic/AccountHandler';
 import { updateGameIds, updateGameSort } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import Tooltip from '../ux/hover/Tooltip';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import IconButton from '../ux/buttons/IconButton';
 
 // const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(

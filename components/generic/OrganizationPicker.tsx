@@ -14,7 +14,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { reset as resetGames } from '@/redux/features/games-slice';
 import { reset as resetRanking } from '@/redux/features/ranking-slice';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { reset } from '@/redux/features/compare-slice';
 import Tooltip from '../ux/hover/Tooltip';

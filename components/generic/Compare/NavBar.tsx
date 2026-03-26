@@ -16,7 +16,7 @@ import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
 import { useScrollContext } from '@/contexts/scrollContext';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tab from '@/components/ux/buttons/Tab';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';

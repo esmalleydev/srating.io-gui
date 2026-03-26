@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import Typography from '@/components/ux/text/Typography';
 import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 const ClientWrapper = ({ children }) => {
   const theme = useTheme();

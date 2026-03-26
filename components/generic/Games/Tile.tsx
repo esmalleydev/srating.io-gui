@@ -20,7 +20,7 @@ import useOnScreen from '@/components/hooks/useOnScreen';
 import Record from './Tile/Record';
 import Rank from './Tile/Rank';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/games-slice';

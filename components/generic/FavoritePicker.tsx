@@ -9,7 +9,7 @@ import AccountHandler from '@/components/generic/AccountHandler';
 import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import Tooltip from '../ux/hover/Tooltip';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import IconButton from '../ux/buttons/IconButton';
 
 const FavoritePicker = (
@@ -96,7 +96,7 @@ const FavoritePicker = (
   return (
     <>
       <Tooltip onClickRemove text = {'Save favorite'}>
-        <IconButton onClick = {handleFavorite} value = 'favorite' icon = {<FavoriteIcon sx = {favoriteStyle} fontSize = 'small' />} />
+        <IconButton onClick = {handleFavorite} value = 'favorite' icon = {<FavoriteIcon style = {favoriteStyle} fontSize = 'small' />} />
       </Tooltip>
       <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
     </>

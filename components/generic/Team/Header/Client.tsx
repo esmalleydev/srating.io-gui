@@ -11,7 +11,7 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Coach, CoachStatisticRanking, Team } from '@/types/general';
 import { ConferenceStatisticRanking } from '@/types/cbb';
 import General from '@/components/helpers/General';

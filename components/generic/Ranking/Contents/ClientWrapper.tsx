@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
 import { useAppSelector } from '@/redux/hooks';
 

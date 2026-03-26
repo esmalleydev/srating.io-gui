@@ -6,7 +6,7 @@ import { useAppSelector } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
 import Wizard, { WizardStep } from '@/components/ux/layout/Wizard';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { useNavigation } from '@/components/hooks/useNavigation';
 
 const CreateGroup = () => {

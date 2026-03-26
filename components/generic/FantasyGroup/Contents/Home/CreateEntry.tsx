@@ -1,7 +1,7 @@
 'use client';
 
 import Inputs from '@/components/helpers/Inputs';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import TextInput from '@/components/ux/input/TextInput';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';

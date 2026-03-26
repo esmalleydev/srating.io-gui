@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Color, Style } from '@esmalley/ts-utils';
 import Typography from '@/components/ux/text/Typography';
 import CancelIcon from '@mui/icons-material/Cancel';

@@ -4,7 +4,7 @@ import React from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import AdditionalOptions from '@/components/generic/Team/Header/AdditionalOptions';
 import BackButton from '@/components/generic/BackButton';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 // const breakPoint = 450;

@@ -18,7 +18,7 @@ import Paper from '@/components/ux/container/Paper';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Dates, Objector } from '@esmalley/ts-utils';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 /**
  * The main wrapper div for all the contents

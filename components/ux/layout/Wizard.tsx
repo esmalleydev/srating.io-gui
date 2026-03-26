@@ -5,7 +5,7 @@
 import Typography from '../text/Typography';
 import Button from '../buttons/Button';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 import CheckIcon from '@mui/icons-material/Check';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';

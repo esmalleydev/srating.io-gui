@@ -10,7 +10,7 @@ import { useClientAPI } from '@/components/clientAPI';
 import Typography from '@/components/ux/text/Typography';
 import { FantasyEntryLoadData, handleLoad } from './ReduxWrapper';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 

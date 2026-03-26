@@ -1,7 +1,7 @@
 'use client';
 
 import Blank from '@/components/generic/Blank';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { FantasyRanking } from '@/types/general';

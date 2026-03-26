@@ -4,7 +4,7 @@ import { RefObject, useLayoutEffect, useRef } from 'react';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
 import { useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tab from '@/components/ux/buttons/Tab';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Style } from '@esmalley/ts-utils';

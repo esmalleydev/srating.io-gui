@@ -1,4 +1,5 @@
 'use client';
+/*
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
@@ -170,3 +171,4 @@ const Tile = (props) => {
 }
 
 export default Tile;
+*/

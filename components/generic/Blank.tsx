@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Typography from '../ux/text/Typography';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 const Blank = (

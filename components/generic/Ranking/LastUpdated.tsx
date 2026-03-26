@@ -4,7 +4,7 @@
 import HelpIcon from '@mui/icons-material/Help';
 import { getLastUpdated } from './DataHandler';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dates, Style } from '@esmalley/ts-utils';
 
 

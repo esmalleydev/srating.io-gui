@@ -8,7 +8,7 @@ import Subscriptions from './Subscriptions';
 import { useAppSelector } from '@/redux/hooks';
 import Fantasy from './Fantasy';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 

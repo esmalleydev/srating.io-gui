@@ -4,7 +4,7 @@ import React, { useState, useTransition } from 'react';
 import { getBreakPoint, getMarginTop, getDateBarHeight } from '@/components/generic/DateBar';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Modal from '@/components/ux/modal/Modal';
 import Tab from '@/components/ux/buttons/Tab';
 import Typography from '@/components/ux/text/Typography';

@@ -7,7 +7,7 @@ import { setDataKey } from '@/redux/features/ranking-slice';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 const FloatingButtons = () => {
   const theme = useTheme();

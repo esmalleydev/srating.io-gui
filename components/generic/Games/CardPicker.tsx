@@ -8,7 +8,7 @@ import ViewCompactIcon from '@mui/icons-material/ViewCompact';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/display-slice';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
 import Tile from '@/components/ux/container/Tile';

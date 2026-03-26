@@ -19,7 +19,7 @@ import ConferenceChips from '../ConferenceChips';
 import ConferencePicker from '../ConferencePicker';
 import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import PositionPicker from './PositionPicker';
 import TableColumns from '@/components/helpers/TableColumns';
 import ClassYearPicker from './ClassYearPicker';

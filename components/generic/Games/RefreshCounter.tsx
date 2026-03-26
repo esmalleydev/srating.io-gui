@@ -5,7 +5,7 @@ import WifiOffIcon from '@mui/icons-material/WifiOff';
 import { useAppSelector } from '@/redux/hooks';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 /**

@@ -6,7 +6,7 @@ import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
 import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import TableColumns from '@/components/helpers/TableColumns';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tooltip from '@/components/ux/hover/Tooltip';
 
 

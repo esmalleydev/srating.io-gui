@@ -2,7 +2,7 @@
 
 /* eslint-disable no-nested-ternary */
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Button from '@/components/ux/buttons/Button';
 import IconButton from '@/components/ux/buttons/IconButton';
 import Paper from '@/components/ux/container/Paper';

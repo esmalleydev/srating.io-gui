@@ -5,7 +5,7 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 import Locked from './Billing/Locked';
 import RankSpan from './RankSpan';
 import Typography from '../ux/text/Typography';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '../ux/container/Paper';
 import Tooltip from '../ux/hover/Tooltip';
 import React from 'react';

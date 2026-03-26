@@ -9,7 +9,7 @@ import Organization from '@/components/helpers/Organization';
 import CBB from '@/components/helpers/CBB';
 import CFB from '@/components/helpers/CFB';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';

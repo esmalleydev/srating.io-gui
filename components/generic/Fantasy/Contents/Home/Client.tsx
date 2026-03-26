@@ -13,7 +13,7 @@ import PublicBracketsGroups from './PublicBracketsGroups';
 import PublicDraftGroups from './PublicDraftGroups';
 import CreateGroup from './CreateGroup';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 interface Data {

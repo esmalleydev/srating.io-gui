@@ -15,7 +15,7 @@ import PredictionLine from './Tile/PredictionLine';
 import StatLine from './Tile/StatLine';
 import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '@/components/ux/container/Paper';
 import Button from '@/components/ux/buttons/Button';
 import { setDataKey } from '@/redux/features/picks-slice';

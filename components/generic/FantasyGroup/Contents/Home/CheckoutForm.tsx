@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
 import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 
 

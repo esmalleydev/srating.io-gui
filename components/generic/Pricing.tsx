@@ -12,7 +12,7 @@ import ShowChartIcon from '@mui/icons-material/ShowChart';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import Billing from './Billing';
 import ButtonSwitch from './ButtonSwitch';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '../ux/text/Typography';
 import { Color, Style } from '@esmalley/ts-utils';
 import Paper from '../ux/container/Paper';

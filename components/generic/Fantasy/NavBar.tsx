@@ -3,7 +3,7 @@
 import BackButton from '../BackButton';
 import { useAppSelector } from '@/redux/hooks';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Objector, Style } from '@esmalley/ts-utils';
 
 

@@ -22,7 +22,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import { Games } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
 import { Boxscores as BoxscoreCFB } from '@/types/cfb';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import { Dates } from '@esmalley/ts-utils';

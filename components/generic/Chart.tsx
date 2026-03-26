@@ -8,7 +8,7 @@ import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import { useState } from 'react';
 
 import LinearScaleIcon from '@mui/icons-material/LinearScale';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import RankSpan from './RankSpan';

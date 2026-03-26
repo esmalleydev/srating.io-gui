@@ -1,7 +1,7 @@
 'use client';
 
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dates } from '@esmalley/ts-utils';
 
 

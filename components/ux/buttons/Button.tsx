@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 // import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Color, Style } from '@esmalley/ts-utils';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';

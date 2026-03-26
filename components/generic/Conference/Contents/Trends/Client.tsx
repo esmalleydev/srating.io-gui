@@ -18,14 +18,14 @@ import { Elos, Games, TeamSeasonConferences } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
 import { useAppSelector } from '@/redux/hooks';
 import Team from '@/components/helpers/Team';
-import ColumnPickerFull from '@/components/generic/ColumnPickerFull';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
 import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import Paper from '@/components/ux/container/Paper';
 import { Color, Dates } from '@esmalley/ts-utils';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
+import ColumnPicker from '@/components/generic/ColumnPicker';
 
 export interface TrendsType {
   elos: Elos;
@@ -97,13 +97,24 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
   const [inactiveSeries, setInactiveSeries] = useState<Array<string>>([]);
   const [selectedChip, setSelectedChip] = useState(standardColumns[0]);
   const [customColumn, setCustomColumn] = useState<string | null>(null);
-  const [customColumnsOpen, setCustomColumnsOpen] = useState(false);
 
   const allColumns = TableColumns.getColumns({ organization_id, view: 'conference', graphable: true });
 
   if (customColumn && customColumn in allColumns) {
     standardColumns.push(allColumns[customColumn].id);
   }
+
+  const handlCustomColumnsSave = (col) => {
+    const selectedColumn = col || null;
+
+    if (!standardColumns.includes(selectedColumn)) {
+      setCustomColumn(selectedColumn);
+    }
+
+    if (selectedColumn) {
+      setSelectedChip(selectedColumn);
+    }
+  };
 
   const statsCompareChips: React.JSX.Element[] = [];
 
@@ -122,36 +133,10 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
   }
 
   statsCompareChips.push(
-    <Chip
-      key = {'custom'}
-      style = {{ margin: '5px 5px 10px 5px' }}
-      filled = {selectedChip === 'custom'}
-      value = {'custom'}
-      onClick = {() => { handleCustom(); }}
-      title = {'+ Custom'}
-    />,
+    <div style ={{ display: 'inline-block' }}>
+      <ColumnPicker key = {'conference-stat-custom-column-picker'} options = {allColumns} selected = {customColumn ? [customColumn] : []} filled = {false} isRadio = {true} autoClose={true} actionHandler = {handlCustomColumnsSave} />
+    </div>,
   );
-
-  const handleCustom = () => {
-    setCustomColumnsOpen(true);
-  };
-
-  const handlCustomColumnsSave = (columns) => {
-    const selectedColumn = columns.length ? columns[0] : null;
-    setCustomColumnsOpen(false);
-
-    if (!standardColumns.includes(selectedColumn)) {
-      setCustomColumn(selectedColumn);
-    }
-
-    if (selectedColumn) {
-      setSelectedChip(selectedColumn);
-    }
-  };
-
-  const handlCustomColumnsExit = () => {
-    setCustomColumnsOpen(false);
-  };
 
 
   const date_of_rank_x_team_id_x_data = {};
@@ -435,7 +420,6 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
         {!formattedData.length ? <Typography style = {{ textAlign: 'center', margin: '10px 0px' }} type = 'h5'>Nothing here yet...</Typography> : ''}
         {formattedData.length ? getRankingGraph() : ''}
       </div>
-      <ColumnPickerFull key = {'conference-stat-custom-column-picker'} options = {allColumns} open = {customColumnsOpen} selected = {customColumn ? [customColumn] : []} saveHandler = {handlCustomColumnsSave} closeHandler = {handlCustomColumnsExit} limit = {1} title='Select a column' />
     </Contents>
   );
 };

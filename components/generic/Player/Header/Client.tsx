@@ -9,7 +9,7 @@ import { useAppSelector } from '@/redux/hooks';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Player, PlayerTeamSeasons, Team, Teams } from '@/types/general';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import FavoritePicker from '../../FavoritePicker';
 import OptionPicker from '../../OptionPicker';
 import { PlayerStatisticRanking, StatisticRanking } from '@/types/cbb';

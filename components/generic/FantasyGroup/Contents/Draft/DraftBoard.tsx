@@ -1,7 +1,7 @@
 'use client';
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Button from '@/components/ux/buttons/Button';
 import Paper from '@/components/ux/container/Paper';
 import Tile from '@/components/ux/container/Tile';

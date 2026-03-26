@@ -17,7 +17,7 @@ import { decorateHeaderRow, decorateRows } from '@/components/generic/Ranking/Co
 import DraftZonePick from './DraftZonePick';
 import { Objector } from '@esmalley/ts-utils';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 const DraftZone = () => {

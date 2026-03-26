@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '../text/Typography'; // Adjust path if needed
 import { useState } from 'react';
 import { Color, Style } from '@esmalley/ts-utils';

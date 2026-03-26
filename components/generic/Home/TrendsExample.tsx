@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import { RankingColumns } from '@/types/general';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Chip from '@/components/ux/container/Chip';
 
 

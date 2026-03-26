@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Button from '../buttons/Button';
 import Typography from '../text/Typography';
 import Modal from './Modal';

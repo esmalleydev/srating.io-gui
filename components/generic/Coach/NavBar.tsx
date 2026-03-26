@@ -4,7 +4,7 @@ import { useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey } from '@/redux/features/coach-slice';
 import Tab from '@/components/ux/buttons/Tab';
 import { Style } from '@esmalley/ts-utils';

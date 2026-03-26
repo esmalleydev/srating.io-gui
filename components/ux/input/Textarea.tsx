@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '../text/Typography';
 import { RefObject } from 'react';
 import { BaseInputProps, useInputLogic } from './hooks/useInputLogic';

@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { updateDataKey } from '@/redux/features/display-slice';
 import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 const StatusPicker = () => {
   const theme = useTheme();

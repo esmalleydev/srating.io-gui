@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey } from '@/redux/features/user-slice';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
 import TextInput from '@/components/ux/input/TextInput';

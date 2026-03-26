@@ -1,7 +1,7 @@
 'use client';
 
 import Team from '@/components/helpers/Team';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';

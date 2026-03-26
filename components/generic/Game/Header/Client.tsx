@@ -6,7 +6,7 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import Refresher from '../Refresher';
 import { Game } from '@/types/general';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 const Client = (

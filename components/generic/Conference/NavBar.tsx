@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Tab from '@/components/ux/buttons/Tab';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey } from '@/redux/features/conference-slice';
 import { Style } from '@esmalley/ts-utils';
 

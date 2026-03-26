@@ -7,7 +7,7 @@ import BackButton from '@/components/generic/BackButton';
 
 import Search from './Search';
 import AdditionalOptions from '../AdditionalOptions';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Style } from '@esmalley/ts-utils';
 
 

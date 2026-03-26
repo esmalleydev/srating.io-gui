@@ -14,7 +14,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
 import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey } from '@/redux/features/user-slice';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
 import TextInput from '@/components/ux/input/TextInput';

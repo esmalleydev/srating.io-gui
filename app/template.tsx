@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -16,6 +14,8 @@ import { Objector, socket, toast } from '@esmalley/ts-utils';
 import { setDataKey as setDataKeyGeneral } from '@/redux/features/general-slice';
 import { getStore } from './StoreProvider';
 import { InitialState, setDataKey as setDataKeyUser } from '@/redux/features/user-slice';
+import { ThemeProvider, Themes } from '@/components/ux/contexts/themeContext';
+import { UXBaseline } from '@/components/ux/baseline/UXBaseline';
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
@@ -144,22 +144,6 @@ const Template = ({ children }: { children: React.ReactNode }) => {
     };
   }, [session_id, user]);
 
-  // todo deprecate once mui is completely removed
-  const darkTheme = createTheme({
-    palette: {
-      mode: 'dark',
-    },
-  });
-
-  const lightTheme = createTheme({
-    palette: {
-      mode: 'light',
-      background: {
-        default: '#efefef',
-      },
-    },
-  });
-
 
   let paddingTop = '64px';
 
@@ -168,8 +152,8 @@ const Template = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <ThemeProvider theme={themeMode === 'dark' ? darkTheme : lightTheme}>
-      <CssBaseline />
+    <ThemeProvider theme={themeMode as Themes}>
+      <UXBaseline />
       {
       isMounted ?
         <ScrollProvider>

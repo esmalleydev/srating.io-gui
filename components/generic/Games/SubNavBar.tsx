@@ -7,7 +7,7 @@ import AdditionalOptions from '@/components/generic/Games/AdditionalOptions';
 import StatusPicker from '@/components/generic/StatusPicker';
 import RefreshCounter from './RefreshCounter';
 import GamesFilterPicker from './GamesFilterPicker';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 const getHeaderHeight = () => {
   return 48;

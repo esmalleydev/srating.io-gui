@@ -5,7 +5,7 @@ import { useAppSelector } from '@/redux/hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import CheckIcon from '@mui/icons-material/Check';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dates } from '@esmalley/ts-utils';
 
 const Title = () => {

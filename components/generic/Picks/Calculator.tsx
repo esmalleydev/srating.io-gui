@@ -1,22 +1,7 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { styled, useTheme } from '@mui/material/styles';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-
-
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Skeleton from '@mui/material/Skeleton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { SortDirection } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import { visuallyHidden } from '@mui/utils';
-
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelCircleIcon from '@mui/icons-material/Cancel';
@@ -37,20 +22,15 @@ import Inputs from '@/components/helpers/Inputs';
 import { Arrayifier, Dates, Sorter } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
-
-const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900],
-}));
+import { useTheme } from '@/components/ux/contexts/themeContext';
+import Table from '@/components/ux/table/Table';
+import Thead from '@/components/ux/table/Thead';
+import Tr from '@/components/ux/table/Tr';
+import Th from '@/components/ux/table/Th';
+import Tbody from '@/components/ux/table/Tbody';
+import Td from '@/components/ux/table/Td';
+import Paper from '@/components/ux/container/Paper';
+import Skeleton from '@/components/ux/loading/Skeleton';
 
 // todo this somestimes triggers a double load in PicksLoader.... something with having const picksLoading = useAppSelector(state => state.picksReducer.picksLoading);, makes it double render
 
@@ -66,6 +46,8 @@ const Calculator = ({ games, date }) => {
   const picksLoading = useAppSelector((state) => state.picksReducer.picksLoading);
   const displayRank = useAppSelector((state) => state.displayReducer.rank);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
+  const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
+  const path = Organization.getPath({ organizations, organization_id });
   const hasAccess = useAppSelector((state) => state.userReducer.isValidSession);
 
   const [now, setNow] = useState(Dates.format(Dates.parse(), 'Y-m-d'));
@@ -104,9 +86,8 @@ const Calculator = ({ games, date }) => {
   };
 
 
-  const handleGame = (g: Game) => {
-    const path = Organization.getPath({ organizations, organization_id: g.organization_id });
-    navigation.game(`/${path}/games/${g.game_id}`);
+  const handleGame = (game_id: string) => {
+    navigation.game(`/${path}/games/${game_id}`);
   };
 
   const headCells = [
@@ -537,6 +518,8 @@ const Calculator = ({ games, date }) => {
     setOrderBy(id);
   };
 
+  let b = 0;
+
 
   const getStyledTableRow = (row) => {
     const teamCellStyle: React.CSSProperties = {
@@ -547,8 +530,25 @@ const Calculator = ({ games, date }) => {
     if (width < 800) {
       teamCellStyle.position = 'sticky';
       teamCellStyle.left = 0;
-      teamCellStyle.backgroundColor = (theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[900]);
+      teamCellStyle.backgroundColor = (theme.mode === 'light' ? theme.grey[200] : theme.grey[900]);
     }
+
+    let trColor = (b % 2 === 0 ? theme.grey[800] : theme.grey[900]);
+
+    if (theme.mode === 'light') {
+      trColor = b % 2 === 0 ? theme.grey[200] : theme.grey[300];
+    }
+
+    b++;
+
+    const trStyle = {
+      padding: '4px 5px',
+      border: 0,
+      backgroundColor: trColor,
+      '&:hover td': {
+        backgroundColor: (theme.mode === 'light' ? theme.info.light : theme.info.dark),
+      },
+    };
 
     const Game = new HelperGame({
       game: row.game,
@@ -559,21 +559,28 @@ const Calculator = ({ games, date }) => {
     const vsRank = Game.getTeamRank(row.vs, displayRank);
     const vsName = Game.getTeamName(row.vs);
 
+    let icon: string | React.JSX.Element = '-';
+
+    if (row.status === 'final') {
+      icon = (row.result ? <CheckCircleIcon style = {{ color: theme.success.main }} /> : <CancelCircleIcon style = {{ color: theme.error.main }} />);
+    }
+
     return (
-      <StyledTableRow
+      <Tr
         key={row.game_id}
-        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        style={trStyle}
+        onClick={() => { handleGame(row.game_id); }}
       >
-        <TableCell sx = {teamCellStyle} onClick={() => { handleGame(row.game_id); }}><div>{pickRank ? <sup style = {{ marginRight: '5px' }}>{pickRank}</sup> : ''}{pickName}</div></TableCell>
-        <TableCell>{row.pick_ml}</TableCell>
-        <TableCell>{Game.getStartTime()}</TableCell>
-        <TableCell sx = {{ cursor: 'pointer', whiteSpace: 'nowrap' }} onClick={() => { handleGame(row.game_id); }}>
+        <Td style = {teamCellStyle}><div>{pickRank ? <sup style = {{ marginRight: '5px' }}>{pickRank}</sup> : ''}{pickName}</div></Td>
+        <Td>{row.pick_ml}</Td>
+        <Td>{Game.getStartTime()}</Td>
+        <Td style = {{ cursor: 'pointer', whiteSpace: 'nowrap' }}>
           <div>{vsRank ? <sup style = {{ marginRight: '5px' }}>{vsRank}</sup> : ''}{vsName}</div>
-        </TableCell>
-        <TableCell>{row.vs_ml}</TableCell>
-        <TableCell>{row.chance}</TableCell>
-        <TableCell>{row.status === 'final' ? (row.result ? <CheckCircleIcon color = 'success' /> : <CancelCircleIcon sx = {{ color: 'red' }} />) : '-'}</TableCell>
-      </StyledTableRow>
+        </Td>
+        <Td>{row.vs_ml}</Td>
+        <Td>{row.chance}</Td>
+        <Td>{icon}</Td>
+      </Tr>
     );
   };
 
@@ -605,39 +612,34 @@ const Calculator = ({ games, date }) => {
 
   const getTable = (rowContainers) => {
     return (
-      <TableContainer component={Paper}>
-        <Table size = 'small'>
-          <TableHead>
-            <TableRow>
-              {headCells.map((headCell) => (
-                <StyledTableHeadCell
-                  sx = {headCell.id === 'pick' ? { position: 'sticky', left: 0, 'z-index': 3 } : {}}
+      <Table>
+        <Thead>
+          <Tr>
+            {headCells.map((headCell) => {
+              const tdStyle: React.CSSProperties = {
+                padding: '4px 5px',
+                border: 0,
+                backgroundColor: theme.mode === 'light' ? theme.info.light : theme.info.dark,
+              };
+
+              return (
+                <Th
+                  style = {tdStyle}
                   key={headCell.id}
-                  align={'left'}
-                  style = {{ padding: headCell.padding }}
-                  sortDirection={orderBy === headCell.id ? (order as SortDirection) : false}
+                  onClick={() => { handleSort(headCell.id); }}
+                  sortable = {true}
+                  sortDirection={orderBy === headCell.id ? order : false}
                 >
-                  <TableSortLabel
-                    active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? (order as 'asc' | 'desc') : 'asc'}
-                    onClick={() => { handleSort(headCell.id); }}
-                  >
-                    {headCell.label}
-                    {orderBy === headCell.id ? (
-                      <Box component="span" sx={visuallyHidden}>
-                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                      </Box>
-                    ) : null}
-                  </TableSortLabel>
-                </StyledTableHeadCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rowContainers}
-          </TableBody>
-        </Table>
-    </TableContainer>
+                  {headCell.label}
+                </Th>
+              );
+            })}
+          </Tr>
+        </Thead>
+        <Tbody>
+          {rowContainers}
+        </Tbody>
+      </Table>
     );
   };
 
@@ -663,7 +665,7 @@ const Calculator = ({ games, date }) => {
   );
   if (total_bet || date < now) {
     betting_contents.push(inputs);
-    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>Hypothetical pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.text.secondary }}>Hypothetical pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
 
     if (total_bet) {
       betting_contents.push(<Typography type = 'body1'>Total bet: ${total_bet} ({games_bet} games)</Typography>);
@@ -671,7 +673,7 @@ const Calculator = ({ games, date }) => {
       betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((winnings - total_bet).toString()).toFixed(2)} ({total_bet > 0 ? parseFloat((((winnings - total_bet) / total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
 
-    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>A round robin bet creates a parlay for every possible combination of games based on the input below. It will use the inputs above as a base for games to select. Must have at least 2 eligible games. Ex: if there are 10 games total and you select 9 games, it would create 10 parlays of 9 games each.</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.text.secondary }}>A round robin bet creates a parlay for every possible combination of games based on the input below. It will use the inputs above as a base for games to select. Must have at least 2 eligible games. Ex: if there are 10 games total and you select 9 games, it would create 10 parlays of 9 games each.</Typography>);
     betting_contents.push(roundRobinInput);
     if (games_bet > 2 && roundRobinLength) {
       betting_contents.push(<Typography type = 'body1'>Total bet: ${roundRobinBetTotal} ({roundRobinBetCombos} parlays)</Typography>);
@@ -680,42 +682,42 @@ const Calculator = ({ games, date }) => {
     }
   } else if (date === now) {
     betting_contents.push(inputs);
-    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>Future pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.text.secondary }}>Future pre-game ML betting ${bet} on each pick with odds greater than {oddsMin} and less than {oddsMax}</Typography>);
 
     if (future_total_bet) {
       betting_contents.push(<Typography type = 'body1'>Total bet: ${future_total_bet} ({future_games_bet} games)</Typography>);
-      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>100% win rate</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.text.secondary, marginTop: '10px' }}>100% win rate</Typography>);
       betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_winnings_100.toString()).toFixed(2)} ({future_games_bet} games) (100%)</Typography>);
       betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_winnings_100 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_100 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
-      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>Random ~75% win rate</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.text.secondary, marginTop: '10px' }}>Random ~75% win rate</Typography>);
       betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_winnings_75.toString()).toFixed(2)} ({future_games_won_75} games) ({((future_games_won_75 / future_games_bet) * 100).toFixed(2)}%)</Typography>);
       betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_winnings_75 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_75 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
-      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>Random ~60% win rate</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.text.secondary, marginTop: '10px' }}>Random ~60% win rate</Typography>);
       betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_winnings_60.toString()).toFixed(2)} ({future_games_won_60} games) ({((future_games_won_60 / future_games_bet) * 100).toFixed(2)}%)</Typography>);
       betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_winnings_60 - future_total_bet).toString()).toFixed(2)} ({future_total_bet > 0 ? parseFloat((((future_winnings_60 - future_total_bet) / future_total_bet) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
 
-    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.palette.text.secondary }}>A round robin bet creates a parlay for every possible combination of games based on the input below. It will use the inputs above as a base for games to select. Must have at least 2 eligible games. Ex: if there are 10 games total and you select 9 games, it would create 10 parlays of 9 games each.</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ color: theme.text.secondary }}>A round robin bet creates a parlay for every possible combination of games based on the input below. It will use the inputs above as a base for games to select. Must have at least 2 eligible games. Ex: if there are 10 games total and you select 9 games, it would create 10 parlays of 9 games each.</Typography>);
     betting_contents.push(roundRobinInput);
 
     if (future_games_bet > 2 && roundRobinLength) {
-      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>100% win rate</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.text.secondary, marginTop: '10px' }}>100% win rate</Typography>);
       betting_contents.push(<Typography type = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
       betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_100.toString()).toFixed(2)} ({future_roundRobinWins_100}  ({((future_roundRobinWins_100 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
       betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_100 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_100 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
 
-      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>75% win rate</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.text.secondary, marginTop: '10px' }}>75% win rate</Typography>);
       betting_contents.push(<Typography type = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
       betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_75.toString()).toFixed(2)} ({future_roundRobinWins_75}  ({((future_roundRobinWins_75 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
       betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_75 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_75 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
 
-      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.palette.text.secondary, marginTop: '10px' }}>60% win rate</Typography>);
+      betting_contents.push(<Typography type = 'subtitle2' style = {{ color: theme.text.secondary, marginTop: '10px' }}>60% win rate</Typography>);
       betting_contents.push(<Typography type = 'body1'>Total bet: ${future_roundRobinBetTotal} ({future_roundRobinBetCombos} parlays)</Typography>);
       betting_contents.push(<Typography type = 'body1'>Won: ${parseFloat(future_roundRobinWonTotal_60.toString()).toFixed(2)} ({future_roundRobinWins_60}  ({((future_roundRobinWins_60 / future_roundRobinBetCombos) * 100).toFixed(2)}%))</Typography>);
       betting_contents.push(<Typography type = 'body1'>Net: ${parseFloat((future_roundRobinWonTotal_60 - future_roundRobinBetTotal).toString()).toFixed(2)} ({future_roundRobinBetTotal > 0 ? parseFloat((((future_roundRobinWonTotal_60 - future_roundRobinBetTotal) / future_roundRobinBetTotal) * 100).toString()).toFixed(2) : 0}%)</Typography>);
     }
   } else {
-    betting_contents.push(<Typography type = 'subtitle1' style = {{ textAlign: 'center', color: theme.palette.text.secondary }}>No betting info available yet... come back soon!</Typography>);
+    betting_contents.push(<Typography type = 'subtitle1' style = {{ textAlign: 'center', color: theme.text.secondary }}>No betting info available yet... come back soon!</Typography>);
     // if (date > now) {
     //   betting_contents.push(<Typography type = 'caption' style = {{'textAlign': 'center'}} style = {{ color: theme.palette.text.secondary }}>Picks for games greater than today may change</Typography>);
     // }

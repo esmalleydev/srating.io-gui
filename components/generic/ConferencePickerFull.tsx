@@ -1,5 +1,5 @@
 'use client';
-
+/*
 import { useState } from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
@@ -163,3 +163,4 @@ const ConferencePickerFull = () => {
 };
 
 export default ConferencePickerFull;
+*/

@@ -17,7 +17,7 @@ import ConferenceRank from './ConferenceRank';
 import ConferenceRecord from './ConferenceRecord';
 import RefreshCounter from './RefreshCounter';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import { useNavigation } from '@/components/hooks/useNavigation';
 
 

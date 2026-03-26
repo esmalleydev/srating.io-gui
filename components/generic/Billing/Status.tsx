@@ -11,7 +11,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import Footer from '../Footer';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Button from '@/components/ux/buttons/Button';
 import Conversions from './Conversions';
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';

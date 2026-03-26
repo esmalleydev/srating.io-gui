@@ -2,7 +2,7 @@
 
 import { Objector, Style } from '@esmalley/ts-utils';
 import BackButton from '../BackButton';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 const getNavHeaderHeight = () => {

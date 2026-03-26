@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Columns from '../layout/Columns';
 import Typography from '../text/Typography';
 import Paper from '../container/Paper';

@@ -13,7 +13,7 @@ import Typography from '@/components/ux/text/Typography';
 import Chip from '@/components/ux/container/Chip';
 import Paper from '@/components/ux/container/Paper';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 /**
  * The main wrapper div for all the contents

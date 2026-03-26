@@ -8,7 +8,7 @@ import HelperGame from '@/components/helpers/Game';
 import Locked from '@/components/generic/Billing/Locked';
 import { useRouter } from 'next/navigation';
 import { setLoading } from '@/redux/features/loading-slice';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import General from '@/components/helpers/General';
 import { Color, Objector } from '@esmalley/ts-utils';
 import Table from '@/components/ux/table/Table';

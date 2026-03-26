@@ -1,5 +1,5 @@
 'use client';
-
+/*
 import React, { useState } from 'react';
 
 import AppBar from '@mui/material/AppBar';
@@ -117,3 +117,4 @@ const OptionPickerFull = (
 };
 
 export default OptionPickerFull;
+*/

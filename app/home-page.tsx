@@ -13,10 +13,10 @@ import TrendsExample from '@/components/generic/Home/TrendsExample';
 import RankingExample from '@/components/generic/Home/RankingExample';
 import ToolsExample from '@/components/generic/Home/ToolsExample';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import { useTheme } from '@/components/hooks/useTheme';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import General from '@/components/helpers/General';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 
 const Home = () => {
   const [selectedHero, setSelectedHero] = useState('trends');

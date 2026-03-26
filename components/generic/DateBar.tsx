@@ -15,7 +15,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/games-slice';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import Calendar from '@/components/ux/calendar/Calendar';
 import Plane from '@/components/ux/overlay/Plane';
 import IconButton from '@/components/ux/buttons/IconButton';

@@ -3,7 +3,7 @@
 
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/hooks/useTheme';
+import { useTheme } from '@/components/ux/contexts/themeContext';
 import TableColumns from '@/components/helpers/TableColumns';
 import Modal from '@/components/ux/modal/Modal';
 import IconButton from '@/components/ux/buttons/IconButton';
