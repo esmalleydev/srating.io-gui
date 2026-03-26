@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import useDebounce from '@/components/hooks/useDebounce';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -14,6 +14,7 @@ import { useNavigation } from '../hooks/useNavigation';
 import TextInput from '../ux/input/TextInput';
 import Inputs from '../helpers/Inputs';
 import Menu, { MenuOption } from '../ux/menu/Menu';
+import { useTheme } from '../hooks/useTheme';
 
 
 
@@ -21,6 +22,7 @@ const Search = (
   { onRouter, focus }:
   { onRouter?: () => void; focus: boolean },
 ) => {
+  const theme = useTheme();
   const navigation = useNavigation();
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
@@ -204,7 +206,7 @@ const Search = (
     });
   }
 
-  const containerStyle = {
+  const containerStyle: Record<string, unknown> = {
     height: 35,
     borderRadius: '4px',
     backgroundColor: Color.alphaColor('#fff', 0.15),
@@ -221,11 +223,22 @@ const Search = (
     },
   };
 
+  const placeholderStyle: Record<string, unknown> = {};
+  const clearIconStyle: Record<string, unknown> = {};
+
+  if (theme.mode === 'light') {
+    placeholderStyle.color = '#fff';
+    containerStyle.color = '#fff';
+    clearIconStyle.color = theme.grey[300];
+  }
+
   return (
     <div>
       <TextInput
         style = {containerStyle}
         inputHandler={inputHandler}
+        placeholderStyle={placeholderStyle}
+        clearIconStyle={clearIconStyle}
         placeholder='Search'
         variant='filled'
         clear

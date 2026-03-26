@@ -14,6 +14,7 @@ interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   ref?: RefObject<HTMLInputElement | null>;
   style?: Record<string, unknown>;
   placeholderStyle?: Record<string, unknown>;
+  clearIconStyle?: Record<string, unknown>;
   icon?: React.JSX.Element;
   clear?: boolean;
   transformPlaceholder?: boolean;
@@ -25,6 +26,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     ref = null,
     style = {},
     placeholderStyle = {},
+    clearIconStyle = {},
     placeholder,
     label,
     variant = 'outlined',
@@ -99,7 +101,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     inputStyle.borderBottom = 'none';
     if (!disabled) {
       inputStyle['&:hover'] = {
-        backgroundColor: Color.alphaColor('#fff', 0.25),
+        backgroundColor: Color.alphaColor((theme.mode === 'dark' ? '#fff' : theme.grey[600]), 0.25),
       };
     }
   } else if (variant === 'standard') {
@@ -169,6 +171,12 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     placeholderElement = null;
   }
 
+  const clearStyle = {
+    color: (theme.mode === 'dark' ? theme.error.main : theme.grey[600]),
+  };
+
+  Objector.extender(clearStyle, clearIconStyle);
+
   return (
     <div className={Style.getStyleClassName(containerStyle)}>
       {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
@@ -191,7 +199,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
         {
         clear && value ?
           <div style = {{ position: 'absolute', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', right: 0, top: 0 }}>
-            <IconButton icon = {<CancelIcon style = {{ color: theme.error.main }} />} value = 'clear' onClick={() => {
+            <IconButton icon = {<CancelIcon style = {clearStyle} />} value = 'clear' onClick={() => {
               // Create a synthetic-like object to match React.ChangeEvent structure
               const syntheticEvent = {
                 target: { value: '' },

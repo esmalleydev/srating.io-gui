@@ -30,7 +30,9 @@ const IconButton = (
     type?: 'standard' | 'circle';
     disabled?: boolean;
     autoFocus?: boolean;
-    containerStyle?: React.CSSProperties;
+    containerStyle?: React.CSSProperties & {
+      '&:hover'?: React.CSSProperties
+    };
     buttonStyle?: React.CSSProperties;
     badge?: number;
     ref?: RefObject<HTMLDivElement> | null;

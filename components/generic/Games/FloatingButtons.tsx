@@ -4,12 +4,16 @@ import { useState, useEffect } from 'react';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
-import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+// import Tooltip from '@/components/ux/hover/Tooltip';
+import IconButton from '@/components/ux/buttons/IconButton';
+import { Style } from '@esmalley/ts-utils';
+import { useTheme } from '@/components/hooks/useTheme';
 // import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 
 
 const FloatingButtons = () => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const displaySlice = useAppSelector((state) => state.displayReducer);
 
@@ -47,7 +51,28 @@ const FloatingButtons = () => {
 
   return (
     <div>
-      {showScrollFAB ? <div style = {{ position: 'absolute', bottom: 70, left: 15 }}><Fab size = 'small' color = 'secondary' onClick={handleScrollToTop}>{<KeyboardArrowUpIcon />}</Fab></div> : ''}
+      {showScrollFAB ?
+        <div style = {{ position: 'absolute', bottom: 70, left: 15 }}>
+          {/* <Tooltip position = 'top' text={'Scroll to top'}> */}
+            <IconButton
+              containerStyle = {{
+                zIndex: Style.getZIndex().fab,
+                backgroundColor: theme.secondary.main,
+                boxShadow: Style.getShadow(6),
+                '&:hover': {
+                  backgroundColor: (theme.mode === 'dark' ? theme.secondary.dark : theme.secondary.dark),
+                },
+              }}
+              buttonStyle = {{ color: theme.mode === 'dark' ? '#000' : '#fff' }}
+              type = 'circle'
+              value = 'scroll-to-top'
+              onClick = {handleScrollToTop}
+              icon={<KeyboardArrowUpIcon />}
+            />
+          {/* </Tooltip> */}
+        </div>
+        : ''
+      }
     </div>
   );
 };

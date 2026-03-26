@@ -1,15 +1,16 @@
 'use client';
 
-import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Fab } from '@mui/material';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import Tooltip from '@/components/ux/hover/Tooltip';
-
+import IconButton from '@/components/ux/buttons/IconButton';
+import { Style } from '@esmalley/ts-utils';
+import { useTheme } from '@/components/hooks/useTheme';
 
 const FloatingButtons = () => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const tableFullscreen = useAppSelector((state) => state.rankingReducer.tableFullscreen);
 
@@ -21,9 +22,21 @@ const FloatingButtons = () => {
   return (
     <div style = {{ position: 'absolute', bottom: 70, right: 15 }}>
       <Tooltip position = 'top' text={`${tableFullscreen ? 'Minimize' : 'Full screen'} table`}>
-        <Fab size = 'small' color = 'secondary' onClick={handleFullscreen}>
-          {tableFullscreen ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
-        </Fab>
+        <IconButton
+          containerStyle = {{
+            zIndex: Style.getZIndex().fab,
+            backgroundColor: theme.secondary.main,
+            boxShadow: Style.getShadow(6),
+            '&:hover': {
+              backgroundColor: (theme.mode === 'dark' ? theme.secondary.dark : theme.secondary.dark),
+            },
+          }}
+          buttonStyle = {{ color: theme.mode === 'dark' ? '#000' : '#fff' }}
+          type = 'circle'
+          value = 'full-screen'
+          onClick = {handleFullscreen}
+          icon={tableFullscreen ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
+        />
       </Tooltip>
     </div>
   );
