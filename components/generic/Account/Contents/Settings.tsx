@@ -10,7 +10,7 @@ import { useTheme } from '@/components/ux/contexts/themeContext';
 import Button from '@/components/ux/buttons/Button';
 import Columns from '@/components/ux/layout/Columns';
 import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';

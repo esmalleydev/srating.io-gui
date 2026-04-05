@@ -1,6 +1,6 @@
 'use client';
 
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
 import Typography from '@/components/ux/text/Typography';

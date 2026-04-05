@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '../Inputs';
 
 export type InputVariant = 'standard' | 'outlined' | 'filled';
 export type InputFormatter = 'text' | 'number' | 'money';

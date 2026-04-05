@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
 import { Color, Textor } from '@esmalley/ts-utils';
 import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 
 const Search = () => {

@@ -1,41 +1,9 @@
 /* eslint-disable no-nested-ternary */
 
 import { CompareStatisticRow } from '../generic/CompareStatistic';
+import { TableColumnsType } from '../ux/table/VirtualTable';
 import Organization from './Organization';
 
-export type TableColumn = {
-  id: string;
-  numeric: boolean;
-  label: string; // todo deprecate, replace with getLabel()
-  alt_label?: string; // todo deprecate, replace with getLabel() some day, but for now keep separate
-  tooltip: string; // todo deprecate, replace with getTooltip()
-  sticky?: boolean;
-  disabled?: boolean;
-  sort?: 'lower' | 'higher';
-  organization_ids: string[];
-  views: string[];
-  graphable: boolean;
-  widths?: {
-    [breakpoint: string]: number;
-    default: number;
-  };
-  style?: React.CSSProperties;
-  precision?: number;
-  showDifference?: boolean;
-  compareType?: string;
-  loading?: boolean;
-  locked?: boolean;
-  getLabel?: () => string; // todo make required when prop is deprecated
-  getAltLabel?: () => string; // todo make required when prop is deprecated
-  getTooltip?: () => string; // todo make required when prop is deprecated
-  getDisplayValue?: (row: object, side: string) => string | number | unknown;
-  getValue?: (row: object, side: string) => string | number | unknown;
-}
-
-
-export type TableColumnsType = {
-  [key: string]: TableColumn;
-};
 
 class TableColumns {
   public static getColumns(

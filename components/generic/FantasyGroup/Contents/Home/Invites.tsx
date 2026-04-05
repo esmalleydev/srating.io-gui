@@ -12,7 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import React, { useState } from 'react';
 import Modal from '@/components/ux/modal/Modal';
 import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';

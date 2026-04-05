@@ -8,7 +8,7 @@ import { setDataKey } from '@/redux/features/ranking-slice';
 import { getRows } from './DataHandler';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 
 
 const Search = ({ view }: {view: string}) => {

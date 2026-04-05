@@ -1,7 +1,7 @@
 'use client';
 
 import { useClientAPI } from '@/components/clientAPI';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 import useDebounce from '@/components/hooks/useDebounce';
 import TextInput from '@/components/ux/input/TextInput';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';

@@ -6,7 +6,7 @@ import Slab from '@/components/ux/container/Slab';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useClientAPI } from '@/components/clientAPI';
 import Textarea from '@/components/ux/input/Textarea';

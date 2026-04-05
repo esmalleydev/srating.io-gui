@@ -12,9 +12,9 @@ import Division from '../helpers/Division';
 import { Color, Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '../hooks/useNavigation';
 import TextInput from '../ux/input/TextInput';
-import Inputs from '../helpers/Inputs';
 import Menu, { MenuOption } from '../ux/menu/Menu';
 import { useTheme } from '@/components/ux/contexts/themeContext';
+import Inputs from '../ux/input/Inputs';
 
 
 

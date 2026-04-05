@@ -7,7 +7,7 @@ import Typography from '../text/Typography';
 import Paper from '../container/Paper';
 import { getStore } from '@/app/StoreProvider';
 import { FocusEvent, useEffect, useMemo, useState } from 'react';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 
 export type MultiPickerOption = {
   label: string;

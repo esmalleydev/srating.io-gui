@@ -18,7 +18,7 @@ import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey } from '@/redux/features/user-slice';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
 import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 
 
 const CheckoutForm = ({ pricing }) => {

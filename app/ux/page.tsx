@@ -3,7 +3,6 @@
 
 import SearchIcon from '@mui/icons-material/Search';
 
-import Inputs from '@/components/helpers/Inputs';
 import Divider from '@/components/ux/display/Divider';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
@@ -14,6 +13,8 @@ import LinearProgress from '@/components/ux/loading/LinearProgress';
 import Button from '@/components/ux/buttons/Button';
 import Backdrop from '@/components/ux/loading/Backdrop';
 import Skeleton from '@/components/ux/loading/Skeleton';
+import Inputs from '@/components/ux/input/Inputs';
+
 
 const getInput = (props) => {
   const {

@@ -14,7 +14,7 @@ import Typography from '@/components/ux/text/Typography';
 import Modal from '@/components/ux/modal/Modal';
 import Button from '@/components/ux/buttons/Button';
 import TextInput from '../ux/input/TextInput';
-import Inputs from '../helpers/Inputs';
+import Inputs from '../ux/input/Inputs';
 
 
 const AccountHandler = (

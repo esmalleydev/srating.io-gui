@@ -7,7 +7,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '../text/Typography';
 import Menu, { MenuOption } from '../menu/Menu';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 
 import { Objector, Style } from '@esmalley/ts-utils';
 

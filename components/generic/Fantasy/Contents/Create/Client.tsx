@@ -19,7 +19,7 @@ import { useClientAPI } from '@/components/clientAPI';
 import ErrorModal from '@/components/ux/modal/ErrorModal';
 import { setLoading } from '@/redux/features/loading-slice';
 import { FantasyGroup } from '@/types/general';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 import { Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import { useKontororu } from '@/components/hooks/useKontororu';

@@ -8,12 +8,45 @@ import Tr from './Tr';
 import Td from './Td';
 import Th from './Th';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import { TableColumnsType } from '@/components/helpers/TableColumns';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Tooltip from '../hover/Tooltip';
 import { Objector, Sorter, Theme } from '@esmalley/ts-utils';
 
 // --- Types ---
+
+export type TableColumn = {
+  id: string;
+  numeric: boolean;
+  label: string; // todo deprecate, replace with getLabel()
+  alt_label?: string; // todo deprecate, replace with getLabel() some day, but for now keep separate
+  tooltip: string; // todo deprecate, replace with getTooltip()
+  sticky?: boolean;
+  disabled?: boolean;
+  sort?: 'lower' | 'higher';
+  organization_ids: string[];
+  views: string[];
+  graphable: boolean;
+  widths?: {
+    [breakpoint: string]: number;
+    default: number;
+  };
+  style?: React.CSSProperties;
+  precision?: number;
+  showDifference?: boolean;
+  compareType?: string;
+  loading?: boolean;
+  locked?: boolean;
+  getLabel?: () => string; // todo make required when prop is deprecated
+  getAltLabel?: () => string; // todo make required when prop is deprecated
+  getTooltip?: () => string; // todo make required when prop is deprecated
+  getDisplayValue?: (row: object, side: string) => string | number | unknown;
+  getValue?: (row: object, side: string) => string | number | unknown;
+}
+
+
+export type TableColumnsType = {
+  [key: string]: TableColumn;
+};
 
 export type defaultSortOrderType = 'asc' | 'desc';
 

@@ -18,7 +18,7 @@ import Button from '@/components/ux/buttons/Button';
 import Typography from '@/components/ux/text/Typography';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
-import Inputs from '@/components/helpers/Inputs';
+import Inputs from '@/components/ux/input/Inputs';
 import { Arrayifier, Dates, Sorter } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import CircularProgress from '@/components/ux/loading/CircularProgress';

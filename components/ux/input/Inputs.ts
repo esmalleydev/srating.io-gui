@@ -25,22 +25,23 @@ class Inputs {
   public register(id: string, callback: () => ErrorHandler) {
     this.inputs.set(id, callback);
   }
-  
+
   /**
    * Remove a functional components error handler
-   * @param id 
+   * @param id
   */
- public unregister(id: string) {
+  public unregister(id: string) {
     this.inputs.delete(id);
   }
-  
+
   /**
    * Get all the errors for all the inputs by calling a function which is nested instead the functional component
   */
- public getErrors (): ErrorHandler[] {
+  public getErrors(): ErrorHandler[] {
     const errors: ErrorHandler[] = [];
 
-    for(const [id, callback] of this.inputs) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [id, callback] of this.inputs) {
       const error = callback();
 
       if (error.validationError) {
@@ -50,8 +51,6 @@ class Inputs {
 
     return errors;
   }
-
-
-};
+}
 
 export default Inputs;
