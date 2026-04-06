@@ -7,13 +7,78 @@ import Divider from '@/components/ux/display/Divider';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
 import Typography from '@/components/ux/text/Typography';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
 import Button from '@/components/ux/buttons/Button';
 import Backdrop from '@/components/ux/loading/Backdrop';
 import Skeleton from '@/components/ux/loading/Skeleton';
 import Inputs from '@/components/ux/input/Inputs';
+
+import manifest from '@esmalley/react-material-icons/utils/manifest';
+
+
+// Helper component to handle the dynamic named import
+const DynamicIcon = ({ name }) => {
+  const IconComponent = useMemo(
+    () =>
+      lazy(() => {
+        console.log('importing ' + name);
+        return import(`@esmalley/react-material-icons/${name}`).then((module) => {
+          // Try named export first (e.g. module.HomeIcon)
+          const Component = module[name] ?? module.default ?? Object.values(module)[0];
+
+          if (!Component || (typeof Component !== 'function' && typeof Component !== 'object')) {
+            console.error(`No valid component found in module for: ${name}`, module);
+            return { default: () => <div>?</div> };
+          }
+
+          return { default: Component };
+        }).catch((err) => {
+          console.error(`Failed to load icon: ${name}`, err);
+          return { default: () => <div>?</div> };
+        })
+      }),
+    [name]
+  );
+
+  
+
+  return (
+    <Suspense fallback={<div className="icon-placeholder" />}>
+      <IconComponent size={24} />
+    </Suspense>
+  );
+};
+
+const IconGallery = () => {
+  const [query, setQuery] = useState('');
+
+  // todo add sections
+  const filtered = useMemo(() => {
+    return manifest.filled
+      .filter((name) => name.toLowerCase().includes(query.toLowerCase()))
+      .slice(0, 100);
+  }, [query]);
+
+  return (
+    <div>
+      <input 
+        type="text"
+        onChange={(e) => setQuery(e.target.value)} 
+        placeholder="Search icons..." 
+      />
+      <div className="grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))' }}>
+        {filtered.map((name) => (
+          <div key={name} className="icon-card">
+            <DynamicIcon name={name} />
+            <span style={{ fontSize: '10px' }}>{name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 
 const getInput = (props) => {
@@ -53,6 +118,7 @@ const UX = () => {
 
   return (
     <div style = {{ padding: 20 }}>
+      <IconGallery />
       <Typography type = 'h5'>Loading</Typography>
       <Typography type = 'h6' style = {{ marginBottom: 10 }}>Circle indeterminate</Typography>
       <CircularProgress />
