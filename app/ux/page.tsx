@@ -7,7 +7,7 @@ import Divider from '@/components/ux/display/Divider';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
 import Typography from '@/components/ux/text/Typography';
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
 import Button from '@/components/ux/buttons/Button';
@@ -16,66 +16,147 @@ import Skeleton from '@/components/ux/loading/Skeleton';
 import Inputs from '@/components/ux/input/Inputs';
 
 import manifest from '@esmalley/react-material-icons/utils/manifest';
+import { Textor } from '@esmalley/ts-utils';
+import MultiPicker, { MultiPickerOption } from '@/components/ux/input/MultiPicker';
+import Tile from '@/components/ux/container/Tile';
+import { useTheme } from '@/components/ux/contexts/themeContext';
+import Modal from '@/components/ux/modal/Modal';
 
 
 // Helper component to handle the dynamic named import
-const DynamicIcon = ({ name }) => {
-  const IconComponent = useMemo(
-    () =>
-      lazy(() => {
-        console.log('importing ' + name);
-        return import(`@esmalley/react-material-icons/${name}`).then((module) => {
-          // Try named export first (e.g. module.HomeIcon)
-          const Component = module[name] ?? module.default ?? Object.values(module)[0];
+const DynamicIcon = ({ name, color }) => {
+  const IconComponent: any = useMemo(
+    () => lazy(() => {
+      console.log(`importing ${name}`);
+      return import(`@esmalley/react-material-icons/${name}`).then((module) => {
+      // Try named export first (e.g. module.HomeIcon)
+        const Component = module[name] ?? module.default ?? Object.values(module)[0];
 
-          if (!Component || (typeof Component !== 'function' && typeof Component !== 'object')) {
-            console.error(`No valid component found in module for: ${name}`, module);
-            return { default: () => <div>?</div> };
-          }
-
-          return { default: Component };
-        }).catch((err) => {
-          console.error(`Failed to load icon: ${name}`, err);
+        if (!Component || (typeof Component !== 'function' && typeof Component !== 'object')) {
+          console.error(`No valid component found in module for: ${name}`, module);
           return { default: () => <div>?</div> };
-        })
-      }),
-    [name]
-  );
+        }
 
-  
+        return { default: Component };
+      }).catch((err) => {
+        console.error(`Failed to load icon: ${name}`, err);
+        return { default: () => <div>?</div> };
+      });
+    }),
+    [name],
+  );
 
   return (
     <Suspense fallback={<div className="icon-placeholder" />}>
-      <IconComponent size={24} />
+      <IconComponent size={24} color = {color} />
     </Suspense>
   );
 };
 
-const IconGallery = () => {
-  const [query, setQuery] = useState('');
+const CHUNK_SIZE = 50;
 
-  // todo add sections
-  const filtered = useMemo(() => {
-    return manifest.filled
-      .filter((name) => name.toLowerCase().includes(query.toLowerCase()))
-      .slice(0, 100);
-  }, [query]);
+const IconGallery = () => {
+  const theme = useTheme();
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('filled');
+  const [selected, setSelected] = useState('');
+  // const [showAll, setShowAll] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(CHUNK_SIZE);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  const inputHandler = new Inputs();
+
+  const allFiltered = useMemo(() => {
+    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(safeQuery, 'i');
+
+    return manifest[category].filter((name) => regex.test(name));
+  }, [query, category]);
+
+
+  const visible = useMemo(
+    () => allFiltered.slice(0, visibleCount),
+    [allFiltered, visibleCount],
+  );
+
+  // Reset when query or category changes
+  useEffect(() => {
+    setVisibleCount(CHUNK_SIZE);
+  }, [query, category]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => Math.min(prev + CHUNK_SIZE, allFiltered.length));
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    if (loaderRef.current) observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [allFiltered.length]);
+
+
+  const categories: MultiPickerOption[] = [];
+
+  for (const cat in manifest) {
+    categories.push({
+      value: cat,
+      label: Textor.toSentenceCase(cat),
+    });
+  }
 
   return (
     <div>
-      <input 
-        type="text"
-        onChange={(e) => setQuery(e.target.value)} 
-        placeholder="Search icons..." 
-      />
-      <div className="grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))' }}>
-        {filtered.map((name) => (
-          <div key={name} className="icon-card">
-            <DynamicIcon name={name} />
-            <span style={{ fontSize: '10px' }}>{name}</span>
-          </div>
-        ))}
+      <div style = {{ paddingBottom: 5 }}>
+        <MultiPicker
+          inputHandler={inputHandler}
+          label='Icon type'
+          onChange={(val) => setCategory(val as string)}
+          required
+          options={categories}
+          selected={[category]}
+          isRadio
+          numberOfColumns={5}
+          showError={false}
+          // triggerValidation={triggerValidation}
+        />
       </div>
+      <TextInput
+        inputHandler={inputHandler}
+        placeholder = 'Search icons...'
+        variant = 'outlined'
+        value = {query}
+        onChange = {(val) => setQuery(val)}
+      />
+      <div ref={scrollContainerRef} style={{ maxHeight: 300, overflowY: 'scroll' }}>
+        <Columns numberOfColumns={5}>
+          {visible.map((name) => (
+            <Tile
+              key={name}
+              icon={<DynamicIcon name={name} color={theme.text.primary} />}
+              primary={name}
+              onClick={() => setSelected(name)}
+            />
+          ))}
+        </Columns>
+
+        {/* Sentinel must be inside the scrollable root */}
+        {visibleCount < allFiltered.length && (
+          <div ref={loaderRef} style={{ padding: 20, textAlign: 'center' }}>
+            <Typography type='caption'>
+              {`${visibleCount} / ${allFiltered.length}`}
+            </Typography>
+          </div>
+        )}
+      </div>
+      <Modal open = {selected !== ''} onClose={() => setSelected('')}>
+        <Typography type = 'caption'>{`import ${selected} from @esmalley/react-material-icons/${selected}`}</Typography>
+      </Modal>
     </div>
   );
 };

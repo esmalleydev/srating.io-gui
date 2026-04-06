@@ -28,6 +28,7 @@ interface MultiPickerProps {
   errorMessage?: string; // External error message
   showError?: boolean;
   triggerValidation?: boolean;
+  numberOfColumns?: number;
 }
 
 export const getTerminologyOptions = (type: string) => {
@@ -67,6 +68,7 @@ const MultiPicker = ({
   showError = true,
   style,
   triggerValidation = false,
+  numberOfColumns = 2,
 }: MultiPickerProps) => {
   const theme = useTheme();
   const instanceId = useMemo(() => crypto.randomUUID(), []);
@@ -205,7 +207,7 @@ const MultiPicker = ({
       )}
 
       {/* Option Containers */}
-      <Columns style = {{ gap: 10 }}>
+      <Columns numberOfColumns={numberOfColumns} style = {{ gap: 10 }}>
         {options.map((option) => getOptionContainer(option))}
       </Columns>
 
