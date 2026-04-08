@@ -12,7 +12,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import IconButton from '../buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
-import { useKontororu } from '@/components/hooks/useKontororu';
+import { useKontororu } from '../hooks/useKontororu';
 
 export type WizardStep = {
   title: string;

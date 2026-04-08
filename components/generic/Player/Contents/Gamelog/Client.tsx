@@ -14,7 +14,7 @@ import { useTheme } from '@/components/ux/contexts/themeContext';
 import { getNavHeaderHeight } from '../../NavBar';
 import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankTable from '@/components/generic/RankTable';
-import TableColumns, { TableColumnsType } from '@/components/helpers/TableColumns';
+import TableColumns from '@/components/helpers/TableColumns';
 import Chip from '@/components/ux/container/Chip';
 import { Dates, Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';

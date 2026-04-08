@@ -5,7 +5,6 @@ import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { useEffect, useState } from 'react';
 import RankSpan from './RankSpan';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import { TableColumnsType } from '../helpers/TableColumns';
 import Tooltip from '../ux/hover/Tooltip';
 import Table from '../ux/table/Table';
 import Thead from '../ux/table/Thead';
@@ -15,6 +14,7 @@ import Th from '../ux/table/Th';
 import Tbody from '../ux/table/Tbody';
 import Tfoot from '../ux/table/Tfoot';
 import { Objector, Sorter } from '@esmalley/ts-utils';
+import { TableColumnsType } from '../ux/table/VirtualTable';
 
 
 type defaultSortOrderType = 'asc' | 'desc';

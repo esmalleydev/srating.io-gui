@@ -9,8 +9,8 @@ import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '../ux/container/Paper';
 import Tooltip from '../ux/hover/Tooltip';
 import React from 'react';
-import { TableColumn } from '../helpers/TableColumns';
 import Skeleton from '../ux/loading/Skeleton';
+import { TableColumn } from '../ux/table/VirtualTable';
 
 export type CompareStatisticRow = {
   leftRow: object;

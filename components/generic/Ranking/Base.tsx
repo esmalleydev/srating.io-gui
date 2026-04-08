@@ -53,7 +53,7 @@ const Base = (
   ) || [];
 
   if (view === 'transfer') {
-    seasons = [2025, 2024];
+    seasons = [2026, 2025, 2024];
   }
 
   const { width } = useWindowDimensions() as Dimensions;

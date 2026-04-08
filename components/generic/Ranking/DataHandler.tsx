@@ -4,7 +4,7 @@ import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
-import { Objector } from '@esmalley/ts-utils';
+import { Dates, Objector } from '@esmalley/ts-utils';
 
 const getData = ({ view }) => {
   // console.time('getData')
@@ -120,6 +120,11 @@ const formatCBBData = (args) => {
         lastUpdated < row.updated_at
       ) {
         lastUpdated = row.updated_at;
+      }
+
+      // todo add a col on transfer table
+      if (view === 'transfer') {
+        lastUpdated = `${Dates.format(Dates.parse(null), 'Y-m-d')} 08:00:00`;
       }
 
       // console.time('player')

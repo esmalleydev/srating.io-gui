@@ -1,8 +1,8 @@
 'use client';
 
 import OptionPicker from './OptionPicker';
-import { TableColumnsType } from '../helpers/TableColumns';
 import Chip from '../ux/container/Chip';
+import { TableColumnsType } from '../ux/table/VirtualTable';
 
 
 const ColumnPicker = (
