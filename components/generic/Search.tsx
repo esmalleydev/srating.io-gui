@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import useDebounce from '@/components/hooks/useDebounce';
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from '@esmalley/react-material-icons/Search';
 
 import { useClientAPI } from '../clientAPI';
 import { Coach, Player, Team } from '@/types/general';
@@ -246,7 +246,7 @@ const Search = (
         value = {value}
         showError = {false}
         transformPlaceholder = {false}
-        icon = {<SearchIcon />}
+        icon = {<SearchIcon style = {{ fontSize: 24 }} />}
         onClick={(e) => {
           setAnchorSearch(e.currentTarget);
           if (value.length) {

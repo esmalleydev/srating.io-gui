@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 
-// import TripleDotsIcon from '@mui/icons-material/MoreVert';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CheckIcon from '@mui/icons-material/Check';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+// import TripleDotsIcon from '@esmalley/react-material-icons/MoreVert';
+import SettingsIcon from '@esmalley/react-material-icons/Settings';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
@@ -41,7 +41,7 @@ const AdditionalOptions = () => {
       label: 'Show boxscore data',
       selectable: true,
       onSelect: handleTrendsBoxscore,
-      icon: trendsBoxscoreLine ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
+      icon: trendsBoxscoreLine ? <CheckIcon style = {{ fontSize: 20 }} /> : <VisibilityIcon style = {{ fontSize: 20 }} />,
     },
   ];
 
@@ -52,7 +52,7 @@ const AdditionalOptions = () => {
         <IconButton
           value="additional-filters"
           onClick={handleOpen}
-          icon = {<SettingsIcon />}
+          icon = {<SettingsIcon style = {{ fontSize: 24 }} />}
         />
       </Tooltip>
       <Menu

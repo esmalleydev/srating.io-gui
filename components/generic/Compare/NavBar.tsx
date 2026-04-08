@@ -12,8 +12,8 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import PlayerAdditionalOptions from './PlayerAdditionalOptions';
 import TeamAdditionalOptions from './TeamAdditionalOptions';
 
-import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
-import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
+import SensorOccupiedIcon from '@esmalley/react-material-icons/SensorOccupied';
+import CalendarViewMonthIcon from '@esmalley/react-material-icons/CalendarViewMonth';
 import { useScrollContext } from '@/contexts/scrollContext';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/ux/contexts/themeContext';
@@ -21,10 +21,10 @@ import Tab from '@/components/ux/buttons/Tab';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
-// import GroupsIcon from '@mui/icons-material/Groups';
-// import StadiumIcon from '@mui/icons-material/Stadium';
-// import LocalAirportIcon from '@mui/icons-material/LocalAirport';
-// import HealingIcon from '@mui/icons-material/Healing';
+// import GroupsIcon from '@esmalley/react-material-icons/Groups';
+// import StadiumIcon from '@esmalley/react-material-icons/Stadium';
+// import LocalAirportIcon from '@esmalley/react-material-icons/LocalAirport';
+// import HealingIcon from '@esmalley/react-material-icons/Healing';
 
 const getNavHeaderHeight = () => {
   return 48;
@@ -220,7 +220,7 @@ const NavBar = () => {
         <IconButton
           value = 'table-card-button'
           onClick = {(e) => handleSubView(e, subview === 'table' ? null : 'table')}
-          icon = {<CalendarViewMonthIcon color = {subview === 'table' ? 'success' : 'primary'} />}
+          icon = {<CalendarViewMonthIcon style = {{ fontSize: 24, color: theme[(subview === 'table' ? 'success' : 'primary')].main }} />}
         />
       </Tooltip>,
     );
@@ -233,7 +233,7 @@ const NavBar = () => {
           <IconButton
             value = 'top-players-button'
             onClick = {() => { dispatch(setDataKey({ key: 'topPlayersOnly', value: !topPlayersOnly })); }}
-            icon = {<SensorOccupiedIcon color = {topPlayersOnly ? 'success' : 'primary'} />}
+            icon = {<SensorOccupiedIcon style = {{ fontSize: 24, color: theme[(topPlayersOnly ? 'success' : 'primary')].main }} />}
           />
         </Tooltip>,
       );

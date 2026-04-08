@@ -8,8 +8,8 @@ import Paper from '@/components/ux/container/Paper';
 import Tile from '@/components/ux/container/Tile';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import StadiumIcon from '@mui/icons-material/Stadium';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
+import StadiumIcon from '@esmalley/react-material-icons/Stadium';
 import React, { useState } from 'react';
 
 const Entries = () => {
@@ -58,7 +58,7 @@ const Entries = () => {
     return (
       <Tile
         key = {row.fantasy_entry_id}
-        icon={<StadiumIcon style = {{ color: theme.deepOrange[500] }} />}
+        icon={<StadiumIcon style = {{ fontSize: 24, color: theme.deepOrange[500] }} />}
         primary={row.name}
         secondary={secondary}
         buttons = {buttons}
@@ -95,7 +95,7 @@ const Entries = () => {
 
     return (
       <div style = {{ padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', fontStyle: 'italic', color: theme.text.secondary }}>
-        <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon /></span>
+        <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon style = {{ fontSize: 24 }} /></span>
         <Typography type = 'body1' style = {{ color: theme.text.secondary }}>No entries yet!</Typography>
       </div>
     );

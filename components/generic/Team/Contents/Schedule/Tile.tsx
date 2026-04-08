@@ -9,7 +9,7 @@ import HelperGame from '@/components/helpers/Game';
 
 import Locked from '@/components/generic/Billing/Locked';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import LegendToggleIcon from '@mui/icons-material/LegendToggle';
+import LegendToggleIcon from '@esmalley/react-material-icons/LegendToggle';
 import { setDataKey, updateDataKey } from '@/redux/features/team-slice';
 import { useScrollContext } from '@/contexts/scrollContext';
 import Rank from './Tile/Rank';

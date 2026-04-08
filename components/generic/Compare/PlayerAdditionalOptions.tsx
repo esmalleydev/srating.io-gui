@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import TripleDotsIcon from '@mui/icons-material/MoreVert';
-import CheckIcon from '@mui/icons-material/Check';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import TripleDotsIcon from '@esmalley/react-material-icons/MoreVert';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
@@ -35,7 +35,7 @@ const PlayerAdditionalOptions = () => {
         dispatch(setDataKey({ key: 'hideLowerBench', value: !hideLowerBench }));
         handleClose();
       },
-      icon: hideLowerBench ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
+      icon: hideLowerBench ? <CheckIcon style = {{ fontSize: 20 }} /> : <VisibilityIcon style = {{ fontSize: 20 }} />,
     },
   ];
 
@@ -44,7 +44,7 @@ const PlayerAdditionalOptions = () => {
       <IconButton
         value="player-additional-options"
         onClick={handleOpen}
-        icon = {<TripleDotsIcon />}
+        icon = {<TripleDotsIcon style = {{ fontSize: 24 }} />}
       />
       <Menu
         anchor={anchor}

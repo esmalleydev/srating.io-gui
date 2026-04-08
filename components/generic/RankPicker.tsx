@@ -1,7 +1,7 @@
 'use client';
 
-import CheckIcon from '@mui/icons-material/Check';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { setDataKey } from '@/redux/features/display-slice';
@@ -83,7 +83,7 @@ const RankPicker = (
         <Tile
           style = {{ padding: '5px 0px' }}
           key={rankDisplayOption.value}
-          icon = {rankDisplayOption.value === selected ? <CheckIcon /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.info.main }} />}
+          icon = {rankDisplayOption.value === selected ? <CheckIcon style = {{ fontSize: 24 }} /> : <CheckBoxOutlineBlankIcon style = {{ fontSize: 24, color: theme.info.main }} />}
           primary = {rankDisplayOption.label}
           onClick={() => {
             dispatch(setDataKey({ key: 'rank', value: rankDisplayOption.value }));

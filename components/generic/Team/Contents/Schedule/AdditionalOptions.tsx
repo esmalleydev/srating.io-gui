@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 
-import SettingsIcon from '@mui/icons-material/Settings';
-import CheckIcon from '@mui/icons-material/Check';
-// import VisibilityIcon from '@mui/icons-material/Visibility';
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import SettingsIcon from '@esmalley/react-material-icons/Settings';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+// import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
+import ViewModuleIcon from '@esmalley/react-material-icons/ViewModule';
 
-// import ViewListIcon from '@mui/icons-material/ViewList';
-import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
+// import ViewListIcon from '@esmalley/react-material-icons/ViewList';
+import CalendarViewMonthIcon from '@esmalley/react-material-icons/CalendarViewMonth';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
@@ -43,14 +43,14 @@ const AdditionalOptions = () => {
       label: 'View card mode',
       selectable: true,
       onSelect: handleView,
-      icon: scheduleView === 'default' ? <CheckIcon fontSize='small' /> : <ViewModuleIcon fontSize='small' />,
+      icon: scheduleView === 'default' ? <CheckIcon style = {{ fontSize: 20 }} /> : <ViewModuleIcon style = {{ fontSize: 20 }} />,
     },
     {
       value: 'table',
       label: 'View table mode',
       selectable: true,
       onSelect: handleView,
-      icon: scheduleView === 'table' ? <CheckIcon fontSize='small' /> : <CalendarViewMonthIcon fontSize='small' />,
+      icon: scheduleView === 'table' ? <CheckIcon style = {{ fontSize: 20 }} /> : <CalendarViewMonthIcon style = {{ fontSize: 20 }} />,
     },
   ];
 
@@ -60,7 +60,7 @@ const AdditionalOptions = () => {
         <IconButton
           value="additional-options"
           onClick={handleOpen}
-          icon = {<SettingsIcon />}
+          icon = {<SettingsIcon style = {{ fontSize: 24 }} />}
         />
       </Tooltip>
       <Menu

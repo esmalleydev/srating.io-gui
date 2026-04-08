@@ -6,9 +6,9 @@ import Paper from '@/components/ux/container/Paper';
 import Tile from '@/components/ux/container/Tile';
 import Typography from '@/components/ux/text/Typography';
 import { FantasyGroups } from '@/types/general';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useState } from 'react';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import SportsEsportsIcon from '@esmalley/react-material-icons/SportsEsports';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import Blank from '@/components/generic/Blank';
 import { Dates } from '@esmalley/ts-utils';
@@ -63,7 +63,7 @@ const MyGroups = (
       return (
         <Tile
           key = {row.fantasy_group_id}
-          icon={<SportsEsportsIcon style = {{ color: theme.success.main }} />}
+          icon={<SportsEsportsIcon style = {{ color: theme.success.main, fontSize: 24 }} />}
           primary={row.name}
           secondary={secondary}
           buttons = {[
@@ -80,7 +80,7 @@ const MyGroups = (
     if (!rows || !rows.length) {
       return (
         <Blank
-          icon = {<SentimentVeryDissatisfiedIcon />}
+          icon = {<SentimentVeryDissatisfiedIcon style = {{ fontSize: 24 }} />}
           text = 'Not in any leagues!'
         />
       );

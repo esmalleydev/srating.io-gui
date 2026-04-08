@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 
-import SettingsIcon from '@mui/icons-material/Settings';
-import CheckIcon from '@mui/icons-material/Check';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import SettingsIcon from '@esmalley/react-material-icons/Settings';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
+import ViewModuleIcon from '@esmalley/react-material-icons/ViewModule';
+import MilitaryTechIcon from '@esmalley/react-material-icons/MilitaryTech';
 
 
 import RankPicker from '@/components/generic/RankPicker';
@@ -45,7 +45,7 @@ const AdditionalOptions = () => {
         setRankPickerOpen(true);
         handleClose();
       },
-      icon: <MilitaryTechIcon fontSize='small' />,
+      icon: <MilitaryTechIcon style = {{ fontSize: 20 }} />,
     },
     {
       value: 'card_display',
@@ -55,7 +55,7 @@ const AdditionalOptions = () => {
         setCardPickerOpen(true);
         handleClose();
       },
-      icon: <ViewModuleIcon fontSize='small' />,
+      icon: <ViewModuleIcon style = {{ fontSize: 20 }} />,
     },
     {
       value: null,
@@ -69,7 +69,7 @@ const AdditionalOptions = () => {
       onSelect: () => {
         dispatch(setDataKey({ key: 'hideOdds', value: (hideOdds === 1 ? 0 : 1) }));
       },
-      icon: hideOdds ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
+      icon: hideOdds ? <CheckIcon style = {{ fontSize: 20 }} /> : <VisibilityIcon style = {{ fontSize: 20 }} />,
     },
   ];
 
@@ -80,7 +80,7 @@ const AdditionalOptions = () => {
         <IconButton
           value="additional-options"
           onClick={handleOpen}
-          icon = {<SettingsIcon />}
+          icon = {<SettingsIcon style = {{ fontSize: 24 }} />}
         />
       </Tooltip>
       <Menu

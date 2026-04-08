@@ -3,14 +3,14 @@
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '@/components/ux/container/Paper';
 import Slab from '@/components/ux/container/Slab';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Inputs from '@/components/ux/input/Inputs';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useClientAPI } from '@/components/clientAPI';
 import Textarea from '@/components/ux/input/Textarea';
-import SendIcon from '@mui/icons-material/Send';
+import SendIcon from '@esmalley/react-material-icons/Send';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { useState } from 'react';
 import { setLoading } from '@/redux/features/loading-slice';
@@ -70,7 +70,7 @@ const Comments = () => {
   if (!comment_containers.length) {
     comment_containers.push(
       <div style = {{ padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', fontStyle: 'italic', color: theme.text.secondary }}>
-        <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon /></span>
+        <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon style = {{ fontSize: 24 }} /></span>
         <Typography type = 'body1' style = {{ color: theme.text.secondary }}>No comments yet!</Typography>
       </div>,
     );
@@ -152,7 +152,7 @@ const Comments = () => {
               }}
             />
             <div style = {{ marginTop: '-30px' }}>
-              <IconButton icon = {<SendIcon />} value = 'send' onClick={addComment} />
+              <IconButton icon = {<SendIcon style = {{ fontSize: 24 }} />} value = 'send' onClick={addComment} />
             </div>
           </div>
             : ''

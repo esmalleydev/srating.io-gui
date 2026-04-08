@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Paper from '../container/Paper';
 import Typography from '../text/Typography';
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@esmalley/react-material-icons/Close';
 import IconButton from '../buttons/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
-import WarningIcon from '@mui/icons-material/Warning';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import InfoIcon from '@esmalley/react-material-icons/Info';
+import WarningIcon from '@esmalley/react-material-icons/Warning';
+import CheckCircleOutlineIcon from '@esmalley/react-material-icons/CheckCircleOutline';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Objector, Style, toaster, ToastItem } from '@esmalley/ts-utils';
 

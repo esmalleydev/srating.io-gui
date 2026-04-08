@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowUpIcon from '@esmalley/react-material-icons/KeyboardArrowUp';
 // import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
@@ -67,7 +67,7 @@ const FloatingButtons = () => {
               type = 'circle'
               value = 'scroll-to-top'
               onClick = {handleScrollToTop}
-              icon={<KeyboardArrowUpIcon />}
+              icon={<KeyboardArrowUpIcon style = {{ fontSize: 24 }} />}
             />
           {/* </Tooltip> */}
         </div>

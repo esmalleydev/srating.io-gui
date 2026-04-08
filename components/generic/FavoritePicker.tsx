@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteIcon from '@esmalley/react-material-icons/Favorite';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
@@ -91,12 +91,13 @@ const FavoritePicker = (
 
   if (selected) {
     favoriteStyle.color = theme.warning.light;
+    favoriteStyle.fontSize = 20;
   }
 
   return (
     <>
       <Tooltip onClickRemove text = {'Save favorite'}>
-        <IconButton onClick = {handleFavorite} value = 'favorite' icon = {<FavoriteIcon style = {favoriteStyle} fontSize = 'small' />} />
+        <IconButton onClick = {handleFavorite} value = 'favorite' icon = {<FavoriteIcon style = {favoriteStyle} />} />
       </Tooltip>
       <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
     </>

@@ -10,9 +10,9 @@ import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { Dates } from '@esmalley/ts-utils';
 
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
+import HourglassBottomIcon from '@esmalley/react-material-icons/HourglassBottom';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useEffect, useState } from 'react';
 
 
@@ -86,7 +86,7 @@ const DraftBoard = () => {
 
     elements.push(
       <Tile
-        icon = {row.picked ? <CheckCircleIcon style = {{ color: theme.success.main }} /> : <HourglassBottomIcon />}
+        icon = {row.picked ? <CheckCircleIcon style = {{ fontSize: 24, color: theme.success.main }} /> : <HourglassBottomIcon style = {{ fontSize: 24 }} />}
         primary = {primary}
         secondary = {name}
       />,
@@ -105,7 +105,7 @@ const DraftBoard = () => {
     if (!fantasy_group.locked) {
       return (
         <div style = {{ padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', fontStyle: 'italic', color: theme.text.secondary }}>
-          <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon /></span>
+          <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon style = {{ fontSize: 24 }} /></span>
           <Typography type = 'body1' style = {{ color: theme.text.secondary }}>Waiting for draft to start!<Typography type = 'a' style = {{ marginLeft: 5 }} onClick={() => setOpenModal(true)}>Preview draft order</Typography></Typography>
         </div>
       );

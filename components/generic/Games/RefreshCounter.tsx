@@ -1,6 +1,6 @@
 'use client';
 
-import WifiOffIcon from '@mui/icons-material/WifiOff';
+import WifiOffIcon from '@esmalley/react-material-icons/WifiOff';
 
 import { useAppSelector } from '@/redux/hooks';
 import Tooltip from '@/components/ux/hover/Tooltip';

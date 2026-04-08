@@ -1,7 +1,7 @@
 'use client';
 
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@esmalley/react-material-icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrowRight';
 
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Color, Style, Dates } from '@esmalley/ts-utils';

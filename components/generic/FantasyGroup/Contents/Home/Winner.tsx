@@ -6,9 +6,9 @@ import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { FantasyRanking } from '@/types/general';
 
-// import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
-// import SportsScoreIcon from '@mui/icons-material/SportsScore';
+// import EmojiEventsIcon from '@esmalley/react-material-icons/EmojiEvents';
+import WorkspacePremiumIcon from '@esmalley/react-material-icons/WorkspacePremium';
+// import SportsScoreIcon from '@esmalley/react-material-icons/SportsScore';
 
 const Winner = () => {
   const theme = useTheme();

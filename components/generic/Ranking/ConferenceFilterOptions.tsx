@@ -1,6 +1,6 @@
 'use client';
 
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@esmalley/react-material-icons/Close';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/ranking-slice';
@@ -35,7 +35,7 @@ const ConferenceFilterOptions = ({ open, onClose }) => {
       >
         <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography type = 'h6'>{'Conference filter options'}</Typography>
-          <IconButton value = 'close' onClick={onClose} icon = {<CloseIcon />} />
+          <IconButton value = 'close' onClick={onClose} icon = {<CloseIcon style = {{ fontSize: 24 }} />} />
         </div>
         <div>
           <Switch label = 'Include Previous team' labelPlacement='end' value = {filterOriginalConf} onChange={handleOrginalConfSwitch} />

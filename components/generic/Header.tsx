@@ -7,17 +7,17 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 
 
 // Icons
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
-// import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import MenuIcon from '@esmalley/react-material-icons/Menu';
+import AccountCircle from '@esmalley/react-material-icons/AccountCircle';
+import SearchIcon from '@esmalley/react-material-icons/Search';
+import ArrowBackIcon from '@esmalley/react-material-icons/ArrowBack';
+import QueryStatsIcon from '@esmalley/react-material-icons/QueryStats';
+// import Settings from '@esmalley/react-material-icons/Settings';
+import Logout from '@esmalley/react-material-icons/Logout';
+import AccountCircleIcon from '@esmalley/react-material-icons/AccountCircle';
+import ShoppingCartIcon from '@esmalley/react-material-icons/ShoppingCart';
+import SportsEsportsIcon from '@esmalley/react-material-icons/SportsEsports';
+import NotificationsIcon from '@esmalley/react-material-icons/Notifications';
 
 import sratingLogo from '../../public/favicon-32x32.png';
 
@@ -263,13 +263,13 @@ const Header = () => {
       {
         fullSearch ?
           <div className = {Style.getStyleClassName(toolBarStyle)}>
-            <IconButton onClick = {() => { setFullSearch(false); }} value = 'back' icon = {<ArrowBackIcon />} />
+            <IconButton onClick = {() => { setFullSearch(false); }} value = 'back' icon = {<ArrowBackIcon style = {{ fontSize: 24 }} />} />
             <div style={{ width: '100%' }}>
               <Search onRouter = {() => { setFullSearch(false); }} focus = {true} />
             </div>
           </div> :
           <div className = {Style.getStyleClassName(toolBarStyle)}>
-            <IconButton onClick = {toggleDrawer} containerStyle = {{ marginRight: 16 }} buttonStyle={{ color: '#fff' }} value = 'sidebar' icon = {<MenuIcon />} />
+            <IconButton onClick = {toggleDrawer} containerStyle = {{ marginRight: 16 }} buttonStyle={{ color: '#fff' }} value = 'sidebar' icon = {<MenuIcon style = {{ fontSize: 24 }} />} />
             <Drawer
               open={drawerOpen}
               onClose={toggleDrawer}
@@ -285,15 +285,15 @@ const Header = () => {
             </div>
             <div style={{ flexGrow: 1, display: 'flex' }}>
             </div>
-            <div style={{ flexGrow: 0, lineHeight: 'initial' }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} value = 'compare' icon = {<QueryStatsIcon />} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} /></Tooltip> : ''}</div>
+            <div style={{ flexGrow: 0, lineHeight: 'initial' }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} value = 'compare' icon = {<QueryStatsIcon style = {{ fontSize: 24 }} />} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} /></Tooltip> : ''}</div>
             <div style={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px'), lineHeight: 'initial' }}>
-              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} value = 'search' icon = {<SearchIcon />} /> : <Search focus={false} />}
+              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} value = 'search' icon = {<SearchIcon style = {{ fontSize: 24 }} />} /> : <Search focus={false} />}
             </div>
             <div style={{ flexGrow: 0, lineHeight: 'initial' }}>
               {
               validSession ?
                 <>
-                  <IconButton onClick={handleMenu} value = 'account' icon = {<AccountCircle />} buttonStyle={{ color: '#fff' }} badge={activeNotifications.length} />
+                  <IconButton onClick={handleMenu} value = 'account' icon = {<AccountCircle style = {{ fontSize: 24 }} />} buttonStyle={{ color: '#fff' }} badge={activeNotifications.length} />
                   <Menu
                     anchor={anchorEl}
                     open={Boolean(anchorEl)}

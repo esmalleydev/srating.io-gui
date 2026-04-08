@@ -9,20 +9,20 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { BracketTeam, FantasyBracketSlots } from '@/types/general';
 import { useMemo, useState, useEffect, useRef } from 'react';
 
-import PublicIcon from '@mui/icons-material/Public';
+import PublicIcon from '@esmalley/react-material-icons/Public';
 import Organization from '@/components/helpers/Organization';
 import Chip from '@/components/ux/container/Chip';
 import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/fantasy_entry-slice';
 
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CancelIcon from '@mui/icons-material/Cancel';
+import RadioButtonUncheckedIcon from '@esmalley/react-material-icons/RadioButtonUnchecked';
+import CheckCircleOutlineIcon from '@esmalley/react-material-icons/CheckCircleOutline';
+import CancelIcon from '@esmalley/react-material-icons/Cancel';
 import { Objector, Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import Game from '@/components/helpers/Game';
 import IconButton from '@/components/ux/buttons/IconButton';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import QueryStatsIcon from '@esmalley/react-material-icons/QueryStats';
 
 const slot_height = 100;
 const slot_width = 170;
@@ -710,7 +710,7 @@ const Bracket = () => {
     const color = theme.text.secondary;
     return (
       <div style = {{ display: 'flex', alignItems: 'center', justifyContent: align }}>
-        <PublicIcon style = {{ marginRight: 5, color }} />
+        <PublicIcon style = {{ marginRight: 5, color, fontSize: 24 }} />
         <Typography type = 'h6' style = {{ color }}>{title}</Typography>
       </div>
     );

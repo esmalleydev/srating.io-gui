@@ -6,9 +6,9 @@ import Footer from '../components/generic/Footer';
 
 import Pricing from '@/components/generic/Pricing';
 
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import BuildIcon from '@mui/icons-material/Build';
+import EmojiEventsIcon from '@esmalley/react-material-icons/EmojiEvents';
+import TrendingUpIcon from '@esmalley/react-material-icons/TrendingUp';
+import BuildIcon from '@esmalley/react-material-icons/Build';
 import TrendsExample from '@/components/generic/Home/TrendsExample';
 import RankingExample from '@/components/generic/Home/RankingExample';
 import ToolsExample from '@/components/generic/Home/ToolsExample';

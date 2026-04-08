@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-// import TripleDotsIcon from '@mui/icons-material/MoreVert';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CheckIcon from '@mui/icons-material/Check';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+// import TripleDotsIcon from '@esmalley/react-material-icons/MoreVert';
+import SettingsIcon from '@esmalley/react-material-icons/Settings';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
+import FilterAltIcon from '@esmalley/react-material-icons/FilterAlt';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
@@ -71,7 +71,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         label: 'Hide committed',
         selectable: true,
         onSelect: handleCommitted,
-        icon: hideCommitted ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
+        icon: hideCommitted ? <CheckIcon style = {{ fontSize: 20 }} /> : <VisibilityIcon style = {{ fontSize: 20 }} />,
       });
     }
 
@@ -82,7 +82,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
           label: 'Class filter',
           selectable: true,
           onSelect: handleClassYearFilter,
-          icon: <FilterAltIcon fontSize='small' />,
+          icon: <FilterAltIcon style = {{ fontSize: 20 }} />,
         });
       }
 
@@ -91,7 +91,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         label: 'Hide under 2 MPG',
         selectable: true,
         onSelect: handleUnderTwo,
-        icon: hideUnderTwoMPG ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
+        icon: hideUnderTwoMPG ? <CheckIcon style = {{ fontSize: 20 }} /> : <VisibilityIcon style = {{ fontSize: 20 }} />,
       });
     }
 
@@ -107,7 +107,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         label: 'Conference filter',
         selectable: true,
         onSelect: handleConferenceFilter,
-        icon: <SettingsIcon fontSize='small' />,
+        icon: <SettingsIcon style = {{ fontSize: 20 }} />,
       });
     }
 
@@ -121,7 +121,7 @@ const AdditionalOptions = ({ view }: {view: string}) => {
         <IconButton
           value="additional-filters"
           onClick={handleOpen}
-          icon = {<SettingsIcon />}
+          icon = {<SettingsIcon style = {{ fontSize: 24 }} />}
         />
       </Tooltip>
       <Menu

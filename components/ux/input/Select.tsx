@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@esmalley/react-material-icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@esmalley/react-material-icons/KeyboardArrowUp';
 
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '../text/Typography';
@@ -334,7 +334,7 @@ const Select: React.FC<SelectProps> = ({
           </Typography>
 
           <div style={arrowIconStyle}>
-              {isOpen ? <KeyboardArrowUpIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
+              {isOpen ? <KeyboardArrowUpIcon style = {{ fontSize: 20 }} /> : <KeyboardArrowDownIcon style = {{ fontSize: 20 }} />}
           </div>
         </div>
         <Menu

@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useStripe } from '@stripe/react-stripe-js';
 
 
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
-import WarningIcon from '@mui/icons-material/Warning';
-import ErrorIcon from '@mui/icons-material/Error';
+import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
+import HourglassBottomIcon from '@esmalley/react-material-icons/HourglassBottom';
+import WarningIcon from '@esmalley/react-material-icons/Warning';
+import ErrorIcon from '@esmalley/react-material-icons/Error';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import { useTheme } from '@/components/ux/contexts/themeContext';
@@ -76,14 +76,14 @@ const Client = () => {
    */
   const getIcon = () => {
     if (status === 'succeeded') {
-      return <CheckCircleIcon fontSize='medium' color='success' />;
+      return <CheckCircleIcon style = {{ fontSize: 24, color: theme.success.main }} />;
     } if (status === 'processing') {
-      return <HourglassBottomIcon fontSize='medium' color='info' />;
+      return <HourglassBottomIcon style = {{ fontSize: 24, color: theme.info.main }} />;
     } if (status === 'requires_payment_method') {
-      return <WarningIcon fontSize='medium' color='warning' />;
+      return <WarningIcon style = {{ fontSize: 24, color: theme.warning.main }} />;
     }
 
-    return <ErrorIcon fontSize='medium' color='error' />;
+    return <ErrorIcon style = {{ fontSize: 24, color: theme.error.main }} />;
   };
 
   const getButton = () => {

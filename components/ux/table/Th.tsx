@@ -1,8 +1,8 @@
 'use client';
 
 import { Objector, Style } from '@esmalley/ts-utils';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@esmalley/react-material-icons/ArrowUpward';
+import ArrowDownwardIcon from '@esmalley/react-material-icons/ArrowDownward';
 import { useState } from 'react';
 
 interface ThProps extends React.ThHTMLAttributes<HTMLTableCellElement> {

@@ -6,9 +6,9 @@ import Paper from '@/components/ux/container/Paper';
 import Tile from '@/components/ux/container/Tile';
 import Typography from '@/components/ux/text/Typography';
 import { FantasyEntrys, FantasyGroup, FantasyGroups } from '@/types/general';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useState } from 'react';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import SportsEsportsIcon from '@esmalley/react-material-icons/SportsEsports';
 import { useAppSelector } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { Dates } from '@esmalley/ts-utils';
@@ -63,7 +63,7 @@ const PublicDraftGroups = (
     return (
       <Tile
         key = {row.fantasy_group_id}
-        icon={<SportsEsportsIcon style = {{ color: theme.blue[500] }} />}
+        icon={<SportsEsportsIcon style = {{ color: theme.blue[500], fontSize: 24 }} />}
         primary={row.name}
         secondary={`Free entry; Draft begins ${Dates.format(Dates.parse(row.draft_start_datetime), 'M jS @ g:i a')}`}
         buttons = {[

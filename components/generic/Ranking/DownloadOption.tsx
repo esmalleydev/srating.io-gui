@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import DownloadIcon from '@mui/icons-material/Download';
+import DownloadIcon from '@esmalley/react-material-icons/Download';
 import { useClientAPI } from '@/components/clientAPI';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useAppDispatch } from '@/redux/hooks';
@@ -70,7 +70,7 @@ const DownloadOption = ({ view, organization_id, division_id, season }) => {
         <IconButton
           value="download-csv"
           onClick={handleDownload}
-          icon = {<DownloadIcon />}
+          icon = {<DownloadIcon style = {{ fontSize: 24 }} />}
         />
       </Tooltip>
       <Modal

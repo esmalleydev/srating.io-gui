@@ -3,13 +3,10 @@
 import React, { useTransition } from 'react';
 
 
-import RankingIcon from '@mui/icons-material/EmojiEvents';
-import ScoresIcon from '@mui/icons-material/Scoreboard';
-import PicksIcon from '@mui/icons-material/Casino';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-// import FavoriteIcon from '@mui/icons-material/Favorite';
-import HomeIcon from '@mui/icons-material/Home';
-// import NewspaperIcon from '@mui/icons-material/Newspaper';
+import RankingIcon from '@esmalley/react-material-icons/EmojiEvents';
+import ScoresIcon from '@esmalley/react-material-icons/Scoreboard';
+import PicksIcon from '@esmalley/react-material-icons/Casino';
+import SportsEsportsIcon from '@esmalley/react-material-icons/SportsEsports';
 import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import Paper from '@/components/ux/container/Paper';
@@ -116,25 +113,25 @@ const FooterNavigation = () => {
     // {
     //   value: 'home',
     //   label: 'Home',
-    //   icon: <HomeIcon />,
+    //   icon: <HomeIcon style = {{ fontSize: 24 }} />,
     //   handler: handleHome,
     // },
     {
       value: 'ranking',
       label: 'Ranking',
-      icon: <RankingIcon />,
+      icon: <RankingIcon style = {{ fontSize: 24 }} />,
       handler: handleRanking,
     },
     {
       value: 'games',
       label: 'Scores',
-      icon: <ScoresIcon />,
+      icon: <ScoresIcon style = {{ fontSize: 24 }} />,
       handler: handleScores,
     },
     {
       value: 'picks',
       label: 'Picks',
-      icon: <PicksIcon />,
+      icon: <PicksIcon style = {{ fontSize: 24 }} />,
       handler: handlePicks,
     },
   ];
@@ -143,7 +140,7 @@ const FooterNavigation = () => {
     options.splice(1, 0, {
       value: 'fantasy',
       label: 'Fantasy',
-      icon: <SportsEsportsIcon />,
+      icon: <SportsEsportsIcon style = {{ fontSize: 24 }} />,
       handler: handleFantasy,
     });
   }

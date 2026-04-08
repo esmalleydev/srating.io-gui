@@ -4,7 +4,7 @@ import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '../text/Typography';
 import { RefObject } from 'react';
 import { BaseInputProps, useInputLogic } from './hooks/useInputLogic';
-import CancelIcon from '@mui/icons-material/Cancel';
+import { Cancel as CancelIcon } from '@esmalley/react-material-icons/Cancel';
 import IconButton from '../buttons/IconButton';
 
 import { Objector, Style, Color } from '@esmalley/ts-utils';
@@ -181,7 +181,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     <div className={Style.getStyleClassName(containerStyle)}>
       {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
       <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-        {icon ? <div style = {{ position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', left: iconLeft }}>{icon}</div> : ''}
+        {icon ? <div style = {{ position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', left: iconLeft, pointerEvents: 'none' }}>{icon}</div> : ''}
         {placeholderElement}
         <input
           ref = {ref}

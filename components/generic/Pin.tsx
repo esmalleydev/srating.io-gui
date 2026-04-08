@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PinIcon from '@mui/icons-material/PushPin';
+import PinIcon from '@esmalley/react-material-icons/PushPin';
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 
@@ -96,12 +96,13 @@ const Pin = ({ game_id }: { game_id: string; }) => {
 
   if (selected) {
     pinStyle.color = theme.warning.light;
+    pinStyle.fontSize = 24;
   }
 
   return (
     <>
       <Tooltip onClickRemove text = {'Pin game'}>
-        <IconButton onClick = {handleFavorite} value = 'pin' icon = {<PinIcon sx = {pinStyle} fontSize = 'small' />} />
+        <IconButton onClick = {handleFavorite} value = 'pin' icon = {<PinIcon style = {pinStyle} />} />
       </Tooltip>
       <AccountHandler open = {accountOpen} closeHandler = {handleAccountClose} />
       {/* <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>

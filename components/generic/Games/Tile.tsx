@@ -5,8 +5,8 @@ import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDim
 
 import HelperGame from '@/components/helpers/Game';
 
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import FavoriteIcon from '@esmalley/react-material-icons/Favorite';
+import AccountBalanceIcon from '@esmalley/react-material-icons/AccountBalance';
 import Paper from '@/components/ux/container/Paper';
 
 import Locked from '@/components/generic/Billing/Locked';

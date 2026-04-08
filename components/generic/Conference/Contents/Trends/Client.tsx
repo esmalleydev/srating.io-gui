@@ -5,7 +5,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, Label, Brush,
   YAxisProps,
 } from 'recharts';
-import LinearScaleIcon from '@mui/icons-material/LinearScale';
+import LinearScaleIcon from '@esmalley/react-material-icons/LinearScale';
 
 
 import { Payload } from 'recharts/types/component/DefaultLegendContent';

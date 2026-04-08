@@ -9,12 +9,12 @@ import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { FantasyEntry } from '@/types/general';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import AddIcon from '@mui/icons-material/Add';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
+import AddIcon from '@esmalley/react-material-icons/Add';
 import { useState } from 'react';
 import CreateEntry from './CreateEntry';
 import Tile from '@/components/ux/container/Tile';
-import StadiumIcon from '@mui/icons-material/Stadium';
+import StadiumIcon from '@esmalley/react-material-icons/Stadium';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useNavigation } from '@/components/hooks/useNavigation';
 
@@ -48,7 +48,7 @@ const MyEntries = () => {
     return (
       <Tile
         key = {row.fantasy_entry_id}
-        icon={<StadiumIcon style = {{ color: theme.deepOrange[500] }} />}
+        icon={<StadiumIcon style = {{ fontSize: 24, color: theme.deepOrange[500] }} />}
         primary={row.name}
         secondary={`${fantasy_group.entry_fee ? (row.paid ? 'Paid' : 'Pending payment') : 'Free'} ${fantasyHelper.isDraft() ? 'draft entry' : 'bracket entry'}`}
         buttons = {[
@@ -76,7 +76,7 @@ const MyEntries = () => {
 
   if (canJoin && my_fantasy_entrys.length > 0) {
     paperButtons.push(
-      <IconButton type = 'circle' value = 'join' onClick = {handleJoin} icon={<AddIcon />} />,
+      <IconButton type = 'circle' value = 'join' onClick = {handleJoin} icon={<AddIcon style = {{ fontSize: 24 }} />} />,
     );
   }
 
@@ -97,7 +97,7 @@ const MyEntries = () => {
 
     return (
       <div style = {{ padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', fontStyle: 'italic', color: theme.text.secondary }}>
-        <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon /></span>
+        <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon style = {{ fontSize: 24 }} /></span>
         <Typography type = 'body1' style = {{ color: theme.text.secondary }}>No entries yet!</Typography>
       </div>
     );

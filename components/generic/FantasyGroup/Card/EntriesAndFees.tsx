@@ -5,7 +5,7 @@ import Paper from '@/components/ux/container/Paper';
 import Slab from '@/components/ux/container/Slab';
 import Columns from '@/components/ux/layout/Columns';
 import { FantasyGroup } from '@/types/general';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AttachMoneyIcon from '@esmalley/react-material-icons/AttachMoney';
 import { getTitle, innerBreakPoint, paperStyle } from '../Card';
 
 
@@ -23,7 +23,7 @@ const EntriesAndFees = (
     <Paper style={paperStyle}>
       <div>
         {getTitle(
-          <AttachMoneyIcon style = {{ color: theme.success.main }} />,
+          <AttachMoneyIcon style = {{ color: theme.success.main, fontSize: 24 }} />,
           'Entries & Fees',
         )}
         <Columns numberOfColumns={2} breakPoint = {innerBreakPoint}>

@@ -3,8 +3,8 @@
 import React, { useState, useTransition } from 'react';
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelCircleIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
+import CancelCircleIcon from '@esmalley/react-material-icons/Cancel';
 
 // import CompareStatistic from '../../CompareStatistic';
 import HelperGame from '@/components/helpers/Game';
@@ -562,7 +562,7 @@ const Calculator = ({ games, date }) => {
     let icon: string | React.JSX.Element = '-';
 
     if (row.status === 'final') {
-      icon = (row.result ? <CheckCircleIcon style = {{ color: theme.success.main }} /> : <CancelCircleIcon style = {{ color: theme.error.main }} />);
+      icon = (row.result ? <CheckCircleIcon style = {{ fontSize: 24, color: theme.success.main }} /> : <CancelCircleIcon style = {{ fontSize: 24, color: theme.error.main }} />);
     }
 
     return (

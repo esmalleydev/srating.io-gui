@@ -3,8 +3,8 @@
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import React, { useCallback, useEffect, useState } from 'react';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import CheckIcon from '@mui/icons-material/Check';
+import FiberManualRecordIcon from '@esmalley/react-material-icons/FiberManualRecord';
+import CheckIcon from '@esmalley/react-material-icons/Check';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dates } from '@esmalley/ts-utils';
 
@@ -33,7 +33,7 @@ const Title = () => {
 
     if (fantasy_group.drafted) {
       data.title = 'Draft is over!';
-      data.icon = <CheckIcon style = {{ color: theme.success.main }} />;
+      data.icon = <CheckIcon style = {{ color: theme.success.main, fontSize: 24 }} />;
       return data;
     }
 
@@ -41,7 +41,7 @@ const Title = () => {
 
     if (difference <= 0) {
       data.title = 'Draft in-progress!';
-      data.icon = <FiberManualRecordIcon style = {{ color: theme.error.main }} />;
+      data.icon = <FiberManualRecordIcon style = {{ color: theme.error.main, fontSize: 24 }} />;
       return data;
     }
 

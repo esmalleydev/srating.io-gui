@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Paper from '../container/Paper';
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@esmalley/react-material-icons/Close';
 import { Objector, Style } from '@esmalley/ts-utils';
 
 

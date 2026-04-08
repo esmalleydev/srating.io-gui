@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
 import { useClientAPI } from '@/components/clientAPI';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
@@ -61,7 +61,6 @@ const Settings = () => {
     }
 
     const inputErrors = passwordInputHandler.getErrors();
-    
 
     if (inputErrors.length) {
       setTriggerPasswordValidation(true);
@@ -76,7 +75,6 @@ const Settings = () => {
       return;
     }
 
-    
     if (password && password.length < 7) {
       setPasswordError('Password must be at least 7 characters');
       setPasswordErrorConfirm('Password must be at least 7 characters');
@@ -117,9 +115,9 @@ const Settings = () => {
     if (isUpdating) {
       return;
     }
-    
+
     const inputErrors = accountInputHandler.getErrors();
-    
+
     if (inputErrors.length) {
       setTriggerAccountValidation(true);
       return;
@@ -132,7 +130,7 @@ const Settings = () => {
       class: 'user',
       function: 'updateAccount',
       arguments: {
-        display_name: displayName
+        display_name: displayName,
       },
     }).then((data) => {
       setIsUpdating(false);
@@ -209,7 +207,7 @@ const Settings = () => {
           />
           <div style = {{ textAlign: 'right', marginTop: 10 }}>{
             reset ?
-            <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon color='success' /><Typography type='body1' style={{ display: 'inline-block', marginLeft: 10, color: theme.success.main }}>Password reset!</Typography></div>
+            <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon style = {{ fontSize: 24, color: theme.success.main }} /><Typography type='body1' style={{ display: 'inline-block', marginLeft: 10, color: theme.success.main }}>Password reset!</Typography></div>
               :
             <Button
               disabled = {isReseting} handleClick={handleResetPassword} title = {'Change password'} value = 'change-password' />
@@ -244,10 +242,10 @@ const Settings = () => {
             triggerValidation = {triggerAccountValidation}
             maxLength = {255}
           />
-          
+
           <div style = {{ textAlign: 'right', marginTop: 10 }}>{
             updated ?
-            <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon color='success' /><Typography type='body1' style={{ display: 'inline-block', marginLeft: 10, color: theme.success.main }}>Updated!</Typography></div>
+            <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon style = {{ fontSize: 24, color: theme.success.main }} /><Typography type='body1' style={{ display: 'inline-block', marginLeft: 10, color: theme.success.main }}>Updated!</Typography></div>
               :
             <Button disabled = {isUpdating} handleClick={handleUpdateAccount} title = {'Update'} value = 'update-account' />
           }</div>
@@ -257,7 +255,7 @@ const Settings = () => {
   };
 
   return (
-    <div style = {{ margin: 'auto', maxWidth: 800, }}>
+    <div style = {{ margin: 'auto', maxWidth: 800 }}>
       <Columns breakPoint={breakPoint}>
         {getAccountPaper()}
         {getPasswordPaper()}

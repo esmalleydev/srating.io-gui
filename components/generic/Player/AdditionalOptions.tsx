@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import Settings from '@mui/icons-material/Settings';
-import CheckIcon from '@mui/icons-material/Check';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import Settings from '@esmalley/react-material-icons/Settings';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
 
 
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
@@ -37,7 +37,7 @@ const AdditionalOptions = () => {
       label: 'Show per game stats',
       selectable: true,
       onSelect: handlePerGameToggle,
-      icon: showPerGameStats ? <CheckIcon fontSize='small' /> : <VisibilityIcon fontSize='small' />,
+      icon: showPerGameStats ? <CheckIcon style = {{ fontSize: 20 }} /> : <VisibilityIcon style = {{ fontSize: 20 }} />,
     },
   ];
 
@@ -47,7 +47,7 @@ const AdditionalOptions = () => {
       <IconButton
         value="additional-options"
         onClick={handleOpen}
-        icon = {<Settings />}
+        icon = {<Settings style = {{ fontSize: 24 }} />}
       />
       <Menu
         anchor={anchor}

@@ -10,7 +10,7 @@ import Tile from '../ux/container/Tile';
 import IconButton from '../ux/buttons/IconButton';
 
 
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from '@esmalley/react-material-icons/Delete';
 import { useNavigation } from '../hooks/useNavigation';
 import { useClientAPI } from '../clientAPI';
 import { setDataKey } from '@/redux/features/user-slice';

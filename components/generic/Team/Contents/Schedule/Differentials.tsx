@@ -3,7 +3,7 @@
 import React from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import HelperGame from '@/components/helpers/Game';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowForwardIcon from '@esmalley/react-material-icons/ArrowForward';
 
 import RankSpan from '@/components/generic/RankSpan';
 import Organization from '@/components/helpers/Organization';

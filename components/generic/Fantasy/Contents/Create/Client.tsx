@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Columns from '@/components/ux/layout/Columns';
 import MultiPicker, { getTerminologyOptions } from '@/components/ux/input/MultiPicker';
 import Wizard from '@/components/ux/layout/Wizard';
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from '@esmalley/react-material-icons/Info';
 import { useClientAPI } from '@/components/clientAPI';
 import ErrorModal from '@/components/ux/modal/ErrorModal';
 import { setLoading } from '@/redux/features/loading-slice';
@@ -24,7 +24,7 @@ import { Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import LinearProgress from '@/components/ux/loading/LinearProgress';
 import { useKontororu } from '@/components/ux/hooks/useKontororu';
-// import InfoOutlineIcon from '@mui/icons-material/InfoOutline'; need to upgrade MUI for this icon... >.>
+// import InfoOutlineIcon from '@esmalley/react-material-icons/InfoOutline'; need to upgrade MUI for this icon... >.>
 
 
 // todo somehow connect the textinput min / max to the isValid functions
@@ -279,7 +279,7 @@ const Client = () => {
           />
           {formData.draft_type_terminology_id && formData.draft_type_terminology_id in terminology ? (
             <div style = {{ display: 'flex', alignItems: 'center' }}>
-              <InfoIcon style = {{ color: theme.info.main, marginRight: 10 }} />
+              <InfoIcon style = {{ color: theme.info.main, marginRight: 10, fontSize: 24 }} />
               <Typography type='caption' style={{ color: theme.text.secondary }}>{terminology[formData.draft_type_terminology_id].description}</Typography>
             </div>
           ) : ''}

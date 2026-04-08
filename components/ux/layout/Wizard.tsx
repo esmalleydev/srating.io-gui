@@ -7,9 +7,9 @@ import Button from '../buttons/Button';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 
-import CheckIcon from '@mui/icons-material/Check';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import KeyboardArrowLeftIcon from '@esmalley/react-material-icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrowRight';
 import IconButton from '../buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
 import { useKontororu } from '../hooks/useKontororu';

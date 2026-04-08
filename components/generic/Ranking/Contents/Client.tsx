@@ -6,7 +6,7 @@ import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDim
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from '@esmalley/react-material-icons/Check';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import RankSpan from '../../RankSpan';
 import { getRows } from '../DataHandler';
@@ -260,7 +260,7 @@ export const decorateRows = <T extends (CBBRankingTable | CFBRankingTable), >(
           tableCells.push(<Td key = {i} style = {{ ...cellStyle, ...deltaStyle }}>{(value > 0 ? '+' : '') + value}</Td>);
         }
       } else if (displayColumns[i] === 'committed') {
-        tableCells.push(<Td key = {i} style = {cellStyle}>{row[displayColumns[i]] === 1 ? <CheckIcon fontSize='small' color = 'success' /> : '-'}</Td>);
+        tableCells.push(<Td key = {i} style = {cellStyle}>{row[displayColumns[i]] === 1 ? <CheckIcon style = {{ fontSize: 20, color: theme.success.main }} /> : '-'}</Td>);
       } else if (displayColumns[i] === 'name' && ('player_id' in row)) {
         let classSpan: string | React.JSX.Element = '';
 

@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import SmartToyIcon from '@mui/icons-material/SmartToy';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import LaunchIcon from '@mui/icons-material/Launch';
-import DataObjectIcon from '@mui/icons-material/DataObject';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
-import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
+import SmartToyIcon from '@esmalley/react-material-icons/SmartToy';
+import AnalyticsIcon from '@esmalley/react-material-icons/Analytics';
+import CheckCircleOutlineIcon from '@esmalley/react-material-icons/CheckCircleOutline';
+import LaunchIcon from '@esmalley/react-material-icons/Launch';
+import DataObjectIcon from '@esmalley/react-material-icons/DataObject';
+import ShowChartIcon from '@esmalley/react-material-icons/ShowChart';
+import IntegrationInstructionsIcon from '@esmalley/react-material-icons/IntegrationInstructions';
 import Billing from './Billing';
 import ButtonSwitch from './ButtonSwitch';
 import { useTheme } from '@/components/ux/contexts/themeContext';
@@ -282,7 +282,7 @@ const Pricing = ({ view }: { view: string | null; }) => {
             <ul className = {Style.getStyleClassName(ulStyle)}>
               <li className = {Style.getStyleClassName(liStyle)}>
                 <div style = {{ flexShrink: 0 }}>
-                  <SmartToyIcon color='primary' />
+                  <SmartToyIcon style = {{ fontSize: 24, color: theme.primary.main }} />
                 </div>
                 <div style = {{ display: 'flex', flexDirection: 'column' }}>
                   <Typography type = 'subtitle1'>AI-Powered Predictive Models</Typography>
@@ -291,7 +291,7 @@ const Pricing = ({ view }: { view: string | null; }) => {
               </li>
               <li className = {Style.getStyleClassName(liStyle)}>
                 <div style = {{ flexShrink: 0 }}>
-                  <AnalyticsIcon color='primary' />
+                  <AnalyticsIcon style = {{ fontSize: 24, color: theme.primary.main }} />
                 </div>
                 <div style = {{ display: 'flex', flexDirection: 'column' }}>
                   <Typography type = 'subtitle1'>Daily Data-Driven Picks</Typography>
@@ -300,7 +300,7 @@ const Pricing = ({ view }: { view: string | null; }) => {
               </li>
               <li className = {Style.getStyleClassName(liStyle)}>
                 <div style = {{ flexShrink: 0 }}>
-                  <CheckCircleOutlineIcon color='primary' />
+                  <CheckCircleOutlineIcon style = {{ fontSize: 24, color: theme.primary.main }} />
                 </div>
                 <div style = {{ display: 'flex', flexDirection: 'column' }}>
                   <Typography type = 'subtitle1'>Proven & Transparent</Typography>
@@ -342,7 +342,7 @@ const Pricing = ({ view }: { view: string | null; }) => {
             <ul className = {Style.getStyleClassName(ulStyle)}>
               <li className = {Style.getStyleClassName(liStyle)}>
                 <div style = {{ flexShrink: 0 }}>
-                  <DataObjectIcon color='primary' />
+                  <DataObjectIcon style = {{ fontSize: 24, color: theme.primary.main }} />
                 </div>
                 <div style = {{ display: 'flex', flexDirection: 'column' }}>
                   <Typography type = 'subtitle1'>Flexible & Powerful Data</Typography>
@@ -351,7 +351,7 @@ const Pricing = ({ view }: { view: string | null; }) => {
               </li>
               <li className = {Style.getStyleClassName(liStyle)}>
                 <div style = {{ flexShrink: 0 }}>
-                  <ShowChartIcon color='primary' />
+                  <ShowChartIcon style = {{ fontSize: 24, color: theme.primary.main }} />
                 </div>
                 <div style = {{ display: 'flex', flexDirection: 'column' }}>
                   <Typography type = 'subtitle1'>Live Scores & Betting Odds</Typography>
@@ -360,7 +360,7 @@ const Pricing = ({ view }: { view: string | null; }) => {
               </li>
               <li className = {Style.getStyleClassName(liStyle)}>
                 <div style = {{ flexShrink: 0 }}>
-                  <IntegrationInstructionsIcon color='primary' />
+                  <IntegrationInstructionsIcon style = {{ fontSize: 24, color: theme.primary.main }} />
                 </div>
                 <div style = {{ display: 'flex', flexDirection: 'column' }}>
                   <Typography type = 'subtitle1'>Simple & Fast Integration</Typography>

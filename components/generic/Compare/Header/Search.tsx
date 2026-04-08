@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from '@esmalley/react-material-icons/Search';
 
 import useDebounce from '@/components/hooks/useDebounce';
 import { useClientAPI } from '@/components/clientAPI';
@@ -168,7 +168,7 @@ const Search = () => {
         value = {value}
         showError = {false}
         transformPlaceholder = {false}
-        icon = {<SearchIcon />}
+        icon = {<SearchIcon style = {{ fontSize: 20 }} />}
         onClick={(e) => {
           setAnchorSearch(e.currentTarget);
           if (value.length) {

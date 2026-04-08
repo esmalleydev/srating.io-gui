@@ -6,7 +6,7 @@ import Paper from '@/components/ux/container/Paper';
 import Slab from '@/components/ux/container/Slab';
 import Columns from '@/components/ux/layout/Columns';
 import { FantasyGroup } from '@/types/general';
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from '@esmalley/react-material-icons/Info';
 import { getTitle, innerBreakPoint, paperStyle } from '../Card';
 import { useAppSelector } from '@/redux/hooks';
 import { Dates } from '@esmalley/ts-utils';
@@ -28,7 +28,7 @@ const GeneralDetails = (
     <Paper style={paperStyle}>
       <div>
         {getTitle(
-          <InfoIcon style = {{ color: theme.info.main }} />,
+          <InfoIcon style = {{ color: theme.info.main, fontSize: 24 }} />,
           'General Details',
         )}
         <Columns numberOfColumns={3} breakPoint = {innerBreakPoint}>

@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import CheckIcon from '@mui/icons-material/Check';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
+import RadioButtonUncheckedIcon from '@esmalley/react-material-icons/RadioButtonUnchecked';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import Button from '@/components/ux/buttons/Button';
 import { useTheme } from '@/components/ux/contexts/themeContext';
@@ -79,8 +79,8 @@ const OptionPicker = (
 
   const uncheckedIcon = (
     isRadio ?
-    <RadioButtonUncheckedIcon style = {{ color: theme.primary.main }} fontSize='small' /> :
-    <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />
+    <RadioButtonUncheckedIcon style = {{ color: theme.primary.main, fontSize: 20 }} /> :
+    <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main, fontSize: 20 }} />
   );
 
   // convert to MenuOption
@@ -93,7 +93,7 @@ const OptionPicker = (
       selectable: true,
       disabled: option.disabled,
       onSelect: handleAction,
-      icon: isSelected ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : uncheckedIcon,
+      icon: isSelected ? <CheckIcon style = {{ color: theme.success.main, fontSize: 20 }} /> : uncheckedIcon,
     };
   });
 

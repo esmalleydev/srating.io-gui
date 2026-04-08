@@ -4,8 +4,8 @@ import { useState } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-import CheckIcon from '@mui/icons-material/Check';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { updateDataKey } from '@/redux/features/display-slice';
@@ -47,21 +47,21 @@ const StatusPicker = () => {
       label: 'Upcoming',
       selectable: true,
       onSelect: handleStatuses,
-      icon: selected.indexOf('pre') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />,
+      icon: selected.indexOf('pre') > -1 ? <CheckIcon style = {{ color: theme.success.main, fontSize: 20 }} /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main, fontSize: 20 }} />,
     },
     {
       value: 'live',
       label: 'Live',
       selectable: true,
       onSelect: handleStatuses,
-      icon: selected.indexOf('live') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />,
+      icon: selected.indexOf('live') > -1 ? <CheckIcon style = {{ color: theme.success.main, fontSize: 20 }} /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main, fontSize: 20 }} />,
     },
     {
       value: 'final',
       label: 'Final',
       selectable: true,
       onSelect: handleStatuses,
-      icon: selected.indexOf('final') > -1 ? <CheckIcon style = {{ color: theme.success.main }} fontSize='small' /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main }} fontSize='small' />,
+      icon: selected.indexOf('final') > -1 ? <CheckIcon style = {{ color: theme.success.main, fontSize: 20 }} /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.primary.main, fontSize: 20 }} />,
     },
   ];
 

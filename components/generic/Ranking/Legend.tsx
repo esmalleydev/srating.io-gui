@@ -1,7 +1,7 @@
 'use client';
 
 
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@esmalley/react-material-icons/Close';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import TableColumns from '@/components/helpers/TableColumns';
@@ -20,7 +20,7 @@ const Legend = ({ open, onClose, columns, view, organization_id }) => {
       >
         <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography type = 'h6'>Column legend</Typography>
-          <IconButton value = 'close' onClick={onClose} icon = {<CloseIcon />} />
+          <IconButton value = 'close' onClick={onClose} icon = {<CloseIcon style = {{ fontSize: 24 }} />} />
         </div>
         <div>
           {

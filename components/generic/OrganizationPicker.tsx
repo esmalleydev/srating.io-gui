@@ -4,9 +4,9 @@ import { useState, useTransition } from 'react';
 // import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
-// import CheckIcon from '@mui/icons-material/Check';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+// import CheckIcon from '@esmalley/react-material-icons/Check';
+import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
+import RadioButtonUncheckedIcon from '@esmalley/react-material-icons/RadioButtonUnchecked';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateOrganizationID } from '@/redux/features/organization-slice';
 import { resetDataKey } from '@/redux/features/display-slice';
@@ -106,7 +106,7 @@ const OrganizationPicker = () => {
       selectable: true,
       label: `${organizations[id].code} (${organizations[id].name})`,
       onSelect: handleOrganization,
-      icon: (isSelected ? <CheckCircleIcon style = {{ color: theme.success.main }} fontSize='small' /> : <RadioButtonUncheckedIcon style = {{ color: theme.primary.main }} fontSize='small' />),
+      icon: (isSelected ? <CheckCircleIcon style = {{ color: theme.success.main, fontSize: 20 }} /> : <RadioButtonUncheckedIcon style = {{ color: theme.primary.main, fontSize: 20 }} />),
     });
   }
 

@@ -4,8 +4,8 @@ import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '@/components/ux/container/Paper';
 import Tile from '@/components/ux/container/Tile';
 import Typography from '@/components/ux/text/Typography';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import PersonIcon from '@mui/icons-material/Person';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
+import PersonIcon from '@esmalley/react-material-icons/Person';
 import { useAppSelector } from '@/redux/hooks';
 import { useState } from 'react';
 import Button from '@/components/ux/buttons/Button';
@@ -26,7 +26,7 @@ const Members = () => {
     return (
       <Tile
         key = {row.fantasy_group_user_id}
-        icon={<PersonIcon />}
+        icon={<PersonIcon style = {{ fontSize: 24 }} />}
         primary={row.name || row.user_id}
         secondary={row.email}
       />
@@ -64,7 +64,7 @@ const Members = () => {
 
     return (
       <div style = {{ padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', fontStyle: 'italic', color: theme.text.secondary }}>
-        <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon /></span>
+        <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon style = {{ fontSize: 24 }} /></span>
         <Typography type = 'body1' style = {{ color: theme.text.secondary }}>No members yet!</Typography>
       </div>
     );

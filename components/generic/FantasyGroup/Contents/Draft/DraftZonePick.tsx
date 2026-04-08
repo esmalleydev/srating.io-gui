@@ -5,7 +5,7 @@ import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import EmojiPeopleIcon from '@esmalley/react-material-icons/EmojiPeople';
 import { useEffect, useState } from 'react';
 import Button from '@/components/ux/buttons/Button';
 import Tile from '@/components/ux/container/Tile';
@@ -181,7 +181,7 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
         <div>
           <Typography type = 'caption' style = {{ color: theme.text.secondary }}>My pick</Typography>
           <Tile
-            icon = {<EmojiPeopleIcon />}
+            icon = {<EmojiPeopleIcon style = {{ fontSize: 24 }} />}
             primary = {selectedRow ? selectedRow.name : 'No selection yet'}
             secondary= {selectedRow ? selectedRow.team_name : 'Select a player from the table below'}
           />

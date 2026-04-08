@@ -1,7 +1,7 @@
 'use client';
 
-import CheckIcon from '@mui/icons-material/Check';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/display-slice';
 import Modal from '@/components/ux/modal/Modal';
@@ -56,7 +56,7 @@ const SortPicker = ({ open, openHandler, closeHandler }) => {
         <Tile
           style = {{ padding: '5px 0px' }}
           key={option.value}
-          icon = {option.value === selected ? <CheckIcon /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.info.main }} />}
+          icon = {option.value === selected ? <CheckIcon style = {{ fontSize: 24 }} /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.info.main, fontSize: 24 }} />}
           primary = {option.label}
           onClick={() => {
             dispatch(setDataKey({ key: 'picksSort', value: option.value }));

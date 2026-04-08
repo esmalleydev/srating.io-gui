@@ -7,8 +7,8 @@ import { updateDataKey } from '@/redux/features/ranking-slice';
 import { useEffect } from 'react';
 import { getStore } from '@/app/StoreProvider';
 
-import CheckIcon from '@mui/icons-material/Check';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
 import { Objector } from '@esmalley/ts-utils';
 import Modal from '@/components/ux/modal/Modal';
 import Typography from '@/components/ux/text/Typography';
@@ -158,7 +158,7 @@ const ClassYearPickerDialog = (
       {options.map((option) => (
         <Tile
           key = {option.value}
-          icon = {selectedOption.includes(option.value as string) ? <CheckIcon /> : <CheckBoxOutlineBlankIcon style = {{ color: theme.info.main }} />}
+          icon = {selectedOption.includes(option.value as string) ? <CheckIcon style = {{ fontSize: 24 }} /> : <CheckBoxOutlineBlankIcon style = {{ fontSize: 24, color: theme.info.main }} />}
           primary = {option.label}
           onClick = {() => handleClassYear(option.value as string)}
           style = {{ padding: '5px 0px' }}

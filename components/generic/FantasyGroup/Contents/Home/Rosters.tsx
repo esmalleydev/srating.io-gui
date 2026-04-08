@@ -5,8 +5,8 @@ import IconButton from '@/components/ux/buttons/IconButton';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@esmalley/react-material-icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrowRight';
 import { useState } from 'react';
 
 const Rosters = () => {
@@ -42,7 +42,7 @@ const Rosters = () => {
     <div>
       <Typography type = 'h6'>Rosters</Typography>
       <div style = {{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-        <IconButton icon={<KeyboardArrowLeftIcon />} value = {'left'} onClick={handleRotate} />
+        <IconButton icon={<KeyboardArrowLeftIcon style = {{ fontSize: 24 }} />} value = {'left'} onClick={handleRotate} />
         <div style={{
           flex: 1, // Takes up all available space between buttons
           overflowX: 'auto', // Enables horizontal scrolling
@@ -57,7 +57,7 @@ const Rosters = () => {
             fantasy_entry_player_statistic_rankings = {fantasy_entry_player_statistic_rankings}
           />
         </div>
-        <IconButton icon={<KeyboardArrowRightIcon />} value = {'right'} onClick={handleRotate} />
+        <IconButton icon={<KeyboardArrowRightIcon style = {{ fontSize: 24 }} />} value = {'right'} onClick={handleRotate} />
       </div>
     </div>
   );

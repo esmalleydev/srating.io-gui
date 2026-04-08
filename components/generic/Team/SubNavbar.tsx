@@ -4,8 +4,8 @@ import { useTransition } from 'react';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import LegendToggleIcon from '@mui/icons-material/LegendToggle';
-import HistoryIcon from '@mui/icons-material/History';
+import LegendToggleIcon from '@esmalley/react-material-icons/LegendToggle';
+import HistoryIcon from '@esmalley/react-material-icons/History';
 import { usePathname, useRouter } from 'next/navigation';
 import { setDataKey } from '@/redux/features/team-slice';
 import AdditionalOptions from './Contents/Schedule/AdditionalOptions';
@@ -80,7 +80,7 @@ const SubNavBar = ({ view }) => {
           <IconButton
             value = 'differential-button'
             onClick = {() => dispatch(setDataKey({ key: 'showScheduleDifferentials', value: !showScheduleDifferentials }))}
-            icon = {<LegendToggleIcon color = {showScheduleDifferentials ? 'success' : 'primary'} />}
+            icon = {<LegendToggleIcon style = {{ fontSize: 24, color: theme[(showScheduleDifferentials ? 'success' : 'primary')].main }} />}
           />
         </Tooltip>,
       );
@@ -91,7 +91,7 @@ const SubNavBar = ({ view }) => {
             containerStyle={{ marginLeft: 5 }}
             value = 'historical-button'
             onClick = {() => dispatch(setDataKey({ key: 'showScheduleHistoricalRankRecord', value: !showScheduleHistoricalRankRecord }))}
-            icon = {<HistoryIcon color = {showScheduleHistoricalRankRecord ? 'success' : 'primary'} />}
+            icon = {<HistoryIcon style = {{ fontSize: 24, color: theme[(showScheduleHistoricalRankRecord ? 'success' : 'primary')].main }} />}
           />
         </Tooltip>,
       );

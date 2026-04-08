@@ -4,8 +4,8 @@
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import React, { useState } from 'react';
 import Typography from '../text/Typography';
-import HelpIcon from '@mui/icons-material/Help';
-// import InfoIcon from '@mui/icons-material/Info';
+import HelpIcon from '@esmalley/react-material-icons/Help';
+// import InfoIcon from '@esmalley/react-material-icons/Info';
 
 import { Objector } from '@esmalley/ts-utils';
 

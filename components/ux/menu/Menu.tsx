@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@esmalley/react-material-icons/Close';
 import MenuList from './MenuList';
 import MenuItem from './MenuItem';
 import MenuListIcon from './MenuListIcon';

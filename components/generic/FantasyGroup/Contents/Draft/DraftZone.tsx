@@ -7,7 +7,7 @@ import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 
 
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from '@esmalley/react-material-icons/Search';
 import { useCallback, useState } from 'react';
 import VirtualTable from '@/components/ux/table/VirtualTable';
 import TableColumns from '@/components/helpers/TableColumns';
@@ -124,7 +124,7 @@ const DraftZone = () => {
             inputHandler={inputHandler}
             placeholder='Player search'
             variant='filled'
-            icon = {<SearchIcon />}
+            icon = {<SearchIcon style = {{ fontSize: 20 }} />}
             style = {{ borderRadius: 5 }}
             onChange = {(val) => setPlayerSearchValue(val)}
           />

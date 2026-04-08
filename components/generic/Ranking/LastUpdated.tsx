@@ -1,7 +1,7 @@
 'use client';
 
 
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from '@esmalley/react-material-icons/Help';
 import { getLastUpdated } from './DataHandler';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/ux/contexts/themeContext';
@@ -33,7 +33,7 @@ const LastUpdated = ({ view, handleLegend }) => {
         lastUpdated ?
         <div style = {{ display: 'flex', alignItems: 'center', alignContent: 'center' }}>
           <Typography type = 'body1' style = {{ fontStyle: 'italic', color: theme.text.secondary }}>{`Last updated: ${formatLastUpdated()}`}</Typography>
-          <HelpIcon style = {{ margin: '0px 5px', cursor: 'pointer' }} onClick = {handleLegend} fontSize='small' color = 'info' />
+          <HelpIcon style = {{ margin: '0px 5px', cursor: 'pointer', fontSize: 20, color: theme.info.main }} onClick = {handleLegend} />
           <Typography type = 'body1' style = {{ fontStyle: 'italic', color: theme.link.primary }}><span className={Style.getStyleClassName(spanStyle)} onClick = {handleLegend}>{'Legend'}</span></Typography>
         </div> :
           ''

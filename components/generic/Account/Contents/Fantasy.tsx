@@ -6,8 +6,8 @@ import Paper from '@/components/ux/container/Paper';
 import Tile from '@/components/ux/container/Tile';
 import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
+import SportsEsportsIcon from '@esmalley/react-material-icons/SportsEsports';
 import PayoutMethod from './Fantasy/PayoutMethod';
 
 import { Elements } from '@stripe/react-stripe-js';
@@ -32,7 +32,7 @@ const Fantasy = () => {
     const organization = organizations[fantasy_group.organization_id];
     return (
       <Tile
-        icon = {<SportsEsportsIcon />}
+        icon = {<SportsEsportsIcon style = {{ fontSize: 24 }} />}
         primary = {fantasy_group.name}
         secondary = {`${organization.name} ${fantasy_group.season} fantasy league`}
         buttons = {[

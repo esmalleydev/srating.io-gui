@@ -5,7 +5,7 @@ import Paper from '@/components/ux/container/Paper';
 import Slab from '@/components/ux/container/Slab';
 import Columns from '@/components/ux/layout/Columns';
 import { FantasyGroup as FantasyGroupType } from '@/types/general';
-import GroupsIcon from '@mui/icons-material/Groups';
+import GroupsIcon from '@esmalley/react-material-icons/Groups';
 import { getTitle, innerBreakPoint, paperStyle } from '../Card';
 import { useAppSelector } from '@/redux/hooks';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
@@ -58,7 +58,7 @@ const DraftSettings = (
     <Paper style={paperStyle}>
       <div>
         {getTitle(
-          <GroupsIcon style = {{ color: theme.purple[500] }} />,
+          <GroupsIcon style = {{ color: theme.purple[500], fontSize: 24 }} />,
           'Draft Settings',
         )}
         <Columns numberOfColumns={2} breakPoint = {innerBreakPoint}>

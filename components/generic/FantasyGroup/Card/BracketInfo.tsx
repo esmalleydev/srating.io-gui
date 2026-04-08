@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import RuleIcon from '@mui/icons-material/Rule';
+import RuleIcon from '@esmalley/react-material-icons/Rule';
 import Paper from '@/components/ux/container/Paper';
 import Slab from '@/components/ux/container/Slab';
 import Columns from '@/components/ux/layout/Columns';
@@ -25,7 +25,7 @@ const BracketInfo = (
     <Paper style={paperStyle}>
       <div>
         {getTitle(
-          <RuleIcon style = {{ color: theme.purple[500] }} />,
+          <RuleIcon style = {{ color: theme.purple[500], fontSize: 24 }} />,
           'Bracket info',
         )}
         <Columns numberOfColumns={3} breakPoint = {innerBreakPoint}>

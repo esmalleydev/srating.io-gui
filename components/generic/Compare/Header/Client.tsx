@@ -7,8 +7,8 @@ import HelperTeam from '@/components/helpers/Team';
 import { getBreakPoint } from '@/components/generic/Compare/Header/ClientWrapper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import HighlightOffIcon from '@esmalley/react-material-icons/HighlightOff';
+import SwapHorizIcon from '@esmalley/react-material-icons/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { setDataKey } from '@/redux/features/compare-slice';
 import CBB from '@/components/helpers/CBB';
@@ -124,7 +124,7 @@ const Client = () => {
             <IconButton
               value = 'remove-button'
               onClick = {() => { handleRemove(team_id); }}
-              icon = {<HighlightOffIcon color = {'error'} />}
+              icon = {<HighlightOffIcon style = {{ fontSize: 24, color: theme.error.main }} />}
             />
           </Tooltip>
         </div>
@@ -190,7 +190,7 @@ const Client = () => {
             <IconButton
               value = 'swap-button'
               onClick = {handleSwap}
-              icon = {<SwapHorizIcon />}
+              icon = {<SwapHorizIcon style = {{ fontSize: 24 }} />}
             />
           </Tooltip>
           : ''

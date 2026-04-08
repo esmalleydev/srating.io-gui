@@ -3,7 +3,7 @@
 import { Profiler, useEffect, useState } from 'react';
 import Legend from './Legend';
 import FloatingButtons from './FloatingButtons';
-// import CheckIcon from '@mui/icons-material/Check';
+// import CheckIcon from '@esmalley/react-material-icons/Check';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
 import { updateDataKey } from '@/redux/features/display-slice';

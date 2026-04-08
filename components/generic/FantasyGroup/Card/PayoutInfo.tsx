@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import MoneyIcon from '@mui/icons-material/Money';
+import MoneyIcon from '@esmalley/react-material-icons/Money';
 import Paper from '@/components/ux/container/Paper';
 import Slab from '@/components/ux/container/Slab';
 import Columns from '@/components/ux/layout/Columns';
@@ -38,7 +38,7 @@ const PayoutInfo = (
     <Paper style={paperStyle}>
       <div>
         {getTitle(
-          <MoneyIcon style = {{ color: theme.green[500] }} />,
+          <MoneyIcon style = {{ color: theme.green[500], fontSize: 24 }} />,
           'Payout Info',
         )}
         <Columns numberOfColumns={2} breakPoint = {innerBreakPoint}>

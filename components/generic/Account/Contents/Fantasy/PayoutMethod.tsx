@@ -10,7 +10,7 @@ import MultiPicker from '@/components/ux/input/MultiPicker';
 import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
 import Typography from '@/components/ux/text/Typography';
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from '@esmalley/react-material-icons/Add';
 import { setDataKey } from '@/redux/features/user-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
@@ -18,9 +18,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import React, { useState } from 'react';
 import IconButton from '@/components/ux/buttons/IconButton';
-import StarIcon from '@mui/icons-material/Star';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
+import StarIcon from '@esmalley/react-material-icons/Star';
+import AccountBalanceIcon from '@esmalley/react-material-icons/AccountBalance';
+import CreditCardIcon from '@esmalley/react-material-icons/CreditCard';
 import { setLoading } from '@/redux/features/loading-slice';
 import { StripeCardElement } from '@stripe/stripe-js';
 import { Objector } from '@esmalley/ts-utils';
@@ -440,7 +440,7 @@ const PayoutMethod = () => {
       if (row.type === 'bank_account') {
         bank_accounts.push(
           <Tile
-            icon = {user.default_user_payment_token_id === user_payment_token_id ? <StarIcon style = {{ color: theme.yellow[500] }} /> : <AccountBalanceIcon style = {{ color: theme.info.main }} /> }
+            icon = {user.default_user_payment_token_id === user_payment_token_id ? <StarIcon style = {{ color: theme.yellow[500], fontSize: 24 }} /> : <AccountBalanceIcon style = {{ color: theme.info.main, fontSize: 24 }} /> }
             primary = {row.json_data && 'bank_name' in row.json_data ? row.json_data.bank_name as string : 'Bank account'}
             secondary = {row.json_data && 'last4' in row.json_data ? row.json_data.last4 as string : '1234'}
             buttons = {buttons}
@@ -451,7 +451,7 @@ const PayoutMethod = () => {
       if (row.type === 'card') {
         debit_cards.push(
           <Tile
-            icon = {user.default_user_payment_token_id === user_payment_token_id ? <StarIcon style = {{ color: theme.yellow[500] }} /> : <CreditCardIcon style = {{ color: theme.info.main }} /> }
+            icon = {user.default_user_payment_token_id === user_payment_token_id ? <StarIcon style = {{ color: theme.yellow[500], fontSize: 24 }} /> : <CreditCardIcon style = {{ color: theme.info.main, fontSize: 24 }} /> }
             primary = {row.json_data && 'brand' in row.json_data ? row.json_data.brand as string : 'Debit card'}
             secondary = {row.json_data && 'last4' in row.json_data ? row.json_data.last4 as string : '1234'}
             buttons = {buttons}

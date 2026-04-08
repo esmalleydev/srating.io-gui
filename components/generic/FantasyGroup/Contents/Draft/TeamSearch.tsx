@@ -7,7 +7,7 @@ import TextInput from '@/components/ux/input/TextInput';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { FantasyGroup, Team } from '@/types/general';
 import { useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from '@esmalley/react-material-icons/Search';
 import { Textor } from '@esmalley/ts-utils';
 
 
@@ -114,7 +114,7 @@ const TeamSearch = (
         placeholder='Team search'
         variant='filled'
         clear
-        icon = {<SearchIcon />}
+        icon = {<SearchIcon style = {{ fontSize: 20 }} />}
         style = {{ borderRadius: 5 }}
         value = {teamSearchValue}
         onClick={(e) => {

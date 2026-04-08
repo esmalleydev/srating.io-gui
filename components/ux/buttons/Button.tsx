@@ -5,7 +5,7 @@
 import { useTheme } from '@/components/ux/contexts/themeContext';
 // import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Color, Style } from '@esmalley/ts-utils';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { KeyboardArrowDown as KeyboardArrowDownIcon } from '@esmalley/react-material-icons/KeyboardArrowDown';
 import { RefObject } from 'react';
 
 const Button = (

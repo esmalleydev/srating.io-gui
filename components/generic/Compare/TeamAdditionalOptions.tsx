@@ -2,9 +2,9 @@
 
 import { useState, useTransition } from 'react';
 
-import TripleDotsIcon from '@mui/icons-material/MoreVert';
-import CheckIcon from '@mui/icons-material/Check';
-import LuggageIcon from '@mui/icons-material/Luggage';
+import TripleDotsIcon from '@esmalley/react-material-icons/MoreVert';
+import CheckIcon from '@esmalley/react-material-icons/Check';
+import LuggageIcon from '@esmalley/react-material-icons/Luggage';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
 import { usePathname, useRouter } from 'next/navigation';
@@ -57,7 +57,7 @@ const TeamAdditionalOptions = () => {
       label: 'Neutral site game',
       selectable: true,
       onSelect: handleNeutral,
-      icon: +neutral_site ? <CheckIcon fontSize='small' /> : <LuggageIcon fontSize='small' />,
+      icon: +neutral_site ? <CheckIcon style={{ fontSize: 20 }} /> : <LuggageIcon style={{ fontSize: 20 }} />,
     },
   ];
 
@@ -66,7 +66,7 @@ const TeamAdditionalOptions = () => {
       <IconButton
         value="team-additional-options"
         onClick={handleOpen}
-        icon = {<TripleDotsIcon />}
+        icon = {<TripleDotsIcon style = {{ fontSize: 24 }} />}
       />
       <Menu
         anchor={anchor}

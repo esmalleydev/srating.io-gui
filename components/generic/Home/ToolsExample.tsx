@@ -4,10 +4,10 @@ import { useTransition } from 'react';
 
 
 
-import PicksIcon from '@mui/icons-material/Casino';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import DataObjectIcon from '@mui/icons-material/DataObject';
-import EventIcon from '@mui/icons-material/Event';
+import PicksIcon from '@esmalley/react-material-icons/Casino';
+import QueryStatsIcon from '@esmalley/react-material-icons/QueryStats';
+import DataObjectIcon from '@esmalley/react-material-icons/DataObject';
+import EventIcon from '@esmalley/react-material-icons/Event';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useRouter } from 'next/navigation';
 import { setLoading } from '@/redux/features/loading-slice';

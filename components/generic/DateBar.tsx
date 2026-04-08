@@ -4,9 +4,9 @@ import React, {
   RefObject, useLayoutEffect, useRef, useState, useTransition,
 } from 'react';
 
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import CalendarIcon from '@mui/icons-material/Event';
+import KeyboardArrowLeftIcon from '@esmalley/react-material-icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrowRight';
+import CalendarIcon from '@esmalley/react-material-icons/Event';
 
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -192,14 +192,14 @@ const DateBar = (
   return (
     <div style = {({ display: 'flex', position: 'fixed', width: '100%', zIndex: 1100, height, backgroundColor, color: Color.getTextColor('#ffffff', backgroundColor) })}>
       <div style = {{ display: 'inline-flex' }}>
-        <IconButton onClick={scrollLeft} value = 'scroll-left' icon = {<KeyboardArrowLeftIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
+        <IconButton onClick={scrollLeft} value = 'scroll-left' icon = {<KeyboardArrowLeftIcon style = {{ fontSize: 24, color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
       </div>
       <div ref = {scrollRefDateBar} style = {{ display: 'inline-flex', overflowX: 'scroll', overflowY: 'hidden', scrollbarWidth: 'none', height: '100%', textAlign: 'center', alignItems: 'center' }}>
         {dateContainers}
       </div>
       <div style = {{ display: 'inline-flex', paddingRight: 8 }}>
-        <IconButton onClick={scrollRight} value = 'scroll-right' icon = {<KeyboardArrowRightIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
-        <IconButton onClick={toggleCalendar} value = 'calendar' icon = {<CalendarIcon style = {{ color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
+        <IconButton onClick={scrollRight} value = 'scroll-right' icon = {<KeyboardArrowRightIcon style = {{ fontSize: 24, color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
+        <IconButton onClick={toggleCalendar} value = 'calendar' icon = {<CalendarIcon style = {{ fontSize: 24, color: Color.getTextColor('#ffffff', backgroundColor) }} />} />
         <Plane
           open={calendarOpen}
           onClose={toggleCalendar}

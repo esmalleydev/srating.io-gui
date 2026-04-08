@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import TripleDotsIcon from '@mui/icons-material/MoreVert';
+import TripleDotsIcon from '@esmalley/react-material-icons/MoreVert';
 
 
 import RankPicker from '@/components/generic/RankPicker';
@@ -37,7 +37,7 @@ const AdditionalOptions = () => {
 
   return (
     <div>
-      <IconButton onClick={handleOpen} value = 'triple-dots' icon = {<TripleDotsIcon />} />
+      <IconButton onClick={handleOpen} value = 'triple-dots' icon = {<TripleDotsIcon style = {{ fontSize: 24 }} />} />
       <Menu
         anchor={anchor}
         open={open}

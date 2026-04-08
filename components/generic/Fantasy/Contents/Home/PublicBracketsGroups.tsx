@@ -6,9 +6,9 @@ import Paper from '@/components/ux/container/Paper';
 import Tile from '@/components/ux/container/Tile';
 import Typography from '@/components/ux/text/Typography';
 import { FantasyEntrys, FantasyGroup, FantasyGroups } from '@/types/general';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useState } from 'react';
-import StadiumIcon from '@mui/icons-material/Stadium';
+import StadiumIcon from '@esmalley/react-material-icons/Stadium';
 import Payment from '@/components/helpers/Payment';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppSelector } from '@/redux/hooks';
@@ -64,7 +64,7 @@ const PublicBracketsGroups = (
     return (
       <Tile
         key = {row.fantasy_group_id}
-        icon={<StadiumIcon style = {{ color: theme.blue[500] }} />}
+        icon={<StadiumIcon style = {{ color: theme.blue[500], fontSize: 24 }} />}
         primary={row.name}
         secondary={`Free entry; Limit ${row.entries_per_user} entries per user`}
         buttons = {[
@@ -106,7 +106,7 @@ const PublicBracketsGroups = (
     return (
       <Tile
         key = {row.fantasy_group_id}
-        icon={<StadiumIcon style = {{ color: theme.purple[500] }} />}
+        icon={<StadiumIcon style = {{ color: theme.purple[500], fontSize: 24 }} />}
         primary={row.name}
         secondary={`$${row.entry_fee} entry fee; Current pool $${Payment.get_amount_after_fees(Object.keys(fantasy_entrys).length * (row.entry_fee || 0))}; ${Object.keys(fantasy_entrys).length} entries; Limit ${row.entries_per_user} entries per user`}
         buttons = {[
@@ -167,7 +167,7 @@ const PublicBracketsGroups = (
         {
           !paid_rows.length && !free_rows.length ?
             <div style = {{ padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', fontStyle: 'italic', color: theme.text.secondary }}>
-              <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon /></span>
+              <span style = {{ display: 'flex', marginRight: 10 }}><SentimentVeryDissatisfiedIcon style = {{ fontSize: 24 }} /></span>
               <Typography type = 'body1' style = {{ color: theme.text.secondary }}>No public bracket groups!</Typography>
             </div>
             : ''

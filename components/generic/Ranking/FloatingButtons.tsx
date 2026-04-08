@@ -1,8 +1,8 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
+import OpenInFullIcon from '@esmalley/react-material-icons/OpenInFull';
+import CloseFullscreenIcon from '@esmalley/react-material-icons/CloseFullscreen';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
@@ -35,7 +35,7 @@ const FloatingButtons = () => {
           type = 'circle'
           value = 'full-screen'
           onClick = {handleFullscreen}
-          icon={tableFullscreen ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
+          icon={tableFullscreen ? <CloseFullscreenIcon style = {{ fontSize: 24 }} /> : <OpenInFullIcon style = {{ fontSize: 24 }} />}
         />
       </Tooltip>
     </div>

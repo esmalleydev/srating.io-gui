@@ -1,7 +1,7 @@
 
 'use client';
 
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from '@esmalley/react-material-icons/Search';
 
 import Divider from '@/components/ux/display/Divider';
 import TextInput from '@/components/ux/input/TextInput';
@@ -29,7 +29,7 @@ const DynamicIcon = ({ name, color }) => {
     () => lazy(() => {
       console.log(`importing ${name}`);
       return import(`@esmalley/react-material-icons/${name}`).then((module) => {
-      // Try named export first (e.g. module.HomeIcon)
+        // Try named export first (e.g. module.HomeIcon)
         const Component = module[name] ?? module.default ?? Object.values(module)[0];
 
         if (!Component || (typeof Component !== 'function' && typeof Component !== 'object')) {

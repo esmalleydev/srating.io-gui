@@ -4,7 +4,7 @@ import React, { useState, useTransition } from 'react';
 
 import { useAppDispatch } from '@/redux/hooks';
 
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowForwardIcon from '@esmalley/react-material-icons/ArrowForward';
 
 
 import { useRouter } from 'next/navigation';
@@ -108,7 +108,7 @@ const RankingExample = () => {
 
   return (
     <Contents>
-      <div style = {{ textAlign: 'center' }}><Button ink handleClick={(e) => { handlePath(e, '/cbb/ranking'); } } endIcon = {<ArrowForwardIcon />} title = {'View Full Live Rankings'} value = 'view-full' /></div>
+      <div style = {{ textAlign: 'center' }}><Button ink handleClick={(e) => { handlePath(e, '/cbb/ranking'); } } endIcon = {<ArrowForwardIcon style = {{ fontSize: 20 }}/>} title = {'View Full Live Rankings'} value = 'view-full' /></div>
       <div>
         <VirtualTable
           rows = {rows}

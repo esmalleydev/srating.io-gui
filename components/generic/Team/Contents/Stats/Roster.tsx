@@ -11,7 +11,7 @@ import Chip from '@/components/ux/container/Chip';
 import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Player, Players } from '@/types/general';
-import SyncAltIcon from '@mui/icons-material/SyncAlt';
+import SyncAltIcon from '@esmalley/react-material-icons/SyncAlt';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tooltip from '@/components/ux/hover/Tooltip';
 import ClassSpan from '@/components/generic/ClassSpan';
@@ -70,13 +70,13 @@ const Roster = ({ organization_id, rosterStats, player_team_seasons, season }) =
 
   const columns = Objector.extender(TableColumns.getColumns({ organization_id, view: 'player' }), TableColumns.getColumns({ organization_id, view: 'roster' }));
 
-  const checkIconClass = Style.getStyleClassName({
+  const transferStyle = {
     color: theme.secondary.dark,
-    fontSize: '16px',
+    fontSize: 16,
     display: 'flex',
-  });
+  };
 
-  const transferIcon = <Tooltip text = {'Player is a transfer'}><SyncAltIcon className={checkIconClass} /></Tooltip>;
+  const transferIcon = <Tooltip text = {'Player is a transfer'}><SyncAltIcon style={transferStyle} /></Tooltip>;
 
   type groupedPosition = {
     [key:string]: (CBBPlayerStatisticRanking | CFBPlayerStatisticRanking | Player)[];

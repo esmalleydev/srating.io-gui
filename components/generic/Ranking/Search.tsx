@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from '@esmalley/react-material-icons/Search';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { getRows } from './DataHandler';
@@ -93,7 +93,7 @@ const Search = ({ view }: {view: string}) => {
     <TextInput
       style = {inputStyle}
       placeholderStyle={{ top: 7 }}
-      icon={<SearchIcon />}
+      icon={<SearchIcon style = {{ fontSize: 20 }} />}
       inputHandler={inputHandler}
       value = {searchValue}
       placeholder='Search'

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import IconButton from '@/components/ux/buttons/IconButton';
-import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsIcon from '@esmalley/react-material-icons/Settings';
 import { useState } from 'react';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import Modal from '@/components/ux/modal/Modal';
@@ -14,9 +14,9 @@ import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { FantasyDraftOrders, FantasyGroup } from '@/types/general';
-import LockIcon from '@mui/icons-material/Lock';
-import LogoutIcon from '@mui/icons-material/Logout';
-import DeleteIcon from '@mui/icons-material/Delete';
+import LockIcon from '@esmalley/react-material-icons/Lock';
+import LogoutIcon from '@esmalley/react-material-icons/Logout';
+import DeleteIcon from '@esmalley/react-material-icons/Delete';
 import { FantasyGroupLoadData, handleLoad } from './ReduxWrapper';
 import FantasyGroupHelper from '@/components/helpers/FantasyGroup';
 import Organization from '@/components/helpers/Organization';
@@ -209,7 +209,7 @@ const NavBar = () => {
         });
         handleClose();
       },
-      icon: <LockIcon fontSize='small' />,
+      icon: <LockIcon style = {{ fontSize: 20 }} />,
     });
   }
 
@@ -228,7 +228,7 @@ const NavBar = () => {
         });
         handleClose();
       },
-      icon: <DeleteIcon fontSize='small' style = {{ color: theme.error.main }} />,
+      icon: <DeleteIcon style = {{ color: theme.error.main, fontSize: 20 }} />,
     });
   }
 
@@ -247,7 +247,7 @@ const NavBar = () => {
         });
         handleClose();
       },
-      icon: <LogoutIcon fontSize='small' style = {{ color: theme.error.main }} />,
+      icon: <LogoutIcon style = {{ color: theme.error.main, fontSize: 20 }} />,
     });
   }
 
@@ -263,7 +263,7 @@ const NavBar = () => {
               <IconButton
                 value = 'settings'
                 onClick={handleOpen}
-                icon = {<SettingsIcon />}
+                icon = {<SettingsIcon style = {{ fontSize: 24 }} />}
               />
               <Menu
                 anchor={anchor}
