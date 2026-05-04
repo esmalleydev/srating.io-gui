@@ -435,7 +435,7 @@ const Calendar = (
     <>
       <Paper style = {{ width: 320, padding: '8px' }}>
         <div className={Style.getStyleClassName(containerHeaderStyle)}>
-          <IconButton value = 'left' onClick={goToPrevious} disabled={viewMode !== 'day' && viewMode !== 'month'} icon = {<KeyboardArrowLeftIcon />} />
+          <IconButton value = 'left' onClick={goToPrevious} disabled={viewMode !== 'day' && viewMode !== 'month'} icon = {<KeyboardArrowLeftIcon style = {{ fontSize: 20 }} />} />
           <div className={Style.getStyleClassName(headerTitleStyle)}>
             <div
               className={Style.getStyleClassName(headerSegStyle)}
@@ -450,7 +450,7 @@ const Calendar = (
               {Dates.format(currentMonth, 'Y')}
             </div>
           </div>
-          <IconButton value = 'right' onClick={goToNext} disabled={viewMode !== 'day' && viewMode !== 'month'} icon = {<KeyboardArrowRightIcon />} />
+          <IconButton value = 'right' onClick={goToNext} disabled={viewMode !== 'day' && viewMode !== 'month'} icon = {<KeyboardArrowRightIcon style = {{ fontSize: 20 }} />} />
         </div>
         {getContents()}
       </Paper>

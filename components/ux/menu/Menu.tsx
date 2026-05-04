@@ -2,7 +2,7 @@
 
 // import { useTheme } from '@/components/ux/contexts/themeContext';
 import ReactDOM from 'react-dom';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import CloseIcon from '@esmalley/react-material-icons/Close';
@@ -103,7 +103,7 @@ const Menu = (
   // Store the actual calculated position after adjustment
   const [finalPosition, setFinalPosition] = useState<{ top: number; left: number } | null>(null);
 
-  const [finalDimensions, setFinalDimensions] = useState<{ maxHeight?: number; maxWidth?: number } | null>(null);
+  const [finalDimensions, setFinalDimensions] = useState<{ maxHeight?: number; maxWidth?: number; width?: number; } | null>(null);
 
   const [activeIndex, setActiveIndex] = useState(-1); // For keyboard navigation
 
@@ -132,7 +132,7 @@ const Menu = (
       overflowX: 'hidden',
       minWidth: 16,
       minHeight: 16,
-      width: 'auto',
+      width: finalDimensions?.width || 'auto',
       maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
       maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
       outline: 0,
@@ -195,7 +195,7 @@ const Menu = (
         setHasWidth(true);
       }
 
-      let calculatedTop = anchorRect.top + getOffsetTop(anchorRect, anchorOrigin.vertical);
+      const calculatedTop = anchorRect.top + getOffsetTop(anchorRect, anchorOrigin.vertical);
       let calculatedLeft = anchorRect.left + getOffsetLeft(anchorRect, anchorOrigin.horizontal);
 
 
@@ -207,10 +207,20 @@ const Menu = (
       // let originX = anchorOrigin.horizontal;
       // let originY = anchorOrigin.vertical;
 
+      const spaceBelow = window.innerHeight - calculatedTop - menuPadding;
+
+      // If the menu is taller than the available space below, just cap the height
+      // so the user can scroll inside it. Never push it upward.
+      if (menuRect.height > spaceBelow) {
+        finalMaxHeight = spaceBelow;
+      }
+
+      /*
 
       // --- Vertical Positioning Adjustments (Prioritize below anchor, adjust height) ---
       const spaceBelow = window.innerHeight - calculatedTop - menuPadding;
       const spaceAbove = calculatedTop - menuPadding;
+
 
       if (calculatedTop + menuRect.height > window.innerHeight - menuPadding) {
         // Menu overflows bottom
@@ -240,6 +250,7 @@ const Menu = (
         finalMaxHeight = window.innerHeight - calculatedTop - menuPadding;
         // finalOriginY = 'top';
       }
+        */
 
       // --- Horizontal Positioning Adjustments (Same as before) ---
       if (calculatedLeft + menuRect.width > window.innerWidth - menuPadding) {
@@ -252,7 +263,7 @@ const Menu = (
       }
 
       setFinalPosition({ top: calculatedTop, left: calculatedLeft });
-      setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36 });
+      setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36, width: anchorRect.width });
 
       // if (finalOriginX && finalOriginY) {
       //   setFinalTransformOrigin({ x: String(finalOriginX), y: String(finalOriginY) });

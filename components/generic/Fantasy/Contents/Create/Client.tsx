@@ -183,7 +183,7 @@ const Client = () => {
             inputHandler = {basicInputHandler}
             label = 'What is the name of the league?'
             placeholder='League name'
-            onChange={(val) => onChange('name', val)}
+            onChange={(val) => onChange('name', val as string)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 Kontororu.dispatchEvent(new CustomEvent('next'));

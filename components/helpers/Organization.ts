@@ -66,6 +66,7 @@ class Organization {
     }
 
     if (!(organization_id in organizations)) {
+      return 'Unknown';
       throw new Error('organization_id not in organizations');
     }
 

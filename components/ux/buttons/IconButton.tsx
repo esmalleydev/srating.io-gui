@@ -7,37 +7,36 @@
 import { useTheme } from '@/components/ux/contexts/themeContext';
 // import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Color, Objector, Style } from '@esmalley/ts-utils';
-import { RefObject } from 'react';
+import { HTMLAttributes, RefObject } from 'react';
 
-const IconButton = (
-  {
-    icon,
-    value,
-    onClick,
-    type = 'standard',
-    disabled = false,
-    autoFocus = false,
-    containerStyle = {},
-    buttonStyle = {},
-    badge = 0,
-    ref = null,
-    ...props
-  }:
-  {
-    icon: React.JSX.Element;
-    value: string|number;
-    onClick: (e: React.SyntheticEvent, value: string | number) => void;
-    type?: 'standard' | 'circle';
-    disabled?: boolean;
-    autoFocus?: boolean;
-    containerStyle?: React.CSSProperties & {
-      '&:hover'?: React.CSSProperties
-    };
-    buttonStyle?: React.CSSProperties;
-    badge?: number;
-    ref?: RefObject<HTMLDivElement> | null;
-  },
-) => {
+export interface IconButtonProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> {
+  icon: React.JSX.Element;
+  value: string|number;
+  onClick: (e: React.SyntheticEvent, value: string | number) => void;
+  type?: 'standard' | 'circle';
+  disabled?: boolean;
+  autoFocus?: boolean;
+  containerStyle?: React.CSSProperties & {
+    '&:hover'?: React.CSSProperties
+  };
+  buttonStyle?: React.CSSProperties;
+  badge?: number;
+  ref?: RefObject<HTMLDivElement> | null;
+}
+
+const IconButton: React.FC<IconButtonProps> = ({
+  icon,
+  value,
+  onClick,
+  type = 'standard',
+  disabled = false,
+  autoFocus = false,
+  containerStyle = {},
+  buttonStyle = {},
+  badge = 0,
+  ref = null,
+  ...props
+}) => {
   const theme = useTheme();
   // const { width } = useWindowDimensions() as Dimensions;
 
@@ -46,7 +45,7 @@ const IconButton = (
   } = {
     position: 'relative',
     display: 'inline-flex',
-    cursor: 'pointer',
+    cursor: disabled ? 'initial' : 'pointer',
     alignItems: 'center',
     borderRadius: 8,
     backgroundColor: 'transparent',
@@ -55,6 +54,10 @@ const IconButton = (
       backgroundColor: theme.action.hover,
     },
   };
+
+  if (disabled) {
+    cStyle.pointerEvents = 'none';
+  }
 
   const circleBackgroundColor = theme.mode === 'dark' ? theme.grey[700] : theme.grey[500];
 
@@ -102,8 +105,6 @@ const IconButton = (
     };
   }
 
-
-
   if (disabled) {
     // Disabled regular button (fill/solid)
     // bStyle.backgroundColor = theme.grey[300]; // Light background for disabled
@@ -134,7 +135,17 @@ const IconButton = (
   };
 
   return (
-    <div ref = {ref} className = {Style.getStyleClassName(cStyle)} {...props} onClick={(e) => { onClick(e, value); }}>
+    <div
+      ref = {ref}
+      {...props}
+      className = {Style.getStyleClassName(cStyle)}
+      onClick={(e) => { onClick(e, value); }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          onClick(e, value);
+        }
+      }}
+    >
       <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled}>
         {icon}
       </button>

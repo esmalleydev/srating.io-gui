@@ -14,8 +14,9 @@ export type MultiPickerOption = {
   value: string | number;
 };
 
+// todo compbine with other inputs typ props in useInputLgic?
 
-interface MultiPickerProps {
+export interface MultiPickerProps {
   inputHandler: Inputs;
   options: MultiPickerOption[];
   selected: (string | number)[];
@@ -24,6 +25,7 @@ interface MultiPickerProps {
   style?: React.CSSProperties;
   isRadio?: boolean;
   required?: boolean;
+  disabled?: boolean;
   error?: boolean; // External error control
   errorMessage?: string; // External error message
   showError?: boolean;
@@ -55,6 +57,7 @@ export const getTerminologyOptions = (type: string) => {
 
   return options;
 };
+
 const MultiPicker = ({
   inputHandler,
   label,
@@ -63,6 +66,7 @@ const MultiPicker = ({
   onChange,
   isRadio = false,
   required = false,
+  disabled = false,
   error: externalError = false,
   errorMessage = 'Selection is required',
   showError = true,
@@ -117,6 +121,7 @@ const MultiPicker = ({
       }
     } else {
       // Logic: Multi-select toggle
+      // eslint-disable-next-line no-lonely-if
       if (internalSelected.includes(value)) {
         // Remove item (Immutable way)
         newSelection = internalSelected.filter((item) => item !== value);
@@ -145,10 +150,14 @@ const MultiPicker = ({
 
   const handleOptionClick = (e: React.SyntheticEvent, value: string | number) => {
     e.preventDefault();
+
+    if (disabled) return;
+
     handleSelection(value);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, value: string | number) => {
+    if (disabled) return;
     // 'Enter' or ' ' (Spacebar) are standard for activating buttons
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault(); // Prevent scrolling when pressing Space
@@ -179,10 +188,15 @@ const MultiPicker = ({
       paperStyle.color = theme.error.main;
     }
 
+    if (disabled) {
+      paperStyle.color = theme.text.disabled;
+      paperStyle.pointerEvents = 'none';
+    }
+
     return (
       <Paper
         key={option.value} // Always need a key for map
-        hover
+        hover = {!disabled}
         style={paperStyle}
         tabIndex={0} // Allows the element to be focused via Tab
         onClick={(e) => handleOptionClick(e, option.value)}
@@ -202,7 +216,7 @@ const MultiPicker = ({
       {/* Label with Required Asterisk */}
       {label && (
         <Typography type="caption" style={{ color: hasError ? theme.error.main : theme.text.secondary }}>
-          {label} {/*required && <span style={{ color: showError ? theme.error.main : theme.text.secondary }}>*</span>*/}
+          {label} {/* required && <span style={{ color: showError ? theme.error.main : theme.text.secondary }}>*</span> */}
         </Typography>
       )}
 

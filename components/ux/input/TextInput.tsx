@@ -2,23 +2,14 @@
 
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '../text/Typography';
-import { RefObject } from 'react';
-import { BaseInputProps, useInputLogic } from './hooks/useInputLogic';
+import { TextInputProps, useTextInputLogic } from './hooks/useInputLogic';
 import { Cancel as CancelIcon } from '@esmalley/react-material-icons/Cancel';
 import IconButton from '../buttons/IconButton';
 
 import { Objector, Style, Color } from '@esmalley/ts-utils';
+import { useState } from 'react';
 
 
-interface TextInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'onChange' | 'onFocus' | 'onBlur' | 'max' | 'min' | 'maxLength'>, BaseInputProps {
-  ref?: RefObject<HTMLInputElement | null>;
-  style?: Record<string, unknown>;
-  placeholderStyle?: Record<string, unknown>;
-  clearIconStyle?: Record<string, unknown>;
-  icon?: React.JSX.Element;
-  clear?: boolean;
-  transformPlaceholder?: boolean;
-}
 
 const TextInput: React.FC<TextInputProps> = (props) => {
   const {
@@ -45,6 +36,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     min = null,
     max = null,
     icon = null,
+    rightIcon = null,
     clear = false,
     transformPlaceholder = true,
     // reset = false,
@@ -52,9 +44,10 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   } = props;
 
   const theme = useTheme();
+  const [isHovered, setIsHovered] = useState(false);
 
   // Use the shared logic
-  const { value, isFocused, hasError, displayedErrorMessage, handlers } = useInputLogic(props);
+  const { value, isFocused, hasError, displayedErrorMessage, handlers } = useTextInputLogic(props);
 
   const hidePlaceholder = !transformPlaceholder && (value || isFocused);
 
@@ -65,7 +58,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
 
   if (hasError) {
     borderColor = errorColor;
-  } else if (isFocused) {
+  } else if (isFocused || isHovered) {
     borderColor = theme.mode === 'dark' ? theme.info.light : theme.info.dark;
   }
 
@@ -92,7 +85,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     borderRadius: variant === 'outlined' ? 4 : 0,
     fontSize: '1rem',
     paddingLeft,
-    paddingRight: paddingLeft + (clear ? 24 : 0),
+    paddingRight: paddingLeft + (clear || rightIcon ? 24 : 0),
   };
 
   if (variant === 'filled') {
@@ -121,15 +114,13 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     lineHeight: 'initial',
   };
 
-
-
   const isLabelActive = isFocused || (
     value !== undefined && value !== ''
   );
 
 
   let labelColor = theme.text.secondary;
-  if (isFocused) {
+  if (isFocused || isHovered) {
     labelColor = borderColor;
   } else if (hasError) {
     labelColor = errorColor;
@@ -165,6 +156,25 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     minHeight: '20px', // Prevents layout jumping if you want consistent spacing
   };
 
+  const iconStyle = {
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    left: iconLeft,
+    color: labelColor,
+    pointerEvents: 'none',
+  };
+
+  const rightIconStyle: Record<string, unknown> = {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    color: labelColor,
+    pointerEvents: 'none', // Allow clicking through the icon
+    right: variant === 'standard' ? 0 : 12,
+  };
+
   let placeholderElement: React.JSX.Element | null = <Typography type = 'caption' className = {Style.getStyleClassName(pStyle)}>{placeholder}</Typography>;
 
   if (hidePlaceholder) {
@@ -173,6 +183,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
 
   const clearStyle = {
     color: (theme.mode === 'dark' ? theme.error.main : theme.grey[600]),
+    fontSize: 20,
   };
 
   Objector.extender(clearStyle, clearIconStyle);
@@ -181,7 +192,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     <div className={Style.getStyleClassName(containerStyle)}>
       {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
       <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
-        {icon ? <div style = {{ position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', left: iconLeft, pointerEvents: 'none' }}>{icon}</div> : ''}
+        {icon ? <div className = {Style.getStyleClassName(iconStyle)}>{icon}</div> : ''}
         {placeholderElement}
         <input
           ref = {ref}
@@ -194,8 +205,23 @@ const TextInput: React.FC<TextInputProps> = (props) => {
           onChange={handlers.handleChange}
           onFocus={handlers.handleFocus}
           onBlur={handlers.handleBlur}
+          onMouseEnter={() => {
+            if (disabled) return;
+            setIsHovered(true);
+          }}
+          onMouseLeave={() => {
+            if (disabled) return;
+            setIsHovered(false);
+          }}
           {...domProps}
         />
+        {
+          (!clear || (clear && !value)) && rightIcon ?
+            <div style={rightIconStyle}>
+              {rightIcon}
+            </div>
+            : ''
+        }
         {
         clear && value ?
           <div style = {{ position: 'absolute', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', right: 0, top: 0 }}>

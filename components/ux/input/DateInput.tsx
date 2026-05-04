@@ -8,7 +8,11 @@ import Paper from '../container/Paper';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 
 import { Objector, Style, Dates } from '@esmalley/ts-utils';
-import Inputs from './Inputs';
+import { DateInputProps } from './hooks/useInputLogic';
+
+import CalendarMonthIcon from '@esmalley/react-material-icons/CalendarMonth';
+
+// todo allow passing in a format to display ex: m/d/y vs yyyy-mm-dd etc...
 
 
 // Helper to validate a date object
@@ -52,57 +56,67 @@ const to24Hour = (hours: number, meridiem: string) => {
   return h;
 };
 
-interface DatePickerProps {
-  inputHandler: Inputs;
-  placeholder: string;
-  label?: string;
-  value?: string | Date; // Can accept string (ISO) or Date object
-  onChange: (date: Date | null) => void;
-  minDate?: string;
-  maxDate?: string;
-  style?: React.CSSProperties;
-  error?: boolean; // External error control
-  errorMessage?: string;
-  showError?: boolean;
-  required?: boolean;
-  triggerValidation?: boolean;
-  enableTime?: boolean;
-}
+
+const DateInput: React.FC<DateInputProps> = (props) => {
+  const {
+    // Pull out the specific DateInput props
+    value: valueProp,
+    ref = null,
+    style = {},
+    onChange,
+    minDate = '1900-01-01',
+    maxDate = '2100-01-01',
+    enableTime = false,
+
+    // Pull out TextInput specific props
+    inputHandler,
+    placeholderStyle = {},
+    clearIconStyle = {},
+    placeholder,
+    label,
+    variant = 'outlined',
+    disabled = false,
+    error: externalError = false,
+    errorMessage: externalErrorMessage,
+    showError = true,
+    required = false,
+    onFocus,
+    onBlur,
+    triggerValidation = false,
+    icon,
+    clear = false,
+    transformPlaceholder = true,
+
+    // Pull out the conflicting "Base" props to prevent them from being passed into domProps
+    defaultValue: _defaultValue, // Extract and ignore
+    validator: _validator, // Extract and ignore
+    transformOnBlur: _transformOnBlur,
 
 
-const DateInput: React.FC<DatePickerProps> = ({
-  inputHandler,
-  placeholder,
-  label,
-  value,
-  onChange,
-  minDate = '1900-01-01',
-  maxDate = '2100-01-01',
-  style,
-  error: externalError = false,
-  errorMessage: externalErrorMessage,
-  showError = true,
-  required = false,
-  triggerValidation = false,
-  enableTime = false,
-}) => {
+    // Pull out HTML attributes that clash with TextInputProps types
+    min: _min,
+    max: _max,
+
+    // 4. Everything else (id, name, etc.) stays in domProps
+    ...domProps
+  } = props;
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   // --- State ---
   const [isOpen, setIsOpen] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
   const [internalError, setInternalError] = useState(false);
   const [internalErrorMessage, setInternalErrorMessage] = useState('');
 
   const displayFormat = enableTime ? 'm/d/Y h:i a' : 'm/d/Y';
 
   // Parse initial value
-  const initialDate = value ? Dates.parse(value) : null;
+  const initialDate = valueProp ? Dates.parse(valueProp) : null;
   const [selectedDate, setSelectedDate] = useState<Date | null>(isValidDate(initialDate) ? initialDate : null);
   const [calAncor, setCalAncor] = useState(null);
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const skipOpenRef = useRef(false);
-  const textRef = useRef<HTMLInputElement | null>(null);
+  const textRef = ref || useRef<HTMLInputElement | null>(null);
 
   // Input string state (what the user sees)
   const [inputValue, setInputValue] = useState(selectedDate ? Dates.format(selectedDate, displayFormat) : '');
@@ -110,8 +124,8 @@ const DateInput: React.FC<DatePickerProps> = ({
   // --- Synchronization ---
   // If parent updates prop 'value', sync local state
   useEffect(() => {
-    if (value) {
-      const d = Dates.parse(value);
+    if (valueProp) {
+      const d = Dates.parse(valueProp);
       if (isValidDate(d)) {
         if (minDate && Dates.parse(d) < Dates.parse(minDate)) {
           setInternalError(true);
@@ -135,7 +149,7 @@ const DateInput: React.FC<DatePickerProps> = ({
         setInternalErrorMessage('Invalid date');
       }
     }
-  }, [value, minDate, maxDate]);
+  }, [valueProp, minDate, maxDate]);
 
 
 
@@ -208,23 +222,32 @@ const DateInput: React.FC<DatePickerProps> = ({
 
         if (current >= min && current <= max) {
           setSelectedDate(newDate);
-          onChange(newDate);
+          if (onChange) {
+            onChange(newDate);
+          }
           setInternalError(false);
           setInternalErrorMessage('');
           // We don't close the calendar here so they can see it update,
           // but you could set setIsOpen(false) if preferred.
         }
       } else {
-        onChange(null);
+        if (onChange) {
+          onChange(null);
+        }
         setSelectedDate(null);
         setInternalError(true);
         setInternalErrorMessage('Invalid date');
       }
     } else {
-      onChange(null);
+      if (onChange) {
+        onChange(null);
+      }
       setSelectedDate(null);
-      setInternalError(true);
-      setInternalErrorMessage('Invalid date');
+
+      if (text) {
+        setInternalError(true);
+        setInternalErrorMessage('Invalid date');
+      }
     }
   };
 
@@ -246,7 +269,9 @@ const DateInput: React.FC<DatePickerProps> = ({
     // console.log('Dates.format(newDate, displayFormat)', Dates.format(newDate, displayFormat))
 
     setInputValue(Dates.format(newDate, displayFormat));
-    onChange(newDate);
+    if (onChange) {
+      onChange(newDate);
+    }
     setInternalError(false);
     setInternalErrorMessage('');
 
@@ -285,7 +310,9 @@ const DateInput: React.FC<DatePickerProps> = ({
 
     setSelectedDate(newDate);
     setInputValue(Dates.format(newDate, displayFormat));
-    onChange(newDate);
+    if (onChange) {
+      onChange(newDate);
+    }
   };
 
   // --- Styles ---
@@ -312,6 +339,8 @@ const DateInput: React.FC<DatePickerProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (disabled) return;
+
     if (e.key === 'Tab' && isOpen) {
       // If tabbing forward and the calendar is open
       if (!e.shiftKey) {
@@ -377,6 +406,7 @@ const DateInput: React.FC<DatePickerProps> = ({
   };
 
   const handleTextInputClick = (e) => {
+    if (disabled) return;
     setIsOpen(true);
   };
 
@@ -411,10 +441,14 @@ const DateInput: React.FC<DatePickerProps> = ({
   return (
     <div ref={containerRef} className={Style.getStyleClassName(wrapperStyle)}>
       <TextInput
+        {...domProps}
         inputHandler={inputHandler}
+        placeholderStyle={placeholderStyle}
+        clearIconStyle={clearIconStyle}
         ref = {textRef}
         placeholder={placeholder}
         label={label}
+        variant={variant}
         value={inputValue}
         onChange={handleInputChange}
         onFocus={handleOnFocus}
@@ -427,6 +461,11 @@ const DateInput: React.FC<DatePickerProps> = ({
         showError = {showError}
         required = {required}
         triggerValidation = {triggerValidation}
+        clear = {clear}
+        disabled = {disabled}
+        transformPlaceholder = {transformPlaceholder}
+        icon = {icon}
+        rightIcon={<CalendarMonthIcon style = {{ fontSize: 20 }} />}
       />
       <Plane
         open={isOpen}
@@ -558,8 +597,6 @@ const TimeColumn = <T extends number | string>({ items, selected, onSelect, form
     </ul>
   );
 };
-
-
 
 
 export default DateInput;

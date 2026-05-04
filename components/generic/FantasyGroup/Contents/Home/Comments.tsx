@@ -144,7 +144,7 @@ const Comments = () => {
               errorMessage={errorMessage}
               triggerValidation = {triggerValidation}
               value = {newComment}
-              onChange={(val) => setNewComment(val)}
+              onChange={(val) => setNewComment(val as string)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   addComment();

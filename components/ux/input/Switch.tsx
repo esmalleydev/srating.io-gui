@@ -7,7 +7,7 @@ import Typography from '../text/Typography'; // Adjust path if needed
 import { useState } from 'react';
 import { Color, Style } from '@esmalley/ts-utils';
 
-interface SwitchProps {
+export interface SwitchProps {
   // Label to display next to the switch
   label?: string;
   // Controlled state
