@@ -3,7 +3,7 @@
 import { useAppSelector } from '@/redux/hooks';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import CircularProgress from '@/components/ux/loading/CircularProgress';
 
 /**

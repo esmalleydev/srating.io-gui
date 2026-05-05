@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import ConferenceFilterOptions from './ConferenceFilterOptions';
 import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { ClassYearPickerDialog } from './ClassYearPicker';
 import IconButton from '@/components/ux/buttons/IconButton';

@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OpenInFullIcon from '@esmalley/react-material-icons/OpenInFull';
 import CloseFullscreenIcon from '@esmalley/react-material-icons/CloseFullscreen';
 import { setDataKey } from '@/redux/features/ranking-slice';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
 import { useTheme } from '@/components/ux/contexts/themeContext';

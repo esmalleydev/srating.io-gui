@@ -5,7 +5,7 @@ import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { useEffect, useState } from 'react';
 import RankSpan from './RankSpan';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '../ux/hover/Tooltip';
+import Tooltip from '../ux/overlay/Tooltip';
 import Table from '../ux/table/Table';
 import Thead from '../ux/table/Thead';
 import Tr from '../ux/table/Tr';

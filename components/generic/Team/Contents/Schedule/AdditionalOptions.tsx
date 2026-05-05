@@ -12,7 +12,7 @@ import CalendarViewMonthIcon from '@esmalley/react-material-icons/CalendarViewMo
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 
 const AdditionalOptions = () => {

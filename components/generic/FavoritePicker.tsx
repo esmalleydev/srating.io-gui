@@ -8,7 +8,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
-import Tooltip from '../ux/hover/Tooltip';
+import Tooltip from '../ux/overlay/Tooltip';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import IconButton from '../ux/buttons/IconButton';
 

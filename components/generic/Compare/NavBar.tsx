@@ -18,7 +18,7 @@ import { useScrollContext } from '@/contexts/scrollContext';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tab from '@/components/ux/buttons/Tab';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
 // import GroupsIcon from '@esmalley/react-material-icons/Groups';

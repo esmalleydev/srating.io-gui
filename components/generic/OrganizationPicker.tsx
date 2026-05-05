@@ -17,7 +17,7 @@ import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { reset } from '@/redux/features/compare-slice';
-import Tooltip from '../ux/hover/Tooltip';
+import Tooltip from '../ux/overlay/Tooltip';
 import { setLoading } from '@/redux/features/loading-slice';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import Button from '@/components/ux/buttons/Button';

@@ -17,7 +17,7 @@ import Record from './Tile/Record';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Game, Team } from '@/types/general';
 import Paper from '@/components/ux/container/Paper';

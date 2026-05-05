@@ -2,7 +2,7 @@
 
 import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '../ux/hover/Tooltip';
+import Tooltip from '../ux/overlay/Tooltip';
 import { Style } from '@esmalley/ts-utils';
 
 const ClassSpan = (

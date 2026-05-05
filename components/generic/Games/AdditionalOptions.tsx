@@ -12,7 +12,7 @@ import MilitaryTechIcon from '@esmalley/react-material-icons/MilitaryTech';
 import RankPicker from '@/components/generic/RankPicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import { setDataKey } from '@/redux/features/display-slice';
 import CardPicker from './CardPicker';
 import IconButton from '@/components/ux/buttons/IconButton';

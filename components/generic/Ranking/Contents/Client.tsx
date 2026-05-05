@@ -17,7 +17,7 @@ import { getConferenceChips } from '../../ConferenceChips';
 import TableColumns from '@/components/helpers/TableColumns';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import ClassSpan from '../../ClassSpan';
 import VirtualTable, { CustomDecorateHeaderRow, CustomDecorateRows, defaultSortOrderType } from '@/components/ux/table/VirtualTable';
 import Td from '@/components/ux/table/Td';

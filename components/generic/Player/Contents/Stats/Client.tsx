@@ -9,7 +9,7 @@ import { getNavHeaderHeight } from '../../NavBar';
 import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankSpan from '@/components/generic/RankSpan';
 import TableColumns from '@/components/helpers/TableColumns';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import AdditionalOptions from '../../AdditionalOptions';
 import { useAppSelector } from '@/redux/hooks';
 import LinearProgress from '@/components/ux/loading/LinearProgress';

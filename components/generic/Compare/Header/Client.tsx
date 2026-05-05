@@ -15,7 +15,7 @@ import CBB from '@/components/helpers/CBB';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Organization from '@/components/helpers/Organization';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';

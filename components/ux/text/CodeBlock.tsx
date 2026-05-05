@@ -4,7 +4,7 @@ import Paper from '../container/Paper';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import IconButton from '../buttons/IconButton';
 import ContentCopyIcon from '@esmalley/react-material-icons/ContentCopy';
-import Tooltip from '../hover/Tooltip';
+import Tooltip from '../overlay/Tooltip';
 
 type SupportedLang = 'js' | 'ts' | 'sh' | 'py';
 

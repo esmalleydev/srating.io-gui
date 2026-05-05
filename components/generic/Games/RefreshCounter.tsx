@@ -3,7 +3,7 @@
 import WifiOffIcon from '@esmalley/react-material-icons/WifiOff';
 
 import { useAppSelector } from '@/redux/hooks';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import CircularProgress from '@/components/ux/loading/CircularProgress';

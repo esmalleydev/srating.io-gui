@@ -30,7 +30,7 @@ import { setLoading } from '@/redux/features/loading-slice';
 import OrganizationPicker from './OrganizationPicker';
 import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
 import Organization from '../helpers/Organization';
-import Tooltip from '../ux/hover/Tooltip';
+import Tooltip from '../ux/overlay/Tooltip';
 import Button from '../ux/buttons/Button';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import IconButton from '../ux/buttons/IconButton';

@@ -5,7 +5,7 @@ import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import KeyboardArrowUpIcon from '@esmalley/react-material-icons/KeyboardArrowUp';
-// import Tooltip from '@/components/ux/hover/Tooltip';
+// import Tooltip from '@/components/ux/overlay/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
 import { useTheme } from '@/components/ux/contexts/themeContext';

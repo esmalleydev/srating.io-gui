@@ -22,7 +22,7 @@ import Rank from './Tile/Rank';
 import Organization from '@/components/helpers/Organization';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Typography from '@/components/ux/text/Typography';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import { setDataKey } from '@/redux/features/games-slice';
 import IconButton from '@/components/ux/buttons/IconButton';
 import Modal from '@/components/ux/modal/Modal';

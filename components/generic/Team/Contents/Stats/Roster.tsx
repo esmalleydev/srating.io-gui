@@ -13,7 +13,7 @@ import TableColumns from '@/components/helpers/TableColumns';
 import { Player, Players } from '@/types/general';
 import SyncAltIcon from '@esmalley/react-material-icons/SyncAlt';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import ClassSpan from '@/components/generic/ClassSpan';
 import { Objector, Style, Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';

@@ -10,7 +10,7 @@ import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/player-slice';
 import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import Tooltip from '@/components/ux/overlay/Tooltip';
 import IconButton from '@/components/ux/buttons/IconButton';
 import { useNavigation } from '@/components/hooks/useNavigation';
 
