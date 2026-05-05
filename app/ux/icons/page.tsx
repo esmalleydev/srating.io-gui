@@ -12,7 +12,6 @@ import { useTheme } from '@/components/ux/contexts/themeContext';
 import manifest from '@esmalley/react-material-icons/utils/manifest';
 import { Textor } from '@esmalley/ts-utils';
 import CodeBlock from '@/components/ux/text/CodeBlock';
-import Button from '@/components/ux/buttons/Button';
 
 // todo export icon type to set in any
 
@@ -132,12 +131,8 @@ export default function IconGalleryPage() {
           </div>
         )}
       </div>
-      <Modal open={selected !== ''} onClose={() => setSelected('')} paperStyle={{ maxWidth: 800 }}>
-        <Typography type = 'h6'>Copy import string</Typography>
-        <CodeBlock code = {importString} style = {{ padding: '0px' }}/>
-        <div style = {{ textAlign: 'right' }}>
-          <Button title = 'Copy' value = 'copy' handleClick={() => alert('todo copy to clipboard')} />
-        </div>
+      <Modal open={selected !== ''} onClose={() => setSelected('')} paperStyle={{ maxWidth: 800 }} type = 'custom'>
+        <CodeBlock code = {importString} style = {{ padding: '10px 20px' }}/>
       </Modal>
     </div>
   );

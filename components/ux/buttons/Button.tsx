@@ -120,7 +120,7 @@ const Button = (
 
   let endIconInternal = endIcon;
   if (type === 'select' && !endIcon) {
-    endIconInternal = <KeyboardArrowDownIcon />;
+    endIconInternal = <KeyboardArrowDownIcon style = {{ fontSize: 20, marginLeft: 5 }} />;
   }
 
   return (

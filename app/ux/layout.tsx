@@ -10,8 +10,12 @@ import KeyboardArrowUpIcon from '@esmalley/react-material-icons/KeyboardArrowUp'
 
 import { useState } from 'react';
 import { Objector } from '@esmalley/ts-utils';
+import Drawer from '@/components/ux/overlay/Drawer';
+import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import IconButton from '@/components/ux/buttons/IconButton';
+import WebIcon from '@esmalley/react-material-icons/Web';
 
-export default function UXLayout({ children }: { children: React.ReactNode }) {
+const getSideBarContents = () => {
   const pathname = usePathname();
   const theme = useTheme();
 
@@ -66,6 +70,10 @@ export default function UXLayout({ children }: { children: React.ReactNode }) {
       name: 'Modal',
     },
     {
+      value: 'menu',
+      name: 'Menu',
+    },
+    {
       value: 'loading',
       name: 'Loading states',
     },
@@ -73,78 +81,111 @@ export default function UXLayout({ children }: { children: React.ReactNode }) {
 
   const getSidebarItemStyle = (path: string) => {
     const isActive = pathname === path;
-    return {
+
+    const style: Record<string, unknown> = {
       padding: '10px 0px',
       cursor: 'pointer',
-      borderRadius: '4px',
+      // borderRadius: '4px',
       color: isActive ? theme.info.main : theme.text.primary,
-      fontWeight: isActive ? 'bold' : 'normal',
       transition: 'background-color 0.2s',
       display: 'block',
       textDecoration: 'none',
-    //   border: isActive ? `1px solid ${theme.info.main}` : 'none',
+      paddingLeft: 20,
+      '&:hover': {
+        backgroundColor: theme.action.hover,
+      },
     };
+
+    if (isActive) {
+      style.borderLeft = `1px solid ${style.color}`;
+      style.backgroundColor = theme.action.hover;
+    }
+    return style;
   };
+
+
+  return (
+    <div style={{
+      width: '250px',
+      borderRight: `2px solid ${theme.secondary.main}`,
+      display: 'flex',
+      flexDirection: 'column',
+      // gap: '8px',
+      backgroundColor: theme.background.main,
+    }}>
+      <Typography type='h6' style={{ marginBottom: '16px', paddingLeft: 20, color: theme.text.secondary }}>Component list</Typography>
+
+      <Typography type='a' href="/ux" style={getSidebarItemStyle('/ux')}>
+        Getting started
+      </Typography>
+
+      {sections.map((row) => {
+        const section = row.value;
+        const row_children = row.children;
+
+        if (!row_children || !row_children.length) {
+          return (
+            <Typography type='a' href={`/ux/${section}`} style={getSidebarItemStyle(`/ux/${section}`)}>{row.name}</Typography>
+          );
+        }
+        return (
+          <>
+          <div
+            style = {{ display: 'flex', justifyContent: 'space-between', cursor: 'pointer', paddingLeft: 20 }}
+            onClick={() => {
+              if (expanded.has(section)) {
+                expanded.delete(section);
+              } else {
+                expanded.add(section);
+              }
+              setExpanded(Objector.deepClone(expanded));
+            }}
+          >
+            <Typography type = 'body1'>{row.name}</Typography>
+            {expanded.has(section) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </div>
+          <div>
+            {row_children.map((child) => {
+              return (
+                expanded.has(section) ?
+                <Typography type='a' href={`/ux/${section}/${child.value}`} style={getSidebarItemStyle(`/ux/${section}/${child.value}`)}><span style = {{ paddingLeft: 10 }}></span>{child.name}</Typography>
+                  : ''
+              );
+            })}
+          </div>
+          </>
+        );
+      })}
+    </div>
+  );
+};
+
+export default function UXLayout({ children }: { children: React.ReactNode }) {
+  const theme = useTheme();
+  const { width } = useWindowDimensions() as Dimensions;
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
-      {/* Sidebar Navigation */}
-      <div style={{
-        width: '250px',
-        borderRight: `2px solid ${theme.secondary.main}`,
-        padding: '10px 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        // gap: '8px',
-        backgroundColor: theme.background.main,
-      }}>
-        <Typography type='h6' style={{ marginBottom: '16px', color: theme.text.secondary }}>Component list</Typography>
 
-        <Typography type='a' href="/ux" style={getSidebarItemStyle('/ux')}>
-          Getting started
-        </Typography>
-
-        {sections.map((row) => {
-          const section = row.value;
-          const row_children = row.children;
-
-          if (!row_children || !row_children.length) {
-            return (
-              <Typography type='a' href={`/ux/${section}`} style={getSidebarItemStyle(`/ux/${section}`)}>{row.name}</Typography>
-            );
-          }
-          return (
-            <>
-            <div
-              style = {{ display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }}
-              onClick={() => {
-                if (expanded.has(section)) {
-                  expanded.delete(section);
-                } else {
-                  expanded.add(section);
-                }
-                setExpanded(Objector.deepClone(expanded));
-              }}
-            >
-              <Typography type = 'body1'>{row.name}</Typography>
-              {expanded.has(section) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </div>
-            <div style = {{ paddingLeft: 10 }}>
-              {row_children.map((child) => {
-                return (
-                  expanded.has(section) ?
-                  <Typography type='a' href={`/ux/${section}/${child.value}`} style={getSidebarItemStyle(`/ux/${section}/${child.value}`)}>{child.name}</Typography>
-                    : ''
-                );
-              })}
-            </div>
-            </>
-          );
-        })}
-      </div>
+      {
+        width <= 750 ?
+        <>
+        <div style = {{ width: 50, textAlign: 'center', paddingTop: 10, borderRight: `2px solid ${theme.secondary.main}` }}>
+          <IconButton onClick = {() => setDrawerOpen(!drawerOpen)} value = 'sidebar' icon = {<WebIcon style = {{ fontSize: 24, color: theme.text.secondary }} />} />
+        </div>
+        <Drawer
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+        >
+          {getSideBarContents()}
+        </Drawer>
+        </>
+          : getSideBarContents()
+      }
 
       {/* Main Content Area */}
-      <div style={{ flex: 1, padding: '30px', overflowY: 'auto' }}>
+      <div style={{ flex: 1, padding: '10px 20px', overflowY: 'auto' }}>
         {children}
       </div>
     </div>

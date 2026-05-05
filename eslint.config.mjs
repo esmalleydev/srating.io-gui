@@ -1306,7 +1306,7 @@ export default [
       'quote-props': ['error', 'as-needed', { keywords: false, unnecessary: true, numbers: false }],
 
       // specify whether double or single quotes should be used
-      quotes: ['error', 'single', { avoidEscape: true }],
+      quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
 
       // do not require jsdoc
       // https://eslint.org/docs/rules/require-jsdoc
