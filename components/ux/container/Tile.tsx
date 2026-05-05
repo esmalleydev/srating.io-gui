@@ -28,7 +28,7 @@ const Tile = (
     style?: React.CSSProperties;
     iconStyle?: React.CSSProperties;
     buttons?: React.JSX.Element[];
-    onClick?: () => void;
+    onClick?: (e) => void;
   },
 ) => {
   const theme = useTheme();

@@ -2,7 +2,7 @@
 
 // import { useTheme } from '@/components/ux/contexts/themeContext';
 import ReactDOM from 'react-dom';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Paper from '@/components/ux/container/Paper';
 import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import CloseIcon from '@esmalley/react-material-icons/Close';
@@ -132,7 +132,8 @@ const Menu = (
       overflowX: 'hidden',
       minWidth: 16,
       minHeight: 16,
-      width: finalDimensions?.width || 'auto',
+      // width: finalDimensions?.width || 'auto',
+      width: 'auto',
       maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
       maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
       outline: 0,
@@ -165,15 +166,45 @@ const Menu = (
   };
 
   const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
+
+    // If the element is no longer in the document, it was likely
+    // detached by a React re-render. We should probably ignore it.
+    if (!target || !target.isConnected) {
+      return;
+    }
+    // console.log('Is target still in document?', document.body.contains(event.target as Node));
+    // console.log('target', target)
+    // console.log('target.isConnected', target.isConnected)
+    // console.log('menuContentRef.current', menuContentRef.current)
+    // console.log('anchor', anchor)
+
     if (
       menuContentRef.current &&
-      !menuContentRef.current.contains(event.target as Node) &&
+      !menuContentRef.current.contains(target) &&
       anchor &&
-      !anchor.contains(event.target as Node)
+      !anchor.contains(target)
     ) {
+      // console.log('OK')
       handleClose();
     }
   };
+
+  // Effect to handle clicks outside the menu content to close it
+  useEffect(() => {
+    if (open && menuRootRef.current) {
+      // Add event listener to the document (or the overlay div)
+      // We add it to the menuRoot (the portal's target) to capture events on the overlay
+      menuRootRef.current.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Cleanup the event listener when the component unmounts or menu closes
+    return () => {
+      if (menuRootRef.current) {
+        menuRootRef.current.removeEventListener('mousedown', handleClickOutside);
+      }
+    };
+  }, [open, onClose, menuRootRef, menuContentRef, anchor]);
 
   // if the options change, reset the activeIndex
   useEffect(() => {
@@ -263,7 +294,8 @@ const Menu = (
       }
 
       setFinalPosition({ top: calculatedTop, left: calculatedLeft });
-      setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36, width: anchorRect.width });
+      // setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36, width: anchorRect.width });
+      setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36 });
 
       // if (finalOriginX && finalOriginY) {
       //   setFinalTransformOrigin({ x: String(finalOriginX), y: String(finalOriginY) });
@@ -286,7 +318,7 @@ const Menu = (
         menuRootRef.current.removeEventListener('mousedown', handleClickOutside);
       }
     };
-  }, [open, onClose, menuRootRef]);
+  }, [open, onClose, menuRootRef, menuContentRef, anchor]);
 
   const getNextIndex = (current: number) => {
     const nextIndex = current + 1;

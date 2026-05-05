@@ -19,7 +19,7 @@ const getSideBarContents = () => {
   const pathname = usePathname();
   const theme = useTheme();
 
-  const [expanded, setExpanded] = useState(new Set(['inputs', 'containers', 'layouts', 'buttons']));
+  const [expanded, setExpanded] = useState(new Set(['inputs', 'containers', 'layouts', 'text', 'buttons']));
 
   const sections = [
     {
@@ -45,12 +45,11 @@ const getSideBarContents = () => {
       ],
     },
     {
-      value: 'buttons',
-      name: 'Buttons',
+      value: 'text',
+      name: 'Text',
       children: [
-        { value: 'button', name: 'Button' },
-        { value: 'iconbutton', name: 'IconButton' },
-        { value: 'tab', name: 'Tab' },
+        { value: 'typography', name: 'Typography' },
+        { value: 'codeblock', name: 'CodeBlock' },
       ],
     },
     {
@@ -63,6 +62,15 @@ const getSideBarContents = () => {
         { value: 'multiple', name: 'Multiple' },
         { value: 'toggle', name: 'Toggle' },
         { value: 'textarea', name: 'Textarea' },
+      ],
+    },
+    {
+      value: 'buttons',
+      name: 'Buttons',
+      children: [
+        { value: 'button', name: 'Button' },
+        { value: 'iconbutton', name: 'IconButton' },
+        { value: 'tab', name: 'Tab' },
       ],
     },
     {
@@ -165,10 +173,12 @@ export default function UXLayout({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions() as Dimensions;
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
+  // todo make this sidebar independent from the rest
 
-      {
+  return (
+    <div style = {{ display: 'flex' }}>
+      <div style = {{ height: '100%', overflowY: 'scroll' }}>
+         {
         width <= 750 ?
         <>
         <div style = {{ width: 50, textAlign: 'center', paddingTop: 10, borderRight: `2px solid ${theme.secondary.main}` }}>
@@ -183,8 +193,8 @@ export default function UXLayout({ children }: { children: React.ReactNode }) {
         </>
           : getSideBarContents()
       }
+      </div>
 
-      {/* Main Content Area */}
       <div style={{ flex: 1, padding: '10px 20px', overflowY: 'auto' }}>
         {children}
       </div>

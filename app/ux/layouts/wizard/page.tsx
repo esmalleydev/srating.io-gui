@@ -7,8 +7,8 @@ import TextInput from '@/components/ux/input/TextInput';
 import Columns from '@/components/ux/layout/Columns';
 import Wizard, { WizardStep } from '@/components/ux/layout/Wizard';
 import Typography from '@/components/ux/text/Typography';
+import CodeBlock from '@/components/ux/text/CodeBlock';
 import { useState } from 'react';
-
 
 export default function Page() {
   const Kontororu = useKontororu();
@@ -38,12 +38,9 @@ export default function Page() {
     id: 'step_1',
     isValid: () => {
       const errors = stepOneInputHandler.getErrors();
-
       if (errors.length) {
         return false;
       }
-
-      // put any other custom error handling here
       return true;
     },
     content: (
@@ -94,14 +91,41 @@ export default function Page() {
   steps.push(stepTwo);
 
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       <Typography type='h5' style={{ marginBottom: 20 }}>Wizard</Typography>
-      <Typography type = 'body1' style={{ marginBottom: 10 }}>The wizard component can be used to create a step by step guide that checks validation after each step. It will transition through each step and handles the back and next buttons, which can also be customized.</Typography>
+      <Typography type='body1' style={{ marginBottom: 20 }}>
+        The Wizard component is used to create a step-by-step guide. It manages transitions through various steps, handles validation at each step, and allows customization of back and next buttons.
+      </Typography>
+
       <Wizard
         steps={steps}
         validationTrigger={setTriggerValidation}
       />
 
+      <CodeBlock code={`
+        import Wizard, { WizardStep } from '@/components/ux/layout/Wizard';
+        import TextInput from '@/components/ux/input/TextInput';
+        import { Inputs } from '@/components/ux/input/Inputs';
+
+
+        const [triggerValidation, setTriggerValidation] = useState(false);
+
+        const steps: WizardStep[] = [
+          {
+            title: 'Step 1',
+            id: 'step_1',
+            isValid: () => true,
+            content: (
+              <Columns>
+                <TextInput ... />
+              </Columns>
+            ),
+          },
+          // ...
+        ];
+
+        <Wizard steps={steps} validationTrigger={setTriggerValidation} />
+      `} />
     </div>
   );
 }
