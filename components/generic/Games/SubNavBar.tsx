@@ -1,6 +1,6 @@
 'use client';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { getBreakPoint, getDateBarHeight, getMarginTop } from '@/components/generic/DateBar';
 import ConferencePicker from '@/components/generic/ConferencePicker';
 import AdditionalOptions from '@/components/generic/Games/AdditionalOptions';

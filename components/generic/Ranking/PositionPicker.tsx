@@ -1,6 +1,6 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker, { optionType } from '../OptionPicker';
 import Organization from '@/components/helpers/Organization';

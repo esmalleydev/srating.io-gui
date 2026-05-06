@@ -2,7 +2,7 @@
 
 import Team from '@/components/helpers/Team';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';

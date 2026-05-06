@@ -13,7 +13,7 @@ import TextInput from '@/components/ux/input/TextInput';
 import Inputs from '@/components/ux/input/Inputs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { setDataKey } from '@/redux/features/user-slice';
 
 

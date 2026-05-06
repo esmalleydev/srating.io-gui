@@ -17,7 +17,7 @@ import Typography from '../ux/text/Typography';
 import { Color, Style } from '@esmalley/ts-utils';
 import Paper from '../ux/container/Paper';
 import Columns from '../ux/layout/Columns';
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 
 type priceOption = {
   code: string;

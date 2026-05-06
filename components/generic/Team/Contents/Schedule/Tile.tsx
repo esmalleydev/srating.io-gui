@@ -3,7 +3,7 @@
 import {
   useRef, ReactElement, RefObject,
 } from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
 

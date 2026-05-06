@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-// import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+// import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 
 
 // import CheckIcon from '@esmalley/react-material-icons/Check';
@@ -19,7 +19,7 @@ import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { reset } from '@/redux/features/compare-slice';
 import Tooltip from '../ux/overlay/Tooltip';
 import { setLoading } from '@/redux/features/loading-slice';
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import Button from '@/components/ux/buttons/Button';
 
 const OrganizationPicker = () => {

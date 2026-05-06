@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import Header from '@/components/generic/Header';

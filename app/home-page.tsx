@@ -12,7 +12,7 @@ import BuildIcon from '@esmalley/react-material-icons/Build';
 import TrendsExample from '@/components/generic/Home/TrendsExample';
 import RankingExample from '@/components/generic/Home/RankingExample';
 import ToolsExample from '@/components/generic/Home/ToolsExample';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import Typography from '@/components/ux/text/Typography';
 import Paper from '@/components/ux/container/Paper';
 import General from '@/components/helpers/General';

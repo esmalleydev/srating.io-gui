@@ -14,7 +14,7 @@ import {
   Boxscores as BoxscoresCBB,
   ConferenceStatisticRankings, LeagueStatisticRankings, StatisticRankings,
 } from '@/types/cbb';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import StatsGraph from './StatsGraph';
 import { useSearchParams } from 'next/navigation';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';

@@ -8,7 +8,7 @@ import Tr from './Tr';
 import Td from './Td';
 import Th from './Th';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import Tooltip from '../overlay/Tooltip';
 import { Objector, Sorter, Theme } from '@esmalley/ts-utils';
 

@@ -13,7 +13,7 @@ import MyPicks from './MyPicks';
 import Button from '@/components/ux/buttons/Button';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import { useTheme } from '@/components/ux/contexts/themeContext';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import Tab from '@/components/ux/buttons/Tab';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
 import LinearProgress from '@/components/ux/loading/LinearProgress';

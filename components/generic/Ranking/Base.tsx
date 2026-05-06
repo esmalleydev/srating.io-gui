@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
 import { updateDataKey } from '@/redux/features/display-slice';
 import { updateDataKey as updateDataKeyRanking } from '@/redux/features/ranking-slice';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import AdditionalOptions from './AdditionalOptions';
 import Search from './Search';
 import LastUpdated from './LastUpdated';

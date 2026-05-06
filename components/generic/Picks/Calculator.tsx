@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 
 import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
 import CancelCircleIcon from '@esmalley/react-material-icons/Cancel';

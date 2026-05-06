@@ -1,6 +1,6 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 // import AdditionalOptions from '@/components/generic/CBB/Team/AdditionalOptions';
 import BackButton from '@/components/generic/BackButton';
 import { useTheme } from '@/components/ux/contexts/themeContext';

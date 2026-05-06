@@ -2,6 +2,12 @@
 
 import { Objector, Style } from '@esmalley/ts-utils';
 
+export interface TdProps extends Omit<React.TdHTMLAttributes<HTMLTableCellElement>, 'onClick' | 'style'> {
+  onClick?: () => void;
+  style?: React.CSSProperties | object; // Allows custom style objects alongside standard CSS properties
+  children?: React.ReactNode;
+}
+
 
 const Td = (
   {
@@ -10,13 +16,7 @@ const Td = (
     style = {},
     children,
     ...props
-  }:
-  {
-    // sortDirection?: 'asc' | 'desc' | false;
-    onClick?: () => void,
-    style?: object;
-    children: React.ReactNode;
-  },
+  }: TdProps,
 ) => {
   const tdStyle = Objector.extender(
     {

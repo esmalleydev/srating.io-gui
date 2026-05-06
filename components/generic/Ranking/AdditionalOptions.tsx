@@ -11,7 +11,7 @@ import { setDataKey } from '@/redux/features/ranking-slice';
 import ConferenceFilterOptions from './ConferenceFilterOptions';
 import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
 import Tooltip from '@/components/ux/overlay/Tooltip';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { ClassYearPickerDialog } from './ClassYearPicker';
 import IconButton from '@/components/ux/buttons/IconButton';
 

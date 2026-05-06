@@ -7,7 +7,7 @@ import HelperTeam from '@/components/helpers/Team';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '@/components/generic/OptionPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
 import Typography from '@/components/ux/text/Typography';

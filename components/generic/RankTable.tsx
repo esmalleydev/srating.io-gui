@@ -1,7 +1,7 @@
 'use client';
 
 
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { useEffect, useState } from 'react';
 import RankSpan from './RankSpan';
 import { useTheme } from '@/components/ux/contexts/themeContext';

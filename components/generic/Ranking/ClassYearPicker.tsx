@@ -1,6 +1,6 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { useAppDispatch } from '@/redux/hooks';
 import OptionPicker, { optionType } from '../OptionPicker';
 import { updateDataKey } from '@/redux/features/ranking-slice';

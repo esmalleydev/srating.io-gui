@@ -11,7 +11,7 @@ import LinearScaleIcon from '@esmalley/react-material-icons/LinearScale';
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import { StatisticRankings as CBBStatisticRankings } from '@/types/cbb';
 import { StatisticRankings as CFBStatisticRanking } from '@/types/cfb';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { Elos, Games, TeamSeasonConferences } from '@/types/general';

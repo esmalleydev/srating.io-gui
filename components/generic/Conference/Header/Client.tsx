@@ -6,7 +6,7 @@ import { useTransition } from 'react';
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import OptionPicker from '@/components/generic/OptionPicker';
 import { setLoading } from '@/redux/features/loading-slice';
 import Rank from './Rank';

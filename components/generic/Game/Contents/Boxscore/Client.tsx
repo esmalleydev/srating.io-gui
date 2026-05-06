@@ -19,7 +19,7 @@ import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Paper from '@/components/ux/container/Paper';
 import TableColumns from '@/components/helpers/TableColumns';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import General from '@/components/helpers/General';
 import { Color, Objector, Style, Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';

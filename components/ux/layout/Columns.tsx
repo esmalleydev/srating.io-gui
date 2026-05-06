@@ -1,6 +1,6 @@
 'use client';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { Objector, Style } from '@esmalley/ts-utils';
 
 

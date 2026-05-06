@@ -4,7 +4,7 @@
 import ReactDOM from 'react-dom';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Paper from '@/components/ux/container/Paper';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import CloseIcon from '@esmalley/react-material-icons/Close';
 import MenuList from './MenuList';
 import MenuItem from './MenuItem';

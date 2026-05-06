@@ -8,7 +8,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { setDataKey } from '@/redux/features/compare-slice';
 
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import PlayerAdditionalOptions from './PlayerAdditionalOptions';
 import TeamAdditionalOptions from './TeamAdditionalOptions';
 

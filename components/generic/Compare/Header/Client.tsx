@@ -5,7 +5,7 @@ import React, { useTransition } from 'react';
 
 import HelperTeam from '@/components/helpers/Team';
 import { getBreakPoint } from '@/components/generic/Compare/Header/ClientWrapper';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import HighlightOffIcon from '@esmalley/react-material-icons/HighlightOff';
 import SwapHorizIcon from '@esmalley/react-material-icons/SwapHoriz';

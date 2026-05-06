@@ -1,6 +1,6 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 
 
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';

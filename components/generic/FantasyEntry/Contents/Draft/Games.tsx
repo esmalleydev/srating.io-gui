@@ -6,7 +6,7 @@ import Paper from '@/components/ux/container/Paper';
 import Typography from '@/components/ux/text/Typography';
 import { Game } from '@/types/general';
 import Blank from '@/components/generic/Blank';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import Organization from '@/components/helpers/Organization';
 import Team from '@/components/helpers/Team';
 import { Dates } from '@esmalley/ts-utils';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-// import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
+// import { useWindowDimensions, Dimensions } from '@/components/ux/hooks/useWindowDimensions';
 
 
 import CheckIcon from '@esmalley/react-material-icons/Check';

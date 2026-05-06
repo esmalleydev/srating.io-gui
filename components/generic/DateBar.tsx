@@ -8,7 +8,7 @@ import KeyboardArrowLeftIcon from '@esmalley/react-material-icons/KeyboardArrowL
 import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrowRight';
 import CalendarIcon from '@esmalley/react-material-icons/Event';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch } from '@/redux/hooks';

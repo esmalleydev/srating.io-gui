@@ -6,7 +6,7 @@ import Organization from '@/components/helpers/Organization';
 import HelperTeam from '@/components/helpers/Team';
 import HelperPlayer from '@/components/helpers/Player';
 import { useAppSelector } from '@/redux/hooks';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { Player, PlayerTeamSeasons, Team, Teams } from '@/types/general';
 import Typography from '@/components/ux/text/Typography';
 import { useTheme } from '@/components/ux/contexts/themeContext';

@@ -6,7 +6,7 @@ import { getNavHeaderHeight } from './NavBar';
 import { useAppSelector } from '@/redux/hooks';
 import { useTheme } from '@/components/ux/contexts/themeContext';
 import Tab from '@/components/ux/buttons/Tab';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 

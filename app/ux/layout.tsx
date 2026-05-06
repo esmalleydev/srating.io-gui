@@ -11,7 +11,7 @@ import KeyboardArrowUpIcon from '@esmalley/react-material-icons/KeyboardArrowUp'
 import { useState } from 'react';
 import { Objector } from '@esmalley/ts-utils';
 import Drawer from '@/components/ux/overlay/Drawer';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import IconButton from '@/components/ux/buttons/IconButton';
 import WebIcon from '@esmalley/react-material-icons/Web';
 
@@ -19,7 +19,7 @@ const getSideBarContents = () => {
   const pathname = usePathname();
   const theme = useTheme();
 
-  const [expanded, setExpanded] = useState(new Set(['inputs', 'containers', 'layouts', 'text', 'buttons']));
+  const [expanded, setExpanded] = useState(new Set(['inputs', 'containers', 'layouts', 'text', 'buttons', 'overlay', 'tables']));
 
   const sections = [
     {
@@ -71,6 +71,24 @@ const getSideBarContents = () => {
         { value: 'button', name: 'Button' },
         { value: 'iconbutton', name: 'IconButton' },
         { value: 'tab', name: 'Tab' },
+      ],
+    },
+    {
+      value: 'overlay',
+      name: 'Overlay',
+      children: [
+        { value: 'drawer', name: 'Drawer' },
+        { value: 'plane', name: 'Plane' },
+        { value: 'tooltip', name: 'Tooltip' },
+        { value: 'toast', name: 'Toast' },
+      ],
+    },
+    {
+      value: 'tables',
+      name: 'Tables',
+      children: [
+        { value: 'table', name: 'Table' },
+        { value: 'virtualtable', name: 'Virtual table' },
       ],
     },
     {

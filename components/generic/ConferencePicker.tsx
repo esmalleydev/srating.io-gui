@@ -3,7 +3,7 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker, { optionType } from './OptionPicker';
 import { useEffect } from 'react';
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { updateDataKey } from '@/redux/features/display-slice';
 import { getStore } from '@/app/StoreProvider';
 import { Objector } from '@esmalley/ts-utils';

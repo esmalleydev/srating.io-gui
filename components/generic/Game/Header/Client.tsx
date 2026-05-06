@@ -2,7 +2,7 @@
 
 import HelperGame from '@/components/helpers/Game';
 import { getBreakPoint } from '@/components/generic/Game/Header/ClientWrapper';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import Refresher from '../Refresher';
 import { Game } from '@/types/general';
 import Typography from '@/components/ux/text/Typography';

@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { getBreakPoint } from './ClientWrapper';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';

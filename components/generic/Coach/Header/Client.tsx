@@ -3,7 +3,7 @@
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperTeam from '@/components/helpers/Team';
 import { useAppSelector } from '@/redux/hooks';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
+import { Dimensions, useWindowDimensions } from '@/components/ux/hooks/useWindowDimensions';
 import { Coach } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
 import CBB from '@/components/helpers/CBB';
