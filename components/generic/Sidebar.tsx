@@ -10,6 +10,7 @@ import { updateTheme } from '../../redux/features/theme-slice';
 import { Code as GitHubIcon } from '@esmalley/react-material-icons/Code';
 import DarkModeIcon from '@esmalley/react-material-icons/ModeNight';
 import LightModeIcon from '@esmalley/react-material-icons/LightMode';
+import FormatPaintIcon from '@esmalley/react-material-icons/FormatPaint';
 // import BeerIcon from '@esmalley/react-material-icons/SportsBar';
 import SettingsIcon from '@esmalley/react-material-icons/Settings';
 import RSSFeedIcon from '@esmalley/react-material-icons/RssFeed';
@@ -182,6 +183,12 @@ const Sidebar = (
         onClick: () => { window.open('https://docs.srating.io', '_blank'); },
         icon: <ArticleIcon style={iconStyle} />,
         text: 'API Docs',
+      })}
+
+      {getButtonContainer({
+        onClick: () => { window.open('https://ux.srating.io', '_blank'); },
+        icon: <FormatPaintIcon style={iconStyle} />,
+        text: 'UX Docs',
       })}
 
       {getButtonContainer({
