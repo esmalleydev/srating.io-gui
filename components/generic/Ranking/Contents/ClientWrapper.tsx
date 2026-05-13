@@ -1,9 +1,8 @@
 
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
 import { useAppSelector } from '@/redux/hooks';
+import { LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 const ClientWrapper = (
   { children }:

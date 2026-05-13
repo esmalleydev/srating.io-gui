@@ -1,10 +1,5 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import SportsEsportsIcon from '@esmalley/react-material-icons/SportsEsports';
@@ -14,6 +9,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise } from '@/lib/stripe-client';
 import { Appearance, StripeElementsOptions } from '@stripe/stripe-js';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 
@@ -36,7 +32,7 @@ const Fantasy = () => {
         primary = {fantasy_group.name}
         secondary = {`${organization.name} ${fantasy_group.season} fantasy league`}
         buttons = {[
-          <Button title = 'View' value = {fantasy_group.fantasy_group_id} ink handleClick={handleTileClick} />,
+          <Button title = 'View' value = {fantasy_group.fantasy_group_id} ink onClick={handleTileClick} />,
         ]}
       />
     );

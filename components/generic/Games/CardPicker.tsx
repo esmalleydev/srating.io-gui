@@ -8,10 +8,7 @@ import ViewCompactIcon from '@esmalley/react-material-icons/ViewCompact';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/display-slice';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
-import Tile from '@/components/ux/container/Tile';
+import { Modal, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 /**

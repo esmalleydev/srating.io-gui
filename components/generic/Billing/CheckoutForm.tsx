@@ -13,12 +13,8 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
-import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey } from '@/redux/features/user-slice';
-import CircularProgress from '@/components/ux/loading/CircularProgress';
-import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/ux/input/Inputs';
+import { Button, CircularProgress, Inputs, TextInput, useTheme } from '@esmalley/react-material-ui';
 
 
 const CheckoutForm = ({ pricing }) => {
@@ -185,7 +181,7 @@ const CheckoutForm = ({ pricing }) => {
         value = {email}
         error = {!!emailError}
         errorMessage = {emailError}
-        onChange = {(val) => setEmail(val)}
+        onChange = {(val) => setEmail(val as string)}
         id="name"
         placeholder="Email"
         type="email"
@@ -193,7 +189,7 @@ const CheckoutForm = ({ pricing }) => {
       />
       <PaymentElement id="payment-element" options = {paymentElementOptions} />
       <Button
-        handleClick={handleSubmit}
+        onClick={handleSubmit}
         containerStyle={{ width: '100%' }}
         buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.blue[700] }}
         disabled={isLoading || !stripe || !elements}

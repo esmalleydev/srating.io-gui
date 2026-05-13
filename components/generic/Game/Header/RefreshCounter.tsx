@@ -1,10 +1,7 @@
 'use client';
 
 import { useAppSelector } from '@/redux/hooks';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import CircularProgress from '@/components/ux/loading/CircularProgress';
+import { CircularProgress, Tooltip, Typography, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * Be very careful with any logic in this, it will be running a lot! On every interval tick

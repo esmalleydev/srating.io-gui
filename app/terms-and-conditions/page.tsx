@@ -1,7 +1,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import Typography from '@/components/ux/text/Typography';
+import { Typography } from '@esmalley/react-material-ui';
 import { Metadata } from 'next';
 
 

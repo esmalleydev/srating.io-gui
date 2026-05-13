@@ -2,11 +2,8 @@
 
 
 import CloseIcon from '@esmalley/react-material-icons/Close';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import TableColumns from '@/components/helpers/TableColumns';
-import Modal from '@/components/ux/modal/Modal';
-import IconButton from '@/components/ux/buttons/IconButton';
+import { IconButton, Modal, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const Legend = ({ open, onClose, columns, view, organization_id }) => {
   const headers = TableColumns.getColumns({ organization_id, view });

@@ -14,13 +14,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { reset as resetGames } from '@/redux/features/games-slice';
 import { reset as resetRanking } from '@/redux/features/ranking-slice';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { reset } from '@/redux/features/compare-slice';
-import Tooltip from '../ux/hover/Tooltip';
 import { setLoading } from '@/redux/features/loading-slice';
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
-import Button from '@/components/ux/buttons/Button';
+import { Button, Menu, MenuOption, Tooltip, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 const OrganizationPicker = () => {
   const dispatch = useAppDispatch();
@@ -36,7 +32,7 @@ const OrganizationPicker = () => {
   const pathName = usePathname();
   const theme = useTheme();
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -121,7 +117,7 @@ const OrganizationPicker = () => {
         <Button
           type = 'select'
           ink
-          handleClick={handleOpen}
+          onClick={handleOpen}
           buttonStyle={(theme.mode === 'light' ? { color: '#fff' } : {})}
           title = {title}
           value = {title}

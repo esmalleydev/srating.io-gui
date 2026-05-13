@@ -8,8 +8,7 @@ import LuggageIcon from '@esmalley/react-material-icons/Luggage';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
 import { usePathname, useRouter } from 'next/navigation';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import IconButton from '@/components/ux/buttons/IconButton';
+import { IconButton, Menu, MenuOption } from '@esmalley/react-material-ui';
 
 
 const TeamAdditionalOptions = () => {

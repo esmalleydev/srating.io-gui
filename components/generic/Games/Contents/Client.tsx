@@ -7,11 +7,8 @@ import { getHeaderHeight } from '@/components/generic/Games/SubNavBar';
 import Tile, { getTileBaseStyle } from '@/components/generic/Games/Tile';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { getDateBarHeight } from '../../DateBar';
-import Typography from '@/components/ux/text/Typography';
 import ConferenceChips from '../../ConferenceChips';
-import Paper from '@/components/ux/container/Paper';
-import Skeleton from '@/components/ux/loading/Skeleton';
-import { Objector } from '@esmalley/ts-utils';
+import { Paper, Skeleton, Typography } from '@esmalley/react-material-ui';
 
 const Contents = ({ children, childStyle = {} }) => {
   const gameContainerStyle: React.CSSProperties = {

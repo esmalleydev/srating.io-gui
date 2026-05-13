@@ -8,8 +8,7 @@ import { getSubNavHeaderHeight } from '../../SubNavbar';
 import Roster from './Roster';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents

@@ -9,11 +9,8 @@ import { LineProps } from 'recharts';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import Chip from '@/components/ux/container/Chip';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Color } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { Chip, LinearProgress, Typography, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents
@@ -117,7 +114,7 @@ const Client = ({ game, game_pulses, odds }: {game: Game, game_pulses: GamePulse
       clock &&
       current_period
     ) {
-      let showPeriod = false;
+      const showPeriod = false;
 
       if (!(current_period in map)) {
         // todo put a reference line for current period

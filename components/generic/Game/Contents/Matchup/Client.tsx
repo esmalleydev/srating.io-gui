@@ -3,14 +3,11 @@
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 import { useAppSelector } from '@/redux/hooks';
 import PredictionLine from './PredictionLine';
-import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import CFB from '@/components/helpers/CFB';
 import React, { Profiler } from 'react';
-import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Objector } from '@esmalley/ts-utils';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Skeleton, Typography } from '@esmalley/react-material-ui';
 
 
 /**

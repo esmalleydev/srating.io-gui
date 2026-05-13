@@ -1,7 +1,5 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-
 import HelperGame from '@/components/helpers/Game';
 import HelperTeam from '@/components/helpers/Team';
 import { useAppSelector } from '@/redux/hooks';
@@ -16,9 +14,8 @@ import CoachRecord from './CoachRecord';
 import ConferenceRank from './ConferenceRank';
 import ConferenceRecord from './ConferenceRecord';
 import RefreshCounter from './RefreshCounter';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const getBreakPoint = () => {
@@ -30,7 +27,7 @@ const getHeaderHeight = () => {
 };
 
 const getMarginTop = () => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   let margin = 64;
 
@@ -55,7 +52,7 @@ const ClientWrapper = (
   const navigation = useNavigation();
   const theme = useTheme();
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
   const path = Organization.getPath({ organizations, organization_id: game.organization_id });

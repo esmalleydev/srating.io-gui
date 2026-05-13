@@ -1,14 +1,13 @@
 'use client';
 
 import React from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import BackButton from '@/components/generic/BackButton';
 
 import Search from './Search';
 import AdditionalOptions from '../AdditionalOptions';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Style } from '@esmalley/ts-utils';
+import { useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 // todo make mobile friendly
@@ -18,7 +17,7 @@ const getBreakPoint = () => {
 };
 
 const getHeaderHeight = () => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   if (width <= getBreakPoint()) {
     return 110;
@@ -28,7 +27,7 @@ const getHeaderHeight = () => {
 };
 
 const getMarginTop = () => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   let margin = 64;
 

@@ -6,8 +6,7 @@ import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { useEffect } from 'react';
 import { setDataKey } from '@/redux/features/conference-slice';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 
 const ContentsWrapper = (

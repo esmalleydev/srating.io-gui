@@ -1,19 +1,15 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import EmojiPeopleIcon from '@esmalley/react-material-icons/EmojiPeople';
 import { useEffect, useState } from 'react';
-import Button from '@/components/ux/buttons/Button';
-import Tile from '@/components/ux/container/Tile';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { handleData } from '../../ReduxWrapper';
 import { Dates, toast } from '@esmalley/ts-utils';
+import { Button, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const DraftZonePick = ({ selectedRow, onPick }) => {
@@ -190,7 +186,7 @@ const DraftZonePick = ({ selectedRow, onPick }) => {
           <Button
             value = 'make_pick'
             title = 'Finalize pick'
-            handleClick={handlePick}
+            onClick={handlePick}
             disabled = {!selectedRow && isMyPick}
           />
         </div>

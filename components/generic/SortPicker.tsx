@@ -4,10 +4,7 @@ import CheckIcon from '@esmalley/react-material-icons/Check';
 import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/display-slice';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
-import Tile from '../ux/container/Tile';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Modal, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 /**

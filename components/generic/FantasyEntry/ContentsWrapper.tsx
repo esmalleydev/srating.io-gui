@@ -7,10 +7,8 @@ import { useEffect, useState } from 'react';
 import { setDataKey } from '@/redux/features/fantasy_entry-slice';
 import { getNavHeaderHeight } from './NavBar';
 import { useClientAPI } from '@/components/clientAPI';
-import Typography from '@/components/ux/text/Typography';
 import { FantasyEntryLoadData, handleLoad } from './ReduxWrapper';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { LinearProgress, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 

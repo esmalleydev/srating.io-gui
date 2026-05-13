@@ -1,10 +1,5 @@
 'use client';
 
-import Inputs from '@/components/ux/input/Inputs';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import TextInput from '@/components/ux/input/TextInput';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import { Appearance, StripeElementsOptions } from '@stripe/stripe-js';
@@ -12,12 +7,12 @@ import { Elements } from '@stripe/react-stripe-js';
 
 import { useState } from 'react';
 import CheckoutForm from './CheckoutForm';
-import Button from '@/components/ux/buttons/Button';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
 import { stripePromise } from '@/lib/stripe-client';
 import { Objector } from '@esmalley/ts-utils';
+import { Button, Inputs, Modal, TextInput, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const CreateEntry = (
   {
@@ -138,7 +133,7 @@ const CreateEntry = (
           variant = 'filled'
           autoFocus
           required
-          onChange={(val) => setEntryName(val)}
+          onChange={(val) => setEntryName(val as string)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               createFreeEntry();
@@ -158,7 +153,7 @@ const CreateEntry = (
             </div>
             :
             <div style = {{ textAlign: 'right' }}>
-              <Button ink title='Create entry' value = 'create' handleClick={createFreeEntry} />
+              <Button ink title='Create entry' value = 'create' onClick={createFreeEntry} />
             </div>
         }
       </div>

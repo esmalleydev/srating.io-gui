@@ -11,10 +11,7 @@ import Organization from '../helpers/Organization';
 import Division from '../helpers/Division';
 import { Color, Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '../hooks/useNavigation';
-import TextInput from '../ux/input/TextInput';
-import Menu, { MenuOption } from '../ux/menu/Menu';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Inputs from '../ux/input/Inputs';
+import { Inputs, Menu, MenuOption, TextInput, useTheme } from '@esmalley/react-material-ui';
 
 
 
@@ -260,7 +257,7 @@ const Search = (
           }
         }}
         onChange={(val) => {
-          setValue(val);
+          setValue(val as string);
           if (!val) {
             setValue('');
             setTeams([]);

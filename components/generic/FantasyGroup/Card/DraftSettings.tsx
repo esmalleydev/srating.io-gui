@@ -1,19 +1,13 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Slab from '@/components/ux/container/Slab';
-import Columns from '@/components/ux/layout/Columns';
 import { FantasyGroup as FantasyGroupType } from '@/types/general';
 import GroupsIcon from '@esmalley/react-material-icons/Groups';
 import { getTitle, innerBreakPoint, paperStyle } from '../Card';
 import { useAppSelector } from '@/redux/hooks';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
-import Button from '@/components/ux/buttons/Button';
 import React, { useState } from 'react';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
 import { Dates } from '@esmalley/ts-utils';
+import { Button, Columns, Modal, Paper, Slab, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const DraftSettings = (
@@ -88,7 +82,7 @@ const DraftSettings = (
         </Columns>
       </div>
       <div style = {{ textAlign: 'right' }}>
-        {draft_order.length ? <Button ink value = 'draft_order' title = {fantasy_group.locked ? 'View draft order' : 'Preview draft order'} handleClick={() => setOpenModal(true)} /> : ''}
+        {draft_order.length ? <Button ink value = 'draft_order' title = {fantasy_group.locked ? 'View draft order' : 'Preview draft order'} onClick={() => setOpenModal(true)} /> : ''}
       </div>
     </Paper>
     <Modal

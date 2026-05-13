@@ -4,10 +4,7 @@ import CloseIcon from '@esmalley/react-material-icons/Close';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/ranking-slice';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
-import IconButton from '@/components/ux/buttons/IconButton';
-import Switch from '@/components/ux/input/Switch';
+import { IconButton, Modal, Switch, Typography } from '@esmalley/react-material-ui';
 
 const ConferenceFilterOptions = ({ open, onClose }) => {
   const dispatch = useAppDispatch();

@@ -5,11 +5,10 @@ import { useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey } from '@/redux/features/team-slice';
-import Tab from '@/components/ux/buttons/Tab';
 import SubNavBar from './SubNavbar';
 import { Style } from '@esmalley/ts-utils';
+import { Tab, useTheme } from '@esmalley/react-material-ui';
 
 
 const getNavHeaderHeight = () => {
@@ -67,7 +66,7 @@ const NavBar = () => {
 
   for (let i = 0; i < tabOrder.length; i++) {
     tabs.push(
-      <Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} containerStyle={{ backgroundColor }} handleClick = {handleTabClick} />,
+      <Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} containerStyle={{ backgroundColor }} onClick = {handleTabClick} />,
     );
   }
 

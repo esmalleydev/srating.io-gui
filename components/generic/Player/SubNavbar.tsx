@@ -4,11 +4,9 @@ import { RefObject, useLayoutEffect, useRef } from 'react';
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
 import { useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tab from '@/components/ux/buttons/Tab';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Tab, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 const getSubNavHeaderHeight = () => {
   const view = useAppSelector((state) => state.playerReducer.view);
@@ -23,7 +21,7 @@ export { getSubNavHeaderHeight };
 const SubNavBar = ({ view }) => {
   const navigation = useNavigation();
   const theme = useTheme();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const scrollRefTab = useRef<HTMLDivElement>(null);
 
@@ -105,7 +103,7 @@ const SubNavBar = ({ view }) => {
         tabRef = scrollRefTab as RefObject<HTMLDivElement>;
       }
 
-      const tab = <Tab ref = {tabRef} key = {tabOrder[i]} title = {tabOptions[tabOrder[i]]} value = {tabOrder[i]} selected = {selected} handleClick={handleTabClick} buttonStyle = {buttonStyle} />;
+      const tab = <Tab ref = {tabRef} key = {tabOrder[i]} title = {tabOptions[tabOrder[i]]} value = {tabOrder[i]} selected = {selected} onClick={handleTabClick} buttonStyle = {buttonStyle} />;
 
       tabs.push(tab);
     }

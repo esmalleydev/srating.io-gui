@@ -1,12 +1,9 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import RuleIcon from '@esmalley/react-material-icons/Rule';
-import Paper from '@/components/ux/container/Paper';
-import Slab from '@/components/ux/container/Slab';
-import Columns from '@/components/ux/layout/Columns';
 import { FantasyGroup } from '@/types/general';
 import { getTitle, innerBreakPoint, paperStyle } from '../Card';
+import { Columns, Paper, Slab, useTheme } from '@esmalley/react-material-ui';
 
 
 const BracketInfo = (

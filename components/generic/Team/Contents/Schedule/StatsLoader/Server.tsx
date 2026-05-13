@@ -1,7 +1,5 @@
 'use server';
 
-import React from 'react';
-
 import { useServerAPI } from '@/components/serverAPI';
 import { Client } from './Client';
 

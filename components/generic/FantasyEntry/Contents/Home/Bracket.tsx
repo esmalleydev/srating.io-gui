@@ -1,17 +1,12 @@
 'use client';
 
 import Team from '@/components/helpers/Team';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { BracketTeam, FantasyBracketSlots } from '@/types/general';
 import { useMemo, useState, useEffect, useRef } from 'react';
 
 import PublicIcon from '@esmalley/react-material-icons/Public';
 import Organization from '@/components/helpers/Organization';
-import Chip from '@/components/ux/container/Chip';
 import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/fantasy_entry-slice';
 
@@ -21,8 +16,8 @@ import CancelIcon from '@esmalley/react-material-icons/Cancel';
 import { Objector, Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import Game from '@/components/helpers/Game';
-import IconButton from '@/components/ux/buttons/IconButton';
 import QueryStatsIcon from '@esmalley/react-material-icons/QueryStats';
+import { Chip, IconButton, Paper, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 const slot_height = 100;
 const slot_width = 170;
@@ -650,7 +645,7 @@ const WinnerContainer = ({ team_id }) => {
 
 const Bracket = () => {
   const theme = useTheme();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const fantasy_bracket_slots = useAppSelector((state) => state.fantasyEntryReducer.fantasy_bracket_slots);
   const fantasy_entry = useAppSelector((state) => state.fantasyEntryReducer.fantasy_entry);
   const bracket_teams = useAppSelector((state) => state.fantasyEntryReducer.bracket_teams);

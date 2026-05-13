@@ -3,9 +3,8 @@
 
 import HelpIcon from '@esmalley/react-material-icons/Help';
 import { getLastUpdated } from './DataHandler';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dates, Style } from '@esmalley/ts-utils';
+import { Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const LastUpdated = ({ view, handleLegend }) => {

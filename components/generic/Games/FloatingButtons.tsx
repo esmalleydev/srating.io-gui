@@ -6,9 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import KeyboardArrowUpIcon from '@esmalley/react-material-icons/KeyboardArrowUp';
 // import Tooltip from '@/components/ux/hover/Tooltip';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { IconButton, useTheme } from '@esmalley/react-material-ui';
 // import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 
 
@@ -63,7 +62,7 @@ const FloatingButtons = () => {
                   backgroundColor: (theme.mode === 'dark' ? theme.secondary.dark : theme.secondary.dark),
                 },
               }}
-              buttonStyle = {{ color: theme.mode === 'dark' ? '#000' : '#fff' }}
+              style = {{ color: theme.mode === 'dark' ? '#000' : '#fff' }}
               type = 'circle'
               value = 'scroll-to-top'
               onClick = {handleScrollToTop}

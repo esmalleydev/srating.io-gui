@@ -4,9 +4,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { resetDataKey, setDataKey } from '@/redux/features/ranking-slice';
 import ColumnPicker from '../ColumnPicker';
 import Organization from '@/components/helpers/Organization';
-import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Textor } from '@esmalley/ts-utils';
+import { Chip } from '@esmalley/react-material-ui';
 
 export const getAvailableChips = ({ organization_id, view }) => {
   let availableChips = ['composite'];

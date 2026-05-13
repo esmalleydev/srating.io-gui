@@ -3,14 +3,13 @@
 import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import AdditionalOptions from './AdditionalOptions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/player-slice';
 import ColumnPicker from '@/components/generic/ColumnPicker';
 import { Dates } from '@esmalley/ts-utils';
+import { Chip, useTheme } from '@esmalley/react-material-ui';
 
 
 const StatsGraph = (

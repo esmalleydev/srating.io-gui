@@ -2,20 +2,17 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import Header from '@/components/generic/Header';
 import FooterNavigation from '@/components/generic/FooterNavigation';
 import { ScrollContainer, ScrollProvider } from '@/contexts/scrollContext';
 import Spinner from '@/components/generic/Spinner';
-import Toast from '@/components/ux/overlay/Toast';
 import { Objector, socket, toast } from '@esmalley/ts-utils';
 import { setDataKey as setDataKeyGeneral } from '@/redux/features/general-slice';
 import { getStore } from './StoreProvider';
 import { InitialState, setDataKey as setDataKeyUser } from '@/redux/features/user-slice';
-import { ThemeProvider, Themes } from '@/components/ux/contexts/themeContext';
-import { UXBaseline } from '@/components/ux/baseline/UXBaseline';
+import { ThemeProvider, Themes, Toast, useWindowDimensions, UXBaseline } from '@esmalley/react-material-ui';
 
 
 const Template = ({ children }: { children: React.ReactNode }) => {
@@ -26,8 +23,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
   const pendingStatusRef = useRef<NodeJS.Timeout | null>(null);
   const pendingMSWait = 2100;
 
-  const windowDimensions = useWindowDimensions() as Dimensions;
-  const { width } = windowDimensions || {};
+  const { width } = useWindowDimensions();
 
   /**
    * TODO this fixes some hydration issues...but shouldnt be needed...
@@ -159,7 +155,7 @@ const Template = ({ children }: { children: React.ReactNode }) => {
         <ScrollProvider>
           <ScrollContainer>
             <div>
-              <Toast />
+              <Toast style = {{ bottom: 64 }} />
               <Spinner />
               <Header />
                 <div style = {{ padding: `${paddingTop} 0px 56px 0px` }}>

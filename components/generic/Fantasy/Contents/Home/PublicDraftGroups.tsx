@@ -1,10 +1,5 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import Typography from '@/components/ux/text/Typography';
 import { FantasyEntrys, FantasyGroup, FantasyGroups } from '@/types/general';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useState } from 'react';
@@ -13,6 +8,7 @@ import { useAppSelector } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const PublicDraftGroups = (
   {
@@ -67,7 +63,7 @@ const PublicDraftGroups = (
         primary={row.name}
         secondary={`Free entry; Draft begins ${Dates.format(Dates.parse(row.draft_start_datetime), 'M jS @ g:i a')}`}
         buttons = {[
-          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
+          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink onClick={handleTileClick} />,
         ]}
       />
     );
@@ -82,7 +78,7 @@ const PublicDraftGroups = (
         value = 'view-all'
         title = {`View all (${free_rows.length})`}
         ink
-        handleClick={() => setFreeLimit(Infinity)}
+        onClick={() => setFreeLimit(Infinity)}
       />,
     );
   } else if (freeLimit === Infinity) {
@@ -92,7 +88,7 @@ const PublicDraftGroups = (
         value = 'hide-extra'
         title = {'Show less'}
         ink
-        handleClick={() => setFreeLimit(initialLimit)}
+        onClick={() => setFreeLimit(initialLimit)}
       />,
     );
   }
@@ -109,7 +105,7 @@ const PublicDraftGroups = (
         primary={row.name}
         secondary={`$${row.entry_fee} entry fee; ${Object.keys(fantasy_entrys).length} entries; Draft begins ${Dates.format(Dates.parse(row.draft_start_datetime), 'M jS @ g:i a')}`}
         buttons = {[
-          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
+          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink onClick={handleTileClick} />,
         ]}
       />
     );
@@ -123,7 +119,7 @@ const PublicDraftGroups = (
         value = 'view-all'
         title = {`View all (${paid_rows.length})`}
         ink
-        handleClick={() => setPaidLimit(Infinity)}
+        onClick={() => setPaidLimit(Infinity)}
       />,
     );
   } else if (paidLimit === Infinity) {
@@ -132,7 +128,7 @@ const PublicDraftGroups = (
         value = 'hide-extra'
         title = {'Show less'}
         ink
-        handleClick={() => setPaidLimit(initialLimit)}
+        onClick={() => setPaidLimit(initialLimit)}
       />,
     );
   }

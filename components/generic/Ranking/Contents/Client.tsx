@@ -2,7 +2,6 @@
 
 import React, { Profiler, useEffect, useRef, useState } from 'react';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 
@@ -12,21 +11,16 @@ import RankSpan from '../../RankSpan';
 import { getRows } from '../DataHandler';
 import Organization from '@/components/helpers/Organization';
 // import { CBBRankingTable } from '@/types/cbb';
-import Typography from '@/components/ux/text/Typography';
 import { getConferenceChips } from '../../ConferenceChips';
 import TableColumns from '@/components/helpers/TableColumns';
 import { RankingTable as CBBRankingTable } from '@/types/cbb';
 import { RankingTable as CFBRankingTable } from '@/types/cfb';
-import Tooltip from '@/components/ux/hover/Tooltip';
 import ClassSpan from '../../ClassSpan';
-import VirtualTable, { CustomDecorateHeaderRow, CustomDecorateRows, defaultSortOrderType } from '@/components/ux/table/VirtualTable';
-import Td from '@/components/ux/table/Td';
-import Tr from '@/components/ux/table/Tr';
-import Th from '@/components/ux/table/Th';
 import { Arithmetic, Color, Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import {
+  CustomDecorateHeaderRow, CustomDecorateRows, defaultSortOrderType, LinearProgress, Td, Th, Tooltip, Tr, Typography, useTheme, useWindowDimensions, VirtualTable,
+} from '@esmalley/react-material-ui';
 
 
 
@@ -272,7 +266,6 @@ export const decorateRows = <T extends (CBBRankingTable | CFBRankingTable), >(
           <Td key = {i} style = {cellStyle}>{classSpan}{row[displayColumns[i]]}</Td>,
         );
       } else {
-
         // if (headCell.id === 'rank') {
         //   cellStyle.width = 300;
         //   cellStyle.minWidth = 300;
@@ -450,7 +443,7 @@ export const decorateHeaderRow = (
 
 const Client = ({ generated, organization_id, division_id, season, view }) => {
   const navigation = useNavigation();
-  const { height, width } = useWindowDimensions() as Dimensions;
+  const { height, width } = useWindowDimensions();
 
 
   const dispatch = useAppDispatch();

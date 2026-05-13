@@ -3,7 +3,7 @@
 import ArrowUpwardIcon from '@esmalley/react-material-icons/ArrowUpward';
 import { getHeaderHeight } from './Header/ClientWrapper';
 import { getNavHeaderHeight } from './NavBar';
-import Typography from '@/components/ux/text/Typography';
+import { Typography } from '@esmalley/react-material-ui';
 
 const Splash = () => {
   const top = getHeaderHeight() + getNavHeaderHeight() + 5;

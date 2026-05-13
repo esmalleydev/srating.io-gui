@@ -1,6 +1,7 @@
 'use client';
 
-import Typography from '@/components/ux/text/Typography';
+import { Typography } from '@esmalley/react-material-ui';
+
 
 
 export const getTitle = (icon, title) => {

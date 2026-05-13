@@ -1,23 +1,20 @@
 'use client';
 
 import { useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { Game } from '@/types/general';
 import Blank from '@/components/generic/Blank';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Organization from '@/components/helpers/Organization';
 import Team from '@/components/helpers/Team';
 import { Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Paper, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 
 
 const Games = ({ fantasy_entry_id }) => {
   const navigation = useNavigation();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const theme = useTheme();
   const fantasy_group = useAppSelector((state) => state.fantasyEntryReducer.fantasy_group);
 

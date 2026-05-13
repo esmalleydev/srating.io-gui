@@ -7,7 +7,6 @@ import { useAppDispatch } from '@/redux/hooks';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { setLoading } from '@/redux/features/loading-slice';
 
@@ -31,7 +30,7 @@ const SubNavBar = ({ view }) => {
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
   const subHeaderHeight = getSubNavHeaderHeight();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   // const view = useAppSelector(state => state.compareReducer.view);
 

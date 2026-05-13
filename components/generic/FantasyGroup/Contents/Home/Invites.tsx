@@ -1,25 +1,19 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import IconButton from '@/components/ux/buttons/IconButton';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import AddIcon from '@esmalley/react-material-icons/Add';
 import React, { useState } from 'react';
-import Modal from '@/components/ux/modal/Modal';
-import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/ux/input/Inputs';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useClientAPI } from '@/components/clientAPI';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
 
 import MarkEmailReadIcon from '@esmalley/react-material-icons/MarkEmailRead';
-import Tile from '@/components/ux/container/Tile';
 import { Dates, Objector } from '@esmalley/ts-utils';
+import {
+  Button, IconButton, Inputs, Modal, Paper, TextInput, Tile, Typography, useTheme,
+} from '@esmalley/react-material-ui';
 
 const Invites = () => {
   const theme = useTheme();
@@ -108,7 +102,7 @@ const Invites = () => {
     if (canInvite && inviteRows.length === 0) {
       return (
         <div style = {{ textAlign: 'center' }}>
-          <Button title = 'Invite people' value = 'invite' handleClick = {handleInvite} />
+          <Button title = 'Invite people' value = 'invite' onClick = {handleInvite} />
         </div>
       );
     }
@@ -152,7 +146,7 @@ const Invites = () => {
           error = {Boolean(errorMessage)}
           errorMessage = {errorMessage}
           value = {emails || ''}
-          onChange={(val) => setEmails(val)}
+          onChange={(val) => setEmails(val as string)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               sendInvites();
@@ -160,7 +154,7 @@ const Invites = () => {
           }}
         />
         <div style = {{ textAlign: 'right' }}>
-          <Button value = 'send' title = 'Send' handleClick={sendInvites} />
+          <Button value = 'send' title = 'Send' onClick={sendInvites} />
         </div>
       </Modal>
     </div>

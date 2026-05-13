@@ -1,9 +1,5 @@
 'use client';
 
-import React from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-
-
 import HelperGame from '@/components/helpers/Game';
 import Indicator from '@/components/generic/Indicator';
 import Pin from '@/components/generic/Pin';
@@ -14,13 +10,9 @@ import Rank from './Tile/Rank';
 import PredictionLine from './Tile/PredictionLine';
 import StatLine from './Tile/StatLine';
 import Organization from '@/components/helpers/Organization';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Button from '@/components/ux/buttons/Button';
 import { setDataKey } from '@/redux/features/picks-slice';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Button, Paper, Skeleton, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 /**
@@ -45,7 +37,7 @@ const Tile = ({ game }) => {
   const theme = useTheme();
 
   const scrollRef = useScrollContext();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const dispatch = useAppDispatch();
 
   const organizations = useAppSelector((state) => state.dictionaryReducer.organization);
@@ -213,7 +205,7 @@ const Tile = ({ game }) => {
         <StatLine game = {game} />
         {getOdds()}
         <div style = {{ textAlign: 'right' }}>
-          <Button handleClick = {handleMatchup} title = {'Full matchup'} value={'full-matchup'} ink />
+          <Button onClick = {handleMatchup} title = {'Full matchup'} value={'full-matchup'} ink />
         </div>
       </div>
     </Paper>

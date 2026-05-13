@@ -1,29 +1,32 @@
 'use client';
 
-import { Profiler, useMemo, useState } from 'react';
+import { Profiler, useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { getNavHeaderHeight } from '../../NavBar';
-import TextInput from '@/components/ux/input/TextInput';
-import Switch from '@/components/ux/input/Switch';
-import Typography from '@/components/ux/text/Typography';
-import DateInput from '@/components/ux/input/DateInput';
-import Select from '@/components/ux/input/Select';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Columns from '@/components/ux/layout/Columns';
-import MultiPicker, { getTerminologyOptions } from '@/components/ux/input/MultiPicker';
-import Wizard from '@/components/ux/layout/Wizard';
 import InfoIcon from '@esmalley/react-material-icons/Info';
 import { useClientAPI } from '@/components/clientAPI';
-import ErrorModal from '@/components/ux/modal/ErrorModal';
 import { setLoading } from '@/redux/features/loading-slice';
 import { FantasyGroup } from '@/types/general';
-import Inputs from '@/components/ux/input/Inputs';
 import { Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useKontororu } from '@/components/ux/hooks/useKontororu';
+import {
+  Columns,
+  DateInput,
+  ErrorModal,
+  Inputs,
+  LinearProgress,
+  MultiPicker,
+  Select,
+  Switch,
+  TextInput,
+  Typography,
+  useKontororu,
+  useTheme,
+  Wizard,
+} from '@esmalley/react-material-ui';
+import General from '@/components/helpers/General';
 // import InfoOutlineIcon from '@esmalley/react-material-icons/InfoOutline'; need to upgrade MUI for this icon... >.>
 
 
@@ -172,7 +175,7 @@ const Client = () => {
             label='What type of league is this?'
             onChange={(val) => onChange('fantasy_group_type_terminology_id', val as string)}
             required
-            options={getTerminologyOptions('fantasy_group_type')}
+            options={General.getTerminologyOptions('fantasy_group_type')}
             selected={formData.fantasy_group_type_terminology_id ? [formData.fantasy_group_type_terminology_id] : []}
             isRadio
             triggerValidation={triggerValidation}
@@ -183,7 +186,7 @@ const Client = () => {
             inputHandler = {basicInputHandler}
             label = 'What is the name of the league?'
             placeholder='League name'
-            onChange={(val) => onChange('name', val)}
+            onChange={(val) => onChange('name', val as string)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 Kontororu.dispatchEvent(new CustomEvent('next'));
@@ -272,7 +275,7 @@ const Client = () => {
               setDraftMinutes(initialDraftMinutes);
             }}
             required
-            options={getTerminologyOptions('draft_type')}
+            options={General.getTerminologyOptions('draft_type')}
             selected={formData.draft_type_terminology_id ? [formData.draft_type_terminology_id] : []}
             isRadio
             triggerValidation={triggerValidation}
@@ -311,7 +314,7 @@ const Client = () => {
                     required
                     label = 'How many minutes does each person have to draft?'
                     placeholder='Draft time (minutes)'
-                    onChange={(val) => setDraftMinutes(val)}
+                    onChange={(val) => setDraftMinutes(val as string)}
                     triggerValidation={triggerValidation}
                     formatter={'number'}
                     value = {draftMinutes}
@@ -330,7 +333,7 @@ const Client = () => {
             label='How will scoring work?'
             onChange={(val) => onChange('draft_scoring_terminology_id', val as string)}
             required
-            options={getTerminologyOptions('draft_scoring')}
+            options={General.getTerminologyOptions('draft_scoring')}
             selected={formData.draft_scoring_terminology_id ? [formData.draft_scoring_terminology_id] : []}
             isRadio
             triggerValidation={triggerValidation}

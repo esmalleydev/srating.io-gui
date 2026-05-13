@@ -1,14 +1,12 @@
 'use client';
 
 import { useClientAPI } from '@/components/clientAPI';
-import Inputs from '@/components/ux/input/Inputs';
 import useDebounce from '@/components/hooks/useDebounce';
-import TextInput from '@/components/ux/input/TextInput';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { FantasyGroup, Team } from '@/types/general';
 import { useState } from 'react';
 import SearchIcon from '@esmalley/react-material-icons/Search';
 import { Textor } from '@esmalley/ts-utils';
+import { Inputs, Menu, MenuOption, TextInput } from '@esmalley/react-material-ui';
 
 
 const TeamSearch = (
@@ -130,7 +128,7 @@ const TeamSearch = (
           }
         }}
         onChange={(val) => {
-          setTeamSearchValue(val);
+          setTeamSearchValue(val as string);
           if (!val) {
             setTeams([]);
             setTeamMenuOpen(false);

@@ -8,9 +8,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { setPlayerIds, setTeamIds } from '@/redux/features/favorite-slice';
 import { useClientAPI } from '@/components/clientAPI';
-import Tooltip from '../ux/hover/Tooltip';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import IconButton from '../ux/buttons/IconButton';
+import { IconButton, Tooltip, useTheme } from '@esmalley/react-material-ui';
 
 const FavoritePicker = (
   { team_id = null, player_id = null }:

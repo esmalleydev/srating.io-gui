@@ -1,10 +1,7 @@
 'use client';
 
-import React from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-// import AdditionalOptions from '@/components/generic/CBB/Team/AdditionalOptions';
 import BackButton from '@/components/generic/BackButton';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const getBreakPoint = () => {
@@ -12,7 +9,7 @@ const getBreakPoint = () => {
 };
 
 const getHeaderHeight = () => {
-  // const { width } = useWindowDimensions() as Dimensions;
+  // const { width } = useWindowDimensions();
 
   // if (width <= breakPoint) {
   //   return 110;
@@ -22,7 +19,7 @@ const getHeaderHeight = () => {
 };
 
 const getMarginTop = () => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   let margin = 64;
 

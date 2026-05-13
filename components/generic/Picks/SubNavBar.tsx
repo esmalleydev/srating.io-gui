@@ -4,13 +4,9 @@ import React, { useState, useTransition } from 'react';
 import { getBreakPoint, getMarginTop, getDateBarHeight } from '@/components/generic/DateBar';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Modal from '@/components/ux/modal/Modal';
-import Tab from '@/components/ux/buttons/Tab';
-import Typography from '@/components/ux/text/Typography';
-import Button from '@/components/ux/buttons/Button';
 import { Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, Modal, Tab, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const getHeaderHeight = () => {
   return 48;
@@ -57,7 +53,7 @@ const SubNavBar = () => {
 
   const tabs: React.JSX.Element[] = [];
   for (let i = 0; i < tabOrder.length; i++) {
-    tabs.push(<Tab key = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} value = {tabOrder[i]} handleClick={(e) => handleTabClick(e, tabOrder[i])} />);
+    tabs.push(<Tab key = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} value = {tabOrder[i]} onClick={(e) => handleTabClick(e, tabOrder[i])} />);
   }
 
   const handleSubscribe = () => {
@@ -117,8 +113,8 @@ const SubNavBar = () => {
         <Typography type = 'body1'>Subscribe for just $5 per month to get access to the betting calculator!</Typography>
         <Typography type = 'a' onClick = {handleLiveWinRate}>View the live win rate</Typography>
         <div style = {{ textAlign: 'right' }}>
-          <Button handleClick={handleCloseLockedDialog} title = {'Maybe later'} ink value = 'later' />
-          <Button handleClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
+          <Button onClick={handleCloseLockedDialog} title = {'Maybe later'} ink value = 'later' />
+          <Button onClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
         </div>
       </Modal>
     </div>

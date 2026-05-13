@@ -21,13 +21,11 @@ import QueryStatsIcon from '@esmalley/react-material-icons/QueryStats';
 import { reset } from '@/redux/features/compare-slice';
 import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '../helpers/Organization';
-import Typography from '../ux/text/Typography';
 import { Style } from '@esmalley/ts-utils';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Divider from '../ux/display/Divider';
 import { useNavigation } from '../hooks/useNavigation';
 
 import sratingLogo from '../../public/favicon-32x32.png';
+import { Divider, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Sidebar = (

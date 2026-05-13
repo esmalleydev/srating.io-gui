@@ -1,12 +1,11 @@
 'use client';
 
 import Roster from '@/components/generic/FantasyEntry/Contents/Draft/Roster';
-import IconButton from '@/components/ux/buttons/IconButton';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 
 import KeyboardArrowLeftIcon from '@esmalley/react-material-icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrowRight';
+import { IconButton, Typography } from '@esmalley/react-material-ui';
 import { useState } from 'react';
 
 const Rosters = () => {

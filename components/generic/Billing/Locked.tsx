@@ -7,11 +7,7 @@ import LockIcon from '@esmalley/react-material-icons/Lock';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
-import Button from '@/components/ux/buttons/Button';
-import IconButton from '@/components/ux/buttons/IconButton';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Button, IconButton, Modal, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Locked = (
@@ -92,8 +88,8 @@ const Locked = (
         <Typography style = {{ margin: '8px 0px' }} type = 'body1'>{'Subscribe for just $5 per month to get access to win percentages and predicted score for every game!'}</Typography>
         {/* <Typography style = {{ margin: '4px 0px' }} type = 'body1'><a style = {{ cursor: 'pointer', color: theme.link.primary }} onClick = {handleLiveWinRate} href = {getLiveWinRateHref()}>View the live win rate</a></Typography> */}
         <div style = {{ textAlign: 'right', marginTop: 20 }}>
-          <Button handleClick={handleClose} title = {'Maybe Later'} value = 'close' ink = {true} />
-          <Button handleClick={handleSubscribe} title = {'Subscribe'} value = 'subscribe' autoFocus />
+          <Button onClick={handleClose} title = {'Maybe Later'} value = 'close' ink = {true} />
+          <Button onClick={handleSubscribe} title = {'Subscribe'} value = 'subscribe' autoFocus />
         </div>
       </Modal>
     </>

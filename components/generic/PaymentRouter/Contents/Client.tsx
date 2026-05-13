@@ -9,14 +9,10 @@ import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
 import HourglassBottomIcon from '@esmalley/react-material-icons/HourglassBottom';
 import WarningIcon from '@esmalley/react-material-icons/Warning';
 import ErrorIcon from '@esmalley/react-material-icons/Error';
-import Typography from '@/components/ux/text/Typography';
-import Paper from '@/components/ux/container/Paper';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';
 import { useAppSelector } from '@/redux/hooks';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import CircularProgress from '@/components/ux/loading/CircularProgress';
+import { Button, CircularProgress, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Client = () => {
@@ -88,10 +84,10 @@ const Client = () => {
 
   const getButton = () => {
     if (payment_router.table === 'fantasy_entry') {
-      return <Button ink handleClick={() => { navigation.fantasy_entry(`/fantasy_entry/${payment_router.id}`); }} title = {'View entry'} value = 'view-entry' />;
+      return <Button ink onClick={() => { navigation.fantasy_entry(`/fantasy_entry/${payment_router.id}`); }} title = {'View entry'} value = 'view-entry' />;
     }
 
-    return <Button ink handleClick={() => { router.push('/account'); }} title = {'View account'} value = 'view-account' />;
+    return <Button ink onClick={() => { router.push('/account'); }} title = {'View account'} value = 'view-account' />;
   };
 
   let title = 'Subscription details';

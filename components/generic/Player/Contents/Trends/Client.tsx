@@ -5,8 +5,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import { ConferenceStatisticRankings, LeaguePlayerStatisticRankings, PlayerBoxscores, PlayerStatisticRankings } from '@/types/cbb';
 import { Games } from '@/types/general';
 import StatsGraph from './StatsGraph';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 
 export interface TrendsType {

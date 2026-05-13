@@ -1,11 +1,10 @@
 'use client';
 
 import { useAppSelector } from '@/redux/hooks';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import Roster from './Roster';
 import { Games } from './Games';
+import { Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 

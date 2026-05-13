@@ -1,8 +1,7 @@
 'use client';
 
+import { Typography, useTheme } from '@esmalley/react-material-ui';
 import React from 'react';
-import Typography from '../ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 
 
 const Blank = (

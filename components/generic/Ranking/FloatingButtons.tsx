@@ -4,10 +4,8 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OpenInFullIcon from '@esmalley/react-material-icons/OpenInFull';
 import CloseFullscreenIcon from '@esmalley/react-material-icons/CloseFullscreen';
 import { setDataKey } from '@/redux/features/ranking-slice';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { IconButton, Tooltip, useTheme } from '@esmalley/react-material-ui';
 
 const FloatingButtons = () => {
   const theme = useTheme();
@@ -31,7 +29,7 @@ const FloatingButtons = () => {
               backgroundColor: (theme.mode === 'dark' ? theme.secondary.dark : theme.secondary.dark),
             },
           }}
-          buttonStyle = {{ color: theme.mode === 'dark' ? '#000' : '#fff' }}
+          style = {{ color: theme.mode === 'dark' ? '#000' : '#fff' }}
           type = 'circle'
           value = 'full-screen'
           onClick = {handleFullscreen}

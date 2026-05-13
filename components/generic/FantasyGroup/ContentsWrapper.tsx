@@ -9,10 +9,8 @@ import { getNavHeaderHeight } from './NavBar';
 import { getStore } from '@/app/StoreProvider';
 import { useClientAPI } from '@/components/clientAPI';
 import { FantasyGroupLoadData, handleLoad } from './ReduxWrapper';
-import Typography from '@/components/ux/text/Typography';
 import { Objector, socket, toast } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { LinearProgress, Typography, useTheme } from '@esmalley/react-material-ui';
 
 // TODO
 // pending invites does not update from broadcast when someone joins

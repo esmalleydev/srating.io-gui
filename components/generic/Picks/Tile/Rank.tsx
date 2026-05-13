@@ -6,7 +6,7 @@ import { useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Skeleton } from '@esmalley/react-material-ui';
 
 
 const Rank = ({ game, team_id }) => {

@@ -8,14 +8,10 @@ import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
 import HourglassBottomIcon from '@esmalley/react-material-icons/HourglassBottom';
 import WarningIcon from '@esmalley/react-material-icons/Warning';
 import ErrorIcon from '@esmalley/react-material-icons/Error';
-import Typography from '@/components/ux/text/Typography';
-import Paper from '@/components/ux/container/Paper';
 import Footer from '../Footer';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
 import Conversions from './Conversions';
 import { PaymentIntent, SetupIntent } from '@stripe/stripe-js';
-import CircularProgress from '@/components/ux/loading/CircularProgress';
+import { Button, CircularProgress, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Status = () => {
@@ -110,7 +106,7 @@ const Status = () => {
               <Typography type='body2'>{reference}</Typography>
             </div>
             <div style = {{ textAlign: 'right' }}>
-              <Button ink handleClick={() => { router.push('/account'); }} title = {'View account'} value = 'view-account' />
+              <Button ink onClick={() => { router.push('/account'); }} title = {'View account'} value = 'view-account' />
             </div>
           </Paper>
         </div>

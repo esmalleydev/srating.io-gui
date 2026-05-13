@@ -12,18 +12,15 @@ import BuildIcon from '@esmalley/react-material-icons/Build';
 import TrendsExample from '@/components/generic/Home/TrendsExample';
 import RankingExample from '@/components/generic/Home/RankingExample';
 import ToolsExample from '@/components/generic/Home/ToolsExample';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import Typography from '@/components/ux/text/Typography';
-import Paper from '@/components/ux/container/Paper';
 import General from '@/components/helpers/General';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Paper, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 const Home = () => {
   const [selectedHero, setSelectedHero] = useState('trends');
 
   const theme = useTheme();
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const ref: RefObject<HTMLDivElement | null> = useRef(null);
 

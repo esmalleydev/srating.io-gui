@@ -7,8 +7,7 @@ import { useAppSelector } from '@/redux/hooks';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { Client as DraftClient } from '../Draft/Client';
 import Bracket from './Bracket';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 
 

@@ -3,15 +3,10 @@
 import { Profiler, useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
-import Button from '@/components/ux/buttons/Button';
 import { setLoading } from '@/redux/features/loading-slice';
-import ErrorModal from '@/components/ux/modal/ErrorModal';
-import Typography from '@/components/ux/text/Typography';
 import { setDataKey } from '@/redux/features/user-slice';
-import Columns from '@/components/ux/layout/Columns';
 import GeneralDetails from '../FantasyGroup/Card/GeneralDetails';
 import EntriesAndFees from '../FantasyGroup/Card/EntriesAndFees';
 import DraftSettings from '../FantasyGroup/Card/DraftSettings';
@@ -20,7 +15,7 @@ import PayoutInfo from '../FantasyGroup/Card/PayoutInfo';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { FantasyEntrys, FantasyGroup as FantasyGroupType } from '@/types/general';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { Button, Columns, ErrorModal, LinearProgress, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 
@@ -131,7 +126,7 @@ const Client = (
           <div>
             <Typography type = 'h5'>You have been invited to join "{fantasy_group.name}"!</Typography>
           </div>
-          <Button value = 'join' title = 'Join league!' handleClick={join} buttonStyle = {{ backgroundColor: (theme.mode === 'dark' ? theme.info.dark : theme.info.main) }} />
+          <Button value = 'join' title = 'Join league!' onClick={join} buttonStyle = {{ backgroundColor: (theme.mode === 'dark' ? theme.info.dark : theme.info.main) }} />
         </div>
         <div>
           <Typography type = 'h6' style={{ marginBottom: 12 }}>League Details</Typography>

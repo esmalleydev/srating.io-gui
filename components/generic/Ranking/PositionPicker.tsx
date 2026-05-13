@@ -1,6 +1,5 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker, { optionType } from '../OptionPicker';
 import Organization from '@/components/helpers/Organization';
@@ -8,11 +7,12 @@ import { updateDataKey } from '@/redux/features/display-slice';
 import { useEffect } from 'react';
 import { getStore } from '@/app/StoreProvider';
 import { Objector } from '@esmalley/ts-utils';
+import { useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const PositionPicker = ({ selected, isRadio = false }: { selected: string[]; isRadio?: boolean; }) => {
   const dispatch = useAppDispatch();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
 
   let options: optionType[] = [];

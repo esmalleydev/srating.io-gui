@@ -28,7 +28,7 @@ const ConferencePickerFull = () => {
   const selected = useAppSelector((state) => state.displayReducer.conferences);
   const conferences = useAppSelector((state) => state.dictionaryReducer.conference);
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const [confOpen, setConfOpen] = useState(false);
 

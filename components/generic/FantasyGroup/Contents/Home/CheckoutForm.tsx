@@ -12,9 +12,7 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
-import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
+import { Button, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const CheckoutForm = ({ entryName }) => {
@@ -145,7 +143,7 @@ const CheckoutForm = ({ entryName }) => {
         <Typography style = {{ color: theme.text.secondary }} type = 'caption'>This league has an entry fee. Your entry fee will count towards the total pool. The fee for this entry is ${fantasy_group.entry_fee}. See <a style = {{ color: theme.link.primary }} href = "https://srating.io/terms-and-conditions" target = "_blank">terms and conditions</a> before joining. Payments processed securely via <a style = {{ color: theme.link.primary }} href = "https://stripe.com" target = "_blank">Stripe</a></Typography>
       </div>
       <Button
-        handleClick={handleSubmit}
+        onClick={handleSubmit}
         containerStyle={{ width: '100%' }}
         buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.blue[700] }}
         disabled={loading || !stripe || !elements}

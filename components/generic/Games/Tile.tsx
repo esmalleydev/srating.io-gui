@@ -1,13 +1,11 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
 
 import FavoriteIcon from '@esmalley/react-material-icons/Favorite';
 import AccountBalanceIcon from '@esmalley/react-material-icons/AccountBalance';
-import Paper from '@/components/ux/container/Paper';
 
 import Locked from '@/components/generic/Billing/Locked';
 import Indicator from '@/components/generic/Indicator';
@@ -20,16 +18,13 @@ import useOnScreen from '@/components/hooks/useOnScreen';
 import Record from './Tile/Record';
 import Rank from './Tile/Rank';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
-import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/games-slice';
-import IconButton from '@/components/ux/buttons/IconButton';
-import Modal from '@/components/ux/modal/Modal';
 import General from '@/components/helpers/General';
 import { Color, Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import {
+  IconButton, Modal, Paper, Skeleton, Tooltip, Typography, useTheme, useWindowDimensions,
+} from '@esmalley/react-material-ui';
 
 
 export const getTileBaseStyle = (): {
@@ -39,7 +34,7 @@ export const getTileBaseStyle = (): {
   height?: number;
   cursor?: string;
 } => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   let tileWidth = '320px';
 

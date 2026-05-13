@@ -1,21 +1,15 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Slab from '@/components/ux/container/Slab';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
-import Typography from '@/components/ux/text/Typography';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Inputs from '@/components/ux/input/Inputs';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useClientAPI } from '@/components/clientAPI';
-import Textarea from '@/components/ux/input/Textarea';
 import SendIcon from '@esmalley/react-material-icons/Send';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { useState } from 'react';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
 import { Dates, Objector } from '@esmalley/ts-utils';
+import { IconButton, Inputs, Paper, Slab, Textarea, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const Comments = () => {
   const theme = useTheme();
@@ -144,7 +138,7 @@ const Comments = () => {
               errorMessage={errorMessage}
               triggerValidation = {triggerValidation}
               value = {newComment}
-              onChange={(val) => setNewComment(val)}
+              onChange={(val) => setNewComment(val as string)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   addComment();

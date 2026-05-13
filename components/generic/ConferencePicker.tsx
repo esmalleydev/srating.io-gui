@@ -3,10 +3,10 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker, { optionType } from './OptionPicker';
 import { useEffect } from 'react';
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { updateDataKey } from '@/redux/features/display-slice';
 import { getStore } from '@/app/StoreProvider';
 import { Objector } from '@esmalley/ts-utils';
+import { useWindowDimensions } from '@esmalley/react-material-ui';
 
 const ConferencePicker = () => {
   // console.time('ConferencePicker')
@@ -17,7 +17,7 @@ const ConferencePicker = () => {
   const organization_id = useAppSelector((state) => state.organizationReducer.organization_id);
   const division_id = useAppSelector((state) => state.organizationReducer.division_id);
   const season = useAppSelector((state) => state.organizationReducer.season);
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
 
   // useEffect(() => {

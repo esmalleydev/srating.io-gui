@@ -7,17 +7,14 @@ import HelperTeam from '@/components/helpers/Team';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '@/components/generic/OptionPicker';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Coach, CoachStatisticRanking, Team } from '@/types/general';
 import { ConferenceStatisticRanking } from '@/types/cbb';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Skeleton, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 /**
@@ -99,7 +96,7 @@ const Client = (
   const searchParams = useSearchParams();
   const theme = useTheme();
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const [isPending, startTransition] = useTransition();
 
   const displayRank = useAppSelector((state) => state.displayReducer.rank);

@@ -12,8 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useRouter } from 'next/navigation';
 import { setLoading } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
-import Tile from '@/components/ux/container/Tile';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Tile, useTheme } from '@esmalley/react-material-ui';
 
 const ToolsExample = () => {
   const theme = useTheme();

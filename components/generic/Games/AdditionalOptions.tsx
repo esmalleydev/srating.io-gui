@@ -11,11 +11,9 @@ import MilitaryTechIcon from '@esmalley/react-material-icons/MilitaryTech';
 
 import RankPicker from '@/components/generic/RankPicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
-import Tooltip from '@/components/ux/hover/Tooltip';
 import { setDataKey } from '@/redux/features/display-slice';
 import CardPicker from './CardPicker';
-import IconButton from '@/components/ux/buttons/IconButton';
+import { IconButton, Menu, MenuDivider, MenuOption, Tooltip } from '@esmalley/react-material-ui';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);

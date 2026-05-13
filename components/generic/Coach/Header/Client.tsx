@@ -3,17 +3,12 @@
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import HelperTeam from '@/components/helpers/Team';
 import { useAppSelector } from '@/redux/hooks';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Coach } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
-import CBB from '@/components/helpers/CBB';
-import CFB from '@/components/helpers/CFB';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Skeleton, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 /**
@@ -65,7 +60,7 @@ const ClientSkeleton = () => {
 };
 
 const Client = ({ organization_id, division_id, coach_statistic_rankings, season }) => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const theme = useTheme();
   const navigation = useNavigation();
   const coach: Coach = useAppSelector((state) => state.coachReducer.coach);

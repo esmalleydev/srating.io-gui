@@ -1,12 +1,11 @@
 'use client';
 
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import FiberManualRecordIcon from '@esmalley/react-material-icons/FiberManualRecord';
 import CheckIcon from '@esmalley/react-material-icons/Check';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dates } from '@esmalley/ts-utils';
+import { Typography, useTheme } from '@esmalley/react-material-ui';
 
 const Title = () => {
   const theme = useTheme();

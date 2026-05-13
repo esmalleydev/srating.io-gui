@@ -1,10 +1,8 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Skeleton from '@/components/ux/loading/Skeleton';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
+import { Skeleton, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const ConferenceRecord = (
   { game, team_id }:

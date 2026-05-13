@@ -1,6 +1,5 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch } from '@/redux/hooks';
 import OptionPicker, { optionType } from '../OptionPicker';
 import { updateDataKey } from '@/redux/features/ranking-slice';
@@ -10,10 +9,7 @@ import { getStore } from '@/app/StoreProvider';
 import CheckIcon from '@esmalley/react-material-icons/Check';
 import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
 import { Objector } from '@esmalley/ts-utils';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
-import Tile from '@/components/ux/container/Tile';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Modal, Tile, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 const options: optionType[] = [
   { value: 'all', label: 'All' },
@@ -69,7 +65,7 @@ const useEffectTimeout = () => {
 
 const ClassYearPicker = ({ selected, isRadio = false }: { selected: string[]; isRadio?: boolean; }) => {
   const dispatch = useAppDispatch();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const selectedOption = (selected && selected.length) ? selected : ['all'];
 

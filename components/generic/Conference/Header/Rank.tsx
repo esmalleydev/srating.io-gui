@@ -2,17 +2,17 @@
 
 import React from 'react';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { getBreakPoint } from './ClientWrapper';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
+import { useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const Rank = ({ conference_statistic_ranking }) => {
   const bestColor = General.getBestColor();
   const worstColor = General.getWorstColor();
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   let rank = null;
   if (conference_statistic_ranking) {

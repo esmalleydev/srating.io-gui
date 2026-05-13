@@ -11,9 +11,7 @@ import { Team } from '@/types/general';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
 import { Color, Textor } from '@esmalley/ts-utils';
-import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/ux/input/Inputs';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
+import { Inputs, Menu, MenuOption, TextInput } from '@esmalley/react-material-ui';
 
 const Search = () => {
   const router = useRouter();
@@ -182,7 +180,7 @@ const Search = () => {
           }
         }}
         onChange={(val) => {
-          setValue(val);
+          setValue(val as string);
           if (!val) {
             setValue('');
             setTeams([]);

@@ -6,16 +6,13 @@ import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Chip from '@/components/ux/container/Chip';
-import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
 import ColumnPicker from '@/components/generic/ColumnPicker';
 import Team from '@/components/helpers/Team';
 import { Color, Dates } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { Chip, LinearProgress, Typography, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents

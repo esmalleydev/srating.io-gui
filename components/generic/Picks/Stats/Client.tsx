@@ -1,13 +1,7 @@
 'use client';
 
-import React from 'react';
-
-
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
-import Paper from '@/components/ux/container/Paper';
+import { Paper, Skeleton, Typography, useTheme } from '@esmalley/react-material-ui';
 import { Color, Dates, Objector } from '@esmalley/ts-utils';
-import Skeleton from '@/components/ux/loading/Skeleton';
 
 
 const getCardStyle = () => {

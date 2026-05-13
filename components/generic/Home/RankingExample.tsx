@@ -11,11 +11,10 @@ import { useRouter } from 'next/navigation';
 import { setLoading as setLoadingDisplay } from '@/redux/features/loading-slice';
 import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';
-import Button from '@/components/ux/buttons/Button';
-import VirtualTable, { defaultSortOrderType } from '@/components/ux/table/VirtualTable';
 import { decorateHeaderRow, decorateRows } from '../Ranking/Contents/Client';
 import { RankingTable } from '@/types/cbb';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, defaultSortOrderType, VirtualTable } from '@esmalley/react-material-ui';
 
 
 
@@ -108,7 +107,7 @@ const RankingExample = () => {
 
   return (
     <Contents>
-      <div style = {{ textAlign: 'center' }}><Button ink handleClick={(e) => { handlePath(e, '/cbb/ranking'); } } endIcon = {<ArrowForwardIcon style = {{ fontSize: 20 }}/>} title = {'View Full Live Rankings'} value = 'view-full' /></div>
+      <div style = {{ textAlign: 'center' }}><Button ink onClick={(e) => { handlePath(e, '/cbb/ranking'); } } endIcon = {<ArrowForwardIcon style = {{ fontSize: 20 }}/>} title = {'View Full Live Rankings'} value = 'view-full' /></div>
       <div>
         <VirtualTable
           rows = {rows}

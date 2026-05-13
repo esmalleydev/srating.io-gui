@@ -12,12 +12,8 @@ import ShowChartIcon from '@esmalley/react-material-icons/ShowChart';
 import IntegrationInstructionsIcon from '@esmalley/react-material-icons/IntegrationInstructions';
 import Billing from './Billing';
 import ButtonSwitch from './ButtonSwitch';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '../ux/text/Typography';
 import { Color, Style } from '@esmalley/ts-utils';
-import Paper from '../ux/container/Paper';
-import Columns from '../ux/layout/Columns';
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
+import { Columns, Paper, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 type priceOption = {
   code: string;
@@ -34,7 +30,7 @@ type priceOption = {
 }
 
 const Pricing = ({ view }: { view: string | null; }) => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const router = useRouter();
   const theme = useTheme();
   const [billingOpen, setBillingOpen] = useState(false);

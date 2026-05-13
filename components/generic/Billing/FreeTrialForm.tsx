@@ -5,12 +5,8 @@ import { useRouter } from 'next/navigation';
 
 import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
-import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey } from '@/redux/features/user-slice';
-import CircularProgress from '@/components/ux/loading/CircularProgress';
-import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/ux/input/Inputs';
+import { Button, CircularProgress, Inputs, TextInput, useTheme } from '@esmalley/react-material-ui';
 
 const FreeTrialForm = () => {
   const theme = useTheme();
@@ -100,13 +96,13 @@ const FreeTrialForm = () => {
         value = {email}
         error = {(!!emailError || !!errorMessage)}
         errorMessage = {emailError || errorMessage}
-        onChange = {(val) => setEmail(val)}
+        onChange = {(val) => setEmail(val as string)}
         id="name"
         placeholder="Email"
         type="email"
         variant='standard'
       />
-      <Button handleClick={handleSubmit} containerStyle={{ width: '100%' }} buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.blue[700] }} disabled = {isLoading} title = {'Get free trial'} value = 'trial' />
+      <Button onClick={handleSubmit} containerStyle={{ width: '100%' }} buttonStyle = {{ width: '100%', marginTop: '20px', textAlign: 'center', backgroundColor: theme.blue[700] }} disabled = {isLoading} title = {'Get free trial'} value = 'trial' />
     </form>
   );
 };

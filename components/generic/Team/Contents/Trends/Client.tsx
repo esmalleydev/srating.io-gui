@@ -14,7 +14,6 @@ import {
   Boxscores as BoxscoresCBB,
   ConferenceStatisticRankings, LeagueStatisticRankings, StatisticRankings,
 } from '@/types/cbb';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import StatsGraph from './StatsGraph';
 import { useSearchParams } from 'next/navigation';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
@@ -22,11 +21,8 @@ import { headerBarHeight } from '@/components/generic/Header';
 import { Games } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
 import { Boxscores as BoxscoreCFB } from '@/types/cfb';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
-import Paper from '@/components/ux/container/Paper';
 import { Dates } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { LinearProgress, Paper, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 export interface TrendsType {
   games: Games;
@@ -73,7 +69,7 @@ const Client = (
 ) => {
   const theme = useTheme();
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const breakPoint = 600;
 

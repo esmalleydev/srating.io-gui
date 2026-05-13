@@ -1,13 +1,7 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
-import Modal from '@/components/ux/modal/Modal';
-import Button from '@/components/ux/buttons/Button';
 import React, { SyntheticEvent, useState } from 'react';
-import Tile from '../ux/container/Tile';
-import IconButton from '../ux/buttons/IconButton';
 
 
 import DeleteIcon from '@esmalley/react-material-icons/Delete';
@@ -16,6 +10,7 @@ import { useClientAPI } from '../clientAPI';
 import { setDataKey } from '@/redux/features/user-slice';
 import Blank from './Blank';
 import { Dates } from '@esmalley/ts-utils';
+import { Button, IconButton, Modal, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Notifications = (
@@ -100,13 +95,13 @@ const Notifications = (
 
   if (Object.keys(inactive).length && !viewCleared) {
     buttons.push(
-      <Button ink handleClick = {() => setViewCleared(true)} title = {'View cleared'} value = 'view-cleared' />,
+      <Button ink onClick = {() => setViewCleared(true)} title = {'View cleared'} value = 'view-cleared' />,
     );
   }
 
   if (viewCleared) {
     buttons.push(
-      <Button ink handleClick = {() => setViewCleared(false)} title = {'View active'} value = 'view-active' />,
+      <Button ink onClick = {() => setViewCleared(false)} title = {'View active'} value = 'view-active' />,
     );
   }
 
@@ -114,7 +109,7 @@ const Notifications = (
     buttons.push(
       <Button
         ink
-        handleClick = {(e) => {
+        onClick = {(e) => {
           handleClear(
             e,
             Object.keys(active),
@@ -141,7 +136,7 @@ const Notifications = (
       rowButtons.push(
         <Button
           ink
-          handleClick = {(e) => {
+          onClick = {(e) => {
             handleClear(
               e,
               [row.notification_id],

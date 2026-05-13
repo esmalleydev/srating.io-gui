@@ -1,4 +1,4 @@
-/*'use client';
+/* 'use client';
 
 import { Suspense, useState } from 'react';
 import { Client, ClientSkeleton } from './Client';

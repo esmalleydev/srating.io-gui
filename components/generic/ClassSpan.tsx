@@ -1,15 +1,13 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '../ux/hover/Tooltip';
+import { Tooltip, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 import { Style } from '@esmalley/ts-utils';
 
 const ClassSpan = (
   { class_year }:
   { class_year: string;},
 ) => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const theme = useTheme();
 

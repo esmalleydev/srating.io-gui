@@ -4,12 +4,10 @@
 
 import HelperGame from '@/components/helpers/Game';
 import { useAppSelector } from '@/redux/hooks';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Tile = ({ game }) => {

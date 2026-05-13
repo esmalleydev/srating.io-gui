@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Profiler, useEffect, useState } from 'react';
+import React, { Profiler, useState } from 'react';
 
 import HelperGame from '@/components/helpers/Game';
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
@@ -14,16 +14,11 @@ import Organization from '@/components/helpers/Organization';
 // import ButtonSwitch from '../../ButtonSwitch';
 import RankTable from '@/components/generic/RankTable';
 import { Game, Players } from '@/types/general';
-import Chip from '@/components/ux/container/Chip';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
 import TableColumns from '@/components/helpers/TableColumns';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import General from '@/components/helpers/General';
 import { Color, Objector, Style, Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { Chip, LinearProgress, Paper, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 
@@ -80,7 +75,7 @@ const Client = (
 
   const bestColor = General.getBestColor();
   const worstColor = General.getWorstColor();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const numberOfTeams = Organization.getNumberOfTeams({ organization_id: game.organization_id, division_id: game.division_id, season: game.season });
 

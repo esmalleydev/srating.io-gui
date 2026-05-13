@@ -5,7 +5,6 @@ import HelperGame from '@/components/helpers/Game';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game//NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import Paper from '@/components/ux/container/Paper';
 
 // import SportsScoreIcon from '@esmalley/react-material-icons/SportsScore';
 // import TrendingUpIcon from '@esmalley/react-material-icons/TrendingUp';
@@ -14,10 +13,8 @@ import Paper from '@/components/ux/container/Paper';
 // import FunctionsIcon from '@esmalley/react-material-icons/Functions';
 // import LockOpenIcon from '@esmalley/react-material-icons/LockOpen';
 // import LockIcon from '@esmalley/react-material-icons/Lock';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
 import { Color } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { LinearProgress, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents

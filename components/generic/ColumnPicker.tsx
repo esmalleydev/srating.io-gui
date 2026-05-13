@@ -1,8 +1,7 @@
 'use client';
 
+import { Chip, TableColumnsType } from '@esmalley/react-material-ui';
 import OptionPicker from './OptionPicker';
-import Chip from '../ux/container/Chip';
-import { TableColumnsType } from '../ux/table/VirtualTable';
 
 
 const ColumnPicker = (

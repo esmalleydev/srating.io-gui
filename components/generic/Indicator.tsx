@@ -1,7 +1,6 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '../ux/hover/Tooltip';
+import { Tooltip, useTheme } from '@esmalley/react-material-ui';
 import { Color } from '@esmalley/ts-utils';
 
 const Indicator = (

@@ -8,11 +8,8 @@ import { getHeaderHeight } from '@/components/generic/Compare/Header/ClientWrapp
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Compare/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { LinearProgress, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents

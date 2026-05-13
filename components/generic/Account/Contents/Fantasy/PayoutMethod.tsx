@@ -1,15 +1,6 @@
 'use client';
 
 import { useClientAPI } from '@/components/clientAPI';
-import Inputs from '@/components/ux/input/Inputs';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import MultiPicker from '@/components/ux/input/MultiPicker';
-import TextInput from '@/components/ux/input/TextInput';
-import Columns from '@/components/ux/layout/Columns';
-import Typography from '@/components/ux/text/Typography';
 import AddIcon from '@esmalley/react-material-icons/Add';
 import { setDataKey } from '@/redux/features/user-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -17,13 +8,15 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import React, { useState } from 'react';
-import IconButton from '@/components/ux/buttons/IconButton';
 import StarIcon from '@esmalley/react-material-icons/Star';
 import AccountBalanceIcon from '@esmalley/react-material-icons/AccountBalance';
 import CreditCardIcon from '@esmalley/react-material-icons/CreditCard';
 import { setLoading } from '@/redux/features/loading-slice';
 import { StripeCardElement } from '@stripe/stripe-js';
 import { Objector } from '@esmalley/ts-utils';
+import {
+  Button, Columns, IconButton, Inputs, MultiPicker, Paper, TextInput, Tile, Typography, useTheme,
+} from '@esmalley/react-material-ui';
 
 
 
@@ -102,7 +95,7 @@ const BankAccountForm = (
         <Button
           title = 'Back'
           value = 'back'
-          handleClick={handleDone}
+          onClick={handleDone}
           ink
         />
       </div>
@@ -119,7 +112,7 @@ const BankAccountForm = (
         required
         maxLength={255}
         triggerValidation = {triggerValidation}
-        onChange={(val) => setName(val)}
+        onChange={(val) => setName(val as string)}
         value = {name}
         />
       <Columns numberOfColumns={2}>
@@ -129,7 +122,7 @@ const BankAccountForm = (
           required
           maxLength={255}
           triggerValidation = {triggerValidation}
-          onChange={(val) => setAccountNumber(val)}
+          onChange={(val) => setAccountNumber(val as string)}
           value = {accountNumber}
           />
         <TextInput
@@ -138,14 +131,14 @@ const BankAccountForm = (
           required
           maxLength={255}
           triggerValidation = {triggerValidation}
-          onChange={(val) => setRoutingNumber(val)}
+          onChange={(val) => setRoutingNumber(val as string)}
           value = {routingNumber}
         />
       </Columns>
       {errorMessage ? <Typography type = 'body1' style = {{ color: theme.error.main }}>{errorMessage}</Typography> : ''}
       <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
         <div>{backButton}</div>
-        <Button title='Add bank account' value = 'add' handleClick={handleClick} />
+        <Button title='Add bank account' value = 'add' onClick={handleClick} />
       </div>
     </div>
   );
@@ -178,7 +171,7 @@ const DebitCardForm = (
         <Button
           title = 'Back'
           value = 'back'
-          handleClick={handleDone}
+          onClick={handleDone}
           ink
         />
       </div>
@@ -267,7 +260,7 @@ const DebitCardForm = (
         {errorMessage ? <Typography type = 'body1' style = {{ color: theme.error.main }}>{errorMessage}</Typography> : ''}
         <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
           <div>{backButton}</div>
-          <Button title='Add debit card' value = 'add' handleClick={handleSubmit} />
+          <Button title='Add debit card' value = 'add' onClick={handleSubmit} />
         </div>
       </form>
     </Paper>
@@ -422,7 +415,7 @@ const PayoutMethod = () => {
           <Button
             title = 'Set default method'
             value = 'default'
-            handleClick={() => setDefault(user_payment_token_id)}
+            onClick={() => setDefault(user_payment_token_id)}
             ink
           />,
         );
@@ -432,7 +425,7 @@ const PayoutMethod = () => {
         <Button
           title = 'Remove'
           value = 'remove'
-          handleClick={() => removeToken(user_payment_token_id)}
+          onClick={() => removeToken(user_payment_token_id)}
           ink
         />,
       );

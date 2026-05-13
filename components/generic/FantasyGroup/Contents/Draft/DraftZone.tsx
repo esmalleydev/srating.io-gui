@@ -1,23 +1,17 @@
 'use client';
 
-import Inputs from '@/components/ux/input/Inputs';
-import TextInput from '@/components/ux/input/TextInput';
-import Columns from '@/components/ux/layout/Columns';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 
 
 import SearchIcon from '@esmalley/react-material-icons/Search';
 import { useCallback, useState } from 'react';
-import VirtualTable from '@/components/ux/table/VirtualTable';
 import TableColumns from '@/components/helpers/TableColumns';
 import { getCachedDataKey } from '@/components/generic/Ranking/Contents/Loader';
 import TeamSearch from './TeamSearch';
 import { decorateHeaderRow, decorateRows } from '@/components/generic/Ranking/Contents/Client';
 import DraftZonePick from './DraftZonePick';
 import { Objector } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Columns, Inputs, LinearProgress, TextInput, Typography, useTheme, VirtualTable } from '@esmalley/react-material-ui';
 
 
 const DraftZone = () => {
@@ -126,7 +120,7 @@ const DraftZone = () => {
             variant='filled'
             icon = {<SearchIcon style = {{ fontSize: 20 }} />}
             style = {{ borderRadius: 5 }}
-            onChange = {(val) => setPlayerSearchValue(val)}
+            onChange = {(val) => setPlayerSearchValue(val as string)}
           />
         </Columns>
         {getContents()}

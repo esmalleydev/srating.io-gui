@@ -1,14 +1,11 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import MoneyIcon from '@esmalley/react-material-icons/Money';
-import Paper from '@/components/ux/container/Paper';
-import Slab from '@/components/ux/container/Slab';
-import Columns from '@/components/ux/layout/Columns';
 import { FantasyEntrys, FantasyGroup } from '@/types/general';
 import { getTitle, innerBreakPoint, paperStyle } from '../Card';
 import Payment from '@/components/helpers/Payment';
 import { useAppSelector } from '@/redux/hooks';
+import { Columns, Paper, Slab, useTheme } from '@esmalley/react-material-ui';
 
 
 const PayoutInfo = (

@@ -5,22 +5,16 @@ import React, { useTransition } from 'react';
 
 import HelperTeam from '@/components/helpers/Team';
 import { getBreakPoint } from '@/components/generic/Compare/Header/ClientWrapper';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import HighlightOffIcon from '@esmalley/react-material-icons/HighlightOff';
 import SwapHorizIcon from '@esmalley/react-material-icons/SwapHoriz';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { setDataKey } from '@/redux/features/compare-slice';
-import CBB from '@/components/helpers/CBB';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import Organization from '@/components/helpers/Organization';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import IconButton from '@/components/ux/buttons/IconButton';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { IconButton, Skeleton, Typography, Tooltip, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const Client = () => {
@@ -29,7 +23,7 @@ const Client = () => {
   const breakPoint = getBreakPoint();
   const bestColor = General.getBestColor();
   const worstColor = General.getWorstColor();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();

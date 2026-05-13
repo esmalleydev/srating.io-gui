@@ -1,7 +1,6 @@
 'use client';
 
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Typography, useTheme } from '@esmalley/react-material-ui';
 import { Dates } from '@esmalley/ts-utils';
 
 

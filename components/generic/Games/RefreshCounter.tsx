@@ -3,10 +3,7 @@
 import WifiOffIcon from '@esmalley/react-material-icons/WifiOff';
 
 import { useAppSelector } from '@/redux/hooks';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import CircularProgress from '@/components/ux/loading/CircularProgress';
+import { CircularProgress, Tooltip, Typography, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * Be very careful with any logic in this, it will be running a lot! On every interval tick
@@ -51,7 +48,6 @@ const RefreshCounter = () => {
           >
             <Typography
               type="caption"
-              // component="div"
               style = {{ fontSize: 11, color: theme.text.secondary }}
             >{Math.round(refreshCountdown)}</Typography>
         </div>

@@ -1,16 +1,8 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-
+import { Paper, Skeleton, TableColumn, Tooltip, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 import Locked from './Billing/Locked';
 import RankSpan from './RankSpan';
-import Typography from '../ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '../ux/container/Paper';
-import Tooltip from '../ux/hover/Tooltip';
-import React from 'react';
-import Skeleton from '../ux/loading/Skeleton';
-import { TableColumn } from '../ux/table/VirtualTable';
 
 export type CompareStatisticRow = {
   leftRow: object;
@@ -32,7 +24,7 @@ const CompareStatistic = (
     maxWidth?: number;
   },
 ) => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const theme = useTheme();
 
   const fixedLength = width > 500 ? 2 : 1;

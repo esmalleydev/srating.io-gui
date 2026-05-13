@@ -7,12 +7,8 @@ import { useClientAPI } from '@/components/clientAPI';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
 import { ApiKey, Pricing, Subscription as SubscriptionType } from '@/types/general';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Modal from '@/components/ux/modal/Modal';
-import Button from '@/components/ux/buttons/Button';
 import { Dates } from '@esmalley/ts-utils';
+import { Button, Modal, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Subscription = (
@@ -114,7 +110,7 @@ const Subscription = (
             <Typography style = {{ color: theme.text.secondary }} type='subtitle1'>API key</Typography>
             <div>
               <Typography type='body1'>{apiKey.key}</Typography>
-              {cancelledSub === null && !subscription.expires ? <div style = {{ textAlign: 'right' }}><Button handleClick={handleRegenerate} title = 'Regenerate' ink value = 'regen' /></div> : ''}
+              {cancelledSub === null && !subscription.expires ? <div style = {{ textAlign: 'right' }}><Button onClick={handleRegenerate} title = 'Regenerate' ink value = 'regen' /></div> : ''}
             </div>
           </div>
             : ''
@@ -124,8 +120,8 @@ const Subscription = (
           <div style = {{ textAlign: 'right' }}>
             {
               cancelledSub === null && !subscription.expires ?
-                <Button handleClick={handleCancelOpen} title = 'Cancel subscription' value = 'cancel' ink buttonStyle = {{ color: theme.error.main }} /> :
-                <Button handleClick={handleRenewClick} title = 'Renew' value = 'renew' ink buttonStyle = {{ color: theme.success.main }} />
+                <Button onClick={handleCancelOpen} title = 'Cancel subscription' value = 'cancel' ink buttonStyle = {{ color: theme.error.main }} /> :
+                <Button onClick={handleRenewClick} title = 'Renew' value = 'renew' ink buttonStyle = {{ color: theme.success.main }} />
             }
           </div>
             : ''
@@ -137,8 +133,8 @@ const Subscription = (
           <Typography type = 'h6'>{'Cancel subscription?'}</Typography>
           <Typography type = 'body1' style = {{ color: theme.text.secondary, margin: '10px 0px' }}>Subscription will remain active until next billing date.</Typography>
           <div style={{ textAlign: 'right', marginTop: 10 }}>
-            <Button handleClick={handleCancelClose} autoFocus title='Back' ink value = 'back' />
-            <Button handleClick={handleCancelSubscription} buttonStyle={{ backgroundColor: theme.error.main }} title = 'Cancel subscription' value = 'cancel' />
+            <Button onClick={handleCancelClose} autoFocus title='Back' ink value = 'back' />
+            <Button onClick={handleCancelSubscription} buttonStyle={{ backgroundColor: theme.error.main }} title = 'Cancel subscription' value = 'cancel' />
           </div>
         </Modal>
       </Paper>

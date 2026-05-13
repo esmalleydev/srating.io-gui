@@ -45,7 +45,7 @@ const Tile = (props) => {
   const handleMouseEnter = (e) => {
     setHover(true);
   };
-  
+
   const handleMouseLeave = (e) => {
     setHover(false);
   };
@@ -57,7 +57,7 @@ const Tile = (props) => {
     if (!CBB.isInProgress() && !CBB.isFinal()) {
       startTime = Dates.format(game.start_datetime, 'M jS') + ' - ' + startTime;
     }
-    
+
     const flexContainer = {
       'display': 'flex',
       'alignItems': 'center',

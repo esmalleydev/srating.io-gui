@@ -1,8 +1,7 @@
 
 
 import { useAppSelector } from '@/redux/hooks';
-import Backdrop from '../ux/loading/Backdrop';
-import CircularProgress from '../ux/loading/CircularProgress';
+import { Backdrop, CircularProgress } from '@esmalley/react-material-ui';
 
 
 const Spinner = () => {

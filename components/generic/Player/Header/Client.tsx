@@ -6,10 +6,7 @@ import Organization from '@/components/helpers/Organization';
 import HelperTeam from '@/components/helpers/Team';
 import HelperPlayer from '@/components/helpers/Player';
 import { useAppSelector } from '@/redux/hooks';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { Player, PlayerTeamSeasons, Team, Teams } from '@/types/general';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import FavoritePicker from '../../FavoritePicker';
 import OptionPicker from '../../OptionPicker';
 import { PlayerStatisticRanking, StatisticRanking } from '@/types/cbb';
@@ -17,7 +14,7 @@ import ClassSpan from '../../ClassSpan';
 import General from '@/components/helpers/General';
 import { Color } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Skeleton, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 /**
@@ -98,7 +95,7 @@ const Client = (
 
   const breakPoint = 475;
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
 
   const teamHelper = new HelperTeam({ team });

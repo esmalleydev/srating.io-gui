@@ -1,16 +1,13 @@
 'use client';
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { Dates } from '@esmalley/ts-utils';
 
 import HourglassBottomIcon from '@esmalley/react-material-icons/HourglassBottom';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useState } from 'react';
+import { Modal, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const UpcomingPicks = () => {

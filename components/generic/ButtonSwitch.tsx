@@ -1,7 +1,6 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
+import { Typography, useTheme } from '@esmalley/react-material-ui';
 import { Color } from '@esmalley/ts-utils';
 
 const ButtonSwitch = (

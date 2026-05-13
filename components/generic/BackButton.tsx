@@ -1,10 +1,9 @@
 'use client';
 
 import ArrowBackIcon from '@esmalley/react-material-icons/ArrowBack';
-import Tooltip from '@/components/ux/hover/Tooltip';
 import { useAppDispatch } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
-import IconButton from '../ux/buttons/IconButton';
+import { IconButton, Tooltip } from '@esmalley/react-material-ui';
 
 
 const BackButton = () => {

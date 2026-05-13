@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { getCardStyle, getOrderedBuckets } from './Client';
-import Skeleton from '@/components/ux/loading/Skeleton';
 import { Objector } from '@esmalley/ts-utils';
+import { Skeleton } from '@esmalley/react-material-ui';
 
 const Loading = () => {
   const orderedBuckets = getOrderedBuckets();

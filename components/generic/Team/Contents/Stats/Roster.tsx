@@ -7,16 +7,13 @@ import { PlayerStatisticRankings as CBBPlayerStatisticRankings, PlayerStatisticR
 import { PlayerStatisticRankings as CFBPlayerStatisticRankings, PlayerStatisticRanking as CFBPlayerStatisticRanking } from '@/types/cfb';
 import Organization from '@/components/helpers/Organization';
 import RankTable from '@/components/generic/RankTable';
-import Chip from '@/components/ux/container/Chip';
-import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Player, Players } from '@/types/general';
 import SyncAltIcon from '@esmalley/react-material-icons/SyncAlt';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '@/components/ux/hover/Tooltip';
 import ClassSpan from '@/components/generic/ClassSpan';
 import { Objector, Style, Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Chip, Tooltip, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Roster = ({ organization_id, rosterStats, player_team_seasons, season }) => {

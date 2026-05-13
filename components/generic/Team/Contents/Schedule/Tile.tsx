@@ -3,7 +3,6 @@
 import {
   useRef, ReactElement, RefObject,
 } from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import HelperGame from '@/components/helpers/Game';
 
@@ -15,16 +14,11 @@ import { useScrollContext } from '@/contexts/scrollContext';
 import Rank from './Tile/Rank';
 import Record from './Tile/Record';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { Game, Team } from '@/types/general';
-import Paper from '@/components/ux/container/Paper';
 import General from '@/components/helpers/General';
 import { Color, Dates } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { IconButton, Paper, Skeleton, Tooltip, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const Tile = (
@@ -55,7 +49,7 @@ const Tile = (
 
   const scrollRef = useScrollContext();
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
 
   const won = (

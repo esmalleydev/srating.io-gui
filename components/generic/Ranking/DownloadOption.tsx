@@ -6,13 +6,8 @@ import { useClientAPI } from '@/components/clientAPI';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useRouter } from 'next/navigation';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
-import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { CSV } from '@esmalley/ts-utils';
+import { Button, IconButton, Modal, Tooltip, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const DownloadOption = ({ view, organization_id, division_id, season }) => {
   const theme = useTheme();
@@ -82,8 +77,8 @@ const DownloadOption = ({ view, organization_id, division_id, season }) => {
             Subscribe for $25 per month to get API and CSV download access
           </Typography>
         <div style = {{ textAlign: 'right' }}>
-          <Button handleClick={handleClose} ink title='Maybe later' value = 'later' />
-          <Button handleClick={handleSubscribe} autoFocus title = 'Subscribe' value = 'subscribe' />
+          <Button onClick={handleClose} ink title='Maybe later' value = 'later' />
+          <Button onClick={handleSubscribe} autoFocus title = 'Subscribe' value = 'subscribe' />
         </div>
       </Modal>
     </div>

@@ -3,7 +3,6 @@
 import { Profiler } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import Columns from '@/components/ux/layout/Columns';
 import Members from './Members';
 import Invites from './Invites';
 import Entries from './Entries';
@@ -17,8 +16,7 @@ import FantasyGroup from '@/components/helpers/FantasyGroup';
 import Rosters from './Rosters';
 import Winner from './Winner';
 import { Dates } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Columns, LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 
 

@@ -2,14 +2,8 @@
 
 import BackButton from '../BackButton';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import IconButton from '@/components/ux/buttons/IconButton';
 import SettingsIcon from '@esmalley/react-material-icons/Settings';
 import { useState } from 'react';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import Modal from '@/components/ux/modal/Modal';
-import Button from '@/components/ux/buttons/Button';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/fantasy_group-slice';
 import { useClientAPI } from '@/components/clientAPI';
@@ -22,6 +16,7 @@ import FantasyGroupHelper from '@/components/helpers/FantasyGroup';
 import Organization from '@/components/helpers/Organization';
 import { Objector, Style } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, IconButton, Menu, MenuOption, Modal, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const getNavHeaderHeight = () => {
@@ -283,8 +278,8 @@ const NavBar = () => {
         <Typography type = 'h6'>{modalData.title}</Typography>
         <Typography type = 'caption' style = {{ color: theme.text.secondary }}>{modalData.message}</Typography>
         <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button value = 'cancel' title = 'Cancel' ink handleClick={() => setModalOpen(false)} />
-          <Button value = 'handleit' title = {modalData.button} handleClick={modalData.action} />
+          <Button value = 'cancel' title = 'Cancel' ink onClick={() => setModalOpen(false)} />
+          <Button value = 'handleit' title = {modalData.button} onClick={modalData.action} />
         </div>
       </Modal>
     </>

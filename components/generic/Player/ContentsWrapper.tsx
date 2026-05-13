@@ -7,8 +7,7 @@ import { headerBarHeight } from '@/components/generic/Header';
 import { useEffect } from 'react';
 import { setDataKey } from '@/redux/features/player-slice';
 import { getSubNavHeaderHeight } from './SubNavbar';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 
 const ContentsWrapper = (

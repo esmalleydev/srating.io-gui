@@ -3,16 +3,13 @@
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import Organization from '@/components/helpers/Organization';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { getNavHeaderHeight } from '../../NavBar';
 import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankSpan from '@/components/generic/RankSpan';
 import TableColumns from '@/components/helpers/TableColumns';
-import Tooltip from '@/components/ux/hover/Tooltip';
 import AdditionalOptions from '../../AdditionalOptions';
 import { useAppSelector } from '@/redux/hooks';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { LinearProgress, Tooltip, Typography, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents

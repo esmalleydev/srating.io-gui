@@ -11,21 +11,16 @@ import LinearScaleIcon from '@esmalley/react-material-icons/LinearScale';
 import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import { StatisticRankings as CBBStatisticRankings } from '@/types/cbb';
 import { StatisticRankings as CFBStatisticRanking } from '@/types/cfb';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
 import { Elos, Games, TeamSeasonConferences } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
 import { useAppSelector } from '@/redux/hooks';
 import Team from '@/components/helpers/Team';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
-import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
-import Paper from '@/components/ux/container/Paper';
 import { Color, Dates } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
 import ColumnPicker from '@/components/generic/ColumnPicker';
+import { Chip, LinearProgress, Paper, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 export interface TrendsType {
   elos: Elos;
@@ -69,7 +64,7 @@ const Client = ({ organization_id, conference_id, data }: { organization_id: str
   const theme = useTheme();
   const backgroundColor = theme.background.main;
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   let standardColumns = [
     'adjusted_efficiency_rating',

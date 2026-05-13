@@ -8,10 +8,8 @@ import { Payload } from 'recharts/types/component/DefaultLegendContent';
 import { useState } from 'react';
 
 import LinearScaleIcon from '@esmalley/react-material-icons/LinearScale';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
-import Paper from '@/components/ux/container/Paper';
 import RankSpan from './RankSpan';
+import { Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 /**

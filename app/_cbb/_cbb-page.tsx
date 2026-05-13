@@ -74,7 +74,7 @@ const Home = () => {
     intervalRefresher = setInterval(function() {
       getData()
     }, 30000);
-  
+
     return function clean_up() {
       clearInterval(intervalRefresher);
     };

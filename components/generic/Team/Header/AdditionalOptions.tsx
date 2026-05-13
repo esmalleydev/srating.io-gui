@@ -3,8 +3,7 @@ import { useState } from 'react';
 import TripleDotsIcon from '@esmalley/react-material-icons/MoreVert';
 
 import RankPicker from '@/components/generic/RankPicker';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import IconButton from '@/components/ux/buttons/IconButton';
+import { IconButton, Menu, MenuOption } from '@esmalley/react-material-ui';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);

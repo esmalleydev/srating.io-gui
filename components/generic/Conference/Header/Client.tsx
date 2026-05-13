@@ -6,14 +6,13 @@ import { useTransition } from 'react';
 // import FavoritePicker from '@/components/generic/FavoritePicker';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import OptionPicker from '@/components/generic/OptionPicker';
 import { setLoading } from '@/redux/features/loading-slice';
 import Rank from './Rank';
 import { getBreakPoint } from './ClientWrapper';
 import Record from './Record';
 import { ConferenceStatisticRankings } from '@/types/cbb';
-import Typography from '@/components/ux/text/Typography';
+import { Typography, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const Client = (
@@ -39,7 +38,7 @@ const Client = (
   const pathName = usePathname();
   const searchParams = useSearchParams();
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const [isPending, startTransition] = useTransition();
 

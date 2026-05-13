@@ -2,9 +2,7 @@
 
 
 import { useAppSelector } from '@/redux/hooks';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Skeleton, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Record = ({ game, team_id }) => {

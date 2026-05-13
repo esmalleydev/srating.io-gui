@@ -4,7 +4,7 @@
 import { compiler } from 'markdown-to-jsx';
 
 import Sidebar from './Sidebar';
-import Typography from '@/components/ux/text/Typography';
+import { Typography } from '@esmalley/react-material-ui';
 
 const options = {
   overrides: {

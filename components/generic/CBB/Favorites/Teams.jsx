@@ -136,7 +136,7 @@ const Teams = (props) => {
       const tileContainers = [];
 
       let team_with_ranking = null;
-      
+
       // decorate previous games + steal the last ranking for team title
       if (team.team_id in team_id_x_last_game) {
         const game = team_id_x_last_game[team.team_id];

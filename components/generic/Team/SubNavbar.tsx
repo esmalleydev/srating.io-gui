@@ -9,11 +9,8 @@ import HistoryIcon from '@esmalley/react-material-icons/History';
 import { usePathname, useRouter } from 'next/navigation';
 import { setDataKey } from '@/redux/features/team-slice';
 import AdditionalOptions from './Contents/Schedule/AdditionalOptions';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tab from '@/components/ux/buttons/Tab';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
+import { IconButton, Tab, Tooltip, useTheme } from '@esmalley/react-material-ui';
 
 const getSubNavHeaderHeight = () => 42;
 
@@ -137,7 +134,7 @@ const SubNavBar = ({ view }) => {
 
     for (let i = 0; i < tabOrder.length; i++) {
       const selected = tabOrder[i] === subview;
-      tabs.push(<Tab key = {tabOrder[i]} title = {tabOptions[tabOrder[i]]} value = {tabOrder[i]} selected = {selected} handleClick={handleTabClick}/>);
+      tabs.push(<Tab key = {tabOrder[i]} title = {tabOptions[tabOrder[i]]} value = {tabOrder[i]} selected = {selected} onClick={handleTabClick}/>);
     }
 
 

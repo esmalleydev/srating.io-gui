@@ -8,16 +8,11 @@ import HelperGame from '@/components/helpers/Game';
 import Locked from '@/components/generic/Billing/Locked';
 import { useRouter } from 'next/navigation';
 import { setLoading } from '@/redux/features/loading-slice';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import General from '@/components/helpers/General';
 import { Color, Objector } from '@esmalley/ts-utils';
-import Table from '@/components/ux/table/Table';
-import Thead from '@/components/ux/table/Thead';
-import Tr from '@/components/ux/table/Tr';
-import Td from '@/components/ux/table/Td';
-import Tbody from '@/components/ux/table/Tbody';
-import Typography from '@/components/ux/text/Typography';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import {
+  Skeleton, Table, Tbody, Td, Thead, Tr, Typography, useTheme,
+} from '@esmalley/react-material-ui';
 
 
 const TableView = ({ sorted_games, team_id }) => {

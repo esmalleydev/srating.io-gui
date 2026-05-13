@@ -7,8 +7,7 @@ import CheckIcon from '@esmalley/react-material-icons/Check';
 import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/compare-slice';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import IconButton from '@/components/ux/buttons/IconButton';
+import { IconButton, Menu, MenuOption } from '@esmalley/react-material-ui';
 
 const PlayerAdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);

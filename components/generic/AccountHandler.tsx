@@ -7,14 +7,9 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/redux/hooks';
 import { useClientAPI } from '@/components/clientAPI';
 import { setLoading } from '@/redux/features/loading-slice';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { setDataKey as setDataKeyUser } from '@/redux/features/user-slice';
 import { setDataKey as setDataKeyGames } from '@/redux/features/games-slice';
-import Typography from '@/components/ux/text/Typography';
-import Modal from '@/components/ux/modal/Modal';
-import Button from '@/components/ux/buttons/Button';
-import TextInput from '../ux/input/TextInput';
-import Inputs from '../ux/input/Inputs';
+import { Button, Inputs, Modal, TextInput, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const AccountHandler = (
@@ -382,8 +377,8 @@ const AccountHandler = (
 
     buttons = (
       <>
-        <Button handleClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />
-        <Button handleClick = {useLoginCode} title = {'Sign in'} value = 'sign-in' />
+        <Button onClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />
+        <Button onClick = {useLoginCode} title = {'Sign in'} value = 'sign-in' />
       </>
     );
   } else if (forgotPassword) {
@@ -410,8 +405,8 @@ const AccountHandler = (
 
     buttons = (
       <>
-        <Button handleClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />
-        <Button handleClick = {sendLoginCode} title = {'Send temporary code'} value = 'temp-code' />
+        <Button onClick = {(e) => { setTempLogin(false); setForgotPassword(false); }} title = {'Back'} ink value = 'back' />
+        <Button onClick = {sendLoginCode} title = {'Send temporary code'} value = 'temp-code' />
       </>
     );
   } else if (register) {
@@ -463,7 +458,7 @@ const AccountHandler = (
     );
 
     buttons = (
-      <Button handleClick = {handleRegister} title = {'Create account'} value = 'create' />
+      <Button onClick = {handleRegister} title = {'Create account'} value = 'create' />
     );
   } else {
     boxContents = (
@@ -507,7 +502,7 @@ const AccountHandler = (
     );
 
     buttons = (
-      <Button handleClick = {handleLogin} title = {'Sign in'} value = 'sign-in' />
+      <Button onClick = {handleLogin} title = {'Sign in'} value = 'sign-in' />
     );
   }
 

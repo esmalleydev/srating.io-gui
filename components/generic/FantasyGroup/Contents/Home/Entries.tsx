@@ -2,14 +2,10 @@
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import StadiumIcon from '@esmalley/react-material-icons/Stadium';
+import { Button, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 import React, { useState } from 'react';
 
 const Entries = () => {
@@ -52,7 +48,7 @@ const Entries = () => {
       fantasyGroupHelper.isDraft()
     ) {
       buttons.push(
-        <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
+        <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink onClick={handleTileClick} />,
       );
     }
     return (
@@ -74,7 +70,7 @@ const Entries = () => {
         value = 'view-all'
         title = {`View all (${rows.length})`}
         ink
-        handleClick={() => setLimit(Infinity)}
+        onClick={() => setLimit(Infinity)}
       />,
     );
   } else if (limit === Infinity) {
@@ -83,7 +79,7 @@ const Entries = () => {
         value = 'hide-extra'
         title = {'Show less'}
         ink
-        handleClick={() => setLimit(initialLimit)}
+        onClick={() => setLimit(initialLimit)}
       />,
     );
   }

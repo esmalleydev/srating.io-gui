@@ -6,9 +6,7 @@ import SearchIcon from '@esmalley/react-material-icons/Search';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import { getRows } from './DataHandler';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
-import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/ux/input/Inputs';
+import { Inputs, TextInput, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const Search = ({ view }: {view: string}) => {
@@ -17,7 +15,7 @@ const Search = ({ view }: {view: string}) => {
   const dispatch = useAppDispatch();
   const conferences = useAppSelector((state) => state.displayReducer.conferences);
   const rows = getRows({ view });
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const searchValue = useAppSelector((state) => state.rankingReducer.searchValue);
   // const [value, setValue] = useState<string>('');
 

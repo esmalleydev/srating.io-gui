@@ -5,10 +5,7 @@ import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOut
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import Organization from '@/components/helpers/Organization';
 import { setDataKey } from '@/redux/features/display-slice';
-import Typography from '../ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Modal from '../ux/modal/Modal';
-import Tile from '../ux/container/Tile';
+import { Modal, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 /**

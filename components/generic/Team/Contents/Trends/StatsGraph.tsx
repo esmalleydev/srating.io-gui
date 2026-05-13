@@ -4,14 +4,12 @@ import Chart from '@/components/generic/Chart';
 import { LineProps, YAxisProps } from 'recharts';
 import ColumnPicker from '@/components/generic/ColumnPicker';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Chip from '@/components/ux/container/Chip';
-import Typography from '@/components/ux/text/Typography';
 import TableColumns from '@/components/helpers/TableColumns';
 import AdditionalOptions from './AdditionalOptions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
 import { Dates } from '@esmalley/ts-utils';
+import { Chip, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const StatsGraph = (

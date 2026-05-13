@@ -1,14 +1,10 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import Typography from '@/components/ux/text/Typography';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import PersonIcon from '@esmalley/react-material-icons/Person';
 import { useAppSelector } from '@/redux/hooks';
 import { useState } from 'react';
-import Button from '@/components/ux/buttons/Button';
+import { Button, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const Members = () => {
   const theme = useTheme();
@@ -42,7 +38,7 @@ const Members = () => {
         value = 'view-all'
         title = {`View all (${members.length})`}
         ink
-        handleClick={() => setLimit(Infinity)}
+        onClick={() => setLimit(Infinity)}
       />,
     );
   } else if (limit === Infinity) {
@@ -51,7 +47,7 @@ const Members = () => {
         value = 'hide-extra'
         title = {'Show less'}
         ink
-        handleClick={() => setLimit(initialLimit)}
+        onClick={() => setLimit(initialLimit)}
       />,
     );
   }

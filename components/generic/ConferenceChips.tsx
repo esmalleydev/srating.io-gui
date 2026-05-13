@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Chip from '@/components/ux/container/Chip';
 import { updateDataKey } from '@/redux/features/display-slice';
+import { Chip } from '@esmalley/react-material-ui';
 
 export const getConferenceChips = () => {
   // console.time('getConferenceChips')

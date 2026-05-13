@@ -5,9 +5,7 @@ import { useState } from 'react';
 import CheckIcon from '@esmalley/react-material-icons/Check';
 import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
 import RadioButtonUncheckedIcon from '@esmalley/react-material-icons/RadioButtonUnchecked';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Button, Menu, MenuOption, useTheme } from '@esmalley/react-material-ui';
 
 export type optionType = {
   value: string | null;
@@ -105,7 +103,7 @@ const OptionPicker = (
         <Button
           type = 'select'
           ink
-          handleClick={handleOpen}
+          onClick={handleOpen}
           title = {buttonName || 'Loading'}
           value = {buttonName || 'loading'}
         />

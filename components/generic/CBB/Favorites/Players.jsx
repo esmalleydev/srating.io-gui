@@ -77,10 +77,10 @@ const Players = (props) => {
 
       for (let i = 0; i < timestamps.length; i++) {
         const player_boxscore = temporary[timestamps[i]];
-  
+
         // fill in with the 3 past games
         player_id_x_player_boxscores[player.player_id][player_boxscore.player_boxscore_id] = player_boxscore;
-  
+
         // only want the first 3 games
         if (i === 2) {
           break;
@@ -101,11 +101,11 @@ const Players = (props) => {
 
       const tableContainers = [];
 
-      
+
       tableContainers.push(
         <GameLog gamelogs = {player_id_x_player_boxscores[player.player_id]} player_team_season = {player_id_x_player_team_season_id[player.player_id]} />
       );
-      
+
       // get last 3 gamelogs
 
       if (tableContainers.length) {

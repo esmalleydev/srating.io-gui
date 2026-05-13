@@ -1,10 +1,5 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import Typography from '@/components/ux/text/Typography';
 import { FantasyGroups } from '@/types/general';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useState } from 'react';
@@ -12,6 +7,7 @@ import SportsEsportsIcon from '@esmalley/react-material-icons/SportsEsports';
 import { useNavigation } from '@/components/hooks/useNavigation';
 import Blank from '@/components/generic/Blank';
 import { Dates } from '@esmalley/ts-utils';
+import { Button, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const MyGroups = (
   {
@@ -67,7 +63,7 @@ const MyGroups = (
           primary={row.name}
           secondary={secondary}
           buttons = {[
-            <Button key = {`view- ${row.fantasy_group_id}`} title = 'View' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
+            <Button key = {`view- ${row.fantasy_group_id}`} title = 'View' value = {row.fantasy_group_id} ink onClick={handleTileClick} />,
           ]}
         />
       );
@@ -95,7 +91,7 @@ const MyGroups = (
           value = 'view-all'
           title = {`View all (${rows.length})`}
           ink
-          handleClick={() => setLimit(Infinity)}
+          onClick={() => setLimit(Infinity)}
         />,
       );
     } else if (limit === Infinity) {
@@ -105,7 +101,7 @@ const MyGroups = (
           value = 'hide-extra'
           title = {'Show less'}
           ink
-          handleClick={() => setLimit(initialLimit)}
+          onClick={() => setLimit(initialLimit)}
         />,
       );
     }

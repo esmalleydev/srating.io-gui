@@ -5,12 +5,11 @@ import RankTable from '@/components/generic/RankTable';
 import Organization from '@/components/helpers/Organization';
 import TableColumns from '@/components/helpers/TableColumns';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { PlayerBoxscore as CBBPlayerBoxscore, PlayerStatisticRanking } from '@/types/cbb';
 import { PlayerBoxscore as CFBPlayerBoxscore } from '@/types/cfb';
 import { FantasyEntry, FantasyEntryPlayers, FantasyEntryPlayerStatisticRanking, FantasyGroup, Players, PlayerTeamSeasons } from '@/types/general';
+import { Paper, Typography } from '@esmalley/react-material-ui';
 import { Objector, Textor } from '@esmalley/ts-utils';
 
 import React from 'react';

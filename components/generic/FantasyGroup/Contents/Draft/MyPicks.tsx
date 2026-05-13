@@ -1,13 +1,10 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { FantasyDraftOrders, FantasyEntryPlayers } from '@/types/general';
 
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
+import { Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const MyPicks = () => {

@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import OptionPicker from '../OptionPicker';
 import { updateDataKey } from '@/redux/features/display-slice';
 import { updateDataKey as updateDataKeyRanking } from '@/redux/features/ranking-slice';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import AdditionalOptions from './AdditionalOptions';
 import Search from './Search';
 import LastUpdated from './LastUpdated';
@@ -17,14 +16,12 @@ import ColumnChipPicker from './ColumnChipPicker';
 import DownloadOption from './DownloadOption';
 import ConferenceChips from '../ConferenceChips';
 import ConferencePicker from '../ConferencePicker';
-import Chip from '@/components/ux/container/Chip';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import PositionPicker from './PositionPicker';
 import TableColumns from '@/components/helpers/TableColumns';
 import ClassYearPicker from './ClassYearPicker';
 import { Textor } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Chip, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const Base = (
@@ -56,7 +53,7 @@ const Base = (
     seasons = [2026, 2025, 2024];
   }
 
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     if (

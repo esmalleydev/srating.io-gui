@@ -8,25 +8,21 @@ import KeyboardArrowLeftIcon from '@esmalley/react-material-icons/KeyboardArrowL
 import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrowRight';
 import CalendarIcon from '@esmalley/react-material-icons/Event';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useScrollContext } from '@/contexts/scrollContext';
 import { useAppDispatch } from '@/redux/hooks';
 import { updateGameSort } from '@/redux/features/favorite-slice';
 import { setLoading } from '@/redux/features/loading-slice';
 import { setDataKey } from '@/redux/features/games-slice';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Calendar from '@/components/ux/calendar/Calendar';
-import Plane from '@/components/ux/overlay/Plane';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { Color, Dates, Style } from '@esmalley/ts-utils';
+import { Calendar, IconButton, Plane, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 const getBreakPoint: () => number = () => {
   return 600;
 };
 
 const getMarginTop: () => number = () => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   if (width <= getBreakPoint()) {
     return 56;

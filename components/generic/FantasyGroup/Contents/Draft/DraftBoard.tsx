@@ -1,12 +1,6 @@
 'use client';
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { Dates } from '@esmalley/ts-utils';
 
@@ -14,6 +8,7 @@ import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
 import HourglassBottomIcon from '@esmalley/react-material-icons/HourglassBottom';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useEffect, useState } from 'react';
+import { Button, Modal, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const DraftBoard = () => {
@@ -116,8 +111,8 @@ const DraftBoard = () => {
         <Typography type = 'body1' style = {{ color: theme.yellow[(theme.mode === 'dark' ? 500 : 900)] }}>Round #{viewRound}</Typography>
         {elements}
         <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
-          {viewRound > 1 ? <Button ink value = 'previous' title = {`View round ${viewRound - 1}`} handleClick={() => setViewRound(viewRound - 1)} /> : <div></div>}
-          {viewRound < maxRounds ? <Button ink value = 'next' title = {`View round ${viewRound + 1}`} handleClick={() => setViewRound(viewRound + 1)} /> : <div></div>}
+          {viewRound > 1 ? <Button ink value = 'previous' title = {`View round ${viewRound - 1}`} onClick={() => setViewRound(viewRound - 1)} /> : <div></div>}
+          {viewRound < maxRounds ? <Button ink value = 'next' title = {`View round ${viewRound + 1}`} onClick={() => setViewRound(viewRound + 1)} /> : <div></div>}
         </div>
       </div>
     );

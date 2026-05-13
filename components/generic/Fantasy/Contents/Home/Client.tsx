@@ -8,12 +8,10 @@ import { useClientAPI } from '@/components/clientAPI';
 import { FantasyEntrys, FantasyGroups, FantasyGroupUsers } from '@/types/general';
 import MyGroups from './MyGroups';
 import { useAppSelector } from '@/redux/hooks';
-import Columns from '@/components/ux/layout/Columns';
 import PublicBracketsGroups from './PublicBracketsGroups';
 import PublicDraftGroups from './PublicDraftGroups';
 import CreateGroup from './CreateGroup';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Columns, LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 
 interface Data {

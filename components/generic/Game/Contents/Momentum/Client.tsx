@@ -1,8 +1,5 @@
 'use client';
 
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-
-
 import CompareStatistic, { CompareStatisticRow } from '@/components/generic/CompareStatistic';
 
 import HelperGame from '@/components/helpers/Game';
@@ -10,15 +7,10 @@ import { Game, Games } from '@/types/general';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import CBB from '@/components/helpers/CBB';
 import Organization from '@/components/helpers/Organization';
-import CFB from '@/components/helpers/CFB';
-import Typography from '@/components/ux/text/Typography';
-import Paper from '@/components/ux/container/Paper';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Dates, Objector } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { LinearProgress, Paper, Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents
@@ -57,7 +49,7 @@ const ClientSkeleton = () => {
 
 
 const Client = ({ game, momentumData, stats }) => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const Game = new HelperGame({
     game,

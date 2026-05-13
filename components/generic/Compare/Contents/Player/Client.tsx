@@ -11,14 +11,11 @@ import RankTable from '@/components/generic/RankTable';
 import HelperTeam from '@/components/helpers/Team';
 import Organization from '@/components/helpers/Organization';
 import { PlayerStatisticRanking } from '@/types/cbb';
-import Typography from '@/components/ux/text/Typography';
-import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import ClassSpan from '@/components/generic/ClassSpan';
 import { Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Chip, LinearProgress, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 /**

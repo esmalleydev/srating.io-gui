@@ -7,11 +7,8 @@ import ArrowForwardIcon from '@esmalley/react-material-icons/ArrowForward';
 
 import RankSpan from '@/components/generic/RankSpan';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { Dates } from '@esmalley/ts-utils';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Paper, Skeleton, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Differentials = ({ game, team_id }) => {

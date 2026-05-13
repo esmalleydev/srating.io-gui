@@ -2,11 +2,8 @@
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
+import { Button, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 import { Dates } from '@esmalley/ts-utils';
 import React, { useEffect, useState, useMemo } from 'react';
 
@@ -72,7 +69,7 @@ const DraftOrBracketCountdown = () => {
         label: 'Draft Starts',
         date: fantasy_group?.draft_start_datetime,
         isComplete: !!(fantasy_group?.drafted),
-        button: <Button value='view-draft' title='Enter Draft Room' handleClick={() => handleView('draft')} />,
+        button: <Button value='view-draft' title='Enter Draft Room' onClick={() => handleView('draft')} />,
       });
       // Step 3: Season Start
       list.push({

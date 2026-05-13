@@ -12,7 +12,7 @@ import AccountLoader from '@/components/generic/Account/AccountLoader';
 
 
 type Props = {
-  params: Promise<{  }>;
+  params: Promise<{ }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 

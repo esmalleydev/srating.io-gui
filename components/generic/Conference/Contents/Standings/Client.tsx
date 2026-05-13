@@ -17,7 +17,7 @@ import RankTable from '@/components/generic/RankTable';
 import TableColumns from '@/components/helpers/TableColumns';
 import { Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import { Skeleton } from '@esmalley/react-material-ui';
 
 
 

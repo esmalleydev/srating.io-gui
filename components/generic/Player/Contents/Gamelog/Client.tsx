@@ -10,15 +10,13 @@ import HelperGame from '@/components/helpers/Game';
 import { Profiler, useState } from 'react';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { getNavHeaderHeight } from '../../NavBar';
 import { getSubNavHeaderHeight } from '../../SubNavbar';
 import RankTable from '@/components/generic/RankTable';
 import TableColumns from '@/components/helpers/TableColumns';
-import Chip from '@/components/ux/container/Chip';
 import { Dates, Objector } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { Chip, LinearProgress, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents

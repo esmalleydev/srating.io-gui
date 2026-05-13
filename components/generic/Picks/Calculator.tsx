@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
 import CancelCircleIcon from '@esmalley/react-material-icons/Cancel';
@@ -14,30 +13,18 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Game } from '@/types/general';
 import Organization from '@/components/helpers/Organization';
 import { setLoading } from '@/redux/features/loading-slice';
-import Button from '@/components/ux/buttons/Button';
-import Typography from '@/components/ux/text/Typography';
-import TextInput from '@/components/ux/input/TextInput';
-import Columns from '@/components/ux/layout/Columns';
-import Inputs from '@/components/ux/input/Inputs';
 import { Arrayifier, Dates, Sorter } from '@esmalley/ts-utils';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import CircularProgress from '@/components/ux/loading/CircularProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Table from '@/components/ux/table/Table';
-import Thead from '@/components/ux/table/Thead';
-import Tr from '@/components/ux/table/Tr';
-import Th from '@/components/ux/table/Th';
-import Tbody from '@/components/ux/table/Tbody';
-import Td from '@/components/ux/table/Td';
-import Paper from '@/components/ux/container/Paper';
-import Skeleton from '@/components/ux/loading/Skeleton';
+import {
+  Button, CircularProgress, Columns, Inputs, Paper, Skeleton, Table, Tbody, Td, TextInput, Th, Thead, Tr, Typography, useTheme, useWindowDimensions,
+} from '@esmalley/react-material-ui';
 
 // todo this somestimes triggers a double load in PicksLoader.... something with having const picksLoading = useAppSelector(state => state.picksReducer.picksLoading);, makes it double render
 
 const Calculator = ({ games, date }) => {
   const navigation = useNavigation();
   const theme = useTheme();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const dispatch = useAppDispatch();
   const [isPending, startTransition] = useTransition();
@@ -607,7 +594,7 @@ const Calculator = ({ games, date }) => {
     }
   }
 
-  const parleyRowsConatiner = rows_parlay.sort( (a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a as any, b as any)).slice().map((row: tableRow) => getStyledTableRow(row));
+  const parleyRowsConatiner = rows_parlay.sort((a: tableRow, b: tableRow) => Sorter.getComparator(order as string, orderBy as string)(a as any, b as any)).slice().map((row: tableRow) => getStyledTableRow(row));
 
 
   const getTable = (rowContainers) => {
@@ -743,7 +730,7 @@ const Calculator = ({ games, date }) => {
         <Typography type = 'body1' style = {{ marginBottom: 10 }}>Subscribe for just $5 per month to get access to the betting calculator!</Typography>
         <Typography type = 'a' onClick = {handleLiveWinRate}>View the live win rate</Typography>
         <div style = {{ textAlign: 'right' }}>
-          <Button handleClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
+          <Button onClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
         </div>
       </div>
     );

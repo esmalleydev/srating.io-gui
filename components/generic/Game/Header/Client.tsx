@@ -2,18 +2,16 @@
 
 import HelperGame from '@/components/helpers/Game';
 import { getBreakPoint } from '@/components/generic/Game/Header/ClientWrapper';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import Refresher from '../Refresher';
 import { Game } from '@/types/general';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Typography, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 
 const Client = (
   { game, tag }:
   { game: Game; tag: string; },
 ) => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const theme = useTheme();
 
   let scoreVariant: string = 'h4';

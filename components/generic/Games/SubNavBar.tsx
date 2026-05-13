@@ -1,13 +1,12 @@
 'use client';
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { getBreakPoint, getDateBarHeight, getMarginTop } from '@/components/generic/DateBar';
 import ConferencePicker from '@/components/generic/ConferencePicker';
 import AdditionalOptions from '@/components/generic/Games/AdditionalOptions';
 import StatusPicker from '@/components/generic/StatusPicker';
 import RefreshCounter from './RefreshCounter';
 import GamesFilterPicker from './GamesFilterPicker';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 
 const getHeaderHeight = () => {
   return 48;
@@ -18,7 +17,7 @@ export { getHeaderHeight };
 
 const SubNavBar = () => {
   const theme = useTheme();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const subHeaderHeight = getHeaderHeight();
   const subHeaderTop = getMarginTop() + getDateBarHeight();

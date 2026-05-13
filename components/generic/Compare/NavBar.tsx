@@ -8,7 +8,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { setDataKey } from '@/redux/features/compare-slice';
 
 
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import PlayerAdditionalOptions from './PlayerAdditionalOptions';
 import TeamAdditionalOptions from './TeamAdditionalOptions';
 
@@ -16,11 +15,8 @@ import SensorOccupiedIcon from '@esmalley/react-material-icons/SensorOccupied';
 import CalendarViewMonthIcon from '@esmalley/react-material-icons/CalendarViewMonth';
 import { useScrollContext } from '@/contexts/scrollContext';
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tab from '@/components/ux/buttons/Tab';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { Style } from '@esmalley/ts-utils';
+import { IconButton, Tab, Tooltip, useTheme, useWindowDimensions } from '@esmalley/react-material-ui';
 // import GroupsIcon from '@esmalley/react-material-icons/Groups';
 // import StadiumIcon from '@esmalley/react-material-icons/Stadium';
 // import LocalAirportIcon from '@esmalley/react-material-icons/LocalAirport';
@@ -45,7 +41,7 @@ const NavBar = () => {
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
   const navHeaderHeight = getNavHeaderHeight();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const scrollRef = useScrollContext();
 
@@ -145,14 +141,14 @@ const NavBar = () => {
   const tabs: React.JSX.Element[] = [];
 
   for (let i = 0; i < tabOrder.length; i++) {
-    tabs.push(<Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} handleClick = {handleView} />);
+    tabs.push(<Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} onClick = {handleView} />);
   }
 
   const subTabs: React.JSX.Element[] = [];
 
   for (let i = 0; i < subTabOrder.length; i++) {
     subTabs.push(
-      <Tab key = {subTabOrder[i]} value = {subTabOrder[i]} selected = {subTabOrder[i] === subview} title = {subTabOptions[subTabOrder[i]]} handleClick = {handleSubView} />,
+      <Tab key = {subTabOrder[i]} value = {subTabOrder[i]} selected = {subTabOrder[i] === subview} title = {subTabOptions[subTabOrder[i]]} onClick = {handleSubView} />,
     );
   }
 

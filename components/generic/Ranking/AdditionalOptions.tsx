@@ -9,14 +9,11 @@ import FilterAltIcon from '@esmalley/react-material-icons/FilterAlt';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/ranking-slice';
 import ConferenceFilterOptions from './ConferenceFilterOptions';
-import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { ClassYearPickerDialog } from './ClassYearPicker';
-import IconButton from '@/components/ux/buttons/IconButton';
+import { IconButton, Menu, MenuDivider, MenuOption, Tooltip, useWindowDimensions } from '@esmalley/react-material-ui';
 
 const AdditionalOptions = ({ view }: {view: string}) => {
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const [anchor, setAnchor] = useState(null);
   const [classPickerDialogOpen, setClassPickerDialogOpen] = useState(false);
   const [confOptionsOpen, setConfOptionsOpen] = useState(false);

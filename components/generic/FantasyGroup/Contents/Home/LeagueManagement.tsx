@@ -1,8 +1,6 @@
 'use client';
 
 
-import Columns from '@/components/ux/layout/Columns';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 
 import FantasyGroup from '@/components/helpers/FantasyGroup';
@@ -11,6 +9,7 @@ import EntriesAndFees from '../../Card/EntriesAndFees';
 import DraftSettings from '../../Card/DraftSettings';
 import BracketInfo from '../../Card/BracketInfo';
 import PayoutInfo from '../../Card/PayoutInfo';
+import { Columns, Typography } from '@esmalley/react-material-ui';
 
 const LeagueManagement = () => {
   const fantasy_group = useAppSelector((state) => state.fantasyGroupReducer.fantasy_group);

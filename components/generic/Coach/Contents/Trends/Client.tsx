@@ -10,11 +10,8 @@ import { CoachElo, CoachElos, Games } from '@/types/general';
 import { getNavHeaderHeight } from '@/components/generic/Coach/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
 import { Dates } from '@esmalley/ts-utils';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
+import { LinearProgress, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 // todo compare to 2 or more coach elos on the same graph? might be cool to see them with the time comparison. ex: and old coach vs relativiely new

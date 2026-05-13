@@ -3,7 +3,6 @@
 import { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 // import { Link } from 'next/link';
-import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
 
 
 // Icons
@@ -28,18 +27,15 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { reset } from '@/redux/features/compare-slice';
 import { setLoading } from '@/redux/features/loading-slice';
 import OrganizationPicker from './OrganizationPicker';
-import Menu, { MenuDivider, MenuOption } from '@/components/ux/menu/Menu';
 import Organization from '../helpers/Organization';
-import Tooltip from '../ux/hover/Tooltip';
-import Button from '../ux/buttons/Button';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import IconButton from '../ux/buttons/IconButton';
 import { setDataKey } from '@/redux/features/user-slice';
 import General from '../helpers/General';
 import { Objector, Style } from '@esmalley/ts-utils';
 import Notifications from './Notifications';
 import { useNavigation } from '../hooks/useNavigation';
-import Drawer from '../ux/overlay/Drawer';
+import {
+  Button, Drawer, IconButton, Menu, MenuDivider, MenuOption, Tooltip, useTheme, useWindowDimensions,
+} from '@esmalley/react-material-ui';
 
 
 // todo hook up settings with router
@@ -67,7 +63,7 @@ const Header = () => {
 
   const router = useRouter();
   const pathName = usePathname();
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -269,7 +265,7 @@ const Header = () => {
             </div>
           </div> :
           <div className = {Style.getStyleClassName(toolBarStyle)}>
-            <IconButton onClick = {toggleDrawer} containerStyle = {{ marginRight: 16 }} buttonStyle={{ color: '#fff' }} value = 'sidebar' icon = {<MenuIcon style = {{ fontSize: 24 }} />} />
+            <IconButton onClick = {toggleDrawer} containerStyle = {{ marginRight: 16 }} style={{ color: '#fff' }} value = 'sidebar' icon = {<MenuIcon style = {{ fontSize: 24 }} />} />
             <Drawer
               open={drawerOpen}
               onClose={toggleDrawer}
@@ -285,15 +281,15 @@ const Header = () => {
             </div>
             <div style={{ flexGrow: 1, display: 'flex' }}>
             </div>
-            <div style={{ flexGrow: 0, lineHeight: 'initial' }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} value = 'compare' icon = {<QueryStatsIcon style = {{ fontSize: 24 }} />} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} /></Tooltip> : ''}</div>
+            <div style={{ flexGrow: 0, lineHeight: 'initial' }}>{width > 320 ? <Tooltip onClickRemove text = {'Compare tool'}><IconButton onClick={handleCompare} value = 'compare' icon = {<QueryStatsIcon style = {{ fontSize: 24 }} />} style={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} /></Tooltip> : ''}</div>
             <div style={{ flexGrow: 0, marginRight: (width < 600 ? 0 : '5px'), lineHeight: 'initial' }}>
-              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} buttonStyle={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} value = 'search' icon = {<SearchIcon style = {{ fontSize: 24 }} />} /> : <Search focus={false} />}
+              {width < 625 ? <IconButton onClick={() => { setFullSearch(true); }} style={{ color: (theme.mode === 'light' ? '#fff' : theme.info.main) }} value = 'search' icon = {<SearchIcon style = {{ fontSize: 24 }} />} /> : <Search focus={false} />}
             </div>
             <div style={{ flexGrow: 0, lineHeight: 'initial' }}>
               {
               validSession ?
                 <>
-                  <IconButton onClick={handleMenu} value = 'account' icon = {<AccountCircle style = {{ fontSize: 24 }} />} buttonStyle={{ color: '#fff' }} badge={activeNotifications.length} />
+                  <IconButton onClick={handleMenu} value = 'account' icon = {<AccountCircle style = {{ fontSize: 24 }} />} style={{ color: '#fff' }} badge={activeNotifications.length} />
                   <Menu
                     anchor={anchorEl}
                     open={Boolean(anchorEl)}
@@ -304,7 +300,7 @@ const Header = () => {
                 :
                 <div>
                   {/* {width >= 425 ? <SignUpButton style = {{'marginRight': 5}} variant = 'outlined' disableElevation onClick={() => {router.push('/pricing');}}>Sign up</SignUpButton> : ''} */}
-                  <Button buttonStyle = {{ backgroundColor: (theme.mode === 'light' ? theme.secondary.main : theme.success.dark) }} handleClick={handleAccount} title = {(width > 550 ? 'Signup / Login' : 'Login')} value = 'login' />
+                  <Button buttonStyle = {{ backgroundColor: (theme.mode === 'light' ? theme.secondary.main : theme.success.dark) }} onClick={handleAccount} title = {(width > 550 ? 'Signup / Login' : 'Login')} value = 'login' />
                 </div>
               }
             </div>

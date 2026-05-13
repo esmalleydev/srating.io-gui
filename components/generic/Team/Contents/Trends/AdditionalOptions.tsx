@@ -9,9 +9,7 @@ import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/team-slice';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import Tooltip from '@/components/ux/hover/Tooltip';
-import IconButton from '@/components/ux/buttons/IconButton';
+import { IconButton, Menu, MenuOption, Tooltip } from '@esmalley/react-material-ui';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);

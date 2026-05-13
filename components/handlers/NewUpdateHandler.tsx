@@ -2,9 +2,7 @@
 
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { setDataKey, setKryptos } from '@/redux/features/user-slice';
-import Modal from '@/components/ux/modal/Modal';
-import Typography from '@/components/ux/text/Typography';
-import Button from '@/components/ux/buttons/Button';
+import { Button, Modal, Typography } from '@esmalley/react-material-ui';
 
 const NewUpdateHandler = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +23,7 @@ const NewUpdateHandler = () => {
         <Typography type = 'h6'>A new update is available</Typography>
         <Typography type = 'body1' style = {{ marginTop: 10 }}>You are running an outdated version, please refresh the page.</Typography>
         <div style = {{ textAlign: 'right', marginTop: 10 }}>
-          <Button title='Refresh' ink handleClick={handle} value = 'refresh' />
+          <Button title='Refresh' ink onClick={handle} value = 'refresh' />
         </div>
       </Modal>
     );

@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 
+import { TableColumnsType } from '@esmalley/react-material-ui';
 import { CompareStatisticRow } from '../generic/CompareStatistic';
-import { TableColumnsType } from '../ux/table/VirtualTable';
 import Organization from './Organization';
 
 

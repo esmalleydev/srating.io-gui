@@ -1,7 +1,7 @@
 
 import { getStore } from '@/app/StoreProvider';
+import { MultiPickerOption } from '@esmalley/react-material-ui';
 import { Theme } from '@esmalley/ts-utils';
-import { MultiPickerOption } from '../ux/input/MultiPicker';
 
 
 class General {

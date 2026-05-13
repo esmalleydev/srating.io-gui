@@ -1,13 +1,10 @@
 'use client';
 
-import Button from '@/components/ux/buttons/Button';
 import { useState } from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import AccountHandler from '@/components/generic/AccountHandler';
-import Wizard, { WizardStep } from '@/components/ux/layout/Wizard';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, Typography, useTheme, Wizard, WizardStep } from '@esmalley/react-material-ui';
 
 const CreateGroup = () => {
   const theme = useTheme();
@@ -60,7 +57,7 @@ const CreateGroup = () => {
         useArrowButton
       />
       <div style = {{ margin: 'auto', textAlign: 'center' }}>
-        <Button title = 'Create fantasy league' value = 'create' handleClick = {() => {
+        <Button title = 'Create fantasy league' value = 'create' onClick = {() => {
           if (!session_id) {
             setShowModal(true);
             return;

@@ -3,13 +3,11 @@
 import RankTable from '@/components/generic/RankTable';
 import TableColumns from '@/components/helpers/TableColumns';
 import { useNavigation } from '@/components/hooks/useNavigation';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { FantasyRanking } from '@/types/general';
 import { Objector } from '@esmalley/ts-utils';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
+import { Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const Ranking = () => {
   const navigation = useNavigation();

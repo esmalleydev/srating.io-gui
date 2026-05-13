@@ -7,11 +7,11 @@ import RankTable from '@/components/generic/RankTable';
 import HelperTeam from '@/components/helpers/Team';
 import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
 import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
-import Chip from '@/components/ux/container/Chip';
 import TableColumns from '@/components/helpers/TableColumns';
 import { getAvailableChips } from '@/components/generic/Ranking/ColumnChipPicker';
 import { useAppSelector } from '@/redux/hooks';
 import { Objector, Textor } from '@esmalley/ts-utils';
+import { Chip } from '@esmalley/react-material-ui';
 
 
 

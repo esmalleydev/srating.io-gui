@@ -2,21 +2,16 @@
 
 /* eslint-disable no-nested-ternary */
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import IconButton from '@/components/ux/buttons/IconButton';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { FantasyEntry } from '@/types/general';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import AddIcon from '@esmalley/react-material-icons/Add';
 import { useState } from 'react';
 import CreateEntry from './CreateEntry';
-import Tile from '@/components/ux/container/Tile';
 import StadiumIcon from '@esmalley/react-material-icons/Stadium';
 import FantasyGroup from '@/components/helpers/FantasyGroup';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, IconButton, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const MyEntries = () => {
   const theme = useTheme();
@@ -52,7 +47,7 @@ const MyEntries = () => {
         primary={row.name}
         secondary={`${fantasy_group.entry_fee ? (row.paid ? 'Paid' : 'Pending payment') : 'Free'} ${fantasyHelper.isDraft() ? 'draft entry' : 'bracket entry'}`}
         buttons = {[
-          <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink handleClick={handleTileClick} />,
+          <Button key = {row.fantasy_entry_id} title = 'View' value = {row.fantasy_entry_id} ink onClick={handleTileClick} />,
         ]}
       />
     );
@@ -90,7 +85,7 @@ const MyEntries = () => {
     if (canJoin && my_fantasy_entrys.length === 0) {
       return (
         <div style = {{ textAlign: 'center' }}>
-          <Button title = 'Create entry' value = 'join' handleClick = {handleJoin} />
+          <Button title = 'Create entry' value = 'join' onClick = {handleJoin} />
         </div>
       );
     }

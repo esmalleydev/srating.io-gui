@@ -1,22 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-// import { useWindowDimensions, Dimensions } from '@/components/hooks/useWindowDimensions';
-
 
 import CheckIcon from '@esmalley/react-material-icons/Check';
 import CheckBoxOutlineBlankIcon from '@esmalley/react-material-icons/CheckBoxOutlineBlank';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
 import { updateDataKey } from '@/redux/features/display-slice';
-import Button from '@/components/ux/buttons/Button';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Button, Menu, MenuOption, useTheme } from '@esmalley/react-material-ui';
 
 const StatusPicker = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const statuses = useAppSelector((state) => state.displayReducer.statuses);
-  // const { width } = useWindowDimensions() as Dimensions;
 
   const selected = statuses;
 
@@ -78,7 +73,7 @@ const StatusPicker = () => {
       <Button
         type = 'select'
         ink
-        handleClick={handleOpen}
+        onClick={handleOpen}
         title = {title}
         value = {title}
       />

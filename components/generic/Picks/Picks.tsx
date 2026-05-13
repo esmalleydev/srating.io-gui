@@ -7,11 +7,10 @@ import AdditionalOptions from '@/components/generic/Picks/AdditionalOptions';
 import ConferencePicker from '@/components/generic/ConferencePicker';
 import { Games } from '@/types/general';
 import ConferenceChips from '../ConferenceChips';
-import Typography from '@/components/ux/text/Typography';
-import Button from '@/components/ux/buttons/Button';
 import { setLoading } from '@/redux/features/loading-slice';
 import { useTransition } from 'react';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, Typography } from '@esmalley/react-material-ui';
 
 
 const Picks = ({ games }: {games: Games}) => {
@@ -100,7 +99,7 @@ const Picks = ({ games }: {games: Games}) => {
         <Typography type = 'body1' style = {{ marginBottom: 10 }}>Subscribe for just $5 per month to get access to the win percentage and predicted score for every game!</Typography>
         <Typography type = 'a' onClick = {handleLiveWinRate}>View the live win rate</Typography>
         <div style = {{ textAlign: 'right' }}>
-          <Button handleClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
+          <Button onClick={handleSubscribe} autoFocus title = {'Subscribe'} value = 'subscribe' />
         </div>
       </div>
     );

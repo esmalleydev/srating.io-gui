@@ -1,10 +1,5 @@
 'use client';
 
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Paper from '@/components/ux/container/Paper';
-import Tile from '@/components/ux/container/Tile';
-import Typography from '@/components/ux/text/Typography';
 import { FantasyEntrys, FantasyGroup, FantasyGroups } from '@/types/general';
 import SentimentVeryDissatisfiedIcon from '@esmalley/react-material-icons/SentimentVeryDissatisfied';
 import { useState } from 'react';
@@ -13,6 +8,7 @@ import Payment from '@/components/helpers/Payment';
 import AccountHandler from '@/components/generic/AccountHandler';
 import { useAppSelector } from '@/redux/hooks';
 import { useNavigation } from '@/components/hooks/useNavigation';
+import { Button, Paper, Tile, Typography, useTheme } from '@esmalley/react-material-ui';
 
 const PublicBracketsGroups = (
   {
@@ -68,7 +64,7 @@ const PublicBracketsGroups = (
         primary={row.name}
         secondary={`Free entry; Limit ${row.entries_per_user} entries per user`}
         buttons = {[
-          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
+          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink onClick={handleTileClick} />,
         ]}
       />
     );
@@ -83,7 +79,7 @@ const PublicBracketsGroups = (
         value = 'view-all'
         title = {`View all (${free_rows.length})`}
         ink
-        handleClick={() => setFreeLimit(Infinity)}
+        onClick={() => setFreeLimit(Infinity)}
       />,
     );
   } else if (freeLimit === Infinity) {
@@ -93,7 +89,7 @@ const PublicBracketsGroups = (
         value = 'hide-extra'
         title = {'Show less'}
         ink
-        handleClick={() => setFreeLimit(initialLimit)}
+        onClick={() => setFreeLimit(initialLimit)}
       />,
     );
   }
@@ -110,7 +106,7 @@ const PublicBracketsGroups = (
         primary={row.name}
         secondary={`$${row.entry_fee} entry fee; Current pool $${Payment.get_amount_after_fees(Object.keys(fantasy_entrys).length * (row.entry_fee || 0))}; ${Object.keys(fantasy_entrys).length} entries; Limit ${row.entries_per_user} entries per user`}
         buttons = {[
-          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink handleClick={handleTileClick} />,
+          <Button key = {`join-${row.fantasy_group_id}`} title = 'Join' value = {row.fantasy_group_id} ink onClick={handleTileClick} />,
         ]}
       />
     );
@@ -125,7 +121,7 @@ const PublicBracketsGroups = (
         value = 'view-all'
         title = {`View all (${paid_rows.length})`}
         ink
-        handleClick={() => setPaidLimit(Infinity)}
+        onClick={() => setPaidLimit(Infinity)}
       />,
     );
   } else if (paidLimit === Infinity) {
@@ -135,7 +131,7 @@ const PublicBracketsGroups = (
         value = 'hide-extra'
         title = {'Show less'}
         ink
-        handleClick={() => setPaidLimit(initialLimit)}
+        onClick={() => setPaidLimit(initialLimit)}
       />,
     );
   }

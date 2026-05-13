@@ -1,13 +1,12 @@
 'use client';
 
 import Blank from '@/components/generic/Blank';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Typography from '@/components/ux/text/Typography';
 import { useAppSelector } from '@/redux/hooks';
 import { FantasyRanking } from '@/types/general';
 
 // import EmojiEventsIcon from '@esmalley/react-material-icons/EmojiEvents';
 import WorkspacePremiumIcon from '@esmalley/react-material-icons/WorkspacePremium';
+import { Typography, useTheme } from '@esmalley/react-material-ui';
 // import SportsScoreIcon from '@esmalley/react-material-icons/SportsScore';
 
 const Winner = () => {

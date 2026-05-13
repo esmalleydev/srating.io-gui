@@ -5,9 +5,7 @@ import Organization from '@/components/helpers/Organization';
 import { StatisticRanking as CBBStatisticRanking } from '@/types/cbb';
 import { StatisticRanking as CFBStatisticRanking } from '@/types/cfb';
 import TableColumns from '@/components/helpers/TableColumns';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '@/components/ux/hover/Tooltip';
+import { Tooltip, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 const Team = ({ organization_id, division_id, season, teamStats }: { organization_id: string, division_id: string, season: number, teamStats: CBBStatisticRanking | CFBStatisticRanking }) => {

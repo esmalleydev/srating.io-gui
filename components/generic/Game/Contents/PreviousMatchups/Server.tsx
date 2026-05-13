@@ -1,7 +1,5 @@
 'use server';
 
-import React from 'react';
-
 import { Client } from '@/components/generic/Game/Contents/PreviousMatchups/Client';
 import { useServerAPI } from '@/components/serverAPI';
 import { Games } from '@/types/general';

@@ -4,11 +4,9 @@ import Settings from '@esmalley/react-material-icons/Settings';
 import CheckIcon from '@esmalley/react-material-icons/Check';
 import VisibilityIcon from '@esmalley/react-material-icons/Visibility';
 
-
-import Menu, { MenuOption } from '@/components/ux/menu/Menu';
-import IconButton from '@/components/ux/buttons/IconButton';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setDataKey } from '@/redux/features/player-slice';
+import { IconButton, Menu, MenuOption } from '@esmalley/react-material-ui';
 
 const AdditionalOptions = () => {
   const [anchor, setAnchor] = useState(null);

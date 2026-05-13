@@ -2,13 +2,12 @@
 
 import { getHeaderHeight, getMarginTop } from './Header/ClientWrapper';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import Tab from '@/components/ux/buttons/Tab';
-import { useTheme } from '@/components/ux/contexts/themeContext';
 import HelperGame from '@/components/helpers/Game';
 import { setDataKey } from '@/redux/features/game-slice';
 import { startTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Style } from '@esmalley/ts-utils';
+import { Tab, useTheme } from '@esmalley/react-material-ui';
 
 
 const getNavHeaderHeight = () => {
@@ -126,7 +125,7 @@ const NavBar = () => {
 
   for (let i = 0; i < tabOrder.length; i++) {
     tabs.push(
-      <Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} containerStyle={{ backgroundColor }} handleClick = {handleTabClick} />,
+      <Tab key = {tabOrder[i]} value = {tabOrder[i]} selected = {tabOrder[i] === view} title = {tabOptions[tabOrder[i]]} containerStyle={{ backgroundColor }} onClick = {handleTabClick} />,
     );
   }
 
@@ -134,7 +133,7 @@ const NavBar = () => {
 
   for (let i = 0; i < subTabOrder.length; i++) {
     subTabs.push(
-      <Tab key = {subTabOrder[i]} value = {subTabOrder[i]} selected = {subTabOrder[i] === subview} title = {subTabOptions[subTabOrder[i]]} handleClick = {handleSubTabClick} />,
+      <Tab key = {subTabOrder[i]} value = {subTabOrder[i]} selected = {subTabOrder[i] === subview} title = {subTabOptions[subTabOrder[i]]} onClick = {handleSubTabClick} />,
     );
   }
 

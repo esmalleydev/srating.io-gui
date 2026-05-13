@@ -2,8 +2,7 @@
 
 import BackButton from '../BackButton';
 import { useAppSelector } from '@/redux/hooks';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Typography, useTheme } from '@esmalley/react-material-ui';
 import { Objector, Style } from '@esmalley/ts-utils';
 
 

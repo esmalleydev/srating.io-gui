@@ -1,20 +1,11 @@
 'use client';
 
-
-import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions';
 import { useEffect, useState } from 'react';
 import RankSpan from './RankSpan';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Tooltip from '../ux/hover/Tooltip';
-import Table from '../ux/table/Table';
-import Thead from '../ux/table/Thead';
-import Tr from '../ux/table/Tr';
-import Td from '../ux/table/Td';
-import Th from '../ux/table/Th';
-import Tbody from '../ux/table/Tbody';
-import Tfoot from '../ux/table/Tfoot';
+import {
+  Table, TableColumnsType, Tbody, Td, Tfoot, Th, Thead, Tooltip, Tr, useTheme, useWindowDimensions,
+} from '@esmalley/react-material-ui';
 import { Objector, Sorter } from '@esmalley/ts-utils';
-import { TableColumnsType } from '../ux/table/VirtualTable';
 
 
 type defaultSortOrderType = 'asc' | 'desc';
@@ -55,7 +46,7 @@ const RankTable = (
 ) => {
   const breakPoint = 425;
   let numberOfStickyColumns = 0;
-  const { width } = useWindowDimensions() as Dimensions;
+  const { width } = useWindowDimensions();
   const theme = useTheme();
 
   const sessionOrder = sessionStorage.getItem(`${sessionStorageKey}.ORDER`) || null;

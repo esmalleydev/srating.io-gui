@@ -4,24 +4,16 @@ import { useState } from 'react';
 
 import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
 import { useClientAPI } from '@/components/clientAPI';
-import Paper from '@/components/ux/container/Paper';
-import Typography from '@/components/ux/text/Typography';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Button from '@/components/ux/buttons/Button';
-import Columns from '@/components/ux/layout/Columns';
-import TextInput from '@/components/ux/input/TextInput';
-import Inputs from '@/components/ux/input/Inputs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setLoading } from '@/redux/features/loading-slice';
-import { Dimensions, useWindowDimensions } from '@/components/hooks/useWindowDimensions';
 import { setDataKey } from '@/redux/features/user-slice';
+import { Button, Columns, Inputs, Paper, TextInput, Typography, useTheme } from '@esmalley/react-material-ui';
 
 
 
 const Settings = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const { width } = useWindowDimensions() as Dimensions;
 
   const user = useAppSelector((state) => state.userReducer.user);
 
@@ -170,7 +162,7 @@ const Settings = () => {
             error = {Boolean(passwordError)}
             errorMessage = {passwordError}
             onChange = {(val) => {
-              setPassword(val);
+              setPassword(val as string);
 
               // reset any custom errors here
               setTriggerPasswordValidation(false);
@@ -191,7 +183,7 @@ const Settings = () => {
             error = {Boolean(passwordErrorConfirm)}
             errorMessage = {passwordErrorConfirm}
             onChange = {(val) => {
-              setPasswordConfirm(val);
+              setPasswordConfirm(val as string);
 
               // reset any custom errors here
               setTriggerPasswordValidation(false);
@@ -210,7 +202,7 @@ const Settings = () => {
             <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon style = {{ fontSize: 24, color: theme.success.main }} /><Typography type='body1' style={{ display: 'inline-block', marginLeft: 10, color: theme.success.main }}>Password reset!</Typography></div>
               :
             <Button
-              disabled = {isReseting} handleClick={handleResetPassword} title = {'Change password'} value = 'change-password' />
+              disabled = {isReseting} onClick={handleResetPassword} title = {'Change password'} value = 'change-password' />
           }</div>
         </Paper>
       </div>
@@ -227,7 +219,7 @@ const Settings = () => {
             value = {displayName}
             onChange={
               (val) => {
-                setDisplayName(val);
+                setDisplayName(val as string);
                 // reset any custom errors here since the valid changed.
                 // Those custom errors will need to be rechecked outside of this function
                 setTriggerAccountValidation(false);
@@ -247,7 +239,7 @@ const Settings = () => {
             updated ?
             <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}><CheckCircleIcon style = {{ fontSize: 24, color: theme.success.main }} /><Typography type='body1' style={{ display: 'inline-block', marginLeft: 10, color: theme.success.main }}>Updated!</Typography></div>
               :
-            <Button disabled = {isUpdating} handleClick={handleUpdateAccount} title = {'Update'} value = 'update-account' />
+            <Button disabled = {isUpdating} onClick={handleUpdateAccount} title = {'Update'} value = 'update-account' />
           }</div>
         </Paper>
       </div>

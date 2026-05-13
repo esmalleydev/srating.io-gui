@@ -1,15 +1,12 @@
 'use client';
 
 import Organization from '@/components/helpers/Organization';
-import { useTheme } from '@/components/ux/contexts/themeContext';
-import Paper from '@/components/ux/container/Paper';
-import Slab from '@/components/ux/container/Slab';
-import Columns from '@/components/ux/layout/Columns';
 import { FantasyGroup } from '@/types/general';
 import InfoIcon from '@esmalley/react-material-icons/Info';
 import { getTitle, innerBreakPoint, paperStyle } from '../Card';
 import { useAppSelector } from '@/redux/hooks';
 import { Dates } from '@esmalley/ts-utils';
+import { Columns, Paper, Slab, useTheme } from '@esmalley/react-material-ui';
 
 
 const GeneralDetails = (

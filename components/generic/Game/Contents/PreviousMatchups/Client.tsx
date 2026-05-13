@@ -9,11 +9,7 @@ import { Game, Games } from '@/types/general';
 import { getNavHeaderHeight, getSubNavHeaderHeight } from '@/components/generic/Game/NavBar';
 import { footerNavigationHeight } from '@/components/generic/FooterNavigation';
 import { headerBarHeight } from '@/components/generic/Header';
-import Typography from '@/components/ux/text/Typography';
-import Chip from '@/components/ux/container/Chip';
-import Paper from '@/components/ux/container/Paper';
-import LinearProgress from '@/components/ux/loading/LinearProgress';
-import { useTheme } from '@/components/ux/contexts/themeContext';
+import { Chip, LinearProgress, Paper, Typography, useTheme } from '@esmalley/react-material-ui';
 
 /**
  * The main wrapper div for all the contents
